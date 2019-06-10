@@ -1,0 +1,1 @@
+cmd /c powershell -ex bypass "%~DP0PSExtensionsHost.ps1"
