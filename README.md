@@ -1,8 +1,8 @@
 # IntuneManagement
 
-This PowerShell script will is using Intune PowerShell module, Microsoft Graph APIs and AzureRM PowerShell module to manage objects in Intune and Azure. The script has a simple UI built in WPF and it supports operations like Export, Import, Copy and Download.
+This PowerShell scripts are using Intune PowerShell module, Microsoft Graph APIs and AzureRM PowerShell module to manage objects in Intune and Azure. The scripts has a simple WPF UI and it supports operations like Export, Import, Copy and Download.
 
-This makes it easy to backup or clone a complete Intune environment. This script will export and import assignments and supports import between environments. This script will create a migration table during export and use that for importing in other environments. It will create groups if they are missing in the environment for import.
+This makes it easy to backup or clone a complete Intune environment. The scripts will export and import assignments and support import/export between environments. The scripts will create a migration table during export and use that for importing in other environments. It will create groups if they are missing in the environment for import.
 
 ![Screenshot](/IntuneManagement.PNG?raw=true)
 
@@ -47,11 +47,15 @@ This makes it easy to backup or clone a complete Intune environment. This script
 Some parts of the code was based on [PowerShell Intune Examples](https://github.com/microsoftgraph/powershell-intune-samples)
 
 ## Known Issues
-The script is using two separate PowerShell modules for accessing Intune and Azure. This can cause multiple logins since they are authenticating to two different apps in azure and the authentication token for Intune PowerShell module have no permissions on the Azure objects.
+The scripts are using two separate PowerShell modules for accessing Intune and Azure. This can cause multiple logins since they are authenticating to two different apps in azure and the authentication token for Intune PowerShell module have no permissions on the Azure objects.
 
 The support for import/export between environments is limited. Only groups in assignments are supported in this version. Additional objects like users, locations, notifications etc. will not be migrated and might cause the import to fail.
 
 The script will create a group if it is missing in the destination environment. It will create a security group with manual assigned members. This might not always be the desired case e.g. original group was synched from AD or it was a dynamic group.
+
+## TIP
+
+Download [Microsoft.WindowsAPICodePack](https://www.nuget.org/packages/WindowsAPICodePack-Core) and [Microsoft.WindowsAPICodePack.Shell](https://www.nuget.org/packages/WindowsAPICodePack-Shell) and copy the DLLs into the script folder to get a nicer folder dialog.
 
 ## License
 
