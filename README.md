@@ -1,4 +1,4 @@
-# IntuneManagement
+# IntuneManagement with PowerShell and WPF UI
 
 This PowerShell scripts are using Intune PowerShell module, Microsoft Graph APIs and AzureRM PowerShell module to manage objects in Intune and Azure. The scripts has a simple WPF UI and it supports operations like Export, Import, Copy and Download.
 
@@ -44,7 +44,7 @@ This makes it easy to backup or clone a complete Intune environment. The scripts
 * [AzureRM PowerShellModule](https://docs.microsoft.com/en-us/powershell/azure/azurerm/install-azurerm-ps?view=azurermps-6.13.0)
 
 ## Acknowledgments
-Some parts of the code was based on [PowerShell Intune Examples](https://github.com/microsoftgraph/powershell-intune-samples)
+The app enryption and upload is based on [PowerShell Intune Examples](https://github.com/microsoftgraph/powershell-intune-samples)
 
 ## Known Issues
 The scripts are using two separate PowerShell modules for accessing Intune and Azure. This can cause multiple logins since they are authenticating to two different apps in azure and the authentication token for Intune PowerShell module have no permissions on the Azure objects.
