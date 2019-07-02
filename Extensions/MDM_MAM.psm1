@@ -99,12 +99,21 @@ function Get-MDMMAM
         $global:lstFiles.ItemsSource = @(Get-JsonFileObjects $global:txtImportPath.Text -Exclude "*_Settings.json")
     }
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles})            
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -ViewFullObject ([scriptblock]{Get-MDMMAMObject $global:dgObjects.SelectedItem.Object})            
 }
 
 function Get-MDMMAMObjects
 {
     Get-AzureNativeObjects "MdmApplications" -property @('appDisplayName')
+}
+
+function Get-MDMMAMObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.objectId) { return }
+
+    Invoke-AzureNativeRequest "/MdmApplications/$($Object.objectId)$additional"
 }
 
 function Export-AllMDMMAM

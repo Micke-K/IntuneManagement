@@ -100,12 +100,21 @@ function Get-AutoPilots
         $global:lstFiles.ItemsSource = @(Get-JsonFileObjects $global:txtImportPath.Text -Exclude "*_Settings.json")
     }
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-AutoPilot})                
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-AutoPilot}) -ViewFullObject ([scriptblock]{Get-AutoPilotObject $global:dgObjects.SelectedItem.Object})                
 }
 
 function Get-AutoPilotObjects
 {
     Get-GraphObjects -Url "/deviceManagement/windowsAutopilotDeploymentProfiles"
+}
+
+function Get-AutoPilotObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.id) { return }
+
+    Invoke-GraphRequest -Url "/deviceManagement/windowsAutopilotDeploymentProfiles/$($Object.id)$additional"
 }
 
 function Export-AllAutoPilots

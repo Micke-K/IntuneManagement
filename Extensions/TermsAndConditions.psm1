@@ -26,7 +26,6 @@ function Get-SupportedImportObjects
     })
 }
 
-
 function Get-SupportedExportObjects
 {
     $global:exportObjects += (New-Object PSObject -Property @{
@@ -101,12 +100,21 @@ function Get-TermsAndConditions
         $global:lstFiles.ItemsSource = @(Get-JsonFileObjects $global:txtImportPath.Text -Exclude "*_Settings.json")
     }
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-TermsAndCondition})                
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-TermsAndCondition}) -ViewFullObject ([scriptblock]{Get-TermsAndConditionObject $global:dgObjects.SelectedItem.Object})                  
 }
 
 function Get-TermsAndConditionObjects
 {
     Get-GraphObjects -Url "/deviceManagement/termsAndConditions"
+}
+
+function Get-TermsAndConditionObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.id) { return }
+
+    Invoke-GraphRequest -Url "/deviceManagement/termsAndConditions/$($Object.id)$additional"
 }
 
 function Export-AllTermsAndConditions

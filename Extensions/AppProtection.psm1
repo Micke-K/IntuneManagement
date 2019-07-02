@@ -100,12 +100,32 @@ function Get-AppProtections
         $global:lstFiles.ItemsSource = @(Get-JsonFileObjects $global:txtImportPath.Text -Exclude "*_Settings.json")
     }
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-AppProtection})                
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-AppProtection}) -ViewFullObject ([scriptblock]{Get-AppProtectionObject $global:dgObjects.SelectedItem.Object}) -ForceFullObject
 }
 
 function Get-AppProtectionObjects
 {    
     Get-GraphObjects -Url "/deviceAppManagement/managedAppPolicies"
+}
+
+function Get-AppProtectionObject
+{
+    param($object, $additional = "")
+
+    if(-not $object.id) { return }
+
+    $objType = Get-AppProtectionObjectType $object."@odata.type"
+
+    $expand = ""
+    if($objType -eq "targetedManagedAppConfigurations")
+    { 
+        $expand = "?`$expand=Apps" 
+    }
+
+    if($objType)
+    {
+        Invoke-GraphRequest -Url "/deviceAppManagement/$objType/$($object.id)$($expand)"
+    }
 }
 
 function Export-AllAppProtections

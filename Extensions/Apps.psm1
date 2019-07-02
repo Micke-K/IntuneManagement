@@ -146,12 +146,21 @@ function Get-Applications
     $script:importParams = @{}
     $script:importParams.Add("Extension", $importExtension)
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles @script:importParams}) # -copy ([scriptblock]{Copy-Application})                
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles @script:importParams}) -ViewFullObject ([scriptblock]{Get-ApplicationObject $global:dgObjects.SelectedItem.Object})                 
 }
 
 function Get-ApplicationObjects
 {
     Get-GraphObjects -Url "/deviceAppManagement/mobileApps?`$filter=(microsoft.graph.managedApp/appAvailability%20eq%20null%20or%20microsoft.graph.managedApp/appAvailability%20eq%20%27lineOfBusiness%27%20or%20isAssigned%20eq%20true)&`$orderby=displayName"
+}
+
+function Get-ApplicationObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.id) { return }
+
+    Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$($Object.id)$additional"
 }
 
 function Export-AllApplications

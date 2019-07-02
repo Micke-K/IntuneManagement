@@ -100,12 +100,21 @@ function Get-ESPs
         $global:lstFiles.ItemsSource = @(Get-JsonFileObjects $global:txtImportPath.Text -Exclude "*_Settings.json")
     }
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-ESP})                
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-ESP}) -ViewFullObject ([scriptblock]{Get-ESPObject $global:dgObjects.SelectedItem.Object})               
 }
 
 function Get-ESPObjects
 {
     Get-GraphObjects -Url "/deviceManagement/deviceEnrollmentConfigurations"
+}
+
+function Get-ESPObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.id) { return }
+
+    Invoke-GraphRequest -Url "/deviceManagement/deviceEnrollmentConfigurations/$($Object.id)$additional"
 }
 
 function Export-AllESPs

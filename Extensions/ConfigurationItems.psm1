@@ -99,12 +99,21 @@ function Get-DeviceConfigurations
         $global:lstFiles.ItemsSource = @(Get-JsonFileObjects $global:txtImportPath.Text -Exclude "*_Settings.json")
     }
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-DeviceConfiguration})                
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-DeviceConfiguration}) -ViewFullObject ([scriptblock]{Get-DeviceConfigurationObject $global:dgObjects.SelectedItem.Object})               
 }
 
 function Get-DeviceConfigurationObjects
 {
     Get-GraphObjects -Url "/deviceManagement/deviceConfigurations"#,"/deviceManagement/groupPolicyConfigurations"
+}
+
+function Get-DeviceConfigurationObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.id) { return }
+
+    Invoke-GraphRequest -Url "/deviceManagement/deviceConfigurations/$($Object.id)$additional"
 }
 
 function Export-AllDeviceConfigurations

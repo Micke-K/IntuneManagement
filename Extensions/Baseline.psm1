@@ -125,12 +125,24 @@ function Get-BaselineProfiles
         $global:lstFiles.ItemsSource = @(Get-JsonFileObjects $global:txtImportPath.Text -Exclude @("*_Settings.json","*_assignments.json"))
     }
     
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-BaselineProfile})             
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-BaselineProfile}) -ViewFullObject ([scriptblock]{Get-BaselineProfileObject $global:dgObjects.SelectedItem.Object})             
 }
 
 function Get-BaselineProfileObjects
 {
     Get-GraphObjects -Url "/deviceManagement/intents"
+}
+
+function Get-BaselineProfileObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.id) { return }
+
+    $profile = Invoke-GraphRequest -Url "/deviceManagement/intents/$($Object.id)"
+    $settings = Invoke-GraphRequest -Url "/deviceManagement/intents/$($Object.id)/Settings"
+
+    @($profile, $settings)
 }
 
 function Export-AllBaselineProfiles

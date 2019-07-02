@@ -101,12 +101,21 @@ function Get-GPOSettings
         $global:lstFiles.ItemsSource = @(Get-JsonFileObjects $global:txtImportPath.Text -Exclude "*_Settings.json")
     }
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-GPOSetting})                
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-GPOSetting}) -ViewFullObject ([scriptblock]{Get-GPOSettingObject $global:dgObjects.SelectedItem.Object})               
 }
 
 function Get-GPOSettingObjects
 {
     Get-GraphObjects -Url "/deviceManagement/groupPolicyConfigurations"
+}
+
+function Get-GPOSettingObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.id) { return }
+
+    @((Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations/$($Object.id)$additional"),(Get-GPOObjectSettings $Object))
 }
 
 function Export-AllGPOSettings

@@ -100,12 +100,21 @@ function Get-CompliancePolicies
         $global:lstFiles.ItemsSource = @(Get-JsonFileObjects $global:txtImportPath.Text -Exclude "*_Settings.json")
     }
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-CompliancePolicy})                
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-CompliancePolicy}) -ViewFullObject ([scriptblock]{Get-CompliancePolicyObject $global:dgObjects.SelectedItem.Object})               
 }
 
 function Get-CompliancePolicyObjects
 {
     Get-GraphObjects -Url "/deviceManagement/deviceCompliancePolicies"
+}
+
+function Get-CompliancePolicyObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.id) { return }
+
+    Invoke-GraphRequest -Url "/deviceManagement/deviceCompliancePolicies/$($Object.id)$additional"
 }
 
 function Export-AllCompliancePolicies

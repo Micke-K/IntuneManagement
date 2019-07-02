@@ -102,7 +102,7 @@ function Get-AZBrandings
         $global:lstFiles.ItemsSource = @(Get-JsonFileObjects $global:txtImportPath.Text -Exclude "*_Settings.json")
     }
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles})            
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -ViewFullObject ([scriptblock]{Get-AZBrandingObject $global:dgObjects.SelectedItem.Object})            
 }
 
 function Get-AZBrandingObjects
@@ -112,6 +112,15 @@ function Get-AZBrandingObjects
     {
         $response | Where { $_.Object.isConfigured -eq $true }
     }
+}
+
+function Get-AZBrandingObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.locale) { return }
+
+    Invoke-AzureNativeRequest "LoginTenantBrandings/$($Object.locale)$additional"
 }
 
 function Export-AllAZBrandings

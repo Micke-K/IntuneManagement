@@ -3,7 +3,7 @@ function Invoke-InitializeModule
     $module = Get-Module -Name Microsoft.Graph.Intune -ListAvailable
     if(-not $module)
     {
-        $ret = [System.Windows.MessageBox]::Show("Intune PowerShell module not found!`n`nDo you want to install it?`n`nYes = Install intune module (Requires admin or it will fail)`nNo = Contune without module (Nothing will work)`nCancel = Quit", "Error", "YesNoCancel", "Error")
+        $ret = [System.Windows.MessageBox]::Show("Intune PowerShell module not found!`n`nDo you want to install it?`n`nYes = Install intune module (Requires admin or it will fail)`nNo = Contune without module (No Azure modules will be loaded)`nCancel = Quit", "Error", "YesNoCancel", "Error")
         if($ret -eq "Yes")
         {
             try
@@ -11,7 +11,7 @@ function Invoke-InitializeModule
                 Install-Module -Name Microsoft.Graph.Intune -Force -ErrorAction SilentlyContinue
             }
             catch {}
-            if(-not (Get-Module -Name Microsoft.Graph.Intune))
+            if(-not (Get-Module -Name Microsoft.Graph.Intune -ListAvailable -Refresh))
             {
                 [System.Windows.MessageBox]::Show("Failed to install Intune PowerShell module!`n`nRestart this as admin and try again`nor`nStart PowerShell as admin and run:`nInstall-Module -Name Microsoft.Graph.Intune", "Error", "OK", "Error")
                 exit
@@ -20,6 +20,10 @@ function Invoke-InitializeModule
         elseif($ret -eq "Cancel")
         {
             exit
+        }
+        else
+        {
+            return
         }
     }
 
@@ -31,9 +35,24 @@ function Invoke-InitializeModule
         }
     }
 
+    if(-not $global:authentication)
+    {
+        [System.Windows.MessageBox]::Show("Failed to connect to Azure with Intune PowerShell module!`n`nNo Intune extensions will be imported", "Error", "OK", "Error")
+        return
+    }
+
+    $global:Me = Invoke-GraphRequest "ME"
+
+    if(-not $global:Me)
+    {
+        [System.Windows.MessageBox]::Show("Failed to get information about current logged on Azure user!`n`nVerify connection and try again`n`nNo Intune modules will be imported!", "Error", "OK", "Error")
+        return
+    }
+    $global:Organization = (Invoke-GraphRequest "Organization").Value
+
     $global:graphURL = "https://graph.microsoft.com/beta"
 
-# Add settings
+    # Add settings
     $global:appSettingSections += (New-Object PSObject -Property @{
             Title = "Intune"
             Id = "IntuneAzure"
@@ -112,9 +131,6 @@ function Invoke-InitializeModule
                 MenuID = "IntuneGraphAPIEX"
                 Script = [ScriptBlock]{ Show-ExportAllForm }
         })
-
-    $global:Me = Invoke-GraphRequest "ME"
-    $global:Organization = (Invoke-GraphRequest "Organization").Value
 
     $global:UpdateJsonForMigration = $true
 }
@@ -617,8 +633,56 @@ function Add-DefaultObjectButtons
         [scriptblock]
         $import,
         [scriptblock]
-        $copy
+        $copy,
+        [scriptblock]
+        $viewFullObject,
+        [switch]
+        $ForceFullObject,
+        [switch]
+        $hideview
     )
+
+    if($hideview -ne $true)
+    {
+        $newBtn = New-Object System.Windows.Controls.Button
+        #View button
+        $newBtn.Content = 'View'
+        $newBtn.Name = 'btnView'
+        $newBtn.Margin = "5,0,0,0"  
+        $newBtn.Width = "100"  
+        $spSubMenu.AddChild($newBtn)
+
+        $script:viewFullObject = $viewFullObject
+        $script:ForceFullObject = ($ForceFullObject -eq $true)
+
+        if($view)
+        {
+            $newBtn.Add_Click($view)
+        }
+        else 
+        {
+            $newBtn.Add_Click([scriptblock]{
+                if(-not $global:dgObjects.SelectedItem) { return }
+
+                if(-not $global:dgObjects.SelectedItem.Object) { return }
+
+                if($script:ForceFullObject -eq $true -and $script:ViewFullObject)
+                {
+                    Write-Status "Loading full object info"
+                    $objFullInfo = Invoke-Command -ScriptBlock $script:ViewFullObject
+                    Write-Status ""
+                    if($objFullInfo)
+                    {                        
+                        Show-ObjectInfo -object $objFullInfo -NoLoadFull
+                    }
+                }
+                else
+                {
+                    Show-ObjectInfo -Object $global:dgObjects.SelectedItem.Object 
+                }
+            })
+        }
+    }
 
     if($copy)
     {
@@ -663,6 +727,82 @@ function Add-DefaultObjectButtons
     {
         Show-SubMenu
     }
+}
+
+function Show-ObjectInfo
+{
+    param(
+        $FormTitle = "Object info",
+        $object,
+        [switch]$NoLoadFull)
+
+    if(-not $object) { return }
+
+    [xml]$xaml = @"
+    <Window $wpfNS
+        Title="$FormTitle" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBox Name="txtValue" 
+                Grid.Column="1" Grid.Row="1"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                ScrollViewer.CanContentScroll="True"
+                IsReadOnly="True"
+                MinWidth="250" MinLines="5" AcceptsReturn="True" />
+
+        <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Name="btnFull" MinWidth="60" Margin="0,0,5,0" ToolTip="Load full info of the object" Visibility="Collapsed">Load full</Button>
+            <Button Name="btnCopy" MinWidth="60" Margin="0,0,5,0" ToolTip="Copy text to clipboard">Copy</Button>
+            <Button IsDefault="True" Name="btnOk" MinWidth="60" Margin="0,0,0,0">_Close</Button>
+        </WrapPanel>
+    </Grid>
+</Window>
+"@
+
+    $reader = (New-Object System.Xml.XmlNodeReader $xaml)
+    $script:inputBox = [Windows.Markup.XamlReader]::Load($reader)
+
+    $script:txtValue = $script:inputBox.FindName("txtValue")
+    $btnOk = $script:inputBox.FindName("btnOk")
+    $btnCopy = $script:inputBox.FindName("btnCopy")
+    $btnFull = $script:inputBox.FindName("btnFull")
+
+    $script:txtValue.Text = (ConvertTo-Json $Object -Depth 5)
+
+    $btnOk.Add_Click({        
+        $script:inputBox.Close()
+    })
+
+    $btnCopy.Add_Click({        
+        $script:txtValue.Text | Clip
+    })
+
+    if($script:ViewFullObject -and $NoLoadFull -ne $true)
+    {
+        $btnFull.Visibility = "Visible"
+        $btnFull.Add_Click({        
+            Write-Status "Loading full object info"
+            $objFullInfo = Invoke-Command -ScriptBlock $script:ViewFullObject
+            Write-Status ""
+            if($objFullInfo)
+            {
+                $script:inputBox.Close()
+                Show-ObjectInfo -object $objFullInfo -NoLoadFull
+            }
+        })
+    }
+
+    $inputBox.ShowDialog() | Out-Null
 }
 
 ########################################################################

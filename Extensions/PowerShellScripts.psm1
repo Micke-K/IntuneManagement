@@ -126,7 +126,7 @@ function Get-PowerShellScripts
 
     $script:exportParams.Add("Extension", $exportExtension)
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-PowerShellScript})                
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -copy ([scriptblock]{Copy-PowerShellScript}) -ViewFullObject ([scriptblock]{Get-PowerShellScriptObject $global:dgObjects.SelectedItem.Object})           
 
     #Add download button
     $btnDownload = New-Object System.Windows.Controls.Button    
@@ -144,6 +144,14 @@ function Get-PowerShellScripts
 function Get-PowerShellScriptObjects
 {
     Get-GraphObjects -Url "/deviceManagement/deviceManagementScripts"
+}
+
+function Get-PowerShellScriptObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.id) { return }
+    Invoke-GraphRequest -Url "/deviceManagement/deviceManagementScripts/$($object.id)$additional"
 }
 
 function Export-AllPowerShellScripts
@@ -185,7 +193,8 @@ function Export-SinglePowerShellScript
     if(Test-Path $path)
     {
         Write-Status "Export $($psObj.displayName)"
-        $obj = Invoke-GraphRequest -Url "/deviceManagement/deviceManagementScripts/$($psObj.id)?`$expand=assignments"
+        $obj = Get-PowerShellScriptObject -object $psObj -additional "?`$expand=assignments"
+        #$obj = Invoke-GraphRequest -Url "/deviceManagement/deviceManagementScripts/$($psObj.id)?`$expand=assignments"
         if($obj)
         {            
             $fileName = "$path\$((Remove-InvalidFileNameChars $obj.displayName)).json"
@@ -215,7 +224,8 @@ function Copy-PowerShellScript
     {
         # Export profile
         Write-Status "Export $($dgObjects.SelectedItem.displayName)"        
-        $obj = Invoke-GraphRequest -Url "/deviceManagement/deviceManagementScripts/$($dgObjects.SelectedItem.id)"
+        $obj = Get-PowerShellScriptObject -object $dgObjects.SelectedItem.Object
+        #$obj = Invoke-GraphRequest -Url "/deviceManagement/deviceManagementScripts/$($dgObjects.SelectedItem.id)"
         if($obj)
         {            
             # Import new profile
@@ -289,7 +299,9 @@ function Import-PowerShellScriptObjects
 function Invoke-DownloadScript
 {
     if(-not $global:dgObjects.SelectedItem.Object.id) { return }
-    $obj = Invoke-GraphRequest -Url "/deviceManagement/deviceManagementScripts/$($global:dgObjects.SelectedItem.Object.id)"
+
+    $obj = Get-PowerShellScriptObject -object $dgObjects.SelectedItem.Object
+    #$obj = Invoke-GraphRequest -Url "/deviceManagement/deviceManagementScripts/$($global:dgObjects.SelectedItem.Object.id)"
     if($obj.scriptContent)
     {            
         Write-Log "Download PowerShell script '$($obj.FileName)' from $($obj.displayName)"

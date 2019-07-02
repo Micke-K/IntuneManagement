@@ -99,13 +99,29 @@ function Get-ConditionalAccess
         $global:lstFiles.ItemsSource = @(Get-JsonFileObjects $global:txtImportPath.Text -Exclude "*_Settings.json")
     }
 
-    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles})            
+    Add-DefaultObjectButtons -export ([scriptblock]{Show-DefaultExportGrid @script:exportParams}) -import ([scriptblock]{Show-DefaultImportGrid -ImportAll $script:importAll -ImportSelected $script:importSelected -GetFiles $script:getImportFiles}) -ViewFullObject ([scriptblock]{Get-ConditionalAccessObject $global:dgObjects.SelectedItem.Object})           
 }
 
 function Get-ConditionalAccessObjects
 {
     #https://main.iam.ad.ext.azure.com/api/Policies/Policies?top=10&nextLink=null&appId=&includeBaseline=true
     Get-AzureNativeObjects "Policies/Policies?top=10&nextLink=null&appId=&includeBaseline=true" -property @('policyName')
+}
+
+function Get-ConditionalAccessObject
+{
+    param($object, $additional = "")
+
+    if(-not $Object.policyId) { return }
+
+    if($Object.baselineType -eq 0)
+    {
+        Invoke-AzureNativeRequest "Policies/$($Object.policyId)$additional"
+    }
+    else
+    {
+        Invoke-AzureNativeRequest "BaselinePolicies/$($Object.policyId)$additional"
+    }
 }
 
 function Export-AllConditionalAccess

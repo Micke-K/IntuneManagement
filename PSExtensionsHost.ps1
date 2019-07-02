@@ -292,7 +292,7 @@ function global:Show-InputDialog
         $script:inputBox.Close()
     })
 
-    $ret = $inputBox.ShowDialog()
+    $inputBox.ShowDialog() | Out-null
 
     return $script:txtValue.Text
 }
