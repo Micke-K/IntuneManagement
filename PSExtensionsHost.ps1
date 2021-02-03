@@ -97,7 +97,7 @@ function global:Write-LogError
 {
     param($Text, $Exception)
 
-    if($Text)
+    if($Text -and $Exception.message)
     {
         $Text += " Exception: $($Exception.message)"
     }
@@ -532,6 +532,12 @@ function global:Add-SettingValue
         $settingObj = Add-SettingTextBox $id $value
     }
 
+    $descriptionInfo = ""
+    if($settingValue.Description)
+    {
+        $descriptionInfo = "<Rectangle Style=`"{DynamicResource InfoIcon}`" ToolTip=`"$($settingValue.Description)`" Margin=`"5,0,0,0`" />"
+    }
+
     $xaml = @"
 <Border Margin="0,5,0,0" $wpfNS>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
@@ -544,8 +550,13 @@ function global:Add-SettingValue
             <ColumnDefinition Width="*" />                                
         </Grid.ColumnDefinitions> 
                 
+        <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
+            <TextBlock Text="$($settingValue.Title)" VerticalAlignment="Center"/>
+            $descriptionInfo
+        </StackPanel>
+<!--
         <TextBlock Text="$($settingValue.Title)" VerticalAlignment="Center" Margin="5,0,0,0" />
-
+-->
         <Border Grid.Column="2" Name="border_$($id)" />
                     
     </Grid>
@@ -873,14 +884,22 @@ function global:Add-MenuItem
 
 function global:Invoke-ModuleFunction
 {
-    param($funtion)
+    param($function)
+
+    Write-Log "Trigger function $function"
+
     foreach($module in $global:loadedModules)
     {
         # Get command with ExportedFunctions instead of Get-Command
-        $cmd = $module.ExportedFunctions[$funtion]
+        $cmd = $module.ExportedFunctions[$function]
         if($cmd) 
         {
+            Write-Log "Trigger $function in $($module.Name)"
             Invoke-Command -ScriptBlock $cmd.ScriptBlock
+        }
+        else
+        {
+            #Write-Log "$function not found in $($module.Name)" 2
         }
     }
 }
@@ -905,6 +924,12 @@ function global:Initialize-Menu
                 Script = [ScriptBlock]{ Show-AboutDialog }
         })
 
+    Add-MenuItem (New-Object PSObject -Property @{
+                Title = 'Reload'
+                MenuID = "General"
+                ShowForm = $false
+                Script = [ScriptBlock]{ Start-Reload }
+        })        
 
     Add-MenuItem (New-Object PSObject -Property @{
                 Title = 'Exit'
@@ -956,6 +981,38 @@ public static extern IntPtr GetConsoleWindow();
 public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
 '
 
+function global:Set-MainTitle
+{
+    if(-not $global:window) { return }
+
+    Write-Log "Set main title"
+
+    $mainTitle = $title
+
+    try
+    {
+        if($global:Me.userPrincipalName)
+        {
+            $IntuneId = $global:Me.userPrincipalName
+            $mainTitle += " - IntuneGraph: $($global:Me.userPrincipalName)"
+        }
+    }
+    catch {} 
+
+    try
+    {
+        $ctx = Get-AzContext -ErrorAction SilentlyContinue
+        if($ctx.Account.Id)
+        {
+            $azureADId = $ctx.Account.Id
+            $mainTitle += " - AzureAD: $($ctx.Account.Id)"
+        }
+    }
+    catch {} 
+
+    $global:window.Title = $mainTitle  
+}
+
 function Show-Console
 {
     $consolePtr = [Console.Window]::GetConsoleWindow()
@@ -983,6 +1040,68 @@ function Hide-Console
     #0 hide
     [Console.Window]::ShowWindow($consolePtr, 0)
 }
+
+#endregion
+
+#region Module functions
+
+function Import-AllModules
+{
+    foreach($file in (Get-Item -path "$modulesPath\*.psm1"))
+    {        
+        $module = Import-Module $file -PassThru -Force -ErrorAction SilentlyContinue
+        if($module)
+        {
+             $global:loadedModules += $module
+             Write-Host "Module $($module.Name) loaded successfully"
+        }
+        else
+        {
+            Write-Warning "Failed to load module $file"
+        }
+    }
+}
+
+function Start-Reload
+{
+    if([System.Windows.MessageBox]::Show("Are you sure you want to reload all modules and settings?", "Exit?", "YesNo", "Question") -eq "No")
+    {
+        return 
+    }
+
+    Write-Status "Reloading modules"
+
+    $global:menuObjects = @()
+    $tmpList = @()
+    $spMenu.Children.Clear()
+
+    foreach($tmpModule in $global:loadedModules)
+    {
+        Remove-Module $tmpModule
+        
+        $module = Import-Module $tmpModule.Path -PassThru -Force -ErrorAction SilentlyContinue
+        if($module)
+        {
+             $tmpList += $module
+             Write-Host "Module $($module.Name) loaded successfully"
+        }
+        else
+        {
+            Write-Warning "Failed to load module $file"
+        }
+    }
+    $global:loadedModules = $tmpList
+
+    Add-DefaultSettings
+
+    Invoke-ModuleFunction "Invoke-InitializeModule"
+
+    Initialize-Menu
+
+    Write-Status ""
+
+}
+
 
 #endregion
 
@@ -1113,25 +1232,14 @@ $global:menuObjects = @()
 
 # Load all modules in the Modules folder
 $modulesPath = [IO.Path]::GetDirectoryName($PSCommandPath) + "\Extensions"
+
 if(Test-Path $modulesPath)
-{    
-    foreach($file in (Get-Item -path "$modulesPath\*.psm1"))
-    {        
-        $module = Import-Module $file -PassThru -Force -ErrorAction SilentlyContinue
-        if($module)
-        {
-             $global:loadedModules += $module
-             Write-Host "Module $($module.Name) loaded successfully"
-        }
-        else
-        {
-            Write-Warning "Failed to load module $file"
-        }
-    }
+{ 
+    Import-AllModules
 }
 else
 {
-    Write-Warning "Modules folder $modulesPath not wound. Aborting..." 3
+    Write-Warning "Modules folder $modulesPath not found. Aborting..." 3
     exit 1
 }
 
@@ -1148,6 +1256,8 @@ if($ShowConsoleWindow -ne $true)
 {
     Hide-Console
 }
+
+Set-MainTitle
 
 # Show main window
 # Workaround for ISE crash

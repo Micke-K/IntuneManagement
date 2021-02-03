@@ -261,6 +261,8 @@ function Import-GPOSetting
 
     Write-Status "Import $($obj.displayName)"
 
+    Start-PreImport $obj
+
     # Import Administrative Template profile
     $response = Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations" -Content (ConvertTo-Json $obj -Depth 5) -HttpMethod POST
     
@@ -268,6 +270,8 @@ function Import-GPOSetting
     {
         foreach($setting in $settings)
         {
+            Start-PreImport $setting
+
             # Import each setting for the Administrative Template profile
             $response2 = Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations/$($response.id)/definitionValues" -Content (ConvertTo-Json $setting -Depth 5) -HttpMethod POST        
         }

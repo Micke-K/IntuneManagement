@@ -247,17 +247,7 @@ function Import-Application
 {
     param($obj)
 
-    Remove-ObjectProperty $obj "uploadState"
-    Remove-ObjectProperty $obj "publishingState"
-    Remove-ObjectProperty $obj "isAssigned"
-    Remove-ObjectProperty $obj "roleScopeTagIds"
-    Remove-ObjectProperty $obj "dependentAppCount"
-    Remove-ObjectProperty $obj "committedContentVersion"
-    Remove-ObjectProperty $obj "id"
-    Remove-ObjectProperty $obj "createdDateTime"
-    Remove-ObjectProperty $obj "lastModifiedDateTime"
-    Remove-ObjectProperty $obj "isFeatured"
-    Remove-ObjectProperty $obj "size"
+    Start-PreImport $obj -RemoveProperties @("uploadState","publishingState","isAssigned","roleScopeTagIds","dependentAppCount","committedContentVersion","id","isFeatured","size")
 
     Write-Status "Import $($obj.displayName)"
 

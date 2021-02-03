@@ -201,6 +201,8 @@ function Import-CompliancePolicy
 {
     param($obj)
 
+    Start-PreImport $obj 
+
     $json = ConvertTo-Json $obj -Depth 5
     $json = $json.Trim().TrimEnd('}').Trim()
     $json += @"

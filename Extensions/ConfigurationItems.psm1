@@ -206,13 +206,9 @@ function Import-DeviceConfiguration
 {
     param($obj)
 
-    if(($obj | GM -MemberType NoteProperty -Name "supportsScopeTags"))
-    {
-        # Remove read-only property
-        $obj.PSObject.Properties.Remove('supportsScopeTags')
-    }
-
     Write-Status "Import $($obj.displayName)"
+
+    Start-PreImport $obj
 
     Invoke-GraphRequest -Url "/deviceManagement/deviceConfigurations" -Content (ConvertTo-Json $obj -Depth 5) -HttpMethod POST        
 }

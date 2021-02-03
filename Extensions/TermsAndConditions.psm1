@@ -210,6 +210,8 @@ function Import-TermsAndCondition
 
     Write-Status "Import $($obj.displayName)"
 
+    Start-PreImport $obj 
+
     Invoke-GraphRequest -Url "/deviceManagement/termsAndConditions" -Content (ConvertTo-Json $obj -Depth 5) -HttpMethod POST        
 }
 

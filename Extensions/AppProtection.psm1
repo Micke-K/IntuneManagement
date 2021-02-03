@@ -198,6 +198,16 @@ function Get-AppProtectionObjectType
     { 
         "androidManagedAppProtections"            
     }
+    elseif($odataType -like "*mdmWindowsInformationProtectionPolicy*")        
+    { 
+        # Win 10 - With enrollment e.g. Intune enrolled Win 10 devices
+        "mdmWindowsInformationProtectionPolicies"            
+    }
+    elseif($odataType -like "*windowsInformationProtectionPolicy*")        
+    { 
+        # Win 10 - Without enrollment e.g. MAM polices for Win 10 
+        "WindowsInformationProtectionPolicies"            
+    }
 }
 
 function Get-AppProtectionObjectForExport
@@ -257,10 +267,8 @@ function Import-AppProtection
     if(($obj | GM -MemberType NoteProperty -Name "Apps"))    
     {        
         $apps = $obj.Apps
-        # Remove apps properties
-        Remove-ObjectProperty $obj "apps"
-        Remove-ObjectProperty $obj "apps@odata.context"
     }
+    Start-PreImport $obj -RemoveProperties @("apps","apps@odata.context")
 
     Write-Status "Import $($obj.displayName)"
 

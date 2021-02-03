@@ -105,7 +105,7 @@ function Get-ConditionalAccess
 function Get-ConditionalAccessObjects
 {
     #https://main.iam.ad.ext.azure.com/api/Policies/Policies?top=10&nextLink=null&appId=&includeBaseline=true
-    Get-AzureNativeObjects "Policies/Policies?top=10&nextLink=null&appId=&includeBaseline=true" -property @('policyName')
+    Get-AzureNativeObjects "Policies/Policies?top=10&appId=&includeBaseline=true" -property @('policyName') -allowPaging
 }
 
 function Get-ConditionalAccessObject
@@ -213,6 +213,8 @@ function Export-SingleConditionalAccess
 function Import-ConditionalAccess
 {
     param($obj)
+
+    Start-PreImport $obj 
 
     $json = Update-JsonForEnvironment $json
 

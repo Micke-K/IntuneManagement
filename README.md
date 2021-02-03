@@ -57,8 +57,6 @@ The script will create a group if it is missing in the destination environment. 
 
 Download [Microsoft.WindowsAPICodePack](https://www.nuget.org/packages/WindowsAPICodePack-Core) and [Microsoft.WindowsAPICodePack.Shell](https://www.nuget.org/packages/WindowsAPICodePack-Shell) and copy the DLLs into the script folder to get a nicer folder dialog.
 
-If you want to test co-management and/or sync with on-prem AD, you can download [DeleMate](http://delemate.com). This tool can install anything from an AD-only environment to a complete SCCM environment in a quick and easy way. If you have a public domain registered, you can then install the AD domain with that name and add that domain to a test Azure environment and then configure AAD Sync and co-managment.  
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details

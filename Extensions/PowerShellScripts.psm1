@@ -243,11 +243,7 @@ function Import-PowerShellScript
 {
     param($obj)
 
-    Remove-ObjectProperty $obj "id"
-    Remove-ObjectProperty $obj "createdDateTime"
-    Remove-ObjectProperty $obj "lastModifiedDateTime"
-    Remove-ObjectProperty $obj "assignments@odata.context"
-    Remove-ObjectProperty $obj "assignments"    
+    Start-PreImport $obj -RemoveProperties @("id","assignments@odata.context","assignments")
 
     Write-Status "Import $($obj.displayName)"
 

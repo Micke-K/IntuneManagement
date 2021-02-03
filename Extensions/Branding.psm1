@@ -188,7 +188,7 @@ function Import-IntuneBranding
 {
     param($obj)
 
-    Remove-ObjectProperty $obj "@odata.context"
+    Start-PreImport $obj -RemoveProperties @("@odata.context")
     
     $newObject = @"
 {

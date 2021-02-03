@@ -222,6 +222,8 @@ function Import-ESP
 {
     param($obj)
 
+    Start-PreImport $obj
+
     if($obj.id -like "*_default*")
     {
         Write-Status "Update $($obj.displayName)"

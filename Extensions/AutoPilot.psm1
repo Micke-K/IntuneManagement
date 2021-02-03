@@ -203,6 +203,8 @@ function Import-AutoPilot
 
     Write-Status "Import $($obj.displayName)"
 
+    Start-PreImport $obj 
+
     Invoke-GraphRequest -Url "/deviceManagement/windowsAutopilotDeploymentProfiles" -Content (ConvertTo-Json $obj -Depth 5) -HttpMethod POST        
 }
 

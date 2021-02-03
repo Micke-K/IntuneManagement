@@ -3,33 +3,34 @@ function Invoke-InitializeModule
     $module = Get-Module -Name Microsoft.Graph.Intune -ListAvailable
     if(-not $module)
     {
-        $ret = [System.Windows.MessageBox]::Show("Intune PowerShell module not found!`n`nDo you want to install it?`n`nYes = Install intune module (Requires admin or it will fail)`nNo = Contune without module (No Azure modules will be loaded)`nCancel = Quit", "Error", "YesNoCancel", "Error")
-        if($ret -eq "Yes")
-        {
-            try
-            {
-                Install-Module -Name Microsoft.Graph.Intune -Force -ErrorAction SilentlyContinue
-            }
-            catch {}
-            if(-not (Get-Module -Name Microsoft.Graph.Intune -ListAvailable -Refresh))
-            {
-                [System.Windows.MessageBox]::Show("Failed to install Intune PowerShell module!`n`nRestart this as admin and try again`nor`nStart PowerShell as admin and run:`nInstall-Module -Name Microsoft.Graph.Intune", "Error", "OK", "Error")
-                exit
-            }
-        }
-        elseif($ret -eq "Cancel")
+        $ret = [System.Windows.MessageBox]::Show("Intune PowerShell module not found!`n`nDo you want to install it as admin?`n`nYes = Install intune module as Admin (Requires admin or it will fail)`nNo = Install module for current user`nCancel = Quit", "Error", "YesNoCancel", "Error")
+        if($ret -eq "Cancel")
         {
             exit
         }
-        else
+
+        $params = @{}
+        if($ret -eq "No")
         {
-            return
+            $params.Add("Scope", "CurrentUser")
+        }
+
+        try
+        {
+            Install-Module -Name Microsoft.Graph.Intune -Force -ErrorAction SilentlyContinue @params
+        }
+        catch {}
+
+        if(-not (Get-Module -Name Microsoft.Graph.Intune -ListAvailable -Refresh))
+        {
+            [System.Windows.MessageBox]::Show("Failed to install Intune PowerShell module!`n`nRestart this as admin and try again`nor`nStart PowerShell as admin and run:`nInstall-Module -Name Microsoft.Graph.Intune", "Error", "OK", "Error")
+            exit
         }
     }
 
     if(-not $global:authentication)
     {
-        if((Get-Command Connect-MSGraph))
+        if((Get-Command Connect-MSGraph -ErrorAction SilentlyContinue))
         {
             $global:authentication = Connect-MSGraph -PassThru 
         }
@@ -41,6 +42,7 @@ function Invoke-InitializeModule
         return
     }
 
+    Write-Log "Get current user"
     $global:Me = Invoke-GraphRequest "ME"
 
     if(-not $global:Me)
@@ -48,6 +50,8 @@ function Invoke-InitializeModule
         [System.Windows.MessageBox]::Show("Failed to get information about current logged on Azure user!`n`nVerify connection and try again`n`nNo Intune modules will be imported!", "Error", "OK", "Error")
         return
     }
+
+    Write-Log "Get organization info"
     $global:Organization = (Invoke-GraphRequest "Organization").Value
 
     $global:graphURL = "https://graph.microsoft.com/beta"
@@ -58,6 +62,8 @@ function Invoke-InitializeModule
             Id = "IntuneAzure"
             Values = @()
     })
+
+    Write-Log "Add settings and menu items"
 
     Add-SettingsObject (New-Object PSObject -Property @{
             Title = "Root folder"
@@ -76,6 +82,7 @@ function Invoke-InitializeModule
             Key = "AddObjectType"
             Type = "Boolean"
             DefaultValue = $true
+            Description = "Default setting for adding object type to the export folder"
     }) "IntuneAzure"
 
     Add-SettingsObject (New-Object PSObject -Property @{
@@ -83,6 +90,7 @@ function Invoke-InitializeModule
             Key = "AddCompanyName"
             Type = "Boolean"
             DefaultValue = $true
+            Description = "Default setting for adding company name to the export folder"
     }) "IntuneAzure"
 
     Add-SettingsObject (New-Object PSObject -Property @{
@@ -90,6 +98,7 @@ function Invoke-InitializeModule
             Key = "ExportIntuneAssignments"
             Type = "Boolean"
             DefaultValue = $true
+            Description = "Default setting for exporting assignments"
     }) "IntuneAzure"
 
     Add-SettingsObject (New-Object PSObject -Property @{
@@ -97,6 +106,7 @@ function Invoke-InitializeModule
             Key = "CreateIntuneGroupOnImport"
             Type = "Boolean"
             DefaultValue = $true
+            Description = "Default setting for creating groups during import"
     }) "IntuneAzure"
 
     Add-SettingsObject (New-Object PSObject -Property @{
@@ -104,6 +114,7 @@ function Invoke-InitializeModule
             Key = "ConvertIntuneSyncedGroupOnImport"
             Type = "Boolean"
             DefaultValue = $true
+            Description = "Convert AD synched groups to Azure AD group during import if the group does not exist"
     }) "IntuneAzure"
 
     Add-SettingsObject (New-Object PSObject -Property @{
@@ -178,7 +189,6 @@ $xmlStr = @"
                 <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will export all objects to a sub-directory of the export path with name based on object type" />
             </StackPanel>
             <CheckBox Grid.Column='1' Grid.Row='1' Name='chkAddObjectType' VerticalAlignment="Center" IsEnabled="false" IsChecked="true" />
-
         
             <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,0,5,0">
                 <Label Content="Add company name to path" />
@@ -1576,3 +1586,29 @@ function Get-GraphAssignmentsObject
     
     $tmpAssignments
 }
+
+#region Policy Functions
+function Start-PreImport
+{
+    param($obj, $removeProperties = @())
+
+
+    foreach($removeProp in @('lastModifiedDateTime','createdDateTime','supportsScopeTags','id'))
+    {
+        if($removeProperties -notcontains $removeProp)
+        {
+            $removeProperties += $removeProp
+        }
+    }
+
+    foreach($prop in $removeProperties)
+    {
+        if(($obj | GM -MemberType NoteProperty -Name $prop))
+        {
+            Write-Log "Remove property $prop"
+            $obj.PSObject.Properties.Remove($prop)
+        }
+    }
+}
+
+#endregion
