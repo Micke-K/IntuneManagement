@@ -15,7 +15,8 @@ This makes it easy to backup or clone a complete Intune environment. The scripts
 * Removed support for AzureRM
 
 **New features**
-* Support for Az module
+* Support for Az module for Azure objects (Conditional access, Company Branding and MDM/MAM settings)
+* Reload - Reloads all modules 
 
 **Fixes**
 * Allow more than 9 Conditional Access policies. Issue [#5](https://github.com/Micke-K/IntuneManagement/issues/5)
