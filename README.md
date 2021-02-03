@@ -8,6 +8,21 @@ This makes it easy to backup or clone a complete Intune environment. The scripts
 
 **Note:** The base PowerShell script is only a host for extensions. It is only used as a framework for basic UI, logging etc. The functionality is located in the extension modules which makes it easy to add/remove features.
 
+## Change log
+**Version 2**
+
+**Breaking changes**
+* Removed support for AzureRM
+
+**New features**
+* Support for Az module
+
+**Fixes**
+* Allow more than 9 Conditional Access policies. Issue [#5](https://github.com/Micke-K/IntuneManagement/issues/5)
+* Include WIP policies. Issue [#7](https://github.com/Micke-K/IntuneManagement/issues/7)
+* Import is not working. Issue [#6](https://github.com/Micke-K/IntuneManagement/issues/6) and [#4](https://github.com/Micke-K/IntuneManagement/issues/4)
+* Intune module can now be install with scope user. Issue [#8](https://github.com/Micke-K/IntuneManagement/issues/8)
+
 ## Intune objects
 * Administrative Templates
 * App Protection/Configuration policies
@@ -34,14 +49,14 @@ This makes it easy to backup or clone a complete Intune environment. The scripts
 * .Net 4.7
 * Intune PowerShell Module
   * Install by running 'Install-Module -Name Microsoft.Graph.Intune'
-* AzueRM PowerShell Module
-  * Install by running 'Install-Module -Name AzureRM -AllowClobber'
+* Az PowerShell Module
+  * Install by running 'Install-Module -Name Az -AllowClobber'
 * Permissions in Azure to manage objects in Intune and Azure 
 
 ## References
 * [Microsoft Graph API](https://docs.microsoft.com/en-us/graph/api/overview?toc=./ref/toc.json&view=graph-rest-beta) 
 * [Microsoft Intune PowerShell Module](https://github.com/microsoft/Intune-PowerShell-SDK)
-* [AzureRM PowerShellModule](https://docs.microsoft.com/en-us/powershell/azure/azurerm/install-azurerm-ps?view=azurermps-6.13.0)
+* [Az PowerShellModule](https://docs.microsoft.com/en-us/powershell/azure/new-azureps-module-az)
 
 ## Acknowledgments
 The app enryption and upload is based on [PowerShell Intune Examples](https://github.com/microsoftgraph/powershell-intune-samples)
