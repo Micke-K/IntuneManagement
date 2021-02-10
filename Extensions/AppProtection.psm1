@@ -268,7 +268,7 @@ function Import-AppProtection
     {        
         $apps = $obj.Apps
     }
-    Start-PreImport $obj -RemoveProperties @("apps","apps@odata.context")
+    Start-PreImport $obj -RemoveProperties @("apps","apps@odata.context","createdDateTime","lastModifiedDateTime")
 
     Write-Status "Import $($obj.displayName)"
 
