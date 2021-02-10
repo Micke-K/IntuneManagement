@@ -205,7 +205,7 @@ function Import-AutoPilot
 
     Start-PreImport $obj 
 
-    Invoke-GraphRequest -Url "/deviceManagement/windowsAutopilotDeploymentProfiles" -Content (ConvertTo-Json $obj -Depth 5) -HttpMethod POST        
+    Invoke-GraphRequest -Url "/deviceManagement/windowsAutopilotDeploymentProfiles" -Content (ConvertTo-Json ($obj | Select-Object -Property * -ExcludeProperty createdDateTime, lastModifiedDateTime) -Depth 5) -HttpMethod POST        
 }
 
 function Import-AllAutoPilotObjects
