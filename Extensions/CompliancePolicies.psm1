@@ -203,7 +203,7 @@ function Import-CompliancePolicy
 
     Start-PreImport $obj 
 
-    $json = ConvertTo-Json $obj -Depth 5
+    $json = ConvertTo-Json ($obj | Select-Object -Property * -ExcludeProperty createdDateTime, lastModifiedDateTime) -Depth 5
     $json = $json.Trim().TrimEnd('}').Trim()
     $json += @"
 ,
