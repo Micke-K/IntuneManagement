@@ -264,7 +264,7 @@ function Import-GPOSetting
     Start-PreImport $obj
 
     # Import Administrative Template profile
-    $response = Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations" -Content (ConvertTo-Json $obj -Depth 5) -HttpMethod POST
+    $response = Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations" -Content (ConvertTo-Json ($obj | Select-Object -Property * -ExcludeProperty createdDateTime, lastModifiedDateTime) -Depth 5) -HttpMethod POST
     
     if($response)
     {
