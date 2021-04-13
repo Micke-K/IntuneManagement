@@ -21,4 +21,114 @@
 		</Setter>				
 	</Style>
 
+    <Style x:Key="HoverUnderlineStyle" TargetType="TextBlock">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="HoverUnderlineStyleWithBackground" TargetType="TextBlock">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+                <Setter Property="TextBlock.Background" Value="LightGray" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="LinkButton" TargetType="Button">
+        <Setter
+            Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock Style="{DynamicResource HoverUnderlineStyle}" HorizontalAlignment="Left"> <!--TextDecorations="Underline" -->
+                        <ContentPresenter />
+                    </TextBlock>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground" Value="Black" />
+        
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ContentButton" TargetType="Button">
+        <Setter
+            Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <ContentPresenter />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground" Value="Black" />
+        
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>    
+
+    <Style TargetType="ListBoxItem">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border Name="Border"
+                            Padding="2"
+                            SnapsToDevicePixels="true">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}"/>
+                        </Trigger>
+                        <Trigger Property="UIElement.IsMouseOver" Value="True">
+                            <Setter Property="Panel.Background" TargetName="Border" 
+                                    Value="{DynamicResource SelectedRowBackgroundColor}"/>
+                            <Setter Property="Border.BorderBrush" TargetName="Border" 
+                                    Value="{DynamicResource SelectedRowBackgroundColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type DataGridRow}">
+        <Style.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{DynamicResource SelectedRowBackgroundColor}" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="{DynamicResource SelectedRowBackgroundColor}" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+            <!--<SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Yellow" /> -->
+        </Style.Resources>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}" />
+                <Setter Property="Foreground" Value="{DynamicResource TextColor}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}" />
+                <Setter Property="Foreground" Value="{DynamicResource TextColor}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>    
+
+     <Style x:Key="Test" TargetType="{x:Type MenuItem}">
+        <Setter Property="Template">
+			<Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <TextBlock Title="{TemplateBinding Header}" />
+                    </Grid>
+                </ControlTemplate>
+			</Setter.Value>
+		</Setter>				
+	</Style>
 </ResourceDictionary>

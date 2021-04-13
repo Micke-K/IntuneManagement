@@ -1,0 +1,106 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" Grid.IsSharedSizeScope='True'>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <Grid Name="grdExportProperties">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" >
+            <Label Content="Export root" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This root folder where exported files will be stored" />
+        </StackPanel>
+
+        <Grid Grid.Column='1' Grid.Row='0'>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />  
+                <ColumnDefinition Width="5" />                              
+                <ColumnDefinition Width="Auto" />                                
+            </Grid.ColumnDefinitions>                 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>                
+            </Grid.RowDefinitions>
+            <TextBox Text="" Name="txtExportPath" />
+            <Button Grid.Column="2" Name="browseExportPath" Padding="5,0,5,0" Width="50" ToolTip="Browse for folder">...</Button>
+        </Grid>
+        
+        <!-- Force object type in name by setting it to true and disable the checkbox. Leave it on for information -->
+        <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="0,0,5,0">
+            <Label Content="Add object name to path" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will export all objects to a sub-directory of the export path with name based on object type" />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='1' Name='chkAddObjectType' VerticalAlignment="Center" IsEnabled="false" IsChecked="true" />
+    
+        <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,0,5,0">
+            <Label Content="ExportAssignments" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Export object assignments" />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='2' Name='chkExportAssignments' VerticalAlignment="Center" IsChecked="true" />            
+
+        <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,0,5,0">
+            <Label Content="Add company name to path" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will add the company name in Azure to the export path" />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='3' Name='chkAddCompanyName' VerticalAlignment="Center" IsChecked="true" />            
+    </Grid>
+
+    <Grid Grid.Row='1' VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Margin="0,0,5,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>                
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Objects to export" />
+                <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Select the object types that should be exported" />
+            </StackPanel>
+        </Grid>
+    
+        <ListBox Name="lstObjectsToExport" Grid.Column='1' 
+                    SelectionMode="Single"
+                    Grid.IsSharedSizeScope='True' >
+            <ListBox.ItemTemplate>  
+                <DataTemplate>  
+                    <Grid> 
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="SelectedColumn" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="FileNameColumn" />
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions> 
+                        <CheckBox IsChecked="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{Binding Title}" Grid.Column='1' Margin="5,0,0,0" />
+                    </Grid>  
+                </DataTemplate>  
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <CheckBox IsChecked="true" Margin="7,2,0,0" Grid.Column='1' Grid.Row='1'  Name="chkCheckAll" ToolTip="Select/Deselect all" />
+    </Grid >
+    
+    <StackPanel Name="spExportSubMenu" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row='2' Grid.ColumnSpan='2' >
+        <Button Name="btnExport" Content="Export" Width='100' Margin="5,0,0,0" />
+        <Button Name="btnClose" Content="Close" Width='100' Margin="5,0,0,0" />
+    </StackPanel>                
+
+</Grid >

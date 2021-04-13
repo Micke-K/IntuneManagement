@@ -1,0 +1,122 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" Grid.IsSharedSizeScope='True'>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <Grid Name="grdImportProperties">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" >
+            <Label Content="Import root" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This root folder where exported files are stored" />
+        </StackPanel>
+        <Grid Grid.Column='1' Grid.Row='0'>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />  
+                <ColumnDefinition Width="5" />                              
+                <ColumnDefinition Width="Auto" />                                
+            </Grid.ColumnDefinitions>                 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>                
+            </Grid.RowDefinitions>
+            <TextBox Text="" Name="txtImportPath" />
+            <Button Grid.Column="2" Name="browseImportPath" Padding="5,0,5,0" Width="50" ToolTip="Browse for folder">...</Button>
+        </Grid>
+        
+        <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="0,0,5,0" Name="spMigrationTableInfo">
+            <Label Content="Migration Table" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This contains information about the exported environment e.g. Groups, ScopeTags etc. Note: This is only used when import object from a different tenant" />
+        </StackPanel>
+        <Label Grid.Column='1' Grid.Row='1' Name="lblMigrationTableInfo" />
+
+        <!-- Force object type in name by setting it to true and disable the checkbox. Leave it on for information -->
+        <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,0,5,0">
+            <Label Content="Add object name to path" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will import objects from a sub-directory of the import path with name based on object type" />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='2' Name='chkAddObjectType' VerticalAlignment="Center" IsEnabled="false" IsChecked="true" />
+                
+        <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,0,5,0">
+            <Label Content="Import Scope (Tags)" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will import ScopeTags. The ScopeTags must exist in the target environment before thay can be assigned during import of an object" />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='3' Name='chkImportScopes' VerticalAlignment="Center" IsChecked="true" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row='4' Margin="0,0,5,0">
+            <Label Content="Import Assignments" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Import object assignments. Note: This will create groups that don't exist in the target environment" />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='4' Name='chkImportAssignments' VerticalAlignment="Center" IsChecked="true" />
+        
+        <StackPanel Orientation="Horizontal" Grid.Row='5' Margin="0,0,5,0">
+            <Label Content="Replace Dependecy IDs" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Replaces IDs of dependency objects e.g. App Config references Applications. Increases import time but makes sure objects are imported correctly. Note: References objects must exist!" />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='5' Name='chkReplaceDependencyIDs' VerticalAlignment="Center" IsChecked="true" />            
+
+    </Grid>
+
+    <Grid Grid.Row='1' VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Margin="0,0,5,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>                
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Objects to import" />
+                <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Select the object types that should be imported" />
+            </StackPanel>
+        </Grid>
+    
+        <ListBox Name="lstObjectsToImport" Grid.Column='1' 
+                    SelectionMode="Single"
+                    Grid.IsSharedSizeScope='True' >
+            <ListBox.ItemTemplate>  
+                <DataTemplate>  
+                    <Grid> 
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="SelectedColumn" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="FileNameColumn" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions> 
+                        <CheckBox IsChecked="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{Binding Title}" Grid.Column='1' Margin="5,0,0,0" />
+                        <TextBlock Text="{Binding ObjectType.ImportOrder}" Grid.Column='2' Margin="5,0,0,0" />
+                    </Grid>  
+                </DataTemplate>  
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <CheckBox IsChecked="true" Margin="7,2,0,0" Grid.Column='1' Grid.Row='1'  Name="chkCheckAll" ToolTip="Select/Deselect all" />
+
+    </Grid >
+
+    <StackPanel Name="spImportSubMenu" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row='2' Grid.ColumnSpan='2' >
+        <Button Name="btnImport" Content="Import" Width='100' Margin="5,0,0,0" />
+        <Button Name="btnClose" Content="Close" Width='100' Margin="5,0,0,0" />
+    </StackPanel>                
+
+</Grid >

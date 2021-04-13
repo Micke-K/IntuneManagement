@@ -1,0 +1,44 @@
+<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    BorderBrush="Black" BorderThickness="1" Padding="5" Background="White">
+    <Grid Name="ProfileInfo" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />  
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions> 
+        
+        <TextBlock Margin="5" Name="txtOrganization" FontWeight="Bold" />
+        <Button Margin="5" Name="lnkLogout" Content="Sign out" Grid.Column="2" Style="{DynamicResource LinkButton}" HorizontalAlignment="Right"/>
+        <TextBlock Margin="5" Name="txtUsername" Grid.Row="1" Grid.Column="2" FontWeight="Bold" FontSize="24" />
+        <TextBlock Margin="5"  Name="txtLogonName" Grid.Row="2" Grid.Column="2" />
+
+        <StackPanel Margin="5" Grid.Row="3" Grid.ColumnSpan="2">
+            <TextBlock Text="Application:" />
+            <TextBlock Name="txtAppName" />
+            <TextBlock Name="txtAppId"  />
+        </StackPanel>
+
+        <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal">        
+            <Button Margin="5" Name="lnkTokeninfo" Content="MSAL Token" Cursor="Hand"  Style="{DynamicResource LinkButton}" />
+            <Button Margin="5" Name="lnkAccessTokenInfo" ToolTip="Show the decoded JWT info of the AccessToken" Content="Access Token" Cursor="Hand"  Style="{DynamicResource LinkButton}" />
+            <Button Margin="5" Name="lnkIdTokenInfo" ToolTip="Show the decoded JWT info of the IdToken" Content="Id Token" Cursor="Hand"  Style="{DynamicResource LinkButton}" />
+            <Button Margin="5" Name="lnkForceRefresh" ToolTip="Force a refresh of the token e.g. after being added to a new role" Content="Refresh" Cursor="Hand"  Style="{DynamicResource LinkButton}" />
+        </StackPanel>
+
+        <Grid Grid.Row="8" Name="grdAccountsAndTenants" Grid.ColumnSpan="2" Margin="5,0,5,0" HorizontalAlignment="Stretch">        
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />  
+            </Grid.ColumnDefinitions> 
+        </Grid>
+    </Grid>
+</Border>

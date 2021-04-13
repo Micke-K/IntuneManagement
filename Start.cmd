@@ -1,1 +1,1 @@
-cmd /c powershell -ex bypass "%~DP0PSExtensionsHost.ps1"
+cmd /c powershell -ex bypass -File "%~DP0Start-IntuneManagement.ps1"
