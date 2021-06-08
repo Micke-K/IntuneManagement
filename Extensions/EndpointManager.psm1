@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.0.0'
+    '3.1.0'
 }
 
 function Invoke-InitializeModule
@@ -100,7 +100,11 @@ function Invoke-InitializeModule
         API = "/deviceManagement/deviceConfigurations"
         QUERYLIST = "`$filter=not%20isof(%27microsoft.graph.windowsUpdateForBusinessConfiguration%27)%20and%20not%20isof(%27microsoft.graph.iosUpdateConfiguration%27)"
         #ExportFullObject = $false
-        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")  
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        PropertiesToRemove = @("privacyAccessControls")
+        PostFileImportCommand = { Start-PostFileImportDeviceConfiguration @args }
+        PostCopyCommand = { Start-PostCopyDeviceConfiguration @args }
+        GroupId = "DeviceConfiguration"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -110,6 +114,7 @@ function Invoke-InitializeModule
         API = "/identity/conditionalAccess/policies"
         Permissons=@("Policy.Read.All","Policy.ReadWrite.ConditionalAccess","Application.Read.All")
         Dependencies = @("NamedLocations","Applications")
+        GroupId = "ConditionalAccess"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -119,6 +124,7 @@ function Invoke-InitializeModule
         API = "/identity/conditionalAccess/namedLocations"
         Permissons=@("Policy.ReadWrite.ConditionalAccess")
         ImportOrder = 50
+        GroupId = "ConditionalAccess"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -134,6 +140,7 @@ function Invoke-InitializeModule
         #PreCopyCommand = { Start-PreCopyEndpointSecurity @args }
         PostCopyCommand = { Start-PostCopyEndpointSecurity @args }
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        GroupId = "EndpointSecurity"
     })    
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -145,6 +152,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Dependencies = @("Locations","Notifications")
         PostExportCommand = { Start-PostExportCompliancePolicies @args }
+        GroupId = "CompliancePolicies"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -161,6 +169,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementApps.ReadWrite.All")
         Icon = "Branding"
         SkipRemoveProperties = @('Id') # Id is removed by PreImport. Required for default profile
+        GroupId = "TenantAdmin"
     })
 
     <#
@@ -197,6 +206,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         SkipRemoveProperties = @('Id')
         AssignmentsType = "enrollmentConfigurationAssignments"
+        GroupId = "WinEnrollment"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -210,6 +220,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         SkipRemoveProperties = @('Id')
         AssignmentsType = "enrollmentConfigurationAssignments"
+        GroupId = "EnrollmentRestrictions"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -220,13 +231,16 @@ function Invoke-InitializeModule
         PostExportCommand = { Start-PostExportAdministrativeTemplate @args }
         PostCopyCommand = { Start-PostCopyAdministrativeTemplate @args }
         PostFileImportCommand = { Start-PostFileImportAdministrativeTemplate @args }
+        LoadObject = { Start-LoadAdministrativeTemplate @args }
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon="DeviceConfiguration"
+        GroupId = "DeviceConfiguration"
+        CompareValue = "CombinedValueWithLabel"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
-        Title = "Scripts"
-        Id = "Scripts"
+        Title = "Scripts (PowerShell)"
+        Id = "PowerShellScripts"
         API = "/deviceManagement/deviceManagementScripts"
         ViewID = "IntuneGraphAPI"
         DetailExtension = { Add-ScriptExtensions @args }
@@ -234,7 +248,34 @@ function Invoke-InitializeModule
         PostExportCommand = { Start-PostExportScripts @args }
         Permissons=@("DeviceManagementManagedDevices.ReadWrite.All")
         AssignmentsType = "deviceManagementScriptAssignments"
+        Icon="Scripts"
+        GroupId = "Scripts"
     })
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Scripts (Shell)"
+        Id = "MacScripts"
+        API = "/deviceManagement/deviceShellScripts"
+        ViewID = "IntuneGraphAPI"
+        DetailExtension = { Add-ScriptExtensions @args }
+        ExportExtension = { Add-ScriptExportExtensions @args }
+        PostExportCommand = { Start-PostExportScripts @args }
+        Permissons=@("DeviceManagementManagedDevices.ReadWrite.All")
+        AssignmentsType = "deviceManagementScriptAssignments"
+        Icon="Scripts"
+        GroupId = "Scripts"
+    })    
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Custom Attributes"
+        Id = "MacCustomAttributes"
+        API = "/deviceManagement/deviceCustomAttributeShellScripts"
+        ViewID = "IntuneGraphAPI"
+        Permissons=@("DeviceManagementManagedDevices.ReadWrite.All")
+        AssignmentsType = "deviceManagementScriptAssignments"
+        Icon="CustomAttributes"
+        GroupId = "CustomAttributes" # MacOS Settings
+    })    
 
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Terms and Conditions"
@@ -245,6 +286,7 @@ function Invoke-InitializeModule
         ExpandAssignments = $false # Not supported for this object type
         PostExportCommand = { Start-PostExportTermsAndConditions @args }
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsTermsAndConditions @args }
+        GroupId = "TenantAdmin"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -258,8 +300,10 @@ function Invoke-InitializeModule
         PostImportCommand = { Start-PostImportAppProtection  @args }
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsAppProtection @args }
         ExportFullObject = $true
+        PropertiesToRemove = @('exemptAppLockerFiles')
         Permissons=@("DeviceManagementApps.ReadWrite.All")
         Dependencies = @("Applications")
+        GroupId = "AppProtection"
     })
 
     # These are also included in the managedAppPolicies API
@@ -276,6 +320,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementApps.ReadWrite.All")
         Dependencies = @("Applications")
         Icon = "AppConfiguration"
+        GroupId = "AppConfiguration"
     })    
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -289,6 +334,7 @@ function Invoke-InitializeModule
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsAppConfiguration @args }
         #PostExportCommand = { Start-PostExportAppConfiguration @args }
         Icon = "AppConfiguration"
+        GroupId = "AppConfiguration"
     })
     
     Add-ViewItem (New-Object PSObject -Property @{
@@ -296,14 +342,17 @@ function Invoke-InitializeModule
         Id = "Applications"
         API = "/deviceAppManagement/mobileApps"
         ViewID = "IntuneGraphAPI"
-        PropertiesToRemove = @('uploadState','publishingState','isAssigned','dependentAppCount','supersedingAppCount','supersededAppCount','committedContentVersion','isFeatured','size')
+        PropertiesToRemove = @('uploadState','publishingState','isAssigned','dependentAppCount','supersedingAppCount','supersededAppCount','committedContentVersion','isFeatured','size','categories')
         QUERYLIST = "`$filter=(microsoft.graph.managedApp/appAvailability%20eq%20null%20or%20microsoft.graph.managedApp/appAvailability%20eq%20%27lineOfBusiness%27%20or%20isAssigned%20eq%20true)&`$orderby=displayName"
         Permissons=@("DeviceManagementApps.ReadWrite.All")
         AssignmentsType="mobileAppAssignments"
         AssignmentProperties = @("@odata.type","target","settings","intent")
         AssignmentTargetProperties = @("@odata.type","groupId","deviceAndAppManagementAssignmentFilterId","deviceAndAppManagementAssignmentFilterType")
         ImportOrder = 60
+        Expand="categories,assignments" # ODataMetadata is set to minimal so assignments can't be autodetected
+        ODataMetadata="minimal" # categories property not supported with ODataMetadata full
         PostFileImportCommand = { Start-PostFileImportApplications @args }
+        GroupId = "Apps"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -314,6 +363,7 @@ function Invoke-InitializeModule
         CopyDefaultName = "%displayName% Copy" # '-' is not allowed in the name
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsAutoPilot @args }
+        GroupId = "WinEnrollment"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -326,7 +376,8 @@ function Invoke-InitializeModule
         PreImportCommand = { Start-PreImportPolicySets @args }
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         ImportOrder = 2000 # Policy Sets reference other objects so make sure it is imported last
-        Dependencies = @("Applications","AppConfiguration","AppProtection","AutoPilot","EnrollmentRestrictions","EnrollmentStatusPage","DeviceConfiguration","AdministrativeTemplates","SettingsCatalog","CompliancePolicies") 
+        Dependencies = @("Applications","AppConfiguration","AppProtection","AutoPilot","EnrollmentRestrictions","EnrollmentStatusPage","DeviceConfiguration","AdministrativeTemplates","SettingsCatalog","CompliancePolicies")
+        GroupId = "PolicySets"
     })
     
     Add-ViewItem (New-Object PSObject -Property @{
@@ -337,6 +388,7 @@ function Invoke-InitializeModule
         QUERYLIST = "`$filter=isof(%27microsoft.graph.windowsUpdateForBusinessConfiguration%27)%20or%20isof(%27microsoft.graph.iosUpdateConfiguration%27)"
         #ExportFullObject = $false
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        GroupId = "WinUpdatePolicies"
     })
     
     Add-ViewItem (New-Object PSObject -Property @{
@@ -344,8 +396,19 @@ function Invoke-InitializeModule
         Id = "FeatureUpdates"
         ViewID = "IntuneGraphAPI"
         API = "/deviceManagement/windowsFeatureUpdateProfiles"
-        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")        
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        GroupId = "WinFeatureUpdates"
     })
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Quality Updates"
+        Id = "QualityUpdates"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/windowsQualityUpdateProfiles"
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        Icon = "UpdatePolicies"
+        GroupId = "WinQualityUpdates"
+    })    
 
     # Locations are not FULLY supported 
     # They will be imported but Compliance Policies will not be updated with new Location object after import
@@ -363,6 +426,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         PreImportCommand = { Start-PreImportLocations @args }
         ImportOrder = 30
+        GroupId = "CompliancePolicies"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -377,6 +441,7 @@ function Invoke-InitializeModule
         Expand="Settings"
         Icon="DeviceConfiguration"
         PostExportCommand = { Start-PostExportSettingsCatalog  @args }
+        GroupId = "DeviceConfiguration"
     })   
     
     Add-ViewItem (New-Object PSObject -Property @{
@@ -391,6 +456,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementRBAC.ReadWrite.All")
         ImportOrder = 20
         #expand=roleassignments
+        GroupId = "TenantAdmin"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -402,6 +468,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementRBAC.ReadWrite.All")
         PostExportCommand = { Start-PostExportScopeTags @args }
         ImportOrder = 10
+        GroupId = "TenantAdmin"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -415,7 +482,7 @@ function Invoke-InitializeModule
         PreImportCommand = { Start-PreImportNotifications @args }
         PostFileImportCommand = { Start-PostFileImportNotifications @args }
         PostCopyCommand = { Start-PostCopyNotifications @args }
-
+        GroupId = "CompliancePolicies"
     })    
     
     # This has some pre-reqs for working!
@@ -432,6 +499,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon="DeviceConfiguration"
         Dependencies = @("Applications")
+        GroupId = "DeviceConfiguration"
     })
 
     # Copy/Export/Import not verified!
@@ -441,7 +509,18 @@ function Invoke-InitializeModule
         ViewID = "IntuneGraphAPI"
         API = "/deviceManagement/appleUserInitiatedEnrollmentProfiles"
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
-    })    
+        GroupId = "AppleEnrollment"
+    })
+    
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Filters"
+        Id = "AssignmentFilters"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/assignmentFilters"
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        ImportOrder = 15
+        GroupId = "TenantAdmin"
+    })
 }
 
 function Invoke-EMAuthenticateToMSAL
@@ -507,15 +586,6 @@ function Set-EMViewPanel
     Add-XamlEvent $panel "btnImport" "Add_Click" -scriptBlock ([scriptblock]{
         Show-GraphImportForm
     })
-
-    Add-XamlEvent $panel "chkSelectAll" "Add_Click" -scriptBlock ([scriptblock]{
-        foreach($item in $global:dgObjects.ItemsSource)
-        { 
-            $item.IsSelected = $this.IsChecked
-        }
-        $global:dgObjects.Items.Refresh()
-    })    
-
     
     Add-XamlEvent $panel "txtFilter" "Add_LostFocus" ({ #param($obj, $e)
         Invoke-FiterBoxChanged $this
@@ -548,8 +618,6 @@ function Set-EMViewPanel
             $enabled = (?: ($this.ItemsSource -eq $null -or ($this.ItemsSource | measure).Count -eq 0) $false $true)
             Set-XamlProperty $global:dgObjects.Parent "btnImport" "IsEnabled" $true # Always all Import if ObjectType allows it
             Set-XamlProperty $global:dgObjects.Parent "btnExport" "IsEnabled" $enabled
-            Set-XamlProperty $global:dgObjects.Parent "chkSelectAll" "IsEnabled" $enabled
-            Set-XamlProperty $global:dgObjects.Parent "chkSelectAll" "IsChecked" $false
         })
     }
 
@@ -641,14 +709,14 @@ function Start-PostListEndpointSecurity
     foreach($obj in $objList)
     {
         if(-not $obj.Object.templateId) { continue }
-        if($obj.Object.templateId -ne $baseLineTepmlate.Id)
+        if($obj.Object.templateId -ne $baseLineTemplate.Id)
         {
-            $baseLineTepmlate = $script:baseLineTemplates | Where Id -eq $obj.Object.templateId
+            $baseLineTemplate = $script:baseLineTemplates | Where Id -eq $obj.Object.templateId
         }
-        if($baseLineTepmlate)
+        if($baseLineTemplate)
         {
-            $obj | Add-Member -MemberType NoteProperty -Name "Type" -Value $baseLineTepmlate.displayName
-            $obj | Add-Member -MemberType NoteProperty -Name "Category" -Value (?: ($baseLineTepmlate.templateSubtype -eq "none") $baseLineTepmlate.templateType $baseLineTepmlate.templateSubtype)
+            $obj | Add-Member -MemberType NoteProperty -Name "Type" -Value $baseLineTemplate.displayName
+            $obj | Add-Member -MemberType NoteProperty -Name "Category" -Value (?: ($baseLineTemplate.templateSubtype -eq "none") $baseLineTemplate.templateType $baseLineTemplate.templateSubtype)
         }
     }
     $objList
@@ -701,6 +769,46 @@ function Start-PostCopyEndpointSecurity
         $settingsObj = New-object PSObject @{ "Settings" = $settings.Value }
         Invoke-GraphRequest -Url "$($objectType.API)/$($objNew.id)/updateSettings" -Body ($settingsObj | ConvertTo-Json -Depth 10) -Method "POST"
     }
+}
+
+#endregion
+
+#region 
+
+function Start-PostFileImportDeviceConfiguration
+{
+    param($obj, $objectType, $importFile)
+
+    if($obj.'@OData.Type' -like "#microsoft.graph.windows10GeneralConfiguration")
+    {
+        $tmpObj = Get-Content $importFile | ConvertFrom-Json
+
+        if(($tmpObj.privacyAccessControls | measure).Count -gt 0)
+        {
+            $privacyObj = [PSCustomObject]@{
+                windowsPrivacyAccessControls = $tmpObj.privacyAccessControls
+            }
+            $json =  $privacyObj | ConvertTo-Json -Depth 10
+            $ret = Invoke-GraphRequest -Url "deviceManagement/deviceConfigurations('$($obj.Id)')/windowsPrivacyAccessControls" -Body $json -Method "POST"
+        }
+    }
+}
+
+function Start-PostCopyDeviceConfiguration
+{
+    param($objCopyFrom, $objNew, $objectType)
+
+    if($objCopyFrom.'@OData.Type' -like "#microsoft.graph.windows10GeneralConfiguration")
+    {
+        if(($objCopyFrom.privacyAccessControls | measure).Count -gt 0)
+        {
+            $privacyObj = [PSCustomObject]@{
+                windowsPrivacyAccessControls = $objCopyFrom.privacyAccessControls
+            }
+            $json =  $privacyObj | ConvertTo-Json -Depth 10
+            $ret = Invoke-GraphRequest -Url "deviceManagement/deviceConfigurations('$($objNew.Id)')/windowsPrivacyAccessControls" -Body $json -Method "POST"
+        }
+    }    
 }
 
 #endregion
@@ -982,10 +1090,15 @@ function Start-GetAppProtection
         {
             
         }
+        $expand = $null
+        if($objectClass -eq "windowsInformationProtectionPolicies")
+        {
+            $expand = "?`$expand=protectedAppLockerFiles,exemptAppLockerFiles"
+        }
 
         if($objectClass)
         {
-            @{"API"="/deviceAppManagement/$objectClass/$($obj.Id)"}
+            @{"API"="/deviceAppManagement/$objectClass/$($obj.Id)$expand"}
         }
     }
 }
@@ -1150,7 +1263,7 @@ function Start-PostFileImportApplications
 }
 #endregion
 
-#region Group Policy/Administrative Template functions
+#region Group Policy/Administrative Templates functions
 function Get-GPOObjectSettings
 {
     param($GPOObj)
@@ -1244,6 +1357,31 @@ function Start-PostFileImportAdministrativeTemplate
     {        
         Import-GPOSetting $obj $settings
     }    
+}
+
+function Start-LoadAdministrativeTemplate
+{
+    param($fileName)
+
+    if(-not $fileName) { return $null }
+
+    $fi = [IO.FileInfo]$fileName
+    $obj = Get-Content $global:txtCompareFile.Text | ConvertFrom-Json 
+
+    if($obj.definitionValues)
+    {
+        return $obj
+    }
+
+    $settingsFile = $fi.DirectoryName + "\" + $fi.BaseName + "_Settings.json"
+
+    if([IO.File]::Exists($settingsFile))
+    {
+        $definitionValues = Get-Content $settingsFile | ConvertFrom-Json
+
+        $obj | Add-Member Noteproperty -Name "definitionValues" -Value $definitionValues -Force  
+    }
+    $obj
 }
 
 #endregion
@@ -1520,16 +1658,26 @@ function Get-EMSettingsObject
 {
     param($obj, $objectType, $file)
 
-    $fi = [IO.FileInfo]$file
-    $settingsFile = $fi.DirectoryName + "\" + $fi.BaseName + "_Settings.json"
-    $fiSettings = [IO.FileInfo]$settingsFile
-    if($fiSettings.Exists -eq $false)
-    {
-        Write-Log "Settings file '$($fiSettings.FullName)' was not found" 2
-        return
-    }
+    if($obj.Settings) { $obj.Settings }
 
-    (Get-Content $fiSettings.FullName) | ConvertFrom-Json  
+    $fi = [IO.FileInfo]$file
+    if($fi.Exists)
+    {
+        Write-Log "Settings not included in export file. Try import from _Settings.json file" 2
+        $settingsFile = $fi.DirectoryName + "\" + $fi.BaseName + "_Settings.json"
+        $fiSettings = [IO.FileInfo]$settingsFile
+        if($fiSettings.Exists -eq $false)
+        {
+            Write-Log "Settings file '$($fiSettings.FullName)' was not found" 2
+            return
+        }
+
+        (Get-Content $fiSettings.FullName) | ConvertFrom-Json
+    }
+    else
+    {
+        Write-Log "Settings not included in export file and _Settings.json file is missing." 3
+    }
 }
 
 function Add-EMAssignmentsToExportFile

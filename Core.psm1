@@ -6,7 +6,7 @@ Core UI and Settings fatures for the CloudAPIPowerShellManager solution
 This module handles the WPF UI
 
 .NOTES
-  Version:        3.0.0
+  Version:        3.1.0
   Author:         Mikael Karlsson
 #>
 
@@ -671,6 +671,27 @@ function Remove-Property
     }
 }
 
+function Get-GridCheckboxColumn
+{
+    param($bindingProperty = "IsSelected")
+
+    $binding = [System.Windows.Data.Binding]::new($bindingProperty)
+    $binding.UpdateSourceTrigger = [System.Windows.Data.UpdateSourceTrigger]::PropertyChanged
+    $column = [System.Windows.Controls.DataGridTemplateColumn]::new()
+    $fef = [System.Windows.FrameworkElementFactory]::new([System.Windows.Controls.CheckBox])
+    $binding.Mode = [System.Windows.Data.BindingMode]::TwoWay
+    $fef.SetValue([System.Windows.Controls.CheckBox]::IsCheckedProperty,$binding)
+    $dt = [System.Windows.DataTemplate]::new()
+    $dt.VisualTree = $fef
+    $column.CellTemplate = $dt
+    $header = [System.Windows.Controls.CheckBox]::new()
+    $header.Margin = [System.Windows.Thickness]::new(-4,0,0,0) # Align header checkbox with the row checkboxes
+    $header.ToolTip = "Select/deselect all items"
+    $column.Header = $header
+
+    $column        
+}
+
 #endregion
 
 #region Reg functions
@@ -1225,6 +1246,8 @@ function Show-View
         Write-Log "Activated View $($viewObject.ViewInfo.Title)"
         & $viewObject.ViewInfo.Activated
     }
+
+    Invoke-ModuleFunction "Invoke-ViewActivated"
 }
 
 #endregion

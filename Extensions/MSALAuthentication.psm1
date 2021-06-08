@@ -1338,7 +1338,23 @@ function Show-MSALDecodedToken {
         }
         elseif($prop.Name -in @("wids"))
         {
-            $value = $tokenData.Payload."$($prop.Name)" -join "`n"
+            if(-not $script:aadRoles)
+            {
+                $script:aadRoles =(Invoke-GraphRequest -url "/directoryRoles?`$select=roleTemplateId,displayName" -ODataMetadata "minimal").value
+            }
+            $wids = @()
+            foreach($wid in $tokenData.Payload."$($prop.Name)")
+            {
+                $text = $wid
+                $role = ($script:aadRoles | where roleTemplateId -eq $wid)
+                if($role)
+                {
+                    $text = ($text + " ($($role.displayName))")
+                }
+                $wids += $text
+            }
+            $value = $wids -join "`n"
+            #$value = $tokenData.Payload."$($prop.Name)" -join "`n"
         }
         elseif($prop.Name -in @("scp"))
         {

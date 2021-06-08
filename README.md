@@ -12,14 +12,31 @@ This PowerShell application is based on the foundation modules CloudAPIPowerShel
 
 **Security note:** Since the scripts are not signed, a warning might be display when running it and files might be blocked. The script will unblock all files. This is to avoid issues that it fails to load the MSAL library etc. If there are any security concerns, the PowerShell code can be reviewed. The DLL files are downloaded from Microsoft repositories, see links below. These files can be downloaded and replaced. The DLL files *CAN* be removed but MSAL is a pre-requisite for login. The script will try to find the DLL in the Az or MSAL.PS module if not found in the script root directory. DLL files are included to reduce dependencies.
 
+## Documentation
+
+This script has an extension that can document profiles and policies in Intune. The output is using the same language string as the Intune portal.
+
+See [Documentation](Documentation.md) for more information
+
+## Comparison
+
+This script has an extension that can compare objects in Intune with exported json files. It will display a data grid with the values and highlight updated values with red.
+
+Objects can be compared based on property values or documented values. 
+
+The property value method is a quick way to compare objects but it will only show the names and values of the native Intune object. This is not a good comparison method for Settings objects since they have all the settings in one property.
+
+The documentation method is a bit slower but will show the values as they are stated in the Intune portal. This is the recommended way to compare objects but note that this is only supported on object types that supports documentation.   
+
 ## Change log
+
 See [Change Log](ReleaseNotes.md) for more information
 
 ## Authentication
 See [MSAL Info](MSALInfo.md) for more information about authentication
 
 ## Supported Intune objects
-* App Configurations
+* App Configurations (App and Device)
 * App Protection
 * Applications
 * Apple Enrolment Types - NOT fully tested
@@ -27,18 +44,22 @@ See [MSAL Info](MSALInfo.md) for more information about authentication
 * Baseline Security profiles
 * Compliance policies
 * Conditional Access
+* Custom Attributes
 * Device Configuration (Administrative Templates, Configuration Policies, Android OEM Config, Settings Catalog)
 * Endpoint Security (Account Protection, Disk Encryption, Firewall, Security Baselines etc.) 
 * Enrollment Restrictions
 * Enrollment Status Page profiles
 * Feature Updates
+* Filters
 * Intune Branding (Company Portal)
 * Locations
 * Named Locations
+* Notifications
 * Policy Sets
+* Quality Updates
 * Role Definitions
 * Scope Tags
-* Scripts (Supports download of PowerShell script)
+* Scripts (PowerShell and Shell scripts, supports download of script)
 * Terms and Conditions
 * Update Policies
 
@@ -86,6 +107,8 @@ The list applications API might not list an imported app immediately after the i
 When using the filter box to search for items, the checkbox must be clicked twice to select an item. 
 
 Logout will only clear the token from cache and not from the browser e.g. if login is triggered after a logout, the user will still be listed in the 'Select user' dialog.
+
+See [Documentation](Documentation.md) for issues regarding the documentation process.
 
 ## TIP
 

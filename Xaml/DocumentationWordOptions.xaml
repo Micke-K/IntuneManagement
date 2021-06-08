@@ -1,0 +1,130 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="0">
+        <Label Content="Output Properties" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the output type. Simple will only add Value and Name for Settings. Extended will output the same as Raw Output. Use Custom to select custom properties" />
+    </StackPanel>
+    <ComboBox Name="cbWordDocumentationProperties" Margin="0,5,0,0" MinWidth="250" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"
+            DisplayMemberPath="Name" SelectedValuePath="Value" />
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="1" Name="spWordCustomProperties">
+        <Label Content="Custom Properties" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Comma separated list with properties to export. The properties must match with values from Raw Data" />
+    </StackPanel>
+    <TextBox Text="" Name="txtWordCustomProperties" Margin="0,5,5,5" Grid.Row="1" Grid.Column="1"/>
+
+    <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row="2">
+        <Label Content="Word document template" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="The document template (*.dotx) file to use for the documentation. Normal.dotx will be used if this is empty" />
+    </StackPanel>
+    <Grid Grid.Column='1' Grid.Row='2' Margin="0,5,5,0" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />  
+            <ColumnDefinition Width="5" />                              
+            <ColumnDefinition Width="Auto" />                                
+        </Grid.ColumnDefinitions>                 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>                
+        </Grid.RowDefinitions>
+        <TextBox Text="" Name="txtWordDocumentTemplate" />
+        <Button Grid.Column="2" Name="browseWordDocumentTemplate" Padding="5,0,5,0" Width="50" ToolTip="Browse for template file">...</Button>
+    </Grid>
+
+    <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,0,5,0">
+        <Label Content="Document name" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Default value is %MyDocuments%\%Organization%-%Date%.docx. Special folders and environmentvariables can be used" />
+    </StackPanel>
+    <Grid Grid.Column='1' Grid.Row='3' Margin="0,5,5,0" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />  
+            <ColumnDefinition Width="5" />                              
+            <ColumnDefinition Width="Auto" />                                
+        </Grid.ColumnDefinitions>                 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>                
+        </Grid.RowDefinitions>
+        <TextBox Text="" Name="txtWordDocumentName" />
+        <Button Grid.Column="2" Name="browseWordDocumentName" Padding="5,0,5,0" Width="50" ToolTip="Select output document">...</Button>
+    </Grid>
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="5">
+        <Label Content="Include Categories" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Add categories when available for objects" />
+    </StackPanel>
+    <CheckBox Grid.Column='1' Grid.Row='5' Name='chkWordAddCategories' VerticalAlignment="Center" IsChecked="true" />            
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="6">
+        <Label Content="Include Sub-categories" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Add sub-categories when available for objects" />
+    </StackPanel>
+    <CheckBox Grid.Column='1' Grid.Row='6' Name='chkWordAddSubCategories' VerticalAlignment="Center" IsChecked="true" />
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="7">
+        <Label Content="Header 1 style" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Style for Header 1" />
+    </StackPanel>
+    <TextBox Grid.Column='1' Grid.Row='7' Name='txtWordHeader1Style' Margin="0,5,5,5"/>
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="8">
+        <Label Content="Header 2 style" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Style for Header 2" />
+    </StackPanel>
+    <TextBox Grid.Column='2' Grid.Row='8' Name='txtWordHeader2Style' Margin="0,5,5,5"/>
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="9">
+        <Label Content="Table style" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Style for Tables" />
+    </StackPanel>
+    <TextBox Grid.Column='2' Grid.Row='9' Name='txtWordTableStyle' Margin="0,5,5,5"/>
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="10">
+        <Label Content="Table header row style" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Style of the Table header row. Default is Font size increased by 2" />
+    </StackPanel>
+    <TextBox Grid.Column='2' Grid.Row='10' Name='txtWordTableHeaderStyle' Margin="0,5,5,5"/>
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="11">
+        <Label Content="Table Category header row style" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Style of the Table Category row. Default is Font size increased by 2 + Italic" />
+    </StackPanel>
+    <TextBox Grid.Column='2' Grid.Row='11' Name='txtWordCategoryHeaderStyle' Margin="0,5,5,5"/>
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="12">
+        <Label Content="Table Sub-Category header row style" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Style of the Table Sub-Category row. Default is current font + Italic" />
+    </StackPanel>
+    <TextBox Grid.Column='2' Grid.Row='12' Name='txtWordSubCategoryHeaderStyle' Margin="0,5,5,5"/>
+
+    <StackPanel Orientation="Horizontal" Grid.Row='13' Margin="0,0,5,0">
+        <Label Content="Open document" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will open the document and activate Word when finished" />
+    </StackPanel>
+    <CheckBox Grid.Column='1' Grid.Row='13' Name='chkWordOpenDocument' VerticalAlignment="Center" IsChecked="true" />
+
+
+</Grid>

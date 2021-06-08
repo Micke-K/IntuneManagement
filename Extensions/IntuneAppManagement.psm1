@@ -10,7 +10,7 @@ This module manages Application objects in Intune e.g. uploading application fil
 #>
 function Get-ModuleVersion
 {
-    '3.0.0'
+    '3.1.1'
 }
 
 #########################################################################################
@@ -431,6 +431,8 @@ function Write-AzureStorageChunk
 		"x-ms-blob-type" = "BlockBlob"
 	}
 
+    $curProgressPreference = $ProgressPreference
+    $ProgressPreference = 'SilentlyContinue'
 	try
 	{
 		$response = Invoke-WebRequest $uri -Method Put -Headers $headers -Body $encodedBody
@@ -439,6 +441,7 @@ function Write-AzureStorageChunk
 	{
         Write-Log "Failed to upload file chunk. $($_.Exception.Message)" 3
 	}
+    $ProgressPreference = $curProgressPreference
 }
 
 function Get-IntuneKey

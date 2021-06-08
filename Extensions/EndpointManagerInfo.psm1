@@ -10,7 +10,7 @@ This module is for the Endpoint Info View. It shows read-only objects in Intune
 #>
 function Get-ModuleVersion
 {
-    '3.0.0'
+    '3.1.0'
 }
 
 function Invoke-InitializeModule

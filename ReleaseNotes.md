@@ -1,5 +1,39 @@
 # Release Notes
 
+## 3.1.0 - 2021-06-08
+
+**Breaking Changes**
+
+* Export folder for PowerShell is changed to PowerShellScripts
+
+**New features**
+
+- Documentation
+  - Document Intune objects to CSV or Word
+  
+  - Object will be documented with text from Intune
+  
+  - Document in any supported language
+  
+  - See [Documentation](Documentation.md) for more information
+  
+    **Note:** This is the first version of the documentation. It does not support ALL object types and might be missing some properties 
+- Compare
+  - Compare objects with exported files
+  - Property comparison
+  - Documentation comparison 
+- Support for additional objects
+  - Quality Updates, Filters, Mac Scripts and Custom Attributes
+
+* Azure AD role displayed in token info
+* Fixed sending additional headers in the Graph request 
+
+**Fixes**
+
+- Support for Privacy Access Controls in Windows 10 Device Restriction profiles
+- Support for AppLocker files in WIP policy
+- Select All checkboxes moved from below data grids to the header of the column
+
 ## 3.0.0 Beta 1 - 2021-04-01
 
 **Breaking changes**

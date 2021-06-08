@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.0.0'
+    '3.1.0'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -145,7 +145,10 @@ function Invoke-GraphRequest
 
             [Switch]$SkipAuthentication,
 
-            $ODataMetadata = "full" # full, minimal, none or skip
+            $ODataMetadata = "full", # full, minimal, none or skip
+
+            [switch]
+            $NoError
         )
 
     if($SkipAuthentication -ne $true)
@@ -165,11 +168,6 @@ function Invoke-GraphRequest
         'ExpiresOn' = $global:MSALToken.ExpiresOn
         'x-ms-client-request-id' = $requestId
         }
-
-        if($ContentLanguage)
-        {
-            $Headers.Add("Content-Language",$ContentLanguage)
-        }
     }
 
     if($HttpMethod -eq "GET" -and $ODataMetadata -ne "Skip")
@@ -188,7 +186,7 @@ function Invoke-GraphRequest
 
     if($AdditionalHeaders -is [HashTable])
     {
-        foreach($key in $AdditionalHeaders)
+        foreach($key in $AdditionalHeaders.Keys)
         {
             if($Headers.ContainsKey($key)) { continue }
 
@@ -238,6 +236,7 @@ function Invoke-GraphRequest
     }
     catch
     {
+        if($NoError -eq $true) { return }
         Write-LogError "Failed to invoke MS Graph with URL $Url (Request ID: $requestId). Status code: $($_.Exception.Response.StatusCode)" $_.Excption
     }
     
@@ -255,13 +254,20 @@ function Get-GraphObjects
     $property = $null,
     [Array]
     $exclude,
-    $SortProperty = "displayName")
+    $SortProperty = "displayName",
+    $objectType)
 
     $objects = @()
     
     if($property -isnot [Object[]]) { $property = @('displayName', 'description', 'id')}
 
-    $graphObjects = Invoke-GraphRequest -Url $url
+    $params = @{}
+    if($objectType.ODataMetadata)
+    {
+        $params.Add('ODataMetadata',$objectType.ODataMetadata)
+    }
+
+    $graphObjects = Invoke-GraphRequest -Url $url @params
         
     if($graphObjects -and ($graphObjects | GM -Name Value -MemberType NoteProperty))
     {
@@ -281,6 +287,7 @@ function Get-GraphObjects
         {
             $objTmp | Add-Member -NotePropertyName "IsSelected" -NotePropertyValue $false
             $objTmp | Add-Member -NotePropertyName "Object" -NotePropertyValue $graphObject
+            $objTmp | Add-Member -NotePropertyName "ObjectType" -NotePropertyValue $objectType
             $objects += $objTmp
         }            
     }    
@@ -333,7 +340,7 @@ function Show-GraphObjects
         $url = "$($url.Trim())?$($global:curObjectType.QUERYLIST.Trim())"
     }
 
-    $graphObjects = @(Get-GraphObjects -Url $url -property $global:curObjectType.ViewProperties)
+    $graphObjects = @(Get-GraphObjects -Url $url -property $global:curObjectType.ViewProperties -objectType $global:curObjectType)
 
     if($global:curObjectType.PostListCommand)
     {
@@ -348,25 +355,22 @@ function Show-GraphObjects
 
     $prop = $tmpObj.PSObject.Properties | Where Name -eq "IsSelected"
     if($prop)
-    {
-        # Build the CheckBox column for IsSelected
-        $binding = [System.Windows.Data.Binding]::new($prop.Name)
-        $binding.UpdateSourceTrigger = [System.Windows.Data.UpdateSourceTrigger]::PropertyChanged
-        $column = [System.Windows.Controls.DataGridTemplateColumn]::new()
-        $fef = [System.Windows.FrameworkElementFactory]::new([System.Windows.Controls.CheckBox])
-        $binding.Mode = [System.Windows.Data.BindingMode]::TwoWay
-        $fef.SetValue([System.Windows.Controls.CheckBox]::IsCheckedProperty,$binding)
-        $dt = [System.Windows.DataTemplate]::new()
-        $dt.VisualTree = $fef
-        $column.CellTemplate = $dt
-        #$header = [System.Windows.Controls.CheckBox]::new()
-        #$column.Header = $header
+    {        
+        $column = Get-GridCheckboxColumn "IsSelected"
         $dgObjects.Columns.Add($column)
+
+        $column.Header.add_Click({
+            foreach($item in $global:dgObjects.ItemsSource)
+            { 
+                $item.IsSelected = $this.IsChecked
+            }
+            $global:dgObjects.Items.Refresh()
+        })           
     }
 
     $tableColumns = @()
     # Add other columns
-    foreach($prop in ($tmpObj.PSObject.Properties | Where {$_.Name -notin @("IsSelected","Object")}))
+    foreach($prop in ($tmpObj.PSObject.Properties | Where {$_.Name -notin @("IsSelected","Object","ObjectType")}))
     {
         $binding = [System.Windows.Data.Binding]::new($prop.Name)
         $column = [System.Windows.Controls.DataGridTextColumn]::new()
@@ -379,21 +383,6 @@ function Show-GraphObjects
     }
     $ocList = [System.Collections.ObjectModel.ObservableCollection[object]]::new($graphObjects)
     $dgObjects.ItemsSource = [System.Windows.Data.CollectionViewSource]::GetDefaultView($ocList)
-    
-    <#
-    $dt = New-Object System.Data.DataTable
-    [void]$dt.Columns.AddRange($tableColumns)
-    foreach ($graphObject in $graphObjects)
-    {
-        $rowValues = @()
-        Foreach ($prop in $tableColumns)
-        {
-            $rowValues += $graphObject.$prop
-        }
-        $dt.Rows.Add($rowValues) | Out-Null
-    }
-    $dgObjects.ItemsSource = $dt.DefaultView
-    #>
 
     # Show/Hide buttons based on object type
     foreach($ctrl in $spSubMenu.Children)
@@ -408,7 +397,7 @@ function Show-GraphObjects
             Write-LogDebug "Hide $($ctrl.Name)"
             $ctrl.Visibility = "Collapsed"
         }
-    }    
+    }
 }
 
 function Clear-GraphObjects
@@ -467,11 +456,16 @@ function Get-GraphObject
     if($obj.'roleAssignments@odata.navigationLink')
     {
         $expand += "roleAssignments"
+    }
+    
+    if($obj.'privacyAccessControls@odata.associationLink')
+    {
+        $expand += "microsoft.graph.windows10GeneralConfiguration/privacyAccessControls"
     }    
     
     if($objectType.Expand)
     {
-        foreach($objExpand in $objectType.Expand)
+        foreach($objExpand in $objectType.Expand.Split(","))
         {
             if($objExpand -notin $expand) { $expand += $objExpand}
         }
@@ -479,12 +473,23 @@ function Get-GraphObject
 
     if($expand.Count -gt 0)
     {
-        if($api.IndexOf('?') -eq -1) { $api = ($api + "?")}
-        else { $api = ($api + "&")}
-        $api = ($api + ("expand=" + ($expand -join ",")))
+        if($api.IndexOf('?') -eq -1) 
+        {
+            $api = ($api + "?`$expand=")
+        }
+        elseif($api.IndexOf("`$expand") -gt 1)
+        {
+            $api = ($api + ",")
+        }
+        else
+        {
+            $api = ($api + "&`$expand=")
+        }
+
+        $api = ($api + ($expand -join ","))
     }
 
-    $objInfo = Get-GraphObjects -Url $api -property $objectType.ViewProperties
+    $objInfo = Get-GraphObjects -Url $api -property $objectType.ViewProperties -objectType $objectType
 
     if($objInfo -and $objectType.PostGetCommand)
     {
@@ -545,48 +550,40 @@ function Get-GraphMetaData
 {
     if(-not $global:metaDataXML)
     {
-        $downloadSize = 0
-        $url = "https://graph.microsoft.com/beta/`$metadata#deviceAppManagement"
-        try
-        {
-            $wr = [net.WebRequest]::Create($url)
-            try
-            {
-                $wrResponse = $wr.GetResponse()
-                $downloadSize = $wrResponse.ContentLength
-            }
-            catch
-            {				
-            }
-            finally
-            {
-                $wrResponse.Close()
-                $wrResponse.Dispose()
-            }
-            $wr.Abort()
-        }
-        catch
-        {
-            
-        } 
-        #ToDo: When do we update/re-download it?
-        $fileName = [Environment]::ExpandEnvironmentVariables("%LOCALAPPDATA%\GraphPowerShellManager\GraphMetaData.xml")
-        $fi = [IO.FileInfo]$fileName
-        if($fi.Exists -and $fi.Length -ne $downloadSize)
+        # Graph metadata does not support Content-Length in response so size can not be used to check if it is updated
+        # There also no other version information in response headers. Use file date to update every week
+        $url = "https://graph.microsoft.com/beta/`$metadata"
+        $fileFullPath = [Environment]::ExpandEnvironmentVariables("%LOCALAPPDATA%\CloudAPIPowerShellManagement\GraphMetaData.xml")
+        $fi = [IO.FileInfo]$fileFullPath
+        $maxAge = (Get-Date).AddDays(-7)
+        if($fi.Exists -and ($fi.LastWriteTime -gt $maxAge -or $fi.CreationTime -gt $maxAge))
         {            
             try 
             {
-                [xml]$global:metaDataXML = Get-Content $fileName                
+                [xml]$global:metaDataXML = Get-Content $fi.FullName              
             }
             catch { }
         }
 
-
         if(-not $global:metaDataXML)
         {
-            $ret = Invoke-WebRequest $url -UseBasicParsing
-            [xml]$global:metaDataXML = $ret.Content
-            try { $global:metaDataXML.Save($fileName) } catch {}
+            [void][System.Reflection.Assembly]::LoadWithPartialName("System.Web.Extensions")
+            $wc = New-Object System.Net.WebClient
+            $wc.Encoding = [System.Text.Encoding]::UTF8
+            try 
+            {
+                [xml]$global:metaDataXML = $wc.DownloadString($url)
+                # Download to string and then use Save to format the XML output
+                $global:metaDataXML.Save($fi.FullName)
+            }
+            catch
+            {
+                Write-LogError "Failed to download Graph MetaData file" $_.Exception
+            }
+            finally
+            {
+                $wc.Dispose()
+            }
         }
     }
 }
@@ -627,9 +624,9 @@ function Show-GraphExportForm
     Set-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked" (Get-SettingValue "AddCompanyName")
 
     Set-XamlProperty $script:exportForm "btnExportSelected" "IsEnabled" ($global:dgObjects.SelectedItem -ne $null)
-    if(($global:dgObjects.ItemsSource | Where IsSelected).Count -gt 0)
+    if(($global:dgObjects.ItemsSource | Where IsSelected -eq $true).Count -gt 0)
     {
-        Set-XamlProperty $script:exportForm "lblSelectedObject" "Content" "$(($global:dgObjects.ItemsSource | Where IsSelected).Count) selected object(s)" 
+        Set-XamlProperty $script:exportForm "lblSelectedObject" "Content" "$(($global:dgObjects.ItemsSource | Where IsSelected -eq $true).Count) selected object(s)" 
     }
     elseif($global:dgObjects.SelectedItem)
     {
@@ -742,7 +739,7 @@ function Show-GraphBulkExportForm
             {
                 $folder = Get-GraphObjectFolder $item.ObjectType (Get-XamlProperty $script:exportForm "txtExportPath" "Text") (Get-XamlProperty $script:exportForm "chkAddObjectType" "IsChecked") (Get-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked")
 
-                $objects = @(Get-GraphObjects -Url $url -property $objectType.ViewProperties)
+                $objects = @(Get-GraphObjects -Url $url -property $objectType.ViewProperties -objectType $objectType)
                 foreach($obj in $objects)
                 {
                     Write-Status "Export $($item.Title): $((Get-GraphObjectName $obj))" -Force
@@ -908,6 +905,7 @@ function Show-GraphBulkImportForm
 
         foreach($item in ($script:importObjects | where Selected -eq $true | sort-object -property @{e={$_.ObjectType.ImportOrder}}))
         { 
+            Write-Status "Import $($item.ObjectType.Title) objects" -Force
             Write-Log "----------------------------------------------------------------"
             Write-Log "Import $($item.ObjectType.Title) objects"
             Write-Log "----------------------------------------------------------------"
@@ -1085,7 +1083,7 @@ function Import-GraphFile
 
             $keepProperties = ?? $file.ObjectType.AssignmentProperties @("target")
             $keepTargetProperties = ?? $file.ObjectType.AssignmentTargetProperties @("@odata.type","groupId")
-            $ObjctAssignments = @()
+            $ObjectAssignments = @()
             foreach($assignment in $objClone.Assignments)
             {
                 if($assignment.target.UserId -or ($assignment.Source -and $assignment.Source -ne "direct"))
@@ -1106,10 +1104,10 @@ function Import-GraphFile
                     if($prop.Name -in $keepTargetProperties) { continue }
                     Remove-Property $assignment.target $prop.Name
                 }
-                $ObjctAssignments += $assignment
+                $ObjectAssignments += $assignment
             }
 
-            $objClone.Assignments = $ObjctAssignments
+            $objClone.Assignments = $ObjectAssignments
     
             if(($objClone.Assignments | measure).Count -gt 0)
             {                
@@ -1117,7 +1115,10 @@ function Import-GraphFile
                 $strAssign = "$((Update-JsonForEnvironment ($objClone.Assignments | ConvertTo-Json -Depth 10)))"
                 # Array characters [ ] is not included if there is only one assignment
                 # Added them if they are missing
-                if($strAssign.Trim().StartsWith("[") -eq $false) { $strAssign = (" [ " + $strAssign + " ] ") }
+                if($strAssign.Trim().StartsWith("[") -eq $false)
+                { 
+                    $strAssign = (" [ " + $strAssign + " ] ") 
+                }
                 $json = ($json + $strAssign + "}")
 
                 if($json)
@@ -1560,7 +1561,7 @@ function Add-GraphDependencyObjects
         }
         else
         {
-            Write-Log "Export folder for depndency $dep not found" 2
+            Write-Log "Export folder for dependency $dep not found" 2
             continue    
         }
 
@@ -1626,10 +1627,10 @@ function Export-GraphObjects
         # Export all
         $objectsToExport = $global:dgObjects.ItemsSource
     }
-    elseif(($global:dgObjects.ItemsSource | Where IsSelected).Count -gt 0)
+    elseif(($global:dgObjects.ItemsSource | Where IsSelected -eq $true).Count -gt 0)
     {
         # Export checked items
-        $objectsToExport += ($global:dgObjects.ItemsSource | Where IsSelected)
+        $objectsToExport += ($global:dgObjects.ItemsSource | Where IsSelected -eq $true)
     }
     elseif($global:dgObjects.SelectedItem)
     {
@@ -1880,7 +1881,7 @@ function Show-GraphObjectInfo
     
     Add-XamlEvent $script:detailsForm "btnCopy" "Add_Click" -scriptBlock ([scriptblock]{ 
         $tmp = $script:detailsForm.FindName("txtValue")
-        if($tmp.Text) { $tmp.Text | Clip }
+        if($tmp.Text) { $tmp.Text | Set-Clipboard }
     })
 
     Add-XamlEvent $script:detailsForm "btnFull" "Add_Click" -scriptBlock ([scriptblock]{
