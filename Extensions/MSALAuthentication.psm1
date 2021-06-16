@@ -103,7 +103,7 @@ function Get-MSALUserInfo
     if($global:MSALToken)
     {
         Write-Log "Get current user"
-        $tmpMe = MSGraph\Invoke-GraphRequest -Url "ME" -SkipAuthentication
+        $tmpMe = MSGraph\Invoke-GraphRequest -Url "ME" -SkipAuthentication -ODataMetadata "Skip"
         if($tmpMe.creationType -ne "Invitation")
         {
             ### Only get user info from home tenant
@@ -114,7 +114,7 @@ function Get-MSALUserInfo
         }
 
         Write-Log "Get organization info"
-        $global:Organization = (MSGraph\Invoke-GraphRequest -Url "Organization" -SkipAuthentication).Value       
+        $global:Organization = (MSGraph\Invoke-GraphRequest -Url "Organization" -SkipAuthentication -ODataMetadata "Skip").Value       
     }
     else 
     {
@@ -993,7 +993,7 @@ function Get-MSALProfileEllipse
     {
         $initials = "$($global:me.givenName[0])$($global:me.surname[0])".ToUpper()    
     }
-    else
+    elseif($global:me.userPrincipalName)
     {
         $initials = "$($global:me.userPrincipalName[0])".ToUpper()    
     }
@@ -1340,7 +1340,8 @@ function Show-MSALDecodedToken {
         {
             if(-not $script:aadRoles)
             {
-                $script:aadRoles =(Invoke-GraphRequest -url "/directoryRoles?`$select=roleTemplateId,displayName" -ODataMetadata "minimal").value
+                # This will fail if RoleManagement.Read.Directory permission is not granted. Use -NoError to hide any problems
+                $script:aadRoles = (Invoke-GraphRequest -url "/directoryRoles?`$select=roleTemplateId,displayName" -ODataMetadata "minimal" -Noerror).value
             }
             $wids = @()
             foreach($wid in $tokenData.Payload."$($prop.Name)")

@@ -168,19 +168,19 @@ function Invoke-CompareObjects
 }
 function Set-ColumnVisibility
 {
-    param($show)
+    param($showCategory = $false, $showSubCategory = $false)
 
     $colTmp = $global:dgCompareInfo.Columns | Where { $_.Binding.Path.Path -eq "Category" }
     if($colTmp)
     {
-        $colTmp.Visibility = (?: ($show -eq $true) "Visible" "Collapsed")
+        $colTmp.Visibility = (?: ($showCategory -eq $true) "Visible" "Collapsed")
     }
 
     $colTmp = $global:dgCompareInfo.Columns | Where { $_.Binding.Path.Path -eq "SubCategory" }
     if($colTmp)
     {
-        $colTmp.Visibility = (?: ($show -eq $true) "Visible" "Collapsed")
-    }    
+        $colTmp.Visibility = (?: ($showSubCategory -eq $true) "Visible" "Collapsed")
+    }
 }
 
 function Add-CompareProperty
@@ -265,11 +265,25 @@ function Compare-ObjectsBasedonProperty
     }    
 }
 
+function Get-CompareCustomColumnsDoc
+{
+    param($objInfo)
+
+    if($objInfo.Object.'@OData.Type' -eq "#microsoft.graph.deviceEnrollmentPlatformRestrictionsConfiguration")
+    {
+        Set-ColumnVisibility $true $true
+    }
+    else
+    {
+        Set-ColumnVisibility $true $false
+    }
+}
+
 function Compare-ObjectsBasedonDocumentation
 {
     param($obj1, $obj2)
 
-    Set-ColumnVisibility $true
+    Get-CompareCustomColumnsDoc $obj
 
     # ToDo: set this based on configuration value
     $script:assignmentOutput = "simpleFullCompare"
@@ -353,25 +367,25 @@ function Compare-ObjectsBasedonDocumentation
     {
         foreach ($prop in $docObj1.Settings)
         {
-            if(($prop.EntityKey) -in $addedProperties) { continue }
+            if(($prop.EntityKey + $prop.Category + $prop.SubCategory) -in $addedProperties) { continue }
 
-            $addedProperties += $prop.EntityKey
+            $addedProperties += ($prop.EntityKey + $prop.Category + $prop.SubCategory)
             $val1 = $prop.$settingsValue 
-            $prop2 = $docObj2.Settings | Where { $_.EntityKey -eq $prop.EntityKey }
+            $prop2 = $docObj2.Settings | Where { $_.EntityKey -eq $prop.EntityKey -and $_.Category -eq $prop.Category -and $_.SubCategory -eq $prop.SubCategory }
             $val2 = $prop2.$settingsValue
-            Add-CompareProperty $prop.Name $val1 $val2 $prop.Category
+            Add-CompareProperty $prop.Name $val1 $val2 $prop.Category $prop.SubCategory
         }
         
         # These objects are defined only on Object 2. They will be last in the table
         foreach ($prop in $docObj2.Settings)
         {
-            if(($prop.EntityKey) -in $addedProperties) { continue }
+            if(($prop.EntityKey + $prop.Category + $prop.SubCategory) -in $addedProperties) { continue }
 
-            $addedProperties += $prop.EntityKey
-            $val2 = $prop.$settingsValue    
-            $prop2 = $docObj1.Settings | Where  { $_.EntityKey -eq $prop.EntityKey }
+            $addedProperties += ($prop.EntityKey + $prop.Category + $prop.SubCategory)
+            $val2 = $prop.$settingsValue
+            $prop2 = $docObj1.Settings | Where  { $_.EntityKey -eq $prop.EntityKey -and $_.Category -eq $prop.Category -and $_.SubCategory -eq $prop.SubCategory }
             $val1 = $prop2.$settingsValue   
-            Add-CompareProperty $prop.Name $val1 $val2 $prop.Category
+            Add-CompareProperty $prop.Name $val1 $val2 $prop.Category $prop.SubCategory
         }           
     }
 

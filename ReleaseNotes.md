@@ -1,5 +1,23 @@
 # Release Notes
 
+## 3.1.1 - 2021-06-16
+
+**New features**
+
+- Download script for Custom Attribute
+- Documentation
+  - Added support for additional objects (Enrollment restrictions)
+
+**Fixes**
+
+- Failed to get user information during logon. Something was changed in Graph that caused calling ME with full ODATA to fail.
+
+- Added RoleManagement.Read.Directory as a default required permission.
+
+  **NOTE:** This will most likely cause a consent prompt 
+
+- Some additional minor fixes
+
 ## 3.1.0 - 2021-06-08
 
 **Breaking Changes**

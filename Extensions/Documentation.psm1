@@ -207,7 +207,7 @@ function Get-ObjectDocumentation
     elseif($type -eq "#microsoft.graph.deviceManagementIntent")
     {
         Invoke-TranslateIntentObject $obj $objectType | Out-Null
-        $properties = @("Name","Value","Category","RawValue","Description")
+        $properties = @("Name","Value","Category","RawValue","SettingId","Description")
     }
     #endregion
     #region Administrative Templates
@@ -1586,10 +1586,10 @@ function Invoke-VerifyCondition
             return $false
         }
 
-        if(!$expression.value)
+        if($expression.value -eq $null)
         {
-            # Value not specified. Check that property exists
-            $tmpRet = $tmpProp -ne $null
+            # Value not specified. Check if the property is set
+            $tmpRet = $tmpProp.Value -ne $null
         }
         elseif($expression.operator -eq "ne")
         {
@@ -1644,7 +1644,11 @@ function Invoke-TranslateSection
         
         #if($prop.enabled -eq $false -and $objInfo.ShowDisabled -ne $true) { continue }
 
-        if((Invoke-VerifyCondition $obj $prop $objInfo) -eq $false) { continue }
+        if((Invoke-VerifyCondition $obj $prop $objInfo) -eq $false) 
+        {
+            Write-LogDebug "Condition returned false: $(($prop.Condition | ConvertTo-Json -Depth 10 -Compress))" 2
+            continue
+        }
 
         $obj = Get-CustomPropertyObject $obj $prop
 
@@ -1779,10 +1783,11 @@ function Invoke-TranslateSection
                     $value = Get-LanguageString $prop.entityKey
                 }
                 elseif(($prop.allowMissing -ne $true) -and
+                    ($prop.entityKey -ne ".") -and 
                     (-not ($obj.PSObject.Properties | Where Name -eq $prop.entityKey)) -and 
                     (-not ($obj.PSObject.Properties | Where Name -eq "$($prop.entityKey)@odata.navigationLink")))
                 {
-                    if($prop.enabled -eq $true)
+                    if($prop.enabled -ne $false)
                     {
                         Write-Log "Property with EntityKey $($prop.entityKey) is missing. Property will not be added!" 2
                     }
@@ -2508,8 +2513,15 @@ function Invoke-TranslateTable
 {
     param($obj, $prop)
 
-    $propValue = $obj."$($prop.entityKey)"
-    
+    if($prop.entityKey -eq ".")
+    {
+        $propValue = $obj
+    }
+    else
+    {
+        $propValue = $obj."$($prop.entityKey)"
+    }
+
     $items = @()
     foreach($item in $propValue)
     {
@@ -2535,7 +2547,14 @@ function Invoke-TranslateTable
                 $itemValues += (?? $item."$($column.metadata.entityKey)" $obj."$($column.metadata.entityKey)")
             }
         }
-        $items += $itemValues -join $script:propertySeparator
+        if($prop.separator)
+        {
+            $items += $itemValues -join $prop.separator
+        }
+        else
+        {
+            $items += $itemValues -join $script:propertySeparator
+        }
     }
 
     if($items.Count -gt 0)

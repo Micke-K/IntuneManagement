@@ -275,6 +275,7 @@ function Invoke-InitializeModule
         AssignmentsType = "deviceManagementScriptAssignments"
         Icon="CustomAttributes"
         GroupId = "CustomAttributes" # MacOS Settings
+        DetailExtension = { Add-ScriptExtensions @args }
     })    
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -1044,8 +1045,9 @@ function Invoke-DownloadScript
         $dlgSave.InitialDirectory = Get-SettingValue "IntuneRootFolder" $env:Temp
         $dlgSave.FileName = $obj.FileName    
         if($dlgSave.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK -and $dlgSave.Filename)
-        {            
-            [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($obj.scriptContent)) | Out-File $dlgSave.Filename -Force
+        {
+            # Changed to WriteAllBytes to get rid of BOM characters from Custom Attribute file 
+            [IO.File]::WriteAllBytes($dlgSave.FileName, ([System.Convert]::FromBase64String($obj.scriptContent)))
         }
     }    
 }

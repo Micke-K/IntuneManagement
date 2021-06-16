@@ -1,0 +1,417 @@
+[
+    {
+        "dataType":  8,
+        "booleanActions":  0,
+        "nameResourceKey": "Devices.androidWorkProfile"
+    },
+    {
+        "nameResourceKey":  "",
+        "descriptionResourceKey":  "",
+        "entityKey":  "androidForWorkRestriction",
+        "dataType":  6,
+        "booleanActions":  0,
+        "category": "",
+        "complexOptions": [
+            {
+                "nameResourceKey":  "TableHeaders.platform",
+                "descriptionResourceKey":  "",
+                "entityKey":  "platformBlocked",
+                "dataType":  0,
+                "booleanActions":  100,
+                "category":  "EnrollmentRestrictions.DeviceType.platformSettings",
+                "Children": {
+                    "nameResourceKey":  "",
+                    "descriptionResourceKey":  "",
+                    "entityKey":  "",
+                    "dataType":  5,
+                    "booleanActions":  0,
+                    "category": "",                    
+                    "Condition": {
+                        "Expressions": [
+                            {
+                                "property": "platformBlocked",
+                                "value": false
+                            }
+                        ]
+                    },
+                    "complexOptions": [
+                        {
+                            "nameResourceKey":  "EnrollmentRestrictions.DeviceType.versions",
+                            "descriptionResourceKey":  "",
+                            "entityKey":  ".",
+                            "dataType":  21,
+                            "separator": "-",
+                            "category": "EnrollmentRestrictions.DeviceType.platformSettings",                                                
+                            "Condition": {
+                                "type": "and",
+                                "Expressions": [
+                                    {
+                                        "property": "osMinimumVersion"
+                                    },
+                                    {
+                                        "property": "osMaximumVersion"
+                                    }
+                                ]
+                            },
+                            "Columns": [
+                                {
+                                    "metadata": {
+                                        "entityKey": "osMinimumVersion"
+                                    }
+                                },
+                                {
+                                    "metadata": {
+                                        "entityKey": "osMaximumVersion"
+                                    }
+                                }
+                            ]
+                        },                        
+                        {
+                            "nameResourceKey":  "EnrollmentRestrictions.DeviceType.personal",
+                            "descriptionResourceKey":  "",
+                            "entityKey":  "personalDeviceEnrollmentBlocked",
+                            "dataType":  0,
+                            "booleanActions":  100,
+                            "category":  "EnrollmentRestrictions.DeviceType.platformSettings"                        
+                        },
+                        {
+                            "nameResourceKey":  "EnrollmentRestrictions.DeviceType.blockManufacturersHeader",
+                            "descriptionResourceKey":  "",
+                            "entityKey":  "blockedManufacturers",
+                            "dataType":  21,
+                            "separator": "-",
+                            "category": "EnrollmentRestrictions.DeviceType.platformSettings",                                                
+                            "Condition": {
+                                "type": "and",
+                                "Expressions": [
+                                    {
+                                        "property": "blockedManufacturers"
+                                    }
+                                ]
+                            },
+                            "Columns": [
+                                {
+                                    "metadata": {
+                                        "entityKey": "unusedForSingleItems"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }                
+            }
+        ]
+    },
+    {
+        "dataType":  8,
+        "booleanActions":  0,
+        "nameResourceKey": "Devices.android"
+    },
+    {
+        "nameResourceKey":  "",
+        "descriptionResourceKey":  "",
+        "entityKey":  "androidRestriction",
+        "dataType":  6,
+        "booleanActions":  0,
+        "category": "",
+        "complexOptions": [
+            {
+                "nameResourceKey":  "TableHeaders.platform",
+                "descriptionResourceKey":  "",
+                "entityKey":  "platformBlocked",
+                "dataType":  0,
+                "booleanActions":  100,
+                "category":  "EnrollmentRestrictions.DeviceType.platformSettings",
+                "Children": {
+                    "nameResourceKey":  "",
+                    "descriptionResourceKey":  "",
+                    "entityKey":  "",
+                    "dataType":  5,
+                    "booleanActions":  0,
+                    "category": "",                    
+                    "Condition": {
+                        "Expressions": [
+                            {
+                                "property": "platformBlocked",
+                                "value": false
+                            }
+                        ]
+                    },
+                    "complexOptions": [
+                        {
+                            "nameResourceKey":  "EnrollmentRestrictions.DeviceType.versions",
+                            "descriptionResourceKey":  "",
+                            "entityKey":  ".",
+                            "dataType":  21,
+                            "separator": "-",
+                            "category": "EnrollmentRestrictions.DeviceType.platformSettings",                                                
+                            "Condition": {
+                                "type": "and",
+                                "Expressions": [
+                                    {
+                                        "property": "osMinimumVersion"
+                                    },
+                                    {
+                                        "property": "osMaximumVersion"
+                                    }
+                                ]
+                            },
+                            "Columns": [
+                                {
+                                    "metadata": {
+                                        "entityKey": "osMinimumVersion"
+                                    }
+                                },
+                                {
+                                    "metadata": {
+                                        "entityKey": "osMaximumVersion"
+                                    }
+                                }
+                            ]
+                        },                        
+                        {
+                            "nameResourceKey":  "EnrollmentRestrictions.DeviceType.personal",
+                            "descriptionResourceKey":  "",
+                            "entityKey":  "personalDeviceEnrollmentBlocked",
+                            "dataType":  0,
+                            "booleanActions":  100,
+                            "category":  "EnrollmentRestrictions.DeviceType.platformSettings"                        
+                        },
+                        {
+                            "nameResourceKey":  "EnrollmentRestrictions.DeviceType.blockManufacturersHeader",
+                            "descriptionResourceKey":  "",
+                            "entityKey":  "blockedManufacturers",
+                            "dataType":  21,
+                            "separator": "-",
+                            "category": "EnrollmentRestrictions.DeviceType.platformSettings",                                                
+                            "Condition": {
+                                "type": "and",
+                                "Expressions": [
+                                    {
+                                        "property": "blockedManufacturers"
+                                    }
+                                ]
+                            },
+                            "Columns": [
+                                {
+                                    "metadata": {
+                                        "entityKey": "unusedForSingleItems"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }                
+            }
+        ]
+    },
+    {
+        "dataType":  8,
+        "booleanActions":  0,
+        "nameResourceKey": "Devices.iOS"
+    },
+    {
+        "nameResourceKey":  "",
+        "descriptionResourceKey":  "",
+        "entityKey":  "iosRestriction",
+        "dataType":  6,
+        "booleanActions":  0,
+        "category": "",
+        "complexOptions": [
+            {
+                "nameResourceKey":  "TableHeaders.platform",
+                "descriptionResourceKey":  "",
+                "entityKey":  "platformBlocked",
+                "dataType":  0,
+                "booleanActions":  100,
+                "category":  "EnrollmentRestrictions.DeviceType.platformSettings",
+                "Children": {
+                    "nameResourceKey":  "",
+                    "descriptionResourceKey":  "",
+                    "entityKey":  "",
+                    "dataType":  5,
+                    "booleanActions":  0,
+                    "category": "",                    
+                    "Condition": {
+                        "Expressions": [
+                            {
+                                "property": "platformBlocked",
+                                "value": false
+                            }
+                        ]
+                    },
+                    "complexOptions": [
+                        {
+                            "nameResourceKey":  "EnrollmentRestrictions.DeviceType.versions",
+                            "descriptionResourceKey":  "",
+                            "entityKey":  ".",
+                            "dataType":  21,
+                            "separator": "-",
+                            "category": "EnrollmentRestrictions.DeviceType.platformSettings",                                                
+                            "Condition": {
+                                "type": "and",
+                                "Expressions": [
+                                    {
+                                        "property": "osMinimumVersion"
+                                    },
+                                    {
+                                        "property": "osMaximumVersion"
+                                    }
+                                ]
+                            },
+                            "Columns": [
+                                {
+                                    "metadata": {
+                                        "entityKey": "osMinimumVersion"
+                                    }
+                                },
+                                {
+                                    "metadata": {
+                                        "entityKey": "osMaximumVersion"
+                                    }
+                                }
+                            ]
+                        },                        
+                        {
+                            "nameResourceKey":  "EnrollmentRestrictions.DeviceType.personal",
+                            "descriptionResourceKey":  "",
+                            "entityKey":  "personalDeviceEnrollmentBlocked",
+                            "dataType":  0,
+                            "booleanActions":  100,
+                            "category":  "EnrollmentRestrictions.DeviceType.platformSettings"                        
+                        }
+                    ]
+                }                
+            }
+        ]
+    },
+    {
+        "dataType":  8,
+        "booleanActions":  0,
+        "nameResourceKey": "Devices.mac"
+    },
+    {
+        "nameResourceKey":  "",
+        "descriptionResourceKey":  "",
+        "entityKey":  "macRestriction",
+        "dataType":  6,
+        "booleanActions":  0,
+        "category": "",
+        "complexOptions": [
+            {
+                "nameResourceKey":  "TableHeaders.platform",
+                "descriptionResourceKey":  "",
+                "entityKey":  "platformBlocked",
+                "dataType":  0,
+                "booleanActions":  100,
+                "category":  "EnrollmentRestrictions.DeviceType.platformSettings",
+                "Children": {
+                    "nameResourceKey":  "",
+                    "descriptionResourceKey":  "",
+                    "entityKey":  "",
+                    "dataType":  5,
+                    "booleanActions":  0,
+                    "category": "",                    
+                    "Condition": {
+                        "Expressions": [
+                            {
+                                "property": "platformBlocked",
+                                "value": false
+                            }
+                        ]
+                    },
+                    "complexOptions": [                                               
+                        {
+                            "nameResourceKey":  "EnrollmentRestrictions.DeviceType.personal",
+                            "descriptionResourceKey":  "",
+                            "entityKey":  "personalDeviceEnrollmentBlocked",
+                            "dataType":  0,
+                            "booleanActions":  100,
+                            "category":  "EnrollmentRestrictions.DeviceType.platformSettings"                        
+                        }
+                    ]
+                }                
+            }
+        ]
+    },
+    {
+        "dataType":  8,
+        "booleanActions":  0,
+        "nameResourceKey": "Devices.windows"
+    },
+    {
+        "nameResourceKey":  "",
+        "descriptionResourceKey":  "",
+        "entityKey":  "windowsRestriction",
+        "dataType":  6,
+        "booleanActions":  0,
+        "category": "",
+        "complexOptions": [
+            {
+                "nameResourceKey":  "TableHeaders.platform",
+                "descriptionResourceKey":  "",
+                "entityKey":  "platformBlocked",
+                "dataType":  0,
+                "booleanActions":  100,
+                "category":  "EnrollmentRestrictions.DeviceType.platformSettings",
+                "Children": {
+                    "nameResourceKey":  "",
+                    "descriptionResourceKey":  "",
+                    "entityKey":  "",
+                    "dataType":  5,
+                    "booleanActions":  0,
+                    "category": "",                    
+                    "Condition": {
+                        "Expressions": [
+                            {
+                                "property": "platformBlocked",
+                                "value": false
+                            }
+                        ]
+                    },
+                    "complexOptions": [
+                        {
+                            "nameResourceKey":  "EnrollmentRestrictions.DeviceType.versions",
+                            "descriptionResourceKey":  "",
+                            "entityKey":  ".",
+                            "dataType":  21,
+                            "separator": "-",
+                            "category": "EnrollmentRestrictions.DeviceType.platformSettings",                                                
+                            "Condition": {
+                                "type": "and",
+                                "Expressions": [
+                                    {
+                                        "property": "osMinimumVersion"
+                                    },
+                                    {
+                                        "property": "osMaximumVersion"
+                                    }
+                                ]
+                            },
+                            "Columns": [
+                                {
+                                    "metadata": {
+                                        "entityKey": "osMinimumVersion"
+                                    }
+                                },
+                                {
+                                    "metadata": {
+                                        "entityKey": "osMaximumVersion"
+                                    }
+                                }
+                            ]
+                        },                        
+                        {
+                            "nameResourceKey":  "EnrollmentRestrictions.DeviceType.personal",
+                            "descriptionResourceKey":  "",
+                            "entityKey":  "personalDeviceEnrollmentBlocked",
+                            "dataType":  0,
+                            "booleanActions":  100,
+                            "category":  "EnrollmentRestrictions.DeviceType.platformSettings"                        
+                        }
+                    ]
+                }                
+            }
+        ]
+    }
+]

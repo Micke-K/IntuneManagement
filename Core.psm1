@@ -1159,7 +1159,7 @@ function Add-ViewItem
         if($global:PermissionScope -notcontains $scope) { $global:PermissionScope += $scope }
     }
 
-    foreach($required in @("openid","profile","email","User.ReadWrite.All","Group.ReadWrite.All")) #,"https://management.azure.com/user_impersonation") )
+    foreach($required in @("openid","profile","email","User.ReadWrite.All","Group.ReadWrite.All","RoleManagement.Read.Directory")) #,"https://management.azure.com/user_impersonation") )
     {
         if($required -in $global:PermissionScope) { continue }
         $global:PermissionScope += $required 
