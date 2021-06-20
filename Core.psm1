@@ -12,7 +12,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.0.0'
+    '3.0.1'
 }
 
 function Start-CoreApp
@@ -1138,8 +1138,8 @@ function Add-ViewItem
 {
     param($viewItem)
 
-    $objSection = $global:viewObjects | Where { $_.ViewInfo.Id -eq $viewItem.ViewID }
-    if(-not $objSection) 
+    $viewObject = $global:viewObjects | Where { $_.ViewInfo.Id -eq $viewItem.ViewID }
+    if(-not $viewObject) 
     {
         if(($arrMenuInlcude -and $arrMenuInlcude -notcontains $viewItem.ViewID) -or ($arrMenuExlcude -and $arrMenuExlcude -contains $viewItem.ViewID)) { return }
 
@@ -1153,17 +1153,9 @@ function Add-ViewItem
         $viewItem | Add-Member -NotePropertyName "ImportOrder" -NotePropertyValue 1000
     }
 
-    if(-not $global:PermissionScope) { $global:PermissionScope = @() }
     foreach($scope in $viewItem.Permissons)
     {
-        if($global:PermissionScope -notcontains $scope) { $global:PermissionScope += $scope }
-    }
-
-    foreach($required in @("openid","profile","email","User.ReadWrite.All","Group.ReadWrite.All","RoleManagement.Read.Directory")) #,"https://management.azure.com/user_impersonation") )
-    {
-        if($required -in $global:PermissionScope) { continue }
-        $global:PermissionScope += $required 
-        Write-LogDebug "Adding required scope $required"
+        if($viewObject.ViewInfo.Permissions -is [Object[]] -and  $viewObject.ViewInfo.Permissions -notcontains $scope) { $viewObject.ViewInfo.Permissions += $scope }
     }
 
     if($viewItem.Icon -or [IO.File]::Exists(($global:AppRootFolder + "\Xaml\Icons\$($viewItem.Id).xaml")))
@@ -1172,7 +1164,7 @@ function Add-ViewItem
         $viewItem | Add-Member -NotePropertyName "IconImage" -NotePropertyValue $ctrl
     }
 
-    $objSection.ViewItems += $viewItem
+    $viewObject.ViewItems += $viewItem
 }
 
 function Show-View
@@ -1221,7 +1213,7 @@ function Show-View
     {
         $global:txtSplashText.Text = "Authenticate"
         [System.Windows.Forms.Application]::DoEvents()
-        & $viewObject.ViewInfo.Authenticate        
+        & $viewObject.ViewInfo.Authenticate
     }
 
     if($viewObject.ViewInfo.Activating)

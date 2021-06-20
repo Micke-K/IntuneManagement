@@ -10,7 +10,7 @@ This module is for the Endpoint Info View. It shows read-only objects in Intune
 #>
 function Get-ModuleVersion
 {
-    '3.1.0'
+    '3.1.1'
 }
 
 function Invoke-InitializeModule
@@ -27,6 +27,7 @@ function Invoke-InitializeModule
         Authenticate = { Invoke-EMInfoAuthenticateToMSAL }
         AppInfo = (Get-GraphAppInfo "EM" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547")
         SaveSettings = { Invoke-EMSaveSettings }
+        Permissions = @()
     })
 
     Add-ViewObject $global:EMInfoViewObject
@@ -80,7 +81,7 @@ function Invoke-InitializeModule
         ShowButtons = @("View")
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")    
     })
-    
+
 }
 
 function Invoke-EMInfoActivatingView
@@ -99,6 +100,6 @@ function Invoke-EMInfoAuthenticateToMSAL
     $usr = (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser"))
     if($usr)
     {
-        & $global:msalAuthenticator.Login -Account $usr
+        & $global:msalAuthenticator.Login -Account $usr -Permissions $global:EMInfoViewObject.Permissions
     }
 }

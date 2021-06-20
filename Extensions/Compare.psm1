@@ -11,7 +11,7 @@ Objects can be compared based on Properties or Documentatation info.
 
 function Get-ModuleVersion
 {
-    '1.0.0'
+    '1.0.1'
 }
 
 function Invoke-InitializeModule

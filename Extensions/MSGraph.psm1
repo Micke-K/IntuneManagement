@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.1.0'
+    '3.1.1'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -697,19 +697,28 @@ function Show-GraphBulkExportForm
 
     Add-GraphExportExtensions $script:exportForm 0
 
-    $script:lstObjectsToExport = $script:exportForm.FindName("lstObjectsToExport")
-    if($script:lstObjectsToExport)
-    {
-        $script:lstObjectsToExport.ItemsSource = $script:exportObjects
+    $column = Get-GridCheckboxColumn "Selected"
+    $global:dgObjectsToExport.Columns.Add($column)
 
-        Add-XamlEvent $script:exportForm "chkCheckAll" "add_click" ({
-            foreach($item in $script:exportObjects)
-            { 
+    $column.Header.IsChecked = $true # All items are checked by default
+    $column.Header.add_Click({
+            foreach($item in $global:dgObjectsToExport.ItemsSource)
+            {
                 $item.Selected = $this.IsChecked
             }
-            $script:lstObjectsToExport.Items.Refresh()
-        })
-    }
+            $global:dgObjectsToExport.Items.Refresh()
+        }
+    ) 
+
+    # Add Object type column
+    $binding = [System.Windows.Data.Binding]::new("Title")
+    $column = [System.Windows.Controls.DataGridTextColumn]::new()
+    $column.Header = "Object type"
+    $column.IsReadOnly = $true
+    $column.Binding = $binding
+    $global:dgObjectsToExport.Columns.Add($column)
+
+    $global:dgObjectsToExport.ItemsSource = $script:exportObjects
 
     Add-XamlEvent $script:exportForm "btnClose" "add_click" ({
         $script:exportForm = $null
@@ -739,11 +748,11 @@ function Show-GraphBulkExportForm
             {
                 $folder = Get-GraphObjectFolder $item.ObjectType (Get-XamlProperty $script:exportForm "txtExportPath" "Text") (Get-XamlProperty $script:exportForm "chkAddObjectType" "IsChecked") (Get-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked")
 
-                $objects = @(Get-GraphObjects -Url $url -property $objectType.ViewProperties -objectType $objectType)
+                $objects = @(Get-GraphObjects -Url $url -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
                 foreach($obj in $objects)
                 {
-                    Write-Status "Export $($item.Title): $((Get-GraphObjectName $obj))" -Force
-                    Export-GraphObject $obj.Object $item.ObjectType $folder 
+                    Write-Status "Export $($item.Title): $((Get-GraphObjectName $obj.Object $obj.ObjectType))" -Force
+                    Export-GraphObject $obj.Object $item.ObjectType $folder
                 }
                 Save-Setting "" "LastUsedFullPath" $folder
             }
@@ -876,19 +885,36 @@ function Show-GraphBulkImportForm
 
     Add-GraphImportExtensions $script:importForm 0
 
-    $script:lstObjectsToImport = $script:importForm.FindName("lstObjectsToImport")
-    if($script:lstObjectsToImport)
-    {
-        $script:lstObjectsToImport.ItemsSource = $script:importObjects
+    $column = Get-GridCheckboxColumn "Selected"
+    $global:dgObjectsToImport.Columns.Add($column)
 
-        Add-XamlEvent $script:importForm "chkCheckAll" "add_click" ({
-            foreach($item in $script:importObjects)
-            { 
+    $column.Header.IsChecked = $true # All items are checked by default
+    $column.Header.add_Click({
+            foreach($item in $global:dgObjectsToImport.ItemsSource)
+            {
                 $item.Selected = $this.IsChecked
             }
-            $script:lstObjectsToImport.Items.Refresh()
-        })
-    }
+            $global:dgObjectsToImport.Items.Refresh()
+        }
+    ) 
+
+    # Add Object type column
+    $binding = [System.Windows.Data.Binding]::new("Title")
+    $column = [System.Windows.Controls.DataGridTextColumn]::new()
+    $column.Header = "Object type"
+    $column.IsReadOnly = $true
+    $column.Binding = $binding
+    $global:dgObjectsToImport.Columns.Add($column)
+
+    # Add Order column
+    $binding = [System.Windows.Data.Binding]::new("ObjectType.ImportOrder")
+    $column = [System.Windows.Controls.DataGridTextColumn]::new()
+    $column.Header = "Import order"
+    $column.IsReadOnly = $true
+    $column.Binding = $binding
+    $global:dgObjectsToImport.Columns.Add($column)
+    
+    $global:dgObjectsToImport.ItemsSource = $script:importObjects
 
     Add-XamlEvent $script:importForm "btnClose" "add_click" ({
         $script:importForm = $null
@@ -933,6 +959,11 @@ function Show-GraphBulkImportForm
         if($importedObjects -eq 0)
         {
             [System.Windows.MessageBox]::Show("No objects were imported. Verify folder and exported files", "Error", "OK", "Error")
+        }
+        else
+        {
+            Show-GraphObjects
+            Write-Status ""
         }
     })
 
@@ -992,6 +1023,113 @@ function Add-GraphImportExtensions
             
         }
     }    
+}
+
+function Show-GraphBulkDeleteForm
+{
+    $script:deleteForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\BulkDeleteForm.xaml") -AddVariables
+    if(-not $script:deleteForm) { return }
+
+    $script:deleteObjects = @()
+    foreach($objType in $global:lstMenuItems.ItemsSource)
+    {
+        if(-not $objType.Title) { continue }
+
+        if($objType.ShowButtons -is [Object[]] -and $objType.ShowButtons -notcontains "Delete") { continue }
+
+        $script:deleteObjects += New-Object PSObject -Property @{
+            Title = $objType.Title
+            Selected = $false
+            ObjectType = $objType
+        }
+    }
+
+    $column = Get-GridCheckboxColumn "Selected"
+    $global:dgBulkDeleteObjects.Columns.Add($column)
+
+    $column.Header.IsChecked = $false # All items are NOT checked by default
+    $column.Header.add_Click({
+            foreach($item in $global:dgBulkDeleteObjects.ItemsSource)
+            {
+                $item.Selected = $this.IsChecked
+            }
+            $global:dgBulkDeleteObjects.Items.Refresh()
+        }
+    ) 
+
+    # Add title column
+    $binding = [System.Windows.Data.Binding]::new("Title")
+    $column = [System.Windows.Controls.DataGridTextColumn]::new()
+    $column.Header = "Title"
+    $column.IsReadOnly = $true
+    $column.Binding = $binding
+    $global:dgBulkDeleteObjects.Columns.Add($column)    
+
+    $ocList = [System.Collections.ObjectModel.ObservableCollection[object]]::new(@($script:deleteObjects))
+    $global:dgBulkDeleteObjects.ItemsSource = [System.Windows.Data.CollectionViewSource]::GetDefaultView($ocList)    
+
+    Add-XamlEvent $script:deleteForm "btnClose" "add_click" ({
+        $script:deleteForm = $null
+        Show-ModalObject
+    })
+
+    Add-XamlEvent $script:deleteForm "btnDelete" "add_click" ({
+
+        $selCount = (($global:dgBulkDeleteObjects.ItemsSource | Where Selected -eq $true) | measure).Count
+
+        if($selCount -eq 0)
+        {
+            [System.Windows.MessageBox]::Show("No object types selected`n`nSelect types you want to delete", "Error", "OK", "Error") 
+            return 
+        }
+
+        if(([System.Windows.MessageBox]::Show("Are you sure you want to delete all objects of the selected type(s)?`n`n$selCount type(s) selected", "Delete Objects?", "YesNo", "Warning")) -ne "Yes")
+        {
+            return
+        }
+    
+        Write-Status "Delete objects" -Block
+        Write-Log "****************************************************************"
+        Write-Log "Start bulk delete"
+        Write-Log "****************************************************************"
+
+        foreach($item in ($global:dgBulkDeleteObjects.ItemsSource | Where Selected -eq $true))
+        {
+            Write-Log "----------------------------------------------------------------"
+            Write-Log "Delete $($item.ObjectType.Title) objects"
+            Write-Log "----------------------------------------------------------------"
+    
+            $url = $item.ObjectType.API
+            if($item.ObjectType.QUERYLIST)
+            {
+                $url = "$($url.Trim())?$($item.ObjectType.QUERYLIST.Trim())"
+            }
+            
+            try 
+            {
+                Write-Status "Get $($item.Title) objects" -Force
+                $objects = @(Get-GraphObjects -Url $url -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
+                foreach($obj in $objects)
+                {
+                    Write-Status "Delete $($item.Title): $((Get-GraphObjectName $obj.Object $obj.ObjectType))" -Force
+                    Remove-GraphObject $obj.Object $obj.ObjectType $folder 
+                }
+            }
+            catch 
+            {
+                Write-LogError "Failed when deleting $($item.Title) objects" $_.Exception
+            }
+        }
+
+        Write-Log "****************************************************************"
+        Write-Log "Bulk delete finished"
+        Write-Log "****************************************************************"
+        Show-GraphObjects
+        Write-Status ""    
+    })
+
+
+    Show-ModalForm "Bulk Delete" $script:deleteForm -HideButtons
 }
 
 function Get-GraphFileObjects
@@ -1788,6 +1926,82 @@ function Import-GraphObject
     $newObj
 }
 
+function Remove-GraphObjects
+{
+    $objectsToDelete = @()
+    if(($global:dgObjects.ItemsSource | Where IsSelected -eq $true).Count -gt 0)
+    {
+        # Delete checked items
+        $objectsToDelete += ($global:dgObjects.ItemsSource | Where IsSelected -eq $true)
+    }
+    elseif($global:dgObjects.SelectedItem)
+    {
+        # Delete the selected item
+        $objectsToDelete += $global:dgObjects.SelectedItem
+    }
+
+    if($objectsToDelete.Count -eq 0) 
+    {
+        [System.Windows.MessageBox]::Show("No object selected`n`nSelect items you want to delete", "Error", "OK", "Error") 
+        return 
+    }
+
+    if(([System.Windows.MessageBox]::Show("Are you sure you want to delete $($objectsToDelete.Count) $($global:curObjectType.Title) object(s)?", "Delete Objects?", "YesNo", "Warning")) -ne "Yes")
+    {
+        return
+    }
+
+    foreach($tmpObj in $objectsToDelete)
+    {
+        Remove-GraphObject $tmpObj.Object $tmpObj.ObjectType
+    }
+
+    Show-GraphObjects
+    Write-Status ""
+}
+
+function Remove-GraphObject
+{
+    param($objToRemove, $objectType)
+
+    $strAPI = $null
+    if($objectType.PreDeleteCommand)
+    {
+        $ret = & $objectType.PreDeleteCommand $objToRemove $objectType
+        if($ret -is [HashTable])
+        {
+            if($ret.ContainsKey("Delete") -and $ret["Delete"] -eq $false)
+            {
+                # Delete handled manually or aborted
+                return $false
+            }
+
+            if($ret.ContainsKey("API"))
+            {
+                $strAPI = $ret["API"]
+            }
+        }
+    }
+
+    if($strAPI)
+    {
+        $api = $strAPI
+    }
+    elseif($objectType.DELETEAPI)
+    {
+        $api = $objectType.DELETEAPI
+    }
+    else
+    {
+        $api = $objectType.API
+    }
+
+    Write-Status "Delete $((Get-GraphObjectName $objToRemove $objectType))"
+    $strAPI = ($api + "/$($objToRemove.Id)")
+    Write-Log "Delete $($objectType.Title) object $((Get-GraphObjectName $objToRemove $objectType))"
+    Invoke-GraphRequest -Url $strAPI -HttpMethod "DELETE" -ODataMetadata "none"
+}
+
 function Copy-GraphObject
 {
     if(-not $dgObjects.SelectedItem) 
@@ -1940,13 +2154,24 @@ function Add-GraphBulkMenu
     $menuItem = [System.Windows.Controls.MenuItem]::new()
     $menuItem.Header = "_Bulk"
     $menuItem.Name = "EMBulk"
+    
     $subItem = [System.Windows.Controls.MenuItem]::new()
     $subItem.Header = "_Export"
     $subItem.Add_Click({Show-GraphBulkExportForm})  
     $menuItem.AddChild($subItem) | Out-Null
+    
     $subItem = [System.Windows.Controls.MenuItem]::new()
     $subItem.Header = "_Import"
     $subItem.Add_Click({Show-GraphBulkImportForm})  
+    $menuItem.AddChild($subItem) | Out-Null
+    
+    $subItem = [System.Windows.Controls.MenuItem]::new()
+    $subItem.Header = "_Delete"
+    $subItem.Name = "mnuBulkDelete"
+    $allowBulkDelete = Get-SettingValue "EMAllowBulkDelete"
+    # Add it hidden even if not enabled, the save settings will enable it
+    $subItem.Visibility = (?: ($allowBulkDelete -eq $true) "Visible" "Collapsed")
+    $subItem.Add_Click({Show-GraphBulkDeleteForm})
     $menuItem.AddChild($subItem) | Out-Null
 
     $mnuMain.Items.Insert(1,$menuItem) | Out-Null

@@ -1,5 +1,25 @@
 # Release Notes
 
+## 3.1.2 - 2021-06-20
+
+**New features**
+
+- Delete and Bulk Delete - Delete selected items or delete ALL items of selected object types
+
+  **Note:** This must be enabled in the settings. They are not visible by default.
+
+  **WARNING:** Use this carefully! It will delete profiles and policies in Intune. 
+
+- Support for new object Health Scripts
+
+- Object permissions is now handled by ViewObject and authentication provider. This is to support future view extensions.
+
+**Fixes**
+
+* Azure Role Read permission can be disabled in settings
+* Minor UI changes e.g. List Boxes for bulk Import/Export changed to DataGrid
+* Minor bulk export fixes
+
 ## 3.1.1 - 2021-06-16
 
 **New features**

@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.0.0'
+    '3.0.1'
 }
 
 $global:msalAuthenticator = $null
@@ -59,6 +59,14 @@ function Invoke-InitializeModule
         Description = "Default permissions of the selected app will be used when logging on. Some objects might not be accessable"
     }) "MSAL" 
 
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Add Azure Role Read permissions"
+        Key = "AzureADRoleRead"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Request Azure AD Role read permission when getting the token. This can be use to resolve the SIDs to Azure Roles for the wids property on the Access Token. Note: This might trigger a consent prompt"
+    }) "MSAL"
+
     Add-MSALPrereq
 
     #$script:MSALDLLMissing = $true #!!!!
@@ -75,6 +83,7 @@ function Get-MSALAuthenticationObject
             Logout = { Disconnect-MSALUser } 
             ProfilePicture = { Get-MSALProfileEllipse @args }
             ShowErrors = { Show-MSALError }
+            Permissions = @("openid","profile","email","User.ReadWrite.All","Group.ReadWrite.All") #"RoleManagement.Read.Directory"
         }
     }
 
@@ -511,7 +520,9 @@ function Connect-MSALUser
         [switch]
         $Interactive,
 
-        $Account 
+        $Account,
+
+        $Permissions = @() # Addidional permissions required by the current view object
     )
 
     # No login during first time the app is started
@@ -559,8 +570,29 @@ function Connect-MSALUser
     }
     else
     {
-        $Scopes = [string[]]$global:PermissionScope
+        #$Scopes = [string[]]$global:PermissionScope
+        $reqScopes = [string[]]$global:msalAuthenticator.Permissions
         $useDefaultPermissions = $false
+        
+        $resolveRoles = ((Get-SettingValue "AzureADRoleRead" $false) -eq $true)
+
+        if($resolveRoles -and $global:msalAuthenticator.Permissions -notcontains "RoleManagement.Read.Directory")
+        {
+            # Adds the required permission for reading AAD directory roles
+            $reqScopes += "RoleManagement.Read.Directory"
+        }
+
+        if($Permissions.Count -gt 0)
+        {
+            $script:curViewPermissions = $Permissions
+        }
+        $reqScopes += $script:curViewPermissions
+
+        foreach($tmpScope in $script:curViewPermissions)
+        {
+            if($reqScopes -notcontains $tmpScope) { $reqScopes += $tmpScope }
+        }        
+        $Scopes = [String[]]$reqScopes
     }    
 
     $global:MSALApp = Get-MSALApp $global:appObj
@@ -645,14 +677,14 @@ function Connect-MSALUser
             #AADSTS65001
             if($script:authenticationFailure.Classification -eq "ConsentRequired")
             {
-                $Scopes = [string[]]$global:PermissionScope
+                $Scopes = [string[]]$reqScopes
             }
             else
             {
-                if($useDefaultPermissions -eq $false -and $authResult -and ($global:PermissionScope | measure).Count -gt 0 -and $global:promptConsentRequested -notcontains $authResult.TenantId)
+                if($useDefaultPermissions -eq $false -and $authResult -and ($reqScopes | measure).Count -gt 0 -and $global:promptConsentRequested -notcontains $authResult.TenantId)
                 {
                     $missingScopes = @()
-                    foreach($scope in $global:PermissionScope)
+                    foreach($scope in $reqScopes)
                     {
                         $tmpScope = $scope.Split('/')[-1]
                         if($tmpScope -eq ".default") { continue }
@@ -1270,7 +1302,7 @@ function Get-MSALProfileEllipse
             
                 $dg = [System.Windows.Controls.DataGrid]::new()
                 $dg.ItemsSource = ($tokenArr | Select Name, Value)
-                Show-ModalForm "Token info" $dg            
+                Show-ModalForm "Token info" $dg
             }
             
             Add-XamlEvent $tmpObj "lnkAccessTokenInfo" "add_Click" {

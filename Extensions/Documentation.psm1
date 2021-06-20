@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.0.0'
+    '1.0.1'
 }
 
 function Invoke-InitializeModule
@@ -410,6 +410,10 @@ function Get-ObjectTypeString
     elseif($objTypeId -eq "ConditionalAccess")
     {
         return (Get-LanguageString "SecurityTemplate.conditionalAccess")
+    }
+    elseif($objTypeId -eq "EndpointAnalytics")
+    {
+        return (Get-LanguageString "SettingDetails.healthMonScopeBootPerf")
     }
     elseif($objTypeId -eq "EndpointSecurity")
     {

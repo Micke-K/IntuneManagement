@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.0'
+    '3.1.2'
 }
 
 function Invoke-InitializeModule
@@ -20,7 +20,7 @@ function Invoke-InitializeModule
         Title = "Endpoint Manager/Intune"
         Id = "EndpointManager"
         Values = @()
-        Priority = 10        
+        Priority = 10
     })
 
     Add-SettingsObject (New-Object PSObject -Property @{
@@ -72,6 +72,22 @@ function Invoke-InitializeModule
         SubPath = "EndpointManager"
     }) "EndpointManager"
 
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Show Delete button"
+        Key = "EMAllowDelete"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Allow deleting individual objectes"
+    }) "EndpointManager"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Show Bulk Delete "
+        Key = "EMAllowBulkDelete"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Allow using bulk delete to delete all objects of selected types"
+    }) "EndpointManager"
+
     $viewPanel = Get-XamlObject ($global:AppRootFolder + "\Xaml\EndpointManagerPanel.xaml") -AddVariables
     
     Set-EMViewPanel $viewPanel
@@ -89,6 +105,8 @@ function Invoke-InitializeModule
         Authenticate = { Invoke-EMAuthenticateToMSAL }
         AppInfo = (Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547")
         SaveSettings = { Invoke-EMSaveSettings }
+
+        Permissions = @()
     })
 
     Add-ViewObject $global:EMViewObject
@@ -166,6 +184,7 @@ function Invoke-InitializeModule
         PostImportCommand = { Start-PostImportIntuneBranding @args }
         PostGetCommand = { Start-PostGetIntuneBranding @args }
         PostExportCommand = { Start-PostExportIntuneBranding  @args }
+        PreDeleteCommand = { Start-PreDeleteIntuneBranding @args }
         Permissons=@("DeviceManagementApps.ReadWrite.All")
         Icon = "Branding"
         SkipRemoveProperties = @('Id') # Id is removed by PreImport. Required for default profile
@@ -202,6 +221,7 @@ function Invoke-InitializeModule
         ViewID = "IntuneGraphAPI"
         PreImportCommand = { Start-PreImportESP @args }
         PostExportCommand = { Start-PostExportESP @args }
+        PreDeleteCommand = { Start-PreDeleteEnrollmentRestrictions @args } # Note: Uses same PreDelete as restrictions
         QUERYLIST = "`$filter=endsWith(id,'Windows10EnrollmentCompletionPageConfiguration')"
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         SkipRemoveProperties = @('Id')
@@ -217,6 +237,7 @@ function Invoke-InitializeModule
         QUERYLIST = "`$filter=not endsWith(id,'Windows10EnrollmentCompletionPageConfiguration')"
         PostExportCommand = { Start-PostExportEnrollmentRestrictions @args }
         PreImportCommand = { Start-PreImportEnrollmentRestrictions @args }
+        PreDeleteCommand = { Start-PreDeleteEnrollmentRestrictions @args }
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         SkipRemoveProperties = @('Id')
         AssignmentsType = "enrollmentConfigurationAssignments"
@@ -522,13 +543,26 @@ function Invoke-InitializeModule
         ImportOrder = 15
         GroupId = "TenantAdmin"
     })
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Health Scripts"
+        Id = "DeviceHealthScripts"
+        ViewID = "IntuneGraphAPI"
+        QUERYLIST = "`$filter=isGlobalScript%20eq%20false" # Looks like filters are not working for deviceHealthScripts
+        API = "/deviceManagement/deviceHealthScripts"
+        PreDeleteCommand = { Start-PreDeleteDeviceHealthScripts @args }
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        GroupId = "EndpointAnalytics"
+        Icon = "Report"
+        AssignmentsType = "deviceHealthScriptAssignments"
+    })
 }
 
 function Invoke-EMAuthenticateToMSAL
 {
     $global:EMViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547"
     Set-MSALCurrentApp $global:EMViewObject.AppInfo
-    & $global:msalAuthenticator.Login -Account (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser"))
+    & $global:msalAuthenticator.Login -Account (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser")) -Permissions $global:EMViewObject.Permissions
 }
 
 function Invoke-EMDeactivateView
@@ -566,16 +600,38 @@ function Invoke-EMSaveSettings
         Connect-MSALUser -Account $global:MSALToken.Account.Username
         Write-Status ""
     }
+
+    # Hide/Show Delete button
+    $allowDelete = Get-SettingValue "EMAllowDelete"    
+    $global:btnDelete.Visibility = (?: ($allowDelete -eq $true) "Visible" "Collapsed")
+
+    # Hide/Show Delete on Bulk menu
+    $allowBulkDelete = Get-SettingValue "EMAllowBulkDelete"
+    $mnuBulk = $mnuMain.Items | Where Name -eq "EMBulk"
+
+    if($mnuBulk) 
+    {
+        $mnuBulkDelete = $mnuBulk.Items | Where Name -eq "mnuBulkDelete"
+        if($mnuBulkDelete)
+        {
+            $mnuBulkDelete.Visibility = (?: ($allowBulkDelete -eq $true) "Visible" "Collapsed")
+        }
+    }    
 }
 
 function Set-EMViewPanel
 {
     param($panel)
+    
     # ToDo: Create View specific pannel and move this to graph
     Add-XamlEvent $panel "btnView" "Add_Click" -scriptBlock ([scriptblock]{ 
         Show-GraphObjectInfo
     })
 
+    Add-XamlEvent $panel "btnDelete" "Add_Click" -scriptBlock ([scriptblock]{ 
+        Remove-GraphObjects
+    })
+    
     Add-XamlEvent $panel "btnCopy" "Add_Click" -scriptBlock ([scriptblock]{ 
         Copy-GraphObject
     })
@@ -603,11 +659,14 @@ function Set-EMViewPanel
     })
 
     Invoke-FiterBoxChanged ($panel.FindName("txtFilter"))
-    
+
+    $allowDelete = Get-SettingValue "EMAllowDelete"
+    Set-XamlProperty $panel "btnDelete" "Visibility" (?: ($allowDelete -eq $true) "Visible" "Collapsed")    
 
     $global:dgObjects.add_selectionChanged({        
         Set-XamlProperty $this.Parent "btnView" "IsEnabled" (?: ($global:dgObjects.SelectedItem -eq $null) $false $true)
         Set-XamlProperty $this.Parent "btnCopy" "IsEnabled" (?: ($global:dgObjects.SelectedItem -eq $null) $false $true)
+        Set-XamlProperty $this.Parent "btnDelete" "IsEnabled" (?: ($global:dgObjects.SelectedItem -eq $null -and $global:curObjectType.AllowDelete -ne $false) $false $true)
     })
 
     # ToDo: Move this to the view object
@@ -922,6 +981,15 @@ function Start-PostExportIntuneBranding
     }
 }
 
+function Start-PreDeleteIntuneBranding
+{
+    param($obj, $objectType)
+
+    if($obj.isDefaultProfile -eq $true)
+    {
+        @{ "Delete" = $false }
+    }
+}
 
 #endregion
 
@@ -1613,6 +1681,16 @@ function Start-PreImportEnrollmentRestrictions
         Remove-Property $obj "Id"    
     }
 }
+
+function Start-PreDeleteEnrollmentRestrictions
+{
+    param($obj, $objectType)
+
+    if($obj.Priority -eq 0)
+    {
+        @{ "Delete" = $false }
+    }
+}
 #endregion
 
 #region ScopeTags
@@ -1631,6 +1709,20 @@ function Start-PreImportAssignmentsAutoPilot
 
     Add-EMAssignmentsToObject $obj $objectType $file $assignments
 }
+#endregion
+
+#region Health Scripts
+
+function Start-PreDeleteDeviceHealthScripts
+{
+    param($obj, $objectType)
+
+    if($obj.IsGlobal -eq $true)
+    {
+        @{ "Delete" = $false }
+    }
+}
+
 #endregion
 
 #region Generic functions

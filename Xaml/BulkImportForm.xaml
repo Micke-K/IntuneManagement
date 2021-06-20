@@ -90,29 +90,9 @@
             </StackPanel>
         </Grid>
     
-        <ListBox Name="lstObjectsToImport" Grid.Column='1' 
-                    SelectionMode="Single"
-                    Grid.IsSharedSizeScope='True' >
-            <ListBox.ItemTemplate>  
-                <DataTemplate>  
-                    <Grid> 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" SharedSizeGroup="SelectedColumn" />
-                            <ColumnDefinition Width="Auto" SharedSizeGroup="FileNameColumn" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions> 
-                        <CheckBox IsChecked="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock Text="{Binding Title}" Grid.Column='1' Margin="5,0,0,0" />
-                        <TextBlock Text="{Binding ObjectType.ImportOrder}" Grid.Column='2' Margin="5,0,0,0" />
-                    </Grid>  
-                </DataTemplate>  
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <DataGrid Name="dgObjectsToImport" Grid.Column='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" Margin="0,0,0,5" />
 
-        <CheckBox IsChecked="true" Margin="7,2,0,0" Grid.Column='1' Grid.Row='1'  Name="chkCheckAll" ToolTip="Select/Deselect all" />
-
-    </Grid >
+    </Grid>
 
     <StackPanel Name="spImportSubMenu" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row='2' Grid.ColumnSpan='2' >
         <Button Name="btnImport" Content="Import" Width='100' Margin="5,0,0,0" />
