@@ -11,7 +11,7 @@ Objects can be compared based on Properties or Documentatation info.
 
 function Get-ModuleVersion
 {
-    '1.0.2'
+    '1.0.3'
 }
 
 function Invoke-InitializeModule
@@ -695,14 +695,17 @@ function Show-CompareForm
             if($global:txtIntuneObject.Tag.ObjectType)
             {
                 $objectTypePath = [IO.Path]::Combine($path, $global:txtIntuneObject.Tag.ObjectType.Id)
-                if([IO.Direcotry]::Exists($objectTypePath))
+                if([IO.Directory]::Exists($objectTypePath))
                 {
                     $path = $objectTypePath
                 }
             }
         }
 
-        $path = (?: ($global:lastCompareFile -eq $null) $path ([IO.FileInfo]$global:lastCompareFile).DirectoryName)
+        if([String]::IsNullOrEmpty($global:lastCompareFile) -eq $false)
+        {
+            $path = ([IO.FileInfo]$global:lastCompareFile).DirectoryName
+        }
 
         $of = [System.Windows.Forms.OpenFileDialog]::new()
         $of.Multiselect = $false
@@ -711,7 +714,7 @@ function Show-CompareForm
         {
             $of.InitialDirectory = $path
         }
-        
+
         if($of.ShowDialog())
         {
             Set-XamlProperty $script:cmpForm "txtCompareFile" "Text" $of.FileName

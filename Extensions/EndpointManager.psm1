@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.4'
+    '3.1.5'
 }
 
 function Invoke-InitializeModule
@@ -253,6 +253,7 @@ function Invoke-InitializeModule
         PostCopyCommand = { Start-PostCopyAdministrativeTemplate @args }
         PostFileImportCommand = { Start-PostFileImportAdministrativeTemplate @args }
         LoadObject = { Start-LoadAdministrativeTemplate @args }
+        PropertiesToRemove = @("definitionValues")
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon="DeviceConfiguration"
         GroupId = "DeviceConfiguration"
@@ -1440,7 +1441,20 @@ function Start-LoadAdministrativeTemplate
 
     $obj = Get-Content $fi.FullName | ConvertFrom-Json 
 
-    return $obj    
+    if($obj.definitionValues)
+    {
+        return $obj
+    }
+
+    $settingsFile = $fi.DirectoryName + "\" + $fi.BaseName + "_Settings.json"
+
+    if([IO.File]::Exists($settingsFile))
+    {
+        $definitionValues = Get-Content $settingsFile | ConvertFrom-Json
+
+        $obj | Add-Member Noteproperty -Name "definitionValues" -Value $definitionValues -Force  
+    }
+    $obj
 }
 
 #endregion

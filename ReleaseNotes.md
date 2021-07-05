@@ -1,5 +1,12 @@
 # Release Notes
 
+## 3.1.5 - 2021-07-06
+
+**Fixes**
+
+* Fixed rushed update for [Issue 18](https://github.com/Micke-K/IntuneManagement/issues/18) 
+* Fixed bug in Compare module
+
 ## 3.1.4 - 2021-07-06
 
 **Fixes**
