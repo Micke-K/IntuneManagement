@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.0.0'
+    '1.0.1'
 }
 
 function Invoke-InitializeModule
@@ -225,24 +225,12 @@ function Invoke-WordPostProcessItems
     $script:doc.TablesOfFigures | ForEach-Object -Process { $_.Update() | Out-Null }
 
     $fileName = $global:txtWordDocumentName.Text
-
-    [Environment]::SetEnvironmentVariable("Date",(Get-Date).ToString("yyyy-MM-dd"),[System.EnvironmentVariableTarget]::Process)
-    [Environment]::SetEnvironmentVariable("Organization",$global:Organization.displayName,[System.EnvironmentVariableTarget]::Process)
-    
     if(-not $fileName)
     {
         $fileName = "%MyDocuments%\%Organization%-%Date%.docx"
     }
-    $fileName = [Environment]::ExpandEnvironmentVariables($fileName)
 
-    foreach($tmpFolder in ([System.Enum]::GetNames([System.Environment+SpecialFolder])))
-    {
-        $fileName = $fileName -replace "%$($tmpFolder)%",([Environment]::GetFolderPath($tmpFolder))
-    }
-
-    [Environment]::SetEnvironmentVariable("Date",$null,[System.EnvironmentVariableTarget]::Process)
-    [Environment]::SetEnvironmentVariable("Organization",$null,[System.EnvironmentVariableTarget]::Process)
-    $fileName
+    $fileName = Expand-FileName $fileName
 
     $format = [Microsoft.Office.Interop.Word.WdSaveFormat]::wdFormatDocumentDefault
 

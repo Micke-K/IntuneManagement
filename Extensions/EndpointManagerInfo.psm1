@@ -10,7 +10,7 @@ This module is for the Endpoint Info View. It shows read-only objects in Intune
 #>
 function Get-ModuleVersion
 {
-    '3.1.1'
+    '3.1.2'
 }
 
 function Invoke-InitializeModule
@@ -100,6 +100,6 @@ function Invoke-EMInfoAuthenticateToMSAL
     $usr = (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser"))
     if($usr)
     {
-        & $global:msalAuthenticator.Login -Account $usr -Permissions $global:EMInfoViewObject.Permissions
+        & $global:msalAuthenticator.Login -Account $usr
     }
 }

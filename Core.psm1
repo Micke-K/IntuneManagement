@@ -12,7 +12,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.0.1'
+    '3.1.2'
 }
 
 function Start-CoreApp
@@ -363,6 +363,24 @@ function Get-XamlObject
     }
 }
 
+function Invoke-RegisterName
+{
+    param($parent, $name, $registerTo)
+
+    try
+    {
+        $control = $parent.FindName($name)
+        if($control)
+        {
+            $registerTo.RegisterName($name, $control)
+        }
+    }
+    catch    
+    {
+        Write-LogError "Failed to register $name" $_.Exception
+    }
+}
+
 #endregion
 
 #region Dialogs
@@ -427,6 +445,65 @@ function Show-AboutDialog
     Add-XamlEvent $script:dlgAbout "linkSource" "Add_RequestNavigate" ({ [System.Diagnostics.Process]::Start($_.Uri.AbsoluteUri); $_.Handled = $true })
 
     Show-ModalForm "About" $script:dlgAbout 
+}
+
+function Show-UpdatesDialog
+{
+    $script:dlgUpdates = Get-XamlObject ($global:AppRootFolder + "\Xaml\UpdatesDialog.xaml")
+    if(-not $script:dlgUpdates) { return }
+
+    Write-Status "Getting Release Notes Information"
+
+    Add-XamlEvent $script:dlgUpdates "btnClose" "add_click" {
+        $script:dlgUpdates = $null
+        Show-ModalObject 
+    }    
+
+    #Get-Module | Where Name -eq "Core"
+    $fileContent = Get-Content -Raw -Path ($global:AppRootFolder + "\ReleaseNotes.md")
+    try
+    {
+        $tmp = $fileContent.Replace("`r`n","`n")
+        $mystring = ("blob $($tmp.Length)`0" + $tmp)
+        $mystream = [IO.MemoryStream]::new([byte[]][char[]]$mystring)
+        $curHash = Get-FileHash -InputStream $mystream -Algorithm SHA1
+    }
+    finally
+    {
+        if($mystream) { $mystream.Dispose() }
+    }
+
+    <#
+    $latest = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/releases/latest"
+    if($latest)
+    {
+
+    }
+    #>
+
+    $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/contents/ReleaseNotes.md"
+    if($content)
+    {
+        $txt = [System.Text.Encoding]::ASCII.GetString(([System.Convert]::FromBase64String($content.content)))
+        Set-XamlProperty $script:dlgUpdates "txtReleaseNotes" "Text" $txt
+
+        if($content.sha -ne $curHash.Hash)
+        {
+            # ReleaseNotes.md not matching
+            Set-XamlProperty $script:dlgUpdates "tabLocalReleaseNotes" "Visibility" "Visible"
+            Set-XamlProperty $script:dlgUpdates "txtReleaseNotes" "Text" $fileContent
+            Set-XamlProperty $script:dlgUpdates "txtReleaseNotesMatch" "Visibility" "Collapsed"
+        }
+        else
+        {
+            Set-XamlProperty $script:dlgUpdates "txtReleaseNotesNoMatch" "Visibility" "Collapsed"
+            Set-XamlProperty $script:dlgUpdates "tabLocalReleaseNotes" "Visibility" "Collapsed"
+        }
+    }
+
+    Write-Status ""
+
+    Show-ModalForm "Release Notes" $script:dlgUpdates -HideButtons
 }
 
 function Show-InputDialog
@@ -664,6 +741,9 @@ function Get-Folder
 function Remove-Property 
 {
     param($obj, $prop)
+
+    if(-not $prop) { return }
+
     if(($obj | GM -MemberType NoteProperty -Name $prop))
     {
         Write-LogDebug "Remove property $prop"
@@ -692,6 +772,28 @@ function Get-GridCheckboxColumn
     $column        
 }
 
+function Expand-FileName
+{
+    param($fileName)
+
+    [Environment]::SetEnvironmentVariable("Date",(Get-Date).ToString("yyyy-MM-dd"),[System.EnvironmentVariableTarget]::Process)
+    [Environment]::SetEnvironmentVariable("DateTime",(Get-Date).ToString("yyyyMMdd-HHmm"),[System.EnvironmentVariableTarget]::Process)
+    [Environment]::SetEnvironmentVariable("Organization",$global:Organization.displayName,[System.EnvironmentVariableTarget]::Process)
+    
+    $fileName = [Environment]::ExpandEnvironmentVariables($fileName)
+
+    foreach($tmpFolder in ([System.Enum]::GetNames([System.Environment+SpecialFolder])))
+    {
+        $fileName = $fileName -replace "%$($tmpFolder)%",([Environment]::GetFolderPath($tmpFolder))
+    }
+
+    [Environment]::SetEnvironmentVariable("Date",$null,[System.EnvironmentVariableTarget]::Process)
+    [Environment]::SetEnvironmentVariable("DateTime",$null,[System.EnvironmentVariableTarget]::Process)
+    [Environment]::SetEnvironmentVariable("Organization",$null,[System.EnvironmentVariableTarget]::Process)
+    
+    $fileName
+}
+
 #endregion
 
 #region Reg functions
@@ -708,7 +810,7 @@ function Save-Setting
     $regPath = Get-RegPath $SubPath
     if((Test-Path $regPath) -eq  $false)
     {
-        New-Item (Get-RegPath $SubPath) -ErrorAction SilentlyContinue
+        New-Item (Get-RegPath $SubPath) -Force -ErrorAction SilentlyContinue | Out-Null
     }
     New-ItemProperty -Path $regPath -Name $Key -Value $Value -Type $Type -Force | Out-Null
 }
@@ -1201,6 +1303,8 @@ function Show-View
         & $global:currentViewObject.ViewInfo.Deactivating
     }    
 
+    $global:currentViewObject = $viewObject
+
     $viewItems = ?: ($viewObject.ViewInfo.Sort -ne $false) ($viewObject.ViewItems | Sort-Object -Property Title) ($viewObject.ViewItems)
 
     $lblMenuTitle.Content = $viewObject.ViewInfo.Title
@@ -1226,8 +1330,6 @@ function Show-View
     {
         $grdViewPanel.Children.Add($viewObject.ViewInfo.ViewPanel) | Out-Null
     }
-
-    $global:currentViewObject = $viewObject
 
     Set-MainTitle
 
@@ -1286,6 +1388,7 @@ function Get-MainWindow
 
     # ToDo: Convert to a list for data binding
     Add-XamlEvent $window "mnuSettings" "Add_Click" -scriptBlock ([scriptblock]{ Show-SettingsForm })
+    Add-XamlEvent $window "mnuUpdates" "Add_Click" -scriptBlock ([scriptblock]{ Show-UpdatesDialog })
     Add-XamlEvent $window "mnuAbout" "Add_Click" -scriptBlock ([scriptblock]{ Show-AboutDialog })
     Add-XamlEvent $window "mnuExit" "Add_Click" -scriptBlock ([scriptblock]{ 
         if([System.Windows.MessageBox]::Show("Are you sure you want to exit?", "Exit?", "YesNo", "Question") -eq "Yes")

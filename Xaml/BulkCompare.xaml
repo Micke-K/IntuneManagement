@@ -1,0 +1,79 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" Grid.IsSharedSizeScope='True'>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <Grid Name="grdImportProperties">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="0,0,5,0">
+            <Label Content="Compare object" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the objects to compare e.g. compare exported files with existing objects or two existing objects based on name" />
+        </StackPanel>
+        <ComboBox Name="cbCompareProvider" Margin="0,5,0,0" MinWidth="250" Grid.Row='1' Grid.Column="1" HorizontalAlignment="Left" 
+                                DisplayMemberPath="Name" SelectedValuePath="Value"  />
+
+    </Grid>
+
+    <ContentControl Name="ccContentProviderOptions" Grid.Row="1" Grid.ColumnSpan="2" />
+
+    <Grid Grid.Row='2' VerticalAlignment="Stretch" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='0'>
+            <Label Content="Save as" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specifies how the export csv should be saved. One file per ObjectType or one file for all objects." />
+        </StackPanel>
+        <ComboBox Name="cbCompareSave" Margin="0,5,0,0" MinWidth="250" Grid.Row='0' Grid.Column="1" HorizontalAlignment="Left" 
+                    DisplayMemberPath="Name" SelectedValuePath="Value"  />    
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='1' >
+            <Label Content="Comparison Type" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify how objects should be compared" />
+        </StackPanel>
+        <ComboBox Name="cbCompareType" Margin="0,5,0,0" MinWidth="250" Grid.Row='1'  Grid.Column="1" HorizontalAlignment="Left" 
+                                DisplayMemberPath="Name" SelectedValuePath="Value"  />
+
+        <Grid Margin="0,0,5,0" Grid.Row='2' >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>                
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Objects to compare" />
+                <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Select the object types that should be compared" />
+            </StackPanel>
+        </Grid>
+    
+        <DataGrid Name="dgObjectsToCompare" Margin="0,5,0,5" Grid.Row='2' Grid.Column='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" />
+
+    </Grid>
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row='3' Grid.ColumnSpan='2' >
+        <Button Name="btnStartCompare" Content="Compare" Width='100' Margin="5,0,0,0" />
+        <Button Name="btnClose" Content="Close" Width='100' Margin="5,0,0,0" />
+    </StackPanel>                
+
+</Grid >

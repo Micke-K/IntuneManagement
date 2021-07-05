@@ -1,0 +1,27 @@
+<Grid Name="grdImportProperties" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <StackPanel Orientation="Horizontal" Margin="0,0,5,0" >
+        <Label Content="Export root" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="The root folder where exported files are stored. This sould be the Company Name folder if it was included in the export." />
+    </StackPanel>
+    <Grid Grid.Column='1' Grid.Row='0' Margin="0,5,5,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />  
+            <ColumnDefinition Width="5" />                              
+            <ColumnDefinition Width="Auto" />                                
+        </Grid.ColumnDefinitions>                 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>                
+        </Grid.RowDefinitions>
+        <TextBox Text="" Name="txtExportPath" />
+        <Button Grid.Column="2" Name="browseExportPath"  Padding="5,2,5,2" Width="50" ToolTip="Browse for folder">...</Button>
+    </Grid>
+</Grid>

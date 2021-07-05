@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.0.1'
+    '1.0.2'
 }
 
 function Invoke-InitializeModule
@@ -124,7 +124,13 @@ function Get-ObjectDocumentation
 {
     param($documentationObj)
 
-    Write-Status "Get documentation info for $((Get-GraphObjectName $documentationObj.Object $documentationObj.ObjectType)) ($($documentationObj.ObjectType.Title))"
+    $additionalInfo = ""
+    if($documentationObj.Object.'@ObjectFromFile' -eq $true)
+    {
+        $additionalInfo = " - From File"
+    }
+
+    Write-Status "Get documentation info for $((Get-GraphObjectName $documentationObj.Object $documentationObj.ObjectType)) ($($documentationObj.ObjectType.Title))$additionalInfo"
 
     $status = $null
     $inputType = "Settings"    
@@ -225,24 +231,8 @@ function Get-ObjectDocumentation
     {
         $inputType = "Property"
         $processed = $true
-        <#
-        if([IO.File]::Exists(($global:AppRootFolder + "\Documentation\ObjectInfo\$($obj.'@OData.Type').json")))
-        {
-            # Process object based on OData type
-            $processed = Invoke-TranslateCustomProfileObject $obj "$($obj.'@OData.Type')"
-        }
-        elseif($objectType -and [IO.File]::Exists(($global:AppRootFolder + "\Documentation\ObjectInfo\#$($objectType.Id).json")))
-        {
-            # Process object based on Intune Object Type ($objectType)
-            # '#' is added to front of name to distinguish manually created files from generated files
-            $processed = Invoke-TranslateCustomProfileObject $obj "#$($objectType.Id)"
-        }
-        else
-        {
-            # Process objects based on generated Category Files and ObjectCategories.json
-            $processed = Invoke-TranslateProfileObject $obj
-        }
-        #>
+
+        
         $processed = Invoke-TranslateProfileObject $obj
 
         if($processed -eq $false) 
@@ -685,7 +675,7 @@ function Invoke-TranslateADMXObject
         $categoryObj = $script:admxCategories | Where { $definitionValue.definition.id -in ($_.definitions.id) }
         $category = $script:admxCategories.definitions | Where { $definitionValue.definition.id -in ($_.id) }
         # Get presentation values for the current settings (with presentation object included)
-        if($definitionValue.presentationValues -or $obj.'@CompareObject' -eq $true) #$definitionValue.'definition@odata.bind')
+        if($definitionValue.presentationValues -or $obj.'@ObjectFromFile' -eq $true) #$definitionValue.'definition@odata.bind')
         {
             # Documenting exported json
             #$presentationValues = (Invoke-GraphRequest -Url "$($definitionValue.'definition@odata.bind')/presentations?`$expand=presentation"  -ODataMetadata "minimal").value
@@ -1039,7 +1029,7 @@ function Invoke-TranslateIntentObject
     foreach($category in ($categories | Sort -Property displayName))
     {
         # Get settings for the category. This will put them in the correct order...
-        if($obj.'@CompareObject' -ne $true)
+        if($obj.'@ObjectFromFile' -ne $true)
         {
             $settings = (Invoke-GraphRequest "/deviceManagement/intents/$($obj.Id)/categories/$($category.Id)/settings?`$expand=Microsoft.Graph.DeviceManagementComplexSettingInstance/Value" -ODataMetadata "minimal" @params).Value
         }
@@ -2662,7 +2652,9 @@ function Invoke-TranslateScheduledActionType
         foreach($actionConfig in $actionRule.scheduledActionConfigurations)
         {
             $notificationTemplate = $null
+            $notificationTemplateId = $null
             $additionalNotifications = $null
+            $additionalNotificationsList = $null
 
             if($actionConfig.actionType -eq "notification")
             {
@@ -2694,6 +2686,7 @@ function Invoke-TranslateScheduledActionType
                 if($actionConfig.notificationTemplateId -ne [Guid]::Empty)
                 {
                     $notificationTemplate = Get-LanguageString "ScheduledAction.Notification.selected"
+                    $notificationTemplateId = $actionConfig.notificationTemplateId
                 }
                 else
                 {
@@ -2703,6 +2696,7 @@ function Invoke-TranslateScheduledActionType
                 if($actionConfig.notificationMessageCCList.Count -gt 0)
                 {
                     $additionalNotifications = ((Get-LanguageString "ScheduledAction.Notification.numSelected") -f $actionConfig.notificationMessageCCList.Count)
+                    $additionalNotificationsList = $actionConfig.notificationMessageCCList -join ","
                 }
                 else
                 {
@@ -2710,11 +2704,26 @@ function Invoke-TranslateScheduledActionType
                 }
             }
 
+            $objClone = $actionConfig | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+
+            Remove-Property $objClone "Id"
+            foreach($prop in $objClone.PSObject.Properties)
+            {
+                if($prop.Name -like "*@odata*") 
+                { 
+                    Remove-Property $objClone $prop.Name    
+                }
+            }            
+
+            # ToDo: Resolve MessageTemplateId and EmailCCIds to actual object names
             $script:objectComplianceActionData += New-Object PSObject -Property @{
+                IdStr = ($objClone | ConvertTo-Json -Depth 10 -Compress)
                 Action = $actionType
                 Schedule = $schedule
                 MessageTemplate = $notificationTemplate
+                MessageTemplateId = $notificationTemplateId
                 EmailCC = $additionalNotifications
+                EmailCCIds = $additionalNotificationsList
                 Category=$category
                 RawJsonValue=($actionConfig | ConvertTo-Json -Depth 20 -Compress)
             }
@@ -3455,11 +3464,10 @@ function Show-DocumentationForm
             $tmpArr += $script:objectSettingsData | Select -Property $script:settingsProperties | ConvertTo-Csv -NoTypeInformation
         }
 
-        if($script:objectSettingsData.Count -gt 0)
+        if($script:applicabilityRules.Count -gt 0)
         {
             $tmpArr += $script:applicabilityRules | Select -Property Rule,Property,Value,Category | ConvertTo-Csv -NoTypeInformation
-        }        
-
+        }                
 
         if($script:objectComplianceActionData.Count -gt 0)
         {

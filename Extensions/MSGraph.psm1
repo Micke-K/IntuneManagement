@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.1.1'
+    '3.1.2'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -622,6 +622,7 @@ function Show-GraphExportForm
     Set-XamlProperty $script:exportForm "txtExportPath" "Text" (?? (Get-Setting "" "LastUsedRoot") (Get-SettingValue "RootFolder"))
     Set-XamlProperty $script:exportForm "chkAddObjectType" "IsChecked" (Get-SettingValue "AddObjectType")
     Set-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked" (Get-SettingValue "AddCompanyName")
+    Set-XamlProperty $script:exportForm "chkExportAssignments" "IsChecked" (Get-SettingValue "ExportAssignments")    
 
     Set-XamlProperty $script:exportForm "btnExportSelected" "IsEnabled" ($global:dgObjects.SelectedItem -ne $null)
     if(($global:dgObjects.ItemsSource | Where IsSelected -eq $true).Count -gt 0)
@@ -672,6 +673,7 @@ function Show-GraphBulkExportForm
 
     Set-XamlProperty $script:exportForm "txtExportPath" "Text" (?? (Get-Setting "" "LastUsedRoot") (Get-SettingValue "RootFolder"))
     Set-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked" (Get-SettingValue "AddCompanyName")
+    Set-XamlProperty $script:exportForm "chkExportAssignments" "IsChecked" (Get-SettingValue "ExportAssignments")    
 
     Add-XamlEvent $script:exportForm "browseExportPath" "add_click" ({
         $folder = Get-Folder (Get-XamlProperty $script:exportForm "txtExportPath" "Text") "Select root folder for export"
@@ -1147,11 +1149,20 @@ function Get-GraphFileObjects
     $fileArr = @()
     foreach($file in (Get-Item -path "$path\*.json" @params))
     {
+        if($ObjectType.LoadObject)
+        {
+            $graphObj  = & $ObjectType.LoadObject $file.FullName
+        }
+        else
+        {
+            $graphObj = (ConvertFrom-Json (Get-Content $file.FullName -Raw))
+        }
+
         $obj = New-Object PSObject -Property @{
                 FileName = $file.Name
                 FileInfo = $file
                 Selected = $SelectedStatus
-                Object = (ConvertFrom-Json (Get-Content $file.FullName -Raw))
+                Object = $graphObj
                 ObjectType = $ObjectType
         }
 
@@ -1818,13 +1829,7 @@ function Export-GraphObject
 
         if($chkExportAssignments.IsChecked -ne $true -and $obj.Assignments)
         {
-            ### ToDo: Fix full support for including Assignments. $extend=Assignments might not work
-            ### E.g. Check AutoPilot
-            Remove-Property $obj $Assignments
-        }
-        elseif($chkExportAssignments.IsChecked -eq $true -and -not $obj.Assignments)
-        {
-
+            Remove-Property $obj "Assignments"
         }
 
         $obj | ConvertTo-Json -Depth 10 | Out-File ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$((Get-GraphObjectName $obj $objectType)).json")))

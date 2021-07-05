@@ -1,5 +1,27 @@
 # Release Notes
 
+## 3.1.3 - 2021-07-05
+
+**New features**
+
+- Bulk Compare
+  - Compare with exported files
+  - Compare with existing objects based on name patterns
+- Bulk Copy 
+  - Copy existing objects based on name patterns
+- Support for documenting PolicySets
+- Release Notes check - Check if there are any updates by comparing the local version of ReleaseNotes.md with the GitHub version 
+
+**Fixes**
+
+* Fixed bug that caused an exception when exporting objects with an assignment and the 'Export Assignment' option disabled. 
+
+  See [Issue 16](https://github.com/Micke-K/IntuneManagement/issues/16) for more info
+
+* Export Assignments in Bulk Export and Object Export did not get default value from Settings 
+
+* Fixed issue where the required permissions were not passed during authentication  
+
 ## 3.1.2 - 2021-06-20
 
 **New features**

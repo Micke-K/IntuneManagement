@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.0.1'
+    '3.0.2'
 }
 
 $global:msalAuthenticator = $null
@@ -520,9 +520,7 @@ function Connect-MSALUser
         [switch]
         $Interactive,
 
-        $Account,
-
-        $Permissions = @() # Addidional permissions required by the current view object
+        $Account
     )
 
     # No login during first time the app is started
@@ -563,7 +561,7 @@ function Connect-MSALUser
         $global:MSALToken = $null
     }
 
-    if((Get-SettingValue "UseDefaultPermissions") -eq $true)
+    if((Get-SettingValue "UseDefaultPermissions") -eq $true -or ($global:currentViewObject.ViewInfo.Permissions | measure).Count -eq 0)
     {
         [string[]] $Scopes = "https://graph.microsoft.com/.default"
         $useDefaultPermissions = $true
@@ -582,11 +580,7 @@ function Connect-MSALUser
             $reqScopes += "RoleManagement.Read.Directory"
         }
 
-        if($Permissions.Count -gt 0)
-        {
-            $script:curViewPermissions = $Permissions
-        }
-        $reqScopes += $script:curViewPermissions
+        $script:curViewPermissions = $global:currentViewObject.ViewInfo.Permissions
 
         foreach($tmpScope in $script:curViewPermissions)
         {

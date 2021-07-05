@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.2'
+    '3.1.3'
 }
 
 function Invoke-InitializeModule
@@ -562,7 +562,7 @@ function Invoke-EMAuthenticateToMSAL
 {
     $global:EMViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547"
     Set-MSALCurrentApp $global:EMViewObject.AppInfo
-    & $global:msalAuthenticator.Login -Account (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser")) -Permissions $global:EMViewObject.Permissions
+    & $global:msalAuthenticator.Login -Account (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser"))
 }
 
 function Invoke-EMDeactivateView
@@ -1178,7 +1178,7 @@ function Start-PostListAppProtection
     param($objList, $objectType)
 
     # App Configurations for Managed Apps are included in App Protections e.g. the /deviceAppManagement/managedAppPolicies API
-    # For some reason, the some $filter options is not supported to filter out these objects
+    # For some reason, the $filter option is not supported to filter out these objects
     # e.g. not isof(...) to excluded the type, not startsWith(id, 'A_') to exlude based on Id
     # These filters generates a request error so fiter them out manually in this function instead
     # The portal is probably doing the same thing since these are included in the return but not in the UI

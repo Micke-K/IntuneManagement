@@ -26,7 +26,29 @@ Objects can be compared based on property values or documented values.
 
 The property value method is a quick way to compare objects but it will only show the names and values of the native Intune object. This is not a good comparison method for Settings objects since they have all the settings in one property.
 
-The documentation method is a bit slower but will show the values as they are stated in the Intune portal. This is the recommended way to compare objects but note that this is only supported on object types that supports documentation.   
+The documentation method is a bit slower but will show the values as they are stated in the Intune portal. This is the recommended way to compare objects but note that this is only supported on object types that supports documentation. 
+
+Bulk compare is supported. This can be performed in two ways:
+
+* **Export File** - This will read each exported file and compare it with the existing object
+
+  The result file will be stored in the exported folder structure. Either in the Object Type folder or the parent folder depending on the Save as setting. 
+
+  **Note:** This cannot be used with files exported from a different environment since it used the Id as identifier
+
+* **Named Objects** - Compare file based on patterns
+
+  This can be used in where a pattern is used separate objects between different environments e.g. [Test] Policy 1 vs [Prod] Policy 1.
+
+  Output files are by default stored in the My Documents folder.      
+
+The output CSV can either be one file for ALL objects or one file for each Object Type.   
+
+## Bulk Copy
+
+Bulk copy can be used to clone objects based on a name pattern. This can be used in the same scenario as Bulk Compare where the object names includes an environment identifier. The application will identify all objects matching the source pattern and copy each object with a new name matching the 'Copy object name pattern'. The object will not be copied if it detects that an object already exists with the new name.
+
+**Note:** Assignments will NOT be copied. 
 
 ## Change log
 

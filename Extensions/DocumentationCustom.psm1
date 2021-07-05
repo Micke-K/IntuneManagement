@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.0.0'
+    '1.0.1'
 }
 
 function Invoke-InitializeModule
@@ -68,7 +68,14 @@ function Invoke-CDDocumentObject
         return [PSCustomObject]@{
             Properties = @("Name","Value","Category","SubCategory")
         }
-    }   
+    }
+    elseif($type -eq '#microsoft.graph.policySet')
+    {
+        Invoke-CDDocumentPolicySet $documentationObj
+        return [PSCustomObject]@{
+            Properties = @("Name","Value","Category","SubCategory")
+        }
+    }
 }
 
 function Get-CDAllManagedApps
@@ -2041,3 +2048,101 @@ function Invoke-CDDocumentConditionalAccess
         })
     }    
 }
+
+#region Document Policy Sets
+function Invoke-CDDocumentPolicySet
+{
+    param($documentationObj)
+
+    $obj = $documentationObj.Object
+    $objectType = $documentationObj.ObjectType
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+    
+    ###################################################
+    # Basic info
+    ###################################################
+
+    Add-BasicDefaultValues $obj $objectType
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "SettingDetails.appConfiguration")
+    
+
+    ###################################################
+    # Basic info
+    ###################################################
+
+    $addedSettings = @()
+
+    $policySetSettings = (
+        [PSCustomObject]@{
+            Types = @(
+                @('#microsoft.graph.mobileAppPolicySetItem','appTitle'),
+                @('#microsoft.graph.targetedManagedAppConfigurationPolicySetItem','appConfigurationTitle'),
+                @('#microsoft.graph.managedAppProtectionPolicySetItem','appProtectionTitle'),
+                @('#microsoft.graph.iosLobAppProvisioningConfigurationPolicySetItem','iOSAppProvisioningTitle'))
+            Category = (Get-LanguageString "PolicySet.appManagement")
+        },
+        [PSCustomObject]@{
+            Types = @(
+                @('#microsoft.graph.deviceConfigurationPolicySetItem','deviceConfigurationTitle'),
+                @('#microsoft.graph.deviceCompliancePolicyPolicySetItem','deviceComplianceTitle'),
+                @('#microsoft.graph.deviceManagementScriptPolicySetItem','powershellScriptTitle'))
+            Category = (Get-LanguageString "PolicySet.deviceManagement")
+        }, 
+        [PSCustomObject]@{
+            Types = @(
+                @('#microsoft.graph.enrollmentRestrictionsConfigurationPolicySetItem','deviceTypeRestrictionTitle'),
+                @('#microsoft.graph.windowsAutopilotDeploymentProfilePolicySetItem','windowsAutopilotDeploymentProfileTitle'),
+                @('#microsoft.graph.windows10EnrollmentCompletionPageConfigurationPolicySetItem','enrollmentStatusSettingTitle'))
+            Category = (Get-LanguageString "PolicySet.deviceEnrollment")
+        }
+    )
+
+    foreach($policySettingType in $policySetSettings)
+    {
+        foreach($subType in $policySettingType.Types)
+        {
+            foreach($setting in ($obj.items | where '@OData.Type' -eq $subType[0]))
+            {
+                if($setting.status -eq "error")
+                {
+                    Write-Log "Skipping missing $($subType[0]) type with id $($setting.id). Error code: $($setting.errorCode)"
+                    continue
+                }
+
+                Add-CustomSettingObject ([PSCustomObject]@{
+                    Name = $setting.displayName
+                    Value = (Get-CDDocumentPolicySetValue $setting)
+                    EntityKey = $setting.id
+                    Category = $policySettingType.Category
+                    SubCategory = (Get-LanguageString "PolicySet.$($subType[1])")
+                })
+            }
+        }
+    }
+}
+
+function Get-CDDocumentPolicySetValue
+{
+    param($policySetItem)
+
+    if($policySetItem.'@OData.Type' -eq '#microsoft.graph.enrollmentRestrictionsConfigurationPolicySetItem' -or 
+        $policySetItem.'@OData.Type' -eq '#microsoft.graph.windows10EnrollmentCompletionPageConfigurationPolicySetItem')
+    {
+        return $policySetItem.Priority
+    }
+    elseif($policySetItem.'@OData.Type' -eq '#microsoft.graph.windowsAutopilotDeploymentProfilePolicySetItem')
+    {
+        if($policySetItem.itemType -eq '#microsoft.graph.azureADWindowsAutopilotDeploymentProfile')
+        {
+            return (Get-LanguageString "Autopilot.DirectoryService.azureAD")
+        }
+        elseif($policySetItem.itemType -eq '#microsoft.graph.activeDirectoryWindowsAutopilotDeploymentProfile')
+        {
+            return (Get-LanguageString "Autopilot.DirectoryService.activeDirectoryAD")
+        }
+    }
+    # ToDo: Add support for all PolicySet items 
+}
+#endregion
