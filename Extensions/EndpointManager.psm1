@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.3'
+    '3.1.4'
 }
 
 function Invoke-InitializeModule
@@ -1436,22 +1436,11 @@ function Start-LoadAdministrativeTemplate
     if(-not $fileName) { return $null }
 
     $fi = [IO.FileInfo]$fileName
-    $obj = Get-Content $global:txtCompareFile.Text | ConvertFrom-Json 
+    if($fi.Exists -eq $false) { return }
 
-    if($obj.definitionValues)
-    {
-        return $obj
-    }
+    $obj = Get-Content $fi.FullName | ConvertFrom-Json 
 
-    $settingsFile = $fi.DirectoryName + "\" + $fi.BaseName + "_Settings.json"
-
-    if([IO.File]::Exists($settingsFile))
-    {
-        $definitionValues = Get-Content $settingsFile | ConvertFrom-Json
-
-        $obj | Add-Member Noteproperty -Name "definitionValues" -Value $definitionValues -Force  
-    }
-    $obj
+    return $obj    
 }
 
 #endregion

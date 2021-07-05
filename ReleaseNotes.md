@@ -1,5 +1,13 @@
 # Release Notes
 
+## 3.1.3 - 2021-07-06
+
+**Fixes**
+
+* Fixed issue importing Administrative Templates
+
+  See [Issue 18](https://github.com/Micke-K/IntuneManagement/issues/18) for more info
+
 ## 3.1.3 - 2021-07-05
 
 **New features**
