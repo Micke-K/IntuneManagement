@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.0.1'
+    '1.0.2'
 }
 
 function Invoke-InitializeModule
@@ -76,6 +76,16 @@ function Invoke-CDDocumentObject
             Properties = @("Name","Value","Category","SubCategory")
         }
     }
+    elseif($type -eq '#microsoft.graph.windows10CustomConfiguration' -or 
+        $type -eq '#microsoft.graph.androidForWorkCustomConfiguration' -or
+        $type -eq '#microsoft.graph.androidWorkProfileCustomConfiguration' -or
+        $type -eq '#microsoft.graph.androidCustomConfiguration')
+    {
+        Invoke-CDDocumentCustomOMAUri $documentationObj
+        return [PSCustomObject]@{
+            Properties = @("Name","Value","Category","SubCategory")
+        }
+    }    
 }
 
 function Get-CDAllManagedApps
@@ -2069,7 +2079,7 @@ function Invoke-CDDocumentPolicySet
     
 
     ###################################################
-    # Basic info
+    # Settings
     ###################################################
 
     $addedSettings = @()
@@ -2144,5 +2154,116 @@ function Get-CDDocumentPolicySetValue
         }
     }
     # ToDo: Add support for all PolicySet items 
+}
+
+function Invoke-CDDocumentCustomOMAUri
+{
+    param($documentationObj)
+
+    $obj = $documentationObj.Object
+    $objectType = $documentationObj.ObjectType
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+    
+    ###################################################
+    # Basic info
+    ###################################################
+
+    Add-BasicDefaultValues $obj $objectType
+    #Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "PolicyType.custom")
+
+    $platformId = Get-ObjectPlatformFromType $obj
+    Add-BasicPropertyValue (Get-LanguageString "Inputs.platformLabel") (Get-LanguageString "Platform.$platformId")
+
+    ###################################################
+    # Settings
+    ###################################################
+
+    $addedSettings = @()
+    $category = Get-LanguageString "SettingDetails.customPolicyOMAURISettingsName"
+
+    foreach($setting in $obj.omaSettings)
+    {
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = (Get-LanguageString "TableHeaders.name")
+            Value =  $setting.displayName
+            EntityKey = "displayName_$($setting.omaUri)"
+            Category = $category
+            SubCategory = $setting.displayName
+        })
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = (Get-LanguageString "TableHeaders.description")
+            Value =  $setting.description
+            EntityKey = "description_$($setting.omaUri)"
+            Category = $category
+            SubCategory = $setting.displayName
+        })
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = (Get-LanguageString "SettingDetails.oMAURIName")
+            Value =  $setting.omaUri
+            EntityKey = "omaUri_$($setting.omaUri)"
+            Category = $category
+            SubCategory = $setting.displayName
+        })
+
+        if($setting.'@OData.Type' -eq '#microsoft.graph.omaSettingString')
+        {
+            $value = (Get-LanguageString "SettingDetails.stringName")
+        }
+        elseif($setting.'@OData.Type' -eq '#microsoft.graph.omaSettingBase64')
+        {
+            $value = (Get-LanguageString "SettingDetails.base64Name")
+        }
+        elseif($setting.'@OData.Type' -eq '#microsoft.graph.omaSettingBoolean')
+        {
+            $value = (Get-LanguageString "SettingDetails.booleanName")
+        }
+        elseif($setting.'@OData.Type' -eq '#microsoft.graph.omaSettingDateTime')
+        {
+            $value = (Get-LanguageString "SettingDetails.dateTimeName")
+        }
+        elseif($setting.'@OData.Type' -eq '#microsoft.graph.omaSettingFloatingPoint')
+        {
+            $value = (Get-LanguageString "SettingDetails.floatingPointName")
+        }
+        elseif($setting.'@OData.Type' -eq '#microsoft.graph.omaSettingInteger')
+        {
+            $value = (Get-LanguageString "SettingDetails.integerName")
+        }
+        elseif($setting.'@OData.Type' -eq '#microsoft.graph.omaSettingStringXml')
+        {
+            $value = (Get-LanguageString "SettingDetails.stringXMLName")
+        }
+        else
+        {
+            $value = $null
+        }
+
+        if($value)
+        {
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = (Get-LanguageString "SettingDetails.dataTypeName")
+                Value =  $value
+                EntityKey = "type_$($setting.omaUri)"
+                Category = $category
+                SubCategory = $setting.displayName
+            })
+        }
+
+        if($setting.isEncrypted -ne $true)
+        {
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = (Get-LanguageString "SettingDetails.valueName")
+                Value =  $setting.value
+                EntityKey = "value_$($setting.omaUri)"
+                Category = $category
+                SubCategory = $setting.displayName
+            })
+        }        
+    }
+
 }
 #endregion

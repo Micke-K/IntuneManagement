@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.0.2'
+    '1.0.3'
 }
 
 function Invoke-InitializeModule
@@ -681,9 +681,13 @@ function Invoke-TranslateADMXObject
             #$presentationValues = (Invoke-GraphRequest -Url "$($definitionValue.'definition@odata.bind')/presentations?`$expand=presentation"  -ODataMetadata "minimal").value
             $presentationValues = $definitionValue.presentationValues
         }
+        elseif($definitionValue.id)
+        {
+            $presentationValues = (Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations/$($obj.id)/definitionValues/$($definitionValue.id)/presentationValues?`$expand=presentation"  -ODataMetadata "minimal" @params).value                
+        }
         else
         {
-            $presentationValues = (Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations/$($obj.id)/definitionValues/$($definitionValue.id)/presentationValues?`$expand=presentation"  -ODataMetadata "minimal" @params).value
+            $presentationValues = $null    
         }
 
         $value = $null
@@ -3674,7 +3678,9 @@ function Invoke-CSVProcessItem
             $itemsToExport = $itemsToExport | Select Name,Value | ConvertTo-Csv -NoTypeInformation
         }
 
-        $itemsToExport | Out-File ($folder + "\$($objName).csv") -Encoding UTF8 -Force
+        $fileName = $folder + "\$((Remove-InvalidFileNameChars $objName)).csv"
+        Write-Log "Save documentation to $fileName"
+        $itemsToExport | Out-File -LiteralPath $fileName -Encoding UTF8 -Force
     }
     catch 
     {

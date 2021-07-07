@@ -11,7 +11,7 @@ Objects can be compared based on Properties or Documentatation info.
 
 function Get-ModuleVersion
 {
-    '1.0.3'
+    '1.0.4'
 }
 
 function Invoke-InitializeModule
@@ -631,7 +631,7 @@ function Save-BulkCompareResults
     if($compResultValues.Count -gt 0)
     {
         Write-Log "Save bulk comare results to $file"
-        $compResultValues | Select -Property $props | ConvertTo-Csv -NoTypeInformation | Out-File $file -Force -Encoding UTF8
+        $compResultValues | Select -Property $props | ConvertTo-Csv -NoTypeInformation | Out-File -LiteralPath $file -Force -Encoding UTF8
     } 
 }
 
@@ -677,7 +677,7 @@ function Show-CompareForm
         if($sf.ShowDialog() -eq "OK")
         {
             $csvInfo = Get-CompareCsvInfo $global:dgCompareInfo.ItemsSource $script:cmpForm.Tag
-            $csvInfo | Out-File $sf.FileName -Force -Encoding UTF8
+            $csvInfo | Out-File -LiteralPath $sf.FileName -Force -Encoding UTF8
         }    
     }
 
@@ -789,7 +789,7 @@ function Start-CompareExportObject
         }
         else
         {
-            $compareObj = Get-Content $global:txtCompareFile.Text | ConvertFrom-Json 
+            $compareObj = Get-Content -LiteralPath $global:txtCompareFile.Text | ConvertFrom-Json 
         }
     }
     catch

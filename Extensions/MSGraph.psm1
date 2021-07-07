@@ -124,6 +124,13 @@ function Get-GraphAppInfo
     $appObj
 }
 
+function Invoke-GraphAuthenticationUpdated
+{
+    $global:MigrationTableCache = $null
+    $global:LoadedDependencyObjects = $null
+    $global:migFileObj = $null
+}
+
 function Invoke-GraphRequest
 {
     param (
@@ -661,7 +668,7 @@ function Show-GraphExportForm
         }
     }
 
-    Add-GraphExportExtensions $script:exportForm 1
+    Add-GraphExportExtensions $script:exportForm 1 $global:curObjectType
     
     Show-ModalForm "Export $($global:curObjectType.Title) objects" $script:exportForm -HideButtons
 }
@@ -695,9 +702,9 @@ function Show-GraphBulkExportForm
             Selected = (?? $objType.BulkExport $true)
             ObjectType = $objType
         }
-    }
 
-    Add-GraphExportExtensions $script:exportForm 0
+        Add-GraphExportExtensions $script:exportForm 0 $objType
+    }    
 
     $column = Get-GridCheckboxColumn "Selected"
     $global:dgObjectsToExport.Columns.Add($column)
@@ -979,25 +986,29 @@ function Show-GraphBulkImportForm
 
 function Add-GraphExportExtensions
 {
-    param($form, $buttonIndex = 0)
-    
-    if($global:curObjectType.ExportExtension)
+    param($form, $buttonIndex = 0, $objectTypes)
+       
+    #$global:curObjectType
+    foreach($objectType in $objectTypes)
     {
-        $grid = $form.FindName("grdExportProperties")
-        $extraProperties = & $global:curObjectType.ExportExtension $global:curObjectType.ExportExtension $form "spExportSubMenu" 1
-        for($i=0;($i + 1) -lt (($extraProperties) | measure).Count;$i ++) 
-        {            
-            $rd = [System.Windows.Controls.RowDefinition]::new()
-            $rd.Height = [double]::NaN            
-            $grid.RowDefinitions.Add($rd)
-            $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
-            $grid.Children.Add($extraProperties[$i])
+        if($objectType.ExportExtension)
+        {
+            $grid = $form.FindName("grdExportProperties")
+            $extraProperties = & $objectType.ExportExtension $form "spExportSubMenu" 1
+            for($i=0;($i + 1) -lt (($extraProperties) | measure).Count;$i ++) 
+            {            
+                $rd = [System.Windows.Controls.RowDefinition]::new()
+                $rd.Height = [double]::NaN            
+                $grid.RowDefinitions.Add($rd)
+                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
+                $grid.Children.Add($extraProperties[$i])
 
-            $i++            
-            $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
-            $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
-            $grid.Children.Add($extraProperties[$i])
-            
+                $i++            
+                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
+                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
+                $grid.Children.Add($extraProperties[$i])
+                
+            }
         }
     }    
 }
@@ -1155,7 +1166,7 @@ function Get-GraphFileObjects
         }
         else
         {
-            $graphObj = (ConvertFrom-Json (Get-Content $file.FullName -Raw))
+            $graphObj = (ConvertFrom-Json (Get-Content -LiteralPath $file.FullName -Raw))
         }
 
         $obj = New-Object PSObject -Property @{
@@ -1470,6 +1481,11 @@ function Add-GraphMigrationObject
 
     $migFileName = Join-Path $path "MigrationTable.json"
 
+    if($global:migFileObj -and $global:migFileObj.TenantId -ne $global:organization.Id)
+    {
+        $global:migFileObj = $null
+    }
+
     if(-not $global:migFileObj)
     {
         if(-not ([IO.File]::Exists($migFileName)))
@@ -1572,14 +1588,14 @@ function Get-GraphMigrationObjectsFromFile
                     if($global:GraphMigrationTable)
                     {
                         $fi = [IO.FileInfo]$global:GraphMigrationTable
-                        $groupFi = [IO.FileInfo]($fi.DirectoryName + "\Groups\$($migObj.DisplayName).json")
+                        $groupFi = [IO.FileInfo]($fi.DirectoryName + "\Groups\$((Remove-InvalidFileNameChars $migObj.DisplayName)).json")
                     }
 
                     if($groupFi.Exists -eq $true)
                     {
                         # ToDo: Create group from Json (could be a dynamic group)
                         # Warn if synched group
-                        $groupObj = (Get-Content $groupFi.FullName) | ConvertFrom-Json 
+                        $groupObj = (Get-Content -LiteralPath $groupFi.FullName) | ConvertFrom-Json 
 
                         #isAssignableToRole - For Role assignment groupd.
                         $keepProps = @("displayName","description","mailEnabled","mailNickname","securityEnabled","membershipRule","groupTypes", "membershipRuleProcessingState")
@@ -1832,8 +1848,9 @@ function Export-GraphObject
             Remove-Property $obj "Assignments"
         }
 
-        $obj | ConvertTo-Json -Depth 10 | Out-File ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$((Get-GraphObjectName $obj $objectType)).json")))
-    
+        #$obj | ConvertTo-Json -Depth 10 | Out-File ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$((Get-GraphObjectName $obj $objectType)).json")))
+        $obj | ConvertTo-Json -Depth 10 | Out-File -LiteralPath ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$((Get-GraphObjectName $obj $objectType)).json")))
+        
         if($objectType.PostExportCommand)
         {
             & $objectType.PostExportCommand $obj $objectType $exportFolder

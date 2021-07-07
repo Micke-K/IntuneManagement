@@ -1,5 +1,29 @@
 # Release Notes
 
+## 3.1.6 - 2021-07-07
+
+**Fixes**
+
+* Fixed invalid file name characters - [Issue 19](https://github.com/Micke-K/IntuneManagement/issues/19)
+
+  * Added -LiteralPath to Get and Set-Content
+  * Save CSV in document
+  * Import/Export Administrative Template and Role Definitions 
+  * Saving the PowerShell script file
+  * Export with assignments for multiple profiles  
+
+* Added support for [ and ] in file names
+
+  **Note:** This can cause duplicate files if exporting to the same location as pre 3.1.6 export and the profile name contains [ or ]
+
+* Changed to custom documentation for Custom OMA-URI profiles  
+
+* Administrative Template now includes definitionValues in detailed view and export
+
+* Fixed exporting PowerShell script in Bulk export. Option was only available if PowerShell was active type.
+
+* Fixed issue with MigrationTable when exporting from two different environments without restart. The Group information was save to the same MigrationTable. 
+
 ## 3.1.5 - 2021-07-06
 
 **Fixes**

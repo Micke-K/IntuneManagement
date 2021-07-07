@@ -12,7 +12,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.1.2'
+    '3.1.3'
 }
 
 function Start-CoreApp
@@ -658,8 +658,7 @@ function Remove-InvalidFileNameChars
   $re = "[{0}]" -f [RegEx]::Escape(([IO.Path]::GetInvalidFileNameChars() -join ''))
 
   $Name = $Name -replace $re
-  $Name = $Name -replace "[]]", ""
-  $Name = $Name -replace "[[]", ""
+
 
   return $Name
 }

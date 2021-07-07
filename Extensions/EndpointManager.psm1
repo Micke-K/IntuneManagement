@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.5'
+    '3.1.6'
 }
 
 function Invoke-InitializeModule
@@ -249,6 +249,7 @@ function Invoke-InitializeModule
         Id = "AdministrativeTemplates"
         API = "/deviceManagement/groupPolicyConfigurations"
         ViewID = "IntuneGraphAPI"
+        PostGetCommand = { Start-PostGetAdministrativeTemplate @args }
         PostExportCommand = { Start-PostExportAdministrativeTemplate @args }
         PostCopyCommand = { Start-PostCopyAdministrativeTemplate @args }
         PostFileImportCommand = { Start-PostFileImportAdministrativeTemplate @args }
@@ -789,7 +790,8 @@ function Start-PostExportEndpointSecurity
 
     $settings = Invoke-GraphRequest -Url "$($objectType.API)/$($obj.id)/settings"
     $settingsJson = "{ `"settings`": $((ConvertTo-Json  $settings.value -Depth 10 ))`n}"
-    $settingsJson | Out-File "$path\$((Get-GraphObjectName $obj $objectType))_Settings.json" -Force
+    $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType)))_Settings.json"
+    $settingsJson | Out-File -LiteralPath $fileName -Force
 }
 
 function Start-PostFileImportEndpointSecurity
@@ -842,7 +844,7 @@ function Start-PostFileImportDeviceConfiguration
 
     if($obj.'@OData.Type' -like "#microsoft.graph.windows10GeneralConfiguration")
     {
-        $tmpObj = Get-Content $importFile | ConvertFrom-Json
+        $tmpObj = Get-Content -LiteralPath $importFile | ConvertFrom-Json
 
         if(($tmpObj.privacyAccessControls | measure).Count -gt 0)
         {
@@ -976,7 +978,7 @@ function Start-PostExportIntuneBranding
     {
         if($obj.$imgType.Value)
         {
-            $fileName = "$path\$((Remove-InvalidFileNameChars  (Get-GraphObjectName $obj $objectType)))_$imgType.jpg" 
+            $fileName = "$path\$((Get-GraphObjectName $obj $objectType))_$imgType.jpg" 
             [IO.File]::WriteAllBytes($fileName, [System.Convert]::FromBase64String($obj.$imgType.Value))
         }
     }
@@ -1095,7 +1097,7 @@ function Start-PostExportScripts
     {
         Write-Log "Export script $($obj.FileName)"
         $fileName = [IO.Path]::Combine($exportPath, $obj.FileName)
-        [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($obj.scriptContent)) | Out-File $fileName -Force
+        [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($obj.scriptContent)) | Out-File -LiteralPath $fileName -Force
     }
 }
 
@@ -1280,7 +1282,7 @@ function Start-PostFileImportApplications
 {
     param($obj, $objectType, $file)
 
-    $tmpObj = Get-Content $file | ConvertFrom-Json
+    $tmpObj = Get-Content -LiteralPath $file | ConvertFrom-Json
 
     if(-not $tmpObj.'@odata.type') { return }
 
@@ -1405,7 +1407,8 @@ function Start-PostExportAdministrativeTemplate
 
     # Collect and save all the settings of the Administrative Templates profile
     $settings = Get-GPOObjectSettings $obj
-    ConvertTo-Json $settings -Depth 10 | Out-File "$path\$((Get-GraphObjectName $obj $objectType))_Settings.json" -Force
+    $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType)))_Settings.json"
+    ConvertTo-Json $settings -Depth 10 | Out-File -LiteralPath $fileName -Force
 }
 
 function Start-PostCopyAdministrativeTemplate
@@ -1439,7 +1442,7 @@ function Start-LoadAdministrativeTemplate
     $fi = [IO.FileInfo]$fileName
     if($fi.Exists -eq $false) { return }
 
-    $obj = Get-Content $fi.FullName | ConvertFrom-Json 
+    $obj = Get-Content -LiteralPath $fi.FullName | ConvertFrom-Json 
 
     if($obj.definitionValues)
     {
@@ -1450,11 +1453,32 @@ function Start-LoadAdministrativeTemplate
 
     if([IO.File]::Exists($settingsFile))
     {
-        $definitionValues = Get-Content $settingsFile | ConvertFrom-Json
+        $definitionValues = Get-Content -LiteralPath $settingsFile | ConvertFrom-Json
 
         $obj | Add-Member Noteproperty -Name "definitionValues" -Value $definitionValues -Force  
     }
     $obj
+}
+
+function Start-PostGetAdministrativeTemplate
+{
+    param($obj, $objectType)
+
+    $definitionValues = Get-GPOObjectSettings $obj.Object
+    if($definitionValues)
+    {
+        $obj.Object | Add-Member Noteproperty -Name "definitionValues" -Value $definitionValues -Force 
+    }    
+    <#
+    # Leave for now. This only loads the configured defenition values and not the values specified.
+    # That would require enumerating each definition value which takes time. 
+    $definitionValues = (Invoke-GraphRequest "deviceManagement/groupPolicyConfigurations('$($obj.Id)')/definitionValues?`$expand=definition(`$select=id,classType,displayName,policyType,groupPolicyCategoryId)" -ODataMetadata "minimal").value
+
+    if($definitionValues)
+    {
+        $obj.Object | Add-Member Noteproperty -Name "definitionValues" -Value $definitionValues -Force 
+    }
+    #>
 }
 
 #endregion
@@ -1510,8 +1534,8 @@ function Start-PostExportRoleDefinitions
 {
     param($obj, $objectType, $path)
 
-    $fileName = "$path\$((Get-GraphObjectName $obj $objectType)).json"
-    $tmpObj = Get-Content $fileName | ConvertFrom-Json
+    $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType))).json"
+    $tmpObj = Get-Content -LiteralPath $fileName | ConvertFrom-Json
 
     if(($tmpObj.RoleAssignments | measure).Count -gt 0)
     {        
@@ -1530,7 +1554,7 @@ function Start-PostExportRoleDefinitions
         if($roleAssignmentsArr.Count -gt 0)
         {
             $tmpObj.RoleAssignments = $roleAssignmentsArr
-            $tmpObj | ConvertTo-Json -Depth 10 | Out-File $fileName
+            $tmpObj | ConvertTo-Json -Depth 10 | Out-File -LiteralPath $fileName
         }
     }
 }
@@ -1547,7 +1571,7 @@ function Start-PostFileImportRoleDefinitions
 {
     param($obj, $objectType, $file)
 
-    $tmpObj = Get-Content $file | ConvertFrom-Json
+    $tmpObj = Get-Content -LiteralPath $file | ConvertFrom-Json
 
     $loadedScopeTags = $global:LoadedDependencyObjects["ScopeTags"]
     if(($tmpObj.RoleAssignments | measure).Count -gt 0 -and ($loadedScopeTags | measure).Count -gt 0)
@@ -1743,9 +1767,12 @@ function Save-EMDefaultPolicy
             if($fileName)
             {
                 $oldFile = "$path\$((Get-GraphObjectName $obj $objectType)).json"
-                try { [IO.File]::Delete($oldFile) | Out-Null } Catch {}
-
-                $obj | ConvertTo-Json -Depth 10 | Out-File "$path\$fileName.json"
+                if([IO.File]::Exists($oldFile))
+                {
+                    # Clean up from old version of the script that used the wrong name for Default policies
+                    try { [IO.File]::Delete($oldFile) | Out-Null } Catch {}
+                }
+                $obj | ConvertTo-Json -Depth 10 | Out-File -LiteralPath "$path\$((Remove-InvalidFileNameChars $fileName)).json"
             }
         }
         catch {}
@@ -1769,7 +1796,7 @@ function Get-EMSettingsObject
             return
         }
 
-        (Get-Content $fiSettings.FullName) | ConvertFrom-Json
+        (Get-Content -LiteralPath $fiSettings.FullName) | ConvertFrom-Json
     }
     else
     {
@@ -1781,8 +1808,13 @@ function Add-EMAssignmentsToExportFile
 {
     param($obj, $objectType, $path, $Url = "")
 
-    $fileName = "$path\$((Get-GraphObjectName $obj $objectType)).json"
-    $tmpObj = Get-Content $fileName | ConvertFrom-Json
+    $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType))).json"
+    if([IO.File]::Exists($fileName) -eq $false)
+    {
+        Write-Log "File not found: $fileName. Could not add assignments" 3
+        return
+    }
+    $tmpObj = Get-Content -LiteralPath $fileName | ConvertFrom-Json
 
     if(-not $url)
     {
@@ -1799,7 +1831,7 @@ function Add-EMAssignmentsToExportFile
         {
             $tmpObj.Assignments = $assignments
         }
-        ConvertTo-Json $tmpObj -Depth 10 | Out-File $fileName -Force
+        ConvertTo-Json $tmpObj -Depth 10 | Out-File -LiteralPath $fileName -Force
     }
 }
 

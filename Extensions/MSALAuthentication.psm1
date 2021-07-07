@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.0.2'
+    '3.0.3'
 }
 
 $global:msalAuthenticator = $null
@@ -830,7 +830,8 @@ function Connect-MSALUser
         }
 
         Write-LogDebug "User, tenant or app has changed"
-        Get-MSALUserInfo        
+        Get-MSALUserInfo
+        Invoke-ModuleFunction "Invoke-GraphAuthenticationUpdated"
     }
 }
 
