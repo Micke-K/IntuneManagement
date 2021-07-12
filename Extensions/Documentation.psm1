@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.0.3'
+    '1.0.4'
 }
 
 function Invoke-InitializeModule
@@ -3281,14 +3281,8 @@ function Show-DocumentationForm
                 foreach($objectType in ($global:currentViewObject.ViewItems | Where GroupId -eq $objGroup.GroupId))
                 {                    
                     Write-Status "Get $($objectType.Title) objects"
-
-                    $url = $objectType.API
-                    if($objectType.QUERYLIST)
-                    {
-                        $url = "$($url.Trim())?$($objectType.QUERYLIST.Trim())"
-                    }
                 
-                    $graphObjects = @(Get-GraphObjects -Url $url -property $objectType.ViewProperties -objectType $objectType)
+                    $graphObjects = @(Get-GraphObjects -property $objectType.ViewProperties -objectType $objectType)
                 
                     if($objectType.PostListCommand)
                     {

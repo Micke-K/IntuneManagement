@@ -1,6 +1,6 @@
 function Get-ModuleVersion
 {
-    '1.0.0'
+    '1.0.1'
 }
 
 function Invoke-InitializeModule
@@ -105,14 +105,8 @@ function Start-BulkCopyObjects
         Write-Log "----------------------------------------------------------------"
         Write-Log "Copy $($item.ObjectType.Title) objects"
         Write-Log "----------------------------------------------------------------"
-
-        $url = $item.ObjectType.API
-        if($item.ObjectType.QUERYLIST)
-        {
-            $url = "$($url.Trim())?$($item.ObjectType.QUERYLIST.Trim())"
-        }
     
-        $graphObjects = @(Get-GraphObjects -Url $url -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
+        $graphObjects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
         
         $nameProp = ?? $item.ObjectType.NameProperty "displayName"
 

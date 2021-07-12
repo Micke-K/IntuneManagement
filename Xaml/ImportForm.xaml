@@ -13,6 +13,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
@@ -58,10 +59,33 @@
             <Label Content="Replace Dependecy IDs" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Replaces IDs of dependency objects e.g. App Config references Applications. Increases import time but makes sure objects are imported correctly. Note: References objects must exist!" />
         </StackPanel>
-        <CheckBox Grid.Column='1' Grid.Row='4' Name='chkReplaceDependencyIDs' VerticalAlignment="Center" IsChecked="true" />            
+        <CheckBox Grid.Column='1' Grid.Row='4' Name='chkReplaceDependencyIDs' VerticalAlignment="Center" IsChecked="true" />
+        
+        <StackPanel Orientation="Horizontal" Grid.Row='5' Margin="0,0,5,0" Name="lblUpdateExistsinObject" Visibility="Collapsed">
+            <Label Content="Update existing object" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Replaces IDs of dependency objects e.g. App Config references Applications. Increases import time but makes sure objects are imported correctly. Note: References objects must exist!" />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='5' Name='chkUpdateExistingObject' VerticalAlignment="Center" IsChecked="false" Visibility="Collapsed"/>            
+
+        <StackPanel Orientation="Horizontal" Grid.Row='5' Margin="0,0,5,0" Name="lblImportType" Visibility="Collapsed">
+                        <Label Content="Import Type" />
+                        <Rectangle Style="{DynamicResource InfoIcon}">                        
+                            <Rectangle.ToolTip>
+                                <TextBlock>
+                                    Specify how files are imported<LineBreak />
+                                    <Bold>Always import</Bold>: Always try to import the object. No detction of existing object (Default)<LineBreak />
+                                    <Bold>Skip if object exists</Bold>: Skip import if there is an existing object with the same name and type<LineBreak />
+                                    <Bold>Replace</Bold>: If an object is detected, it will be deleted. The assignments will be copied to the new imported object<LineBreak />
+                                    <Bold>Update</Bold>: If an object is detected, settings will be replaced from the import file
+                                </TextBlock>
+                            </Rectangle.ToolTip>                        
+                        </Rectangle>
+        </StackPanel>
+        <ComboBox Name="cbImportType" Margin="0,5,0,0" MinWidth="250" Grid.Row='5' Grid.Column="1" HorizontalAlignment="Left" 
+                    DisplayMemberPath="Name" SelectedValuePath="Value" Visibility="Collapsed" />
     </Grid>
 
-    <Grid Grid.Row='1' VerticalAlignment="Stretch" >
+    <Grid Grid.Row='1' VerticalAlignment="Stretch" Margin="0,5,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -79,8 +103,10 @@
                 <Label Content="Import files" />
                 <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Files that can be imported. Note: These must match the object type being imported!" />
             </StackPanel>
-        </Grid>        
-
+        </Grid>
+        
+        <DataGrid Name="dgObjectsToImport" Grid.Column='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" Margin="0,0,0,5" />
+        <!-- 
         <ListBox Name="lstFiles" Grid.Column='1' 
                     SelectionMode="Single"
                     VerticalAlignment="Stretch" 
@@ -101,6 +127,8 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <CheckBox Grid.Column='1' Grid.Row='2' Margin="7,2,0,0"  IsChecked="true" Name="chkCheckAll" ToolTip="Select/Deselect all" />
+        -->
+
     </Grid>
     <StackPanel Name="spImportSubMenu" Grid.Row='2'  Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,5">
         <Button Name="btnGetFiles" Content="Get files" Width='100' Margin="5,0,0,0" />

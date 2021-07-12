@@ -10,13 +10,52 @@ The script also support dependencies e.g. an App Protection is depending on an A
 
 This PowerShell application is based on the foundation modules CloudAPIPowerShellManagement and Core. These modules manages UI, settings, logging etc. The functionality for the application is located in the extension modules. This makes it easy to add/remove features, views etc. Additional features will be added...
 
-**Security note:** Since the scripts are not signed, a warning might be display when running it and files might be blocked. The script will unblock all files. This is to avoid issues that it fails to load the MSAL library etc. If there are any security concerns, the PowerShell code can be reviewed. The DLL files are downloaded from Microsoft repositories, see links below. These files can be downloaded and replaced. The DLL files *CAN* be removed but MSAL is a pre-requisite for login. The script will try to find the DLL in the Az or MSAL.PS module if not found in the script root directory. DLL files are included to reduce dependencies.
+**Security note:** Since the scripts are not signed, a warning might be display when running it and files might be blocked. The script will unblock all files. This is to avoid issues that it fails to load the MSAL library etc. If there are any security concerns, the PowerShell code can be reviewed and the DLL files can be downloaded manually from Microsoft repositories, see links below. The DLL files *CAN* be removed but MSAL is a pre-requisite for authentication. The script will try to find the DLL in the Az or MSAL.PS module if not found in the script root directory. DLL files are included to reduce dependencies.
+
+## Starting the App
+
+Before starting the app:
+
+* The CMD files needs to be unblocked before the app can be started. The app can be started without it but Windows will prompt with a security warning.
+* The script will unblock all other files
+
+Before logging on:
+
+* The app will use the Intune PowerShell Azure Enterprise Application by default but request all permissions required by the script. The will most likely cause a consent prompt since it uses more permission than the Intune module. Enable **Use Default Permissions** in Settings to only request the current permissions granted to the Enterprise App. 
+  **Note:** Using default permission might reduce functionality e.g. permissions for one or more object types might be missing  
+* Enable **Get Tenant List** in Settings if accessing multiple environments with the same account. This might cause a Consent prompt
+
+Start the script by running **Start.cmd**, **Start-WithConsole.cmd** or **Start-IntuneManagement.ps1**. **Start-WithConsole.cmd** will leave the command prompt window open so you can see the log while running the app. 
 
 ## Documentation
 
 This script has an extension that can document profiles and policies in Intune. The output is using the same language string as the Intune portal.
 
 See [Documentation](Documentation.md) for more information
+
+## Import
+
+The script can import the exported json files in multiple ways.
+
+* **Always import:** The script will try to import the file. It will not check if it exists. 
+  This is the default behavior
+* **Skip if object exists:** The script will look if there is an existing object with the same name and type. It will not import the file if existing object is detected
+* **Replace (Preview):** If a existing object is detected, the script will 
+  * Import the file without assignments
+  * Copy assignments from the existing object
+  * Run PostReplace commands - Priority will be set for Enrollment Restrictions etc.
+  * Update PolicySets object(s) to use the new imported object (detected by policySet assignments)
+  * Delete the original object 
+* **Update (Experimental):** This will update the existing object.
+  Note: This is not fully implemented yet. It only works on a few object types 
+
+**WARNING:** Use Replace with caution!  Replace will delete the existing object after the imported object is updated but could cause issues in the environment if something in the process goes wrong. Verify the process in a test environment before using this!  
+
+**Recommendation:** Backup all policies before running Replace/Update.
+
+The Replace/Update feature can be used in a scenario where all profiles/policies are managed in a separate reference (Dev/Test) and then implemented in one or more destination environment. The existing objects will then be reset to have the same settings as the reference environment
+
+**Note:** This must be turned on in Settings by enabling the **Allow update on import (Preview)** setting.
 
 ## Comparison
 
@@ -114,9 +153,9 @@ Some MSAL functionalities are based on [MSAL.PS Module](https://github.com/Azure
 
 ## Known Issues
 
-Device Configuration and App Configuration objects are split up in different object types. They are using different Graph APIs and each object type in the menu uses one API. This is also why all Endpoint Security objects are of the same object type. They use the same API but are separated based on the Baseline Template Id they us.
+Device Configuration and App Configuration objects are split up in different object types. They are using different Graph APIs and each object type in the menu uses one API. This is also why all Endpoint Security objects are of the same object type. They use the same API but are separated based on the Baseline Template Id they use.
 
-Android Store Apps are **not** imported. The create method is documented in Microsoft Graph but it's not working. Looks like these apps must be synched from Google Play.
+Android Store Apps are **not** imported. The Create API is documented in Microsoft Graph but it's not working. Looks like these apps must be synched from Google Play.
 
 Using multiple tenants support causes multiple logins/consent prompts the first time if 'Microsoft Graph PowerShell' is used. Querying the API for tenant list uses a different scope that is not included by default in the 'Microsoft Graph PowerShell' app. 
 
@@ -134,7 +173,7 @@ See [Documentation](Documentation.md) for issues regarding the documentation pro
 
 ## TIP
 
-Check the log file for errors. The UI might not show errors why login failed etc. The log uses the Endpoint Configuration Manager (SCCM) format and it is best viewed with CMTrace. An old version can be downloaded [here](https://www.microsoft.com/en-us/download/confirmation.aspx?id=50012).
+Check the log file for errors. The UI might not show errors why login failed etc. The log uses the Endpoint Configuration Manager (SCCM) format and it is best viewed with CMTrace or OneTrace. An old version of CMTrace can be downloaded [here](https://www.microsoft.com/en-us/download/confirmation.aspx?id=50012).
 
 ## License
 

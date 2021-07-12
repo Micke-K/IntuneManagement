@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.6'
+    '3.1.7'
 }
 
 function Invoke-InitializeModule
@@ -27,6 +27,7 @@ function Invoke-InitializeModule
         Title = "Application"
         Key = "EMAzureApp"
         Type = "List" 
+        SelectedValuePath = "ClientId"
         ItemsSource = $global:MSGraphGlobalApps
         DefaultValue = ""
         SubPath = "EndpointManager"
@@ -70,22 +71,6 @@ function Invoke-InitializeModule
         Type = "Folder"
         Description = "Root folder where intune app packages are located"
         SubPath = "EndpointManager"
-    }) "EndpointManager"
-
-    Add-SettingsObject (New-Object PSObject -Property @{
-        Title = "Show Delete button"
-        Key = "EMAllowDelete"
-        Type = "Boolean"
-        DefaultValue = $false
-        Description = "Allow deleting individual objectes"
-    }) "EndpointManager"
-
-    Add-SettingsObject (New-Object PSObject -Property @{
-        Title = "Show Bulk Delete "
-        Key = "EMAllowBulkDelete"
-        Type = "Boolean"
-        DefaultValue = $false
-        Description = "Allow using bulk delete to delete all objects of selected types"
     }) "EndpointManager"
 
     $viewPanel = Get-XamlObject ($global:AppRootFolder + "\Xaml\EndpointManagerPanel.xaml") -AddVariables
@@ -157,6 +142,7 @@ function Invoke-InitializeModule
         PostFileImportCommand = { Start-PostFileImportEndpointSecurity @args }
         #PreCopyCommand = { Start-PreCopyEndpointSecurity @args }
         PostCopyCommand = { Start-PostCopyEndpointSecurity @args }
+        PreUpdateCommand = { Start-PreUpdateEndpointSecurity @args }
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         GroupId = "EndpointSecurity"
     })    
@@ -170,6 +156,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Dependencies = @("Locations","Notifications")
         PostExportCommand = { Start-PostExportCompliancePolicies @args }
+        PreUpdateCommand = { Start-PreUpdateCompliancePolicies @args }
         GroupId = "CompliancePolicies"
     })
 
@@ -222,6 +209,9 @@ function Invoke-InitializeModule
         PreImportCommand = { Start-PreImportESP @args }
         PostExportCommand = { Start-PostExportESP @args }
         PreDeleteCommand = { Start-PreDeleteEnrollmentRestrictions @args } # Note: Uses same PreDelete as restrictions
+        PreReplaceCommand = { Start-PreReplaceEnrollmentRestrictions @args } # Note: Uses same PreReplaceCommand as restrictions
+        PostReplaceCommand = { Start-PostReplaceEnrollmentRestrictions @args } # Note: Uses same PostReplaceCommand as restrictions
+        PreFilesImportCommand = { Start-PreFilesImportEnrollmentRestrictions @args } # Note: Uses same PreFilesImportCommand as restrictions
         QUERYLIST = "`$filter=endsWith(id,'Windows10EnrollmentCompletionPageConfiguration')"
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         SkipRemoveProperties = @('Id')
@@ -238,6 +228,9 @@ function Invoke-InitializeModule
         PostExportCommand = { Start-PostExportEnrollmentRestrictions @args }
         PreImportCommand = { Start-PreImportEnrollmentRestrictions @args }
         PreDeleteCommand = { Start-PreDeleteEnrollmentRestrictions @args }
+        PreReplaceCommand = { Start-PreReplaceEnrollmentRestrictions @args }
+        PostReplaceCommand = { Start-PostReplaceEnrollmentRestrictions @args }
+        PreFilesImportCommand = { Start-PreFilesImportEnrollmentRestrictions @args }
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         SkipRemoveProperties = @('Id')
         AssignmentsType = "enrollmentConfigurationAssignments"
@@ -387,6 +380,7 @@ function Invoke-InitializeModule
         CopyDefaultName = "%displayName% Copy" # '-' is not allowed in the name
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsAutoPilot @args }
+        PreDeleteCommand = { Start-PreDeleteAutoPilot @args }
         GroupId = "WinEnrollment"
     })
 
@@ -834,6 +828,58 @@ function Start-PostCopyEndpointSecurity
     }
 }
 
+function Start-PreUpdateEndpointSecurity
+{
+    param($obj, $objectType, $curObject, $fromObj)
+
+    if(-not $fromObj.settings) { return }
+
+    $strAPI = "/deviceManagement/intents/$($curObject.Object.id)/updateSettings"
+    
+    $curObject = Get-GraphObject $curObject.Object $objectType
+
+    $curValues = @()
+    foreach($val in $curObject.Object.settings)
+    {
+        if($fromObj.settings | Where { $_.definitionId -eq $val.definitionId}) { continue }
+
+        # Set all existing values to null
+        # Note: This will not remove them from the configured list just set them Not Configured
+        $curValues += [PSCustomObject]@{
+            '@odata.type' = $val.'@odata.type'
+            definitionId = $val.definitionId
+            id = $val.id
+            valueJson = "null"
+        }
+    }
+
+    $curValues += $fromObj.settings
+
+    <#
+    if($curValues.Count -gt 0)
+    {
+        $tmpObj = [PSCustomObject]@{
+            settings = $curValues
+        }
+        $json = ConvertTo-Json $tmpObj -Depth 10
+
+        # Set all existing values to null
+        # Note: This will not remove them from the configured list just set them Not Configured
+        Invoke-GraphRequest -Url $strAPI -Content $json -HttpMethod "POST" | Out-Null
+    }
+    #>
+
+    $tmpObj = [PSCustomObject]@{
+        settings = $curValues
+    }
+    Start-GraphPreImport $tmpObj.settings 
+
+    $json = ConvertTo-Json $tmpObj -Depth 10
+    Invoke-GraphRequest -Url $strAPI -Content $json -HttpMethod "POST" | Out-Null
+
+    Remove-Property $obj "templateId"
+}
+
 #endregion
 
 #region 
@@ -892,6 +938,23 @@ function Start-PostExportCompliancePolicies
         }
     }
 }
+
+function Start-PreUpdateCompliancePolicies
+{
+    param($obj, $objectType, $curObject, $fromObj)
+
+    $strAPI = "/deviceManagement/deviceCompliancePolicies/$($curObject.Object.id)/scheduleActionsForRules"
+
+    $tmpObj = [PSCustomObject]@{
+        deviceComplianceScheduledActionForRules = $obj.scheduledActionsForRule
+    }
+
+    $json = ConvertTo-Json $tmpObj -Depth 10
+    Invoke-GraphRequest -Url $strAPI -Content $json -HttpMethod "POST" | Out-Null
+
+    Remove-Property $obj "scheduledActionsForRule"
+}
+
 #endregion
 
 #region Intune Branding functions
@@ -1242,7 +1305,7 @@ function Start-PostImportAppProtection
                 $tmp = $newObject."@odata.type".Split('.')[-1]
                 $objectClass = Get-GraphObjectClassName $tmp
 
-                $response = Invoke-GraphRequest -Url "/deviceAppManagement/$objectClass/$($obj.Id)/targetApps" -Content "{ apps: $(ConvertTo-Json $global:ImportObjectInfo.Apps -Depth 10)}" -HttpMethod POST
+                Invoke-GraphRequest -Url "/deviceAppManagement/$objectClass/$($obj.Id)/targetApps" -Content "{ apps: $(ConvertTo-Json $global:ImportObjectInfo.Apps -Depth 10)}" -HttpMethod POST | Out-Null
             }
             catch {}
         }
@@ -1504,12 +1567,63 @@ function Start-PreImportPolicySets
     {
         foreach($prop in ($item.PSObject.Properties | Where {$_.Name -notin $keepProperties}))
         {
-            #if($prop.Name -in $keepProperties) { continue }
             Remove-Property $item $prop.Name
         }
         #@("itemType","displayName","status","errorCode") | foreach { Remove-Property $item $_ }
     }
 }
+
+function Update-EMPolicySetAssignment
+{
+    param($assignment, $sourceObject, $newObject, $objectType)
+
+    $api = "/deviceAppManagement/policySets/$($assignment.SourceId)?`$expand=assignments,items"
+
+    $psObj = Invoke-GraphRequest -Url $api -ODataMetadata "Minimal"
+
+    if(-not $psObj)
+    {
+        return
+    }
+
+    $curItem = $psObj.Items | Where payloadId -eq $sourceObject.Id
+
+    if(-not $curItem)
+    {
+        return
+    }
+
+    $api = "/deviceAppManagement/policySets/$($assignment.SourceId)/update"
+
+    $curItemClone = $curItem | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+    $newItem = $curItem | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+    $newItem.payloadId = $newObject.Id
+    if($newItem.guidedDeploymentTags -is [String] -and [String]::IsNullOrEmpty($newItem.guidedDeploymentTags))
+    {
+        $newItem.guidedDeploymentTags = @()
+    }
+
+    $keepProperties = @('@odata.type','payloadId','Settings','guidedDeploymentTags') 
+    #itemType? e.g. #microsoft.graph.iosManagedAppProtection
+    #priority?
+
+    foreach($prop in ($newItem.PSObject.Properties | Where {$_.Name -notin $keepProperties}))
+    {
+        Remove-Property $newItem $prop.Name
+    }
+
+    $update = @{}
+    $update.Add('addedPolicySetItems',@($newItem))
+    $update.Add('updatedPolicySetItems', @())
+    $update.Add('deletedPolicySetItems',@($curItemClone.Id))
+
+    $json = $update | ConvertTo-Json -Depth 10
+
+    Write-Log "Update PolicySet $($psObj.displayName) - Replace: $((Get-GraphObjectName $newObject $objectType))"
+
+    Invoke-GraphRequest -Url $api -HttpMethod "POST" -Content $json 
+}
+
 #endregion
 
 #endregion Locations
@@ -1718,6 +1832,38 @@ function Start-PreDeleteEnrollmentRestrictions
         @{ "Delete" = $false }
     }
 }
+
+function Start-PreReplaceEnrollmentRestrictions
+{
+    param($obj, $objectType, $sourceObj, $fromFile)
+
+    if($sourceObj.Priority -eq 0) { @{ "Replace" = $false } }
+}
+
+function Start-PostReplaceEnrollmentRestrictions
+{
+    param($obj, $objectType, $sourceObj, $fromFile)
+
+    if($sourceObj.Priority -eq 0) { return }
+
+    $api = "/deviceManagement/deviceEnrollmentConfigurations/$($obj.id)/setpriority"
+
+    $priority = [PSCustomObject]@{
+        priority = $sourceObj.Priority
+    }
+    $json = $priority | ConvertTo-Json -Depth 10
+
+    Write-Log "Update priority for $($obj.displayName) to $($sourceObj.Priority)"
+    Invoke-GraphRequest $api -HttpMethod "POST" -Content $json
+}
+
+function Start-PreFilesImportEnrollmentRestrictions
+{
+    param($objectType, $filesToImport)
+
+    $filesToImport | sort-object -property @{e={$_.Object.priority}} 
+}
+
 #endregion
 
 #region ScopeTags
@@ -1736,6 +1882,32 @@ function Start-PreImportAssignmentsAutoPilot
 
     Add-EMAssignmentsToObject $obj $objectType $file $assignments
 }
+
+function Start-PreDeleteAutoPilot
+{
+    param($obj, $objectType)
+
+    Write-Log "Delete AutoPilot profile assignments"
+
+    if(-not $obj.Assignments)
+    {
+        $tmpObj = (Get-GraphObject $obj $objectType).Object
+    }
+    else
+    {
+        $tmpObj = $obj
+    }
+
+    foreach($assignment in $tmpObj.Assignments)
+    {
+        if($assignment.Source -ne "direct") { continue }
+
+        $api = "/deviceManagement/windowsAutopilotDeploymentProfiles/$($obj.Id)/assignments/$($assignment.Id)"
+
+        Invoke-GraphRequest $api -HttpMethod "DELETE"
+    }
+}
+
 #endregion
 
 #region Health Scripts

@@ -1,5 +1,28 @@
 # Release Notes
 
+## 3.1.7 - 2021-07-12
+
+**New features**
+
+- Support for documenting Notifications
+- **PREVIEW/EXPERIMENTAL** - Support for Replace/Update existing profiles/policies during import. 
+  See the Import section in the [Readme](Readme.md#Import) file for more information
+  This is based on the feature request in [Issue 17](https://github.com/Micke-K/IntuneManagement/issues/17)
+
+**Fixes**
+
+* Fixed bug that caused an exception when listing App Protection objects and only one object existed in the environment. 
+
+  See [Issue 15](https://github.com/Micke-K/IntuneManagement/issues/15) for more info
+
+* Import Priority based objects in the priority order specified in the files (Enrolment Restrictions and Autopilot profiles) 
+
+* Set default settings for the options in the Import forms (Based on Settings)
+
+* Delete Autopilot profiles with assignments
+
+* Moved the assignments import to a separate function 
+
 ## 3.1.6 - 2021-07-07
 
 **Fixes**

@@ -14,6 +14,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
@@ -68,9 +69,25 @@
         </StackPanel>
         <CheckBox Grid.Column='1' Grid.Row='5' Name='chkReplaceDependencyIDs' VerticalAlignment="Center" IsChecked="true" />            
 
+        <StackPanel Orientation="Horizontal" Grid.Row='6' Margin="0,0,5,0" Name="lblImportType" Visibility="Collapsed">
+                        <Label Content="Import Type" />
+                        <Rectangle Style="{DynamicResource InfoIcon}">                        
+                            <Rectangle.ToolTip>
+                                <TextBlock>
+                                    Specify how files are imported<LineBreak />
+                                    <Bold>Always import</Bold>: Always try to import the object. No detction of existing object (Default)<LineBreak />
+                                    <Bold>Skip if object exists</Bold>: Skip import if there is an existing object with the same name and type<LineBreak />
+                                    <Bold>Replace</Bold>: If an object is detected, it will be deleted. The assignments will be copied to the new imported object<LineBreak />
+                                    <Bold>Update</Bold>: If an object is detected, settings will be replaced from the import file
+                                </TextBlock>
+                            </Rectangle.ToolTip>                        
+                        </Rectangle>
+        </StackPanel>
+        <ComboBox Name="cbImportType" Margin="0,5,0,0" MinWidth="250" Grid.Row='6' Grid.Column="1" HorizontalAlignment="Left" 
+                    DisplayMemberPath="Name" SelectedValuePath="Value" Visibility="Collapsed" />
     </Grid>
 
-    <Grid Grid.Row='1' VerticalAlignment="Stretch">
+    <Grid Grid.Row='1' VerticalAlignment="Stretch" Margin="0,5,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>

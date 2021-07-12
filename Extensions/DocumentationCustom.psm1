@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.0.2'
+    '1.0.3'
 }
 
 function Invoke-InitializeModule
@@ -82,6 +82,13 @@ function Invoke-CDDocumentObject
         $type -eq '#microsoft.graph.androidCustomConfiguration')
     {
         Invoke-CDDocumentCustomOMAUri $documentationObj
+        return [PSCustomObject]@{
+            Properties = @("Name","Value","Category","SubCategory")
+        }
+    }
+    elseif($type -eq '#microsoft.graph.notificationMessageTemplate')
+    {
+        Invoke-CDDocumentNotification $documentationObj
         return [PSCustomObject]@{
             Properties = @("Name","Value","Category","SubCategory")
         }
@@ -2155,7 +2162,9 @@ function Get-CDDocumentPolicySetValue
     }
     # ToDo: Add support for all PolicySet items 
 }
+#endregion
 
+#region Custom Profile
 function Invoke-CDDocumentCustomOMAUri
 {
     param($documentationObj)
@@ -2264,6 +2273,168 @@ function Invoke-CDDocumentCustomOMAUri
             })
         }        
     }
+}
+#endregion
 
+#region Notification
+function Invoke-CDDocumentNotification
+{
+    param($documentationObj)
+
+    $obj = $documentationObj.Object
+    $objectType = $documentationObj.ObjectType
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+    
+    ###################################################
+    # Basic info
+    ###################################################
+
+    Add-BasicDefaultValues $obj $objectType
+    
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "Titles.notifications")
+
+    ###################################################
+    # Settings
+    ###################################################
+
+    $category = Get-LanguageString "TableHeaders.settings"
+
+    if($obj.brandingOptions)
+    {
+        $brandingOptions = $obj.brandingOptions.Split(',')
+    }
+    else
+    {
+        $brandingOptions = @()
+    }
+
+    foreach($brandingOption in @('includeCompanyLogo','includeCompanyName','includeContactInformation','includeCompanyPortalLink'))
+    {
+        if($brandingOption -eq 'includeCompanyLogo')
+        {
+            $label = (Get-LanguageString "NotificationMessage.companyLogo")
+        }
+        elseif($brandingOption -eq 'includeCompanyName')
+        {
+            $label = (Get-LanguageString "NotificationMessage.companyName")
+        }
+        elseif($brandingOption -eq 'includeContactInformation')
+        {
+            $label = (Get-LanguageString "NotificationMessage.companyContact")
+        }
+        elseif($brandingOption -eq 'includeCompanyPortalLink')
+        {
+            $label = (Get-LanguageString "NotificationMessage.iwLink")
+        }
+
+        if(($brandingOption -in $brandingOptions))
+        {
+            $value = Get-LanguageString "BooleanActions.enable"
+        }
+        else
+        {
+            $value = Get-LanguageString "BooleanActions.disable"
+        }
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = $label
+            Value =  $value
+            EntityKey = $brandingOption
+            Category = $category
+            SubCategory = $null
+        })
+    }
+    
+    #$subCategory = Get-LanguageString "NotificationMessage.localeLabel"
+    $subCategory = Get-LanguageString "NotificationMessage.listTitle"
+
+    foreach($template in $obj.localizedNotificationMessages)
+    {
+        $first,$second = $template.locale.Split('-')
+        $baseInfo = [cultureinfo]$first
+        $lng = $baseInfo.EnglishName.ToLower()
+        if($first -eq 'en')
+        {
+            if($second -eq "US")
+            {
+                $lng = ($lng + "US")
+            }
+            elseif($second -eq "GB")
+            {
+                $lng = ($lng + "UK")
+            }
+        }
+        elseif($first -eq 'es')
+        {
+            if($second -eq "es")
+            {
+                $lng = ($lng + "Spain")
+            }
+            elseif($second -eq "mx")
+            {
+                $lng = ($lng + "Mexico")
+            }
+        }
+        elseif($first -eq 'fr')
+        {
+            if($second -eq "ca")
+            {
+                $lng = ($lng + "Canada")
+            }
+            elseif($second -eq "fr")
+            {
+                $lng = ($lng + "France")
+            }
+        }
+        elseif($first -eq 'pt')
+        {
+            if($second -eq "pt")
+            {
+                $lng = ($lng + "Portugal")
+            }
+            elseif($second -eq "br")
+            {
+                $lng = ($lng + "Brazil")
+            }
+        }
+        elseif($first -eq 'zh')
+        {
+            if($second -eq "tw")
+            {
+                $lng = ($lng + "Traditional")
+            }
+            elseif($second -eq "cn")
+            {
+                $lng = ($lng + "Simplified")
+            }
+        }
+        elseif($first -eq 'nb')
+        {
+            $lng = "norwegian"
+        }        
+       
+        $label = Get-LanguageString "NotificationMessage.NotificationMessageTemplatesTab.$lng"
+
+        if(-not $label) { continue }
+
+        $value = $template.subject
+
+        if($template.isDefault)
+        {
+            $value = ($value + $script:objectSeparator + (Get-LanguageString "NotificationMessage.isDefaultLocale") + ": " + (Get-LanguageString "SettingDetails.trueOption"))
+        }
+
+        $fullValue = ($value + $script:objectSeparator + $template.messageTemplate)
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = $label
+            Value =  $fullValue            
+            EntityKey = $template.locale
+            Category = $category
+            SubCategory = $subCategory
+        })        
+    }
 }
 #endregion

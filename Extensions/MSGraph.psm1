@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.1.2'
+    '3.1.3'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -25,6 +25,25 @@ function Invoke-InitializeModule
 
     $global:LoadedDependencyObject = $null
     $global:MigrationTableCache = $null
+
+    $script:lstImportTypes = @(
+        [PSCustomObject]@{
+            Name = "Always import"
+            Value = "alwaysImport"
+        },
+        [PSCustomObject]@{
+            Name = "Skip if object exists"
+            Value = "skipIfExist"
+        },
+        [PSCustomObject]@{
+            Name = "Replace (Preview)"
+            Value = "replace"
+        },
+        [PSCustomObject]@{
+            Name = "Update (Experimental)"
+            Value = "update"
+        }
+    )
 
     # Make sure MS Graph settings are added before exiting before App Id and Tenant Id is missing
     Write-Log "Add settings and menu items"
@@ -84,11 +103,52 @@ function Invoke-InitializeModule
     }) "ImportExport"
 
     Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Import type"
+        Key = "ImportType"
+        Type = "List" 
+        ItemsSource = $script:lstImportTypes
+        DefaultValue = "alwaysImport"
+    }) "ImportExport"    
+
+    Add-SettingsObject (New-Object PSObject -Property @{
         Title = "Import Assignments"
         Key = "ImportAssignments"
         Type = "Boolean"
         DefaultValue = $true
-        Description = "Import assignments when importing objects"
+        Description = "Default value for Import assignments when importing objects"
+    }) "ImportExport"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Import Scope (Tags)"
+        Key = "ImportScopeTags"
+        Type = "Boolean"
+        DefaultValue = $true
+        Description = "Default value for Import Scope (Tags) when importing objects"
+    }) "ImportExport"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Show Delete button"
+        Key = "EMAllowDelete"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Allow deleting individual objectes"
+    }) "ImportExport"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Show Bulk Delete "
+        Key = "EMAllowBulkDelete"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Allow using bulk delete to delete all objects of selected types"
+    }) "ImportExport"
+    
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Allow update on import (Preview)"
+        Key = "AllowUpdate"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "This will enable the option to update/replace an existing object during import"
     }) "ImportExport"
 }
 
@@ -127,6 +187,7 @@ function Get-GraphAppInfo
 function Invoke-GraphAuthenticationUpdated
 {
     $global:MigrationTableCache = $null
+    $global:MigrationTableCacheId = $null
     $global:LoadedDependencyObjects = $null
     $global:migFileObj = $null
 }
@@ -142,7 +203,7 @@ function Invoke-GraphRequest
 
             $Headers,
 
-            [ValidateSet("GET","POST","OPTIONS","DELETE", "PATCH")]
+            [ValidateSet("GET","POST","OPTIONS","DELETE", "PATCH","PUT")]
             [Alias("Method")]
             $HttpMethod = "GET",
 
@@ -240,6 +301,8 @@ function Invoke-GraphRequest
         {
             throw $global:error[0]
         }
+
+        if($HttpMethod -eq "PATCH" -and [String]::IsNullOrempty($ret)) { $ret = $true }
     }
     catch
     {
@@ -255,14 +318,16 @@ function Invoke-GraphRequest
 function Get-GraphObjects 
 {
     param(
-    [Array]
+    [String]
     $Url,
     [Array]
     $property = $null,
     [Array]
     $exclude,
     $SortProperty = "displayName",
-    $objectType)
+    $objectType,
+    [switch]
+    $SingleObject)
 
     $objects = @()
     
@@ -274,7 +339,29 @@ function Get-GraphObjects
         $params.Add('ODataMetadata',$objectType.ODataMetadata)
     }
 
+    if(-not $url)
+    {
+        $url = $objectType.API
+    }
+
+    if($SingleObject -ne $true -and $objectType.QUERYLIST)
+    {
+        if(($url.IndexOf('?')) -eq -1) 
+        {
+            $url = "$($url.Trim())?$($objectType.QUERYLIST.Trim())"
+        }
+        else
+        {
+            $url = "$($url.Trim())&$($objectType.QUERYLIST.Trim())" # Risky...does not check that the parameter is already in use
+        }        
+    }    
+
     $graphObjects = Invoke-GraphRequest -Url $url @params
+
+    if($SingleObject -ne $true -and $objectType.PostListCommand)
+    {
+        $graphObjects = & $objectType.PostListCommand $graphObjects $objectType
+    }
         
     if($graphObjects -and ($graphObjects | GM -Name Value -MemberType NoteProperty))
     {
@@ -341,18 +428,7 @@ function Show-GraphObjects
         $global:grdTitle.Visibility = "Visible"
     }
 
-    $url = $global:curObjectType.API
-    if($global:curObjectType.QUERYLIST)
-    {
-        $url = "$($url.Trim())?$($global:curObjectType.QUERYLIST.Trim())"
-    }
-
-    $graphObjects = @(Get-GraphObjects -Url $url -property $global:curObjectType.ViewProperties -objectType $global:curObjectType)
-
-    if($global:curObjectType.PostListCommand)
-    {
-        $graphObjects = & $global:curObjectType.PostListCommand $graphObjects $global:curObjectType
-    }
+    $graphObjects = @(Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType)
 
     if(($graphObjects | measure).Count -eq 0) { return }
 
@@ -486,7 +562,7 @@ function Get-GraphObject
         }
         elseif($api.IndexOf("`$expand") -gt 1)
         {
-            $api = ($api + ",")
+            $api = ($api + ",") # A bit risky...assumes that expand is last in the existing query 
         }
         else
         {
@@ -496,7 +572,7 @@ function Get-GraphObject
         $api = ($api + ($expand -join ","))
     }
 
-    $objInfo = Get-GraphObjects -Url $api -property $objectType.ViewProperties -objectType $objectType
+    $objInfo = Get-GraphObjects -Url $api -property $objectType.ViewProperties -objectType $objectType -SingleObject
 
     if($objInfo -and $objectType.PostGetCommand)
     {
@@ -746,18 +822,12 @@ function Show-GraphBulkExportForm
             Write-Log "----------------------------------------------------------------"
             Write-Log "Export $($item.ObjectType.Title) objects"
             Write-Log "----------------------------------------------------------------"
-    
-            $url = $item.ObjectType.API
-            if($item.ObjectType.QUERYLIST)
-            {
-                $url = "$($url.Trim())?$($item.ObjectType.QUERYLIST.Trim())"
-            }
             
             try 
             {
                 $folder = Get-GraphObjectFolder $item.ObjectType (Get-XamlProperty $script:exportForm "txtExportPath" "Text") (Get-XamlProperty $script:exportForm "chkAddObjectType" "IsChecked") (Get-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked")
 
-                $objects = @(Get-GraphObjects -Url $url -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
+                $objects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
                 foreach($obj in $objects)
                 {
                     Write-Status "Export $($item.Title): $((Get-GraphObjectName $obj.Object $obj.ObjectType))" -Force
@@ -797,13 +867,44 @@ function Show-GraphImportForm
     }
 
     Set-XamlProperty $script:importForm "txtImportPath" "Text" (?? $path (Get-SettingValue "RootFolder"))
+    Set-XamlProperty $script:importForm "chkImportAssignments" "IsChecked" (Get-SettingValue "ImportAssignments")
+    Set-XamlProperty $script:importForm "chkImportScopes" "IsChecked" (Get-SettingValue "ImportScopeTags")
+    Set-XamlProperty $script:importForm "cbImportType" "ItemsSource" $script:lstImportTypes
+    Set-XamlProperty $script:importForm "cbImportType" "SelectedValue" (Get-SettingValue "ImportType" "alwaysImport")
+    
+    if((Get-SettingValue "AllowUpdate") -eq $true)
+    {
+        Set-XamlProperty  $script:importForm "lblImportType" "Visibility" "Visible"
+        Set-XamlProperty  $script:importForm "cbImportType" "Visibility" "Visible"
+    }
+
+    $column = Get-GridCheckboxColumn "Selected"
+    $global:dgObjectsToImport.Columns.Add($column)
+
+    $column.Header.IsChecked = $true # All items are checked by default
+    $column.Header.add_Click({
+            foreach($item in $global:dgObjectsToImport.ItemsSource)
+            {
+                $item.Selected = $this.IsChecked
+            }
+            $global:dgObjectsToImport.Items.Refresh()
+        }
+    ) 
+
+    # Add Object type column
+    $binding = [System.Windows.Data.Binding]::new("fileName")
+    $column = [System.Windows.Controls.DataGridTextColumn]::new()
+    $column.Header = "File Name"
+    $column.IsReadOnly = $true
+    $column.Binding = $binding
+    $global:dgObjectsToImport.Columns.Add($column)
 
     Add-XamlEvent $script:importForm "browseImportPath" "add_click" ({
         $folder = Get-Folder (Get-XamlProperty $script:importForm "txtImportPath" "Text") "Select root folder for import"
         if($folder)
         {
             Set-XamlProperty $script:importForm "txtImportPath" "Text" $folder
-            $global:lstFiles.ItemsSource = @(Get-GraphFileObjects $folder)
+            $global:dgObjectsToImport.ItemsSource = @(Get-GraphFileObjects $folder)
             Save-Setting "" "LastUsedFullPath" $folder
             Set-XamlProperty $script:importForm "lblMigrationTableInfo" "Content" (Get-MigrationTableInfo)
         }
@@ -817,26 +918,30 @@ function Show-GraphImportForm
     Add-XamlEvent $script:importForm "btnImportSelected" "add_click" {
         Write-Status "Import objects"
         Get-GraphDependencyDefaultObjects
-        foreach ($fileObj in ($global:lstFiles.ItemsSource | Where Selected -eq $true))
+        $allowUpdate = ((Get-SettingValue "AllowUpdate") -eq $true)
+        $filesToImport = $global:dgObjectsToImport.ItemsSource | Where Selected -eq $true
+        if($global:curObjectType.PreFilesImportCommand)
         {
-            Import-GraphFile $fileObj 
+            $filesToImport = & $global:curObjectType.PreFilesImportCommand $global:curObjectType $filesToImport
+        }
+
+        foreach ($fileObj in $filesToImport)
+        {
+            if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport" -and (Reset-GraphObjet $fileObj $global:dgObjects.ItemsSource))
+            {
+                continue
+            }
+
+            Import-GraphFile $fileObj
         }
         Show-GraphObjects
         Show-ModalObject
         Write-Status ""
     }
 
-    Add-XamlEvent $script:importForm "chkCheckAll" "add_click" {
-        foreach($obj in $global:lstFiles.Items)
-        { 
-            $obj.Selected = $global:chkCheckAll.IsChecked
-        }
-        $global:lstFiles.Items.Refresh()
-    }
-
     Add-XamlEvent $script:importForm "btnGetFiles" "add_click" {
         # Used when the user manually updates the path and the press Get Files
-        $global:lstFiles.ItemsSource = @(Get-GraphFileObjects $global:txtImportPath.Text)
+        $global:dgObjectsToImport.ItemsSource = @(Get-GraphFileObjects $global:txtImportPath.Text)
         if([IO.Directory]::Exists($global:txtImportPath.Text))
         {
             Save-Setting "" "LastUsedFullPath" $global:txtImportPath.Text
@@ -848,7 +953,7 @@ function Show-GraphImportForm
 
     if($global:txtImportPath.Text)
     {
-        $global:lstFiles.ItemsSource = @(Get-GraphFileObjects $global:txtImportPath.Text)
+        $global:dgObjectsToImport.ItemsSource = @(Get-GraphFileObjects $global:txtImportPath.Text)
         Set-XamlProperty $script:importForm "lblMigrationTableInfo" "Content" (Get-MigrationTableInfo)
     }
     
@@ -867,7 +972,16 @@ function Show-GraphBulkImportForm
     }
 
     Set-XamlProperty $script:importForm "txtImportPath" "Text" (?? $path (Get-SettingValue "RootFolder"))
-    #Set-XamlProperty $script:importForm "chkAddCompanyName" "IsChecked" (Get-SettingValue "AddCompanyName")
+    Set-XamlProperty $script:importForm "chkImportAssignments" "IsChecked" (Get-SettingValue "ImportAssignments")
+    Set-XamlProperty $script:importForm "chkImportScopes" "IsChecked" (Get-SettingValue "ImportScopeTags")
+    Set-XamlProperty $script:importForm "cbImportType" "ItemsSource" $script:lstImportTypes
+    Set-XamlProperty $script:importForm "cbImportType" "SelectedValue" (Get-SettingValue "ImportType" "alwaysImport")
+
+    if((Get-SettingValue "AllowUpdate") -eq $true)
+    {
+        Set-XamlProperty  $script:importForm "lblImportType" "Visibility" "Visible"
+        Set-XamlProperty  $script:importForm "cbImportType" "Visibility" "Visible"        
+    }
 
     Add-XamlEvent $script:importForm "browseImportPath" "add_click" ({
         $folder = Get-Folder (Get-XamlProperty $script:importForm "txtImportPath" "Text") "Select root folder for import"
@@ -938,6 +1052,8 @@ function Show-GraphBulkImportForm
         Get-GraphDependencyDefaultObjects
         $importedObjects = 0
 
+        $allowUpdate = ((Get-SettingValue "AllowUpdate") -eq $true)
+
         foreach($item in ($script:importObjects | where Selected -eq $true | sort-object -property @{e={$_.ObjectType.ImportOrder}}))
         { 
             Write-Status "Import $($item.ObjectType.Title) objects" -Force
@@ -946,10 +1062,34 @@ function Show-GraphBulkImportForm
             Write-Log "----------------------------------------------------------------"
             $folder = Get-GraphObjectFolder $item.ObjectType (Get-XamlProperty $script:importForm "txtImportPath" "Text") (Get-XamlProperty $script:importForm "chkAddObjectType" "IsChecked")
             
+            $graphObjects = $null
+
+            if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport")
+            {           
+                try 
+                {
+                    Write-Status "Get $($item.Title) objects" -Force
+                    $graphObjects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
+                }
+                catch {}
+            }
+
             if([IO.Directory]::Exists($folder))
             {
-                foreach ($fileObj in @(Get-GraphFileObjects $folder -ObjectType $item.ObjectType))
+                $filesToImport = Get-GraphFileObjects $folder -ObjectType $item.ObjectType
+                if($item.ObjectType.PreFilesImportCommand)
                 {
+                    $filesToImport = & $item.ObjectType.PreFilesImportCommand $item.ObjectType $filesToImport
+                }
+        
+                foreach ($fileObj in @($filesToImport))
+                {
+                    if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport" -and $graphObjects -and (Reset-GraphObjet $fileObj $graphObjects))
+                    {
+                        $importedObjects++ 
+                        continue
+                    }
+        
                     Import-GraphFile $fileObj
                     $importedObjects++
                 }
@@ -1111,19 +1251,13 @@ function Show-GraphBulkDeleteForm
             Write-Log "----------------------------------------------------------------"
             Write-Log "Delete $($item.ObjectType.Title) objects"
             Write-Log "----------------------------------------------------------------"
-    
-            $url = $item.ObjectType.API
-            if($item.ObjectType.QUERYLIST)
-            {
-                $url = "$($url.Trim())?$($item.ObjectType.QUERYLIST.Trim())"
-            }
             
             try 
             {
                 Write-Status "Get $($item.Title) objects" -Force
-                $objects = @(Get-GraphObjects -Url $url -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
+                $objects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
                 foreach($obj in $objects)
-                {
+                {                    
                     Write-Status "Delete $($item.Title): $((Get-GraphObjectName $obj.Object $obj.ObjectType))" -Force
                     Remove-GraphObject $obj.Object $obj.ObjectType $folder 
                 }
@@ -1225,72 +1359,7 @@ function Import-GraphFile
         
         if($newObj -and $objClone.Assignments -and $global:chkImportAssignments.IsChecked -eq $true)
         {
-            $preConfig = $null
-            if($file.ObjectType.PreImportAssignmentsCommand)
-            {
-                $preConfig = & $file.ObjectType.PreImportAssignmentsCommand $newObj $file.ObjectType $file.FileInfo.FullName $objClone.Assignments
-            }
-
-            ###### Import Assignments ###### 
-            
-            if($preConfig -isnot [Hashtable]) { $preConfig = @{} }
-
-            if($preConfig["Import"] -eq $false) { return } # Assignment managed manually so skip further processing
-
-            $api = ?? $preConfig["API"] "$($file.ObjectType.API)/$($newObj.Id)/assign"
-
-            $method = ?? $preConfig["Method"] "POST"
-
-            $keepProperties = ?? $file.ObjectType.AssignmentProperties @("target")
-            $keepTargetProperties = ?? $file.ObjectType.AssignmentTargetProperties @("@odata.type","groupId")
-            $ObjectAssignments = @()
-            foreach($assignment in $objClone.Assignments)
-            {
-                if($assignment.target.UserId -or ($assignment.Source -and $assignment.Source -ne "direct"))
-                {
-                    # E.g. Source could be PolicySet...so should not be added here
-                    continue 
-                }
-
-                $assignment.Id = ""
-                foreach($prop in $assignment.PSObject.Properties)
-                {
-                    if($prop.Name -in $keepProperties) { continue }
-                    Remove-Property $assignment $prop.Name
-                }
-
-                foreach($prop in $assignment.target.PSObject.Properties)
-                {
-                    if($prop.Name -in $keepTargetProperties) { continue }
-                    Remove-Property $assignment.target $prop.Name
-                }
-                $ObjectAssignments += $assignment
-            }
-
-            $objClone.Assignments = $ObjectAssignments
-    
-            if(($objClone.Assignments | measure).Count -gt 0)
-            {                
-                $json = "{ `"$((?? $file.ObjectType.AssignmentsType "assignments"))`": "
-                $strAssign = "$((Update-JsonForEnvironment ($objClone.Assignments | ConvertTo-Json -Depth 10)))"
-                # Array characters [ ] is not included if there is only one assignment
-                # Added them if they are missing
-                if($strAssign.Trim().StartsWith("[") -eq $false)
-                { 
-                    $strAssign = (" [ " + $strAssign + " ] ") 
-                }
-                $json = ($json + $strAssign + "}")
-
-                if($json)
-                {
-                    $objAssign = Invoke-GraphRequest $api -HttpMethod $method -Content $json
-                }
-            }
-
-            if($assignmentsProcessed -ne $true -and $file.ObjectType.PostImportAssignmentsCommand)
-            {
-                & $file.ObjectType.PostImportAssignmentsCommand $newObj $file.ObjectType $file.FileInfo.FullName $objAssign
-            }
+            Import-GraphObjectAssignment $newObj $file.ObjectType $objClone.Assignments $file.FileInfo.FullName | Out-Null
         }        
     } 
     catch 
@@ -1299,6 +1368,227 @@ function Import-GraphFile
     }
 }
 
+function Reset-GraphObjet
+{ 
+    param($fileObj, $objectList)
+
+    $nameProp = ?? $fileObj.ObjectType.NameProperty "displayName"
+    $curObject = $objectList | Where { $_.Object.$nameProp -eq $fileObj.Object.$nameProp -and $_.Object.'@OData.Type' -eq $fileObj.Object.'@OData.Type' }
+    
+    if($global:cbImportType.SelectedValue -eq "skipIfExist" -and ($curObject | measure).Count -gt 0)
+    {
+        Write-Log "Objects with name $($fileObj.Object.$nameProp) already exists. Object will not be imported"
+        return $true
+    }
+    elseif(($curObject | measure).Count -gt 1)
+    {
+        Write-Log "Multiple objects return with name $($fileObj.Object.$nameProp). Object will not be imported or replaced" 2
+        return $true
+    }
+    elseif(($curObject | measure).Count -eq 1)
+    {
+        Write-Log "Update $((Get-GraphObjectName $fileObj.Object $fileObj.ObjectType)) with id $($curObject.Object.Id)"
+        $objectType = $fileObj.ObjectType
+
+        # Clone the object before removing properties
+        $obj = $fileObj.Object | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+        Start-GraphPreImport $obj $objectType
+        Remove-Property $obj "Assignments"
+        Remove-Property $obj "isAssigned"
+    
+        if($global:cbImportType.SelectedValue -eq "update")
+        {
+            $params = @{}
+            $strAPI = (?? $objectType.APIPATCH $objectType.API) + "/$($curObject.Object.Id)"
+            $method = "PATCH"
+            if($objectType.PreUpdateCommand)
+            {
+                $ret = & $objectType.PreUpdateCommand $obj $objectType $curObject $fileObj.Object
+                if($ret -is [HashTable])
+                {
+                    if($ret.ContainsKey("Import") -and $ret["Import"] -eq $false)
+                    {
+                        # Import handled manually 
+                        return $false
+                    }
+
+                    if($ret.ContainsKey("API"))
+                    {
+                        $strAPI = $ret["API"]
+                    }
+                    
+                    if($ret.ContainsKey("Method"))
+                    {
+                        $method = $ret["Method"]
+                    }
+
+                    if($ret.ContainsKey("AdditionalHeaders") -and $ret["AdditionalHeaders"] -is [HashTable])
+                    {
+                        $params.Add("AdditionalHeaders",$ret["AdditionalHeaders"])
+                    }            
+                }
+            }
+
+            $json = ConvertTo-Json $obj -Depth 10
+            if($true) #$global:MigrationTableCacheId -ne $global:Organization.Id)
+            {
+                # Call Update-JsonForEnvironment before importing the object
+                # E.g. PolicySets contains references, AppConfiguration policies reference apps etc.
+                $json = Update-JsonForEnvironment $json
+            }
+
+            $objectUpdated = (Invoke-GraphRequest -Url $strAPI -Content $json -HttpMethod $method @params)
+
+            if($objectUpdated)
+            {
+                Write-Log "Object updated successfully"
+            }
+
+            if($objectUpdated -and $objectType.PostUpdateCommand)
+            {
+                # Reload the updated object
+                $updatedObject = Get-GraphObject $curObject.Object $objectType
+                & $objectType.PostUpdateCommand $updatedObject $fileObj
+            }
+            return $true
+        }
+        elseif($global:cbImportType.SelectedValue -eq "replace")
+        {           
+            $replace = $true
+            $import = $true
+            $delete = $true
+
+            if($objectType.PreReplaceCommand)
+            {
+                $ret = & $objectType.PreReplaceCommand $obj $objectType $curObject.Object $fileObj
+                if($ret -is [Hashtable])
+                {
+                    if($ret["Replace"] -eq $false) { $replace = $false }
+
+                    if($ret["Import"] -eq $false) { $import = $false }
+
+                    if($ret["Delete"] -eq $false) { $delete = $false }
+                }                
+            }
+
+            if($import)
+            {
+                $newObj = Import-GraphObject $obj $objectType $fileObj.FileInfo.FullName
+            }
+
+            if($newObj -and $replace)
+            {
+                if($objectType.PostReplaceCommand)
+                {
+                    $ret = & $objectType.PostReplaceCommand $newObj $objectType $curObject.Object $fileObj
+                    if($ret -is [Hashtable])
+                    {
+                        if($ret["Delete"] -eq $false) { $delete = $false }
+                    }                          
+                }
+
+                # Load all information about current object to include assignments
+                $curObject = Get-GraphObject $curObject.Object $objectType
+
+                $refAssignments = $curObject.Object.Assignments | Where { $_.Source -ne "direct" } 
+                if($refAssignments)
+                {
+                    foreach($refAssignment in $refAssignments)
+                    {
+                        if($refAssignment.Source -eq "policySets")
+                        {
+                            Update-EMPolicySetAssignment $refAssignment $curObject $newObj $objectType                           
+                        }
+                    }
+                }
+    
+                Import-GraphObjectAssignment $newObj $objectType $curObject.Object.Assignments $fileObj.FileInfo.FullName -CopyAssignments | Out-Null
+
+                if($delete)
+                {
+                    Remove-GraphObject $curObject.Object $objectType
+                }
+            }
+            elseif($replace -eq $false) # Might not be 100% correct. Replace -eq $false probably means that the object was patched and not imported eg default enrollment restrictions etc.
+            {
+                Write-Log "Failed to import file for $($fileObj.Object.$nameProp) ($($objectType.Title))" 2
+            }
+            return $true
+        }
+    }
+    # No object to update. Import the file
+    return $false
+}
+
+function Import-GraphObjectAssignment
+{
+    param($obj, $objectType, $assignments, $fromFile, [switch]$CopyAssignments)
+
+    if(($assignments | measure).Count -eq 0) { return }
+
+    $preConfig = $null
+    $clonedAssignments = $assignments | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+
+    if($objectType.PreImportAssignmentsCommand)
+    {
+        $preConfig = & $objectType.PreImportAssignmentsCommand $obj $objectType $fromFile $clonedAssignments
+    }
+
+    if($preConfig -isnot [Hashtable]) { $preConfig = @{} }
+
+    if($preConfig["Import"] -eq $false) { return } # Assignment managed manually so skip further processing
+
+    $api = ?? $preConfig["API"] "$($objectType.API)/$($newObj.Id)/assign"
+
+    $method = ?? $preConfig["Method"] "POST"
+
+    $keepProperties = ?? $objectType.AssignmentProperties @("target")
+    $keepTargetProperties = ?? $objectType.AssignmentTargetProperties @("@odata.type","groupId")
+    
+    $ObjectAssignments = @()
+    foreach($assignment in $clonedAssignments)
+    {
+        if(($assignment.target.UserId -and $CopyAssignments -ne $true) -or ($assignment.Source -and $assignment.Source -ne "direct"))
+        {
+            # E.g. Source could be PolicySet...so should not be added here
+            continue 
+        }
+
+        $assignment.Id = ""
+        foreach($prop in $assignment.PSObject.Properties)
+        {
+            if($prop.Name -in $keepProperties) { continue }
+            Remove-Property $assignment $prop.Name
+        }
+
+        foreach($prop in $assignment.target.PSObject.Properties)
+        {
+            if($prop.Name -in $keepTargetProperties) { continue }
+            Remove-Property $assignment.target $prop.Name
+        }
+        
+        $ObjectAssignments += $assignment
+    }
+
+    if($ObjectAssignments.Count -eq 0) { return } # No "Direct" assignments
+
+    $htAssignments = @{}
+    $htAssignments.Add((?? $objectType.AssignmentsType "assignments"), @($ObjectAssignments))
+
+    $json = $htAssignments | ConvertTo-Json -Depth 10
+    if($CopyAssignments -ne $true)
+    {
+        $json = Update-JsonForEnvironment $json
+    }
+
+    $objAssign = Invoke-GraphRequest $api -HttpMethod $method -Content $json
+
+    if($objectType.PostImportAssignmentsCommand)
+    {
+        & $objectType.PostImportAssignmentsCommand $obj $objectType $fromFile $objAssign
+    }
+    
+}
 #endregion
 
 #region Migration Info
@@ -1564,12 +1854,13 @@ function Get-GraphMigrationObjectsFromFile
     $migFileName = Get-GraphMigrationTableForImport
     if(-not $migFileName) { return }
 
-    $global:MigrationTableCache = @()
-
     $migFileObj = ConvertFrom-Json (Get-Content $migFileName -Raw) 
 
     # No need to translate migrated objects in the same environment as exported 
     if($migFileObj.TenantId -eq $global:organization.Id) { return }
+
+    $global:MigrationTableCache = @()
+    $global:MigrationTableCacheId = $migFileObj.TenantId
 
     Write-Status "Loading migration objects"
 
@@ -1939,6 +2230,11 @@ function Import-GraphObject
     }
 
     $newObj = (Invoke-GraphRequest -Url $strAPI -Content $json -HttpMethod $method @params)
+
+    if($newObj -and $method -eq "POST")
+    {
+        Write-Log "$($objectType.Title) object imported successfully with id: $($newObj.Id)"
+    }
 
     if($newObj -and $objectType.PostImportCommand)
     {

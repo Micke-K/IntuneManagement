@@ -11,7 +11,7 @@ Objects can be compared based on Properties or Documentatation info.
 
 function Get-ModuleVersion
 {
-    '1.0.4'
+    '1.0.5'
 }
 
 function Invoke-InitializeModule
@@ -370,14 +370,8 @@ function Invoke-BulkCompareNamedObjects
         Write-Log "----------------------------------------------------------------"
         Write-Log "Compare $($item.ObjectType.Title) objects"
         Write-Log "----------------------------------------------------------------"
-
-        $url = $item.ObjectType.API
-        if($item.ObjectType.QUERYLIST)
-        {
-            $url = "$($url.Trim())?$($item.ObjectType.QUERYLIST.Trim())"
-        }
     
-        $graphObjects = @(Get-GraphObjects -Url $url -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
+        $graphObjects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
         
         $nameProp = ?? $item.ObjectType.NameProperty "displayName"
 
@@ -512,14 +506,8 @@ function Start-BulkCompareExportObjects
         if([IO.Directory]::Exists($folder))
         {
             Save-Setting "" "LastUsedFullPath" $folder
-
-            $url = $item.ObjectType.API
-            if($item.ObjectType.QUERYLIST)
-            {
-                $url = "$($url.Trim())?$($item.ObjectType.QUERYLIST.Trim())"
-            }
         
-            $graphObjects = @(Get-GraphObjects -Url $url -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)        
+            $graphObjects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)        
 
             foreach ($fileObj in @(Get-GraphFileObjects $folder -ObjectType $item.ObjectType))
             {                

@@ -12,7 +12,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.1.3'
+    '3.1.4'
 }
 
 function Start-CoreApp
@@ -914,14 +914,17 @@ function Add-SettingCheckBox
 
 function Add-SettingComboBox
 {
-    param($id, $value, $itemsData)
+    param($id, $value, $settingObj)
+
+    $nameProp = ?? $settingObj.DisplayMemberPath "Name"
+    $valueProp = ?? $settingObj.SelectedValuePath "Value"
 
     $xaml =  @"
-<ComboBox $wpfNS Name="$($id)" DisplayMemberPath="Name" SelectedValuePath="ClientId" />
+<ComboBox $wpfNS Name="$($id)" DisplayMemberPath="$($nameProp)" SelectedValuePath="$($valueProp)" />
 "@
     $xamlObj = [Windows.Markup.XamlReader]::Parse($xaml)
 
-    $xamlObj.ItemsSource = $itemsData
+    $xamlObj.ItemsSource = $settingObj.ItemsSource
     if($value)
     {
         $xamlObj.SelectedValue = $value
@@ -979,7 +982,7 @@ function Add-SettingValue
     }
     elseif($settingValue.Type -eq "List")
     {
-        $settingObj = Add-SettingComboBox $id $value $settingValue.ItemsSource
+        $settingObj = Add-SettingComboBox $id $value $settingValue
     }
     else
     {
