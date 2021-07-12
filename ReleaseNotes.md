@@ -6,7 +6,7 @@
 
 - Support for documenting Notifications
 - **PREVIEW/EXPERIMENTAL** - Support for Replace/Update existing profiles/policies during import. 
-  See the Import section in the [Readme](Readme.md#Import) file for more information
+  See the Import section in the [Readme](README.md#Import) file for more information
   This is based on the feature request in [Issue 17](https://github.com/Micke-K/IntuneManagement/issues/17)
 
 **Fixes**
