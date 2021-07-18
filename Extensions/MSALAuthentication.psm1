@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.0.3'
+    '3.0.4'
 }
 
 $global:msalAuthenticator = $null
@@ -837,33 +837,57 @@ function Connect-MSALUser
 
 function Disconnect-MSALUser
 {
-    param($user, [switch]$force)
+    param($user, [switch]$force, [switch]$PassThru)
 
+    $logout = $false
+    $userLoggedOut = $false
     if(-not $user) 
     {
+        $logout = $true
         if(-not $global:MSALToken.Account) { return }
         $user = $global:MSALToken.Account # Logout current user
         $global:MSALToken = $null
-        Clear-MSALCurentUserVaiables  # Only clear variables for current user        
+        Clear-MSALCurentUserVaiables  # Only clear variables for current user
+        $msg = "Do you want to remove the token from the cache?"
+        $title = "Remove token?"
+    }
+    else
+    {
+        $msg = "Are you sure you want to forget user $($user.UserName)?" #!!!
+        $title = "Forget user?"
     }
 
     # ToDo: Clear browser cache
 
     if($user -and $global:MSALApp -and (Get-SettingValue "CacheMSALToken"))
     {
-        if($force -eq $true -or [System.Windows.MessageBox]::Show("Do you want to remove the token from the cache?", "Clear cache?", "YesNo", "Question") -eq "Yes")
+        if($force -eq $true -or [System.Windows.MessageBox]::Show($msg, $title, "YesNo", "Question") -eq "Yes")
         {
             try 
             {
                 [void]$global:MSALApp.RemoveAsync($user).GetAwaiter().GetResult()
+                if($logout -eq $false)
+                {
+                    Write-Log "User $($user.UserName) removed from cache"
+                }
+                $userLoggedOut = $true
             }
             catch 
             {
-                Write-LogError "Failed to remove token from cache" $_.Exception
+                Write-LogError "Failed to remove $($user.UserName) from cache" $_.Exception
             }
         }
     }
-    Get-MSALUserInfo
+
+    if($logout)
+    {
+        Get-MSALUserInfo
+    }
+
+    if($PassThru -eq $true)
+    {
+        $userLoggedOut
+    }
 }
 
 function Get-MSALProfileEllipse
@@ -1079,7 +1103,7 @@ function Get-MSALProfileEllipse
         try 
         {
             #########################################################################################################
-            ### Build Profile Info forcurrent user
+            ### Build Profile Info for current user
             #########################################################################################################
 
             $global:grdProfileInfo = $null
@@ -1132,35 +1156,33 @@ function Get-MSALProfileEllipse
                 try
                 {
                     $grdAccount = [System.Windows.Controls.Grid]::new()
+
                     $cd = [System.Windows.Controls.ColumnDefinition]::new()
-                    $grdAccount.ColumnDefinitions.Add($cd)
+                    $grdAccount.ColumnDefinitions.Add($cd) # Login
+
                     $cd = [System.Windows.Controls.ColumnDefinition]::new()
                     $cd.Width = [double]::NaN   
-                    $grdAccount.ColumnDefinitions.Add($cd)
+                    $grdAccount.ColumnDefinitions.Add($cd) # Forget
+
+                    $grdLogin = [System.Windows.Controls.Grid]::new()
+                    $cd = [System.Windows.Controls.ColumnDefinition]::new()
+                    $grdLogin.ColumnDefinitions.Add($cd)
+                    $cd = [System.Windows.Controls.ColumnDefinition]::new()
+                    $cd.Width = [double]::NaN   
+                    $grdLogin.ColumnDefinitions.Add($cd)
 
                     $icon = Get-XamlObject ($global:AppRootFolder + "\Xaml\Icons\LoggedOnUser.xaml")
                     $icon.Width = 24
                     $icon.Height = 24
                     $icon.Margin = "0,0,5,0"
-                    $grdAccount.Children.Add($icon) | Out-Null
+                    $grdLogin.Children.Add($icon) | Out-Null
 
                     $lbObj = [Windows.Markup.XamlReader]::Parse("<TextBlock $wpfNS>$($account.UserName)<LineBreak/>$($account.HomeAccountId.TenantId)</TextBlock>")
                     $lbObj.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
-                    $grdAccount.Children.Add($lbObj) | Out-Null
-
-                    # Forget user
-                    # Cannot be added to Grid since that is for logging on with user
-                    # Need to rebuild the 
-                    #$icon = Get-XamlObject ($global:AppRootFolder + "\Xaml\Icons\Trash.xaml")
-                    #$icon.Width = 24
-                    #$icon.Height = 24
-                    #$icon.Margin = "0,0,5,0"
-                    #$icon.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
-                    #$icon.HorizontalAlignment = "Right"
-                    #$grdAccount.Children.Add($icon) | Out-Null
+                    $grdLogin.Children.Add($lbObj) | Out-Null
 
                     $lnkButton = [System.Windows.Controls.Button]::new()
-                    $lnkButton.Content = $grdAccount
+                    $lnkButton.Content = $grdLogin
                     $lnkButton.Style = $window.TryFindResource("LinkButton") 
                     $lnkButton.Margin = "0,5,0,0"
                     $lnkButton.Cursor = "Hand"
@@ -1177,8 +1199,36 @@ function Get-MSALProfileEllipse
                         }
                         Write-Status ""
                     })
+
+                    $grdAccount.Children.Add($lnkButton) | Out-Null
+
+                    # Add Forget user icon
+                    $icon = Get-XamlObject ($global:AppRootFolder + "\Xaml\Icons\Bin.xaml")
+                    $icon.Width = 16
+                    $icon.Height = 16
+                    $icon.Margin = "5,5,0,0"
                     
-                    AddGridObject $otherLogins $lnkButton
+                    $lnkButton = [System.Windows.Controls.Button]::new()
+                    $lnkButton.ToolTip = "Forget"
+                    $lnkButton.Content = $icon
+                    $lnkButton.Style = $window.TryFindResource("LinkButton") 
+                    $lnkButton.Margin = "0,5,0,0"
+                    $lnkButton.Cursor = "Hand"
+                    $lnkButton.Tag = $account
+                    $lnkButton.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
+                    $lnkButton.add_Click({
+                        Write-Status "Logging out $($this.Tag.UserName)"
+                        if((Disconnect-MSALUser $this.Tag -PassThru))
+                        {
+                            $this.Parent.Parent.Children.Remove($this.Parent)
+                        }
+                        
+                        Write-Status ""
+                    })
+                                        
+                    $grdAccount.Children.Add($lnkButton) | Out-Null                    
+                    
+                    AddGridObject $otherLogins $grdAccount
                 }
                 catch {}                    
             }           

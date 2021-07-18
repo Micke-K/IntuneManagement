@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.1.3'
+    '3.1.4'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -40,7 +40,7 @@ function Invoke-InitializeModule
             Value = "replace"
         },
         [PSCustomObject]@{
-            Name = "Update (Experimental)"
+            Name = "Update (Preview)"
             Value = "update"
         }
     )
@@ -1338,7 +1338,7 @@ function Import-GraphFile
     try 
     {
         # Clone the object to keep original values
-        $objClone = $file.Object | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+        $objClone = $file.Object | ConvertTo-Json -Depth 20 | ConvertFrom-Json
 
         if($objectType.PreFileImportCommand)
         {
@@ -1391,13 +1391,18 @@ function Reset-GraphObjet
         $objectType = $fileObj.ObjectType
 
         # Clone the object before removing properties
-        $obj = $fileObj.Object | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+        $obj = $fileObj.Object | ConvertTo-Json -Depth 20 | ConvertFrom-Json
         Start-GraphPreImport $obj $objectType
         Remove-Property $obj "Assignments"
         Remove-Property $obj "isAssigned"
     
         if($global:cbImportType.SelectedValue -eq "update")
         {
+            foreach($prop in $objectType.PropertiesToRemoveForUpdate)
+            {
+                Remove-Property $obj $prop
+            }
+
             $params = @{}
             $strAPI = (?? $objectType.APIPATCH $objectType.API) + "/$($curObject.Object.Id)"
             $method = "PATCH"
@@ -1409,7 +1414,7 @@ function Reset-GraphObjet
                     if($ret.ContainsKey("Import") -and $ret["Import"] -eq $false)
                     {
                         # Import handled manually 
-                        return $false
+                        return $true
                     }
 
                     if($ret.ContainsKey("API"))
@@ -1429,7 +1434,7 @@ function Reset-GraphObjet
                 }
             }
 
-            $json = ConvertTo-Json $obj -Depth 10
+            $json = ConvertTo-Json $obj -Depth 15
             if($true) #$global:MigrationTableCacheId -ne $global:Organization.Id)
             {
                 # Call Update-JsonForEnvironment before importing the object
@@ -1527,7 +1532,7 @@ function Import-GraphObjectAssignment
     if(($assignments | measure).Count -eq 0) { return }
 
     $preConfig = $null
-    $clonedAssignments = $assignments | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+    $clonedAssignments = $assignments | ConvertTo-Json -Depth 20 | ConvertFrom-Json
 
     if($objectType.PreImportAssignmentsCommand)
     {
@@ -1575,7 +1580,7 @@ function Import-GraphObjectAssignment
     $htAssignments = @{}
     $htAssignments.Add((?? $objectType.AssignmentsType "assignments"), @($ObjectAssignments))
 
-    $json = $htAssignments | ConvertTo-Json -Depth 10
+    $json = $htAssignments | ConvertTo-Json -Depth 20
     if($CopyAssignments -ne $true)
     {
         $json = Update-JsonForEnvironment $json
@@ -2139,8 +2144,7 @@ function Export-GraphObject
             Remove-Property $obj "Assignments"
         }
 
-        #$obj | ConvertTo-Json -Depth 10 | Out-File ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$((Get-GraphObjectName $obj $objectType)).json")))
-        $obj | ConvertTo-Json -Depth 10 | Out-File -LiteralPath ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$((Get-GraphObjectName $obj $objectType)).json")))
+        $obj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$((Get-GraphObjectName $obj $objectType)).json"))) -Force
         
         if($objectType.PostExportCommand)
         {
@@ -2186,7 +2190,7 @@ function Import-GraphObject
     Write-Log "Import $($objectType.Title) object $((Get-GraphObjectName $obj $objectType))"
     
     # Clone the object before removing properties
-    $objClone = $obj | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+    $objClone = $obj | ConvertTo-Json -Depth 20 | ConvertFrom-Json
 
     Start-GraphPreImport $obj $objectType
 

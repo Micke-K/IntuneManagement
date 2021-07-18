@@ -1,5 +1,18 @@
 # Release Notes
 
+## 3.1.8 - 2021-07-18
+
+**New features**
+
+- Forget cached users - Forget a user by clicking on the bin icon in the user information. This will remove the user from the cached file. It will not remove it from the browser cache.
+- Update existing profiles during import is moved to preview. 
+  **Important:** See the Import section in the [Readme](README.md#Import) file for more information
+  This is based on the feature request in [Issue 17](https://github.com/Micke-K/IntuneManagement/issues/17)
+
+**Fixes**
+
+* Fixed a bug when exporting Settings Catalog. When exporting settings based on key/value pairs, some parts were not converted to json objects. Import worked but not the update. Depth parameter was increased in the ConvertTo-Json functions. 
+
 ## 3.1.7 - 2021-07-12
 
 **New features**

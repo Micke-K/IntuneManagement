@@ -39,17 +39,27 @@ The script can import the exported json files in multiple ways.
 
 * **Always import:** The script will try to import the file. It will not check if it exists. 
   This is the default behavior
+  
 * **Skip if object exists:** The script will look if there is an existing object with the same name and type. It will not import the file if existing object is detected
+
 * **Replace (Preview):** If a existing object is detected, the script will 
+  
   * Import the file without assignments
   * Copy assignments from the existing object
   * Run PostReplace commands - Priority will be set for Enrollment Restrictions etc.
   * Update PolicySets object(s) to use the new imported object (detected by policySet assignments)
   * Delete the original object 
-* **Update (Experimental):** This will update the existing object.
-  Note: This is not fully implemented yet. It only works on a few object types 
+  
+* **Update (Preview):** This will update the existing object.
+  
+  Update does not support all the properties that import does and object types behaves differently during update e.g. Settings for Endpoint Security objects will not be cleared. There is no API for removing settings only adding. If a settings does not in the import file, the existing setting will be set to Not Configured. Settings Catalog replaces the whole settings property during update. 
+  
+  This has been tested with all supported object types *except* Import Scripts (Shell), Android OEM Config and Apple Enrollment Types.
+  
+  
+  Each application type works differently. Update functionality has been tested on Win32, Windows MSI LoB, iOS Store, Microsoft Store and Microsoft 365 (Windows and MacOS).
 
-**WARNING:** Use Replace with caution!  Replace will delete the existing object after the imported object is updated but could cause issues in the environment if something in the process goes wrong. Verify the process in a test environment before using this!  
+**WARNING:** Use Replace with caution!  Replace will delete the existing object after a new object is imported and the assignments are copied, but it could cause issues in the environment if something in the process goes wrong. Replacing single objects can break references e.g. replacing an Application can break AutoPilot profiles, App Protection and App Configuration policies. Verify the process in a test environment before using this!  
 
 **Recommendation:** Backup all policies before running Replace/Update.
 

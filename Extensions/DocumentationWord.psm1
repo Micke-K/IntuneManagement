@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.0.1'
+    '1.0.2'
 }
 
 function Invoke-InitializeModule
@@ -53,6 +53,10 @@ function Invoke-InitializeModule
         Status="TableHeaders.status"
         CombinedValueWithLabel="TableHeaders.value"
         CombinedValue="TableHeaders.value"
+        useDeviceLicensing="TableHeaders.licenseType"
+        #filterMode="Filter mode" # Not in any sring file yet
+
+        
     }    
 }
 

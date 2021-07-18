@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.7'
+    '3.1.8'
 }
 
 function Invoke-InitializeModule
@@ -83,7 +83,7 @@ function Invoke-InitializeModule
         Description = "Manages Intune environments. This view can be used for copying objects in an Intune environment. It can also be used for backing up an entire Intune environment and cloning the Intune environment into another tenant."
         ID="IntuneGraphAPI" 
         ViewPanel = $viewPanel 
-        ItemChanged = { Show-GraphObjects; Write-Status ""}
+        ItemChanged = { Show-GraphObjects; Invoke-ModuleFunction "Invoke-GraphObjectsChanged"; Write-Status ""}
         Deactivating = { Invoke-EMDeactivateView }
         Activating = { Invoke-EMActivatingView  }
         Authentication = (Get-MSALAuthenticationObject)
@@ -172,9 +172,11 @@ function Invoke-InitializeModule
         PostGetCommand = { Start-PostGetIntuneBranding @args }
         PostExportCommand = { Start-PostExportIntuneBranding  @args }
         PreDeleteCommand = { Start-PreDeleteIntuneBranding @args }
+        PreUpdateCommand = { Start-PreUpdateIntuneBranding @args }
         Permissons=@("DeviceManagementApps.ReadWrite.All")
         Icon = "Branding"
         SkipRemoveProperties = @('Id') # Id is removed by PreImport. Required for default profile
+        PropertiesToRemoveForUpdate = @('isDefaultProfile','disableClientTelemetry')
         GroupId = "TenantAdmin"
     })
 
@@ -212,10 +214,12 @@ function Invoke-InitializeModule
         PreReplaceCommand = { Start-PreReplaceEnrollmentRestrictions @args } # Note: Uses same PreReplaceCommand as restrictions
         PostReplaceCommand = { Start-PostReplaceEnrollmentRestrictions @args } # Note: Uses same PostReplaceCommand as restrictions
         PreFilesImportCommand = { Start-PreFilesImportEnrollmentRestrictions @args } # Note: Uses same PreFilesImportCommand as restrictions
+        #PreUpdateCommand = { Start-PreUpdateEnrollmentRestrictions @args } # Note: Uses same PreUpdateCommand as restrictions
         QUERYLIST = "`$filter=endsWith(id,'Windows10EnrollmentCompletionPageConfiguration')"
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         SkipRemoveProperties = @('Id')
         AssignmentsType = "enrollmentConfigurationAssignments"
+        PropertiesToRemoveForUpdate = @('priority')
         GroupId = "WinEnrollment"
     })
 
@@ -231,6 +235,8 @@ function Invoke-InitializeModule
         PreReplaceCommand = { Start-PreReplaceEnrollmentRestrictions @args }
         PostReplaceCommand = { Start-PostReplaceEnrollmentRestrictions @args }
         PreFilesImportCommand = { Start-PreFilesImportEnrollmentRestrictions @args }
+        #PreUpdateCommand = { Start-PreUpdateEnrollmentRestrictions @args }
+        PropertiesToRemoveForUpdate = @('priority')
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         SkipRemoveProperties = @('Id')
         AssignmentsType = "enrollmentConfigurationAssignments"
@@ -292,6 +298,8 @@ function Invoke-InitializeModule
         Icon="CustomAttributes"
         GroupId = "CustomAttributes" # MacOS Settings
         DetailExtension = { Add-ScriptExtensions @args }
+        PropertiesToRemoveForUpdate = @('customAttributeName','customAttributeType','displayName')
+        #PreUpdateCommand = { Start-PreUpdateMacCustomAttributes @args }
     })    
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -316,8 +324,10 @@ function Invoke-InitializeModule
         PreImportCommand = { Start-PreImportAppProtection @args }
         PostImportCommand = { Start-PostImportAppProtection  @args }
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsAppProtection @args }
+        PreUpdateCommand = { Start-PreUpdateAppProtection  @args }
         ExportFullObject = $true
         PropertiesToRemove = @('exemptAppLockerFiles')
+        PropertiesToRemoveForUpdate = @("protectedAppLockerFiles","version") # ToDo: !!! Add support for protectedAppLockerFiles?
         Permissons=@("DeviceManagementApps.ReadWrite.All")
         Dependencies = @("Applications")
         GroupId = "AppProtection"
@@ -334,6 +344,7 @@ function Invoke-InitializeModule
         PreImportCommand = { Start-PreImportAppProtection @args }
         PostImportCommand = { Start-PostImportAppProtection  @args }
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsAppProtection @args }
+        PreUpdateCommand = { Start-PreUpdateAppConfigurationApp @args }
         Permissons=@("DeviceManagementApps.ReadWrite.All")
         Dependencies = @("Applications")
         Icon = "AppConfiguration"
@@ -369,6 +380,7 @@ function Invoke-InitializeModule
         Expand="categories,assignments" # ODataMetadata is set to minimal so assignments can't be autodetected
         ODataMetadata="minimal" # categories property not supported with ODataMetadata full
         PostFileImportCommand = { Start-PostFileImportApplications @args }
+        PreUpdateCommand = { Start-PreUpdateApplication  @args }
         GroupId = "Apps"
     })
 
@@ -392,6 +404,7 @@ function Invoke-InitializeModule
         Expand = "Items"
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsPolicySets @args }
         PreImportCommand = { Start-PreImportPolicySets @args }
+        PreUpdateCommand = { Start-PreUpdatePolicySets @args }
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         ImportOrder = 2000 # Policy Sets reference other objects so make sure it is imported last
         Dependencies = @("Applications","AppConfiguration","AppProtection","AutoPilot","EnrollmentRestrictions","EnrollmentStatusPage","DeviceConfiguration","AdministrativeTemplates","SettingsCatalog","CompliancePolicies")
@@ -407,6 +420,7 @@ function Invoke-InitializeModule
         #ExportFullObject = $false
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         GroupId = "WinUpdatePolicies"
+        PropertiesToRemoveForUpdate = @('version','qualityUpdatesPauseStartDate','featureUpdatesPauseStartDate','qualityUpdatesWillBeRolledBack','featureUpdatesWillBeRolledBack')
     })
     
     Add-ViewItem (New-Object PSObject -Property @{
@@ -416,6 +430,8 @@ function Invoke-InitializeModule
         API = "/deviceManagement/windowsFeatureUpdateProfiles"
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         GroupId = "WinFeatureUpdates"
+        PropertiesToRemoveForUpdate = @('deployableContentDisplayName','endOfSupportDate')
+        #PreUpdateCommand = { Start-PreUpdateFeatureUpdates @args } 
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -426,6 +442,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon = "UpdatePolicies"
         GroupId = "WinQualityUpdates"
+        PropertiesToRemoveForUpdate = @('releaseDateDisplayName','deployableContentDisplayName')
     })    
 
     # Locations are not FULLY supported 
@@ -459,6 +476,7 @@ function Invoke-InitializeModule
         Expand="Settings"
         Icon="DeviceConfiguration"
         PostExportCommand = { Start-PostExportSettingsCatalog  @args }
+        PreUpdateCommand = { Start-PreUpdateSettingsCatalog  @args }
         GroupId = "DeviceConfiguration"
     })   
     
@@ -474,6 +492,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementRBAC.ReadWrite.All")
         ImportOrder = 20
         #expand=roleassignments
+        PropertiesToRemoveForUpdate = @('isBuiltInRoleDefinition','isBuiltIn','roleAssignments') ### !!! ToDo: Add support for roleAssignments
         GroupId = "TenantAdmin"
     })
 
@@ -500,6 +519,7 @@ function Invoke-InitializeModule
         PreImportCommand = { Start-PreImportNotifications @args }
         PostFileImportCommand = { Start-PostFileImportNotifications @args }
         PostCopyCommand = { Start-PostCopyNotifications @args }
+        PropertiesToRemoveForUpdate = @('defaultLocale','localizedNotificationMessages') ### !!! ToDo: Add support for localizedNotificationMessages
         GroupId = "CompliancePolicies"
     })    
     
@@ -527,6 +547,7 @@ function Invoke-InitializeModule
         ViewID = "IntuneGraphAPI"
         API = "/deviceManagement/appleUserInitiatedEnrollmentProfiles"
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
+        PropertiesToRemoveForUpdate = @('platform')
         GroupId = "AppleEnrollment"
     })
     
@@ -538,6 +559,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         ImportOrder = 15
         GroupId = "TenantAdmin"
+        PropertiesToRemoveForUpdate = @('platform')
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -547,10 +569,13 @@ function Invoke-InitializeModule
         QUERYLIST = "`$filter=isGlobalScript%20eq%20false" # Looks like filters are not working for deviceHealthScripts
         API = "/deviceManagement/deviceHealthScripts"
         PreDeleteCommand = { Start-PreDeleteDeviceHealthScripts @args }
+        PreImportCommand = { Start-PreImportDeviceHealthScripts @args }
+        PreUpdateCommand = { Start-PreUpdateDeviceHealthScripts @args }
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         GroupId = "EndpointAnalytics"
         Icon = "Report"
         AssignmentsType = "deviceHealthScriptAssignments"
+        PropertiesToRemoveForUpdate = @('version','isGlobalScript','highestAvailableVersion')
     })
 }
 
@@ -694,6 +719,7 @@ function Set-EMViewPanel
             # ToDo: Move this to view view object
             $txtFilter = $this.Parent.FindName("txtFilter")
             if($txtFilter) { $txtFilter.Text = "" }
+            
             Show-GraphObjects
             Write-Status ""
         })
@@ -783,7 +809,7 @@ function Start-PostExportEndpointSecurity
     param($obj, $objectType, $path)
 
     $settings = Invoke-GraphRequest -Url "$($objectType.API)/$($obj.id)/settings"
-    $settingsJson = "{ `"settings`": $((ConvertTo-Json  $settings.value -Depth 10 ))`n}"
+    $settingsJson = "{ `"settings`": $((ConvertTo-Json  $settings.value -Depth 20 ))`n}"
     $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType)))_Settings.json"
     $settingsJson | Out-File -LiteralPath $fileName -Force
 }
@@ -796,7 +822,7 @@ function Start-PostFileImportEndpointSecurity
     if($settings)
     {
         Start-GraphPreImport $settings
-        Invoke-GraphRequest -Url "$($objectType.API)/$($obj.id)/updateSettings" -Body ($settings | ConvertTo-Json -Depth 10) -Method "POST"
+        Invoke-GraphRequest -Url "$($objectType.API)/$($obj.id)/updateSettings" -Body ($settings | ConvertTo-Json -Depth 20) -Method "POST"
     }    
 }
 
@@ -824,7 +850,7 @@ function Start-PostCopyEndpointSecurity
     if($settings)
     {
         $settingsObj = New-object PSObject @{ "Settings" = $settings.Value }
-        Invoke-GraphRequest -Url "$($objectType.API)/$($objNew.id)/updateSettings" -Body ($settingsObj | ConvertTo-Json -Depth 10) -Method "POST"
+        Invoke-GraphRequest -Url "$($objectType.API)/$($objNew.id)/updateSettings" -Body ($settingsObj | ConvertTo-Json -Depth 20) -Method "POST"
     }
 }
 
@@ -861,7 +887,7 @@ function Start-PreUpdateEndpointSecurity
         $tmpObj = [PSCustomObject]@{
             settings = $curValues
         }
-        $json = ConvertTo-Json $tmpObj -Depth 10
+        $json = ConvertTo-Json $tmpObj -Depth 20
 
         # Set all existing values to null
         # Note: This will not remove them from the configured list just set them Not Configured
@@ -874,7 +900,7 @@ function Start-PreUpdateEndpointSecurity
     }
     Start-GraphPreImport $tmpObj.settings 
 
-    $json = ConvertTo-Json $tmpObj -Depth 10
+    $json = ConvertTo-Json $tmpObj -Depth 20
     Invoke-GraphRequest -Url $strAPI -Content $json -HttpMethod "POST" | Out-Null
 
     Remove-Property $obj "templateId"
@@ -897,7 +923,7 @@ function Start-PostFileImportDeviceConfiguration
             $privacyObj = [PSCustomObject]@{
                 windowsPrivacyAccessControls = $tmpObj.privacyAccessControls
             }
-            $json =  $privacyObj | ConvertTo-Json -Depth 10
+            $json =  $privacyObj | ConvertTo-Json -Depth 20
             $ret = Invoke-GraphRequest -Url "deviceManagement/deviceConfigurations('$($obj.Id)')/windowsPrivacyAccessControls" -Body $json -Method "POST"
         }
     }
@@ -914,7 +940,7 @@ function Start-PostCopyDeviceConfiguration
             $privacyObj = [PSCustomObject]@{
                 windowsPrivacyAccessControls = $objCopyFrom.privacyAccessControls
             }
-            $json =  $privacyObj | ConvertTo-Json -Depth 10
+            $json =  $privacyObj | ConvertTo-Json -Depth 20
             $ret = Invoke-GraphRequest -Url "deviceManagement/deviceConfigurations('$($objNew.Id)')/windowsPrivacyAccessControls" -Body $json -Method "POST"
         }
     }    
@@ -949,7 +975,7 @@ function Start-PreUpdateCompliancePolicies
         deviceComplianceScheduledActionForRules = $obj.scheduledActionsForRule
     }
 
-    $json = ConvertTo-Json $tmpObj -Depth 10
+    $json = ConvertTo-Json $tmpObj -Depth 20
     Invoke-GraphRequest -Url $strAPI -Content $json -HttpMethod "POST" | Out-Null
 
     Remove-Property $obj "scheduledActionsForRule"
@@ -994,7 +1020,7 @@ function Start-PreImportIntuneBranding
         # Create a new profile with basic info
         # Patch the profile with all the info
 
-        $global:brandingClone = $obj | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+        $global:brandingClone = $obj | ConvertTo-Json -Depth 20 | ConvertFrom-Json
 
         foreach($prop in ($obj.PSObject.Properties | Where {$_.Name -notin @("profileName","profileDescription","roleScopeTagIds")})) #"customPrivacyMessage"
         {
@@ -1014,7 +1040,7 @@ function Start-PostImportIntuneBranding
     {
         Remove-Property $global:brandingClone $prop
     }
-    $json = ($global:brandingClone | ConvertTo-Json -Depth 10)
+    $json = ($global:brandingClone | ConvertTo-Json -Depth 20)
     $ret = Invoke-GraphRequest -Url "$($objectType.API)/$($obj.Id)" -Body $json -Method "PATCH"
 }
 
@@ -1054,6 +1080,19 @@ function Start-PreDeleteIntuneBranding
     if($obj.isDefaultProfile -eq $true)
     {
         @{ "Delete" = $false }
+    }
+}
+
+function Start-PreUpdateIntuneBranding
+{
+    param($obj, $objectType, $curObject, $fromObj)
+
+    if($curObject.Object.isDefaultProfile)
+    {
+        foreach($prop in @("profileName","isDefaultProfile","disableClientTelemetry","profileDescription"))
+        {
+            Remove-Property $obj $prop
+        }
     }
 }
 
@@ -1305,7 +1344,7 @@ function Start-PostImportAppProtection
                 $tmp = $newObject."@odata.type".Split('.')[-1]
                 $objectClass = Get-GraphObjectClassName $tmp
 
-                Invoke-GraphRequest -Url "/deviceAppManagement/$objectClass/$($obj.Id)/targetApps" -Content "{ apps: $(ConvertTo-Json $global:ImportObjectInfo.Apps -Depth 10)}" -HttpMethod POST | Out-Null
+                Invoke-GraphRequest -Url "/deviceAppManagement/$objectClass/$($obj.Id)/targetApps" -Content "{ apps: $(ConvertTo-Json $global:ImportObjectInfo.Apps -Depth 20)}" -HttpMethod POST | Out-Null
             }
             catch {}
         }
@@ -1321,6 +1360,71 @@ function Start-PreImportAssignmentsAppProtection
     {
         @{"API"="/deviceAppManagement/$($global:ImportObjectClass)/$($obj.Id)/assign"}
     }
+}
+
+function Start-PreUpdateAppConfigurationApp
+{
+    param($obj, $objectType, $curObject, $fromObj)
+    
+    if($obj.Apps)
+    {
+        try
+        {
+            Write-Log "Update App Configuruation Apps"
+
+            $json = [PSCustomObject]@{ apps = @($obj.Apps) } | ConvertTo-Json -Depth 10
+            $objectClass = 'targetedManagedAppConfigurations' #!!!Get-GraphObjectClassName $obj
+
+            Invoke-GraphRequest -Url "/deviceAppManagement/$objectClass/$($curObject.Object.Id)/targetApps" -Content $json -HttpMethod POST | Out-Null
+        }
+        catch {}
+    }
+
+    Remove-Property $obj "apps"
+}
+
+function Start-PreUpdateAppProtection
+{
+    param($obj, $objectType, $curObject, $fromObj)
+
+    if($curObject.Object.'@OData.Type' -eq "#microsoft.graph.windowsInformationProtectionPolicy")
+    {
+        $api = "/deviceAppManagement/windowsInformationProtectionPolicies/$($curObject.Object.Id)"
+    }
+    elseif($curObject.Object.'@OData.Type' -eq "#microsoft.graph.mdmWindowsInformationProtectionPolicy")
+    {
+        $api = "/deviceAppManagement/mdmWindowsInformationProtectionPolicies/$($curObject.Object.Id)"
+    }
+    elseif($curObject.Object.'@OData.Type' -eq "#microsoft.graph.iosManagedAppProtection")
+    {
+        $api = "/deviceAppManagement/iosManagedAppProtections/$($curObject.Object.Id)"
+    }
+    elseif($curObject.Object.'@OData.Type' -eq "#microsoft.graph.androidManagedAppProtection")
+    {
+        $api = "/deviceAppManagement/androidManagedAppProtections/$($curObject.Object.Id)"        
+    }
+    else
+    {
+        return (Start-PreUpdateAppConfigurationApp $obj $objectType $curObject $fromObj)
+    }
+    
+    if($obj.Apps)
+    {
+        try
+        {
+            Write-Log "Update App Protection Apps"
+
+            $json = [PSCustomObject]@{ apps = @($obj.Apps) } | ConvertTo-Json -Depth 10
+
+            Invoke-GraphRequest -Url "$api/targetApps" -Content $json -HttpMethod POST | Out-Null
+        }
+        catch {}
+        
+        Remove-Property $obj "apps"
+    }
+
+    @{ "API" = $api }
+
 }
 #endregion
 
@@ -1397,6 +1501,26 @@ function Start-PostFileImportApplications
         Write-Log "Unsupported application type $appType. File will not be uploaded" 2    
     }
 }
+
+function Start-PreUpdateApplication
+{
+    param($obj, $objectType, $curObject, $fromObj)
+
+    if($curObject.Object.'@OData.type' -eq "#microsoft.graph.windowsMobileMSI")
+    {
+        Remove-Property $obj "useDeviceContext"
+    }
+    elseif($curObject.Object.'@OData.type' -eq "#microsoft.graph.officeSuiteApp")
+    {
+        Remove-Property $obj "officeConfigurationXml"
+        Remove-Property $obj "officePlatformArchitecture"
+        Remove-Property $obj "developer"
+        Remove-Property $obj "owner"
+        Remove-Property $obj "publisher"
+    }
+
+    Remove-Property $obj "appStoreUrl"
+}
 #endregion
 
 #region Group Policy/Administrative Templates functions
@@ -1459,7 +1583,7 @@ function Import-GPOSetting
             Start-GraphPreImport $setting
 
             # Import each setting for the Administrative Template profile
-            Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations/$($obj.id)/definitionValues" -Content (ConvertTo-Json $setting -Depth 10) -HttpMethod POST | Out-Null
+            Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations/$($obj.id)/definitionValues" -Content (ConvertTo-Json $setting -Depth 20) -HttpMethod POST | Out-Null
         }
     }
 }
@@ -1471,7 +1595,7 @@ function Start-PostExportAdministrativeTemplate
     # Collect and save all the settings of the Administrative Templates profile
     $settings = Get-GPOObjectSettings $obj
     $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType)))_Settings.json"
-    ConvertTo-Json $settings -Depth 10 | Out-File -LiteralPath $fileName -Force
+    ConvertTo-Json $settings -Depth 20 | Out-File -LiteralPath $fileName -Force
 }
 
 function Start-PostCopyAdministrativeTemplate
@@ -1573,6 +1697,58 @@ function Start-PreImportPolicySets
     }
 }
 
+function Start-PreUpdatePolicySets
+{
+    param($obj, $objectType, $curObject, $fromObj)
+
+    Start-PreImportPolicySets $obj $objectType
+
+    $curObject = Get-GraphObject $curObject.Object $objectType
+
+    # Update ref object in the json
+    # Used when importing in a different environment
+    $jsonObj = ConvertTo-Json $obj -Depth 15
+    $updateObj = Update-JsonForEnvironment $jsonObj | ConvertFrom-Json
+
+    $addedItems = @()
+    $updatedItems = @()
+    $deletedItems = @()
+
+    foreach($item in $updateObj.items)
+    {
+        if(($curObject.Object.items | Where payloadId -eq $item.payloadId))
+        {
+            $updatedItems += $item
+        }
+        else
+        {
+            $addedItems += $item
+        }
+    }
+
+    foreach($item in $curObject.Object.items)
+    {
+        if(-not ($updateObj.Items | Where payloadId -eq $item.payloadId))
+        {
+            $deletedItems += $item.id
+        }
+    }
+
+    $updateItemObj = [PSCustomObject]@{
+        addedPolicySetItems = $addedItems
+        deletedPolicySetItems = $deletedItems
+        updatedPolicySetItems = $updatedItems
+    }
+
+    Write-Log "Update Policy Set items. Add: $($addedItems.Count), Update: $($updatedItems.Count), Delete: $($deletedItems.Count)"
+
+    $updateApi = "/deviceAppManagement/policySets/$($curObject.Object.Id)/update"
+    $json = $updateItemObj | ConvertTo-Json -Depth 15
+
+    Invoke-GraphRequest -Url $updateApi -HttpMethod "POST" -Content $json
+    Remove-Property $obj "items"
+}
+
 function Update-EMPolicySetAssignment
 {
     param($assignment, $sourceObject, $newObject, $objectType)
@@ -1595,8 +1771,8 @@ function Update-EMPolicySetAssignment
 
     $api = "/deviceAppManagement/policySets/$($assignment.SourceId)/update"
 
-    $curItemClone = $curItem | ConvertTo-Json -Depth 10 | ConvertFrom-Json
-    $newItem = $curItem | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+    $curItemClone = $curItem | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+    $newItem = $curItem | ConvertTo-Json -Depth 20 | ConvertFrom-Json
     $newItem.payloadId = $newObject.Id
     if($newItem.guidedDeploymentTags -is [String] -and [String]::IsNullOrEmpty($newItem.guidedDeploymentTags))
     {
@@ -1617,7 +1793,7 @@ function Update-EMPolicySetAssignment
     $update.Add('updatedPolicySetItems', @())
     $update.Add('deletedPolicySetItems',@($curItemClone.Id))
 
-    $json = $update | ConvertTo-Json -Depth 10
+    $json = $update | ConvertTo-Json -Depth 20
 
     Write-Log "Update PolicySet $($psObj.displayName) - Replace: $((Get-GraphObjectName $newObject $objectType))"
 
@@ -1668,7 +1844,7 @@ function Start-PostExportRoleDefinitions
         if($roleAssignmentsArr.Count -gt 0)
         {
             $tmpObj.RoleAssignments = $roleAssignmentsArr
-            $tmpObj | ConvertTo-Json -Depth 10 | Out-File -LiteralPath $fileName
+            $tmpObj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath $fileName
         }
     }
 }
@@ -1711,7 +1887,7 @@ function Start-PostFileImportRoleDefinitions
             }
 
             # This will update GroupIds
-            $json = Update-JsonForEnvironment (ConvertTo-Json $roleAssignmentObj -Depth 10)
+            $json = Update-JsonForEnvironment (ConvertTo-Json $roleAssignmentObj -Depth 20)
 
             Write-Log "Import Role Assignments"
             Invoke-GraphRequest -Url "/deviceManagement/roleAssignments"  -Body $json -Method "POST"
@@ -1726,6 +1902,13 @@ function Start-PostExportSettingsCatalog
     param($obj, $objectType, $path)
 
     Add-EMAssignmentsToExportFile $obj $objectType $path
+}
+
+function Start-PreUpdateSettingsCatalog
+{
+    param($obj, $objectType, $curObject, $fromObj)
+
+    @{"Method"="PUT"}
 }
 
 #endregion
@@ -1749,7 +1932,7 @@ function Start-PostFileImportNotifications
     foreach($localizedNotificationMessage in $tmpObj.localizedNotificationMessages)
     {
         Start-GraphPreImport $localizedNotificationMessage $objectType
-        Invoke-GraphRequest -Url "$($objectType.API)/$($obj.id)/localizedNotificationMessages" -Body ($localizedNotificationMessage | ConvertTo-Json -Depth 10) -Method "POST"
+        Invoke-GraphRequest -Url "$($objectType.API)/$($obj.id)/localizedNotificationMessages" -Body ($localizedNotificationMessage | ConvertTo-Json -Depth 20) -Method "POST"
     }
 }
 
@@ -1760,7 +1943,7 @@ function Start-PostCopyNotifications
     foreach($localizedNotificationMessage in $objCopyFrom.localizedNotificationMessages)
     {
         Start-GraphPreImport $localizedNotificationMessage $objectType
-        Invoke-GraphRequest -Url "$($objectType.API)/$($objNew.id)/localizedNotificationMessages" -Body ($localizedNotificationMessage | ConvertTo-Json -Depth 10) -Method "POST"
+        Invoke-GraphRequest -Url "$($objectType.API)/$($objNew.id)/localizedNotificationMessages" -Body ($localizedNotificationMessage | ConvertTo-Json -Depth 20) -Method "POST"
     }
 }
 #endregion
@@ -1851,7 +2034,7 @@ function Start-PostReplaceEnrollmentRestrictions
     $priority = [PSCustomObject]@{
         priority = $sourceObj.Priority
     }
-    $json = $priority | ConvertTo-Json -Depth 10
+    $json = $priority | ConvertTo-Json -Depth 20
 
     Write-Log "Update priority for $($obj.displayName) to $($sourceObj.Priority)"
     Invoke-GraphRequest $api -HttpMethod "POST" -Content $json
@@ -1862,6 +2045,13 @@ function Start-PreFilesImportEnrollmentRestrictions
     param($objectType, $filesToImport)
 
     $filesToImport | sort-object -property @{e={$_.Object.priority}} 
+}
+
+function Start-PreUpdateEnrollmentRestrictions
+{
+    param($obj, $objectType, $curObject, $fromObj)
+
+    Remove-Property $obj "priority"
 }
 
 #endregion
@@ -1916,9 +2106,29 @@ function Start-PreDeleteDeviceHealthScripts
 {
     param($obj, $objectType)
 
-    if($obj.IsGlobal -eq $true)
+    if($obj.isGlobalScript -eq $true)
     {
         @{ "Delete" = $false }
+    }
+}
+
+function Start-PreImportDeviceHealthScripts
+{
+    param($obj, $objectType, $file, $assignments)
+
+    if($obj.isGlobalScript -eq $true)
+    {
+        @{ "Import" = $false }
+    }
+}
+
+function Start-PreUpdateDeviceHealthScripts
+{
+    param($obj, $objectType, $curObject, $fromObj)
+
+    if($curObject.Object.isGlobalScript -eq $true)
+    {
+        @{ "Import" = $false }
     }
 }
 
@@ -1944,7 +2154,7 @@ function Save-EMDefaultPolicy
                     # Clean up from old version of the script that used the wrong name for Default policies
                     try { [IO.File]::Delete($oldFile) | Out-Null } Catch {}
                 }
-                $obj | ConvertTo-Json -Depth 10 | Out-File -LiteralPath "$path\$((Remove-InvalidFileNameChars $fileName)).json"
+                $obj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath "$path\$((Remove-InvalidFileNameChars $fileName)).json"
             }
         }
         catch {}
@@ -2003,7 +2213,7 @@ function Add-EMAssignmentsToExportFile
         {
             $tmpObj.Assignments = $assignments
         }
-        ConvertTo-Json $tmpObj -Depth 10 | Out-File -LiteralPath $fileName -Force
+        ConvertTo-Json $tmpObj -Depth 20 | Out-File -LiteralPath $fileName -Force
     }
 }
 
@@ -2033,12 +2243,39 @@ function Add-EMAssignmentsToObject
             Remove-Property $assignment.target $prop.Name
         }
 
-        $json = Update-JsonForEnvironment ($assignment | ConvertTo-Json -Depth 10)
+        $json = Update-JsonForEnvironment ($assignment | ConvertTo-Json -Depth 20)
         Invoke-GraphRequest -Url $api -Body $json -Method "POST" | Out-Null
     }
     @{"Import"=$false}
 }
 
 #endregion
+
+#region Mac Custom Scripts
+
+function Start-PreUpdateMacCustomAttributes
+{
+    param($obj, $objectType, $curObject, $fromObj)
+
+    foreach($prop in @('customAttributeName','customAttributeType','displayName'))
+    {
+        Remove-Property $obj $prop
+    }
+}
+
+#endregion
+
+#region Mac Feature Updates
+function Start-PreUpdateFeatureUpdates
+{
+    param($obj, $objectType, $curObject, $fromObj)
+
+    foreach($prop in @('deployableContentDisplayName','endOfSupportDate'))
+    {
+        Remove-Property $obj $prop
+    }
+}
+#endregion
+
 
 Export-ModuleMember -alias * -function *

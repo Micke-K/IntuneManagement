@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.0.4'
+    '1.0.5'
 }
 
 function Invoke-InitializeModule
@@ -55,6 +55,16 @@ function Invoke-ShowMainWindow
     $global:spSubMenu.RegisterName($button.Name, $button)
 
     $global:spSubMenu.Children.Insert(0, $button)
+}
+
+function Invoke-GraphObjectsChanged
+{
+    $btnDocument = $global:spSubMenu.Children | Where-Object { $_.Name -eq "btnDocument" }
+    $btnExport = $global:spSubMenu.Children | Where-Object { $_.Name -eq "btnExport" }
+    if($btnDocument -and $btnExport)
+    {
+        $btnDocument.Visibility = $btnExport.Visibility 
+    }
 }
 
 function Invoke-ViewActivated
@@ -2889,7 +2899,22 @@ function Invoke-TranslateAssignments
             {
                 if(($assignment.settings.PSObject.Properties | Where Name -eq $settingProp))
                 {
-                    $assignmentSettingProps.Add($settingProp, $assignment.settings.$settingProp)
+                    if($settingProp -eq "useDeviceLicensing")
+                    {
+                        if($assignment.settings.$settingProp -eq $true)
+                        {
+                            $value = Get-LanguageString "SettingDetails.licenseTypeDevice"
+                        }
+                        else
+                        {
+                            $value = Get-LanguageString "SettingDetails.licenseTypeUser"
+                        }
+                    }
+                    else
+                    {
+                        $value = $assignment.settings.$settingProp
+                    }
+                    $assignmentSettingProps.Add($settingProp, $value)
                 }
             }
         }

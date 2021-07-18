@@ -10,7 +10,7 @@ This module is for the Endpoint Info View. It shows read-only objects in Intune
 #>
 function Get-ModuleVersion
 {
-    '3.1.2'
+    '3.1.3'
 }
 
 function Invoke-InitializeModule
@@ -21,7 +21,7 @@ function Invoke-InitializeModule
         Description = "Displays read-only information in Intune."
         ID = "EMInfoGraphAPI" 
         ViewPanel = $viewPanel 
-        ItemChanged = { Show-GraphObjects; Write-Status ""}
+        ItemChanged = { Show-GraphObjects; Invoke-ModuleFunction "Invoke-GraphObjectsChanged"; Write-Status ""}
         Activating = { Invoke-EMInfoActivatingView }
         Authentication = (Get-MSALAuthenticationObject)
         Authenticate = { Invoke-EMInfoAuthenticateToMSAL }
@@ -37,7 +37,7 @@ function Invoke-InitializeModule
         Id = "BaselineTemplates"
         ViewID = "EMInfoGraphAPI"
         API = "/deviceManagement/templates"
-        ShowButtons = @("View")
+        ShowButtons = @("Export","View")
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon="EndpointSecurity"        
     })
@@ -48,7 +48,7 @@ function Invoke-InitializeModule
         ViewID = "EMInfoGraphAPI"
         ViewProperties = @("bindStatus", "lastAppSyncDateTime", "ownerUserPrincipalName")
         API = "/deviceManagement/androidManagedStoreAccountEnterpriseSettings"
-        ShowButtons = @("View")
+        ShowButtons = @("Export","View")
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")    
     })
 
@@ -57,7 +57,7 @@ function Invoke-InitializeModule
         Id = "AndroidEnrolmentProfiles"
         ViewID = "EMInfoGraphAPI"
         API = "deviceManagement/androidDeviceOwnerEnrollmentProfiles"
-        ShowButtons = @("View")
+        ShowButtons = @("Export","View")
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon = "AndroidCOWP"
     })    
@@ -68,7 +68,7 @@ function Invoke-InitializeModule
         ViewID = "EMInfoGraphAPI"
         ViewProperties = @("appleId", "state", "appleId", "id")
         API = "/deviceAppManagement/vppTokens"
-        ShowButtons = @("View")
+        ShowButtons = @("Export","View")
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")    
     })
 
@@ -78,7 +78,7 @@ function Invoke-InitializeModule
         ViewID = "EMInfoGraphAPI"
         ViewProperties = @("tokenName", "appleIdentifier", "tokenExpirationDateTime", "id")
         API = "/deviceManagement/depOnboardingSettings/?`$top=100"
-        ShowButtons = @("View")
+        ShowButtons = @("Export","View")
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")    
     })
 
