@@ -29,7 +29,7 @@ Start the script by running **Start.cmd**, **Start-WithConsole.cmd** or **Start-
 
 ## Documentation
 
-This script has an extension that can document profiles and policies in Intune. The output is using the same language string as the Intune portal.
+This script has an extension that can document profiles and policies in Intune. The output is using the same language strings as the Intune portal.
 
 See [Documentation](Documentation.md) for more information
 
@@ -98,6 +98,24 @@ The output CSV can either be one file for ALL objects or one file for each Objec
 Bulk copy can be used to clone objects based on a name pattern. This can be used in the same scenario as Bulk Compare where the object names includes an environment identifier. The application will identify all objects matching the source pattern and copy each object with a new name matching the 'Copy object name pattern'. The object will not be copied if it detects that an object already exists with the new name.
 
 **Note:** Assignments will NOT be copied. 
+
+## Intune Tools
+
+Additional Intune Tools is included in the script.
+
+* ADMX Import
+  * Import 3rd part ADMX settings like Chrome etc. by using a UI similar to GPMC
+  * Support for any language if there is an ADML file for it 
+* Reg Values
+  * Create registry settings in HKLM or HKCU. Supported value types:
+    * String
+    * Multi-String
+    * Expandable String
+    * DWORD
+    *  List (Key/Value pair) 
+  * This tool creates a custom ADMX file based on the specified registry keys.
+
+See [ADMX Import](ADMXImport.md) for more information about the ADMX tools
 
 ## Change log
 

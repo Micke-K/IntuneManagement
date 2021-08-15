@@ -95,7 +95,7 @@ Json files for translating property objects to documentation is located in the D
 
 The generated files sometimes requires additional manually created properties. These could be properties in the UI that has a Yes/No, Enabled/Not Configured etc. trigger associated with a specific value. These properties must be manually added to the object before the documentation. The `DocumentationCustom.psm1` file takes care of this. This file is also used for overriding the documentation of specific values and other custom required processing.    
 
-The json files contains a definition of each property to document. This includes information like type e.g. Boolean (Yes/No, Allow/Block, Enabled/Disabled etc.),  Options, DataTable etc. The script will use these files to translate each property into PSCustomObject that is then used by the output provider. The functionality of these files has been extended to enhance the documentation options for the manually created files. Data types of 100 or above is custom functionality.  All data types below 100 is based on the same functionality as in the Intune portal. The data type engine in the script is created based on best effort of the generated json files. 
+The json files contains a definition of each property to document. This includes information like type e.g. Boolean (Yes/No, Allow/Block, Enabled/Disabled etc.),  Options, DataTable etc. The script will use these files to translate each property into a PSCustomObject that is then used by the output provider. The functionality of these files has been extended to enhance the documentation options for the manually created files. Data types of 100 or above is custom functionality.  All data types below 100 is based on the same functionality as in the Intune portal. The data type engine in the script is created based on best effort of the generated json files. 
 
 The `DocumentationCustom.psm1` file also takes care of custom documentation for some object types e.g. Conditional Access. App Configuration policies etc. These objects are documented via a PowerShell function in the script.
 
@@ -136,7 +136,7 @@ Documentation providers has a Priority property. This defines in what order the 
 
 **Documentation Output Provider**
 
-Once the script has finished gathering all the data of an object, it sends it to the Documentation Output provider.  This will then document it to the specific output type of the provider. Word and CSV are included. There is also a "None" provider as included. This will only add the gathered information in the UI. This is used for quick information or when building the translation files. This is also used by the comparison functionality.
+Once the script has finished gathering all the data of an object, it sends it to the Documentation Output provider.  This will then document it to the specific output type of the provider. Word and CSV are included. There is also a "None" provider included. This will only add the gathered information in the UI. This is used for quick information or when building the translation files. This is also used by the comparison functionality.
 
 The`DocumentationWord.psm1` and `DocumentationWordOptions.xaml` files are example on how to create an output provider. The xaml file contains the configuration options in the UI. The psm1 file registers the provider and builds the Word document based on the gathered information.
 

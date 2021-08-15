@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.0.5'
+    '1.0.6'
 }
 
 function Invoke-InitializeModule
@@ -283,7 +283,8 @@ function Get-ObjectDocumentation
         DefaultDocumentationProperties = $defaultDocumentationProperties
         ErrorText = $status
         InputType = $inputType
-        UpdateFilteredObject = $updateFilteredObject        
+        UpdateFilteredObject = $updateFilteredObject
+        UnconfiguredProperties = $obj."@UnconfiguredProperties"
     }
 }
 
@@ -1175,6 +1176,7 @@ function Get-IntentSettingInfo
         ; # Skip child settings
     }
     elseif($valueObj.'@odata.type' -eq '#microsoft.graph.deviceManagementCollectionSettingInstance' -or
+            $defObj.'@odata.type' -eq '#microsoft.graph.deviceManagementComplexSettingDefinition' -or
             $defObj."valueType" -eq  "collection")
     {
         $valueArr = @()
@@ -1231,9 +1233,10 @@ function Get-IntentSettingInfo
         }
         $valueSet = $valueArr.Count -gt 0
     }
-    elseif($valueObj.'@odata.type' -eq '#microsoft.graph.deviceManagementAbstractComplexSettingInstance')
+    elseif($valueObj.'@odata.type' -eq '#microsoft.graph.deviceManagementAbstractComplexSettingInstance' -or
+        $defObj.'@odata.type' -eq '#microsoft.graph.deviceManagementAbstractComplexSettingDefinition')
     {
-        $tmpDef = $category.settingDefinitions | Where id -eq $rawValue.'$implementationId'
+        $tmpDef = $category.settingDefinitions | Where id -eq $rawValue.implementationId
         if($tmpDef)
         {
             $itemValue = $tmpDef.displayName
@@ -1284,7 +1287,8 @@ function Get-IntentSettingInfo
     {
         ; # Skip children if value is not set...
     }
-    elseif($valueObj.'@odata.type' -eq '#microsoft.graph.deviceManagementComplexSettingInstance')
+    elseif($valueObj.'@odata.type' -eq '#microsoft.graph.deviceManagementComplexSettingInstance' -or 
+        $defObj.'@odata.type' -eq '#microsoft.graph.deviceManagementComplexSettingDefinition')
     {        
         if($valueObj.Value)
         {
@@ -1373,7 +1377,9 @@ function Get-IntentSettingInfo
         $curObjectInfo.Value = ?: $isValueSet "Configure" (Get-LanguageString "SettingDetails.notConfigured")
         $curObjectInfo.ValueSet = $isValueSet        
     }
-    elseif($valueObj.'@odata.type' -eq '#microsoft.graph.deviceManagementAbstractComplexSettingInstance' -and $rawValue -and $tmpDef )
+    elseif(($valueObj.'@odata.type' -eq '#microsoft.graph.deviceManagementAbstractComplexSettingInstance' -or 
+            $defObj.'@odata.type' -eq '#microsoft.graph.deviceManagementAbstractComplexSettingDefinition') -and
+            $rawValue -and $tmpDef)
     {
         foreach($childDefId in $tmpDef.propertyDefinitionIds)
         {
@@ -1675,7 +1681,7 @@ function Invoke-TranslateSection
                 }
                 elseif($tmpStr)
                 {
-                    Write-Log "SubCategpry ignored based on length: $tmpStr" 2
+                    Write-LogDebug "SubCategpry ignored based on length: $tmpStr" 2
                 }
             }
             Invoke-ChildSections $obj $prop
@@ -1741,6 +1747,7 @@ function Invoke-TranslateSection
             if($rawValue -eq $null -and ![String]::IsNullOrEmpty($prop.unconfiguredValue) -and $global:chkSetUnconfiguredValue.IsChecked)
             {
                 $propValue = $prop.unconfiguredValue
+                Add-NotConfiguredProperty $prop
             }
             elseif($rawValue -eq $null -and ![String]::IsNullOrEmpty($prop.defaultValue) -and $global:chkSetDefaultValue.IsChecked)
             {
@@ -2366,8 +2373,22 @@ function Invoke-TranslateBoolean
     }
     else
     {
+        Add-NotConfiguredProperty $prop
         Get-LanguageString "BooleanActions.notConfigured"
     }
+}
+
+function Add-NotConfiguredProperty
+{
+    param($prop)
+
+    # Add not configured prop to the base object
+    if(-not ($script:currentObject.PSObject.Properties | Where Name -eq "@UnconfiguredProperties"))
+    {
+        $script:currentObject | Add-Member Noteproperty -Name "@UnconfiguredProperties" -Value @() -Force 
+    }
+
+    $script:currentObject.'@UnconfiguredProperties' += $prop
 }
 
 function Invoke-TranslateOption
@@ -2398,6 +2419,11 @@ function Invoke-TranslateOption
             }
             elseif($option.nameResourceKey)
             {
+                if($option.nameResourceKey -eq "notConfigured")
+                {
+                    Add-NotConfiguredProperty $prop
+                }
+
                 $optionValue = (Get-LanguageString (?: $option.nameResourceKey.Contains(".") $option.nameResourceKey "SettingDetails.$($option.nameResourceKey)"))
             }
             else
@@ -2477,6 +2503,7 @@ function Invoke-TranslateMultiOption
     }
     else
     {
+        Add-NotConfiguredProperty $prop
         Get-LanguageString "BooleanActions.notConfigured"
     }
 }
@@ -2841,6 +2868,10 @@ function Invoke-TranslateAssignments
         if($assignment.target.GroupId)
         {
             $groupName = ($groupInfo | Where id -eq $assignment.target.GroupId).displayName
+            if(-not $groupName)
+            {
+                $groupName = $assignment.target.GroupId
+            }
         }
         elseif($assignment.target.'@odata.type' -eq "#microsoft.graph.allDevicesAssignmentTarget")
         {
@@ -3386,10 +3417,11 @@ function Show-DocumentationForm
                     Add-RawDataInfo $obj.Object $obj.ObjectType
 
                     $updateNotConfigured = $true
+                    $notConfiguredLoc = Get-LanguageString "BooleanActions.notConfigured"
                     $notConfiguredText = ""
                     if($global:cbNotConifugredText.SelectedValue -eq "notConfigured")
                     {
-                        $notConfiguredText = Get-LanguageString "BooleanActions.notConfigured"
+                        $notConfiguredText = $notConfiguredLoc
                     }
                     elseif($global:cbNotConifugredText.SelectedValue -eq "asis")
                     {
@@ -3409,9 +3441,14 @@ function Show-DocumentationForm
                                 break
                             }
                             
-                            if($global:chkSkipNotConfigured.IsChecked -and (([String]::IsNullOrEmpty($item.RawValue) -or $item.RawValue -eq "notConfigured")))
+                            if($global:chkSkipNotConfigured.IsChecked -and (([String]::IsNullOrEmpty($item.RawValue) -or ("$($item.RawValue)" -eq "notConfigured"))))
                             {
-                                # Skip unconfigured items
+                                # Skip unconfigured items e.g. properties with null values
+                                continue                
+                            }
+                            elseif($global:chkSkipNotConfigured.IsChecked -and $documentedObj.UnconfiguredProperties -and ($documentedObj.UnconfiguredProperties | Where EntityKey -eq $item.EntityKey))
+                            {
+                                # Skip unconfigured items e.g. boolean with a value but Not Configured
                                 continue                
                             }
 
@@ -3438,7 +3475,14 @@ function Show-DocumentationForm
                             if($updateNotConfigured -and ($item.RawValue -eq $null -or "$($item.RawValue)" -eq "" -or "$($item.RawValue)" -eq "notConfigured") -and [String]::IsNullOrEmpty($item.Value))
                             {
                                 $item.Value = $notConfiguredText
-                            }                            
+                            }
+                            
+                            if($global:chkSkipNotConfigured.IsChecked -and $item.Value -eq $notConfiguredLoc)
+                            {
+                                # Skip unconfigured items based on value e.g. value = Not Configured 
+                                Write-Log "Skipping property $($itenm.Name) based on '$($notConfiguredLoc)' string value" 2
+                                continue
+                            }
 
                             $filteredSettings += $item
                         }
@@ -3577,6 +3621,13 @@ function Add-CSVOptionsControl
     $global:spCSVCustomProperties.Visibility = (?: ($global:cbCSVDocumentationProperties.SelectedValue -ne "custom") "Collapsed" "Visible")
     $global:txtCSVCustomProperties.Visibility = (?: ($global:cbCSVDocumentationProperties.SelectedValue -ne "custom") "Collapsed" "Visible")
 
+    $global:cbCSVDelimiter.ItemsSource = @("", ",",";","-","|")
+    try
+    {
+        $global:cbCSVDelimiter.SelectedIndex = $global:cbCSVDelimiter.ItemsSource.IndexOf((Get-Setting "Documentation" "CSVDelimiter"))
+    }
+    catch {}
+
     Add-XamlEvent $script:csvForm "browseCSVDocumentationPath" "add_click" {
         $folder = Get-Folder (Get-XamlProperty $script:csvForm "txtCSVDocumentationPath" "Text") "Select root folder for export"
         if($folder)
@@ -3603,6 +3654,7 @@ function Invoke-CSVPreProcessItems
 {
     Save-Setting "Documentation" "CSVExportProperties" $global:cbCSVDocumentationProperties.SelectedValue
     Save-Setting "Documentation" "CSVCustomDisplayProperties" $global:txtCSVCustomProperties.Text
+    Save-Setting "Documentation" "CSVDelimiter" $global:cbCSVDelimiter.Text
 }
 
 function Invoke-CSVProcessItem
@@ -3630,6 +3682,12 @@ function Invoke-CSVProcessItem
 
         $itemsToExport = @()
         
+        $params = @{}
+        if($global:cbCSVDelimiter.Text)
+        {
+            $params.Add('Delimiter',$global:cbCSVDelimiter.Text)
+        }
+
         if(($global:cbCSVDocumentationProperties.SelectedValue -eq 'extended' -and $documentedObj.DisplayProperties) -or 
             ($global:cbCSVDocumentationProperties.SelectedValue -eq 'custom' -and $global:txtCSVCustomProperties.Text))
         {
@@ -3687,14 +3745,14 @@ function Invoke-CSVProcessItem
                 $itemsToExport += ""
                 $itemsToExport += "# Assignments"
                 $itemsToExport += ""
-                $itemsToExport += $documentedObj.Assignments  | Select $properties | ConvertTo-Csv -NoTypeInformation
+                $itemsToExport += $documentedObj.Assignments  | Select $properties | ConvertTo-Csv -NoTypeInformation @params
             }
         }        
         else
         {
             $itemsToExport += $documentedObj.BasicInfo
             $itemsToExport += $documentedObj.FilteredSettings
-            $itemsToExport = $itemsToExport | Select Name,Value | ConvertTo-Csv -NoTypeInformation
+            $itemsToExport = $itemsToExport | Select Name,Value | ConvertTo-Csv -NoTypeInformation @params
         }
 
         $fileName = $folder + "\$((Remove-InvalidFileNameChars $objName)).csv"

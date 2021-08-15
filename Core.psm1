@@ -12,7 +12,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.1.4'
+    '3.1.5'
 }
 
 function Start-CoreApp
@@ -1534,7 +1534,7 @@ function Get-JWTtoken
 }
 #endregion
 
-function AddGridObject
+function Add-GridObject
 {
     param($grid, $obj)
 
@@ -1549,6 +1549,117 @@ function Get-IsAdmin
 {
     (New-Object Security.Principal.WindowsPrincipal ([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 }
+
+function Get-NumericUpDownControl
+{
+    param($id, [decimal]$minValue = 0, [decimal]$maxValue = 9999, [int]$step = 1)
+
+    try 
+    {
+        [xml]$xaml = Get-Content ($global:AppRootFolder + "\Xaml\NumericUpDown.xaml")                 
+        $xamlObj = ([Windows.Markup.XamlReader]::Load((New-Object System.Xml.XmlNodeReader $xaml)))
+
+        $xamlObj.Name = $id
+        $xamlObj.Children[0].Name = $id + "_TextBox"
+        $xamlObj.Children[1].Name = $id + "_UpButton"
+        $xamlObj.Children[1].Name = $id + "_DownButton"
+
+        $settings = [PSCustomObject]@{
+            MinValue = $minValue
+            MaxValue = $maxValue
+            Step = $step
+            _lastKnownValue = $null
+        }
+
+        $xamlObj | Add-Member -MemberType NoteProperty -Name "Settings" -Value $settings
+        
+        $xamlObj.Children[0].Add_TextChanged({
+            $val = $null
+            if([decimal]::TryParse($this.Parent.Children[0].Text, [ref]$val))
+            {
+                $this.Parent.Settings._lastKnownValue = $val;
+            } 
+        })
+
+        $xamlObj.Children[0].Add_LostFocus({
+            $val = $null
+            if([decimal]::TryParse($this.Parent.Children[0].Text, [ref]$val))
+            {
+                ;
+            }
+            elseif($this.Parent.Settings._lastKnownValue)
+            {
+                $val = $this.Parent.Settings._lastKnownValue
+            }
+
+            if($val -ne $null)
+            {
+                if($val -gt $this.Parent.Settings.MaxValue)
+                {
+                    $val = $this.Parent.Settings.MaxValue
+                }
+                elseif($val -lt $this.Parent.Settings.MinValue)
+                {
+                    $val = $this.Parent.Settings.MinValue
+                }
+                $this.Parent.Children[0].Text = $val.ToString()
+            }
+        })
+
+        $xamlObj.Children[1].Add_Click({
+            $val = $null
+            if([decimal]::TryParse($this.Parent.Children[0].Text, [ref]$val))
+            {
+                $val = $val + $this.Parent.Settings.Step
+                if($val -gt $this.Parent.Settings.MaxValue)
+                {
+                    $val = $this.Parent.Settings.MaxValue
+                }
+                $this.Parent.Children[0].Text = $val.ToString()
+            }
+        })
+
+        $xamlObj.Children[2].Add_Click({
+            $val = $null
+            if([decimal]::TryParse($this.Parent.Children[0].Text, [ref]$val))
+            {
+                $val = $val - $this.Parent.Settings.Step
+                if($val -lt $this.Parent.Settings.MinValue)
+                {
+                    $val = $this.Parent.Settings.MinValue
+                }
+                $this.Parent.Children[0].Text = $val.ToString()
+            }
+        })        
+        
+        return $xamlObj
+            
+    }
+    catch 
+    {
+        Write-LogError "Failed to create NumericUpDown control" $_.Exception
+        return $null    
+    }    
+
+}
+
+function Format-XML
+{
+    param([xml]$xml, $indent = 2)
+    
+    if(-not $xml) { return }
+
+    #From: https://devblogs.microsoft.com/powershell/format-xml/
+    $StringWriter = New-Object System.IO.StringWriter
+    $XmlWriter = New-Object System.XMl.XmlTextWriter $StringWriter
+    $xmlWriter.Formatting = "indented"
+    $xmlWriter.Indentation = $Indent
+    $xml.WriteContentTo($XmlWriter)
+    $XmlWriter.Flush()
+    $StringWriter.Flush()
+    $StringWriter.ToString()
+}
+
 
 New-Alias -Name ?? -value Invoke-Coalesce
 New-Alias -Name ?: -value Invoke-IfTrue

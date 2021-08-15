@@ -11,7 +11,7 @@ Objects can be compared based on Properties or Documentatation info.
 
 function Get-ModuleVersion
 {
-    '1.0.5'
+    '1.0.6'
 }
 
 function Invoke-InitializeModule
@@ -160,6 +160,9 @@ function Show-CompareBulkForm
     $global:cbCompareType.ItemsSource = $global:comparisonTypes | Where ShowOnBulk -ne $false 
     $global:cbCompareType.SelectedValue = (Get-Setting "Compare" "Type" "property")
 
+    $global:cbCompareCSVDelimiter.ItemsSource = @("", ",",";","-","|")
+    $global:cbCompareCSVDelimiter.SelectedValue = (Get-Setting "Compare" "Delimiter" ";")
+
     $script:compareObjects = @()
     foreach($objType in $global:lstMenuItems.ItemsSource)
     {
@@ -202,8 +205,9 @@ function Show-CompareBulkForm
 
     Add-XamlEvent $script:form "btnStartCompare" "add_click" {
         Write-Status "Compare objects"
-        Save-Setting "Compare" "Provider" $global:cbCompareProvider.SelectedValue        
-        Save-Setting "Compare" "Type" $global:cbCompareType.SelectedValue        
+        Save-Setting "Compare" "Provider" $global:cbCompareProvider.SelectedValue
+        Save-Setting "Compare" "Type" $global:cbCompareType.SelectedValue
+        Save-Setting "Compare" "Delimiter" $global:cbCompareCSVDelimiter.SelectedValue
         if($global:cbCompareProvider.SelectedItem.BulkCompare)
         {
             & $global:cbCompareProvider.SelectedItem.BulkCompare
@@ -530,7 +534,8 @@ function Start-BulkCompareExportObjects
                 }
                 else
                 {
-                    $sourceObj = Get-GraphObject $curObject.Object $curObject.ObjectType 
+                    $sourceObj = Get-GraphObject $curObject.Object $curObject.ObjectType
+                    $fileObj.Object | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force 
                     $compareProperties = Compare-Objects $sourceObj.Object $fileObj.Object $item.ObjectType                    
                 }
 
@@ -618,8 +623,20 @@ function Save-BulkCompareResults
 
     if($compResultValues.Count -gt 0)
     {
+        $params = @{}
+        try
+        {        
+            if($global:cbCompareCSVDelimiter.Text)
+            {
+                $params.Add("Delimiter", [char]$global:cbCompareCSVDelimiter.Text)
+            }
+        }
+        catch
+        {
+            
+        }
         Write-Log "Save bulk comare results to $file"
-        $compResultValues | Select -Property $props | ConvertTo-Csv -NoTypeInformation | Out-File -LiteralPath $file -Force -Encoding UTF8
+        $compResultValues | Select -Property $props | ConvertTo-Csv -NoTypeInformation @params | Out-File -LiteralPath $file -Force -Encoding UTF8
     } 
 }
 
@@ -798,6 +815,8 @@ function Start-CompareExportObject
         }
     }
 
+    $compareObj | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force
+
     $compareResult = Compare-Objects $obj.Object $compareObj $obj.ObjectType
 
     $global:dgCompareInfo.ItemsSource = $compareResult
@@ -817,16 +836,6 @@ function Compare-Objects
     {
         Write-Log "Selected comparison type ($($global:cbCompareType.SelectedItem.Name)) does not have a Compare property specified" 3
     }
-    <#
-    elseif($global:cbCompareType.SelectedValue -eq "property")
-    {
-        $compareResult = Compare-ObjectsBasedonProperty $obj1 $obj2 $objectType
-    }
-    elseif($global:cbCompareType.SelectedValue -eq "doc")
-    {
-        $compareResult = Compare-ObjectsBasedonDocumentation $obj1 $obj2 $objectType
-    }
-    #>
 
     $compareResult
 }
@@ -854,10 +863,6 @@ function Add-CompareProperty
 
     $value1 = if($value1 -eq $null) { "" } else { $value1.ToString().Trim("`"") }
     $value2 = if($value2 -eq $null) { "" } else {  $value2.ToString().Trim("`"") }
-    if( ($value1 -eq $value2) -eq $false)
-    {
-        $dummy = 1
-    }
 
     $script:compareProperties += [PSCustomObject]@{
         PropertyName = $name
@@ -962,7 +967,6 @@ function Compare-ObjectsBasedonDocumentation
         ObjectType = $objectType
     })
     
-    $obj2 | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force      
 
     $docObj2 = Invoke-ObjectDocumentation ([PSCustomObject]@{
         Object = $obj2
@@ -1049,7 +1053,7 @@ function Compare-ObjectsBasedonDocumentation
 
             $addedProperties += ($prop.EntityKey + $prop.Category + $prop.SubCategory)
             $val1 = $prop.$settingsValue 
-            $prop2 = $docObj2.Settings | Where { $_.EntityKey -eq $prop.EntityKey -and $_.Category -eq $prop.Category -and $_.SubCategory -eq $prop.SubCategory }
+            $prop2 = $docObj2.Settings | Where { $_.EntityKey -eq $prop.EntityKey -and $_.Category -eq $prop.Category -and $_.SubCategory -eq $prop.SubCategory -and $_.Enabled -eq $prop.Enabled }
             $val2 = $prop2.$settingsValue
             Add-CompareProperty $prop.Name $val1 $val2 $prop.Category $prop.SubCategory
         }
@@ -1061,7 +1065,7 @@ function Compare-ObjectsBasedonDocumentation
 
             $addedProperties += ($prop.EntityKey + $prop.Category + $prop.SubCategory)
             $val2 = $prop.$settingsValue
-            $prop2 = $docObj1.Settings | Where  { $_.EntityKey -eq $prop.EntityKey -and $_.Category -eq $prop.Category -and $_.SubCategory -eq $prop.SubCategory }
+            $prop2 = $docObj1.Settings | Where  { $_.EntityKey -eq $prop.EntityKey -and $_.Category -eq $prop.Category -and $_.SubCategory -eq $prop.SubCategory -and $_.Enabled -eq $prop.Enabled  }
             $val1 = $prop2.$settingsValue   
             Add-CompareProperty $prop.Name $val1 $val2 $prop.Category $prop.SubCategory
         }           

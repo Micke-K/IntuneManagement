@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.8'
+    '3.1.9'
 }
 
 function Invoke-InitializeModule
@@ -106,7 +106,9 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         PropertiesToRemove = @("privacyAccessControls")
         PostFileImportCommand = { Start-PostFileImportDeviceConfiguration @args }
+        PreCopyCommand = { Start-PreCopyDeviceConfiguration @args }
         PostCopyCommand = { Start-PostCopyDeviceConfiguration @args }
+        PostExportCommand = { Start-PostExportDeviceConfiguration @args }
         GroupId = "DeviceConfiguration"
     })
 
@@ -187,6 +189,7 @@ function Invoke-InitializeModule
 
     # Could work with https://main.iam.ad.ext.azure.com/api/LoginTenantBrandings
     
+    #>
 
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Azure Branding"
@@ -196,12 +199,12 @@ function Invoke-InitializeModule
         ViewProperties = @("Id")
         PreImportCommand = { Start-PreImportAzureBranding  @args }
         PostListCommand = { Start-PostListAzureBranding @args }
+        ShowButtons = @("Export","View")
         NameProperty = "Id"
         Permissons=@("Organization.ReadWrite.All")
         Icon = "Branding"
         SkipRemoveProperties = @('Id')
     })
-    #>
 
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Enrollment Status Page"
@@ -381,6 +384,7 @@ function Invoke-InitializeModule
         ODataMetadata="minimal" # categories property not supported with ODataMetadata full
         PostFileImportCommand = { Start-PostFileImportApplications @args }
         PreUpdateCommand = { Start-PreUpdateApplication  @args }
+        PreImportCommand = { Start-PreImportCommandApplication  @args }
         GroupId = "Apps"
     })
 
@@ -393,6 +397,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsAutoPilot @args }
         PreDeleteCommand = { Start-PreDeleteAutoPilot @args }
+        PropertiesToRemoveForUpdate = @('managementServiceAppId')
         GroupId = "WinEnrollment"
     })
 
@@ -666,28 +671,28 @@ function Set-EMViewPanel
     })
     
     Add-XamlEvent $panel "txtFilter" "Add_LostFocus" ({ #param($obj, $e)
-        Invoke-FiterBoxChanged $this
+        Invoke-FilterBoxChanged $this
         #$e.Handled = $true
     })
     
     Add-XamlEvent $panel "txtFilter" "Add_GotFocus" ({
         if($this.Tag -eq "1" -and $this.Text -eq "Filter") { $this.Text = "" }
-        Invoke-FiterBoxChanged $this
+        Invoke-FilterBoxChanged $this
     })
     
     Add-XamlEvent $panel "txtFilter" "Add_TextChanged" ({
-        Invoke-FiterBoxChanged $this
+        Invoke-FilterBoxChanged $this
     })
 
-    Invoke-FiterBoxChanged ($panel.FindName("txtFilter"))
+    Invoke-FilterBoxChanged ($panel.FindName("txtFilter"))
 
     $allowDelete = Get-SettingValue "EMAllowDelete"
     Set-XamlProperty $panel "btnDelete" "Visibility" (?: ($allowDelete -eq $true) "Visible" "Collapsed")    
 
     $global:dgObjects.add_selectionChanged({        
-        Set-XamlProperty $this.Parent "btnView" "IsEnabled" (?: ($global:dgObjects.SelectedItem -eq $null) $false $true)
-        Set-XamlProperty $this.Parent "btnCopy" "IsEnabled" (?: ($global:dgObjects.SelectedItem -eq $null) $false $true)
-        Set-XamlProperty $this.Parent "btnDelete" "IsEnabled" (?: ($global:dgObjects.SelectedItem -eq $null -and $global:curObjectType.AllowDelete -ne $false) $false $true)
+        Set-XamlProperty $this.Parent "btnView" "IsEnabled" (?: ($null -eq $global:dgObjects.SelectedItem) $false $true)
+        Set-XamlProperty $this.Parent "btnCopy" "IsEnabled" (?: ($null -eq $global:dgObjects.SelectedItem) $false $true)
+        Set-XamlProperty $this.Parent "btnDelete" "IsEnabled" (?: ($null -eq $global:dgObjects.SelectedItem -and $global:curObjectType.AllowDelete -ne $false) $false $true)
     })
 
     # ToDo: Move this to the view object
@@ -696,7 +701,7 @@ function Set-EMViewPanel
     {
         $dpd.AddValueChanged($global:dgObjects, {
             Set-XamlProperty $global:dgObjects.Parent "txtFilter" "Text" ""
-            $enabled = (?: ($this.ItemsSource -eq $null -or ($this.ItemsSource | measure).Count -eq 0) $false $true)
+            $enabled = (?: ($null -eq $this.ItemsSource -or ($this.ItemsSource | measure).Count -eq 0) $false $true)
             Set-XamlProperty $global:dgObjects.Parent "btnImport" "IsEnabled" $true # Always all Import if ObjectType allows it
             Set-XamlProperty $global:dgObjects.Parent "btnExport" "IsEnabled" $enabled
         })
@@ -726,7 +731,7 @@ function Set-EMViewPanel
     }        
 }
 
-function Invoke-FiterBoxChanged 
+function Invoke-FilterBoxChanged 
 { 
     param($txtBox)
 
@@ -751,9 +756,12 @@ function Invoke-FiterBoxChanged
         {
             $filter = {
                 param ($item)
-                foreach($prop in ($item.PSObject.Properties | Where {$_.Name -notin @("IsSelected","Object")}))
+
+                return ($null -ne ($item.PSObject.Properties | Where { $_.Name -notin @("IsSelected","Object", "ObjectType") -and $_.Value -match [regex]::Escape($txtBox.Text) }))
+
+                foreach($prop in ($item.PSObject.Properties | Where { $_.Name -notin @("IsSelected","Object", "ObjectType")}))
                 {
-                    if($prop.Value -match $txtBox.Text) { return $true }
+                    if($prop.Value -match [regex]::Escape($txtBox.Text)) { return $true }
                 }
                 $false
             }
@@ -941,9 +949,82 @@ function Start-PostCopyDeviceConfiguration
                 windowsPrivacyAccessControls = $objCopyFrom.privacyAccessControls
             }
             $json =  $privacyObj | ConvertTo-Json -Depth 20
-            $ret = Invoke-GraphRequest -Url "deviceManagement/deviceConfigurations('$($objNew.Id)')/windowsPrivacyAccessControls" -Body $json -Method "POST"
+            Invoke-GraphRequest -Url "deviceManagement/deviceConfigurations('$($objNew.Id)')/windowsPrivacyAccessControls" -Body $json -Method "POST" | Out-null
         }
-    }    
+    }
+}
+
+function Start-PreCopyDeviceConfiguration
+{
+    param($obj, $objectType, $newName)
+
+    if(($obj.omaSettings | measure).Count -gt 0)
+    {
+        foreach($omaSetting in ($obj.omaSettings | Where isEncrypted -eq $true))
+        {
+            if($omaSetting.isEncrypted -eq $false) { continue }
+
+            $xmlValue = Invoke-GraphRequest -Url "/deviceManagement/deviceConfigurations/$($obj.Id)/getOmaSettingPlainTextValue(secretReferenceValueId='$($omaSetting.secretReferenceValueId)')"
+            if($xmlValue.Value)
+            {
+                $omaSetting.isEncrypted = $false
+                $omaSetting.secretReferenceValueId = $null
+                
+                if($omaSetting.'@odata.type' -eq "#microsoft.graph.omaSettingStringXml" -or 
+                $omaSetting.'value@odata.type' -eq "#Binary")
+                {
+                    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($xmlValue.Value)
+                    $omaSetting.value = [Convert]::ToBase64String($bytes)
+                }
+                else
+                {
+                    $omaSetting.value = $xmlValue.Value
+                }
+            }
+        }
+    }
+
+    $false 
+}
+
+function Start-PostExportDeviceConfiguration
+{
+    param($obj, $objectType, $path)
+    
+    $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType))).json"
+
+    if(($obj.omaSettings | measure).Count -gt 0)
+    {
+        $updated = $false
+        foreach($omaSetting in @(($obj.omaSettings | Where isEncrypted -eq $true)))
+        {
+            if($omaSetting.isEncrypted -eq $false) { continue }
+
+            # Get decrypted value and mark OMA-URI setting as not encrypted
+            $xmlValue = Invoke-GraphRequest -Url "/deviceManagement/deviceConfigurations/$($obj.Id)/getOmaSettingPlainTextValue(secretReferenceValueId='$($omaSetting.secretReferenceValueId)')"
+            if($xmlValue.Value)
+            {
+                $omaSetting.isEncrypted = $false
+                $omaSetting.secretReferenceValueId = $null
+                if($omaSetting.'@odata.type' -eq "#microsoft.graph.omaSettingStringXml" -or 
+                    $omaSetting.'value@odata.type' -eq "#Binary")
+                {
+                    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($xmlValue.Value)
+                    $omaSetting.value = [Convert]::ToBase64String($bytes)
+                }
+                else
+                {
+                    $omaSetting.value = $xmlValue.Value
+                }
+                $updated = $true
+            }
+        }
+
+        if($updated)
+        {
+            $obj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath $fileName -Force
+        }
+    }
 }
 
 #endregion
@@ -1041,7 +1122,7 @@ function Start-PostImportIntuneBranding
         Remove-Property $global:brandingClone $prop
     }
     $json = ($global:brandingClone | ConvertTo-Json -Depth 20)
-    $ret = Invoke-GraphRequest -Url "$($objectType.API)/$($obj.Id)" -Body $json -Method "PATCH"
+    Invoke-GraphRequest -Url "$($objectType.API)/$($obj.Id)" -Body $json -Method "PATCH" | Out-Null
 }
 
 function Start-PostGetIntuneBranding
@@ -1285,7 +1366,7 @@ function Start-PostListAppProtection
     # App Configurations for Managed Apps are included in App Protections e.g. the /deviceAppManagement/managedAppPolicies API
     # For some reason, the $filter option is not supported to filter out these objects
     # e.g. not isof(...) to excluded the type, not startsWith(id, 'A_') to exlude based on Id
-    # These filters generates a request error so fiter them out manually in this function instead
+    # These filters generates a request error so filter them out manually in this function instead
     # The portal is probably doing the same thing since these are included in the return but not in the UI
     $objList | Where { $_.Object.'@OData.Type' -ne '#microsoft.graph.targetedManagedAppConfiguration' }
 }
@@ -1521,6 +1602,18 @@ function Start-PreUpdateApplication
 
     Remove-Property $obj "appStoreUrl"
 }
+
+function Start-PreImportCommandApplication
+{
+    param($obj, $objectType, $file, $assignments)
+
+    if($obj.'@OData.Type' -in @('#microsoft.graph.microsoftStoreForBusinessApp','#microsoft.graph.androidStoreApp'))
+    {
+        Write-Log "App type '$($obj.'@OData.Type')' not supported for import" 2
+        @{ "Import" = $false }
+    }
+}
+
 #endregion
 
 #region Group Policy/Administrative Templates functions
@@ -1927,7 +2020,7 @@ function Start-PostFileImportNotifications
 {
     param($obj, $objectType, $file)
 
-    $tmpObj = Get-Content $file | ConvertFrom-Json
+    $tmpObj = Get-Content -LiteralPath $file | ConvertFrom-Json
 
     foreach($localizedNotificationMessage in $tmpObj.localizedNotificationMessages)
     {
@@ -2003,6 +2096,12 @@ function Start-PreImportEnrollmentRestrictions
     else
     {
         Remove-Property $obj "Id"    
+    }
+
+    if($obj.windowsMobileRestriction)
+    {
+        # Windows Phone operations are no longer supported
+        Remove-Property $obj "windowsMobileRestriction" 
     }
 }
 

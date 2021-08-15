@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.0.3'
+    '1.0.4'
 }
 
 function Invoke-InitializeModule
@@ -295,7 +295,7 @@ function Add-CDDocumentCustomProfileValue
             return $false
         }
     }
-    elseif($topObj.'@OData.Type' -like "#microsoft.graph.windows10EndpointProtectionConfiguration")
+    elseif($topObj.'@OData.Type' -like "#microsoft.graph.windowsHealthMonitoringConfiguration")
     {
         if($prop.EntityKey -eq "configDeviceHealthMonitoringScope") 
         { 
@@ -713,14 +713,13 @@ function Add-CDDocumentCustomProfileProperty
         Add-DefenderFirewallSettings $obj.firewallProfilePrivate "Private"
         Add-DefenderFirewallSettings $obj.firewallProfilePublic "Public"
 
-        $obj | Add-Member Noteproperty -Name "bitLockerBaseConfigureEncryptionMethods" -Value ($obj.bitLockerSystemDrivePolicy.encryptionMethod -ne $null) -Force
+        $obj | Add-Member Noteproperty -Name "bitLockerBaseConfigureEncryptionMethods" -Value (?: ($obj.bitLockerSystemDrivePolicy.encryptionMethod -ne $null) $true $null) -Force
         $obj | Add-Member Noteproperty -Name "bitLockerSystemDriveEncryptionMethod" -Value $obj.bitLockerSystemDrivePolicy.encryptionMethod -Force
         $obj | Add-Member Noteproperty -Name "bitLockerFixedDriveEncryptionMethod" -Value $obj.bitLockerFixedDrivePolicy.encryptionMethod -Force
         $obj | Add-Member Noteproperty -Name "bitLockerRemovableDriveEncryptionMethod" -Value $obj.bitLockerRemovableDrivePolicy.encryptionMethod -Force
 
-        #$obj.bitLockerSystemDrivePolicy | Add-Member Noteproperty -Name "bitLockerMinimumPinLength" -Value ($obj.bitLockerSystemDrivePolicy.minimumPinLength -ne $null) -Force
-        $obj.bitLockerSystemDrivePolicy | Add-Member Noteproperty -Name "bitLockerMinimumPinLength" -Value ($obj.bitLockerSystemDrivePolicy.minimumPinLength -ne $null) -Force
-        $obj.bitLockerSystemDrivePolicy | Add-Member Noteproperty -Name "bitLockerSyntheticSystemDrivePolicybitLockerDriveRecovery" -Value ($obj.bitLockerSystemDrivePolicy.recoveryOptions -ne $null) -Force
+        $obj.bitLockerSystemDrivePolicy | Add-Member Noteproperty -Name "bitLockerMinimumPinLength" -Value (?: ($obj.bitLockerSystemDrivePolicy.minimumPinLength -ne $null) $true $null) -Force
+        $obj.bitLockerSystemDrivePolicy | Add-Member Noteproperty -Name "bitLockerSyntheticSystemDrivePolicybitLockerDriveRecovery" -Value (?: ($obj.bitLockerSystemDrivePolicy.recoveryOptions -ne $null) $true $null)  -Force
         
         if($obj.bitLockerSystemDrivePolicy.prebootRecoveryUrl -eq $null -and $obj.bitLockerSystemDrivePolicy.prebootRecoveryEnableMessageAndUrl -eq $null)
         {
@@ -746,7 +745,7 @@ function Add-CDDocumentCustomProfileProperty
             $obj.bitLockerSystemDrivePolicy | Add-Member Noteproperty -Name "bitLockerSyntheticSystemDrivePolicy$($tmpProp)" -Value $obj.bitLockerSystemDrivePolicy.recoveryOptions.$tmpProp -Force
         }
 
-        $obj.bitLockerFixedDrivePolicy | Add-Member Noteproperty -Name "bitLockerSyntheticFixedDrivePolicybitLockerDriveRecovery" -Value ($obj.bitLockerFixedDrivePolicy.recoveryOptions -ne $null) -Force
+        $obj.bitLockerFixedDrivePolicy | Add-Member Noteproperty -Name "bitLockerSyntheticFixedDrivePolicybitLockerDriveRecovery" -Value (?: ($obj.bitLockerFixedDrivePolicy.recoveryOptions -ne $null) $true $null) -Force
 
         foreach($tmpProp in ($obj.bitLockerFixedDrivePolicy.recoveryOptions.PSObject.Properties).Name)
         {
@@ -2194,15 +2193,17 @@ function Invoke-CDDocumentCustomOMAUri
 
     foreach($setting in $obj.omaSettings)
     {
-        Add-CustomSettingObject ([PSCustomObject]@{
-            Name = (Get-LanguageString "TableHeaders.name")
+        # Add the name of the OMA-URI setting
+        Add-CustomSettingObject ([PSCustomObject]@{            
+            Name = (Get-LanguageString "SettingDetails.nameName")
             Value =  $setting.displayName
             EntityKey = "displayName_$($setting.omaUri)"
             Category = $category
             SubCategory = $setting.displayName
         })
 
-        Add-CustomSettingObject ([PSCustomObject]@{
+        # Add the description of the OMA-URI setting
+        Add-CustomSettingObject ([PSCustomObject]@{            
             Name = (Get-LanguageString "TableHeaders.description")
             Value =  $setting.description
             EntityKey = "description_$($setting.omaUri)"
@@ -2210,7 +2211,8 @@ function Invoke-CDDocumentCustomOMAUri
             SubCategory = $setting.displayName
         })
 
-        Add-CustomSettingObject ([PSCustomObject]@{
+        # Add the OMA-URI path of the OMA-URI setting
+        Add-CustomSettingObject ([PSCustomObject]@{            
             Name = (Get-LanguageString "SettingDetails.oMAURIName")
             Value =  $setting.omaUri
             EntityKey = "omaUri_$($setting.omaUri)"
@@ -2253,6 +2255,7 @@ function Invoke-CDDocumentCustomOMAUri
 
         if($value)
         {
+            # Add the type of the OMA-URI setting
             Add-CustomSettingObject ([PSCustomObject]@{
                 Name = (Get-LanguageString "SettingDetails.dataTypeName")
                 Value =  $value
@@ -2262,15 +2265,40 @@ function Invoke-CDDocumentCustomOMAUri
             })
         }
 
+        $value = $setting.value
+        # Add the type of the OMA-URI setting
         if($setting.isEncrypted -ne $true)
         {
+            if($setting.'@OData.Type' -eq '#microsoft.graph.omaSettingStringXml')
+            {
+                $value = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($value))
+            }
+
             Add-CustomSettingObject ([PSCustomObject]@{
                 Name = (Get-LanguageString "SettingDetails.valueName")
-                Value =  $setting.value
+                Value =  $value
                 EntityKey = "value_$($setting.omaUri)"
                 Category = $category
                 SubCategory = $setting.displayName
             })
+        }
+        else # ToDo: Add check button
+        {
+            if($obj.'@ObjectFromFile' -ne $true)
+            {
+                $xmlValue = Invoke-GraphRequest -Url "/deviceManagement/deviceConfigurations/$($obj.Id)/getOmaSettingPlainTextValue(secretReferenceValueId='$($setting.secretReferenceValueId)')"
+                $value = $xmlValue.Value
+                if($value)
+                {
+                    Add-CustomSettingObject ([PSCustomObject]@{
+                        Name = (Get-LanguageString "SettingDetails.valueName")
+                        Value =  $value
+                        EntityKey = "value_$($setting.omaUri)"
+                        Category = $category
+                        SubCategory = $setting.displayName
+                    })
+                }
+            }
         }        
     }
 }

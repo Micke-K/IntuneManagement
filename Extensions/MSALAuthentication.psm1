@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.0.4'
+    '3.0.5'
 }
 
 $global:msalAuthenticator = $null
@@ -20,6 +20,7 @@ function Invoke-InitializeModule
     $global:MSALToken = $null
     $global:MSALAuthority = $null
     $script:AccessableTenants = $null
+    $global:SkipTokenCacheHelperEx = $null
 
     $global:appSettingSections += (New-Object PSObject -Property @{
         Title = "MSAL"
@@ -404,7 +405,15 @@ function Add-MSALPrereq
     $RequiredAssemblies.Add($msalPath)
     $RequiredAssemblies.Add('System.Security.dll')
 
-    Add-Type -Path ($global:AppRootFolder + "\CS\TokenCacheHelperEx.cs") -ReferencedAssemblies $RequiredAssemblies
+    try
+    {
+        Add-Type -Path ($global:AppRootFolder + "\CS\TokenCacheHelperEx.cs") -ReferencedAssemblies $RequiredAssemblies
+    }
+    catch
+    {
+        $global:SkipTokenCacheHelperEx = $true
+        Write-LogError "Failed to compile TokenCacheHelperEx. The access token will not be cached. Check write access to the CS folder and ASR policies" $_.Exception
+    }
 }
 
 function Get-MsalAuthenticationToken
@@ -496,7 +505,7 @@ function Get-MSALApp
         
         $msalApp = $appBuilder.Build()
 
-        if((Get-SettingValue "CacheMSALToken"))
+        if($global:SkipTokenCacheHelperEx -ne $true -and (Get-SettingValue "CacheMSALToken"))
         {
             [TokenCacheHelperEx]::EnableSerialization($msalApp.UserTokenCache, "%LOCALAPPDATA%\CloudAPIPowerShellManagement\msalcahce.bin3")
         }
@@ -540,16 +549,16 @@ function Connect-MSALUser
         return
     }
 
-    if (-not ("TokenCacheHelperEx" -as [type])) 
+    if ($global:SkipTokenCacheHelperEx -ne $true -and -not ("TokenCacheHelperEx" -as [type])) 
     {
         Add-MSALPrereq
     }
 
-    if (-not ("TokenCacheHelperEx" -as [type])) 
-    {
-        Write-Log "Failed to compile TokenCacheHelperEx class"
-        return
-    }
+    #if (-not ("TokenCacheHelperEx" -as [type])) 
+    #{
+    #    Write-Log "Failed to compile TokenCacheHelperEx class"
+    #    return
+    #}
 
     $curTicks = $global:MSALToken.ExpiresOn.LocalDateTime.Ticks
 
@@ -977,7 +986,7 @@ function Get-MSALProfileEllipse
                             Write-Status ""
                         })
                         
-                        AddGridObject $otherLogins $lnkButton
+                        Add-GridObject $otherLogins $lnkButton
                     }
                     catch {}                    
                 }           
@@ -1019,7 +1028,7 @@ function Get-MSALProfileEllipse
                     Write-Status ""
                 })
                 
-                AddGridObject $otherLogins $lnkButton
+                Add-GridObject $otherLogins $lnkButton
 
                 $loginPanel.Tag = $this.Content
 
@@ -1228,7 +1237,7 @@ function Get-MSALProfileEllipse
                                         
                     $grdAccount.Children.Add($lnkButton) | Out-Null                    
                     
-                    AddGridObject $otherLogins $grdAccount
+                    Add-GridObject $otherLogins $grdAccount
                 }
                 catch {}                    
             }           
@@ -1271,7 +1280,7 @@ function Get-MSALProfileEllipse
                 Write-Status ""
             })
             
-            AddGridObject $otherLogins $lnkButton
+            Add-GridObject $otherLogins $lnkButton
             
             if(($script:AccessableTenants | measure).Count -gt 1)
             {
@@ -1281,7 +1290,7 @@ function Get-MSALProfileEllipse
                 $lbObj = [Windows.Markup.XamlReader]::Parse("<TextBlock $wpfNS><Bold>Tenants:</Bold></TextBlock>")
                 $lbObj.Margin = "0,5,0,0"
 
-                AddGridObject $otherLogins $lbObj
+                Add-GridObject $otherLogins $lbObj
                 foreach($tenant in $script:AccessableTenants)
                 {
                     try
@@ -1312,13 +1321,13 @@ function Get-MSALProfileEllipse
                                 }
                                 Write-Status ""
                             })
-                            AddGridObject $otherLogins $lnkButton
+                            Add-GridObject $otherLogins $lnkButton
                         }
                         else
                         {
                             $lbObj.Background = $window.TryFindResource("SelectedRowBackgroundColor")
                             $lbObj.Margin = "0,5,0,0"
-                            AddGridObject $otherLogins $lbObj
+                            Add-GridObject $otherLogins $lbObj
                         }                        
                     }
                     catch {}

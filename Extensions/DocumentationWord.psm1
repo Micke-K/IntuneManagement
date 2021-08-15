@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.0.2'
+    '1.0.3'
 }
 
 function Invoke-InitializeModule
@@ -54,9 +54,7 @@ function Invoke-InitializeModule
         CombinedValueWithLabel="TableHeaders.value"
         CombinedValue="TableHeaders.value"
         useDeviceLicensing="TableHeaders.licenseType"
-        #filterMode="Filter mode" # Not in any sring file yet
-
-        
+        #filterMode="Filter mode" # Not in any string file yet 
     }    
 }
 
@@ -83,6 +81,10 @@ function Add-WordOptionsControl
     $global:txtWordTableHeaderStyle.Text = Get-Setting "Documentation" "WordTableHeaderStyle" ""
     $global:txtWordCategoryHeaderStyle.Text = Get-Setting "Documentation" "WordCategoryHeaderStyle" ""
     $global:txtWordSubCategoryHeaderStyle.Text = Get-Setting "Documentation" "WordSubCategoryHeaderStyle" ""
+    $global:txtWordContentControls.Text = Get-Setting "Documentation" "WordContentControls" "Year=;Address="
+    $global:txtWordTitleProperty.Text = Get-Setting "Documentation" "WordTitleProperty" "Intune documentation"
+    $global:txtWordSubjectProperty.Text = Get-Setting "Documentation" "WordSubjectProperty" "Intune documentation"
+    
 
     $global:chkWordOpenDocument.IsChecked = ((Get-Setting "Documentation" "WordOpenDocument" "true") -ne "false")
 
@@ -125,6 +127,9 @@ function Invoke-WordPreProcessItems
     Save-Setting "Documentation" "WordTableHeaderStyle" $global:txtWordTableHeaderStyle.Text
     Save-Setting "Documentation" "WordCategoryHeaderStyle" $global:txtWordCategoryHeaderStyle.Text
     Save-Setting "Documentation" "WordSubCategoryHeaderStyle" $global:txtWordSubCategoryHeaderStyle.Text
+    Save-Setting "Documentation" "WordContentControls" $global:txtWordContentControls.Text
+    Save-Setting "Documentation" "WordTitleProperty" $global:txtWordTitleProperty.Text
+    Save-Setting "Documentation" "WordSubjectProperty" $global:txtWordSubjectProperty.Text
     
     try
     {
@@ -205,6 +210,69 @@ function Invoke-WordPreProcessItems
     }
 
     $script:builtinStyles = [Enum]::GetNames([Microsoft.Office.Interop.Word.wdBuiltinStyle])
+
+    if(-not $global:txtWordDocumentTemplate.Text)
+    {
+        $script:doc.Application.Templates.LoadBuildingBlocks()
+        $BuildingBlocks = $script:doc.Application.Templates | Where {$_.name -eq 'Built-In Building Blocks.dotx'}
+        if($BuildingBlocks)
+        {    
+            $coverPageName = ?? $global:txtWordCoverPage.Text 'Ion (Dark)'  
+            try
+            {
+                $blocks = @()
+
+                for($i = 1;$i -le $BuildingBlocks.BuildingBlockEntries.Count;$i++)
+                {
+                    $blocks += $BuildingBlocks.BuildingBlockEntries.Item($i)
+                }
+                
+                $coverPages = (($blocks | Where { $_.Type.Index -eq 2 } | Select Name) | Sort -Property Name).Name
+
+                if(($coverPages | measure).Count -gt 0)
+                {
+                    if($coverPageName -notin $coverPages)
+                    {
+                        Write-Log "$coverPageName not found in available Cover Page list. Using: $($coverPages[0])"
+                        Write-Log "Available Cover Pages: $(($coverPages -join ","))"
+                        $coverPageName = $coverPages[0]
+                    }
+                    else
+                    {
+                        Write-Log "Add Cover Page: $coverPageName"
+                    }
+                }
+
+                $coverPage = $BuildingBlocks.BuildingBlockEntries.Item($coverPageName)
+                $coverPage.Insert($script:wordApp.Selection.Range,$true) | Out-Null
+                $script:wordApp.Selection.InsertNewPage()
+            }
+            catch 
+            {
+                Write-LogError "Failed to create Cover Page" $_.Exception
+            }
+
+            try
+            {
+                $coverPageProps = $script:doc.CustomXMLParts | where { $_.NamespaceURI -match "coverPageProps$" }
+                if($coverPageProps)
+                {
+                    Write-Log "Available Cover Page properties for $($coverPageName): $(((([xml]$coverPageProps.DocumentElement.XML).ChildNodes[0].ChildNodes).Name -join ","))"
+                }
+            }
+            catch{}
+
+            try
+            {
+                $script:doc.TablesOfContents.Add($script:wordApp.Selection.Range) | out-null
+                $script:wordApp.Selection.InsertNewPage()
+            }
+            catch
+            {
+                Write-LogError "Failed to create Table of Contents" $_.Exception
+            }
+        }
+    }
 }
 
 function Invoke-WordPostProcessItems
@@ -216,17 +284,34 @@ function Invoke-WordPostProcessItems
     }
     
     #Add properties - ToDo: This is static...
-    Set-WordDocBuiltInProperty "wdPropertyTitle" "Intune documentation"
-    Set-WordDocBuiltInProperty "wdPropertySubject" "Intune documentation"
+    Set-WordDocBuiltInProperty "wdPropertyTitle" (?? $global:txtWordTitleProperty.Text "Intune documentation")
+    Set-WordDocBuiltInProperty "wdPropertySubject" (?? $global:txtWordSubjectProperty.Text "Intune documentation")
     Set-WordDocBuiltInProperty "wdPropertyAuthor" $userName
     Set-WordDocBuiltInProperty "wdPropertyCompany" $global:Organization.displayName
     Set-WordDocBuiltInProperty "wdPropertyKeywords" "Intune,Endpoint Manager,MEM"
+    
+    try
+    {
+        # ToDo: Add support for custom properties
+        # Add: https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.core.documentproperties.add?view=office-pia
+        # Types: https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.core.msodocproperties?view=office-pia
+        #$coverPageProps = $script:doc.CustomXMLParts | where { $_.NamespaceURI -match "coverPageProps$" }
+        #[System.__ComObject].InvokeMember("add",[System.Reflection.BindingFlags]::InvokeMethod,$null,$script:doc.CustomDocumentProperties,([array]("PropName", $false, 4, "PropValue")))
+        
+        $ContentControlProperties = $global:txtWordContentControls.Text #"Year=;Address=TestAddress"
+        foreach($ccObj in $ContentControlProperties.Split(';'))
+        {
+            $ccName,$ccVal = $ccObj.Split('=')
+            Set-WordContentControlText $ccName $ccVal
+        }
+    }
+    catch {}
 
     #update fields, ToC etc.
     $script:doc.Fields | ForEach-Object -Process { $_.Update() | Out-Null } 
     $script:doc.TablesOfContents | ForEach-Object -Process { $_.Update() | Out-Null }
     $script:doc.TablesOfFigures | ForEach-Object -Process { $_.Update() | Out-Null }
-    $script:doc.TablesOfFigures | ForEach-Object -Process { $_.Update() | Out-Null }
+    $script:doc.TablesOfAuthorities | ForEach-Object -Process { $_.Update() | Out-Null }
 
     $fileName = $global:txtWordDocumentName.Text
     if(-not $fileName)
@@ -250,15 +335,57 @@ function Invoke-WordPostProcessItems
 
     if($global:chkWordOpenDocument.IsChecked -eq $true)
     {
-        $wordApp.Visible = $true
-        $wordApp.WindowState = [Microsoft.Office.Interop.Word.WdWindowState]::wdWindowStateMaximize
-        $wordApp.Activate()
-        [Console.Window]::SetForegroundWindow($wordApp.ActiveWindow.Hwnd) | Out-Null
+        $script:wordApp.Visible = $true
+        $script:wordApp.WindowState = [Microsoft.Office.Interop.Word.WdWindowState]::wdWindowStateMaximize
+        $script:wordApp.Activate()
+        [Console.Window]::SetForegroundWindow($script:wordApp.ActiveWindow.Hwnd) | Out-Null
     }
     else
     {
         $script:doc.Close([Microsoft.Office.Interop.Word.WdSaveOptions]::wdDoNotSaveChanges)
-        $wordApp.Quit()
+        $script:wordApp.Quit()
+    }
+}
+
+function Set-WordContentControlText 
+{
+    param($controlName, $value)
+
+    if(-not $controlName) { return }
+
+    try
+    {
+        $ctrl = $script:doc.SelectContentControlsByTitle($controlName)
+
+        if($ctrl) 
+        {
+            Write-LogDebug "Update ContentControl $controlName (Type: $($ctrl[1].Type))"
+            if($ctrl[1].Type -eq 6)
+            {
+                if($ctrl[1].DateDisplayFormat)
+                {
+                    $ctrl[1].Range.Text = (Get-Date).ToString($ctrl[1].DateDisplayFormat)
+                }
+                else
+                {
+                    $ctrl[1].Range.Text = (Get-Date).ToShortDateString()
+                }
+            }
+            else
+            {
+                if(-not $value) { return }
+
+                $ctrl[1].Range.Text = $value
+            }
+        }
+        else
+        {
+            Write-Log "No ContentControl found with name $controlName" 2
+        }
+    }
+    catch
+    {
+        Write-LogError "Failed to set ContentControl $controlName" $_.Exception
     }
 }
 

@@ -1,0 +1,198 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Grid.IsSharedSizeScope='True'>
+    
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Grid Name="grdADMXRegPolicy">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />        
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row='0' Margin="0,0,5,0">
+            <Label Content="Policy name" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This is the name/id of the policy in the ADMX file. A guid will be used if not specified" />
+        </StackPanel>
+        <TextBox Name="txtADMXRegPolicyName" Text="{Binding RegPolicy.PolicyName}" Margin="0,5,0,0" Grid.Row='0' Grid.Column="1" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="0,0,5,0">
+            <Label Content="Policy status" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Enabled will add the registry keys and disable will remove them" />
+        </StackPanel>
+        <ComboBox Name="cbADMXRegPolicyStatus" Margin="0,5,0,0" MinWidth="250" Grid.Row='1' Grid.Column="1" HorizontalAlignment="Left" 
+                                DisplayMemberPath="Name" SelectedValuePath="Value" SelectedValue="{Binding RegPolicy.PolicyStatus}"  />                                
+
+        <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,0,5,0">
+            <Label Content="Registry hive" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="HKLM for machine settings and HKCU for user settings" />
+        </StackPanel>
+        <ComboBox Name="cbADMXRegHive" Margin="0,5,0,0" MinWidth="250" Grid.Row='2' Grid.Column="1" HorizontalAlignment="Left" 
+                                DisplayMemberPath="Name" SelectedValuePath="Value" SelectedValue="{Binding RegPolicy.Hive}" />                                
+
+        <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,0,5,0">
+            <Label Content="Reg key" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Path to the registry value" />
+        </StackPanel>
+        <TextBox Name="txtADMXRegKey" Text="{Binding RegPolicy.Key}"  Margin="0,5,0,0" Grid.Row='3' Grid.Column="1" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row='5' Margin="0,0,5,0">
+            <Label Content="Policy value" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Name of the registry value to set if the policy is enabled/disabled" />
+        </StackPanel>
+        <TextBox Name="txtADMXRegPolicyValueName" Text="{Binding RegPolicy.StatusValueName}" Margin="0,5,0,0" Grid.Row='5' Grid.Column="1" />    
+    </Grid>
+        
+    <Separator Grid.Row='1' Grid.ColumnSpan="2" Margin="0,5,0,5" />
+    
+    <Grid Name="grdADMXRegPolicyElement" Grid.Row='2'>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />        
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="250" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row='0' TextWrapping="Wrap" Grid.ColumnSpan="2">
+                    Add registry values that should be created/removed in the specified registry key
+        </TextBlock>        
+        <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="0,0,5,0">
+            <Label Content="Data type" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="HKLM for machine settings and HKCU for user settings" />
+        </StackPanel>
+        <ComboBox Name="cbADMXRegElementDataType" Margin="0,5,0,0" MinWidth="250" Grid.Row='1' Grid.Column="1" HorizontalAlignment="Left" 
+                                DisplayMemberPath="Name" SelectedValuePath="Value" SelectedValue="{Binding PolicyElement.DataType}" />
+                                
+        <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,0,5,0">
+            <Label Content="Key" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Optional. Only required if the reg value is located in a different key than specified for the policy" />
+        </StackPanel>
+        <TextBox Name="txtADMXRegElementKey" Text="{Binding PolicyElement.Key}" Margin="0,5,0,0" Grid.Row='2' Grid.Column="1" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,0,5,0">
+            <Label Content="Value name" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Name of the registry value to add" />
+        </StackPanel>
+        <TextBox Name="txtADMXRegElementValueName" Text="{Binding PolicyElement.ValueName}" Margin="0,5,0,0" Grid.Row='3' Grid.Column="1" />
+        
+        <StackPanel Orientation="Horizontal" Grid.Row='4' Margin="0,0,5,0">
+            <Label Content="Value" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Value to set" />
+        </StackPanel>
+        <TextBox Name="txtADMXRegElementValue" Text="{Binding PolicyElement.Value}" Margin="0,5,0,0" Grid.Row='4' Grid.Column="1" />
+
+        <StackPanel Grid.Row='5' Grid.Column='1' Orientation="Horizontal" Margin="0,5,0,0" >
+            <Button Name="btnADMXRegElementAdd" Content="Add" MinWidth="100" />
+            <Button Name="btnADMXRegElementNew" Content="Update" MinWidth="100" Visibility="Collapsed" />
+        </StackPanel>
+
+        <Rectangle Grid.Column="2" VerticalAlignment="Stretch" Fill="Black" Width="1" Margin="5,0,5,0" Grid.RowSpan="99"/>
+
+        <Grid Grid.Column="3" Grid.RowSpan="99">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />        
+                <RowDefinition Height="Auto" />        
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+                <ColumnDefinition Width="*" />                
+            </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row='0' TextWrapping="Wrap" Grid.ColumnSpan="2">
+                            Additional value settings
+                </TextBlock> 
+
+                <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="0,0,5,0">
+                    <Label Content="Do not overwrite" />
+                    <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Attribute: sotf - Do not overwrite existing value" />
+                </StackPanel>
+                <CheckBox Name="chkADMXRegAttributeSoft" IsChecked="{Binding PolicyElement.AttributeSoft}" Margin="0,5,0,0" Grid.Row='1' Grid.Column="1" />
+
+                <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,0,5,0" Name="spADMXRegAttributeExpandable" Visibility="Collapsed" >
+                    <Label Content="Expandable string" />
+                    <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Attribute: expandable - Create(REG_EXPAND_SZ) instead of a string type (REG_SZ)" />
+                </StackPanel>
+                <CheckBox Name="chkADMXRegAttributeExpandable" IsChecked="{Binding PolicyElement.AttributeExpandable}" Margin="0,5,0,0" Grid.Row='2' Grid.Column="1" Visibility="Collapsed" />
+
+                <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,0,5,0" Name="spADMXRegAttributeAdditive" Visibility="Collapsed" >
+                    <Label Content="Additive" />
+                    <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Attribute: additive - Add the list value to an existing list. Existing values will be kept" />
+                </StackPanel>
+                <CheckBox Name="chkADMXRegAttributeAdditive" IsChecked="{Binding PolicyElement.AttributeAdditive}" Margin="0,5,0,0" Grid.Row='3' Grid.Column="1" Visibility="Collapsed" />
+
+                <StackPanel Orientation="Horizontal" Grid.Row='4' Margin="0,0,5,0" Name="spADMXRegAttributeValuePrefix" Visibility="Collapsed" >
+                    <Label Content="Value prefix" />
+                    <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Attribute: valuePrefix - Add the list value to an existing list. Existing values will be kept" />
+                </StackPanel>
+                <TextBox Name="txtADMXRegAttributeValuePrefix" Text="{Binding PolicyElement.AttributePrefix}" Margin="0,5,0,0" Grid.Row='4' Grid.Column="1" Visibility="Collapsed"  />
+
+                <StackPanel Orientation="Horizontal" Grid.Row='5' Margin="0,0,5,0" Name="spADMXRegAttributeValueSeparator" Visibility="Collapsed" >
+                    <Label Content="Separator" />
+                    <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify separator for List and MultiText values. ; is default." />
+                </StackPanel>
+                <TextBox Name="txtADMXRegAttributeValueSeparator" Width='50' MaxLength="1" HorizontalAlignment="Left" Margin="0,5,0,0" Grid.Row='5' Grid.Column="1" Visibility="Collapsed" />
+        </Grid>
+    </Grid>
+        
+    <Grid Name="grdADMXRegPolicyElements" Grid.Row='3'>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0">
+            <Label Content="Added reg values" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Reg values added to the profile" VerticalAlignment="Top" Margin="0,7,0,0" />
+        </StackPanel>
+        <DataGrid Name="dgADMXRegAddedElements" Margin="0,5,0,0" MinWidth="250" Grid.Column="1"
+                    AutoGenerateColumns="False"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow"
+                        CanUserAddRows="False"
+                        ItemsSource="{Binding RegPolicy.PolicyElements}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Value Name" Binding="{Binding ValueName}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="Data type" Binding="{Binding DataTypeDisplayString, Mode=OneWay}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="Value" Binding="{Binding Value}" IsReadOnly="True" Width="1*" />
+                <DataGridTextColumn Header="Key" Binding="{Binding Key}" IsReadOnly="True" Width="Auto" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+
+    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0" >
+        <Button Name="btnADMXRegAddNew" Content="Save" MinWidth="100" Margin="0,0,5,0" />
+        <Button Name="btnADMXRegCancel" Content="Cancel" MinWidth="100" />
+    </StackPanel> 
+</Grid>

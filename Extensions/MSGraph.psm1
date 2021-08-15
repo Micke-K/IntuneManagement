@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.1.4'
+    '3.1.5'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -430,42 +430,48 @@ function Show-GraphObjects
 
     $graphObjects = @(Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType)
 
-    if(($graphObjects | measure).Count -eq 0) { return }
-
     $dgObjects.AutoGenerateColumns = $false
     $dgObjects.Columns.Clear()
-    $tmpObj = $graphObjects | Select -First 1
 
-    $prop = $tmpObj.PSObject.Properties | Where Name -eq "IsSelected"
-    if($prop)
-    {        
-        $column = Get-GridCheckboxColumn "IsSelected"
-        $dgObjects.Columns.Add($column)
+    if(($graphObjects | measure).Count -gt 0)
+    { 
+        $tmpObj = $graphObjects | Select -First 1
 
-        $column.Header.add_Click({
-            foreach($item in $global:dgObjects.ItemsSource)
-            { 
-                $item.IsSelected = $this.IsChecked
-            }
-            $global:dgObjects.Items.Refresh()
-        })           
+        $prop = $tmpObj.PSObject.Properties | Where Name -eq "IsSelected"
+        if($prop)
+        {        
+            $column = Get-GridCheckboxColumn "IsSelected"
+            $dgObjects.Columns.Add($column)
+
+            $column.Header.add_Click({
+                foreach($item in $global:dgObjects.ItemsSource)
+                { 
+                    $item.IsSelected = $this.IsChecked
+                }
+                $global:dgObjects.Items.Refresh()
+            })           
+        }
+
+        $tableColumns = @()
+        # Add other columns
+        foreach($prop in ($tmpObj.PSObject.Properties | Where {$_.Name -notin @("IsSelected","Object","ObjectType")}))
+        {
+            $binding = [System.Windows.Data.Binding]::new($prop.Name)
+            $column = [System.Windows.Controls.DataGridTextColumn]::new()
+            $column.Header = $prop.Name
+            $column.IsReadOnly = $true
+            $column.Binding = $binding
+
+            $tableColumns += $prop.Name
+            $dgObjects.Columns.Add($column)
+        }
+        $ocList = [System.Collections.ObjectModel.ObservableCollection[object]]::new($graphObjects)
+        $dgObjects.ItemsSource = [System.Windows.Data.CollectionViewSource]::GetDefaultView($ocList)
     }
-
-    $tableColumns = @()
-    # Add other columns
-    foreach($prop in ($tmpObj.PSObject.Properties | Where {$_.Name -notin @("IsSelected","Object","ObjectType")}))
+    else
     {
-        $binding = [System.Windows.Data.Binding]::new($prop.Name)
-        $column = [System.Windows.Controls.DataGridTextColumn]::new()
-        $column.Header = $prop.Name
-        $column.IsReadOnly = $true
-        $column.Binding = $binding
-
-        $tableColumns += $prop.Name
-        $dgObjects.Columns.Add($column)
+        $dgObjects.ItemsSource = $null
     }
-    $ocList = [System.Collections.ObjectModel.ObservableCollection[object]]::new($graphObjects)
-    $dgObjects.ItemsSource = [System.Windows.Data.CollectionViewSource]::GetDefaultView($ocList)
 
     # Show/Hide buttons based on object type
     foreach($ctrl in $spSubMenu.Children)
@@ -1236,7 +1242,7 @@ function Show-GraphBulkDeleteForm
             return 
         }
 
-        if(([System.Windows.MessageBox]::Show("Are you sure you want to delete all objects of the selected type(s)?`n`n$selCount type(s) selected", "Delete Objects?", "YesNo", "Warning")) -ne "Yes")
+        if(([System.Windows.MessageBox]::Show("Are you sure you want to delete all objects of the selected type(s)?`n`n$selCount type(s) selected`n`nEnvironment: $($global:Organization.displayName)", "Delete Objects?", "YesNo", "Warning")) -ne "Yes")
         {
             return
         }
@@ -1331,7 +1337,10 @@ function Import-GraphFile
         return
     }
 
-    Get-GraphMigrationObjectsFromFile
+    if($global:chkImportAssignments -and $global:chkImportAssignments.IsChecked -eq $true)
+    {
+        Get-GraphMigrationObjectsFromFile
+    }
 
     Get-GraphDependencyObjects $file.ObjectType
     
@@ -2268,7 +2277,7 @@ function Remove-GraphObjects
         return 
     }
 
-    if(([System.Windows.MessageBox]::Show("Are you sure you want to delete $($objectsToDelete.Count) $($global:curObjectType.Title) object(s)?", "Delete Objects?", "YesNo", "Warning")) -ne "Yes")
+    if(([System.Windows.MessageBox]::Show("Are you sure you want to delete $($objectsToDelete.Count) $($global:curObjectType.Title) object(s)?`n`nEnvironment: $($global:Organization.displayName)", "Delete Objects?", "YesNo", "Warning")) -ne "Yes")
     {
         return
     }
@@ -2344,17 +2353,18 @@ function Copy-GraphObject
     {
         # Export profile
         Write-Status "Export $((Get-GraphObjectName $dgObjects.SelectedItem $global:curObjectType))"
+
+        $exportObj = (Get-GraphObject $dgObjects.SelectedItem.Object $global:curObjectType -SkipAssignments).Object
+
         if($global:curObjectType.PreCopyCommand)
         {
-            if((& $global:curObjectType.PreCopyCommand $dgObjects.SelectedItem.Object $global:curObjectType $ret))
+            if((& $global:curObjectType.PreCopyCommand $exportObj $global:curObjectType $ret))
             {
                 Show-GraphObjects
                 Write-Status ""
                 return
             }
         }
-
-        $exportObj = (Get-GraphObject $dgObjects.SelectedItem.Object $global:curObjectType -SkipAssignments).Object
 
         # Convert to Json and back to clone the object
         $obj = ConvertTo-Json $exportObj -Depth 10 | ConvertFrom-Json

@@ -1,5 +1,69 @@
 # Release Notes
 
+## 3.2.0 - 2021-08-15
+
+**New features**
+
+- Intune Tools (New View)
+
+  - **ADMX Import** - Configure settings for 3rd party ADMX files with a UI similar to GPMC and create a Custom Profile based on the configured settings
+
+  - **Reg Values** - Add registry values to HKLM or HKCU. This will create and ADMX based on the configured settings and create a Custom Profile in Intune
+
+    See [ADMX Import](ADMXImport.md) for more information on how this works
+
+    **Note:** There is only Import functionality in this version. It does not support updating an existing Custom Profile ADMX policies.
+    
+  - **Important!** Consider this tool to be in preview at this moment. It has only been tested on Cloud only joined devices. It looks like there are different functionality in the Policy CSP between hybrid and cloud only joined devices. 
+    It would be great if anyone testing this on hybrid (or cloud only joined) devices could create an issue and report back the findings, even if it works as intended.
+
+  There are indications that Microsoft is implementing this into the portal UI. The [groupPolicyUploadedDefinitionFile](https://docs.microsoft.com/en-us/graph/api/resources/intune-grouppolicy-grouppolicyuploadeddefinitionfile?view=graph-rest-beta) API suggests that the portal will support this in the future. It would be good if this could be integrated with the Settings Catalog.
+
+- Documentation:
+
+  - Create cover page and table of contents when no template is selected
+  - Select CSV delimiter when documenting to a CSV file
+
+- Compare:
+
+  - Select CSV delimiter for bulk compare
+
+**Fixes**
+
+* Authentication
+
+  * The script will start even if it failed to add type TokenCacheHelperEx. 
+
+    This is based on [Issue 21](https://github.com/Micke-K/IntuneManagement/issues/21)
+
+    **Note:** The token will not support caching if this fails. This could be caused by not having write access to the \CS folder or by restrictive ASR policies
+
+* Export/Import
+
+  * Added support for exporting OMA-URI values that are stored encrypted. 
+
+    **Note:** OMA-URI strings and XML Files are stored encrypted. These values will be decrypted and stored in clear text. Be careful if sensitive data is stored e.g. passwords. 
+
+  * Fix for updating existing Autopilot profiles during import. A new property was added that broke the functionality.
+    This is based on the feature request in [Issue 17](https://github.com/Micke-K/IntuneManagement/issues/17)
+
+* Documentation
+
+  * New handling of Not Configured properties. Skipping unconfigured properties will now skip all these properties during documentation 
+  * Minor fixes to avoid duplicate documentation of properties  
+
+* Compare
+
+  * Fixed bugs when comparing Intent objects (Endpoint Security) policies in Documentation mode.
+
+* Copy
+
+  * Copy Custom Profiles with encrypted values
+
+**Additional Changes:**
+
+* Documentation files has be re-generated to support new\updated properties on Property based objects. 
+
 ## 3.1.8 - 2021-07-18
 
 **New features**

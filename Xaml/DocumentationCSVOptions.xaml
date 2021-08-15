@@ -45,17 +45,23 @@
         <Button Grid.Column="2" Name="browseCSVDocumentationPath" Padding="5,0,5,0" Width="50" ToolTip="Browse for folder">...</Button>
     </Grid>
 
-    <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,0,5,0">
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="3">
+        <Label Content="CSV delimiter" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify what character to use as delimiter for the CSV output" />
+    </StackPanel>
+    <ComboBox Name="cbCSVDelimiter" Margin="0,5,0,0" Width="100" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" />
+
+    <StackPanel Orientation="Horizontal" Grid.Row='4' >
         <Label Content="Add object name to path" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will export all objects to a sub-directory of the export path with name based on object type" />
     </StackPanel>        
-    <CheckBox Grid.Column='1' Grid.Row='3' Name='chkCSVAddObjectType' VerticalAlignment="Center" IsChecked="true" />
+    <CheckBox Grid.Column='1' Grid.Row='4' Name='chkCSVAddObjectType' VerticalAlignment="Center" IsChecked="true" />
 
-    <StackPanel Orientation="Horizontal" Grid.Row='4' Margin="0,0,5,0">
+    <StackPanel Orientation="Horizontal" Grid.Row='5' Margin="0,0,5,0">
         <Label Content="Add company name to path" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will add the company name in Azure to the export path" />
     </StackPanel>
-    <CheckBox Grid.Column='1' Grid.Row='4' Name='chkCSVAddCompanyName' VerticalAlignment="Center" IsChecked="true" />
+    <CheckBox Grid.Column='1' Grid.Row='5' Name='chkCSVAddCompanyName' VerticalAlignment="Center" IsChecked="true" />
 
 
 </Grid>
