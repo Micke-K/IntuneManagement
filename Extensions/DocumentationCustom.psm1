@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.0.4'
+    '1.0.5'
 }
 
 function Invoke-InitializeModule
@@ -306,6 +306,20 @@ function Add-CDDocumentCustomProfileValue
             }
         }
     }
+    elseif($obj.'@OData.Type' -like "#microsoft.graph.windows10VpnConfiguration")
+    {
+        if($prop.EntityKey -eq "enableSplitTunneling" -and $prop.enabled -eq $false) 
+        { 
+            # SplitTunneling settings are moved to another file
+            return $false
+        }
+        elseif($prop.EntityKey -eq "eapXml" -and $obj.eapXml)
+        {
+            $propValue = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.eapXml)) 
+            Add-PropertyInfo $prop $propValue -originalValue $propValue
+            return $false
+        }
+    }    
 }
 
 <#
@@ -638,6 +652,11 @@ function Add-CDDocumentCustomProfileProperty
 
         $obj | Add-Member Noteproperty -Name "useMicrosoftSearchAsDefault" -Value ($obj.excludedApps.bing -eq $false)
 
+        if($obj.officeConfigurationXml)
+        {
+            $xmlConfig = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.officeConfigurationXml)) 
+            $obj | Add-Member Noteproperty -Name "MSAppsConfigXml" -Value $xmlConfig
+        }
         $retValue = $true
     }
     elseif($obj.'@OData.Type' -like "#microsoft.graph.windowsWifiEnterpriseEAPConfiguration")
@@ -1036,6 +1055,12 @@ function Add-CDDocumentCustomProfileProperty
         $obj | Add-Member Noteproperty -Name "detectionRulesType" -Value $detectionRulesType -Force 
         $obj | Add-Member Noteproperty -Name "returnCodes" -Value ($returnCodes -join $objSeparator) -Force 
         $obj | Add-Member Noteproperty -Name "win10Release" -Value (Get-LanguageString "MinimumOperatingSystem.Windows.V10Release.release$($obj.minimumSupportedWindowsRelease)") -Force 
+    }
+    elseif($obj.'@OData.Type' -eq "#microsoft.graph.deviceHealthScript")
+    {
+        $obj | Add-Member Noteproperty -Name "detectionScriptAdded" -Value (-not [String]::IsNullOrEmpty($obj.detectionScriptContent))
+        $obj | Add-Member Noteproperty -Name "remediationScriptAdded" -Value (-not [String]::IsNullOrEmpty($obj.remediationScriptContent))
+        $obj | Add-Member Noteproperty -Name "useLoggedOnCredentials" -Value ($obj.runAsAccount -ne "system")
     }
 
     if(($obj.PSObject.Properties | where Name -eq "securityRequireSafetyNetAttestationBasicIntegrity") -and 

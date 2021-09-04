@@ -17,53 +17,19 @@ This module is for the Intune Tools View.
 .NOTES
   Author:         Mikael Karlsson
 #>
+
+$global:EMToolsViewObject = $null
+
 function Get-ModuleVersion
 {
-    '1.0.0'
+    '1.0.1'
 }
 
 function Invoke-InitializeModule
 {
-    $viewPanel = Get-XamlObject ($global:AppRootFolder + "\Xaml\EndpointManagerTools.xaml") -AddVariables
-    
-    if(-not $viewPanel) { return }
+    Add-ADMXRegClasses    
 
-    Add-ADMXRegClasses
-
-    #Add menu group and items
-    $global:EMToolsViewObject = (New-Object PSObject -Property @{ 
-        Title = "Intune Tools"
-        Description = "Additional tools for managing Intune"
-        ID = "EMTools" 
-        ViewPanel = $viewPanel 
-        ItemChanged = { Show-EMTool }
-        Activating = { Invoke-EMToolsActivatingView }
-        Authentication = (Get-MSALAuthenticationObject)
-        Authenticate = { Invoke-EMToolsAuthenticateToMSAL }
-        AppInfo = (Get-GraphAppInfo "EM" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547")
-        SaveSettings = { Invoke-EMSaveSettings }
-        Permissions = @()
-    })
-
-    Add-ViewObject $global:EMToolsViewObject
-
-    Add-ViewItem (New-Object PSObject -Property @{
-        Title = "ADMX Import"
-        Id = "ADMXImport"
-        ViewID = "EMTools"
-        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
-        Icon="DeviceConfiguration"
-        ShowViewItem = { Show-ADMXIngestion }
-    })
-    
-    Add-ViewItem (New-Object PSObject -Property @{
-        Title = "Reg Values"
-        Id = "ADMXRegValues"
-        ViewID = "EMTools"
-        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
-        Icon="DeviceConfiguration"
-        ShowViewItem = { Show-ADMXRegValues }
-    })
+    Add-EMToolsViewItem
 
     # https://docs.microsoft.com/en-us/windows/client-management/mdm/win32-and-centennial-app-policy-configuration
     # ADMX ingestion cannot write to these paths:
@@ -93,6 +59,58 @@ function Invoke-InitializeModule
     </policies>
 </policyDefinitions>      
 "@    
+}
+
+function Add-EMToolsViewItem
+{
+    param($viewItem)
+
+    if(-not $global:EMToolsViewObject)
+    {
+        $viewPanel = Get-XamlObject ($global:AppRootFolder + "\Xaml\EndpointManagerTools.xaml") -AddVariables
+    
+        if(-not $viewPanel) { return }
+
+        #Add menu group and items
+        $global:EMToolsViewObject = (New-Object PSObject -Property @{ 
+            Title = "Intune Tools"
+            Description = "Additional tools for managing Intune"
+            ID = "EMTools" 
+            ViewPanel = $viewPanel 
+            ItemChanged = { Show-EMTool }
+            Activating = { Invoke-EMToolsActivatingView }
+            Authentication = (Get-MSALAuthenticationObject)
+            Authenticate = { Invoke-EMToolsAuthenticateToMSAL }
+            AppInfo = (Get-GraphAppInfo "EM" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547")
+            SaveSettings = { Invoke-EMSaveSettings }
+            Permissions = @()
+        })
+
+        Add-ViewObject $global:EMToolsViewObject
+
+        Add-ViewItem (New-Object PSObject -Property @{
+            Title = "ADMX Import"
+            Id = "ADMXImport"
+            ViewID = "EMTools"
+            Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+            Icon="DeviceConfiguration"
+            ShowViewItem = { Show-ADMXIngestion }
+        })
+        
+        Add-ViewItem (New-Object PSObject -Property @{
+            Title = "Reg Values"
+            Id = "ADMXRegValues"
+            ViewID = "EMTools"
+            Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+            Icon="DeviceConfiguration"
+            ShowViewItem = { Show-ADMXRegValues }
+        })
+    }
+
+    if($viewItem)
+    {
+        Add-ViewItem $viewItem
+    }
 }
 
 function Invoke-EMToolsActivatingView

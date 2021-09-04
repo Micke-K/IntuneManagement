@@ -11,7 +11,7 @@ Objects can be compared based on Properties or Documentatation info.
 
 function Get-ModuleVersion
 {
-    '1.0.6'
+    '1.0.7'
 }
 
 function Invoke-InitializeModule
@@ -399,8 +399,9 @@ function Invoke-BulkCompareNamedObjects
             }
             else
             {
-                # Add objects that are exported but deleted
-                Write-Log "Object '$((Get-GraphObjectName $graphObj.Object $graphObj.ObjectType))' with id $($graphObj.Object.Id) has no matching object with the compate pattern" 2
+                $sourceObj = Get-GraphObject $graphObj.Object $graphObj.ObjectType 
+                # Add objects that are exported but deleted/not imported etc.
+                Write-Log "Object '$((Get-GraphObjectName $graphObj.Object $graphObj.ObjectType))' with id $($graphObj.Object.Id) has no matching object with the compare pattern" 2
                 $compareProperties = @([PSCustomObject]@{
                         Object1Value = (Get-GraphObjectName $graphObj.Object $graphObj.ObjectType)
                         Object2Value = $null
@@ -828,7 +829,15 @@ function Compare-Objects
 
     $script:compareProperties = @()
 
-    if($global:cbCompareType.SelectedItem.Compare)
+    if($obj1.'@OData.Type' -eq "#microsoft.graph.deviceManagementConfigurationPolicy" -or 
+        $obj1.'@OData.Type' -eq "#microsoft.graph.deviceManagementIntent" -or 
+        $obj1.'@OData.Type' -eq "#microsoft.graph.groupPolicyConfiguration")
+    {
+        # Always use documentation for Settings Catalog, Endpoint Security and Administrative Template policies
+        # These use Graph API for docummentation and all properties will be documented
+        $compareResult = Compare-ObjectsBasedonDocumentation $obj1 $obj2 $objectType
+    }
+    elseif($global:cbCompareType.SelectedItem.Compare)
     {
         $compareResult = & $global:cbCompareType.SelectedItem.Compare $obj1 $obj2 $objectType
     }

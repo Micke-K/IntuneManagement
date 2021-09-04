@@ -42,7 +42,7 @@ The script can import the exported json files in multiple ways.
   
 * **Skip if object exists:** The script will look if there is an existing object with the same name and type. It will not import the file if existing object is detected
 
-* **Replace (Preview):** If a existing object is detected, the script will 
+* **Replace (Preview):** If an existing object is detected, the script will 
   
   * Import the file without assignments
   * Copy assignments from the existing object
@@ -52,7 +52,7 @@ The script can import the exported json files in multiple ways.
   
 * **Update (Preview):** This will update the existing object.
   
-  Update does not support all the properties that import does and object types behaves differently during update e.g. Settings for Endpoint Security objects will not be cleared. There is no API for removing settings only adding. If a settings does not in the import file, the existing setting will be set to Not Configured. Settings Catalog replaces the whole settings property during update. 
+  The update APIs does not support all the properties that the import API sdoes and object types behaves differently during update e.g. Settings for **Endpoint Security** objects will not be cleared. There is no API for removing settings, only adding. If a setting does not exist in the import file, the existing setting will be set to *Not Configured*. **Settings Catalog** replaces the whole settings property during update. 
   
   This has been tested with all supported object types *except* Import Scripts (Shell), Android OEM Config and Apple Enrollment Types.
   
@@ -114,6 +114,11 @@ Additional Intune Tools is included in the script.
     * DWORD
     *  List (Key/Value pair) 
   * This tool creates a custom ADMX file based on the specified registry keys.
+
+* Intune Assignments
+  * Quickly gather all assignments from an export
+  * Easily identify all profiles/polices a group is assigned to
+  * Export as CSV to analyse in Excel 
 
 See [ADMX Import](ADMXImport.md) for more information about the ADMX tools
 
@@ -187,15 +192,17 @@ Android Store Apps are **not** imported. The Create API is documented in Microso
 
 Using multiple tenants support causes multiple logins/consent prompts the first time if 'Microsoft Graph PowerShell' is used. Querying the API for tenant list uses a different scope that is not included by default in the 'Microsoft Graph PowerShell' app. 
 
-Using multiple tenants support *might* cause and endless loop in the login screen and cause duplicate accounts in token cache. Actual cause is not found yet but it happens on rare occasions and it looks like it happens when a guest account is used. Workaround: Cancel the login, restart the script, logout and restart the script again. 
+~~Using multiple tenants support *might* cause and endless loop in the login screen and cause duplicate accounts in token cache. Actual cause is not found yet but it happens on rare occasions and it looks like it happens when a guest account is used. Workaround: Cancel the login, restart the script, logout and restart the script again.~~ - Not seen this in a long time. Please create issue if this happens
 
 When multi tenant settings is Enabled/Disabled, the Profile Info is not updated until the account is changed or app is restarted. Profile Info popup is built after logon.
 
-The list applications API might not list an imported app immediately after the import. Click Refresh to reload the application objects.
+The *List Applications* API might not list an imported app immediately after the import. Click *Refresh* to reload the application objects.
 
 When using the filter box to search for items, the checkbox must be clicked twice to select an item. 
 
 Logout will only clear the token from cache and not from the browser e.g. if login is triggered after a logout, the user will still be listed in the 'Select user' dialog.
+
+Referenced settings will NOT be imported/copied. There is no value stored in a property on the object for these settings. Example: A VPN profile has certificates as referenced properties. The certificates must be added manually after import/copy.
 
 See [Documentation](Documentation.md) for issues regarding the documentation process.
 

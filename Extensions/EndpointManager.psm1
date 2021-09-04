@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.9'
+    '3.1.10'
 }
 
 function Invoke-InitializeModule
@@ -106,9 +106,8 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         PropertiesToRemove = @("privacyAccessControls")
         PostFileImportCommand = { Start-PostFileImportDeviceConfiguration @args }
-        PreCopyCommand = { Start-PreCopyDeviceConfiguration @args }
         PostCopyCommand = { Start-PostCopyDeviceConfiguration @args }
-        PostExportCommand = { Start-PostExportDeviceConfiguration @args }
+        PostGetCommand = { Start-PostGetDeviceConfiguration @args }
         GroupId = "DeviceConfiguration"
     })
 
@@ -204,6 +203,7 @@ function Invoke-InitializeModule
         Permissons=@("Organization.ReadWrite.All")
         Icon = "Branding"
         SkipRemoveProperties = @('Id')
+        GroupId = "Azure"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -510,6 +510,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementRBAC.ReadWrite.All")
         PostExportCommand = { Start-PostExportScopeTags @args }
         ImportOrder = 10
+        DocumentAll = $true
         GroupId = "TenantAdmin"
     })
 
@@ -954,17 +955,17 @@ function Start-PostCopyDeviceConfiguration
     }
 }
 
-function Start-PreCopyDeviceConfiguration
+function Start-PostGetDeviceConfiguration
 {
-    param($obj, $objectType, $newName)
-
-    if(($obj.omaSettings | measure).Count -gt 0)
+    param($obj, $objectType)
+    
+    if(($obj.Object.omaSettings | measure).Count -gt 0)
     {
-        foreach($omaSetting in ($obj.omaSettings | Where isEncrypted -eq $true))
+        foreach($omaSetting in ($obj.Object.omaSettings | Where isEncrypted -eq $true))
         {
             if($omaSetting.isEncrypted -eq $false) { continue }
 
-            $xmlValue = Invoke-GraphRequest -Url "/deviceManagement/deviceConfigurations/$($obj.Id)/getOmaSettingPlainTextValue(secretReferenceValueId='$($omaSetting.secretReferenceValueId)')"
+            $xmlValue = Invoke-GraphRequest -Url "/deviceManagement/deviceConfigurations/$($obj.Object.Id)/getOmaSettingPlainTextValue(secretReferenceValueId='$($omaSetting.secretReferenceValueId)')"
             if($xmlValue.Value)
             {
                 $omaSetting.isEncrypted = $false
@@ -982,49 +983,7 @@ function Start-PreCopyDeviceConfiguration
                 }
             }
         }
-    }
-
-    $false 
-}
-
-function Start-PostExportDeviceConfiguration
-{
-    param($obj, $objectType, $path)
-    
-    $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType))).json"
-
-    if(($obj.omaSettings | measure).Count -gt 0)
-    {
-        $updated = $false
-        foreach($omaSetting in @(($obj.omaSettings | Where isEncrypted -eq $true)))
-        {
-            if($omaSetting.isEncrypted -eq $false) { continue }
-
-            # Get decrypted value and mark OMA-URI setting as not encrypted
-            $xmlValue = Invoke-GraphRequest -Url "/deviceManagement/deviceConfigurations/$($obj.Id)/getOmaSettingPlainTextValue(secretReferenceValueId='$($omaSetting.secretReferenceValueId)')"
-            if($xmlValue.Value)
-            {
-                $omaSetting.isEncrypted = $false
-                $omaSetting.secretReferenceValueId = $null
-                if($omaSetting.'@odata.type' -eq "#microsoft.graph.omaSettingStringXml" -or 
-                    $omaSetting.'value@odata.type' -eq "#Binary")
-                {
-                    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($xmlValue.Value)
-                    $omaSetting.value = [Convert]::ToBase64String($bytes)
-                }
-                else
-                {
-                    $omaSetting.value = $xmlValue.Value
-                }
-                $updated = $true
-            }
-        }
-
-        if($updated)
-        {
-            $obj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath $fileName -Force
-        }
-    }
+    }  
 }
 
 #endregion
@@ -1251,6 +1210,22 @@ function Add-ScriptExtensions
     { 
         $tmp.Children.Insert($index, $btnDownload)
     }
+
+    $btnDownload = New-Object System.Windows.Controls.Button    
+    $btnDownload.Content = 'Edit'
+    $btnDownload.Name = 'btnEdit'
+    $btnDownload.Margin = "0,0,5,0"  
+    $btnDownload.Width = "100"
+    
+    $btnDownload.Add_Click({
+        Invoke-EditScript
+    })
+
+    $tmp = $form.FindName($buttonPanel)
+    if($tmp) 
+    { 
+        $tmp.Children.Insert($index, $btnDownload)
+    }    
 }
 
 function Add-ScriptExportExtensions
@@ -1280,7 +1255,7 @@ function Start-PostExportScripts
     {
         Write-Log "Export script $($obj.FileName)"
         $fileName = [IO.Path]::Combine($exportPath, $obj.FileName)
-        [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($obj.scriptContent)) | Out-File -LiteralPath $fileName -Force
+        [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.scriptContent)) | Out-File -LiteralPath $fileName -Force
     }
 }
 
@@ -1304,6 +1279,87 @@ function Invoke-DownloadScript
             [IO.File]::WriteAllBytes($dlgSave.FileName, ([System.Convert]::FromBase64String($obj.scriptContent)))
         }
     }    
+}
+
+function Invoke-EditScript
+{
+    if(-not $global:dgObjects.SelectedItem.Object.id) { return }
+
+    $obj = (Get-GraphObject $global:dgObjects.SelectedItem $global:curObjectType)
+    Write-Status ""
+    if(-not $obj.Object.scriptContent) { return }
+    $script:currentScriptObject = $obj
+
+    $script:editForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\EditScriptDialog.xaml")
+    
+    if(-not $script:editForm) { return }
+
+    Set-XamlProperty $script:editForm "txtEditScriptTitle" "Text" "Edit: $($obj.Object.displayName)"
+    
+    $scriptText = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.Object.scriptContent))
+    Set-XamlProperty $script:editForm "txtScriptText" "Text" $scriptText
+
+    $script:currentModal = $null
+    if($global:grdModal.Children.Count -gt 0)
+    {
+        $script:currentModal = $global:grdModal.Children[0]
+    }
+
+    Add-XamlEvent $script:editForm "btnSaveScriptEdit" "add_click" ({
+        $scriptText = Get-XamlProperty $script:editForm "txtScriptText" "Text"
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes($scriptText)
+        $encodedText = [Convert]::ToBase64String($bytes)
+
+        if($script:currentScriptObject.Object.scriptContent -ne $encodedText)
+        {
+            # Save script
+            if(([System.Windows.MessageBox]::Show("Are you sure you want to update the script?`n`nObject:`n$($script:currentScriptObject.displayName)", "Update script?", "YesNo", "Warning")) -eq "Yes")
+            {
+                Write-Status "Update $($script:currentScriptObject.displayName)"
+                $obj =  $script:currentScriptObject.Object | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+                $obj.scriptContent = $encodedText
+                Start-GraphPreImport $obj $script:currentScriptObject.ObjectType
+                foreach($prop in $script:currentScriptObject.ObjectType.PropertiesToRemoveForUpdate)
+                {
+                    Remove-Property $obj $prop
+                }                
+                Remove-Property $obj "Assignments"
+                Remove-Property $obj "isAssigned"
+
+                $json = ConvertTo-Json $obj -Depth 15
+
+                $objectUpdated = (Invoke-GraphRequest -Url "$($script:currentScriptObject.ObjectType.API)/$($script:currentScriptObject.Object.Id)" -Content $json -HttpMethod "PATCH")
+                if(-not $objectUpdated)
+                {
+                    Write-Log "Failed to update script" 3
+                    [System.Windows.MessageBox]::Show("Failed to save the script object. See log for more information","Update failed!", "OK", "Error")
+                }
+                Write-Status ""
+            }
+        }
+        
+        $global:grdModal.Children.Clear()
+        if($script:currentModal)
+        {
+            $global:grdModal.Children.Add($script:currentModal)
+        }
+        [System.Windows.Forms.Application]::DoEvents()
+    })    
+    
+    Add-XamlEvent $script:editForm "btnCancelScriptEdit" "add_click" ({
+        $global:grdModal.Children.Clear()
+        if($script:currentModal)
+        {
+            $global:grdModal.Children.Add($script:currentModal)
+        }
+        [System.Windows.Forms.Application]::DoEvents()
+    })
+    
+    $global:grdModal.Children.Clear()
+    $script:editForm.SetValue([System.Windows.Controls.Grid]::RowProperty,1)
+    $script:editForm.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
+    $global:grdModal.Children.Add($script:editForm) | Out-Null
+    [System.Windows.Forms.Application]::DoEvents()
 }
 
 #endregion

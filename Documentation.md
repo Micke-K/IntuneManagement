@@ -109,7 +109,7 @@ These files will have to be re-generated when new functionality is released in I
 
 **Scripts for Generated Files**
 
-The scripts that automatically generates language files, translation files, object info etc. are not included in the release. These scripts are currently not in a state that they can be released. The best would be if Microsoft released all the required information in Graph. A deep dive into graph suggests that it might be possible in the future since some information about the generated files are there but with some properties missing or missing. The information can't be accessed unless an API is called that gets the definition for all the profiles at the same time. 
+The scripts that automatically generates language files, translation files, object info etc. are not included in the release. These scripts are currently not in a state that they can be released. The best would be if Microsoft released all the required information in Graph. A deep dive into graph suggests that it might be possible in the future since some information about the generated files are there but with some properties missing or language text missing. The information can't be accessed unless an API is called that gets the definition for all the profiles at the same time (the file is over 100MB). 
 
 ## Extending The Documentation
 
@@ -130,7 +130,7 @@ The priority order for object documentation is:
 
 **Documentation Provider**
 
-The documentation provider takes care of the collection information about the object. The `DocumentationCustom.psm1`file is an example of this. This file has examples of custom translation of properties for json files and examples of custom translation of objects via a PowerShell functions.
+The documentation provider takes care of collecting all the information about the object. The `DocumentationCustom.psm1`file is an example of this. This file has examples of custom translation of properties for json files and examples of custom translation of objects via a PowerShell functions.
 
 Documentation providers has a Priority property. This defines in what order the providers will be triggered. The provider with the lowest priority number will be executed first. The included custom documentation provider has a priority number of 1000. The information gathering of the provider can be overridden by creating a custom documentation provider with a lower priority number.
 

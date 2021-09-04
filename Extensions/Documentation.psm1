@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.0.6'
+    '1.0.7'
 }
 
 function Invoke-InitializeModule
@@ -443,6 +443,10 @@ function Get-ObjectTypeString
     elseif($objTypeId -eq "TenantAdmin")
     {
         return (Get-LanguageString "Titles.tenantAdmin")
+    }
+    elseif($objTypeId -eq "Azure")
+    {
+        return "Azure"
     }    
 }
 
@@ -1600,10 +1604,14 @@ function Invoke-VerifyCondition
             return $false
         }
 
-        if($expression.value -eq $null)
+        if($expression.operator -eq "null")
+        {            
+            $tmpRet = $null -eq $tmpProp.Value
+        }
+        elseif($null -eq $expression.value)
         {
             # Value not specified. Check if the property is set
-            $tmpRet = $tmpProp.Value -ne $null
+            $tmpRet = $null -ne $tmpProp.Value 
         }
         elseif($expression.operator -eq "ne")
         {
@@ -1737,7 +1745,7 @@ function Invoke-TranslateSection
             {
                 $value = Get-LanguageString $prop.value
 
-                Add-PropertyInfo $prop $value $rawValue
+                Add-PropertyInfo $prop $value $rawValue $rawValue
             }
         }
         elseif([String]::IsNullOrEmpty($prop.entityKey) -eq $false)
@@ -1791,6 +1799,7 @@ function Invoke-TranslateSection
                         {
                             $value = $cert.displayName
                         }
+                        $rawValue = $value
                     }
                 }
                 elseif($prop.dataType -eq 200) # Multi option based on boolean value
@@ -2063,7 +2072,7 @@ function Get-PropertyInfo
         $categoryStr = Get-Category $prop.category
     }
 
-    if(!$jsonValue -and $rawValue -ne $null -and "$($rawValue)" -ne "")
+    if(!$jsonValue -and $null -ne $rawValue -and "$($rawValue)" -ne "")
     {
         $jsonValue = $rawValue | ConvertTo-Json -Depth 10 -Compress
     }
@@ -2436,7 +2445,7 @@ function Invoke-TranslateOption
                 Value=$optionValue
             }
 
-            Add-PropertyInfo $prop $optionValue -originalValue $propValue
+            Add-PropertyInfo $prop $optionValue $propValue
             if($SkipOptionChildren -ne $true)
             {
                 Invoke-ChildSections (Get-CustomChildObject $obj $prop) $option
@@ -3138,6 +3147,8 @@ function Show-DocumentationForm
     {
         foreach($groupId in ($objectTypes | Select GroupId -Unique).GroupId)
         {
+            if(-not $groupId) { continue }
+
             #$script:DocumentationLanguage = ?? $global:cbDocumentationLanguage.SelectedValue "en"
             $script:DocumentationLanguage = "en"
             $groupName = Get-ObjectTypeString -ObjectType $groupId
@@ -3375,9 +3386,24 @@ function Show-DocumentationForm
         }
 
         $tmpCurObjectType = $null
+        $tmpCurObjectGroup = $null
+        $allObjectTypeObjects = @()
         foreach($tmpObj in ($sourceList))
         {
-            $obj = Get-GraphObject $tmpObj.Object $tmpObj.ObjectType
+            if($allObjectTypeObjects.Count -gt 0 -and $tmpCurObjectGroup -ne $tmpObj.ObjectType.GroupId -and $tmpCurObjectType -ne $tmpObj.ObjectType.Id)
+            {
+                if($global:cbDocumentationType.SelectedItem.ProcessAllObjects)
+                {
+                    & $global:cbDocumentationType.SelectedItem.ProcessAllObjects $allObjectTypeObjects
+                    $allObjectTypeObjects = @()
+                }
+                else
+                {
+                    Write-Log "ProcessAllObjects not defined. $tmpCurObjectType will not be documented" 3
+                }
+            }
+
+            $obj = Get-GraphObject $tmpObj.Object $tmpObj.ObjectType            
 
             if($obj)
             {
@@ -3398,19 +3424,35 @@ function Show-DocumentationForm
                 {
                     # The provider takes care of all the processing
                     Write-Status "Run CustomProcess for $($global:cbDocumentationType.SelectedItem.Name)"
-                    & $global:cbDocumentationType.SelectedItem.CustomProcess $obj $documentedObj
-                    continue
+                    $ret = & $global:cbDocumentationType.SelectedItem.CustomProcess $obj $documentedObj
+                    if($ret -is [boolean] -and $ret -eq $true) { continue }
                 }
 
-                if($tmpCurObjectType -ne $obj.ObjectType.GroupId)
+                if($tmpCurObjectGroup -ne $obj.ObjectType.GroupId)
                 {
+                    # A group matches a menu item in the protal but can contain multiple object types
+                    # New object group e.g. Script, Tennant, Device Configuration
+                    if($global:cbDocumentationType.SelectedItem.NewObjectGroup)
+                    {
+                        Write-Status "Run NewObjectGroup for $($global:cbDocumentationType.SelectedItem.Name)"
+                        $ret = & $global:cbDocumentationType.SelectedItem.NewObjectGroup $obj $documentedObj
+                        if($ret -is [boolean] -and $ret -eq $true) { continue }
+                    }
+                    $tmpCurObjectGroup = $obj.ObjectType.GroupId                    
+                }
+
+                if($tmpCurObjectType -ne $obj.ObjectType.Id)
+                {                
+                    # New object type e.g Administrative Template, VPN profile etc.
                     if($global:cbDocumentationType.SelectedItem.NewObjectType)
                     {
                         Write-Status "Run NewObjectType for $($global:cbDocumentationType.SelectedItem.Name)"
-                        & $global:cbDocumentationType.SelectedItem.NewObjectType $obj $documentedObj
+                        $ret = & $global:cbDocumentationType.SelectedItem.NewObjectType $obj $documentedObj
+                        if($ret -is [boolean] -and $ret -eq $true) { continue }
                     }
-                    $tmpCurObjectType = $obj.ObjectType.GroupId
-                }
+                    $tmpCurObjectType = $obj.ObjectType.Id
+                    $allObjectTypeObjects = @()
+                }                
 
                 if($documentedObj) 
                 {
@@ -3435,15 +3477,16 @@ function Show-DocumentationForm
                         $filteredSettings = @()
                         foreach($item in $documentedObj.Settings)
                         {
-                            if(-not ($item.PSObject.Properties | Where Name -eq RawValue) -or $documentedObj.UpdateFilteredObject -eq $false)
+                            if(-not ($item.PSObject.Properties | Where Name -eq "RawValue") -or $documentedObj.UpdateFilteredObject -eq $false)
                             {
                                 $filteredSettings = $documentedObj.Settings
                                 break
                             }
                             
-                            if($global:chkSkipNotConfigured.IsChecked -and (([String]::IsNullOrEmpty($item.RawValue) -or ("$($item.RawValue)" -eq "notConfigured"))))
+                            if($global:chkSkipNotConfigured.IsChecked -and (($item.RawValue -isnot [array] -and ([String]::IsNullOrEmpty($item.RawValue) -or ("$($item.RawValue)" -eq "notConfigured"))) -or ($item.RawValue -is [array] -and ($item.RawValue | measure).Count -eq 0)))
                             {
                                 # Skip unconfigured items e.g. properties with null values
+                                # Note: This could removed configured properties if RawValue is not specified
                                 continue                
                             }
                             elseif($global:chkSkipNotConfigured.IsChecked -and $documentedObj.UnconfiguredProperties -and ($documentedObj.UnconfiguredProperties | Where EntityKey -eq $item.EntityKey))
@@ -3472,7 +3515,7 @@ function Show-DocumentationForm
                                 }
                             }
 
-                            if($updateNotConfigured -and ($item.RawValue -eq $null -or "$($item.RawValue)" -eq "" -or "$($item.RawValue)" -eq "notConfigured") -and [String]::IsNullOrEmpty($item.Value))
+                            if($updateNotConfigured -and (($item.RawValue -isnot [array] -and ($null -eq $item.RawValue -or "$($item.RawValue)" -eq "" -or "$($item.RawValue)" -eq "notConfigured") -and [String]::IsNullOrEmpty($item.Value)) -or ($item.RawValue -is [array] -and ($item.RawValue | measure).Count -eq 0)))
                             {
                                 $item.Value = $notConfiguredText
                             }
@@ -3489,11 +3532,35 @@ function Show-DocumentationForm
 
                         $documentedObj | Add-Member Noteproperty -Name "FilteredSettings" -Value $filteredSettings -Force 
 
-                        & $global:cbDocumentationType.SelectedItem.Process $obj.Object $obj.ObjectType $documentedObj
+                        if($obj.ObjectType.DocumentAll -eq $true)
+                        {
+                            $allObjectTypeObjects += [PSCustomObject]@{
+                                Object = $obj
+                                DocumentationObject = $documentedObj
+                            }
+                        }
+                        else
+                        {                        
+                            & $global:cbDocumentationType.SelectedItem.Process $obj.Object $obj.ObjectType $documentedObj
+                        }
                     }
                 }
             }
         }
+
+        if($allObjectTypeObjects.Count -gt 0)
+        {
+            if($global:cbDocumentationType.SelectedItem.ProcessAllObjects)
+            {
+                & $global:cbDocumentationType.SelectedItem.ProcessAllObjects $allObjectTypeObjects
+                $allObjectTypeObjects = @()
+            }
+            else
+            {
+                Write-Log "ProcessAllObjects not defined. $tmpCurObjectType will not be documented" 3
+            }
+        }
+
 
         if($global:cbDocumentationType.SelectedItem.PostProcess)
         {

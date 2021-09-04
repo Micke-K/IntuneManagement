@@ -12,7 +12,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.1.5'
+    '3.1.6'
 }
 
 function Start-CoreApp
@@ -484,7 +484,7 @@ function Show-UpdatesDialog
     $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/contents/ReleaseNotes.md"
     if($content)
     {
-        $txt = [System.Text.Encoding]::ASCII.GetString(([System.Convert]::FromBase64String($content.content)))
+        $txt = [System.Text.Encoding]::UTF8.GetString(([System.Convert]::FromBase64String($content.content)))
         Set-XamlProperty $script:dlgUpdates "txtReleaseNotes" "Text" $txt
 
         if($content.sha -ne $curHash.Hash)
@@ -1528,8 +1528,8 @@ function Get-JWTtoken
     while ($payload.Length % 4) { $payload += "=" } # Add padding to match required length
 
     return (New-Object PSObject -Property @{
-        Header=(([System.Text.Encoding]::ASCII.GetString(([System.Convert]::FromBase64String($header)))) | ConvertFrom-Json)
-        Payload=(([System.Text.Encoding]::ASCII.GetString(([System.Convert]::FromBase64String($payload)))) | ConvertFrom-Json)
+        Header=(([System.Text.Encoding]::UTF8.GetString(([System.Convert]::FromBase64String($header)))) | ConvertFrom-Json)
+        Payload=(([System.Text.Encoding]::UTF8.GetString(([System.Convert]::FromBase64String($payload)))) | ConvertFrom-Json)
     })
 }
 #endregion

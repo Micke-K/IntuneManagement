@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.0.3'
+    '1.0.4'
 }
 
 function Invoke-InitializeModule
@@ -27,9 +27,10 @@ function Invoke-InitializeModule
         OutputOptions = (Add-WordOptionsControl)
         Activate = { Invoke-WordActivate @args }
         PreProcess = { Invoke-WordPreProcessItems @args }
-        NewObjectType = { Invoke-WordNewObjectType @args }
+        NewObjectGroup = { Invoke-WordNewObjectGroup @args }
         Process = { Invoke-WordProcessItem @args }
         PostProcess = { Invoke-WordPostProcessItems @args }
+        ProcessAllObjects = { Invoke-WordProcessAllObjects @args }
     })
 
     $script:columnHeaders = @{
@@ -389,7 +390,7 @@ function Set-WordContentControlText
     }
 }
 
-function Invoke-WordNewObjectType
+function Invoke-WordNewObjectGroup
 {
     param($obj, $documentedObj)
 
@@ -408,7 +409,7 @@ function Invoke-WordProcessItem
 
     Add-DocText $objName $global:txtWordHeader2Style.Text
     
-    $script:doc.Application.Selection.TypeParagraph()
+    $script:doc.Application.Selection.TypeParagraph()  
 
     try 
     {
@@ -517,6 +518,45 @@ function Invoke-WordProcessItem
     }
 }
 
+function Invoke-WordProcessAllObjects
+{
+    param($allObjectTypeObjects)
+
+    if(($allObjectTypeObjects | measure).Count -eq 0) { return }
+
+    $tmpObj = $allObjectTypeObjects | Select -First 1
+    if(-not $tmpObj) { return }
+
+    $objectType = $tmpObj.Object.ObjectType
+    if($objectType.Id -eq "ScopeTags")
+    {
+        $objTypeName = Get-LanguageString "SettingDetails.scopeTags"
+
+        Add-DocText $objTypeName $global:txtWordHeader2Style.Text
+
+        $script:doc.Application.Selection.TypeParagraph()  
+
+        $items = @()
+
+        $nameLabel = Get-LanguageString "Inputs.displayNameLabel"
+        $descriptionLable = Get-LanguageString "TableHeaders.description" 
+        foreach($obj in $allObjectTypeObjects.Object.Object)
+        {
+            $items += [PSCustomObject]@{
+                $nameLabel = $obj.displayName
+                ID = $obj.Id
+                $descriptionLable = $obj.Description
+            }
+        }
+
+        $items = $items | Sort -Property $nameLabel
+
+        $properties = @($nameLabel,"id",$descriptionLable)
+
+        Add-DocTableItems $tmpObj.Object.Object $tmpObj.Object.ObjectType $items $properties -captionOverride (Get-LanguageString "SettingDetails.scopeTags")
+    }
+}
+
 function Invoke-WordTranslateColumnHeader
 {
     param($columnName)
@@ -529,6 +569,13 @@ function Invoke-WordTranslateColumnHeader
 
     (?? $lngText $columnName)
 }
+
+function Invoke-WordCustomProcessItems
+{
+    param($obj, $documentedObj)
+
+}
+
 function Set-WordColumnHeaderLanguageId
 {
     param($columnName, $lngId)
@@ -547,7 +594,7 @@ function Set-WordColumnHeaderLanguageId
 
 function Add-DocTableItems
 {
-    param($obj, $objectType, $items, $properties, $lngId, [switch]$AddCategories, [switch]$AddSubcategories)
+    param($obj, $objectType, $items, $properties, $lngId, [switch]$AddCategories, [switch]$AddSubcategories, $captionOverride)
 
     $tblHeaderStyle = $global:txtWordTableHeaderStyle.Text
     $tblCategoryStyle = $global:txtWordCategoryHeaderStyle.Text
@@ -559,7 +606,11 @@ function Add-DocTableItems
     $script:docTable.ApplyStyleHeadingRows = $true
     Set-DocObjectStyle $script:docTable $global:txtWordTableStyle.Text
 
-    if($lngId)
+    if($captionOverride)
+    {
+        $caption = $captionOverride
+    }
+    elseif($lngId)
     {
         $caption = "$((Get-LanguageString $lngId)) - $((Get-GraphObjectName $obj $objectType))"
     }

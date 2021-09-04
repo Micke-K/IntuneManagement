@@ -1,5 +1,41 @@
 # Release Notes
 
+## 3.2.1 - 2021-09-04
+
+**New features**
+
+- PowerShell Scripts can now be viewed and edited in the tool 
+- Intune Tools
+  - Added Intune Assignment - Simple tool to quickly gather all assignments from exported objects
+- Documentation
+  - Added documentation support for
+    - Scope (Tags) 
+      Note: This will generate one section for all Scopes in the word document
+    - Health Scripts (Remediation Scripts) 
+
+**Fixes**
+
+* General
+
+  * Custom Device Configuration profiles will convert encrypted OMA URI values when the full object is loaded instead during Copy and Export.
+  * All file exports are now saved in UTF8   
+
+* Compare
+
+  * Fixed issue where the wrong name was specified if the compare object was missing
+  * Administrative Templates, Settings Catalog and Endpoint Security will always compare based on documentation.
+  * Encrypted OMA URI values are now supported
+
+* Documentation
+
+  * Minor updates to support documenting all objects of a specific object type in one section instead of one section per object
+  * Fixed "Not Configured" value issues for empty arrays 
+  * Fixed documentation of Microsoft 365 Apps when XML is used
+  * Minor updates on VPN profile documentation. EAP XML will be in XML format and removed duplicate SplitTunneling values.
+    Note: The EAP XML will require manual update of the column sizes in Word 
+  
+  
+
 ## 3.2.0 - 2021-08-15
 
 **New features**
