@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.1.5'
+    '3.1.6'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -955,7 +955,7 @@ function Show-GraphImportForm
         }
     }
 
-    Add-GraphImportExtensions $script:importForm 1
+    Add-GraphImportExtensions $script:importForm 1 $global:curObjectType
 
     if($global:txtImportPath.Text)
     {
@@ -1010,9 +1010,9 @@ function Show-GraphBulkImportForm
             Selected = (?? $objType.BulkImport $true)
             ObjectType = $objType
         }
-    }
 
-    Add-GraphImportExtensions $script:importForm 0
+        Add-GraphImportExtensions $script:importForm 0 $objType
+    }
 
     $column = Get-GridCheckboxColumn "Selected"
     $global:dgObjectsToImport.Columns.Add($column)
@@ -1161,27 +1161,30 @@ function Add-GraphExportExtensions
 
 function Add-GraphImportExtensions
 {
-    param($form, $buttonIndex = 0)
+    param($form, $buttonIndex = 0, $objectTypes)
     
-    if($global:curObjectType.ImportExtension)
+    foreach($objectType in $objectTypes)
     {
-        $grid = $form.FindName("grdImportProperties")
-        $extraProperties = & $global:curObjectType.ExportExtension $global:curObjectType.ExportExtension $form "spExportSubMenu" 1
-        for($i=0;($i + 1) -lt (($extraProperties) | measure).Count;$i ++) 
-        {            
-            $rd = [System.Windows.Controls.RowDefinition]::new()
-            $rd.Height = [double]::NaN            
-            $grid.RowDefinitions.Add($rd)
-            $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
-            $grid.Children.Add($extraProperties[$i])
+        if($objectType.ImportExtension)
+        {
+            $grid = $form.FindName("grdImportProperties")
+            $extraProperties = & $objectType.ImportExtension $form "spExportSubMenu" 1
+            for($i=0;($i + 1) -lt (($extraProperties) | measure).Count;$i ++) 
+            {            
+                $rd = [System.Windows.Controls.RowDefinition]::new()
+                $rd.Height = [double]::NaN            
+                $grid.RowDefinitions.Add($rd)
+                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
+                $grid.Children.Add($extraProperties[$i])
 
-            $i++            
-            $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
-            $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
-            $grid.Children.Add($extraProperties[$i])
-            
+                $i++            
+                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
+                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
+                $grid.Children.Add($extraProperties[$i])
+                
+            }
         }
-    }    
+    }
 }
 
 function Show-GraphBulkDeleteForm
@@ -2234,7 +2237,7 @@ function Import-GraphObject
         }
     }
 
-    $json = ConvertTo-Json $obj -Depth 10
+    $json = ConvertTo-Json $obj -Depth 20
     if($fromFile)
     {
         # Call Update-JsonForEnvironment before importing the object

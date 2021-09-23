@@ -1,5 +1,17 @@
 # Release Notes
 
+## 3.2.2 - 2021-09-23
+
+**New features**
+
+- Added support for setting Conditional Access policy state during import. The default setting is to import Conditional Access policies with the same sate as they were exported.
+  This is based on feature request [Issue 25](https://github.com/Micke-K/IntuneManagement/issues/25)
+  Note: Security defaults must be disabled before Conditional Access policies can be imported as Enabled.
+
+**Fixes**
+
+* Fixed bugs when using the ImportExtension command
+
 ## 3.2.1 - 2021-09-04
 
 **New features**
@@ -17,7 +29,7 @@
 
 * General
 
-  * Custom Device Configuration profiles will convert encrypted OMA URI values when the full object is loaded instead during Copy and Export.
+  * Custom Device Configuration profiles will convert encrypted OMA URI values when the full object is loaded instead of only during Copy and Export.
   * All file exports are now saved in UTF8   
 
 * Compare

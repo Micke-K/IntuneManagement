@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.10'
+    '3.1.11'
 }
 
 function Invoke-InitializeModule
@@ -119,6 +119,8 @@ function Invoke-InitializeModule
         Permissons=@("Policy.Read.All","Policy.ReadWrite.ConditionalAccess","Application.Read.All")
         Dependencies = @("NamedLocations","Applications")
         GroupId = "ConditionalAccess"
+        ImportExtension = { Add-ConditionalAccessImportExtensions @args }
+        PreImportCommand = { Start-PreImportConditionalAccess @args }
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -2432,5 +2434,61 @@ function Start-PreUpdateFeatureUpdates
 }
 #endregion
 
+#region Conditional Access
+function Add-ConditionalAccessImportExtensions
+{
+    param($form, $buttonPanel, $index = 0)
+
+    $xaml =  @"
+<StackPanel $($global:wpfNS) Orientation="Horizontal" Margin="0,0,5,0">
+<Label Content="Conditional Access State" />
+<Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specifies the enable state of Conditional Access policies" />
+</StackPanel>
+"@
+    $label = [Windows.Markup.XamlReader]::Parse($xaml)
+
+    $CAStates = @()
+    $CAStates += [PSCustomObject]@{
+        Name = "As Exported"
+        Value = "AsExported"
+    }
+
+    $CAStates += [PSCustomObject]@{
+        Name = "Report-only"
+        Value = "enabledForReportingButNotEnforced"
+    }
+
+    $CAStates += [PSCustomObject]@{
+        Name = "On"
+        Value = "enabled"
+    }
+    
+    $CAStates += [PSCustomObject]@{
+        Name = "Off"
+        Value = "disabled"
+    }    
+
+    $global:cbImportCAState = [System.Windows.Controls.ComboBox]::new()
+    $global:cbImportCAState.DisplayMemberPath = "Name"
+    $global:cbImportCAState.SelectedValuePath = "Value"
+    $global:cbImportCAState.ItemsSource = $CAStates
+    $global:cbImportCAState.SelectedValue = "AsExported"
+    $global:cbImportCAState.Margin="0,5,0,0"
+    $global:cbImportCAState.HorizontalAlignment="Left"
+    $global:cbImportCAState.Width=250
+
+    @($label, $global:cbImportCAState)
+}
+
+function Start-PreImportConditionalAccess
+{
+    param($obj, $objectType, $file, $assignments)
+
+    if($global:cbImportCAState.SelectedValue -and $global:cbImportCAState.SelectedValue -ne "AsExported")
+    {
+        $obj.state = $global:cbImportCAState.SelectedValue
+    }
+}
+#endregion
 
 Export-ModuleMember -alias * -function *
