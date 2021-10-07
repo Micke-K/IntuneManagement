@@ -12,7 +12,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.1.6'
+    '3.1.7'
 }
 
 function Start-CoreApp
@@ -1095,6 +1095,14 @@ function Add-DefaultSettings
             Type = "Boolean"
             DefaultValue = $false
     }) "General"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Preview"
+        Key = "PreviewFeatures"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Enable featurs that are marked as Preview. This might require a restart and prompt for consent"
+    }) "General"    
 }
 
 function Add-SettingsObject

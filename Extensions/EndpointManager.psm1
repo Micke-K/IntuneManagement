@@ -1,4 +1,5 @@
 <#
+<#
 .SYNOPSIS
 Module for managing Intune objects
 
@@ -10,7 +11,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.11'
+    '3.1.12'
 }
 
 function Invoke-InitializeModule
@@ -117,11 +118,27 @@ function Invoke-InitializeModule
         ViewID = "IntuneGraphAPI"
         API = "/identity/conditionalAccess/policies"
         Permissons=@("Policy.Read.All","Policy.ReadWrite.ConditionalAccess","Application.Read.All")
-        Dependencies = @("NamedLocations","Applications")
+        Dependencies = @("NamedLocations","Applications","TermsOfUse")
         GroupId = "ConditionalAccess"
         ImportExtension = { Add-ConditionalAccessImportExtensions @args }
         PreImportCommand = { Start-PreImportConditionalAccess @args }
     })
+
+    if((Get-SettingValue "PreviewFeatures" $false) -eq $true)
+    {
+        Add-ViewItem (New-Object PSObject -Property @{
+            Title = "Terms of use"
+            Id = "TermsOfUse"
+            ViewID = "IntuneGraphAPI"
+            ViewProperties = @("id", "displayName")
+            Expand = "files"
+            QUERYLIST = "`$expand=files"
+            API = "/identityGovernance/termsOfUse/agreements"
+            Permissons=@("Agreement.ReadWrite.All")
+            PreImportCommand = { Start-PreImportTermsOfUse @args }
+            GroupId = "ConditionalAccess"        
+        })
+    }
 
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Named Locations"
@@ -776,6 +793,27 @@ function Invoke-FilterBoxChanged
         # This causes odd behaviour with focus e.g. and item has to be clicked twice to be selected 
         $dgObjects.ItemsSource.Filter = $filter
         $dgObjects.ItemsSource.Refresh()
+    }
+
+    $allObjectsCount = 0
+    if($dgObjects.ItemsSource.SourceCollection)
+    {
+        $allObjectsCount = $dgObjects.ItemsSource.SourceCollection.Count
+    }
+
+    $objCount = ($dgObjects.ItemsSource | measure).Count
+    if($objCount -gt 0)
+    {
+        $strAllObjectsInfo = ""
+        if($allObjectsCount -gt $objCount)
+        {
+            $strAllObjectsInfo = " ($($allObjectsCount))"
+        }
+        $global:txtEMObjects.Text = "Objects: $objCount$strAllObjectsInfo"
+    }
+    else
+    {
+        $global:txtEMObjects.Text = ""
     }
 }
 #region Endpoint Security (Intents) functions
@@ -2487,6 +2525,52 @@ function Start-PreImportConditionalAccess
     if($global:cbImportCAState.SelectedValue -and $global:cbImportCAState.SelectedValue -ne "AsExported")
     {
         $obj.state = $global:cbImportCAState.SelectedValue
+    }
+}
+#endregion
+
+#region Terms of use
+function Start-PreImportTermsOfUse
+{
+    param($obj, $objectType, $file, $assignments)
+
+    $pkgPath = Get-SettingValue "EMIntuneAppPackages"
+
+    if(-not $pkgPath -or [IO.Directory]::Exists($pkgPath) -eq $false) 
+    {
+        Write-Log "Intune app directory is either missing or does not exist" 2        
+    }
+
+    try
+    {
+        $fi = [IO.FileInfo]$file
+    } catch {}
+
+    foreach($file in $obj.Files)
+    {
+        $pdfFile = $null
+
+        if($fi.Directory.FullName)
+        {
+            $pdfFile = "$($fi.Directory.FullName)\$($file.fileName)"
+        }
+        
+        if($null -eq $pdfFile -or [IO.File]::Exists($pdfFile) -eq $false) 
+        {
+            $pdfFile = "$($pkgPath)\$($file.fileName)"
+        }        
+
+        if([IO.File]::Exists($pdfFile) -eq $false) 
+        {
+            Write-Log "Terms of use file $($file.fileName) not found. The Terms of Use object will not be imported." 2
+            @{"Import" = $false}
+            return 
+        }
+
+        $bytes = [IO.File]::ReadAllBytes($pdfFile)        
+        $file.fileData = [PSCustomObject]@{
+            data = [Convert]::ToBase64String($bytes)
+        }
     }
 }
 #endregion

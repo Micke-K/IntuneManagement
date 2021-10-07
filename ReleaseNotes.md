@@ -1,5 +1,34 @@
 # Release Notes
 
+## 3.2.3 - 2021-10-07
+
+**New features**
+
+- Added support for Terms of Use Export/Import.
+  This requires that the pdf file is available during import, in either the export folder or the Intune App folder. This is added as a Known Issue in [Readme](README.md).
+
+  **Note:** This is in preview and it requires that the Preview option in Settings is enabled and then a script restart. This will most likely generate a new consent prompt.
+  This is based on [Issue 27](https://github.com/Micke-K/IntuneManagement/issues/27)
+
+- All objects are returned
+
+  This might take long time in huge environments. 
+  Please report feedback on how this works in environments with 1000+ objects e.g. does it take too long time, memory issues etc.
+  This is based on [Issue 29](https://github.com/Micke-K/IntuneManagement/issues/29)
+
+- Added support for custom columns
+  This must be manually added to the registry.
+
+  See [Readme](README.md#Columns) on how to use this
+  This is based on [Issue 30](https://github.com/Micke-K/IntuneManagement/issues/30)
+
+- Object count will be displayed
+
+**Fixes**
+
+* Fixed minor bugs in IntuneAssignments - Support Name for objects that don't use displayName
+* Regenerated documentation and language files - New properties for the iOS Device Restriction profile is now supported
+
 ## 3.2.2 - 2021-09-23
 
 **New features**

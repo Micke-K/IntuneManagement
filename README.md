@@ -122,6 +122,48 @@ Additional Intune Tools is included in the script.
 
 See [ADMX Import](ADMXImport.md) for more information about the ADMX tools
 
+## Columns
+
+Custom columns is supported. The script will by default add id, displayName and description with exception for some object types. These are configured in the EndpointManager.ps1 and  EndpointManagerInfo.psm1 files.
+
+Custom columns can be added for each Object  Type. This must be added manually into the registry, in HKCU\SOFTWARE\CloudAPIPowerShellManagement\EndpointManager\ObjectColumns\\*ObjectType*.
+
+The *ObjectType* value represents the ViewItem ID specified in the EndpointManager.ps1 and  EndpointManagerInfo.psm1 files. This is also the same as the parent folder when items are exported.
+
+The REG_SZ value has the following syntax:
+
+[0|1],Property1[=Header1],Property2[=Header2],...
+
+0|1 - Optional value specifying if columns are added or replacing default columns
+
+0 = Replace default columns with columns specified in the registry value
+1 = Add columns specified in the registry to the default columns. This is default setting.
+
+PropertyX - Property to display. View an object to see available properties 
+
+HeaderX - Optional value for the column header. Property name will be used if this is not specified.
+
+**Note:** Some object types returns multiple object types, @OData.Type. If a custom column is added but the property does not exist on all the object types that were returned, the columns will be empty. The code will **not** break if the property is missing on one or more returned objects. 
+
+The script does not require a restart. Columns are generated when the object type is selected in the menu. 
+
+**Example 1:** 
+Reg key: HKCU\SOFTWARE\CloudAPIPowerShellManagement\EndpointManager\ObjectColumns\DeviceConfiguration
+
+REG_SZ value: **lastModifiedDateTime**
+
+This will add the **lastModifiedDateTime** to the existing columns.
+
+**Example 2:**
+
+Reg key: HKCU\SOFTWARE\CloudAPIPowerShellManagement\EndpointManager\ObjectColumns\TermsOfUse
+
+REG_SZ value: 0,id=Id,displayName=Name,files[0].displayName=Display Name
+
+This will replace the default columns and add new columns with specific header. 
+
+**Note:** Sub-properties are supported e.g. **files[0].displayName**. This will add a column based on the first object in the files property.
+
 ## Change log
 
 See [Change Log](ReleaseNotes.md) for more information
@@ -155,6 +197,7 @@ See [MSAL Info](MSALInfo.md) for more information about authentication
 * Scope Tags
 * Scripts (PowerShell and Shell scripts, supports download of script)
 * Terms and Conditions
+* Terms of Use
 * Update Policies
 
 
@@ -203,6 +246,8 @@ When using the filter box to search for items, the checkbox must be clicked twic
 Logout will only clear the token from cache and not from the browser e.g. if login is triggered after a logout, the user will still be listed in the 'Select user' dialog.
 
 Referenced settings will NOT be imported/copied. There is no value stored in a property on the object for these settings. Example: A VPN profile has certificates as referenced properties. The certificates must be added manually after import/copy.
+
+Terms of Use requires that the pdf file is available. This must be manually coped to either the Export folder for Terms of Use or to the Intune Application folder specified in Settings. It is currently not possible to export the pdf file with Graph API. 
 
 See [Documentation](Documentation.md) for issues regarding the documentation process.
 

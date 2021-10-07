@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.1.6'
+    '3.1.7'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -216,6 +216,9 @@ function Invoke-GraphRequest
             $ODataMetadata = "full", # full, minimal, none or skip
 
             [switch]
+            $AllPages,
+
+            [switch]
             $NoError
         )
 
@@ -288,21 +291,60 @@ function Invoke-GraphRequest
         $Url = $Url -replace "%OrganizationId%", $global:Organization.Id
     }
 
-    ### !!!
-    ### @odata.nextLink - ToDo: Support for paging
-    ### https://docs.microsoft.com/en-us/graph/paging
+    <#
+    if($AllPages)
+    {    
+        # Code to test paging - Force each page to size specified in top parameter below
+        # Kept for reference
+        
+        if(($url.IndexOf('?')) -eq -1) 
+        {
+            $url = "$($url.Trim())?"
+        }
+        else
+        {
+            $url = "$($url.Trim())&"
+        }
+        $url = "$($url.Trim())`$top=20"
+    }
+    #>    
 
     $ret = $null
     try
     {
         Write-LogDebug "Invoke graph API: $Url (Request ID: $requestId)"
-        $ret = Invoke-RestMethod -Uri $Url -Method $HttpMethod @params 
-        if($? -eq $false) 
+        $allValues = @()
+        do 
         {
-            throw $global:error[0]
+            $ret = Invoke-RestMethod -Uri $Url -Method $HttpMethod @params 
+            if($? -eq $false) 
+            {
+                throw $global:error[0]
+            }
+    
+            if($HttpMethod -eq "PATCH" -and [String]::IsNullOrempty($ret))
+            {
+                $ret = $true;
+                break; 
+            }
+            elseif($AllPages -eq $true -and $HttpMethod -eq "GET" -and $ret.value -is [Array])
+            {
+                $allValues += $ret.value
+                if($ret.'@odata.nextLink')
+                {
+                    $Url = $ret.'@odata.nextLink'
+                }
+            }
+            else
+            {
+                break    
+            }
+        } while($ret.'@odata.nextLink')
+        
+        if($allValues.Count -gt 0 -and $ret.value -is [Array])
+        {
+            $ret.value = $allValues
         }
-
-        if($HttpMethod -eq "PATCH" -and [String]::IsNullOrempty($ret)) { $ret = $true }
     }
     catch
     {
@@ -354,7 +396,12 @@ function Get-GraphObjects
         {
             $url = "$($url.Trim())&$($objectType.QUERYLIST.Trim())" # Risky...does not check that the parameter is already in use
         }        
-    }    
+    }
+    
+    if($SingleObject -ne $true)
+    {
+        $params.Add('AllPages',$true)
+    }
 
     $graphObjects = Invoke-GraphRequest -Url $url @params
 
@@ -453,18 +500,52 @@ function Show-GraphObjects
         }
 
         $tableColumns = @()
-        # Add other columns
-        foreach($prop in ($tmpObj.PSObject.Properties | Where {$_.Name -notin @("IsSelected","Object","ObjectType")}))
+
+        $additionalColumns = @()
+        $additionalColsStr = Get-Setting "EndpointManager\ObjectColumns" "$($global:curObjectType.Id)"
+        if($additionalColsStr)
         {
-            $binding = [System.Windows.Data.Binding]::new($prop.Name)
+            $additionalColumns += $additionalColsStr.Split(',')
+        }
+
+        if($additionalColumns.Count -eq 0 -or $additionalColumns[0] -ne "0")
+        {
+            # Add default columns
+            foreach($prop in ($tmpObj.PSObject.Properties | Where {$_.Name -notin @("IsSelected","Object","ObjectType")}))
+            {
+                $binding = [System.Windows.Data.Binding]::new($prop.Name)
+                $column = [System.Windows.Controls.DataGridTextColumn]::new()
+                $column.Header = $prop.Name
+                $column.IsReadOnly = $true
+                $column.Binding = $binding
+
+                $tableColumns += $prop.Name
+                $dgObjects.Columns.Add($column)
+            }
+        }
+
+        # Add custom columns
+        foreach($additionalCol in $additionalColumns)
+        {
+            if($additionalCol -eq "0" -or $additionalCol -eq "1") { continue }
+
+            $bindingProp,$colHeader = $additionalCol.Split('=')
+
+            if(-not $colHeader)
+            {
+                $colHeader = $bindingProp
+            }
+
+            $binding = [System.Windows.Data.Binding]::new("Object.$($bindingProp)")
             $column = [System.Windows.Controls.DataGridTextColumn]::new()
-            $column.Header = $prop.Name
+            $column.Header = $colHeader
             $column.IsReadOnly = $true
             $column.Binding = $binding
 
-            $tableColumns += $prop.Name
+            $tableColumns += $colHeader
             $dgObjects.Columns.Add($column)
         }
+
         $ocList = [System.Collections.ObjectModel.ObservableCollection[object]]::new($graphObjects)
         $dgObjects.ItemsSource = [System.Windows.Data.CollectionViewSource]::GetDefaultView($ocList)
     }
@@ -492,6 +573,7 @@ function Show-GraphObjects
 function Clear-GraphObjects
 {        
     $global:txtFormTitle.Text = ""
+    $global:txtEMObjects.Text = ""
     $global:grdTitle.Visibility = "Collapsed"
     $global:grdObject.Children.Clear()
     $global:dgObjects.ItemsSource = $null

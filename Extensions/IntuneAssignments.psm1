@@ -9,7 +9,7 @@ Module for listing Intune assignments
 #>
 function Get-ModuleVersion
 {
-    '1.0.0'
+    '1.0.1'
 }
 
 function Invoke-InitializeModule
@@ -59,8 +59,8 @@ function Show-EMToolsIntuneAssignments
             $dlgSave = New-Object -Typename System.Windows.Forms.SaveFileDialog
             #$dlgSave.InitialDirectory = Get-SettingValue "IntuneRootFolder" $env:Temp
             $dlgSave.FileName = $obj.FileName
-            $sf.DefaultExt = "*.csv"
-            $sf.Filter = "CSV (*.csv)|*.csv|All files (*.*)| *.*"            
+            $dlgSave.DefaultExt = "*.csv"
+            $dlgSave.Filter = "CSV (*.csv)|*.csv|All files (*.*)| *.*"            
             if($dlgSave.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK -and $dlgSave.Filename)
             {
                 $script:objAssignments | Select Name, Type, IncludedString, ExcludedString | ConvertTo-Csv -NoTypeInformation | Out-File -LiteralPath $dlgSave.Filename -Encoding UTF8 -Force
@@ -123,13 +123,22 @@ function Get-EMIntuneAssignments
 
     Write-Status "Collect exported assignments"
 
+    $intuneViewObj = $global:viewObjects | Where { $_.ViewInfo.ID -eq "IntuneGraphAPI" }
+
     $script:objAssignments = @()
 
     foreach($fileObj in $script:fileArr)
     {
+        $objectType = $null
+        $folderName = $fileObj.FileInfo.Directory.Name
+        if($folderName)
+        {
+            $objectType = $intuneViewObj.ViewItems | Where Id -eq $folderName
+        }
+
         $obj = New-Object PSObject -Property @{
             Object = $fileObj.Object
-            Name = $fileObj.Object.DisplayName
+            Name = $fileObj.Object."$((?? $objectType.NameProperty "displayName"))"
             Type = $null
             Included = $null
             Excluded = $null
