@@ -9,7 +9,7 @@ Module for listing Intune assignments
 #>
 function Get-ModuleVersion
 {
-    '1.0.1'
+    '1.0.2'
 }
 
 function Invoke-InitializeModule
@@ -170,6 +170,7 @@ function Get-EMIntuneAssignments
                 }
                 else
                 {
+                    $assignmentObj = $assignment.target.groupId
                     Write-Warning "Could not find a group with ID $($assignment.target.groupId)"
                 }
                 $included = $assignment.target.'@odata.type' -eq "#microsoft.graph.groupAssignmentTarget"

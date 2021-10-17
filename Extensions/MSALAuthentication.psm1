@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.0.5'
+    '3.3.0'
 }
 
 $global:msalAuthenticator = $null
@@ -18,9 +18,27 @@ function Invoke-InitializeModule
 {
     $script:MSALAllApps = @()
     $global:MSALToken = $null
-    $global:MSALAuthority = $null
+    $global:MSALTenantId = $null
     $script:AccessableTenants = $null
     $global:SkipTokenCacheHelperEx = $null
+
+    $script:lstAADEnvironments = @(
+        [PSCustomObject]@{
+            Name = "Azure AD Public"
+            Value = "public"
+            URL = "login.microsoftonline.com"
+        },
+        [PSCustomObject]@{
+            Name = "Azure AD US Government"
+            Value = "usGov"
+            URL = "login.microsoftonline.us"
+        },
+        [PSCustomObject]@{
+            Name = "Azure AD China"
+            Value = "china"
+            URL = "login.partner.microsoftonline.cn"
+        }
+    )
 
     $global:appSettingSections += (New-Object PSObject -Property @{
         Title = "MSAL"
@@ -68,6 +86,14 @@ function Invoke-InitializeModule
         Description = "Request Azure AD Role read permission when getting the token. This can be use to resolve the SIDs to Azure Roles for the wids property on the Access Token. Note: This might trigger a consent prompt"
     }) "MSAL"
 
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Azure Login"
+        Key = "AzureLogin"
+        Type = "List" 
+        ItemsSource = $script:lstAADEnvironments
+        DefaultValue = "public"
+    }) "MSAL" 
+
     Add-MSALPrereq
 
     #$script:MSALDLLMissing = $true #!!!!
@@ -91,9 +117,19 @@ function Get-MSALAuthenticationObject
     $global:msalAuthenticator
 }
 
+function Invoke-SettingsUpdated
+{
+    Initialize-MSALSettings
+}
+
+function Initialize-MSALSettings
+{
+
+}
+
 function Clear-MSALCurentUserVaiables
 {
-    $global:MSALAuthority = $null
+    $global:MSALTenantId = $null
 }
 
 function Get-MSALCurrentApp
@@ -485,19 +521,42 @@ function Get-MsalAuthenticationToken
     $authResult
 }
 
+function Get-MSALLoginEnvironment
+{
+    $loginValue = Get-SettingValue "AzureLogin" "public"
+    $loginEnv = $script:lstAADEnvironments | Where value -eq $loginValue
+    return (?? $loginEnv.Environment "login.microsoftonline.com")
+}
 function Get-MSALApp
 {
-    param($appInfo)
+    param($appInfo, $loginHint)
 
     $msalApp = $script:MSALAllApps | Where { $_.ClientId -eq  $appInfo.ClientID  -and (-not $appInfo.RedirectUri -or $_.AppConfig.RedirectUri -eq $appInfo.RedirectUri)}
-        
-    if(-not $msalApp)
+    
+    $tenant = ?? $appInfo.TenantId "organizations"
+    
+    if($loginHint.Environment)
     {
-        Write-Log "Add MSAL App $($appInfo.ClientID) $((?? $appInfo.TenantId $appInfo.Authority))"
+        $authority = "https://$($loginHint.Environment)/$tenant/"
+    }
+    elseif($appInfo.Authority)
+    {
+        $authority = $appInfo.Authority
+    }
+    else
+    {
+        $authority = "https://$((Get-MSALLoginEnvironment))/$tenant/"
+    }
+
+    if(-not $msalApp -or $msalApp.Authority -ne $authority)
+    {
+        Write-Log "Add MSAL App $($appInfo.ClientID) $authority"
         $appBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::Create($appInfo.ClientID)
-        
-        if($appInfo.TenantId) { [void]$appBuilder.WithAuthority("https://login.microsoftonline.com/$($appInfo.TenantId)/") }
-        elseif ($appInfo.Authority) { [void]$appBuilder.WithAuthority($appInfo.Authority) }
+
+        [void]$appBuilder.WithAuthority($authority)
+        #if($appInfo.TenantId) { [void]$appBuilder.WithAuthority("https://$((?? $loginHint.Environment (Get-MSALLoginEnvironment)))/$($appInfo.TenantId)/") }
+        #elseif ($appInfo.Authority) { [void]$appBuilder.WithAuthority($appInfo.Authority) }
+
         if($appInfo.RedirectUri) { [void]$appBuilder.WithRedirectUri($appInfo.RedirectUri) }
 
         [void] $appBuilder.WithClientName("CloudAPIPowerShellManagement") 
@@ -512,6 +571,18 @@ function Get-MSALApp
         $script:MSALAllApps += $msalApp
     }
     return $msalApp
+}
+
+function Get-MSALAppAuthority
+{
+    try
+    {
+        ([uri]$global:MSALApp.Authority).Authority
+    }
+    catch
+    {
+        Get-MSALLoginEnvironment
+    }
 }
 
 function Connect-MSALUser
@@ -529,7 +600,9 @@ function Connect-MSALUser
         [switch]
         $Interactive,
 
-        $Account
+        $Account,
+
+        $Tenant
     )
 
     # No login during first time the app is started
@@ -543,11 +616,10 @@ function Connect-MSALUser
         return
     }
 
-    if(-not $global:appObj.TenantId -and -not $global:appObj.Authority)
-    {
-        Write-Log "Tenant id/Authority is missing. Cannot authenticate" 3
-        return
-    }
+    #if(-not $global:appObj.TenantId -and -not $global:appObj.Authority)
+    #{
+    #    Write-Log "Tenant id/Authority is missing. Cannot authenticate" 3
+    #}
 
     if ($global:SkipTokenCacheHelperEx -ne $true -and -not ("TokenCacheHelperEx" -as [type])) 
     {
@@ -598,20 +670,21 @@ function Connect-MSALUser
         $Scopes = [String[]]$reqScopes
     }    
 
-    $global:MSALApp = Get-MSALApp $global:appObj
+    $global:MSALApp = Get-MSALApp $global:appObj $Account
     $loginHint = ""
 
     $global:MSALAccounts = $global:MSALApp.GetAccountsAsync().GetAwaiter().GetResult()
     if($Account)
     {
-        $loginHint = $global:MSALAccounts | Where UserName -eq $Account
-        if($global:MSALToken -and $global:MSALToken.Account.UserName -ne $Account)
+        $userName = ?? $Account.UserName $Account
+        $loginHint = $global:MSALAccounts | Where UserName -eq $userName
+        if($global:MSALToken -and $global:MSALToken.Account.UserName -ne $userName)
         {
             # We're logging in with someone else...
             Clear-MSALCurentUserVaiables
         }
     }
-    
+
     # If we force interactive login the skip setting loginHint to force the user select account
     if(-not $loginHint -and $Interactive -ne $true)
     {
@@ -640,8 +713,8 @@ function Connect-MSALUser
 
     $prompConsent = $false
     $authResult  = $null
-    $tenantId = $global:appObj.TenantId
-    $authority = ?? $global:MSALAuthority $global:appObj.Authority
+    $tenantId = ?? $global:MSALTenantId $global:appObj.TenantId
+    #$authority = ?? $global:MSALApp.Authority $global:appObj.Authority
 
     try
     {
@@ -652,8 +725,8 @@ function Connect-MSALUser
         {
             $aquireTokenObj = $global:MSALApp.AcquireTokenSilent($Scopes, $loginHint)
             if($ForceRefresh) { [void]$aquireTokenObj.WithForceRefresh($ForceRefresh) }
-            if ($tenantId) { [void] $aquireTokenObj.WithAuthority("https://login.microsoftonline.com/$($TenantId)/") }
-            if ($authority) { [void]$aquireTokenObj.WithAuthority($authority) }
+            if ($tenantId) { [void]$aquireTokenObj.WithAuthority("https://$((Get-MSALAppAuthority))/$($tenantId)/")  } 
+            else { [void]$aquireTokenObj.WithAuthority($global:MSALApp.Authority) }
 
             $authResult = Get-MsalAuthenticationToken $aquireTokenObj
 
@@ -709,7 +782,10 @@ function Connect-MSALUser
             }
         }
     }
-    catch {}
+    catch 
+    {
+        Write-LogError "Failed to perform silent login" $_.Exception
+    }
 
     # Interactive login is only allowed once the app has started. Skip if silent login failed during startup
     if($global:MainAppStarted -and ((-not $authResult -and $Silent -ne $true) -or $prompConsent))
@@ -726,12 +802,12 @@ function Connect-MSALUser
         if ($tenantId)
         {
             Write-Log "Tenant id: $tenantId"
-            [void] $aquireTokenObj.WithAuthority("https://login.microsoftonline.com/$tenantId)/")
+            [void]$aquireTokenObj.WithAuthority("https://$((Get-MSALAppAuthority))/$tenantId/")
         }
-        elseif ($authority) 
+        else
         {
-            Write-Log "Authority: $authority"
-            [void]$aquireTokenObj.WithAuthority($authority)
+            Write-Log "Authority: $($global:MSALApp.Authority)"
+            [void]$aquireTokenObj.WithAuthority($global:MSALApp.Authority)
         }
 
         if($loginHintName) 
@@ -786,8 +862,8 @@ function Connect-MSALUser
                 
                 # Can we reuse the app used for login?
                 $appBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::Create($global:appObj.ClientID)
-                if($tenantId) { [void]$appBuilder.WithAuthority("https://login.microsoftonline.com/$($tenantId)") }
-                elseif ($authority) { [void]$appBuilder.WithAuthority($authority) }
+                if($tenantId) { [void]$appBuilder.WithAuthority("https://$((Get-MSALAppAuthority))/$($tenantId)") }
+                else { [void]$appBuilder.WithAuthority($global:MSALApp.Authority) }
                 if($global:appObj.RedirectUri) { [void]$appBuilder.WithRedirectUri($global:appObj.RedirectUri) }            
                 $app = $appBuilder.Build()
 
@@ -977,7 +1053,7 @@ function Get-MSALProfileEllipse
                             Write-Status "Logging in with $($this.Tag.UserName)"
                             Hide-Popup
                             Clear-MSALCurentUserVaiables
-                            Connect-MSALUser -Account $this.Tag.UserName
+                            Connect-MSALUser -Account $this.Tag #!!!.UserName
 
                             if($global:curObjectType)
                             {
@@ -1200,7 +1276,7 @@ function Get-MSALProfileEllipse
                         Write-Status "Logging in with $($this.Tag.UserName)"
                         Hide-Popup
                         Clear-MSALCurentUserVaiables
-                        Connect-MSALUser -Account $this.Tag.UserName
+                        Connect-MSALUser -Account $this.Tag #!!!.UserName
 
                         if($global:curObjectType)
                         {
@@ -1311,9 +1387,9 @@ function Get-MSALProfileEllipse
                             $lnkButton.add_Click({
                                 Write-Status "Logging in to $($this.Tag.DisplayName)"
                                 # Set authority to selected tenant
-                                $global:MSALAuthority = "https://login.microsoftonline.com/$($this.Tag.tenantId)/"
-                                Hide-Popup
-                                Connect-MSALUser -Account $global:MSALToken.Account.Username
+                                $global:MSALTenantId = $this.Tag.tenantId
+                                Hide-Popup                        
+                                Connect-MSALUser -Account ($global:MSALAccounts | Where UserName -eq $global:MSALToken.Account.Username)
 
                                 if($global:curObjectType)
                                 {

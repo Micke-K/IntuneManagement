@@ -23,9 +23,9 @@ Before logging on:
 
 * The app will use the Intune PowerShell Azure Enterprise Application by default but request all permissions required by the script. The will most likely cause a consent prompt since it uses more permission than the Intune module. Enable **Use Default Permissions** in Settings to only request the current permissions granted to the Enterprise App. 
   **Note:** Using default permission might reduce functionality e.g. permissions for one or more object types might be missing  
-* Enable **Get Tenant List** in Settings if accessing multiple environments with the same account. This might cause a Consent prompt
+* Enable **Get Tenant List** in Settings if accessing multiple environments with the same account e.g. a guest account in other tenants. This might cause a Consent prompt
 
-Start the script by running **Start.cmd**, **Start-WithConsole.cmd** or **Start-IntuneManagement.ps1**. **Start-WithConsole.cmd** will leave the command prompt window open so you can see the log while running the app. 
+Start the script by running **Start.cmd**, **Start-WithJson.cmd**, **Start-WithConsole.cmd** or **Start-IntuneManagement.ps1**. **Start-WithConsole.cmd** will leave the command prompt window open so you can see the log while running the app. 
 
 ## Documentation
 
@@ -171,6 +171,28 @@ See [Change Log](ReleaseNotes.md) for more information
 ## Authentication
 See [MSAL Info](MSALInfo.md) for more information about authentication
 
+## Settings
+
+Settings for the script is default stored in the registry. However, the script supports settings to be stored in a json file so it can be copied between computers. Registry settings can be exported in the Settings dialog. 
+
+To use settings based on a json file:
+
+```
+Start-IntuneManagement.ps1 -JSonSettings [-JSonFile <PathToFile>]
+```
+
+If only -JSonSettings is used the script will use the default json setting file:
+
+```
+%LOCALAPPDATA%\CloudAPIPowerShellManagement\Settings.json
+```
+
+Use -JSonFile for custom location of the file
+
+Start-WithJson.cmd is included as an example on how to start the script with json settings.
+
+**Note:** If the file can't be created, the script will revert back registry. Make sure that the script can write to the file. It is not recommended to store the file in a folder that requires UAC to get write permissions.  
+
 ## Supported Intune objects
 * App Configurations (App and Device)
 * App Protection
@@ -235,7 +257,7 @@ Android Store Apps are **not** imported. The Create API is documented in Microso
 
 Using multiple tenants support causes multiple logins/consent prompts the first time if 'Microsoft Graph PowerShell' is used. Querying the API for tenant list uses a different scope that is not included by default in the 'Microsoft Graph PowerShell' app. 
 
-~~Using multiple tenants support *might* cause and endless loop in the login screen and cause duplicate accounts in token cache. Actual cause is not found yet but it happens on rare occasions and it looks like it happens when a guest account is used. Workaround: Cancel the login, restart the script, logout and restart the script again.~~ - Not seen this in a long time. Please create issue if this happens
+~~Using multiple tenants support *might* cause and endless loop in the login screen and cause duplicate accounts in token cache. Actual cause is not found yet but it happens on rare occasions and it looks like it happens when a guest account is used. Workaround: Cancel the login, restart the script, logout and restart the script again.~~ - Not seen this in a long time. Please create an issue if this happens
 
 When multi tenant settings is Enabled/Disabled, the Profile Info is not updated until the account is changed or app is restarted. Profile Info popup is built after logon.
 

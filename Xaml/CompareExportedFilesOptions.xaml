@@ -2,6 +2,7 @@
     <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
@@ -14,8 +15,8 @@
     </StackPanel>
     <TextBox Text="" Name="txtCompareNameFilter" Grid.Column='1' Grid.Row='0' Margin="0,5,5,0" />
 
-    <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="0,0,5,0" >
-        <Label Content="Export root" />
+    <StackPanel Orientation="Horizontal"  Grid.Row='1' Margin="0,0,5,0" >
+        <Label Content="Source root" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="The root folder where exported files are stored. This sould be the Company Name folder if it was included in the export." />
     </StackPanel>
     <Grid Grid.Column='1' Grid.Row='1' Margin="0,5,5,0">
@@ -27,7 +28,24 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>                
         </Grid.RowDefinitions>
-        <TextBox Text="" Name="txtExportPath" />
-        <Button Grid.Column="2" Name="browseExportPath"  Padding="5,2,5,2" Width="50" ToolTip="Browse for folder">...</Button>
+        <TextBox Text="" Name="txtExportPathSource" />
+        <Button Grid.Column="2" Name="browseExportPathSource"  Padding="5,2,5,2" Width="50" ToolTip="Browse for folder">...</Button>
     </Grid>
+
+    <StackPanel Orientation="Horizontal" Grid.Row='2'  Margin="0,0,5,0" >
+        <Label Content="Compare root" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="The folder with exported object that should be compared with the source" />
+    </StackPanel>
+    <Grid Grid.Column='1' Grid.Row='2' Margin="0,5,5,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />  
+            <ColumnDefinition Width="5" />                              
+            <ColumnDefinition Width="Auto" />                                
+        </Grid.ColumnDefinitions>                 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>                
+        </Grid.RowDefinitions>
+        <TextBox Text="" Name="txtExportPathCompare" />
+        <Button Grid.Column="2" Name="browseExportPathCompare"  Padding="5,2,5,2" Width="50" ToolTip="Browse for folder">...</Button>
+    </Grid>    
 </Grid>

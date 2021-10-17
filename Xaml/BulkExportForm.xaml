@@ -37,24 +37,30 @@
             <Button Grid.Column="2" Name="browseExportPath" Padding="5,0,5,0" Width="50" ToolTip="Browse for folder">...</Button>
         </Grid>
         
+        <StackPanel Orientation="Horizontal"  Grid.Row='1' Margin="0,0,5,0" >
+            <Label Content="Name filter" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify name filter for the objects to export" />
+        </StackPanel>
+        <TextBox Text="" Name="txtExportNameFilter" Grid.Column='1' Grid.Row='1' Margin="0,5,0,0" />
+
         <!-- Force object type in name by setting it to true and disable the checkbox. Leave it on for information -->
-        <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="0,0,5,0">
+        <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,0,5,0">
             <Label Content="Add object name to path" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will export all objects to a sub-directory of the export path with name based on object type" />
         </StackPanel>
-        <CheckBox Grid.Column='1' Grid.Row='1' Name='chkAddObjectType' VerticalAlignment="Center" IsEnabled="false" IsChecked="true" />
+        <CheckBox Grid.Column='1' Grid.Row='2' Name='chkAddObjectType' VerticalAlignment="Center" IsEnabled="false" IsChecked="true" />
     
-        <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,0,5,0">
+        <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,0,5,0">
             <Label Content="Export Assignments" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Export object assignments" />
         </StackPanel>
-        <CheckBox Grid.Column='1' Grid.Row='2' Name='chkExportAssignments' VerticalAlignment="Center" IsChecked="true" />            
+        <CheckBox Grid.Column='1' Grid.Row='3' Name='chkExportAssignments' VerticalAlignment="Center" IsChecked="true" />            
 
-        <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,0,5,0">
+        <StackPanel Orientation="Horizontal" Grid.Row='4' Margin="0,0,5,0">
             <Label Content="Add company name to path" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will add the company name in Azure to the export path" />
         </StackPanel>
-        <CheckBox Grid.Column='1' Grid.Row='3' Name='chkAddCompanyName' VerticalAlignment="Center" IsChecked="true" />            
+        <CheckBox Grid.Column='1' Grid.Row='4' Name='chkAddCompanyName' VerticalAlignment="Center" IsChecked="true" />            
     </Grid>
 
     <Grid Grid.Row='1' VerticalAlignment="Stretch">

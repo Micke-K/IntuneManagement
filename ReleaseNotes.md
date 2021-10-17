@@ -1,5 +1,45 @@
 # Release Notes
 
+## 3.3.0 (Beta) - 2021-10-17
+
+This is a **BETA** release. It contains core changes for Authentication and Settings management. Please report any issues [here](https://github.com/Micke-K/IntuneManagement/issues).
+
+**New features**
+
+- Support for Settings in Json files
+  Settings can now be stored in json files and copied between devices.  
+
+  See [Readme](README.md#Settings) on how to use this feature
+  This is based on [Issue 33](https://github.com/Micke-K/IntuneManagement/issues/33)
+
+- Bulk Compare for exported folders
+
+  The tool can now compare two exported folders 
+  This is based on [Issue 32](https://github.com/Micke-K/IntuneManagement/issues/32)
+
+- Support for Azure AD US Government cloud and Azure AD China cloud. Default is Azure AD Public cloud. 
+
+  Change cloud in Settings
+  **Note:** This is a major change to the authentication. This may have an impact if a custom configured Azure app is used.
+  This is based on [Issue 26](https://github.com/Micke-K/IntuneManagement/issues/26). Please report any problem, progress or testing with US Government/China cloud or if there are any issues when a custom configured Azure app is used. 
+
+- Export can now add Id to the name of the backup file
+
+  This can be used if there are multiple objects with the same name.
+
+  This can be enabled in Settings. Backup file name will be <Name>_<Id>.json. 
+
+- Export/Import/Compare/Delete now supports name filter
+  Objects are filtered based on escaped RegEx -nomatch expression so wildcards are not supported. 
+
+- IntuneAssignments report will now include the id of deleted groups 
+
+**Fixes**
+
+* Fixed an issue in Export. Groups were not exported if exporting multiple times and multiple folders during the same session.
+* Fixed an issue in Compare where the csv file was not stored in the correct folder
+* Fixed an issue in Compare where the comparing object may return System[]. This can happen if the generated files has multiple documentation items for a property. First result will be used.  
+
 ## 3.2.3 - 2021-10-07
 
 **New features**

@@ -2,18 +2,30 @@
     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" Grid.IsSharedSizeScope='True'>
     <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
         <RowDefinition Height="*"/>
         <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
 
-    <StackPanel Orientation="Horizontal" Grid.Row='0' Margin="0,0,5,0" VerticalAlignment="Top">
+    <StackPanel Orientation="Horizontal"  Grid.Row='0' Margin="0,0,5,0" >
+        <Label Content="Name filter" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify name filter for the objects to delete" />
+    </StackPanel>
+    <TextBox Text="" Name="txtDeleteNameFilter" Grid.Column='1' Grid.Row='0' Margin="0,5,0,0" />
+
+    <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="5,0,5,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
         <Label Content="Objects to delete" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="All objects of the seleted types will be deleted" Margin="0,2,0,0" />
     </StackPanel>
-    <DataGrid Name="dgBulkDeleteObjects" Grid.Row='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" Margin="0,0,0,5">
+
+    <DataGrid Name="dgBulkDeleteObjects" Grid.Row='2' Grid.ColumnSpan="2" CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" Margin="0,0,0,5">
     </DataGrid>
 
-    <StackPanel Name="spDeleteSubMenu" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row='2' Grid.ColumnSpan='2' >
+    <StackPanel Name="spDeleteSubMenu" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row='3' Grid.ColumnSpan='2' >
         <Button Name="btnDelete" Content="Delete" Width='100' Margin="5,0,0,0" />
         <Button Name="btnClose" Content="Close" Width='100' Margin="5,0,0,0" />
     </StackPanel>                

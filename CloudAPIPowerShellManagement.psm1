@@ -69,7 +69,11 @@ function Initialize-CloudAPIManagement
         [string]
         $View = "",
         [switch]
-        $ShowConsoleWindow
+        $ShowConsoleWindow,
+        [switch]
+        $JSonSettings,
+        [string]
+        $JSonFile
     )
 
     $global:wpfNS = "xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'"
@@ -97,6 +101,16 @@ function Initialize-CloudAPIManagement
     if($ShowConsoleWindow -ne $true)
     {
         Hide-Console
+    }
+
+    if($JSonSettings -eq $true)
+    {
+        $global:UseJSonSettings = $true
+        $global:JSonSettingFile = $JSonFile
+    }
+    else
+    {
+        $global:UseJSonSettings = $false
     }
 
     $global:txtSplashText.Text = "Unblock files" 

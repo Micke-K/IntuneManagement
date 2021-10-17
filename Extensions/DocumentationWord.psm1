@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.0.4'
+    '1.0.5'
 }
 
 function Invoke-InitializeModule
@@ -117,6 +117,7 @@ function Invoke-WordPreProcessItems
     Save-Setting "Documentation" "WordExportProperties" $global:cbWordDocumentationProperties.SelectedValue
     Save-Setting "Documentation" "WordCustomDisplayProperties" $global:txtWordCustomProperties.Text
     Save-Setting "Documentation" "WordDocumentTemplate" $global:txtWordDocumentTemplate.Text
+    Save-Setting "Documentation" "WordDocumentName" $global:txtWordDocumentName.Text
 
     Save-Setting "Documentation" "WordAddCategories" $global:chkWordAddCategories.IsChecked
     Save-Setting "Documentation" "WordAddSubCategories" $global:chkWordAddSubCategories.IsChecked

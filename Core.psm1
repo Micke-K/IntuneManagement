@@ -6,13 +6,12 @@ Core UI and Settings fatures for the CloudAPIPowerShellManager solution
 This module handles the WPF UI
 
 .NOTES
-  Version:        3.1.0
   Author:         Mikael Karlsson
 #>
 
 function Get-ModuleVersion
 {
-    '3.1.7'
+    '3.3.0'
 }
 
 function Start-CoreApp
@@ -35,9 +34,17 @@ function Start-CoreApp
     # Load all modules in the Modules folder
     $global:modulesPath = [IO.Path]::GetDirectoryName($PSCommandPath) + "\Extensions"
 
-    #Import-Module ($PSScriptRoot + "\Core.psm1") -Force -Global
-
     Add-DefaultSettings
+
+    if($global:UseJSonSettings -eq $true)
+    {
+        Initialize-JsonSettings
+    }
+
+    if($global:UseJSonSettings -eq $false)
+    {
+        Write-Log "Use settings in registry"
+    }    
 
     Write-Log "#####################################################################################"
     Write-Log "Application started"
@@ -53,7 +60,7 @@ function Start-CoreApp
         exit 1
     }
 
-    $global:Debug = Get-SettingValue "Debug"
+    Initialize-Settings
     $global:currentViewObject = $null
     $global:FirstTimeRunning = ((Get-Setting "" "FirstTimeRunning" "true") -eq "true")
     $global:MainAppStarted = $false
@@ -795,34 +802,230 @@ function Expand-FileName
 
 #endregion
 
-#region Reg functions
+#region Save/Read Settings functions
 ########################################################################
 #
-# Reg functions
+# Save/Read Settings
 #
 ########################################################################
+function Initialize-Settings
+{
+    param([switch]$Updated)
+
+    $global:Debug = Get-SettingValue "Debug"
+    $global:logFile = $null
+    $global:logFileMaxSize = $null
+    
+    if($Updated -eq $true)
+    {
+        Invoke-ModuleFunction "Invoke-SettingsUpdated"
+    }
+}
+
+function Initialize-JsonSettings
+{
+    if(-not $global:JSonSettingFile)
+    {
+        $global:JSonSettingFile = "$($env:LOCALAPPDATA)\CloudAPIPowerShellManagement\Settings.json"
+        $fi = [IO.FileInfo]$global:JSonSettingFile
+        if($fi.Exists -eq $false)
+        {
+            Export-Settings $fi.FullName
+        }        
+    }
+    else 
+    {
+        $fi = [IO.FileInfo]$global:JSonSettingFile
+        if($fi.Exists -eq $false)
+        {
+            try
+            {                
+                Write-Host "Settings file $($fi.FullName) does not exist. Create empty settings"
+                @{} | ConvertTo-Json | Out-File -FilePath $global:JSonSettingFile -Force -Encoding utf8
+            }
+            catch
+            {
+                Clear-JsonSettingsValues
+                Write-LogError "Failed to create json setting file $($fi.FullName). Veirfy write access. Registry settings will be used." $_.Exception
+            }
+        }
+    }
+
+    $fi = [IO.FileInfo]$global:JSonSettingFile
+    if($fi.Exists -eq $true)
+    {
+        try
+        {
+            $global:JsonSettingsObj = (ConvertFrom-Json (Get-Content -Path $fi.FullName -Raw))
+            Write-Log "Use json settings file: $($fi.FullName)"
+            return
+        }
+        catch
+        {            
+            Clear-JsonSettingsValues
+            Write-LogError "Failed to read json setting file $($fi.FullName). Registry settings will be used." $_.Exception
+        }
+    }
+    else
+    {
+        Clear-JsonSettingsValues
+        Write-LogError "Could not find json setting file $($fi.FullName). Registry settings will be used"
+    }
+    
+}
+
+function Clear-JsonSettingsValues
+{
+    # Failed - Revert back to reg settings
+    $global:JsonSettingsObj =  $null
+    $global:JSonSettingFile = $null
+    $global:UseJSonSettings = $false
+}
 
 function Save-Setting
 {    
-    param($SubPath, $Key, $Value, $Type = "String")
+    param($SubPath = "", $Key = "", $Value, $Type = "String")
 
-    $regPath = Get-RegPath $SubPath
-    if((Test-Path $regPath) -eq  $false)
+    if($global:JsonSettingsObj -and $global:JSonSettingFile)
     {
-        New-Item (Get-RegPath $SubPath) -Force -ErrorAction SilentlyContinue | Out-Null
+        if($SubPath)
+        {
+            $arrParts = $SubPath.Split(@('/','\'))
+        }
+        else
+        {
+            $arrParts = @()
+        }
+
+        $parentSetting = $global:JsonSettingsObj
+
+        foreach($part in $arrParts)
+        {
+            if(($parentSetting.PSObject.Properties | Where Name -eq $part))
+            {
+                $parentSetting = $parentSetting.$part
+            }
+            else
+            {
+                $parentSetting.$part = @()
+                $parentSetting = $parentSetting.$part
+            }
+        }
+
+        try
+        {
+            if($null -eq $Value)
+            {
+                if(($parentSetting.PSObject.Properties | Where Name -eq $Key))
+                {
+                    $parentSetting.PSObject.Properties.Remove($Key) | Out-Null
+                }
+            }
+            else
+            {
+                if($Type -eq "String" -and $null -ne $value)
+                {
+                    $Value = $value.ToString()
+                }
+                elseif($Type -eq "DWord" -and $null -ne $Value)
+                {
+                    $Value = [Int]::Parse($Value)
+                }
+
+                if(-not ($parentSetting.PSObject.Properties | Where Name -eq $Key))
+                {
+                    $parentSetting | Add-Member -MemberType NoteProperty -Name $Key -Value $Value 
+                }
+                else
+                {
+                    $parentSetting.$Key = $Value
+                }
+            }
+
+            $global:JsonSettingsObj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath $global:JSonSettingFile -Force -Encoding utf8
+        }
+        catch
+        {
+            Write-LogError "Failed to save json setting value $Key" $_.Exception
+        }
     }
-    New-ItemProperty -Path $regPath -Name $Key -Value $Value -Type $Type -Force | Out-Null
+    else
+    {
+        $regPath = Get-RegPath $SubPath
+        if((Test-Path $regPath) -eq  $false)
+        {
+            New-Item (Get-RegPath $SubPath) -Force -ErrorAction SilentlyContinue | Out-Null
+        }
+     
+        New-ItemProperty -Path $regPath -Name $Key -Value $Value -Type $Type -Force | Out-Null
+    }
 }
 
 function Get-Setting
 {    
-    param($SubPath, $Key, $defautValue)
+    param($SubPath = "", $Key = "", $defautValue)
 
-    try
-    {       
-        $val = Get-ItemPropertyValue -Path (Get-RegPath $SubPath) -Name $Key -ErrorAction SilentlyContinue
+    if(-not $key)
+    {
+        return
     }
-    catch { }
+
+    $val = $null
+
+    if($global:JsonSettingsObj)
+    {
+        try
+        {
+            if($SubPath)
+            {
+                $arrParts = $SubPath.Split(@('/','\'))
+            }
+            else
+            {
+                $arrParts = @()
+            }
+
+            $parentSetting = $global:JsonSettingsObj
+            $found = $true
+
+            foreach($part in $arrParts)
+            {
+                if(($parentSetting.PSObject.Properties | Where Name -eq $part))
+                {
+                    $parentSetting = $parentSetting.$part
+                }
+                else
+                {     
+                    $found = $false               
+                    break
+                }
+            }
+
+            if($null -ne $parentSetting.$Key -and $found)
+            {
+                $val = $parentSetting.$Key
+            }
+        }
+        catch
+        {
+            Write-LogError "Failed to read json setting value $Key" $_.Exception
+        }
+    }
+    else
+    {
+        try
+        {       
+            $val = Get-ItemPropertyValue -Path (Get-RegPath $SubPath) -Name $Key -ErrorAction SilentlyContinue
+        }
+        catch 
+        {
+            if($_.Exception.HResult -ne -2147024809) # Skip reporting missing values
+            {
+                Write-LogError "Failed to read registry setting value $Key" $_.Exception
+            }
+        }
+    }
+
     if(-not $val) 
     {
         $defautValue
@@ -844,6 +1047,77 @@ function Get-RegPath
     }
 
     $path
+}
+
+function Export-Settings
+{
+    param($fileName)
+
+    try
+    {
+        $fi = [IO.FileInfo]$fileName
+        if($fi.Directory.Exists -eq $false)
+        {
+            $fi.Directory.Create()
+        }
+    }
+    catch
+    {
+        Write-LogError "Failed to create folder for settings file" $_.Exception
+        return
+    }
+
+    $settingObj = [ordered]@{}
+    Add-RegKeyToSettings $settingObj "HKCU:\Software\CloudAPIPowerShellManagement"
+    $json = $settingObj | ConvertTo-Json -Depth 20
+    try
+    {
+        $json | Out-File -filePath $fileName -encoding utf8 -Force -ErrorAction Stop
+    }
+    catch
+    {
+        Write-LogError "Failed to save json setting file" $_.Exception
+    }
+}
+
+function Add-RegKeyToSettings
+{
+    param($settingObj, $regKey)
+
+    try
+    {
+        $keyObj = Get-Item -Path $regKey
+        foreach($keyValue in ($keyObj.GetValueNames() | Sort))
+        {
+            try
+            {
+                $settingObj.Add($keyValue, $keyObj.GetValue($keyValue))
+            }
+            catch
+            {
+                Write-LogError "Failed to add setting from reg key $keyValue in $regKey" $_.Exception
+            }
+        }
+
+        foreach($subKey in ($keyObj.GetSubKeyNames() | Sort))
+        {
+
+            $settingObjSub = [ordered]@{}
+            $settingObj.Add($subKey, $settingObjSub)
+            try
+            {
+                Add-RegKeyToSettings $settingObjSub ($regKey + '\' + $subKey)
+            }
+            catch
+            {
+                Write-LogError "Failed to add setting for reg subkey $subKey in $regKey" $_.Exception
+            }                
+        }        
+    }
+    catch
+    {
+        Write-LogError "Failed to add reg keys to json settings" $_.Exception
+    }
 }
 #endregion
 
@@ -1028,13 +1302,30 @@ function Show-SettingsForm
 
     Add-XamlEvent $settingsForm "btnSave" "Add_Click" ({        
         Save-AllSettings
-        $global:Debug = Get-SettingValue "Debug"
     })
 
     Add-XamlEvent $settingsForm "btnClose" "Add_Click" ({
         Show-ModalObject
     })
 
+    if($JsonSettingsObj)
+    {
+        Set-XamlProperty $settingsForm "btnExport" "Visibility" "Collapsed"
+    }
+    else
+    {
+        Add-XamlEvent $settingsForm "btnExport" "Add_Click" ({
+            $sf = [System.Windows.Forms.SaveFileDialog]::new()
+            $sf.FileName = $script:currentObjName
+            $sf.DefaultExt = "*.json"
+            $sf.Filter = "Json (*.json)|*.json|All files (*.*)|*.*"
+            if($sf.ShowDialog() -eq "OK")
+            {
+                Export-Settings $sf.FileName
+            }         
+        })
+    }
+    
     $tmp = $global:appSettingSections | Where-Object Id -eq "General"
     if($tmp.Values.Count -gt 0)
     {
@@ -1174,6 +1465,9 @@ function Save-AllSettings
     {
         & $global:currentViewObject.ViewInfo.SaveSettings
     }
+
+    Initialize-Settings -Updated
+
     Start-Sleep -Seconds 1 # It goes to quick...ToDo: Do this in a better way
     Write-Status ""
 }

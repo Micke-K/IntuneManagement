@@ -10,13 +10,14 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.1.7'
+    '3.1.8'
 }
 
 $global:MSGraphGlobalApps = @(
+    #Authority="https://login.microsoftonline.com/organizations/"
     (New-Object PSObject -Property @{Name="";ClientId="";RedirectUri="";Authority=""}),
-    (New-Object PSObject -Property @{Name="Microsoft Intune PowerShell";ClientId="d1ddf0e4-d672-4dae-b554-9d5bdfd93547";RedirectUri="urn:ietf:wg:oauth:2.0:oob";Authority="https://login.microsoftonline.com/organizations/"}),
-    (New-Object PSObject -Property @{Name="Microsoft Graph PowerShell";ClientId="14d82eec-204b-4c2f-b7e8-296a70dab67e";RedirectUri="https://login.microsoftonline.com/common/oauth2/nativeclient";Authority="https://login.microsoftonline.com/organizations/"})
+    (New-Object PSObject -Property @{Name="Microsoft Intune PowerShell";ClientId="d1ddf0e4-d672-4dae-b554-9d5bdfd93547";RedirectUri="urn:ietf:wg:oauth:2.0:oob"; }),
+    (New-Object PSObject -Property @{Name="Microsoft Graph PowerShell";ClientId="14d82eec-204b-4c2f-b7e8-296a70dab67e";RedirectUri="https://login.microsoftonline.com/common/oauth2/nativeclient";})
     )
 
 function Invoke-InitializeModule
@@ -150,6 +151,15 @@ function Invoke-InitializeModule
         DefaultValue = $false
         Description = "This will enable the option to update/replace an existing object during import"
     }) "ImportExport"
+
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Add ID to export file"
+        Key = "AddIDToExportFile"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "This will add object ID to the export file to support objects with the same name e.g. ObjectName_ObjectId.json"
+    }) "ImportExport"    
 }
 
 function Get-GraphAppInfo
@@ -190,6 +200,16 @@ function Invoke-GraphAuthenticationUpdated
     $global:MigrationTableCacheId = $null
     $global:LoadedDependencyObjects = $null
     $global:migFileObj = $null
+}
+
+function Invoke-SettingsUpdated
+{
+    Initialize-GraphSettings
+}
+
+function Initialize-GraphSettings
+{
+    
 }
 
 function Invoke-GraphRequest
@@ -296,7 +316,7 @@ function Invoke-GraphRequest
     {    
         # Code to test paging - Force each page to size specified in top parameter below
         # Kept for reference
-        
+
         if(($url.IndexOf('?')) -eq -1) 
         {
             $url = "$($url.Trim())?"
@@ -844,7 +864,8 @@ function Show-GraphBulkExportForm
 
     Set-XamlProperty $script:exportForm "txtExportPath" "Text" (?? (Get-Setting "" "LastUsedRoot") (Get-SettingValue "RootFolder"))
     Set-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked" (Get-SettingValue "AddCompanyName")
-    Set-XamlProperty $script:exportForm "chkExportAssignments" "IsChecked" (Get-SettingValue "ExportAssignments")    
+    Set-XamlProperty $script:exportForm "chkExportAssignments" "IsChecked" (Get-SettingValue "ExportAssignments")
+    #Set-XamlProperty $script:exportForm "txtExportNameFilter" "Text" (Get-Setting "" "ExportNameFilter")
 
     Add-XamlEvent $script:exportForm "browseExportPath" "add_click" ({
         $folder = Get-Folder (Get-XamlProperty $script:exportForm "txtExportPath" "Text") "Select root folder for export"
@@ -903,6 +924,9 @@ function Show-GraphBulkExportForm
         Write-Log "****************************************************************"
         Write-Log "Start bulk export"
         Write-Log "****************************************************************"
+
+        $global:AADObjectCache = $null
+
         foreach($item in $script:exportObjects)
         { 
             if($item.Selected -ne $true) { continue }
@@ -911,6 +935,10 @@ function Show-GraphBulkExportForm
             Write-Log "Export $($item.ObjectType.Title) objects"
             Write-Log "----------------------------------------------------------------"
             
+            $txtNameFilter = $global:txtExportNameFilter.Text.Trim()
+            Save-Setting "" "ExportNameFilter" $txtNameFilter
+            if($txtNameFilter) { Write-Log "Name filter: $txtNameFilter" }
+
             try 
             {
                 $folder = Get-GraphObjectFolder $item.ObjectType (Get-XamlProperty $script:exportForm "txtExportPath" "Text") (Get-XamlProperty $script:exportForm "chkAddObjectType" "IsChecked") (Get-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked")
@@ -918,7 +946,14 @@ function Show-GraphBulkExportForm
                 $objects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
                 foreach($obj in $objects)
                 {
-                    Write-Status "Export $($item.Title): $((Get-GraphObjectName $obj.Object $obj.ObjectType))" -Force
+                    $objName = Get-GraphObjectName $obj.Object $obj.ObjectType
+
+                    if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
+                    {
+                        continue
+                    }
+
+                    Write-Status "Export $($item.Title): $objName" -Force
                     Export-GraphObject $obj.Object $item.ObjectType $folder
                 }
                 Save-Setting "" "LastUsedFullPath" $folder
@@ -1064,7 +1099,8 @@ function Show-GraphBulkImportForm
     Set-XamlProperty $script:importForm "chkImportScopes" "IsChecked" (Get-SettingValue "ImportScopeTags")
     Set-XamlProperty $script:importForm "cbImportType" "ItemsSource" $script:lstImportTypes
     Set-XamlProperty $script:importForm "cbImportType" "SelectedValue" (Get-SettingValue "ImportType" "alwaysImport")
-
+    #Set-XamlProperty $script:importForm "txtImportNameFilter" "Text" (Get-Setting "" "ImportNameFilter")
+    
     if((Get-SettingValue "AllowUpdate") -eq $true)
     {
         Set-XamlProperty  $script:importForm "lblImportType" "Visibility" "Visible"
@@ -1140,6 +1176,10 @@ function Show-GraphBulkImportForm
         Get-GraphDependencyDefaultObjects
         $importedObjects = 0
 
+        $txtNameFilter = $global:txtImportNameFilter.Text.Trim()
+        Save-Setting "" "ImportNameFilter" $txtNameFilter
+        if($txtNameFilter) { Write-Log "Name filter: $txtNameFilter" }
+
         $allowUpdate = ((Get-SettingValue "AllowUpdate") -eq $true)
 
         foreach($item in ($script:importObjects | where Selected -eq $true | sort-object -property @{e={$_.ObjectType.ImportOrder}}))
@@ -1172,6 +1212,13 @@ function Show-GraphBulkImportForm
         
                 foreach ($fileObj in @($filesToImport))
                 {
+                    $objName = Get-GraphObjectName $fileObj.Object $item.ObjectType
+
+                    if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
+                    {
+                        continue
+                    }
+
                     if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport" -and $graphObjects -and (Reset-GraphObjet $fileObj $graphObjects))
                     {
                         $importedObjects++ 
@@ -1274,6 +1321,8 @@ function Show-GraphBulkDeleteForm
     $script:deleteForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\BulkDeleteForm.xaml") -AddVariables
     if(-not $script:deleteForm) { return }
 
+    Set-XamlProperty $script:deleteForm "txtDeleteNameFilter" "Text" (Get-Setting "" "txtDeleteNameFilter")
+
     $script:deleteObjects = @()
     foreach($objType in $global:lstMenuItems.ItemsSource)
     {
@@ -1343,13 +1392,24 @@ function Show-GraphBulkDeleteForm
             Write-Log "Delete $($item.ObjectType.Title) objects"
             Write-Log "----------------------------------------------------------------"
             
+            $txtNameFilter = $global:txtDeleteNameFilter.Text.Trim()
+            Save-Setting "" "DeleteNameFilter" $txtNameFilter
+            if($txtNameFilter) { Write-Log "Name filter: $txtNameFilter" }
+            
             try 
             {
                 Write-Status "Get $($item.Title) objects" -Force
                 $objects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
                 foreach($obj in $objects)
                 {                    
-                    Write-Status "Delete $($item.Title): $((Get-GraphObjectName $obj.Object $obj.ObjectType))" -Force
+                    $objName = Get-GraphObjectName $obj.Object $obj.ObjectType
+
+                    if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
+                    {
+                        continue
+                    }
+
+                    Write-Status "Delete $($item.Title): $objName" -Force -SkipLog
                     Remove-GraphObject $obj.Object $obj.ObjectType $folder 
                 }
             }
@@ -1875,7 +1935,7 @@ function Add-GraphMigrationObject
         $global:migFileObj = $null
     }
 
-    if(-not $global:migFileObj)
+    if(-not $global:migFileObj -or ([IO.File]::Exists($migFileName) -eq $false))
     {
         if(-not ([IO.File]::Exists($migFileName)))
         {
@@ -2238,7 +2298,13 @@ function Export-GraphObject
             Remove-Property $obj "Assignments"
         }
 
-        $obj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$((Get-GraphObjectName $obj $objectType)).json"))) -Force
+        $fileName = Get-GraphObjectName $obj $objectType
+        if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
+        {
+            $fileName = ($fileName + "_" + $obj.Id)
+        }
+
+        $obj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$($fileName).json"))) -Force
         
         if($objectType.PostExportCommand)
         {
