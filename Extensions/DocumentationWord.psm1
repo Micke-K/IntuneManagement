@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.0.5'
+    '1.0.6'
 }
 
 function Invoke-InitializeModule
@@ -86,6 +86,10 @@ function Add-WordOptionsControl
     $global:txtWordTitleProperty.Text = Get-Setting "Documentation" "WordTitleProperty" "Intune documentation"
     $global:txtWordSubjectProperty.Text = Get-Setting "Documentation" "WordSubjectProperty" "Intune documentation"
     
+    $global:chkWordIncludeScripts.IsChecked = ((Get-Setting "Documentation" "WordIncludeScripts" "true") -ne "false")
+    $global:chkWordExcludeScriptSignature.IsChecked = ((Get-Setting "Documentation" "WordExcludeScriptSignature" "false") -ne "false")
+    $global:txtWordScriptTableStyle.Text = Get-Setting "Documentation" "WordScriptTableStyle" ""
+    $global:txtWordScriptStyle.Text = Get-Setting "Documentation" "WordScriptStyle" 
 
     $global:chkWordOpenDocument.IsChecked = ((Get-Setting "Documentation" "WordOpenDocument" "true") -ne "false")
 
@@ -132,7 +136,12 @@ function Invoke-WordPreProcessItems
     Save-Setting "Documentation" "WordContentControls" $global:txtWordContentControls.Text
     Save-Setting "Documentation" "WordTitleProperty" $global:txtWordTitleProperty.Text
     Save-Setting "Documentation" "WordSubjectProperty" $global:txtWordSubjectProperty.Text
-    
+
+    Save-Setting "Documentation" "WordIncludeScripts" $global:chkWordIncludeScripts.IsChecked
+    Save-Setting "Documentation" "WordExcludeScriptSignature" $global:chkWordExcludeScriptSignature.IsChecked
+    Save-Setting "Documentation" "WordScriptTableStyle" $global:txtWordScriptTableStyle.Text
+    Save-Setting "Documentation" "WordScriptStyle" $global:txtWordScriptStyle.Text
+
     try
     {
         $script:wordApp = New-Object -ComObject Word.Application
@@ -472,6 +481,8 @@ function Invoke-WordProcessItem
             Add-DocTableItems $obj $objectType $documentedObj.ApplicabilityRules $properties "SettingDetails.applicabilityRules"
         }
 
+        Add-DocObjectSettings $obj $objectType $documentedObj
+
         if(($documentedObj.Assignments | measure).Count -gt 0)
         {
             $params = @{}
@@ -712,6 +723,49 @@ function Add-DocTableItems
     #$script:doc.Application.Selection.TypeParagraph()
 }
 
+function Add-DocTableScript
+{
+    param($caption, $header, $script)
+
+    if(-not $script) { return }
+
+    $tblScriptStyle = (?? $global:txtWordScriptTableStyle.Text $global:txtWordTableStyle.Text)
+
+    $range = $script:doc.application.selection.range
+    
+    $scriptTable = $script:doc.Tables.Add($range, 2, 1, [Microsoft.Office.Interop.Word.WdDefaultTableBehavior]::wdWord9TableBehavior, [Microsoft.Office.Interop.Word.WdAutoFitBehavior]::wdAutoFitWindow)
+    $scriptTable.ApplyStyleHeadingRows = $true
+    Set-DocObjectStyle $scriptTable $tblScriptStyle | Out-Null
+
+    if($header)
+    {
+        $scriptTable.Cell(1, 1).Range.Text = $header
+    }
+
+    $scriptTable.Cell(2,1).Range.Font.Bold = $false
+    $scriptTable.Cell(2, 1).Range.Text = $script
+    if($global:txtWordScriptStyle.Text)
+    {
+        Set-DocObjectStyle $scriptTable.Rows(2).Range $global:txtWordScriptStyle.Text  | Out-Null
+    }
+    else
+    {
+        $tmp = $script:wordStyles | Where Name -like "HTML Code"
+        if($tmp)
+        {
+            $scriptTable.Cell(2,1).Range.Font = $tmp.Style.Font
+        }
+        $scriptTable.Cell(2,1).Range.Font.Bold = $false
+    }
+    $scriptTable.Cell(2,1).Range.NoProofing = $true
+
+    # -2 = Table, 1 = Below
+    $scriptTable.Application.Selection.InsertCaption(-2, ". $caption", $null, 1)
+
+    # Add new row after the table
+    $script:doc.Application.Selection.TypeParagraph()
+}
+
 function Get-DocStyle
 {
     param($styleName)
@@ -787,4 +841,87 @@ function Set-DocObjectStyle
         }
     }
     $styleSet
+}
+
+
+function Add-DocObjectSettings 
+{
+    param($obj, $objectType, $documentedObj)
+
+    if($obj."@OData.Type" -eq "#microsoft.graph.deviceManagementScript")
+    {
+        if($obj.ScriptContent -and $global:chkWordIncludeScripts.IsChecked -eq $true)
+        {
+            $caption = "{1} - {0}" -f $obj.displayName,(Get-LanguageString "WindowsManagement.powerShellScriptObjectName")
+            Add-DocTableScript $caption $obj.FileName (Get-DocScriptContent $obj.ScriptContent)
+        }
+    }
+    if($obj."@OData.Type" -eq "#microsoft.graph.deviceShellScript")
+    {
+        if($obj.ScriptContent -and $global:chkWordIncludeScripts.IsChecked -eq $true)
+        {
+            $caption = "{1} - {0}" -f $obj.displayName,(Get-LanguageString "WindowsManagement.shellScriptObjectName")
+            Add-DocTableScript $caption $obj.FileName (Get-DocScriptContent $obj.ScriptContent)
+        }
+    }
+    elseif($obj."@OData.Type" -eq "#microsoft.graph.deviceHealthScript")
+    {
+        if($obj.detectionScriptContent)
+        {
+            $caption = Get-LanguageString "ProactiveRemediations.Create.Settings.DetectionScriptMultiLineTextBox.label"
+            $header = "{1} - {0}" -f $obj.displayName,$caption
+            Add-DocTableScript $header $caption (Get-DocScriptContent $obj.detectionScriptContent)
+        }
+
+        if($obj.remediationScriptContent)
+        {
+            $caption = Get-LanguageString "ProactiveRemediations.Create.Settings.RemediationScriptMultiLineTextBox.label"
+            $header = "{1} - {0}" -f $obj.displayName,$caption
+            Add-DocTableScript $header $caption (Get-DocScriptContent $obj.remediationScriptContent)
+        }        
+    }
+    elseif($obj."@OData.Type" -eq "#microsoft.graph.win32LobApp")
+    {
+        foreach($rule in ($obj.requirementRules | Where { $_.'@OData.Type' -eq "#microsoft.graph.win32LobAppPowerShellScriptRequirement" } ))
+        {
+            $caption = "{0} - {1}" -f @($obj.displayName, "Requirement script")
+        
+            Add-DocTableScript $caption $rule.displayName (Get-DocScriptContent $rule.scriptContent)
+        }
+
+        foreach($rule in ($obj.detectionRules | Where { $_.'@OData.Type' -eq "#microsoft.graph.win32LobAppPowerShellScriptDetection" } ))
+        {
+            $caption = "{0} - {1}" -f @($obj.displayName,(Get-LanguageString "ProactiveRemediations.Create.Settings.DetectionScriptMultiLineTextBox.label"))
+        
+            Add-DocTableScript $caption (Get-LanguageString "ProactiveRemediations.Create.Settings.DetectionScriptMultiLineTextBox.label") (Get-DocScriptContent $rule.scriptContent)
+        }        
+    }
+}
+
+function Get-DocScriptContent
+{
+    param($encodeContent)
+
+    if(-not $encodeContent) { return }
+
+    try
+    {
+        $scriptContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($encodeContent))
+
+        if($global:chkWordExcludeScriptSignature.IsChecked -eq $true)
+        {
+            $x = $scriptContent.IndexOf("# SIG # Begin signature block")
+            if($x -gt 0)
+            {
+                $scriptContent = $scriptContent.SubString(0,$x)
+                $scriptContent = $scriptContent + "# SIG # Begin signature block`nSignature data excluded..."
+            }
+        }
+
+        $scriptContent
+    }
+    catch
+    {
+
+    }
 }

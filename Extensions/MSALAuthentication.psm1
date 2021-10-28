@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.3.0'
+    '3.3.1'
 }
 
 $global:msalAuthenticator = $null
@@ -37,6 +37,25 @@ function Invoke-InitializeModule
             Name = "Azure AD China"
             Value = "china"
             URL = "login.partner.microsoftonline.cn"
+            GraphURL = "https://microsoftgraph.chinacloudapi.cn"
+        }
+    )
+
+    $script:lstGCCEnvironments = @(
+        [PSCustomObject]@{
+            Name = "GCC"
+            Value = "gcc"
+            URL = "graph.microsoft.com"
+        },
+        [PSCustomObject]@{
+            Name = "GCC High"
+            Value = "gcgHigh"
+            URL = "graph.microsoft.us"
+        },
+        [PSCustomObject]@{
+            Name = "GCC DoD"
+            Value = "gccDoD"
+            URL = "dod-graph.microsoft.us"
         }
     )
 
@@ -74,7 +93,7 @@ function Invoke-InitializeModule
         Title = "Use Default Permissions"
         Key = "UseDefaultPermissions"
         Type = "Boolean"
-        DefaultValue = $false
+        DefaultValue = $true
         Description = "Default permissions of the selected app will be used when logging on. Some objects might not be accessable"
     }) "MSAL" 
 
@@ -94,6 +113,14 @@ function Invoke-InitializeModule
         DefaultValue = "public"
     }) "MSAL" 
 
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "GCC Environment"
+        Key = "GCCEnvironment"
+        Type = "List" 
+        ItemsSource = $script:lstGCCEnvironments
+        DefaultValue = "gcc"
+    }) "MSAL" 
+
     Add-MSALPrereq
 
     #$script:MSALDLLMissing = $true #!!!!
@@ -105,6 +132,7 @@ function Get-MSALAuthenticationObject
     {
         $global:msalAuthenticator = New-Object PSObject -Property @{
             Title = "MSAL"
+            ID = "MSAL"
             SilentLogin = { Connect-MSALUser -Silent @args; } 
             Login = { Connect-MSALUser @args } 
             Logout = { Disconnect-MSALUser } 
@@ -130,6 +158,7 @@ function Initialize-MSALSettings
 function Clear-MSALCurentUserVaiables
 {
     $global:MSALTenantId = $null
+    $global:MSALGraphEnvironment = $null
 }
 
 function Get-MSALCurrentApp
@@ -143,6 +172,53 @@ function Set-MSALCurrentApp
 
     $global:appObj = $appInfoObj
 }
+
+function Set-MSALGraphEnvironment
+{
+    param($user, $tenantId)
+    
+    if($global:MSALGraphEnvironment)
+    {
+        return
+    }
+
+    $graphEnv = "graph.microsoft.com"
+    
+    if($user)
+    {
+        $curAADEnv = $script:lstAADEnvironments | Where URL -eq $user.Environment
+    }
+    else
+    {
+        $loginValue = Get-SettingValue "AzureLogin" "public" -TenantID (?? $tenantId $loginHint.user.TenantId)
+        $curAADEnv = $script:lstAADEnvironments | Where value -eq $loginValue
+    }
+
+    if($curAADEnv.Value -eq "usGov")
+    {
+        $gccEnv = Get-SettingValue "GCCEnvironment" "gcc" -TenantID (?? $tenantId $loginHint.user.TenantId)
+        if($gccEnv)
+        {
+            $GCCEnvObj = $script:lstGCCEnvironments | Where Value -eq $gccEnv
+            if($GCCEnvObj.URL)
+            {
+                $graphEnv = $GCCEnvObj.URL
+            }
+            else
+            {
+                Write-Log "Could not find GCC environment based on $gccEnv. Default will be used" 2
+            }
+        }
+    }
+    elseif($cuAADEnv.GraphURL)
+    {
+        $graphEnv = $cuAADEnv.GraphURL
+    }
+    
+    Write-Log "Use Graph environment: $graphEnv"
+    $global:MSALGraphEnvironment = $graphEnv
+}
+
 
 function Get-MSALUserInfo
 {
@@ -160,7 +236,12 @@ function Get-MSALUserInfo
         }
 
         Write-Log "Get organization info"
-        $global:Organization = (MSGraph\Invoke-GraphRequest -Url "Organization" -SkipAuthentication -ODataMetadata "Skip").Value       
+        $global:Organization = (MSGraph\Invoke-GraphRequest -Url "Organization" -SkipAuthentication -ODataMetadata "Skip").Value
+        if($global:Organization)
+        {
+            if($global:Organization -is [array]) { $global:Organization = $global:Organization[0]}
+            Save-Setting $global:Organization.Id "_Name" $global:Organization.displayName
+        }
     }
     else 
     {
@@ -642,34 +723,6 @@ function Connect-MSALUser
         $global:MSALToken = $null
     }
 
-    if((Get-SettingValue "UseDefaultPermissions") -eq $true -or ($global:currentViewObject.ViewInfo.Permissions | measure).Count -eq 0)
-    {
-        [string[]] $Scopes = "https://graph.microsoft.com/.default"
-        $useDefaultPermissions = $true
-    }
-    else
-    {
-        #$Scopes = [string[]]$global:PermissionScope
-        $reqScopes = [string[]]$global:msalAuthenticator.Permissions
-        $useDefaultPermissions = $false
-        
-        $resolveRoles = ((Get-SettingValue "AzureADRoleRead" $false) -eq $true)
-
-        if($resolveRoles -and $global:msalAuthenticator.Permissions -notcontains "RoleManagement.Read.Directory")
-        {
-            # Adds the required permission for reading AAD directory roles
-            $reqScopes += "RoleManagement.Read.Directory"
-        }
-
-        $script:curViewPermissions = $global:currentViewObject.ViewInfo.Permissions
-
-        foreach($tmpScope in $script:curViewPermissions)
-        {
-            if($reqScopes -notcontains $tmpScope) { $reqScopes += $tmpScope }
-        }        
-        $Scopes = [String[]]$reqScopes
-    }    
-
     $global:MSALApp = Get-MSALApp $global:appObj $Account
     $loginHint = ""
 
@@ -682,10 +735,11 @@ function Connect-MSALUser
         {
             # We're logging in with someone else...
             Clear-MSALCurentUserVaiables
+            $global:MSALToken = $null
         }
     }
 
-    # If we force interactive login the skip setting loginHint to force the user select account
+    # If we force interactive login then skip setting loginHint to force the user to select account
     if(-not $loginHint -and $Interactive -ne $true)
     {
         if($global:MSALAccounts)
@@ -709,12 +763,49 @@ function Connect-MSALUser
                 }
             }
         }
+    }
+
+    if($ForceRefresh -eq $true)
+    {
+        $global:MSALGraphEnvironment = $null
+    }
+    
+    $tenantId = ?? $global:MSALTenantId $global:appObj.TenantId
+
+    Set-MSALGraphEnvironment $loginHint $tenantId
+    $useDefaultPermissions = (Get-SettingValue "UseDefaultPermissions" -TenantID (?? $tenantId $loginHint.HomeAccountId.TenantId)) 
+
+    if($useDefaultPermissions -eq $true -or ($global:currentViewObject.ViewInfo.Permissions | measure).Count -eq 0)
+    {
+        [string[]] $Scopes = "https://$($global:MSALGraphEnvironment)/.default"
+        $useDefaultPermissions = $true
+    }
+    else
+    {
+        #$Scopes = [string[]]$global:PermissionScope
+        $reqScopes = [string[]]$global:msalAuthenticator.Permissions
+        $useDefaultPermissions = $false
+        
+        $resolveRoles = ((Get-SettingValue "AzureADRoleRead" $false -TenantID (?? $tenantId $loginHint.HomeAccountId.TenantId)) -eq $true)
+
+        if($resolveRoles -and $global:msalAuthenticator.Permissions -notcontains "RoleManagement.Read.Directory")
+        {
+            # Adds the required permission for reading AAD directory roles
+            $reqScopes += "RoleManagement.Read.Directory"
+        }
+
+        $script:curViewPermissions = $global:currentViewObject.ViewInfo.Permissions
+
+        foreach($tmpScope in $script:curViewPermissions)
+        {
+            if($reqScopes -notcontains $tmpScope) { $reqScopes += $tmpScope }
+        }        
+        $Scopes = [String[]]$reqScopes
     }    
+
 
     $prompConsent = $false
     $authResult  = $null
-    $tenantId = ?? $global:MSALTenantId $global:appObj.TenantId
-    #$authority = ?? $global:MSALApp.Authority $global:appObj.Authority
 
     try
     {
@@ -851,7 +942,7 @@ function Connect-MSALUser
     if($currentLoggedInUserId -ne $authResult.Account.HomeAccountId.Identifier)
     {
         $script:AccessableTenants = $null
-        if($authResult -and (Get-Setting "" "GetTenantList" $false) -eq $true)
+        if($authResult -and (Get-SettingValue "GetTenantList" -TenantID $authResult.Account.HomeAccountId.TenantId) -eq $true)
         {
             #########################################################################################################
             ### Get tenant list
@@ -916,8 +1007,77 @@ function Connect-MSALUser
 
         Write-LogDebug "User, tenant or app has changed"
         Get-MSALUserInfo
+        Invoke-MSALCheckObjectViewAccess
         Invoke-ModuleFunction "Invoke-GraphAuthenticationUpdated"
     }
+}
+
+function Invoke-MSALCheckObjectViewAccess
+{
+    foreach($viewObjInfo in ($global:viewObjects | Where { $_.ViewInfo.AuthenticationID -eq "MSAL" }))
+    {
+        $viewObjInfo = $global:viewObjects | Where { $_.ViewInfo.Id -eq $global:EMViewObject.Id }
+        
+        if($viewObjInfo)
+        {
+            $accessToken = Get-JWTtoken $global:MSALToken.AccessToken
+            if($accessToken.Payload.scp)
+            {
+                $curPermissions = $accessToken.Payload.scp.Split(" ")
+                foreach($viewItem in $viewObjInfo.ViewItems)
+                {
+                    $full = 0
+                    $partial = 0
+
+                    foreach($permission in $viewItem.Permissons)
+                    {
+                        if($curPermissions -contains $permission)
+                        {
+                            $full++
+                            continue
+                        }
+                        # Check read access
+                        $arrTemp = $permission.Split('.') 
+                        if($arrTemp[1] -eq "ReadWrite")
+                        {
+                            $arrTemp[1] = "Read"
+                            $arrTemp -join "."
+                        }
+                        if($curPermissions -contains $permission)
+                        {
+                            $partial++
+                        }
+                    }
+                    $hasAccess = $false
+                    if($viewItem.Permissons.Count -eq $full)
+                    {
+                        $accessType = "Full"
+                        $hasAccess = $true
+                    }
+                    elseif($partial -gt 0)
+                    {
+                        $accessType = "Limited"
+                    }
+                    else
+                    {
+                        $accessType = "None"
+                    }
+
+                    if(-not ($viewItem.PSObject.Properties | Where Name -eq "@HasPermissions"))
+                    {
+                        $viewItem | Add-Member -NotePropertyName "@HasPermissions" -NotePropertyValue $hasAccess
+                        $viewItem | Add-Member -NotePropertyName "@AccessType" -NotePropertyValue $accessType
+                    }
+                    else
+                    {
+                        $viewItem."@HasPermissions" = $hasAccess
+                        $viewItem."@AccessType" = $accessType
+                    }
+                }
+            }
+        }
+    }
+    Show-ViewMenu
 }
 
 function Disconnect-MSALUser
@@ -1039,7 +1199,9 @@ function Get-MSALProfileEllipse
                         $icon.Margin = "0,0,5,0"
                         $grdAccount.Children.Add($icon) | Out-Null
 
-                        $lbObj = [Windows.Markup.XamlReader]::Parse("<TextBlock $wpfNS>$($account.UserName)<LineBreak/>$($account.HomeAccountId.TenantId)</TextBlock>")
+                        $tenantName = Get-Setting $account.HomeAccountId.TenantId "_Name" $account.HomeAccountId.TenantId
+
+                        $lbObj = [Windows.Markup.XamlReader]::Parse("<TextBlock $wpfNS>$($account.UserName)<LineBreak/>$($tenantName)</TextBlock>")
                         $lbObj.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
                         $grdAccount.Children.Add($lbObj) | Out-Null
 
@@ -1262,7 +1424,9 @@ function Get-MSALProfileEllipse
                     $icon.Margin = "0,0,5,0"
                     $grdLogin.Children.Add($icon) | Out-Null
 
-                    $lbObj = [Windows.Markup.XamlReader]::Parse("<TextBlock $wpfNS>$($account.UserName)<LineBreak/>$($account.HomeAccountId.TenantId)</TextBlock>")
+                    $tenantName = Get-Setting $account.HomeAccountId.TenantId "_Name" $account.HomeAccountId.TenantId
+
+                    $lbObj = [Windows.Markup.XamlReader]::Parse("<TextBlock $wpfNS>$($account.UserName)<LineBreak/>$($tenantName)</TextBlock>")
                     $lbObj.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
                     $grdLogin.Children.Add($lbObj) | Out-Null
 

@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.0.5'
+    '1.0.6'
 }
 
 function Invoke-InitializeModule
@@ -1061,6 +1061,16 @@ function Add-CDDocumentCustomProfileProperty
         $obj | Add-Member Noteproperty -Name "detectionScriptAdded" -Value (-not [String]::IsNullOrEmpty($obj.detectionScriptContent))
         $obj | Add-Member Noteproperty -Name "remediationScriptAdded" -Value (-not [String]::IsNullOrEmpty($obj.remediationScriptContent))
         $obj | Add-Member Noteproperty -Name "useLoggedOnCredentials" -Value ($obj.runAsAccount -ne "system")
+
+        if($obj.detectionScriptContent)
+        {
+            $obj | Add-Member Noteproperty -Name "detectionScriptContentString" -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(($obj.detectionScriptContent))))
+        }
+        if($obj.remediationScriptContent)
+        {
+            $obj | Add-Member Noteproperty -Name "remediationScriptContentString" -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(($obj.remediationScriptContent))))
+        }
+
     }
 
     if(($obj.PSObject.Properties | where Name -eq "securityRequireSafetyNetAttestationBasicIntegrity") -and 

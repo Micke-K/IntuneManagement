@@ -10,11 +10,10 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.1.8'
+    '3.1.9'
 }
 
 $global:MSGraphGlobalApps = @(
-    #Authority="https://login.microsoftonline.com/organizations/"
     (New-Object PSObject -Property @{Name="";ClientId="";RedirectUri="";Authority=""}),
     (New-Object PSObject -Property @{Name="Microsoft Intune PowerShell";ClientId="d1ddf0e4-d672-4dae-b554-9d5bdfd93547";RedirectUri="urn:ietf:wg:oauth:2.0:oob"; }),
     (New-Object PSObject -Property @{Name="Microsoft Graph PowerShell";ClientId="14d82eec-204b-4c2f-b7e8-296a70dab67e";RedirectUri="https://login.microsoftonline.com/common/oauth2/nativeclient";})
@@ -164,7 +163,7 @@ function Invoke-InitializeModule
 
 function Get-GraphAppInfo
 {
-    param($settingId, $defaultAppId)
+    param($settingId, $defaultAppId, $prefix)
 
     $graphAppId = Get-SettingValue $settingId
 
@@ -234,6 +233,9 @@ function Invoke-GraphRequest
             [Switch]$SkipAuthentication,
 
             $ODataMetadata = "full", # full, minimal, none or skip
+
+            [ValidateSet("BETA","v1.0")]
+            $GraphVersion = "BETA",
 
             [switch]
             $AllPages,
@@ -307,7 +309,7 @@ function Invoke-GraphRequest
 
     if(($Url -notmatch "^http://|^https://"))
     {        
-        $Url = $global:graphURL + "/" + $Url.TrimStart('/')
+        $Url =  "https://$((?? $global:MSALGraphEnvironment "graph.microsoft.com"))/$GraphVersion/" + $Url.TrimStart('/')
         $Url = $Url -replace "%OrganizationId%", $global:Organization.Id
     }
 
@@ -469,10 +471,18 @@ function Show-GraphObjects
 
     if(-not $global:MSALToken)
     {
+        $global:txtNotLoggedIn.Content = "Not logged in. Please login to view objects" 
         $global:grdNotLoggedIn.Visibility = "Visible"
         $global:grdData.Visibility = "Collapsed"
         return
     }
+    elseif($global:curObjectType.'@AccessType' -eq "None")
+    {
+        $global:txtNotLoggedIn.Content = "You don't have the required permissons to access $($global:curObjectType.Title).`n`nRequired perimssons: $($global:curObjectType.Permissons)" 
+        $global:grdNotLoggedIn.Visibility = "Visible"
+        $global:grdData.Visibility = "Collapsed"
+        return
+    }    
     $global:grdNotLoggedIn.Visibility = "Collapsed"
     $global:grdData.Visibility = "Visible"
 
@@ -540,6 +550,7 @@ function Show-GraphObjects
                 $column.Binding = $binding
 
                 $tableColumns += $prop.Name
+
                 $dgObjects.Columns.Add($column)
             }
         }
@@ -577,7 +588,12 @@ function Show-GraphObjects
     # Show/Hide buttons based on object type
     foreach($ctrl in $spSubMenu.Children)
     {
-        if(-not $global:curObjectType.ShowButtons -or ($global:curObjectType.ShowButtons | Where-Object { $ctrl.Name -like "*$($_)" } ))
+        if($ctrl.Name -eq "btnDelete")
+        {
+            $allowDelete = Get-SettingValue "EMAllowDelete"
+            $ctrl.Visibility = (?: ($allowDelete -eq $true) "Visible" "Collapsed")
+        }
+        elseif(-not $global:curObjectType.ShowButtons -or ($global:curObjectType.ShowButtons | Where-Object { $ctrl.Name -like "*$($_)" } ))
         {
             Write-LogDebug "Show $($ctrl.Name)"
             $ctrl.Visibility = "Visible"
@@ -909,7 +925,7 @@ function Show-GraphBulkExportForm
     $column = [System.Windows.Controls.DataGridTextColumn]::new()
     $column.Header = "Object type"
     $column.IsReadOnly = $true
-    $column.Binding = $binding
+    $column.Binding = $binding    
     $global:dgObjectsToExport.Columns.Add($column)
 
     $global:dgObjectsToExport.ItemsSource = $script:exportObjects

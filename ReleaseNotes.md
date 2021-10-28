@@ -1,5 +1,45 @@
 # Release Notes
 
+## 3.3.1 (Beta) - 2021-10-28
+
+This is a **BETA** release. It contains core changes for Authentication and Settings management. Please report any issues [here](https://github.com/Micke-K/IntuneManagement/issues).
+
+**New features**
+
+- Added support for selecting GCC when using US Government Cloud
+
+- Tenant Specific Setting
+  
+  The script now supports tenant specific settings. This can be used in scenarios like: only allow delete on you test environments, tenant specific Intune app folders etc.
+  Login settings like Cloud and GCC is only used if logging on with a cached token. It will otherwise use the current tenant settings. 
+
+  **Test feedback request:** If there are any users accessing multiple cloud environments like US Government with different GCC levels, please report any issues, working or not. Please report it to [Issue 26](https://github.com/Micke-K/IntuneManagement/issues/26)
+
+  Note: Not all settings have be tested and verified and only Setting Values are supported e.g. last Bulk Compare strings are global. Cached settings might not be updated when connecting to another tenant.   
+  
+- Log View 
+  
+  View the log of the current session in the app
+  
+- Added support for documenting scripts for Word
+  This is based on [Issue 34](https://github.com/Micke-K/IntuneManagement/issues/34)
+
+  - New Script options in the Output option tab e.g. enable/disable script documentation, remove PowerShell signature block and documentation styles
+  - Supports PowerShell/Shell scripts, Proactive Remediations and Win32 Apps (Requirement/Detection scripts)
+  - Scripts will be documented in a separate table with style *HTLM Code* by default. Spell check is disabled for the script text.
+
+- Permission detection if **Use Default Permissions** is enabled
+  
+  Default permissions will only use the permission consented to the selected Azure App. The script will check the required permissions with the Access Token. If permissions are missing for one or more objects, they will be marked as red in the menu or they can be excluded from the menu by enable **Hide No-access items** in Settings 
+
+**Default Settings Value Changes**
+
+* **Use Default Permissions** is now set to Disabled by default. With the Tenant Specific Settings feature, this can now be enabled globally or per tenant. Consultants accessing multiple environments might not have permissions to grant consent requests so this could be enabled on a global level and then disabled for tenants where the permissions can be added.  
+
+**Fixes**
+
+* Fixed an issue when using Json settings where it could not add child settings  
+
 ## 3.3.0 (Beta) - 2021-10-17
 
 This is a **BETA** release. It contains core changes for Authentication and Settings management. Please report any issues [here](https://github.com/Micke-K/IntuneManagement/issues).

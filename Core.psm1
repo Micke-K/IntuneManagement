@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.3.0'
+    '3.3.1'
 }
 
 function Start-CoreApp
@@ -28,6 +28,7 @@ function Start-CoreApp
 
     $global:loadedModules = @()
     $global:viewObjects = @()
+    $script:LogItems = [System.Collections.ObjectModel.ObservableCollection[object]]::new()
 
     $global:AppRootFolder = $PSScriptRoot
 
@@ -69,6 +70,19 @@ function Start-CoreApp
     [System.Windows.Forms.Application]::DoEvents()
 
     Invoke-ModuleFunction "Invoke-InitializeModule"
+
+    #Add menu group and items
+    $script:LogViewObject = (New-Object PSObject -Property @{ 
+        Title = "Log"
+        Description = "View log items"
+        ID = "CoreLog"
+        HideMenu = $true
+        Activating = { Show-LogView }
+        Permissions = @()
+        ViewPanel = $null
+    })
+
+    Add-ViewObject $script:LogViewObject
 
     #This will load the main window
     $global:txtSplashText.Text = "Load main window"
@@ -167,23 +181,34 @@ function Write-Log
     {
         $fileObj = [System.IO.FileInfo]$PSCommandPath
     }
-    
+
     $timeStr = "$($date.ToString(""HH"")):$($date.ToString(""mm"")):$($date.ToString(""ss"")).000+000"
-    $dateStr = "$($date.ToString(""MM""))-$($date.ToString(""dd""))-$($date.ToString(""yyyy""))"
+    $dateStr = "$($date.ToString(""MM""))-$($date.ToString(""dd""))-$($date.ToString(""yyyy""))"    
     $logOut = "<![LOG[$Text]LOG]!><time=""$timeStr"" date=""$dateStr"" component=""$($fileObj.BaseName)"" context="""" type=""$type"" thread=""$PID"" file=""$($fileObj.BaseName)"">"
-    
+
     if($type -eq 2)
     {
         Write-Warning $Text
+        $typeStr = "Error"
     }
     elseif($type -eq 3)
     {
         $host.ui.WriteErrorLine($Text)
+        $typeStr = "Warning"
     }
     else
     {
         write-host $Text
+        $typeStr = "Info"
     }
+
+    $script:LogItems.Add([PSCustomObject]@{
+        ID = ($script:LogItems.Count + 1)
+        DateTime = $date
+        Type = $type
+        TypeText = $typeStr
+        Text = $Text
+    })
 
     try
     {    
@@ -883,14 +908,14 @@ function Clear-JsonSettingsValues
 }
 
 function Save-Setting
-{    
+{
     param($SubPath = "", $Key = "", $Value, $Type = "String")
 
     if($global:JsonSettingsObj -and $global:JSonSettingFile)
     {
         if($SubPath)
-        {
-            $arrParts = $SubPath.Split(@('/','\'))
+        {        
+            $arrParts = $SubPath.TrimEnd(@('/','\')).Split(@('/','\'))
         }
         else
         {
@@ -901,13 +926,15 @@ function Save-Setting
 
         foreach($part in $arrParts)
         {
+            if(-not $part.Trim()) { continue }
+
             if(($parentSetting.PSObject.Properties | Where Name -eq $part))
             {
                 $parentSetting = $parentSetting.$part
             }
             else
             {
-                $parentSetting.$part = @()
+                $parentSetting | Add-Member -MemberType NoteProperty -Name $part -Value ([PSCustomObject]@{})
                 $parentSetting = $parentSetting.$part
             }
         }
@@ -978,7 +1005,7 @@ function Get-Setting
         {
             if($SubPath)
             {
-                $arrParts = $SubPath.Split(@('/','\'))
+                $arrParts = $SubPath.TrimEnd(@('/','\')).Split(@('/','\'))
             }
             else
             {
@@ -1119,6 +1146,111 @@ function Add-RegKeyToSettings
         Write-LogError "Failed to add reg keys to json settings" $_.Exception
     }
 }
+
+function Remove-TenantSetting
+{
+    param($settingValue)
+    
+    $subPath = ($global:Organization.Id + "\" + $settingValue.SubPath)
+
+    if($global:JsonSettingsObj)
+    {
+        if($SubPath)
+        {
+            $arrParts = $SubPath.TrimEnd(@('/','\')).Split(@('/','\'))
+        }
+        else
+        {
+            $arrParts = @()
+        }
+
+        $parentSetting = $global:JsonSettingsObj
+
+        foreach($part in $arrParts)
+        {
+            if(($parentSetting.PSObject.Properties | Where Name -eq $part))
+            {
+                $parentSetting = $parentSetting.$part
+            }
+            else
+            {     
+                return
+            }
+        }
+        
+        if(($parentSetting.PSObject.Properties | Where Name -eq $settingValue.Key))
+        {
+            $parentSetting.PSObject.Properties.Remove($settingValue.Key) 
+        }
+
+    }
+    else
+    {
+        $regPath = Get-RegPath $subPath
+        try
+        {
+            $temp = Get-Item -LiteralPath $regPath -ErrorAction SilentlyContinue
+            if(($temp.Property -contains $settingValue.Key))
+            {
+                Remove-ItemProperty -Path $regPath -Name $settingValue.Key -Force -ErrorAction Stop
+            }
+        }
+        catch
+        {
+            Write-LogError "Failed to remove reg value: $($settingValue.Key) in key $($regPath)" $_.Exception
+        }        
+    }
+}
+
+function Get-IsTenantSettingConfigured
+{
+    param($settingValue)
+    
+    $subPath = ($global:Organization.Id + "\" + $settingValue.SubPath)
+
+    if($global:JsonSettingsObj)
+    {
+        if($SubPath)
+        {
+            $arrParts = $SubPath.TrimEnd(@('/','\')).Split(@('/','\'))
+        }
+        else
+        {
+            $arrParts = @()
+        }
+
+        $parentSetting = $global:JsonSettingsObj
+
+        foreach($part in $arrParts)
+        {
+            if(($parentSetting.PSObject.Properties | Where Name -eq $part))
+            {
+                $parentSetting = $parentSetting.$part
+            }
+            else
+            {     
+                return $false
+            }
+        }
+
+        return ($null -ne ($parentSetting.PSObject.Properties | Where Name -eq $settingValue.Key))
+
+    }
+    else
+    {
+        $regPath = Get-RegPath $subPath
+        try
+        {
+            $temp = Get-Item -LiteralPath $regPath -ErrorAction Stop
+            return ($temp.GetValueNames() -contains $settingValue.Key)
+        }
+        catch
+        {
+
+        }        
+    }
+    return $false
+}
 #endregion
 
 #region Setting functions
@@ -1129,35 +1261,56 @@ function Add-RegKeyToSettings
 #
 ########################################################################
 
-function Add-SettingsItem 
+function Add-SettingsItem
 {
-    param($settingItem, $title, $description)
+    param($settingItem, $settingValue)
     
     $rd = [System.Windows.Controls.RowDefinition]::new()
     $rd.Height = [double]::NaN            
     $spSettings.RowDefinitions.Add($rd)
     $settingItem.SetValue([System.Windows.Controls.Grid]::RowProperty,$spSettings.RowDefinitions.Count-1)
     
-    if(-not $title) 
+    if(-not $settingValue) 
     {
-        $settingItem.SetValue([System.Windows.Controls.Grid]::ColumnSpanProperty, 2)
+        $settingItem.SetValue([System.Windows.Controls.Grid]::ColumnSpanProperty, 99)
     }
     else 
     {
-        if($description)
+        if($settingValue.Description)
         {
-            $descriptionInfo = "<Rectangle Style=`"{DynamicResource InfoIcon}`" ToolTip=`"$($description)`" Margin=`"5,0,0,0`" />"
+            $descriptionInfo = "<Rectangle Style=`"{DynamicResource InfoIcon}`" ToolTip=`"$($settingValue.Description)`" Margin=`"5,0,0,0`" />"
         }
     
         $xaml = @"
             <StackPanel $wpfNS Orientation="Horizontal" Margin="5,5,5,0">
-                <TextBlock Text="$($title)" VerticalAlignment="Center"/>
+                <TextBlock Text="$($settingValue.Title)" VerticalAlignment="Center"/>
                 $descriptionInfo
             </StackPanel>
 "@        
+
+        if($script:tenantSettings -and $settingValue)
+        {
+            #_IsChecked
+            $tenantConfig = [System.Windows.Controls.CheckBox]::new()
+            $tenantConfig.ToolTip = "Enable tenant specific setting"
+            $tenantConfig.SetValue([System.Windows.Controls.Grid]::RowProperty,$spSettings.RowDefinitions.Count-1)
+            $tenantConfig.SetValue([System.Windows.Controls.Grid]::ColumnProperty, 0)
+            $tenantConfig.Margin = "0,5,0,0"
+            $tenantConfig.Tag = $settingValue
+            $tenantConfig.IsChecked = (Get-IsTenantSettingConfigured $settingValue)
+            $settingItem.IsEnabled = $tenantConfig.IsChecked
+            $tenantConfig.add_Click({
+                    if($this.Tag.Control) { $this.Tag.Control.IsEnabled = $this.IsChecked }
+                }
+            )
+            $spSettings.AddChild($tenantConfig)
+        }
+
         $settingsTitle = [Windows.Markup.XamlReader]::Parse($xaml)
         $settingsTitle.SetValue([System.Windows.Controls.Grid]::RowProperty,$spSettings.RowDefinitions.Count-1)
-        $settingItem.SetValue([System.Windows.Controls.Grid]::ColumnProperty, 1)
+        $settingsTitle.SetValue([System.Windows.Controls.Grid]::ColumnProperty, 1)
+
+        $settingItem.SetValue([System.Windows.Controls.Grid]::ColumnProperty, 2)
         $spSettings.AddChild($settingsTitle)
         $settingItem.Margin = "0,5,0,0"
     }     
@@ -1244,7 +1397,16 @@ function Add-SettingValue
 
     $id = "id_" + [Guid]::NewGuid().ToString('n')
 
-    $value = Get-SettingValue $settingValue.Key
+    if($settingValue.TenantSettings -eq $false -and $script:tenantSettings)
+    {
+        return # Value nut supported in Tenant Settings
+    }
+    elseif($settingValue.GlobalSettings -eq $false -and $script:tenantSettings -ne $true)
+    {
+        return # Value nut supported in Global Settings
+    }    
+
+    $value = Get-SettingValue $settingValue.Key -GlobalOnly:($script:tenantSettings -ne $true)
 
     if($settingValue.Type -eq "folder")
     {
@@ -1265,7 +1427,7 @@ function Add-SettingValue
 
     if($settingObj) 
     {         
-        Add-SettingsItem $settingObj $settingValue.Title $settingValue.Description
+        Add-SettingsItem $settingObj $settingValue
         # Find the control in the setting object that contains the actual value
         # $settingObj might be a grid that contains the TextBox with the settings value
         $ctrl = $settingObj.FindName($id)
@@ -1294,21 +1456,25 @@ function Add-SettingTitle
 
 function Show-SettingsForm
 {
+    param([switch]$Tenant)
+
     $settingsStr =  Get-Content ($global:AppRootFolder+ "\Xaml\SettingsForm.xaml")
 
     $settingsForm = [Windows.Markup.XamlReader]::Parse($settingsStr)
     $global:settingControls = @()
     $global:spSettings = $settingsForm.FindName("spSettings")
 
+    $script:tenantSettings = ($Tenant -eq $true)
     Add-XamlEvent $settingsForm "btnSave" "Add_Click" ({        
         Save-AllSettings
     })
 
     Add-XamlEvent $settingsForm "btnClose" "Add_Click" ({
+        $script:tenantSettings = $null
         Show-ModalObject
     })
 
-    if($JsonSettingsObj)
+    if($JsonSettingsObj -or $script:tenantSettings -eq $true)
     {
         Set-XamlProperty $settingsForm "btnExport" "Visibility" "Collapsed"
     }
@@ -1388,6 +1554,14 @@ function Add-DefaultSettings
     }) "General"
 
     Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Hide No-access items"
+        Key = "HideNoAccess"
+        Type = "Boolean"
+        Description="Remove items from the menu if object permissions is missing. Default is to mark them with red"
+        DefaultValue = $false
+    }) "General"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
         Title = "Preview"
         Key = "PreviewFeatures"
         Type = "Boolean"
@@ -1412,11 +1586,20 @@ function Add-SettingsObject
 function Save-AllSettings
 {
     Write-Status "Save settings"
+    $dt1 = Get-Date
+    $curHideNoAccess = Get-SettingValue "HideNoAccess"
+
     foreach($section in $global:appSettingSections)
     {
         foreach($settingObj in $section.Values)
         {
             if(-not $settingObj.Control) { continue }
+            if($settingObj.Control.IsEnabled -eq $false -and $script:tenantSettings)
+            {
+                Remove-TenantSetting $settingObj
+                continue
+            }
+
             $valueFound = $false
             if($settingObj.Control.GetType().Name -eq "TextBox")
             {
@@ -1456,7 +1639,15 @@ function Save-AllSettings
 
             if($valueFound)
             {
-                Save-Setting $settingObj.SubPath $settingObj.Key $value 
+                if($script:tenantSettings)
+                {
+                    $subPath = ($global:Organization.Id + "\" + $settingObj.SubPath)
+                }
+                else
+                {
+                    $subPath = $settingObj.SubPath
+                }
+                Save-Setting $subPath $settingObj.Key $value 
             }
         }
     }
@@ -1468,13 +1659,22 @@ function Save-AllSettings
 
     Initialize-Settings -Updated
 
-    Start-Sleep -Seconds 1 # It goes to quick...ToDo: Do this in a better way
+    $newHideNoAccess = Get-SettingValue "HideNoAccess"
+    if($curHideNoAccess -ne $newHideNoAccess )
+    {
+        Show-ViewMenu
+    }
+    
+    if($dt1.AddSeconds(1) -lt (Get-Date))
+    {
+        Start-Sleep -Seconds 1 # It goes to quick...ToDo: Do this in a better way
+    }
     Write-Status ""
 }
 
 function Get-SettingValue
 {
-    param($Key, $defaultValue)
+    param($Key, $defaultValue, [switch]$GlobalOnly, [switch]$TenantOnly, $TenantID)
 
     foreach($section in $global:appSettingSections)
     {
@@ -1484,7 +1684,21 @@ function Get-SettingValue
 
     if(-not $defaultValue) { $defaultValue = $settingObj.DefaultValue }
 
-    $value = Get-Setting $settingObj.SubPath $settingObj.Key $defaultValue
+    $value = $null    
+    if(-not $TenantID) { $TenantID = $global:Organization.Id}
+
+    if($GlobalOnly -ne $true -and $TenantID)
+    {
+        # Try get Tenant specific value first
+        $value = Get-Setting ($TenantID + "\" + $settingObj.SubPath) $settingObj.Key
+    }
+
+    if($null -eq $value -and $TenantOnly -ne $true)
+    {
+        # Get global setting value if tenant value was not found
+        $value = Get-Setting $settingObj.SubPath $settingObj.Key $defaultValue
+    }
+
     if($value)
     {
         if($settingObj.Type -eq "Boolean")
@@ -1609,11 +1823,9 @@ function Show-View
 
     $global:currentViewObject = $viewObject
 
-    $viewItems = ?: ($viewObject.ViewInfo.Sort -ne $false) ($viewObject.ViewItems | Sort-Object -Property Title) ($viewObject.ViewItems)
+    Show-ViewMenu
 
     $lblMenuTitle.Content = $viewObject.ViewInfo.Title
-
-    $lstMenuItems.ItemsSource = @($viewItems)
 
     $grdViewPanel.Children.Clear()
 
@@ -1639,6 +1851,15 @@ function Show-View
 
     Show-AuthenticationInfo
 
+    if($viewObject.ViewInfo.HideMenu -eq $true)
+    {
+        $global:grdViewItemMenu.Visibility = "Collapsed"
+    }
+    else
+    {
+        $global:grdViewItemMenu.Visibility = "Visible"
+    }
+
     if($viewObject.ViewInfo.Activated)
     {
         Write-Log "Activated View $($viewObject.ViewInfo.Title)"
@@ -1646,6 +1867,20 @@ function Show-View
     }
 
     Invoke-ModuleFunction "Invoke-ViewActivated"
+}
+
+function Show-ViewMenu
+{
+    $viewObject = $global:currentViewObject
+
+    $viewItems = ?: ($viewObject.ViewInfo.Sort -ne $false) ($viewObject.ViewItems | Sort-Object -Property Title) ($viewObject.ViewItems)
+
+    if((Get-SettingValue "HideNoAccess"))
+    {
+        $viewItems = $viewItems | Where { $_."@HasPermissions" -ne $false }
+    }
+
+    $lstMenuItems.ItemsSource = @($viewItems)
 }
 
 #endregion
@@ -1692,6 +1927,7 @@ function Get-MainWindow
 
     # ToDo: Convert to a list for data binding
     Add-XamlEvent $window "mnuSettings" "Add_Click" -scriptBlock ([scriptblock]{ Show-SettingsForm })
+    Add-XamlEvent $window "mnuTenantSettings" "Add_Click" -scriptBlock ([scriptblock]{ Show-SettingsForm -Tenant })
     Add-XamlEvent $window "mnuUpdates" "Add_Click" -scriptBlock ([scriptblock]{ Show-UpdatesDialog })
     Add-XamlEvent $window "mnuAbout" "Add_Click" -scriptBlock ([scriptblock]{ Show-AboutDialog })
     Add-XamlEvent $window "mnuExit" "Add_Click" -scriptBlock ([scriptblock]{ 
@@ -1962,6 +2198,27 @@ function Format-XML
     $StringWriter.ToString()
 }
 
+function Show-LogView
+{
+    if($script:LogViewObject -and -not $script:LogViewObject.ViewPanel)
+    {
+        $viewPanel = Get-XamlObject ($global:AppRootFolder + "\Xaml\LogInfo.xaml")
+    
+        if(-not $viewPanel) { return }
+
+        $script:LogViewObject.ViewPanel = $viewPanel 
+
+        Set-XamlProperty $viewPanel "dgLogInfo" "ItemsSource" $script:LogItems
+
+        Add-XamlEvent $viewPanel "dgLogInfo" "add_selectionChanged" ({ 
+            $obj = $this.Parent.FindName("txtLogInfo")
+            if($obj)
+            {
+                $obj.Parent.DataContext = $this.SelectedValue
+            }
+        })
+    }
+}
 
 New-Alias -Name ?? -value Invoke-Coalesce
 New-Alias -Name ?: -value Invoke-IfTrue

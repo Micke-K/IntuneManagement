@@ -17,8 +17,19 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions> 
         
-        <TextBlock Margin="5" Name="txtOrganization" FontWeight="Bold" />
-        <Button Margin="5" Name="lnkLogout" Content="Sign out" Grid.Column="2" Style="{DynamicResource LinkButton}" HorizontalAlignment="Right"/>
+        <Grid Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />  
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Margin="5" Name="txtOrganization" FontWeight="Bold" />
+            <Button Margin="5" Name="lnkLogout" Content="Sign out" Grid.Column="2" Style="{DynamicResource LinkButton}" HorizontalAlignment="Right"/>
+        </Grid>
+
         <TextBlock Margin="5" Name="txtUsername" Grid.Row="1" Grid.Column="2" FontWeight="Bold" FontSize="24" />
         <TextBlock Margin="5"  Name="txtLogonName" Grid.Row="2" Grid.Column="2" />
 

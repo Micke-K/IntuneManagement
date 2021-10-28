@@ -1,12 +1,20 @@
 # IntuneManagement with PowerShell and WPF UI
 
-These PowerShell scripts are using Microsoft Authentication Library (MSAL), Microsoft Graph APIs and Azure Management APIs to manage objects in Intune and Azure. The scripts has a simple WPF UI and it supports operations like Export, Import, Copy and Download.
+<p align="center">
+  <a href="https://twitter.com/Micke_K_72">
+    <img src="https://img.shields.io/twitter/follow/Micke_K_72.svg?style=social" target="_blank" />
+  </a>
+</p>
+
+These PowerShell scripts are using Microsoft Authentication Library (MSAL), Microsoft Graph APIs and Azure Management APIs to manage objects in Intune and Azure. The scripts has a simple WPF UI and it supports operations like Export, Import, Copy, Download, Compare etc.
 
 This makes it easy to backup or clone a complete Intune environment. The scripts can export and import objects including assignments and support import/export between tenants. The scripts will create a migration table during export and use that for importing assignments in other environments. It will create missing groups in the target environment during import. Group information like name, description and type will be imported based on the exported group e.g. dynamic groups are supported. There will be one json file for each group in the export folder.
 
 The script also support dependencies e.g. an App Protection is depending on an App, Policy Sets are depending on Compliance Policies, objects has Scope Tags etc. Dependency support requires exported json files and that the dependency objects are imported in the environment. The script uses the exported json files to get the Id and name's of the exported object and uses that information and updates Id's before import an object from a json file. The Bulk Import form shows the import order of the objects. The objects with the lowest order number will be imported first.
 
-![Screenshot](/IntuneManagement.PNG?raw=true)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/IntuneManagement.PNG" height="80%" width="80%"/>
+</p>
 
 This PowerShell application is based on the foundation modules CloudAPIPowerShellManagement and Core. These modules manages UI, settings, logging etc. The functionality for the application is located in the extension modules. This makes it easy to add/remove features, views etc. Additional features will be added...
 
@@ -79,17 +87,21 @@ The documentation method is a bit slower but will show the values as they are st
 
 Bulk compare is supported. This can be performed in two ways:
 
-* **Export File** - This will read each exported file and compare it with the existing object
+* **Intune Objects with Exported Files** - This will read each exported file and compare it with the existing object
 
   The result file will be stored in the exported folder structure. Either in the Object Type folder or the parent folder depending on the Save as setting. 
 
   **Note:** This cannot be used with files exported from a different environment since it used the Id as identifier
 
-* **Named Objects** - Compare file based on patterns
+* **Named Objects in Intune** - Compare Intune objects based on patterns
 
   This can be used in where a pattern is used separate objects between different environments e.g. [Test] Policy 1 vs [Prod] Policy 1.
 
-  Output files are by default stored in the My Documents folder.      
+* **Files in Exported Folders** - Compare two exported folders
+
+  This can be used in where a pattern is used separate objects between different environments e.g. [Test] Policy 1 vs [Prod] Policy 1.
+
+Output files are by default stored in the My Documents folder.      
 
 The output CSV can either be one file for ALL objects or one file for each Object Type.   
 

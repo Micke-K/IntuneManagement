@@ -22,7 +22,7 @@ $global:EMToolsViewObject = $null
 
 function Get-ModuleVersion
 {
-    '1.0.1'
+    '1.0.2'
 }
 
 function Invoke-InitializeModule
@@ -75,7 +75,8 @@ function Add-EMToolsViewItem
         $global:EMToolsViewObject = (New-Object PSObject -Property @{ 
             Title = "Intune Tools"
             Description = "Additional tools for managing Intune"
-            ID = "EMTools" 
+            ID = "EMTools"
+            AuthenticationID = "MSAL"
             ViewPanel = $viewPanel 
             ItemChanged = { Show-EMTool }
             Activating = { Invoke-EMToolsActivatingView }

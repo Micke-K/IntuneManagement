@@ -11,7 +11,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.12'
+    '3.1.13'
 }
 
 function Invoke-InitializeModule
@@ -74,6 +74,7 @@ function Invoke-InitializeModule
         SubPath = "EndpointManager"
     }) "EndpointManager"
 
+
     $viewPanel = Get-XamlObject ($global:AppRootFolder + "\Xaml\EndpointManagerPanel.xaml") -AddVariables
     
     Set-EMViewPanel $viewPanel
@@ -83,13 +84,14 @@ function Invoke-InitializeModule
         Title = "Intune Manager"
         Description = "Manages Intune environments. This view can be used for copying objects in an Intune environment. It can also be used for backing up an entire Intune environment and cloning the Intune environment into another tenant."
         ID="IntuneGraphAPI" 
-        ViewPanel = $viewPanel 
+        ViewPanel = $viewPanel
+        AuthenticationID = "MSAL"
         ItemChanged = { Show-GraphObjects; Invoke-ModuleFunction "Invoke-GraphObjectsChanged"; Write-Status ""}
         Deactivating = { Invoke-EMDeactivateView }
         Activating = { Invoke-EMActivatingView  }
         Authentication = (Get-MSALAuthenticationObject)
         Authenticate = { Invoke-EMAuthenticateToMSAL }
-        AppInfo = (Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547")
+        AppInfo = (Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547" "EM")
         SaveSettings = { Invoke-EMSaveSettings }
 
         Permissions = @()
@@ -606,7 +608,7 @@ function Invoke-InitializeModule
 
 function Invoke-EMAuthenticateToMSAL
 {
-    $global:EMViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547"
+    $global:EMViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547" "EM"
     Set-MSALCurrentApp $global:EMViewObject.AppInfo
     & $global:msalAuthenticator.Login -Account (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser"))
 }
@@ -622,7 +624,7 @@ function Invoke-EMActivatingView
     Show-MSALError
     
     # Refresh values in case they have changed
-    $global:EMViewObject.AppInfo = (Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547")
+    $global:EMViewObject.AppInfo = (Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547" "EM")
     if(-not $global:EMViewObject.Authentication)
     {
         $global:EMViewObject.Authentication = Get-MSALAuthenticationObject    
@@ -647,6 +649,16 @@ function Invoke-EMSaveSettings
         Write-Status ""
     }
 
+    Set-EMUIStatus
+}
+
+function Invoke-GraphAuthenticationUpdated
+{
+    Set-EMUIStatus
+}
+
+function Set-EMUIStatus
+{
     # Hide/Show Delete button
     $allowDelete = Get-SettingValue "EMAllowDelete"    
     $global:btnDelete.Visibility = (?: ($allowDelete -eq $true) "Visible" "Collapsed")

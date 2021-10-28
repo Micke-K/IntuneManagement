@@ -1,0 +1,59 @@
+
+ <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="4*" MinHeight="300" />
+        <RowDefinition Height="3" />
+        <RowDefinition Height="1*" MinHeight="100"  />
+    </Grid.RowDefinitions>
+    
+    <DataGrid Name="dgLogInfo" 
+        AutoGenerateColumns="False"
+        SelectionMode="Single"
+        SelectionUnit="FullRow"
+        CanUserAddRows="False">
+        <DataGrid.RowStyle>
+            <Style TargetType="DataGridRow"> 
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Type}" Value="3">
+                        <Setter Property="Foreground" Value="Red"></Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Type}" Value="2">
+                        <Setter Property="Foreground" Value="Orange"></Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </DataGrid.RowStyle>
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Date" Binding="{Binding DateTime, StringFormat={}{0:d}}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Time" Binding="{Binding DateTime, StringFormat={}{0:HH:mm.ss.fff}}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Type" Binding="{Binding TypeText}" IsReadOnly="True" Width="Auto" />
+            <DataGridTemplateColumn Header="Text">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                            <TextBlock Text="{Binding Path=Text}" TextWrapping="NoWrap" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
+
+    <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+    <Grid Grid.Row="3">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Date\Time" Grid.Row="0" Grid.Column="0"  />
+        <TextBlock Text="{Binding Path=DateTime, StringFormat={}{0:yyyy-MM-dd HH:mm.ss.fff}}" Grid.Row="0" Grid.Column="2" />
+
+        <TextBox Grid.Row="1" Grid.ColumnSpan="99" Text="{Binding Path=Text}" HorizontalAlignment="Stretch" Name="txtLogInfo" IsReadOnly="True" AcceptsReturn="true" />
+    </Grid>
+</Grid>

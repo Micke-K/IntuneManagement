@@ -34,8 +34,11 @@
             <Menu Name="mnuMain" Padding="0,5,0,5" Grid.ColumnSpan="2" >
                 <MenuItem Header="_File" >  
                     <MenuItem Header="_Settings" Name="mnuSettings" />  
+                    <MenuItem Header="_Tenant Settings" Name="mnuTenantSettings" />  
+                    <Separator />
                     <MenuItem Header="_Release Notes" Name="mnuUpdates" />  
-                    <MenuItem Header="_About" Name="mnuAbout" />  
+                    <MenuItem Header="_About" Name="mnuAbout" />
+                    <Separator />
                     <MenuItem Header="_Exit" Name="mnuExit" />  
                 </MenuItem> 
                 <MenuItem Name="mnuViews" Header="_Views" >
@@ -45,7 +48,7 @@
 
         <Grid Name="grdViewPanel" Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Margin="0,5,5,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
-        <Grid Grid.Row="1" Margin="5" VerticalAlignment="Stretch">
+        <Grid Grid.Row="1" Margin="5" VerticalAlignment="Stretch" Name="grdViewItemMenu">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -64,6 +67,18 @@
                         </Grid>  
                     </DataTemplate>  
                 </ListBox.ItemTemplate>
+                <ListBox.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding @AccessType}" Value="None">
+                                <Setter Property="Foreground" Value="Red" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding @AccessType}" Value="Limited">
+                                <Setter Property="Foreground" Value="Orange" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Resources>
             </ListBox>
         </Grid>        
 

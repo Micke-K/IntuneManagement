@@ -14,11 +14,11 @@ Microsoft links:
 
 The **ADMX Import** tool is used for configuring 3rd party applications e.g. Chrome, Google Update etc., These ADMX files are available from the software vendor. An ADMX can be loaded in the tool and all settings can be configured using a similar UI as GPMC. When the ADMX is loaded, the script will look for an ADML file that is either in the same directory or in the en-US subdirectory. An ADML file can also be loaded manually, if another language should be used in the UI.
 
-![Screenshot](/ADMXExample.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/ADMXExample.png" height="50%" width="50%"/>
 
 The image above shows the the tool after the chrome.admx file was loaded. The tool supports delivering ADMX settings to HKLM (Computer Settings) and HKCU (User Settings). Categories will be added based on the Class attribute for each ADMX policy setting. The *All settings* category will display all the settings for the base category (Computer or User)
 
-![Screenshot](/ADMXSettingExample.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/ADMXSettingExample.png" height="50%" width="50%"/>
 
 A policy setting can either be edited via double-clicking an item or right-clicking and select Edit. 
 
@@ -26,13 +26,13 @@ The *Intune OMA-URI name* property specifies the name of the OMA-URI row in the 
 
 A policy must be set to Enabled before any changes can be made. The *Policy* tab will list all possible settings for the policy. This could be a dropdown box, text box, check box, numeric up-down box etc. The script creates the controls based on the presentation settings in the ADML file. An ADML is not mandatory but the controls and the UI could cause unpredictive results. Always use the associated ADML for correctly generated controls.
 
-![Screenshot](/ADMXSettingExampleOMAURI.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/ADMXSettingExampleOMAURI.png" height="50%" width="50%"/>
 
 The *OMA-URI Settings* tab contains the configured settings. This is the string that will be added to the enabled policy. This can be manually configure in case there is something that is not supported by the script. Do **NOT** add <enabled /> or <disabled /> to this text box. The script will add that automatically.  If *Manual configuration* is checked, the script will upload the text as it is specified, including additional manual changes. If it is not checked, the script will generate the text when importing the profile. If manual configuration is added and then checkbox is cleared, those changes will be lost during the upload.
 
 The *XML Definition* tab contains the XML node for the ADMX policy. This is used for reference in case manual configuration is required.
 
-![Screenshot](/ADMXImportSetting.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/ADMXImportSetting.png" height="50%" width="50%"/>
 
 The *Import* tab  is used for creating the Custom Profile in Intune. The *Custom Profile Name* is mandatory and specifies the name of the profile.  
 
@@ -50,7 +50,7 @@ The *Import* button will create the Custom Profile in Intune. There is no visual
 
 The **Reg Values** tool can be used to create registry values in HKLM and HKCU. This uses the same functionality as the ADMX Import tool; ADMX ingestion. The difference is that the Reg Values tool builds the ADMX file in the background based on the added registry values. There are some benefits of using this over a PowerShell script e.g. Intune will state if the registry keys were applied successfully and if a conflict or an error occurred.  
 
-![Screenshot](/ADMXRegValuePolicy.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/ADMXRegValuePolicy.png" height="50%" width="50%"/>
 
 The initial screen include the options of specifying the Custom Profile name and description. The *Policy type* can either be Policy or Preferences. See Known Issues and Limitations for more information about policy types.
 
@@ -82,39 +82,39 @@ The *Additional value settings* section has additional settings for a policy typ
 
 Example of setting registry values for a device and a user: 
 
-![Screenshot](/RegPolicyHKCU.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegPolicyHKCU.png" height="50%" width="50%"/>
 
 Example of adding HKCU settings
 
-![Screenshot](/RegPolicyHKLM.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegPolicyHKLM.png" height="50%" width="50%"/>
 
 Example of adding HKLM settings
 
-![Screenshot](/RegADMXFileContent.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegADMXFileContent.png" height="50%" width="50%"/>
 
 Example of generated ADMX file
 
-![Screenshot](/RegValueIntuneProfile.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegValueIntuneProfile.png" height="50%" width="50%"/>
 
 Example of the created Custom Profile created. 
 
-![Screenshot](/RegProfileADMXIngestion.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegProfileADMXIngestion.png" height="50%" width="50%"/>
 
 Example of the OMA-URI row for ADMX ingestion for a custom registry value.
 
-![Screenshot](/RegProfileOMAURISetting.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegProfileOMAURISetting.png" height="50%" width="50%"/>
 
 Example of the OMA-URI row for specifying the registry values to set.
 
-![Screenshot](/RegValuesHKCU.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegValuesHKCU.png" height="50%" width="50%"/>
 
 Example of the implemented HKCU settings for a user
 
-![Screenshot](/RegValuesHKLM.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegValuesHKLM.png" height="50%" width="50%"/>
 
 Example of the implemented HKLM settings for a device
 
-![Screenshot](/RegValuesHKLMList.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegValuesHKLMList.png" height="50%" width="50%"/>
 
 Example of the List type implementation on a device 
 
@@ -142,7 +142,7 @@ The Policy CSP will create multiple registry values under HKLM\Software\Microsof
 
 The ADMXDefault part will contain each Category, with full path, specified in the ADMX file. This is why the AppID must be unique when using multiple versions of the same admx file since each of these files will have the same category IDs e.g. each Chrome version should be named based on the version like Chromev91.
 
-![Screenshot](/RegADMXDefault.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegADMXDefault.png" height="50%" width="50%"/>
 
 **Note:** If the same ADMX filename is used, the first file saved will win. It looks like Intune will not overwrite an existing ADMX file. That is why a unique name must be specified when different versions of the ADMX file is used.
 
@@ -170,11 +170,11 @@ The CategoryPath is the full path to the category where the setting is defined. 
 
 One registry key for each ADMX policy is created under the Provider path (PolicyManager\Provider\\<GUID>) . This includes the OME-URI settings configured in the Custom Profile. 
 
-![Screenshot](/RegADMXProvider.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegADMXProvider.png" height="50%" width="50%"/>
 
 Applied settings are added to the Current registry key, Current\Device or Current\\<SID> depending if it is for the device or the user. There is one key for each policy category.
 
-![Screenshot](/RegADMXCurrent.png?raw=true)
+<img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/RegADMXCurrent.png" height="50%" width="50%"/>
 
 **Troubleshooting**
 
