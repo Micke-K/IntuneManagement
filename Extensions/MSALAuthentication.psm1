@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.3.1'
+    '3.3.2'
 }
 
 $global:msalAuthenticator = $null
@@ -120,6 +120,14 @@ function Invoke-InitializeModule
         ItemsSource = $script:lstGCCEnvironments
         DefaultValue = "gcc"
     }) "MSAL" 
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Sort Account List"
+        Key = "SortAccountList"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Sort the list of cached accounts based on user name. Updated at restart or account change"
+    }) "MSAL"    
 
     Add-MSALPrereq
 
@@ -1389,13 +1397,21 @@ function Get-MSALProfileEllipse
                 [System.Windows.Controls.Canvas]::SetTop($obj,($point.Y + $obj.Tag.ActualHeight))
             })
 
-            $otherLogins = $global:grdProfileInfo.FindName("grdAccountsAndTenants")
+            $otherLogins = $global:grdProfileInfo.FindName("grdCachedAccounts")
             
             #########################################################################################################
             ### Add cached users
             #########################################################################################################
+            if((Get-SettingValue "SortAccountList") -eq $true)
+            {
+                $accounts = $global:MSALAccounts | Sort -Property Username
+            }
+            else
+            {
+                 $accounts = $global:MSALAccounts
+            }
 
-            foreach($account in $global:MSALAccounts)
+            foreach($account in $accounts)
             {
                 # Skip current logged on user
                 if($global:MSALToken.Account.Username -eq $Account.Username) { continue }
@@ -1518,9 +1534,13 @@ function Get-MSALProfileEllipse
                     Show-GraphObjects 
                 }
                 Write-Status ""
-            })
-            
+            })                    
+
+            $otherLogins = $global:grdProfileInfo.FindName("grdLoginAccount")
+
             Add-GridObject $otherLogins $lnkButton
+
+            $otherLogins = $global:grdProfileInfo.FindName("grdTenantAccounts")
             
             if(($script:AccessableTenants | measure).Count -gt 1)
             {

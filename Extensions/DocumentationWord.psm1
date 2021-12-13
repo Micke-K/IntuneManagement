@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.0.6'
+    '1.0.7'
 }
 
 function Invoke-InitializeModule
@@ -163,7 +163,7 @@ function Invoke-WordPreProcessItems
         }
         catch
         {
-            Write-LogError "Failed to create document based on tmeplate: $($global:txtWordDocumentTemplate.Text)" $_.Exception
+            Write-LogError "Failed to create document based on template: $($global:txtWordDocumentTemplate.Text)" $_.Exception
         }
     }
     else
@@ -442,7 +442,7 @@ function Invoke-WordProcessItem
                 
                 foreach($prop in $global:txtWordCustomProperties.Text.Split(","))
                 {
-                    # This will add language support for custom colument (or replacing existing header)
+                    # This will add language support for custom columens (or replacing existing header)
                     $propInfo = $prop.Split('=')
                     if(($propInfo | measure).Count -gt 1)
                     {

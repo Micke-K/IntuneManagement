@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.3.1'
+    '3.3.2'
 }
 
 function Start-CoreApp
@@ -784,7 +784,7 @@ function Remove-Property
 
 function Get-GridCheckboxColumn
 {
-    param($bindingProperty = "IsSelected")
+    param($bindingProperty = "IsSelected", [scriptblock]$scriptBlock)
 
     $binding = [System.Windows.Data.Binding]::new($bindingProperty)
     $binding.UpdateSourceTrigger = [System.Windows.Data.UpdateSourceTrigger]::PropertyChanged
@@ -792,6 +792,11 @@ function Get-GridCheckboxColumn
     $fef = [System.Windows.FrameworkElementFactory]::new([System.Windows.Controls.CheckBox])
     $binding.Mode = [System.Windows.Data.BindingMode]::TwoWay
     $fef.SetValue([System.Windows.Controls.CheckBox]::IsCheckedProperty,$binding)
+    if($null -ne $scriptBlock)
+    {
+        [System.Windows.RoutedEventHandler]$checkedEventHandler = $scriptBlock
+        $fef.AddHandler([System.Windows.Controls.CheckBox]::CheckedEvent, $checkedEventHandler) 
+    }
     $dt = [System.Windows.DataTemplate]::new()
     $dt.VisualTree = $fef
     $column.CellTemplate = $dt
@@ -799,6 +804,10 @@ function Get-GridCheckboxColumn
     $header.Margin = [System.Windows.Thickness]::new(-4,0,0,0) # Align header checkbox with the row checkboxes
     $header.ToolTip = "Select/deselect all items"
     $column.Header = $header
+    if($null -ne $scriptBlock)
+    {
+        #$header.add_click($scriptBlock)
+    }
 
     $column        
 }
@@ -1567,7 +1576,7 @@ function Add-DefaultSettings
         Type = "Boolean"
         DefaultValue = $false
         Description = "Enable featurs that are marked as Preview. This might require a restart and prompt for consent"
-    }) "General"    
+    }) "General"
 }
 
 function Add-SettingsObject

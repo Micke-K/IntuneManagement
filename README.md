@@ -275,7 +275,8 @@ When multi tenant settings is Enabled/Disabled, the Profile Info is not updated 
 
 The *List Applications* API might not list an imported app immediately after the import. Click *Refresh* to reload the application objects.
 
-When using the filter box to search for items, the checkbox must be clicked twice to select an item. 
+~~When using the filter box to search for items, the checkbox must be clicked twice to select an item.~~</br />
+Issue fixed in 3.3.2 
 
 Logout will only clear the token from cache and not from the browser e.g. if login is triggered after a logout, the user will still be listed in the 'Select user' dialog.
 

@@ -11,6 +11,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />  
@@ -46,10 +48,27 @@
             <Button Margin="5" Name="lnkForceRefresh" ToolTip="Force a refresh of the token e.g. after being added to a new role" Content="Refresh" Cursor="Hand"  Style="{DynamicResource LinkButton}" />
         </StackPanel>
 
-        <Grid Grid.Row="8" Name="grdAccountsAndTenants" Grid.ColumnSpan="2" Margin="5,0,5,0" HorizontalAlignment="Stretch">        
+        <ScrollViewer Grid.Row="8" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MaxHeight="200"> 
+            <Grid Name="grdCachedAccounts" Margin="5,0,5,2" HorizontalAlignment="Stretch" VerticalAlignment="Top" >        
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />  
+                </Grid.ColumnDefinitions> 
+            </Grid>
+        </ScrollViewer>
+
+        <Grid Name="grdLoginAccount" Grid.Row="9" Grid.ColumnSpan="2" Margin="5,0,5,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" >        
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />  
             </Grid.ColumnDefinitions> 
         </Grid>
+
+        <ScrollViewer Grid.Row="10" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MaxHeight="200"> 
+            <Grid Name="grdTenantAccounts" Margin="5,0,5,2" HorizontalAlignment="Stretch" VerticalAlignment="Top" >        
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />  
+                </Grid.ColumnDefinitions> 
+            </Grid>
+        </ScrollViewer>
+
     </Grid>
 </Border>

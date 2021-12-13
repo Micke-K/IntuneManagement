@@ -10,7 +10,7 @@ This module manages Application objects in Intune e.g. uploading application fil
 #>
 function Get-ModuleVersion
 {
-    '3.1.1'
+    '3.1.2'
 }
 
 #########################################################################################
@@ -41,6 +41,12 @@ function Get-MSIFileInformation
     param($MSIFile, $Properties)
 
     $values = @{}
+
+    if(-not $MSIFile) { return }
+
+    $fi = [IO.FileInfo]$MSIFile
+
+    if($fi.Extension -ne ".msi") { return }
 
     try 
     {        

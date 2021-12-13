@@ -22,7 +22,7 @@ $global:EMToolsViewObject = $null
 
 function Get-ModuleVersion
 {
-    '1.0.2'
+    '1.0.3'
 }
 
 function Invoke-InitializeModule
@@ -891,9 +891,12 @@ function Invoke-ADMXFilterPolicies
         $txtBox.Text = "Filter"
         $txtBox.Foreground="Lightgray"        
     }
+    elseif($txtBox.Tag -eq "1" -and $txtBox.Text -eq "Filter" -and $txtBox.IsFocused -eq $false)
+    {
+
+    }
     else
     {
-        if($txtBox.Tag -eq "1" -and $txtBox.Text -eq "Filter" -and $txtBox.IsFocused -eq $false) { return }
         $txtBox.FontStyle = "Normal"
         $txtBox.Tag = $null
         $txtBox.Foreground="Black"
@@ -908,11 +911,11 @@ function Invoke-ADMXFilterPolicies
         }         
     }
 
-    if($global:dgADMXSettings.ItemsSource -is [System.Windows.Data.ListCollectionView])
+    if($global:dgADMXSettings.ItemsSource -is [System.Windows.Data.ListCollectionView]  -and $txtBox.IsFocused -eq $true)
     {
         # This causes odd behaviour with focus e.g. and item has to be clicked twice to be selected 
         $global:dgADMXSettings.ItemsSource.Filter = $filter
-        $global:dgADMXSettings.ItemsSource.Refresh()
+        #$global:dgADMXSettings.ItemsSource.Refresh()
     }
 }
 

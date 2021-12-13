@@ -11,7 +11,7 @@ Objects can be compared based on Properties or Documentatation info.
 
 function Get-ModuleVersion
 {
-    '1.0.8'
+    '1.0.9'
 }
 
 function Invoke-InitializeModule
@@ -127,9 +127,6 @@ function Invoke-ShowMainWindow
     $button.Margin = "0,0,5,0" 
     $button.IsEnabled = $false
     $button.ToolTip = "Compare object with exported file"
-    $global:dgObjects.add_selectionChanged({
-        Set-XamlProperty $global:dgObjects.Parent "btnCompare" "IsEnabled" (?: ($global:dgObjects.SelectedItem -eq $null) $false $true)
-    })
 
     $button.Add_Click({ 
         Show-CompareForm $global:dgObjects.SelectedItem
@@ -138,6 +135,12 @@ function Invoke-ShowMainWindow
     $global:spSubMenu.RegisterName($button.Name, $button)
 
     $global:spSubMenu.Children.Insert(0, $button)
+}
+
+function Invoke-EMSelectedItemsChanged
+{
+    $hasSelectedItems = ($global:dgObjects.ItemsSource | Where IsSelected -eq $true) -or ($null -ne $global:dgObjects.SelectedItem)
+    Set-XamlProperty $global:dgObjects.Parent "btnCompare" "IsEnabled" $hasSelectedItems
 }
 
 function Invoke-ViewActivated

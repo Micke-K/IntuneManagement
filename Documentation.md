@@ -54,6 +54,8 @@ This is the first version of the documentation support.
 
 * Some Endpoint Security/Settings Catalog items is not translated based on Graph API in the portal e.g. *Antivirus - Windows 10 and Windows Server (ConfigMgr)* policies.  These will be documented based on Graph API information which might be different compared to the portal
 
+* Markdown is currently in experimental state. The script can document to an MD file created in the Documents folder but this can be to large in environments with many objects. The script will create HTML tables to support code blocks and column span. The MD View must support HTML tables to display the document. The *Markdown Viewer* extension in Chrome was used during testing.
+
 Please create an [Issue](https://github.com/Micke-K/IntuneManagement/issues) if properties are documented incorrectly or missing. 
 
 # Deep Dive

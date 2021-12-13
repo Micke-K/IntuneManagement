@@ -9,7 +9,7 @@ Module for listing Intune assignments
 #>
 function Get-ModuleVersion
 {
-    '1.0.2'
+    '1.0.3'
 }
 
 function Invoke-InitializeModule
@@ -232,9 +232,12 @@ function Invoke-IntueAssignmentFilterBoxChanged
         $txtBox.Text = "Filter"
         $txtBox.Foreground="Lightgray"        
     }
+    elseif($txtBox.Tag -eq "1" -and $txtBox.Text -eq "Filter" -and $txtBox.IsFocused -eq $false)
+    {
+        
+    }
     else
     {
-        if($txtBox.Tag -eq "1" -and $txtBox.Text -eq "Filter" -and $txtBox.IsFocused -eq $false) { return }
         $txtBox.FontStyle = "Normal"
         $txtBox.Tag = $null
         $txtBox.Foreground="Black"
@@ -245,15 +248,15 @@ function Invoke-IntueAssignmentFilterBoxChanged
             $filter = {
                 param ($item)
 
-                return ( $item.Name -match [regex]::Escape($txtBox.Text) -or $item.IncludedString -match [regex]::Escape($txtBox.Text) -or $item.ExcludedString -match [regex]::Escape($txtBox.Text) )
+                return ($item.Name -match [regex]::Escape($txtBox.Text) -or $item.IncludedString -match [regex]::Escape($txtBox.Text) -or $item.ExcludedString -match [regex]::Escape($txtBox.Text) )
             }
         }         
     }
 
-    if($dgObject.ItemsSource -is [System.Windows.Data.ListCollectionView])
+    if($dgObject.ItemsSource -is [System.Windows.Data.ListCollectionView] -and $txtBox.IsFocused -eq $true)
     {
         # This causes odd behaviour with focus e.g. and item has to be clicked twice to be selected 
         $dgObject.ItemsSource.Filter = $filter
-        $dgObject.ItemsSource.Refresh()
+        #$dgObject.ItemsSource.Refresh()
     }
 }

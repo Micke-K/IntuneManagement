@@ -11,7 +11,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.13'
+    '3.1.14'
 }
 
 function Invoke-InitializeModule
@@ -225,6 +225,7 @@ function Invoke-InitializeModule
         Icon = "Branding"
         SkipRemoveProperties = @('Id')
         GroupId = "Azure"
+        SkipAddIDOnExport = $true
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -722,9 +723,7 @@ function Set-EMViewPanel
     Set-XamlProperty $panel "btnDelete" "Visibility" (?: ($allowDelete -eq $true) "Visible" "Collapsed")    
 
     $global:dgObjects.add_selectionChanged({        
-        Set-XamlProperty $this.Parent "btnView" "IsEnabled" (?: ($null -eq $global:dgObjects.SelectedItem) $false $true)
-        Set-XamlProperty $this.Parent "btnCopy" "IsEnabled" (?: ($null -eq $global:dgObjects.SelectedItem) $false $true)
-        Set-XamlProperty $this.Parent "btnDelete" "IsEnabled" (?: ($null -eq $global:dgObjects.SelectedItem -and $global:curObjectType.AllowDelete -ne $false) $false $true)
+        Invoke-ModuleFunction "Invoke-EMSelectedItemsChanged"
     })
 
     # ToDo: Move this to the view object
@@ -760,12 +759,40 @@ function Set-EMViewPanel
             Show-GraphObjects
             Write-Status ""
         })
-    }        
+    }
+
+    $global:btnLoadAllPages.add_click({
+        Write-Status "Loading $($global:curObjectType.Title) objects"
+        $graphObjects = @(Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -AllPages)
+        $graphObjects | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null }
+        $global:dgObjects.ItemsSource.CommitNew()
+        Set-GraphPagesButtonStatus
+        Invoke-FilterBoxChanged $global:txtFilter -ForceUpdate
+        Write-Status ""
+    })
+
+    $global:btnLoadNextPage.add_click({
+        Write-Status "Loading $($global:curObjectType.Title) objects"
+        $graphObjects = @(Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage)
+        $graphObjects | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null }
+        $global:dgObjects.ItemsSource.CommitNew()
+        Set-GraphPagesButtonStatus
+        Invoke-FilterBoxChanged $global:txtFilter -ForceUpdate
+        Write-Status ""
+    })    
+}
+
+function Invoke-EMSelectedItemsChanged
+{
+    $hasSelectedItems = ($global:dgObjects.ItemsSource | Where IsSelected -eq $true) -or ($null -ne $global:dgObjects.SelectedItem)
+    Set-XamlProperty $global:dgObjects.Parent "btnView" "IsEnabled" $hasSelectedItems #(?: ($null -eq ($global:dgObjects.SelectedItem)) $false $true)
+    Set-XamlProperty $global:dgObjects.Parent "btnCopy" "IsEnabled" $hasSelectedItems #(?: ($null -eq $global:dgObjects.SelectedItem) $false $true)
+    Set-XamlProperty $global:dgObjects.Parent "btnDelete" "IsEnabled" $hasSelectedItems #(?: ($null -eq $global:dgObjects.SelectedItem -and $global:curObjectType.AllowDelete -ne $false) $false $true)
 }
 
 function Invoke-FilterBoxChanged 
 { 
-    param($txtBox)
+    param($txtBox,[switch]$ForceUpdate)
 
     $filter = $null
     
@@ -774,11 +801,18 @@ function Invoke-FilterBoxChanged
         $txtBox.FontStyle = "Italic"
         $txtBox.Tag = 1
         $txtBox.Text = "Filter"
-        $txtBox.Foreground="Lightgray"        
+        $txtBox.Foreground="Lightgray"
+    }
+    elseif($ForceUpdate -eq $true)
+    {
+        $dgObjects.ItemsSource.Filter = $dgObjects.ItemsSource.Filter
+    }
+    elseif($txtBox.Tag -eq "1" -and $txtBox.Text -eq "Filter" -and $txtBox.IsFocused -eq $false)
+    {
+        
     }
     else
-    {
-        if($txtBox.Tag -eq "1" -and $txtBox.Text -eq "Filter" -and $txtBox.IsFocused -eq $false) { return }
+    {            
         $txtBox.FontStyle = "Normal"
         $txtBox.Tag = $null
         $txtBox.Foreground="Black"
@@ -800,11 +834,9 @@ function Invoke-FilterBoxChanged
         }         
     }
 
-    if($dgObjects.ItemsSource -is [System.Windows.Data.ListCollectionView])
+    if($dgObjects.ItemsSource -is [System.Windows.Data.ListCollectionView] -and $txtBox.IsFocused -eq $true)
     {
-        # This causes odd behaviour with focus e.g. and item has to be clicked twice to be selected 
         $dgObjects.ItemsSource.Filter = $filter
-        $dgObjects.ItemsSource.Refresh()
     }
 
     $allObjectsCount = 0
@@ -869,9 +901,15 @@ function Start-PostExportEndpointSecurity
 {
     param($obj, $objectType, $path)
 
+    $fileName = (Get-GraphObjectName $obj $objectType)
+    if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
+    {
+        $fileName = ($fileName + "_" + $obj.Id)
+    }
+
     $settings = Invoke-GraphRequest -Url "$($objectType.API)/$($obj.id)/settings"
     $settingsJson = "{ `"settings`": $((ConvertTo-Json  $settings.value -Depth 20 ))`n}"
-    $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType)))_Settings.json"
+    $fileName = "$path\$((Remove-InvalidFileNameChars $fileName))_Settings.json"
     $settingsJson | Out-File -LiteralPath $fileName -Force
 }
 
@@ -1142,8 +1180,8 @@ function Start-PostGetIntuneBranding
 
     foreach($imgType in @("themeColorLogo","lightBackgroundLogo","landingPageCustomizedImage"))
     {
-        Write-LogDebug "Get $imgType for $($obj.profileName)"
-        $imgJson = Invoke-GraphRequest -Url "$($objectType.API)/$($obj.Id)/$imgType"
+        Write-LogDebug "Get $imgType for $($obj.Object.profileName)"
+        $imgJson = Invoke-GraphRequest -Url "$($objectType.API)/$($obj.Object.Id)/$imgType"
         if($imgJson.Value)
         {
             $obj.Object.$imgType = $imgJson
@@ -1793,9 +1831,23 @@ function Start-PostExportAdministrativeTemplate
 {
     param($obj, $objectType, $path)
 
+    $fileName = (Get-GraphObjectName $obj $objectType)
+    if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
+    {
+        $fileName = ($fileName + "_" + $obj.Id)
+    }
+    
     # Collect and save all the settings of the Administrative Templates profile
-    $settings = Get-GPOObjectSettings $obj
-    $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType)))_Settings.json"
+    if($obj.definitionValues)
+    {
+        $settings =  $obj.definitionValues
+    }
+    else
+    {
+        $settings = Get-GPOObjectSettings $obj
+    }
+
+    $fileName = "$path\$((Remove-InvalidFileNameChars $fileName))_Settings.json"
     ConvertTo-Json $settings -Depth 20 | Out-File -LiteralPath $fileName -Force
 }
 
@@ -1858,7 +1910,7 @@ function Start-PostGetAdministrativeTemplate
         $obj.Object | Add-Member Noteproperty -Name "definitionValues" -Value $definitionValues -Force 
     }    
     <#
-    # Leave for now. This only loads the configured defenition values and not the values specified.
+    # Leave for now. This only loads the configured definition values and not the values specified.
     # That would require enumerating each definition value which takes time. 
     $definitionValues = (Invoke-GraphRequest "deviceManagement/groupPolicyConfigurations('$($obj.Id)')/definitionValues?`$expand=definition(`$select=id,classType,displayName,policyType,groupPolicyCategoryId)" -ODataMetadata "minimal").value
 
@@ -2025,8 +2077,21 @@ function Start-PostExportRoleDefinitions
 {
     param($obj, $objectType, $path)
 
-    $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType))).json"
-    $tmpObj = Get-Content -LiteralPath $fileName | ConvertFrom-Json
+    $fileName = (Get-GraphObjectName $obj $objectType)
+    if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
+    {
+        $fileName = ($fileName + "_" + $obj.Id)
+    }
+    $tmpObj = $null
+    $fileName = "$path\$((Remove-InvalidFileNameChars $fileName)).json"
+    if([IO.File]::Exists($fileName))
+    {
+        $tmpObj = Get-Content -LiteralPath $fileName | ConvertFrom-Json
+    }
+    else
+    {
+        Write-Log "File not found: $fileName. Could not get role assignments" 3
+    }
 
     if(($tmpObj.RoleAssignments | measure).Count -gt 0)
     {        
@@ -2397,10 +2462,15 @@ function Add-EMAssignmentsToExportFile
 {
     param($obj, $objectType, $path, $Url = "")
 
-    $fileName = "$path\$((Remove-InvalidFileNameChars (Get-GraphObjectName $obj $objectType))).json"
+    $fileName = (Get-GraphObjectName $obj $objectType)
+    if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
+    {
+        $fileName = ($fileName + "_" + $obj.Id)
+    }
+    $fileName = "$path\$((Remove-InvalidFileNameChars $fileName)).json"
     if([IO.File]::Exists($fileName) -eq $false)
     {
-        Write-Log "File not found: $fileName. Could not add assignments" 3
+        Write-Log "File not found: $fileName. Could not add assignments to file" 3
         return
     }
     $tmpObj = Get-Content -LiteralPath $fileName | ConvertFrom-Json

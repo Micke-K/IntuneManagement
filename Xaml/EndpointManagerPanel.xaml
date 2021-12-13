@@ -14,7 +14,13 @@
             SelectionUnit="FullRow"
             CanUserAddRows="False"
             Grid.Column="1"
-            Grid.Row="1" />
+            Grid.Row="1">
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="TextWrapping" Value="NoWrap"/>
+                </Style>
+            </DataGrid.Resources> 
+        </DataGrid>       
 
         <Grid Name="grdTitle" Visibility="Collapsed" >
             <Grid.ColumnDefinitions>
@@ -22,13 +28,17 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <Border Background="{DynamicResource TitleBackgroundColor}" Margin="0,0,0,5" >
                 <ContentControl Name="ccIcon" Width="24" Height="24" Margin="5,0,0,0" />
             </Border>
-            <TextBlock Name="txtFormTitle" Text="" Grid.Column="1" Grid.ColumnSpan="3" FontWeight="Bold" Padding="5" Margin="0,0,0,5" Background="{DynamicResource TitleBackgroundColor}" />
-            <TextBox Name="txtFilter" Grid.Column="2" MinWidth="200" MaxHeight="20" Margin="0,0,5,3" />
+            <TextBlock Name="txtFormTitle" Text="" Grid.Column="1" Grid.ColumnSpan="5" FontWeight="Bold" Padding="5" Margin="0,0,0,5" Background="{DynamicResource TitleBackgroundColor}" />
+            <Button Name="btnLoadAllPages" Grid.Column="2" Content="Load All" Width='100' Margin="0,5,5,7" Visibility="Collapsed" />
+            <Button Name="btnLoadNextPage" Grid.Column="3" Content="Load More" Width='100' Margin="0,5,5,7" Visibility="Collapsed" />
+            <TextBox Name="txtFilter" Grid.Column="4" MinWidth="200" MaxHeight="20" Margin="0,0,5,3" />
 <!--    
             <Grid Grid.Column="2" MinWidth="200" MaxHeight="20">
                 <TextBlock Text="Filter" Background="White" />

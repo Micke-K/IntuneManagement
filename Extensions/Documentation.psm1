@@ -20,13 +20,38 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.0.7'
+    '1.0.8'
 }
 
 function Invoke-InitializeModule
 {
     # Make sure we add the default Output types
     Add-OutputType
+
+    $script:columnHeaders = @{
+        Name="Inputs.displayNameLabel"
+        Value="TableHeaders.value"
+        Description="TableHeaders.description"
+        GroupMode="SettingDetails.modeTableHeader" #assignmentTypeSelectionLabel?
+        Group="TableHeaders.assignedGroups"
+        Groups="TableHeaders.groups"
+        useDeviceContext="SettingDetails.installContextLabel"
+        uninstallOnDeviceRemoval="SettingDetails.UninstallOnRemoval"
+        isRemovable="SettingDetails.installAsRemovable"
+        vpnConfigurationId="PolicyType.vpn"
+        Action="SettingDetails.actionColumnName"
+        Schedule="ScheduledAction.List.schedule"
+        MessageTemplate="ScheduledAction.Notification.messageTemplate"
+        EmailCC="ScheduledAction.Notification.additionalRecipients"
+        Filter="AssignmentFilters.assignmentFilterColumnHeader"
+        Rule="ApplicabilityRules.GridLabel.Rule"
+        ValueWithLabel="TableHeaders.value"
+        Status="TableHeaders.status"
+        CombinedValueWithLabel="TableHeaders.value"
+        CombinedValue="TableHeaders.value"
+        useDeviceLicensing="TableHeaders.licenseType"
+        #filterMode="Filter mode" # Not in any string file yet 
+    }    
 }
 
 function Invoke-ShowMainWindow
@@ -38,12 +63,6 @@ function Invoke-ShowMainWindow
     $button.Margin = "0,0,5,0" 
     $button.IsEnabled = $false
     $button.ToolTip = "Document selected objects"
-    $global:dgObjects.add_selectionChanged({
-        ##Set-XamlProperty $global:dgObjects.Parent "btnDocument" "IsEnabled" (?: ($global:dgObjects.SelectedItem -eq $null) $false $true)
-        #$itemSelected = ($global:dgObjects.ItemsSource | Where IsSelected -eq $true).Count -ge 0 -or $global:dgObjects.SelectedItem
-
-        Set-XamlProperty $global:dgObjects.Parent "btnDocument" "IsEnabled" (?: ($global:dgObjects.SelectedItem -eq $null) $false $true)
-    })
 
     $button.Add_Click({ 
 
@@ -55,6 +74,12 @@ function Invoke-ShowMainWindow
     $global:spSubMenu.RegisterName($button.Name, $button)
 
     $global:spSubMenu.Children.Insert(0, $button)
+}
+
+function Invoke-EMSelectedItemsChanged
+{
+    $hasSelectedItems = ($global:dgObjects.ItemsSource | Where IsSelected -eq $true) -or ($null -ne $global:dgObjects.SelectedItem)
+    Set-XamlProperty $global:dgObjects.Parent "btnDocument" "IsEnabled" $hasSelectedItems
 }
 
 function Invoke-GraphObjectsChanged
@@ -85,6 +110,35 @@ function Invoke-ViewActivated
         $subItem.Add_Click({Invoke-DocumentSelectedObjects})
         $tmp.AddChild($subItem)       
     }
+}
+
+function Set-DocColumnHeaderLanguageId
+{
+    param($columnName, $lngId)
+
+    if(-not $script:columnHeaders -or -not $lngId) { return }
+
+    if($script:columnHeaders.ContainsKey($columnName))
+    {
+        $script:columnHeaders[$columnName] = $lngId
+    }
+    else
+    {
+        $script:columnHeaders.Add($columnName, $lngId)
+    }
+}
+
+function Invoke-DocTranslateColumnHeader
+{
+    param($columnName)
+
+    $lngText = ""
+    if($script:columnHeaders.ContainsKey($columnName))
+    {
+        $lngText = Get-LanguageString $script:columnHeaders[$columnName]
+    }
+
+    (?? $lngText $columnName)
 }
 
 function Add-OutputType
@@ -586,27 +640,6 @@ function Add-ScopeTagStrings
     {
         Add-BasicPropertyValue (Get-LanguageString "TableHeaders.scopeTags") ($objScopeTags -join $script:objectSeparator)
     }
-}
-
-function Get-AllEntityTypes
-{
-    param($entityType, $xml, $hashTable)
-
-    if(-not $hashTable.ContainsKey($entityType))
-    {
-        $hashTable.Add($entityType, $xml.SelectSingleNode("//*[name()='EntityType' and @Name='$entityType']"))
-    }
-
-    $nodes = $xml.SelectNodes("//*[@BaseType='graph.$entityType']")
-
-    foreach($node in $nodes)
-    {
-        if($node.Abstract -ne "true")
-        {
-            $hashTable.Add($node.Name, $node)
-        }
-        Get-AllEntityTypes $node.Name $xml $hashTable
-    }    
 }
 
 function Get-ObjectPlatformFromType

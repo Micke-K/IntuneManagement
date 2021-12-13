@@ -1,5 +1,44 @@
 # Release Notes
 
+## 3.3.2  - 2021-12-14
+
+**New features**
+
+- Markdown support for documentation (Experimental)
+  This will create a MD document in the Documents folder.
+  **Note:** This is not working 100% at the moment. The script will create a MD document but it might be too large if all objects in the environment are documented. 
+
+  Also note that HTML tables are used so that code can be documented as code blocks. This must be supported by the MD Viewer. The *Markdown Viewer* extension in Chrome was used during testing.
+
+  Please report any suggestions to the issue.<br />
+  This is based on [Issue 35](https://github.com/Micke-K/IntuneManagement/issues/35)
+
+- Added support for batched export
+  This will use batch API to request full info for up to 20 objects per batch to reduce export time
+  This can be enabled in setting
+
+- Added support for scrolling cached users and guest accounts in the profile info<br />
+  This can be enabled in settings
+
+- Added support for sorting cached users<br />
+  This can be enabled in settings
+
+**Fixes**
+
+- Paged return of objects<br />
+  Only first page of objects will be loaded by default. 
+  Additional pages can be loaded with **Load More** or all available objects can be loaded with **Load All**.<br />
+  This is based on [Issue 28](https://github.com/Micke-K/IntuneManagement/issues/28)
+
+- Fixed an issue where a checkbox had to be clicked twice to be checked when the list was filtered <br />
+  This is based on a known issue 
+
+- Fixed an issue where buttons were not enabled when **Select All** was checked<br />
+  This is based on [Issue 36](https://github.com/Micke-K/IntuneManagement/issues/36)
+
+- Fixed an issue when adding object ID to the file name during export
+  The separate settings file was not exported with the ID in the name which could cause issues during import
+
 ## 3.3.1 (Beta) - 2021-10-28
 
 This is a **BETA** release. It contains core changes for Authentication and Settings management. Please report any issues [here](https://github.com/Micke-K/IntuneManagement/issues).

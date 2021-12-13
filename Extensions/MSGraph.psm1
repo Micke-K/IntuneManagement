@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.1.9'
+    '3.1.10'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -158,7 +158,24 @@ function Invoke-InitializeModule
         Type = "Boolean"
         DefaultValue = $false
         Description = "This will add object ID to the export file to support objects with the same name e.g. ObjectName_ObjectId.json"
-    }) "ImportExport"    
+    }) "ImportExport"
+    
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Use Batch API (Preview)"
+        Key = "UseBatchAPI"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "This will use batch API to call up to extport 20 objects on each API call"
+    }) "ImportExport"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Refresh Objects after copy"
+        Key = "RefreshObjectsAfterCopy"
+        Type = "Boolean"
+        DefaultValue = $true
+        Description = "This will refresh all objects when after a copy. If this is disabled, the list must be refreshed manually to see the new objects. Default is true"
+    }) "ImportExport"
+    
 }
 
 function Get-GraphAppInfo
@@ -240,6 +257,12 @@ function Invoke-GraphRequest
             [switch]
             $AllPages,
 
+            [int]
+            $PageSize = -1,
+
+            [switch]
+            $Batch,
+
             [switch]
             $NoError
         )
@@ -313,12 +336,8 @@ function Invoke-GraphRequest
         $Url = $Url -replace "%OrganizationId%", $global:Organization.Id
     }
 
-    <#
-    if($AllPages)
-    {    
-        # Code to test paging - Force each page to size specified in top parameter below
-        # Kept for reference
-
+    if($PageSize -gt 0 -and $url.IndexOf("`$top=") -eq -1)
+    {
         if(($url.IndexOf('?')) -eq -1) 
         {
             $url = "$($url.Trim())?"
@@ -327,9 +346,8 @@ function Invoke-GraphRequest
         {
             $url = "$($url.Trim())&"
         }
-        $url = "$($url.Trim())`$top=20"
+        $url = "$($url.Trim())`$top=$($PageSize)"
     }
-    #>    
 
     $ret = $null
     try
@@ -390,13 +408,15 @@ function Get-GraphObjects
     $exclude,
     $SortProperty = "displayName",
     $objectType,
+    [string]
+    $select,
+    [switch]
+    $SinglePage,
+    [switch]
+    $AllPages,
     [switch]
     $SingleObject)
-
-    $objects = @()
-    
-    if($property -isnot [Object[]]) { $property = @('displayName', 'description', 'id')}
-
+        
     $params = @{}
     if($objectType.ODataMetadata)
     {
@@ -417,21 +437,91 @@ function Get-GraphObjects
         else
         {
             $url = "$($url.Trim())&$($objectType.QUERYLIST.Trim())" # Risky...does not check that the parameter is already in use
-        }        
+        }
     }
+
+    if(($url.IndexOf("`$select=")) -eq -1 -and $select)
+    {
+        $url += (?: (($url.IndexOf('?')) -eq -1) "?" "&")
+        $url += "`$select=$select"
+    }    
     
-    if($SingleObject -ne $true)
+    if($SinglePage -eq $true)
+    {
+        #Use default page size or use below for a specific page size for testing
+        #$params.Add("pageSize",100)
+    }
+    elseif($SingleObject -ne $true -and $SinglePage -ne $true)
     {
         $params.Add('AllPages',$true)
     }
 
+    if($script:nextGraphPage -and ($SinglePage -eq $true -or $AllPages -eq $true))
+    {
+        $url = $script:nextGraphPage
+    }
+
     $graphObjects = Invoke-GraphRequest -Url $url @params
+    if($SinglePage -eq $true -or $AllPages -eq $true)
+    {
+        $script:nextGraphPage = $graphObjects.'@odata.nextLink'
+    }    
 
     if($SingleObject -ne $true -and $objectType.PostListCommand)
     {
         $graphObjects = & $objectType.PostListCommand $graphObjects $objectType
     }
         
+    if($graphObjects -and ($graphObjects | GM -Name Value -MemberType NoteProperty))
+    {
+        $retObjects = $graphObjects.Value            
+    }
+    else
+    {
+        $retObjects = $graphObjects
+    }
+
+    return (Add-GraphObectProperties $retObjects $objectType $property $SortProperty)
+
+    $objects = @()
+
+    foreach($graphObject in $retObjects)
+    {
+        $params = @{}
+        if($property) { $params.Add("Property", $property) }
+        if($exclude) { $params.Add("ExcludeProperty", $exclude) }
+        foreach($objTmp in ($graphObject | Select-Object @params))
+        {
+            $objTmp | Add-Member -NotePropertyName "IsSelected" -NotePropertyValue $false
+            $objTmp | Add-Member -NotePropertyName "Object" -NotePropertyValue $graphObject
+            $objTmp | Add-Member -NotePropertyName "ObjectType" -NotePropertyValue $objectType
+            $objects += $objTmp
+        }            
+    }    
+    $property = "IsSelected",$property
+
+    if($objects.Count -gt 0 -and $SortProperty -and ($objects[0] | GM -MemberType NoteProperty -Name $SortProperty))
+    {
+        $objects = $objects | sort -Property $SortProperty
+    }
+
+    $objects
+}
+
+function Add-GraphObectProperties
+{
+    param($graphObjects, 
+            $objectType, 
+            [Array]
+            $property = $null,
+            [Array]
+            $exclude,
+            $SortProperty = "displayName")
+
+    if($property -isnot [Object[]]) { $property = @('displayName', 'description', 'id')}
+    
+    $objects = @()
+    
     if($graphObjects -and ($graphObjects | GM -Name Value -MemberType NoteProperty))
     {
         $retObjects = $graphObjects.Value            
@@ -460,6 +550,7 @@ function Get-GraphObjects
     {
         $objects = $objects | sort -Property $SortProperty
     }
+
     $objects
 }
 
@@ -505,13 +596,15 @@ function Show-GraphObjects
         $global:grdTitle.Visibility = "Visible"
     }
 
-    $graphObjects = @(Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType)
+    $script:nextGraphPage = $null
+
+    $graphObjects = @(Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage)
 
     $dgObjects.AutoGenerateColumns = $false
     $dgObjects.Columns.Clear()
 
     if(($graphObjects | measure).Count -gt 0)
-    { 
+    {
         $tmpObj = $graphObjects | Select -First 1
 
         $prop = $tmpObj.PSObject.Properties | Where Name -eq "IsSelected"
@@ -526,6 +619,7 @@ function Show-GraphObjects
                     $item.IsSelected = $this.IsChecked
                 }
                 $global:dgObjects.Items.Refresh()
+                Invoke-ModuleFunction "Invoke-EMSelectedItemsChanged"
             })           
         }
 
@@ -585,6 +679,7 @@ function Show-GraphObjects
         $dgObjects.ItemsSource = $null
     }
 
+    
     # Show/Hide buttons based on object type
     foreach($ctrl in $spSubMenu.Children)
     {
@@ -604,6 +699,16 @@ function Show-GraphObjects
             $ctrl.Visibility = "Collapsed"
         }
     }
+
+    Set-GraphPagesButtonStatus
+}
+
+function Set-GraphPagesButtonStatus
+{
+    $global:btnLoadAllPages.Visibility = (?: ($script:nextGraphPage) "Visible" "Collapsed")
+    $global:btnLoadNextPage.Visibility = (?: ($script:nextGraphPage) "Visible" "Collapsed")
+    $global:btnLoadAllPages.Tag = $script:nextGraphPage
+    $global:btnLoadNextPage.Tag = $script:nextGraphPage
 }
 
 function Clear-GraphObjects
@@ -620,7 +725,7 @@ function Clear-GraphObjects
 
 function Get-GraphObject
 {
-    param($obj, $objectType, [switch]$SkipAssignments)
+    param($obj, $objectType, [switch]$SkipAssignments, [switch]$GetAPI)
 
     Write-Status "Loading $((Get-GraphObjectName $obj $objectType))" 
 
@@ -694,6 +799,16 @@ function Get-GraphObject
         }
 
         $api = ($api + ($expand -join ","))
+    }
+
+    if($global:Organization.Id)
+    {
+        $api = $api -replace "%OrganizationId%", $global:Organization.Id
+    }
+
+    if($GetAPI -eq $true)
+    {
+        return $api
     }
 
     $objInfo = Get-GraphObjects -Url $api -property $objectType.ViewProperties -objectType $objectType -SingleObject
@@ -959,18 +1074,38 @@ function Show-GraphBulkExportForm
             {
                 $folder = Get-GraphObjectFolder $item.ObjectType (Get-XamlProperty $script:exportForm "txtExportPath" "Text") (Get-XamlProperty $script:exportForm "chkAddObjectType" "IsChecked") (Get-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked")
 
-                $objects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
-                foreach($obj in $objects)
+                Write-Status "Get a list of all $($item.ObjectType.Title) objects" -SkipLog -Force
+                $objects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType) 
+
+                if((Get-SettingValue "UseBatchAPI") -eq $true)
                 {
-                    $objName = Get-GraphObjectName $obj.Object $obj.ObjectType
-
-                    if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
+                    # Use batch to get details of each object
+                    $batchObjects = Get-GraphBatchObjects $objects $txtNameFilter
+                    $i = 1
+                    $total = ($batchObjects | measure).Count
+                    foreach($batchResult in $batchObjects)
                     {
-                        continue
-                    }
+                        $objName = Get-GraphObjectName $batchResult.Object $batchResult.ObjectType
+                        Write-Status "Export $($item.Title): $objName ($($i)/$($total))" -Force
+                        Export-GraphObject $batchResult.Object $batchResult.ObjectType $folder -IsFullObject
+                        $i++
+                    }                
+                }
+                else        
+                {
+                    foreach($obj in $objects)
+                    {
+                        # Export objects one by one
+                        $objName = Get-GraphObjectName $obj.Object $obj.ObjectType
 
-                    Write-Status "Export $($item.Title): $objName" -Force
-                    Export-GraphObject $obj.Object $item.ObjectType $folder
+                        if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
+                        {
+                            continue
+                        }
+
+                        Write-Status "Export $($item.Title): $objName" -Force
+                        Export-GraphObject $obj.Object $item.ObjectType $folder
+                    }
                 }
                 Save-Setting "" "LastUsedFullPath" $folder
             }
@@ -2288,13 +2423,21 @@ function Export-GraphObject
 {
     param($objToExport, 
             $objectType, 
-            $exportFolder)
+            $exportFolder,
+            [switch]$IsFullObject)
 
     if(-not $exportFolder) { return }
 
     Write-Status "Export $((Get-GraphObjectName $objToExport $objectType))"
 
-    $obj = Get-GraphExportObject $objToExport $objectType
+    if($IsFullObject -eq $true)
+    {
+        $obj = $objToExport
+    }
+    else
+    {
+        $obj = Get-GraphExportObject $objToExport $objectType        
+    }
     
     if(-not $obj)
     {
@@ -2315,7 +2458,7 @@ function Export-GraphObject
         }
 
         $fileName = Get-GraphObjectName $obj $objectType
-        if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
+        if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id -and $objectType.SkipAddIDOnExport -ne $true)
         {
             $fileName = ($fileName + "_" + $obj.Id)
         }
@@ -2333,6 +2476,83 @@ function Export-GraphObject
     {
         Write-LogError "Failed to export object" $_.Exception
     }
+}
+
+function Get-GraphBatchObjects
+{
+    param($objects, $txtNameFilter)
+
+    $curBatch = 1
+    $batchArr = @()
+    $batchResults = @()
+    $batchTotal = 0
+    $objectType = $null
+    foreach($obj in $objects)
+    {
+        $objectType = $obj.ObjectType
+        $objName = Get-GraphObjectName $obj.Object $obj.ObjectType
+
+        if($objName -and $txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
+        {
+            $batchTotal++            
+        }
+        else
+        {
+            $ometadata = ?? $obj.ObjectType.ODataMetadata "Full"
+            $batchArr += [PSCustomObject]@{
+                id = ($batchArr.Count + 1)
+                method = "GET"
+                url = (Get-GraphObject $obj.Object $obj.ObjectType -GetAPI) 
+                headers = @{"Accept"="application/json;odata.metadata=$ometadata"}
+            }
+        }        
+
+        if($batchArr.Count -eq 20 -or ($batchTotal + $batchArr.Count -eq $objects.Count))
+        {            
+            $batchObj = [PSCustomObject]@{
+                requests = $batchArr
+                }
+
+            Write-Status "Get batch $curBatch $($obj.ObjectType.Title)" -Force            
+            $batchTotal += $batchArr.Count            
+            $json = $batchObj | ConvertTo-Json -Depth 10
+            $tmpResults = Invoke-GraphRequest -Url "`$batch" -Content $json -HttpMethod "POST" -Batch #-Url $api -property $obj.ObjectType.ViewProperties -objectType $obj.ObjectType -
+            $curResp = 1
+            foreach($batchResult in ($tmpResults.responses | Sort -Property Id))
+            {
+                if($batchResult.Status -ne "200" -or -not $batchResult.body)
+                {
+                    $reqObj = $batchObj.requests | where id -eq $batchResult.Id
+                    Write-Log "Batch result $($batchResult.Status) for URL $($reqObj.URL). Skipping..." 2
+                    continue 
+                }
+
+                $batchResults += $batchResult.body
+                $curResp++
+            }
+        
+            $curBatch++
+            $batchArr = @()
+        }
+    }
+
+    if($objectType -and $batchResults.Count -gt 0)
+    {
+        $batchResultsTmp = $batchResults
+        $batchResults = Add-GraphObectProperties $batchResultsTmp $objectType -property $objectType.ViewProperties
+        
+        $curObj = 1
+        foreach($obj in $batchResults)
+        {
+            if($obj.Object -and $obj.ObjectType.PostGetCommand)
+            {
+                Write-Status "Get full info - $((Get-GraphObjectName $obj.Object $obj.ObjectType)) ($($curObj)/$(@($batchResults).Count))" -Force
+                & $obj.ObjectType.PostGetCommand $obj $obj.ObjectType
+            }
+            $curObj++
+        }
+    }
+    $batchResults
 }
 
 function Get-GraphExportObject
@@ -2527,7 +2747,10 @@ function Copy-GraphObject
         {
             if((& $global:curObjectType.PreCopyCommand $exportObj $global:curObjectType $ret))
             {
-                Show-GraphObjects
+                if((Get-SettingValue "RefreshObjectsAfterCopy") -eq $true)
+                {
+                    Show-GraphObjects
+                }
                 Write-Status ""
                 return
             }
@@ -2547,7 +2770,10 @@ function Copy-GraphObject
                 {
                     & $global:curObjectType.PostCopyCommand $exportObj $newObj $global:curObjectType
                 }
-                Show-GraphObjects
+                if((Get-SettingValue "RefreshObjectsAfterCopy") -eq $true)
+                {
+                    Show-GraphObjects
+                }
             }
             else
             {
@@ -2674,4 +2900,75 @@ function Add-GraphBulkMenu
     $menuItem.AddChild($subItem) | Out-Null
 
     $mnuMain.Items.Insert(1,$menuItem) | Out-Null
+}
+
+
+function Get-GraphAllEntityTypes
+{
+    param($entityType, $xml, $hashTable)
+
+    if(-not $hashTable.ContainsKey($entityType))
+    {
+        $hashTable.Add($entityType, $xml.SelectSingleNode("//*[name()='EntityType' and @Name='$entityType']"))
+    }
+
+    $nodes = $xml.SelectNodes("//*[@BaseType='graph.$entityType']")
+
+    foreach($node in $nodes)
+    {
+        if($node.Abstract -ne "true")
+        {
+            $hashTable.Add($node.Name, $node)
+        }
+        Get-GraphAllEntityTypes $node.Name $xml $hashTable
+    }    
+}
+
+function Get-GraphEntityTypeObject
+{
+    param($entityType, $xml, $skipProperties = @())
+
+    $props = Get-GraphEntityTypeProperties $entityType $xml
+
+    if(-not $props) { return }
+
+    $obj = [PSCustomObject]@{
+        
+    }
+
+    foreach($prop in $props)
+    {
+        if($prop.Name -in $skipProperties) { continue }
+        $obj | Add-Member -NotePropertyName $prop.Name -NotePropertyValue $null
+    }
+    $obj
+}
+
+function Get-GraphEntityTypeProperties
+{
+    param($entityType, $xml)
+
+    $tmpEntity = $xml.SelectSingleNode("//*[name()='EntityType' and @Name='$entityType']")
+    if(-not $tmpEntity) { return }
+
+    $entities = @()
+    $entities += $tmpEntity
+    
+    while($tmpEntity.BaseType)
+    {        
+        $baseType = $tmpEntity.BaseType.Split('.')[-1]
+        $tmpEntity = $xml.SelectSingleNode("//*[name()='EntityType' and @Name='$baseType']")
+        if($tmpEntity) 
+        {
+            $entities += $tmpEntity
+        }
+    }
+    $properties = @()
+    [array]::Reverse($entities)
+    foreach($enitiy in $entities)
+    {
+        $properties += $enitiy.SelectNodes("*[name()='Property']")
+    }
+    
+    $properties 
 }
