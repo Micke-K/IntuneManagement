@@ -481,31 +481,7 @@ function Get-GraphObjects
         $retObjects = $graphObjects
     }
 
-    return (Add-GraphObectProperties $retObjects $objectType $property $SortProperty)
-
-    $objects = @()
-
-    foreach($graphObject in $retObjects)
-    {
-        $params = @{}
-        if($property) { $params.Add("Property", $property) }
-        if($exclude) { $params.Add("ExcludeProperty", $exclude) }
-        foreach($objTmp in ($graphObject | Select-Object @params))
-        {
-            $objTmp | Add-Member -NotePropertyName "IsSelected" -NotePropertyValue $false
-            $objTmp | Add-Member -NotePropertyName "Object" -NotePropertyValue $graphObject
-            $objTmp | Add-Member -NotePropertyName "ObjectType" -NotePropertyValue $objectType
-            $objects += $objTmp
-        }            
-    }    
-    $property = "IsSelected",$property
-
-    if($objects.Count -gt 0 -and $SortProperty -and ($objects[0] | GM -MemberType NoteProperty -Name $SortProperty))
-    {
-        $objects = $objects | sort -Property $SortProperty
-    }
-
-    $objects
+    return (Add-GraphObectProperties $retObjects $objectType $property $exclude $SortProperty)
 }
 
 function Add-GraphObectProperties
@@ -515,7 +491,7 @@ function Add-GraphObectProperties
             [Array]
             $property = $null,
             [Array]
-            $exclude,
+            $exclude = $null,
             $SortProperty = "displayName")
 
     if($property -isnot [Object[]]) { $property = @('displayName', 'description', 'id')}
@@ -544,7 +520,6 @@ function Add-GraphObectProperties
             $objects += $objTmp
         }            
     }    
-    $property = "IsSelected",$property
 
     if($objects.Count -gt 0 -and $SortProperty -and ($objects[0] | GM -MemberType NoteProperty -Name $SortProperty))
     {

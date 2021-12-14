@@ -1,5 +1,12 @@
 # Release Notes
 
+## 3.3.3  - 2021-12-15
+
+**Fixes**
+
+- Fixed issue where displayName was missing in object list<br />
+  Thank you Jason!
+
 ## 3.3.2  - 2021-12-14
 
 **New features**
