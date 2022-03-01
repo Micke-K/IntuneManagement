@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.3.2'
+    '3.4.0'
 }
 
 $global:msalAuthenticator = $null
@@ -234,7 +234,7 @@ function Get-MSALUserInfo
     {
         Write-Log "Get current user"
         $tmpMe = MSGraph\Invoke-GraphRequest -Url "ME" -SkipAuthentication -ODataMetadata "Skip"
-        if($tmpMe.creationType -ne "Invitation")
+        if($null -ne $tmpMe -and $tmpMe.creationType -ne "Invitation")
         {
             ### Only get user info from home tenant
             $global:Me = $tmpMe
@@ -341,6 +341,12 @@ function Show-MSALError
 function Install-MSALDependencyModule
 {
     param($moduleToInstall, $button)
+
+    if($global:hideUI -eq $true)
+    {
+        Write-Log "Cannot install MSAL module in Silent mode"
+        return
+    }
 
     $forceUserInstallation = $false
 
@@ -541,6 +547,38 @@ function Add-MSALPrereq
     }
 }
 
+function Connect-MSALClientApp
+{
+    param($clientId, $tenantId, $secret, $Certificate)
+    $scopes = [String[]]".default"
+        
+    if(-not $script:MSALApp)
+    {
+        $authority = "https://login.microsoftonline.com/$tenantId"
+        #$redirectUri = "http://localhost"
+        
+        if($secret)
+        {
+            $ClientApplicationBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::Create($clientId).WithClientSecret($ClientSecret).WithAuthority([URI]::new($authority)) #.WithRedirectUri($redirectUri)
+        }
+        elseif($Certificate)
+        {
+            $ClientApplicationBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::Create($clientId).WithCertificate($ClientSecret).WithAuthority([URI]::new($authority)) #.WithRedirectUri($redirectUri)
+        }
+        else 
+        {
+            return
+        }
+        $script:MSALApp = $ClientApplicationBuilder.Build()
+    }
+
+    if($script:MSALApp)
+    {        
+        $accessTokenRequest = $script:MSALApp.AcquireTokenForClient($scopes)
+        $global:MSALToken = Get-MsalAuthenticationToken $accessTokenRequest        
+    }
+}
+
 function Get-MsalAuthenticationToken
 {
     param($aquireTokenObj)
@@ -689,6 +727,9 @@ function Connect-MSALUser
         [switch]
         $Interactive,
 
+        [switch]
+        $ClientApp,
+
         $Account,
 
         $Tenant
@@ -696,6 +737,24 @@ function Connect-MSALUser
 
     # No login during first time the app is started
     if($global:FirstTimeRunning -and $global:MainAppStarted -eq $false) { return }
+
+    if($global:hideUI -eq $true)
+    {
+        if($global:AzureAppId -and $global:ClientSecret -and $global:TenantId)
+        {
+            Connect-MSALClientApp $global:AzureAppId $global:TenantId -secret $global:ClientSecret 
+        }
+        elseif($global:AzureAppId -and $global:ClientCert -and $global:TenantId)
+        {
+            Connect-MSALClientApp $global:AzureAppId $global:TenantId -certificate $global:ClientCert
+        }
+        else
+        {
+            Write-Log "Azure AppId, Tenant Id and Sercret/Cert must be specified for batch login" 3
+        }
+        
+        return 
+    }
 
     Write-LogDebug "Authenticate"
 

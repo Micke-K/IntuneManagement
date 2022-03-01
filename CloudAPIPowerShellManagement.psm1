@@ -73,7 +73,19 @@ function Initialize-CloudAPIManagement
         [switch]
         $JSonSettings,
         [string]
-        $JSonFile
+        $JSonFile,
+        [switch]
+        $Silent,
+        [string]
+        $SilentBatchFile,
+        [string]
+        $tenantId,
+        [string]
+        $appId,
+        [string]
+        $secret,
+        [string]
+        $certificate
     )
 
     $global:wpfNS = "xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'"
@@ -81,21 +93,43 @@ function Initialize-CloudAPIManagement
     [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 
     Add-Type -AssemblyName PresentationFramework
 
-    try 
-    {
-        [xml]$xaml = Get-Content ([IO.Path]::GetDirectoryName($PSCommandPath) + "\Xaml\SplashScreen.xaml")
-        $global:SplashScreen = ([Windows.Markup.XamlReader]::Load((New-Object System.Xml.XmlNodeReader $xaml)))
-        $global:txtSplashTitle = $global:SplashScreen.FindName("txtSplashTitle")
-        $global:txtSplashText = $global:SplashScreen.FindName("txtSplashText")
+    $global:hideUI = ($Silent -eq $true)
+    $global:SilentBatchFile = $SilentBatchFile
 
-        $global:txtSplashTitle.Text = ("Initializing Cloud API PowerShell Management")
+    if($global:hideUI -ne $true)
+    {        
+        # Run with UI
+        try 
+        {
+            [xml]$xaml = Get-Content ([IO.Path]::GetDirectoryName($PSCommandPath) + "\Xaml\SplashScreen.xaml")
+            $global:SplashScreen = ([Windows.Markup.XamlReader]::Load((New-Object System.Xml.XmlNodeReader $xaml)))
+            $global:txtSplashTitle = $global:SplashScreen.FindName("txtSplashTitle")
+            $global:txtSplashText = $global:SplashScreen.FindName("txtSplashText")
 
-        $global:SplashScreen.Show() | Out-Null
-        [System.Windows.Forms.Application]::DoEvents()
+            $global:txtSplashTitle.Text = ("Initializing Cloud API PowerShell Management")
+
+            $global:SplashScreen.Show() | Out-Null
+            [System.Windows.Forms.Application]::DoEvents()
+        }
+        catch 
+        {
+            
+        }
     }
-    catch 
+    else
     {
-        
+        # Run silent
+
+        if(-not $tenantId)
+        {
+            # Core module not loaded yet so can't use log function
+            Write-Error "Tenant Id is missing. Use -TenantId <Tenant-guid> on the command line to run silent batch jobs"
+            return
+        }
+        $global:TenantId = $tenantId 
+        $global:AzureAppId = $appId 
+        $global:ClientSecret = $secret 
+        $global:ClientCert = $certificate        
     }
 
     if($ShowConsoleWindow -ne $true)
@@ -113,11 +147,17 @@ function Initialize-CloudAPIManagement
         $global:UseJSonSettings = $false
     }
 
-    $global:txtSplashText.Text = "Unblock files" 
+    if($global:hideUI -ne $true)
+    {
+        $global:txtSplashText.Text = "Unblock files"
+    } 
     [System.Windows.Forms.Application]::DoEvents()
     Unblock-AllFiles $PSScriptRoot
 
-    $global:txtSplashText.Text = "Load core module"
+    if($global:hideUI -ne $true)
+    {
+        $global:txtSplashText.Text = "Load core module"
+    }
     [System.Windows.Forms.Application]::DoEvents()
     Import-Module ($PSScriptRoot + "\Core.psm1") -Force -Global
 

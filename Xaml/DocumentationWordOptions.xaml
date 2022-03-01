@@ -23,6 +23,7 @@
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
         <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
@@ -30,18 +31,81 @@
         <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
 
-    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="0">
-        <Label Content="Output Properties" />
-        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the output type. Simple will only add Value and Name for Settings. Extended will output the same as Raw Output. Use Custom to select custom properties" />
-    </StackPanel>
-    <ComboBox Name="cbWordDocumentationProperties" Margin="0,5,0,0" MinWidth="250" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"
-            DisplayMemberPath="Name" SelectedValuePath="Value" />
+    <Grid Grid.ColumnSpan="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="0">
+            <Label Content="Output Properties" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the output type. Simple will only add Value and Name for Settings. Extended will output the same as Raw Output. Use Custom to select custom properties" />
+        </StackPanel>
+        <ComboBox Name="cbWordDocumentationProperties" Margin="0,5,0,0" MinWidth="250" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"
+                DisplayMemberPath="Name" SelectedValuePath="Value" />
+    
+        <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="1" Name="spWordCustomProperties">
+            <Label Content="Custom Properties" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Comma separated list with properties to export. The properties must match with values from Raw Data" />
+        </StackPanel>
+        <TextBox Text="" Name="txtWordCustomProperties" Margin="0,5,5,5" Grid.Row="1" Grid.Column="1"/>
 
-    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="1" Name="spWordCustomProperties">
-        <Label Content="Custom Properties" />
-        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Comma separated list with properties to export. The properties must match with values from Raw Data" />
-    </StackPanel>
-    <TextBox Text="" Name="txtWordCustomProperties" Margin="0,5,5,5" Grid.Row="1" Grid.Column="1"/>
+    </Grid>
+
+    <Grid Grid.Row="1" Grid.ColumnSpan="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="0">
+            <Label Content="Output Level" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the output level. Full will document full value of each setting, Limited will truncate the value if more than 100 characters and Basic will only include the basic information and assignments but no settings" />
+        </StackPanel>
+        <ComboBox Name="cbWordDocumentationLevel" Margin="0,5,0,0" MinWidth="250" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"
+                DisplayMemberPath="Name" SelectedValuePath="Value" />
+        
+        <Grid Grid.Row="1" Grid.ColumnSpan="2" Name="gdWordDocumentationLimitOptions">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal" Margin="0,5,5,0" >
+                <Label Content="Attach full value" />
+                <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Attach value as a text file if exceeds the Max value length" />
+            </StackPanel>
+            <CheckBox Grid.Column='1' Name='chkWordDocumentationLimitAttatch' VerticalAlignment="Center" IsChecked="true" />
+
+            <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="1">
+                <Label Content="Max value length" />
+                <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the max sting length of the value. Value over this size will be truncated. Default is 100" />
+            </StackPanel>
+            <TextBox Text="" Name="txtWordDocumentationLimitMaxLength" Margin="0,5,5,5" Width="100" Grid.Row="1" HorizontalAlignment="Left"  Grid.Column="1"/>
+
+            <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="2">
+                <Label Content="Truncated value length" />
+                <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the length for the truncate size. Default is same size as Max value length. Specify 0 to skip tuncated text and only include the attached value (must be enabled)" />
+            </StackPanel>
+            <TextBox Text="" Name="txtWordDocumentationLimitTruncateLength" Margin="0,5,5,5" Width="100" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1"/>
+
+        </Grid>
+    </Grid>
 
     <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row="2">
         <Label Content="Word document template" />
@@ -74,7 +138,7 @@
             <RowDefinition Height="Auto"/>                
         </Grid.RowDefinitions>
         <TextBox Text="" Name="txtWordDocumentName" />
-        <Button Grid.Column="2" Name="browseWordDocumentName" Padding="5,0,5,0" Width="50" ToolTip="Select output document">...</Button>
+        <Button Grid.Column="2" Name="browseWordDocumentName" Padding="5,0,5,0" Width="50" ToolTip="Select output document">...</Button>    
     </Grid>
 
     <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="5">
@@ -166,6 +230,12 @@
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Remove signature block from PowerShell scripts to reduce script documentation size" />
     </StackPanel>
     <CheckBox Grid.Column='1' Grid.Row='19' Name='chkWordExcludeScriptSignature' VerticalAlignment="Center" IsChecked="true" />    
+
+    <StackPanel Orientation="Horizontal" Grid.Row='20' Margin="0,0,5,0">
+        <Label Content="Attatch Json file" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Attatch the Json file to the documentation" />
+    </StackPanel>
+    <CheckBox Grid.Column='1' Grid.Row='20' Name='chkWordAttatchJsonFile' VerticalAlignment="Center" IsChecked="false" />    
 
     <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="21">
         <Label Content="Script table style" />

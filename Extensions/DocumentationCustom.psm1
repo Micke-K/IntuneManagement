@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.0.6'
+    '1.1.0'
 }
 
 function Invoke-InitializeModule
@@ -23,6 +23,7 @@ function Invoke-InitializeModule
         GetCustomChildObject = { Get-CDDocumentCustomChildObjet  @args }
         GetCustomPropertyObject = { Get-CDDocumentCustomPropertyObject  @args }
         AddCustomProfileProperty = { Add-CDDocumentCustomProfileProperty @args }
+        PostAddValue = { Invoke-CDDocumentCustomPostAdd @args }
     })
 }
 
@@ -91,6 +92,13 @@ function Invoke-CDDocumentObject
         Invoke-CDDocumentNotification $documentationObj
         return [PSCustomObject]@{
             Properties = @("Name","Value","Category","SubCategory")
+        }
+    }
+    elseif($type -eq '#microsoft.graph.deviceAndAppManagementAssignmentFilter')
+    {
+        Invoke-CDDocumentAssignmentFilter $documentationObj
+        return [PSCustomObject]@{
+            Properties = @("Name","Value") 
         }
     }    
 }
@@ -168,6 +176,73 @@ Property separator character
 .PARAMETER objSeparator
 Object separator character
 #>
+
+function Invoke-CDDocumentCustomPostAdd
+{
+    param($obj, $prop, $propSeparator, $objSeparator)
+
+    if($obj.'@OData.Type' -eq "#microsoft.graph.windowsUpdateForBusinessConfiguration")
+    {
+        if($prop.EntityKey -eq "featureUpdatesDeferralPeriodInDays")
+        {
+            # Inject Windows 11 update setting. Not included in the file
+            $tmpProp = [PSCustomObject]@{
+                nameResourceKey = "allowWindows11UpgradeName"
+                descriptionResourceKey = "allowWindows11UpgradeDescription"
+                entityKey = "allowWindows11Upgrade"
+                dataType = 0
+                booleanActions = 109
+                category = $prop.Category
+            }
+            $propValue = Invoke-TranslateBoolean $obj $tmpProp
+
+            $script:UpdateCategory = $prop.Category
+
+            Add-PropertyInfo $tmpProp $propValue -originalValue $obj.allowWindows11Upgrade
+        }
+
+        if($prop.EntityKey -eq "featureUpdatesRollbackWindowInDays")
+        {
+            if($obj.businessReadyUpdatesOnly -eq "businessReadyOnly")
+            {
+                $propValue = Get-LanguageString "BooleanActions.notConfigured"
+            }
+            else
+            {
+                $propValue = Get-LanguageString "BooleanActions.enable"
+            }
+
+            # Inject Pre-release setting. Not included in the file
+            $tmpProp = [PSCustomObject]@{
+                nameResourceKey = "preReleaseBuilds"
+                descriptionResourceKey = "preReleaseBuildsDescription"
+                entityKey = "preReleaseEnabled" # Not a class property!
+                dataType = 0
+                booleanActions = 2
+                category = $prop.Category
+            }
+
+            Add-PropertyInfo $tmpProp $propValue -originalValue $obj.businessReadyUpdatesOnly
+
+            if($obj.businessReadyUpdatesOnly -ne "businessReadyOnly")
+            {   
+                # Pre-release channel selected. Inject info 
+                $propValue = Get-LanguageString "SettingDetails.$($obj.businessReadyUpdatesOnly)Option"
+
+                $tmpProp = [PSCustomObject]@{
+                    nameResourceKey = "preReleaseChannel"
+                    descriptionResourceKey = "preReleaseBuildsDescription"
+                    entityKey = "businessReadyUpdatesOnly"
+                    dataType = 0
+                    booleanActions = 2
+                    category = $prop.Category
+                }
+
+                Add-PropertyInfo $tmpProp $propValue -originalValue $obj.businessReadyUpdatesOnly
+            }
+        }
+    }
+}
 
 function Add-CDDocumentCustomProfileValue
 {
@@ -318,7 +393,19 @@ function Add-CDDocumentCustomProfileValue
             $propValue = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.eapXml)) 
             Add-PropertyInfo $prop $propValue -originalValue $propValue
             return $false
-        }
+        }                
+    }
+    elseif($obj.'@OData.Type' -eq "#microsoft.graph.windowsUpdateForBusinessConfiguration")
+    {
+        if($prop.EntityKey -eq "businessReadyUpdatesOnly" -or 
+            $prop.EntityKey -eq "autoRestartNotificationDismissal" -or 
+            $prop.EntityKey -eq "scheduleRestartWarningInHours" -or 
+            $prop.EntityKey -eq "scheduleImminentRestartWarningInMinutes" -or
+            $prop.EntityKey -eq "deliveryOptimizationMode") 
+        { 
+            # Not used anymore
+            return $false
+        }             
     }    
 }
 
@@ -695,6 +782,11 @@ function Add-CDDocumentCustomProfileProperty
         }
         $obj | Add-Member Noteproperty -Name "syntheticWipOrApps" -Value $syntheticWipOrApps -Force
         
+        if($null -eq $obj.profileTarget)
+        {
+            $obj.profileTarget = "user"
+        }
+
         $retValue = $true
     }
     elseif($obj.'@OData.Type' -like "#microsoft.graph.iosDeviceFeaturesConfiguration")
@@ -871,6 +963,29 @@ function Add-CDDocumentCustomProfileProperty
         }
 
         $obj | Add-Member Noteproperty -Name "featureUpdateDisplayName" -Value $verInfoTxt
+
+        if($obj.rolloutSettings.offerStartDateTimeInUTC -and
+            $obj.rolloutSettings.offerEndDateTimeInUTC)
+        {
+            $featureUpdateRolloutOption = "gradualRollout"
+            $obj | Add-Member Noteproperty -Name "featureUpdateRolloutStartDate" -Value ((Get-Date $obj.rolloutSettings.offerStartDateTimeInUTC).ToLongDateString())
+            $obj | Add-Member Noteproperty -Name "featureUpdateRolloutEndDate" -Value ((Get-Date $obj.rolloutSettings.offerEndDateTimeInUTC).ToLongDateString())
+            if($null -ne $obj.rolloutSettings.offerIntervalInDays)
+            {
+                $obj | Add-Member Noteproperty -Name "featureUpdateRolloutInterval" -Value ($obj.rolloutSettings.offerIntervalInDays)
+            }
+        }
+        elseif($obj.rolloutSettings.offerStartDateTimeInUTC)
+        {
+            $featureUpdateRolloutOption = "startDateOnly"
+            $obj | Add-Member Noteproperty -Name "featureUpdateRolloutStartDate" -Value ((Get-Date $obj.rolloutSettings.offerStartDateTimeInUTC).ToLongDateString())
+        }
+        else
+        {
+            $featureUpdateRolloutOption = "immediateStart"            
+        }
+
+        $obj | Add-Member Noteproperty -Name "featureUpdateRolloutOption" -Value $featureUpdateRolloutOption
 
         $retValue = $true
     }    
@@ -2499,5 +2614,45 @@ function Invoke-CDDocumentNotification
             SubCategory = $subCategory
         })        
     }
+}
+#endregion
+
+#region
+function Invoke-CDDocumentAssignmentFilter
+{
+    param($documentationObj)
+
+    $obj = $documentationObj.Object
+    $objectType = $documentationObj.ObjectType
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+    
+    ###################################################
+    # Basic info
+    ###################################################
+
+    Add-BasicDefaultValues $obj $objectType
+    
+    # "Filters" is not in the translation file
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") "Filters" 
+    Add-BasicPropertyValue (Get-LanguageString "Inputs.platformLabel") (Get-LanguageString "Platform.$($obj.platform)")
+
+    ###################################################
+    # Settings
+    ###################################################
+
+    $label = Get-LanguageString "ApplicabilityRules.GridLabel.rule"
+
+    # "Rules" is not in the translation file
+    $category = "Rules"
+
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = $label
+        Value =  $obj.rule          
+        EntityKey = "rule"
+        Category = $category
+        SubCategory = $null
+    })
 }
 #endregion

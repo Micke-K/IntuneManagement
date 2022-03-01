@@ -11,7 +11,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.1.14'
+    '3.4.0'
 }
 
 function Invoke-InitializeModule
@@ -239,8 +239,9 @@ function Invoke-InitializeModule
         PreReplaceCommand = { Start-PreReplaceEnrollmentRestrictions @args } # Note: Uses same PreReplaceCommand as restrictions
         PostReplaceCommand = { Start-PostReplaceEnrollmentRestrictions @args } # Note: Uses same PostReplaceCommand as restrictions
         PreFilesImportCommand = { Start-PreFilesImportEnrollmentRestrictions @args } # Note: Uses same PreFilesImportCommand as restrictions
+        PostListCommand = { Start-PostListESP @args }
         #PreUpdateCommand = { Start-PreUpdateEnrollmentRestrictions @args } # Note: Uses same PreUpdateCommand as restrictions
-        QUERYLIST = "`$filter=endsWith(id,'Windows10EnrollmentCompletionPageConfiguration')"
+        #QUERYLIST = "`$filter=endsWith(id,'Windows10EnrollmentCompletionPageConfiguration')"
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         SkipRemoveProperties = @('Id')
         AssignmentsType = "enrollmentConfigurationAssignments"
@@ -253,19 +254,21 @@ function Invoke-InitializeModule
         Id = "EnrollmentRestrictions"
         API = "/deviceManagement/deviceEnrollmentConfigurations"
         ViewID = "IntuneGraphAPI"
-        QUERYLIST = "`$filter=not endsWith(id,'Windows10EnrollmentCompletionPageConfiguration')"
+        #QUERYLIST = "`$filter=not endsWith(id,'Windows10EnrollmentCompletionPageConfiguration')"
         PostExportCommand = { Start-PostExportEnrollmentRestrictions @args }
         PreImportCommand = { Start-PreImportEnrollmentRestrictions @args }
         PreDeleteCommand = { Start-PreDeleteEnrollmentRestrictions @args }
         PreReplaceCommand = { Start-PreReplaceEnrollmentRestrictions @args }
         PostReplaceCommand = { Start-PostReplaceEnrollmentRestrictions @args }
         PreFilesImportCommand = { Start-PreFilesImportEnrollmentRestrictions @args }
+        PostListCommand = { Start-PostListEnrollmentRestrictions @args }
         #PreUpdateCommand = { Start-PreUpdateEnrollmentRestrictions @args }
         PropertiesToRemoveForUpdate = @('priority')
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         SkipRemoveProperties = @('Id')
         AssignmentsType = "enrollmentConfigurationAssignments"
         GroupId = "EnrollmentRestrictions"
+        ViewProperties = @("displayName","platformType","description","Id")
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -405,8 +408,10 @@ function Invoke-InitializeModule
         Expand="categories,assignments" # ODataMetadata is set to minimal so assignments can't be autodetected
         ODataMetadata="minimal" # categories property not supported with ODataMetadata full
         PostFileImportCommand = { Start-PostFileImportApplications @args }
+        PostCopyCommand = { Start-PostCopyApplications @args }
         PreUpdateCommand = { Start-PreUpdateApplication  @args }
         PreImportCommand = { Start-PreImportCommandApplication  @args }
+        DetailExtension = { Add-DetailExtensionApplications @args }
         GroupId = "Apps"
     })
 
@@ -1322,19 +1327,24 @@ function Add-ScriptExportExtensions
 {
     param($form, $buttonPanel, $index = 0)
 
-    $xaml =  @"
+    $ctrl = $form.FindName("chkExportScript")
+    if(-not $ctrl)
+    {
+        $xaml =  @"
 <StackPanel $($global:wpfNS) Orientation="Horizontal" Margin="0,0,5,0">
 <Label Content="Export script" />
-<Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Export the powershell script to a ps1 file" />
+<Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Export the script associated with PowerShell or Shell profiles" />
 </StackPanel>
 "@
-    $label = [Windows.Markup.XamlReader]::Parse($xaml)
+        $label = [Windows.Markup.XamlReader]::Parse($xaml)
 
-    $global:chkExportScript = [System.Windows.Controls.CheckBox]::new()
-    $global:chkExportScript.IsChecked = $true
-    $global:chkExportScript.VerticalAlignment = "Center" 
+        $global:chkExportScript = [System.Windows.Controls.CheckBox]::new()
+        $global:chkExportScript.IsChecked = $true
+        $global:chkExportScript.VerticalAlignment = "Center" 
+        $global:chkExportScript.Name = "chkExportScript" 
 
-    @($label, $global:chkExportScript)
+        @($label, $global:chkExportScript)
+    }
 }
 
 function Start-PostExportScripts
@@ -1672,40 +1682,60 @@ function Start-PreImportAssignmentsAppConfiguration
 #endregon
 
 #region Applications
+
+function Start-PostCopyApplications
+{
+    param($objCopyFrom, $objNew, $objectType)
+
+    Start-ImportApp $objNew
+    Write-Status ""
+}
+
 function Start-PostFileImportApplications
 {
     param($obj, $objectType, $file)
-
+    
     $tmpObj = Get-Content -LiteralPath $file | ConvertFrom-Json
-
-    if(-not $tmpObj.'@odata.type') { return }
-
-    $pkgPath = Get-SettingValue "EMIntuneAppPackages"
-
-    if(-not $pkgPath -or [IO.Directory]::Exists($pkgPath) -eq $false) 
-    {
-        Write-LogDebug "Package source directory is either missing or does not exist" 2
-        return 
-    }
-
-    $packageFile = "$($pkgPath)\$($obj.fileName)"
-
-    if([IO.File]::Exists($packageFile) -eq $false) 
-    {
-        Write-LogDebug "Package source file $packageFile not found" 2
-        return 
-    }
-
-    Write-Status "Import appliction package file $($obj.fileName)"
-    Write-Log "Import application file '$($packageFile)' for $($obj.displayName)"
 
     if(-not ($obj.PSObject.Properties | Where Name -eq '@odata.type'))
     {
         # Add @odata.type property if it is missing. Required by app package import
-        $obj | Add-Member -MemberType NoteProperty -Name '@odata.type' -Value $tmpObj.'@odata.type'
+        $obj | Add-Member -MemberType NoteProperty -Name '@odata.type' -Value $objectType.'@odata.type'
+    }
+    
+    Start-ImportApp $obj
+}
+
+function local:Start-ImportApp
+{
+    param($obj, $packageFile = $null)
+    
+    if(-not $obj.'@odata.type') { return }
+
+    if($null -eq $packageFile)
+    {
+        $pkgPath = Get-SettingValue "EMIntuneAppPackages"
+
+        if(-not $pkgPath -or [IO.Directory]::Exists($pkgPath) -eq $false) 
+        {
+            Write-LogDebug "Package source directory is either missing or does not exist" 2
+            return 
+        }
+
+        $packageFile = "$($pkgPath)\$($obj.fileName)"
+    }
+    $fi = [IO.FileInfo]$packageFile
+
+    if($fi.Exists -eq $false) 
+    {
+        Write-LogDebug "Package source file $($fi.FullName) not found" 2
+        return 
     }
 
-    $appType = $tmpObj.'@odata.type'.Trim('#')
+    Write-Status "Import appliction package file $($fi.FullName)"
+    Write-Log "Import application file '$($($fi.FullName))' for $($obj.displayName)"
+
+    $appType = $obj.'@odata.type'.Trim('#')
 
     if($appType -eq "microsoft.graph.win32LobApp")
     {
@@ -1760,6 +1790,55 @@ function Start-PreImportCommandApplication
     }
 }
 
+function Add-DetailExtensionApplications
+{
+    param($form, $buttonPanel, $index = 0)
+
+    $btnUpload = New-Object System.Windows.Controls.Button    
+    $btnUpload.Content = 'Upload'
+    $btnUpload.Name = 'btnUploadAppfile'
+    $btnUpload.Margin = "0,0,5,0"  
+    $btnUpload.Width = "100"
+    
+    $btnUpload.Add_Click({
+        if($global:dgObjects.SelectedItem.Object.publishingState -ne "notPublished")
+        {
+            # Only allow upload of not published apps
+            # Use portal to replace app file...
+            if(([System.Windows.MessageBox]::Show("Are you sure you want to upload a new file for the app?`n`nApplication:`n$($global:dgObjects.SelectedItem.Object.displayName)", "Update app file?", "YesNo", "Warning")) -ne "Yes")
+            {
+                return
+            }
+        }
+    
+        $pkgPath = Get-SettingValue "EMIntuneAppPackages"
+
+        $of = [System.Windows.Forms.OpenFileDialog]::new()
+        $of.FileName = $global:dgObjects.SelectedItem.Object.fileName
+        $of.DefaultExt = "*.intunewin"
+        $of.Filter = "Intune Win32 (*.intunewin)|*.*"
+        $of.Multiselect = $false
+
+        if($pkgPath -and [IO.Directory]::Exists($pkgPath))
+        {
+            $of.InitialDirectory = $pkgPath
+        }
+        
+        if($of.ShowDialog() -eq "OK")
+        {
+            Write-Status "Import $($global:dgObjects.SelectedItem.Object.displayName) file"
+            Start-ImportApp $global:dgObjects.SelectedItem.Object $of.FileName
+            Write-Status ""
+        }
+    })
+
+    $tmp = $form.FindName($buttonPanel)
+    if($tmp) 
+    { 
+        $tmp.Children.Insert($index, $btnUpload)
+    }
+
+}
 #endregion
 
 #region Group Policy/Administrative Templates functions
@@ -2241,6 +2320,14 @@ function Start-PostExportESP
         Save-EMDefaultPolicy $obj $objectType $path
     }
 }
+
+function Start-PostListESP
+{
+    param($objList, $objectType)
+
+    # endswith not working so filter them out
+    $objList | Where { $_.Object.'@OData.Type' -eq '#microsoft.graph.windows10EnrollmentCompletionPageConfiguration' }
+}
 #endregion
 
 #region Enrollment Restriction functions
@@ -2324,6 +2411,19 @@ function Start-PreUpdateEnrollmentRestrictions
     param($obj, $objectType, $curObject, $fromObj)
 
     Remove-Property $obj "priority"
+}
+
+function Start-PostListEnrollmentRestrictions
+{
+    param($objList, $objectType)
+
+    # endswith not working so filter them out
+    $objList | Where { 
+        ($_.Object.'@OData.Type' -eq '#microsoft.graph.deviceEnrollmentPlatformRestrictionConfiguration' -or 
+        $_.Object.'@OData.Type' -eq '#microsoft.graph.deviceEnrollmentLimitConfiguration' -or 
+        $_.Object.'@OData.Type' -eq '#microsoft.graph.deviceEnrollmentPlatformRestrictionsConfiguration') -and
+        $_.Object.id -notlike "*_PlatformRestrictions" -and $_.Object.platformType -ne "WindowsPhone" -and $_.Object.platformType -ne "AndroidAosp"
+    }
 }
 
 #endregion
@@ -2596,6 +2696,7 @@ function Add-ConditionalAccessImportExtensions
     $global:cbImportCAState.Margin="0,5,0,0"
     $global:cbImportCAState.HorizontalAlignment="Left"
     $global:cbImportCAState.Width=250
+    $global:cbImportCAState.Name = "cbImportCAState"
 
     @($label, $global:cbImportCAState)
 }

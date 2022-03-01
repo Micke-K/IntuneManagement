@@ -1,5 +1,91 @@
 # Release Notes
 
+## 3.4.0  - 2022-03-01
+
+**New features**
+
+- **Silent batch job**
+  Export/Import can now be executed without UI<br />
+  See documentation for full requirements
+  
+  **Note** Please report any issues to [Issue 39](https://github.com/Micke-K/IntuneManagement/issues/39)
+  
+  This is based on [Issue 39](https://github.com/Micke-K/IntuneManagement/issues/39)
+  
+- **Documentation**
+
+  - Support for documenting an environment based on exported files<br />
+
+    Select the **Source files** folder in the Documentation Types (Bulk menu) dialog.
+    
+    Note: Some values will NOT be included. These are referenced values and not a property on the object eg Certificate on a VPN profile, Root certificate on a SCEP profile etc. These values will be documented with ##TBD...<br />
+
+    This is based on [Issue 37](https://github.com/Micke-K/IntuneManagement/issues/37)
+
+  - Support for attaching the json file for the object in the word document
+
+  - Support for documentation output level (Word)<br />
+    Documenting the full environment can create a document with 1000+ pages depending on the amount of profiles and policies. The documentation output level can now be used to reduce the document size. The output level options are:
+
+    - Full - Document every single value
+    - Limited - Set max value and truncate size for documentation and as option, attach the original value as a text document to the value cell e.g. truncate all values over 500 characters to 10 characters and attach the full value as a text file in the document. This will reduce documentation size for profiles with large XML strings like ADMX ingestion
+    - Basic - Only include the Basic and Assignments tables in the documentation 
+
+  - Added support for documenting Filters
+
+- Added UI for configuring custom columns<br />
+  This can now be done in the Detail View<br />
+  This is based on [Issue 30](https://github.com/Micke-K/IntuneManagement/issues/30)<br />
+
+-  Added support for updating Name and Descriptions of the object in Detail View<br />
+  This is As-Is functionality. Not all object types have been tested.<br />
+  It is recommended to use the portal for this.<br />
+  This is based on a private request<br />
+
+- Added support for copying an app
+
+  **Note** This requires that the **App packages folder** is specified in Settings and that the file for the app is available in that folder. If the app file is missing it can be uploaded manually in the Details view 
+
+  This is based on [Issue 42](https://github.com/Micke-K/IntuneManagement/issues/42)
+
+- Added support for manually upload an app file via the Details view 
+
+**Fixes**
+
+- **Documentation**<br />
+
+  - Updated documentation files with support for new properties and removed unused values (Windows Updates, Windows Feature Updates etc.)
+  - Fixed an issue where VPN profiles in some cases was missing the Base VPN settings
+  - Fixed an issue when using a template<br />
+  A table of content will no longer be created. That should be included in the template
+
+- **Application import**
+
+  - Minor change in the app Win32 upload functionality to align to portal APIs
+  - The File Name is now updated to be based on the actual uploaded file 
+
+    **Important** Please create an issue if there are any problems
+
+- Fixed an issue where ESP and Enrolment Restriction objects were not listed
+  The original filters stopped working 
+
+  **Note** The Enrolment restrictions has changed in Graph. There is now one object for each OS type. So there will be multiple restriction objects exported. platformType column was added to identify each object   
+
+  This is based on [Issue 41](https://github.com/Micke-K/IntuneManagement/issues/41) 
+
+- Minor fixes in Import/Export extensions - Required for silent batch job support
+
+- Fixed an issue where PostListCommand was not triggered
+
+    - Additional Endpoint Security columns were not listed
+    - Azure Branding objects was missing the language column <br />
+<br />
+- Fixed issue where the Document button was not enabled when **Select All** was clicked (without selecting an object first)
+
+  This is based on [Issue 36](https://github.com/Micke-K/IntuneManagement/issues/36) 
+
+- Other minor bug fixes to support the new features
+
 ## 3.3.3  - 2021-12-15
 
 **Fixes**
@@ -80,7 +166,7 @@ This is a **BETA** release. It contains core changes for Authentication and Sett
 
 **Default Settings Value Changes**
 
-* **Use Default Permissions** is now set to Disabled by default. With the Tenant Specific Settings feature, this can now be enabled globally or per tenant. Consultants accessing multiple environments might not have permissions to grant consent requests so this could be enabled on a global level and then disabled for tenants where the permissions can be added.  
+* **Use Default Permissions** is now set to Enabled by default. With the Tenant Specific Settings feature, this can now be enabled globally or per tenant. Consultants accessing multiple environments might not have permissions to grant consent requests so this could be enabled on a global level and then disabled for tenants where the permissions can be added.  
 
 **Fixes**
 

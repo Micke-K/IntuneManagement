@@ -2,7 +2,7 @@
 
 The script can document most of the profiles and policies in Intune. The output can either be CSV or Word. Documenting to Word can either be to an existing Word template or empty document. There are many options for the documentation e.g. Language, Header styles, Table styles, managing not configured items etc.  
 
-The idea behind the documentation method in the script is to output the information as close to the Endpoint Manager portal as possible.  Some of the objects has a different property name or value in the Summary text vs Edit mode in the portal. The documentation will then use the Edit mode information when possible. Some policies and profiles might have a slightly different order that the portal.
+The idea behind the documentation method in the script is to output the information as close to the Endpoint Manager portal as possible. Some of the objects has a different property name or value in the Summary text vs Edit mode in the portal. The documentation will then use the Edit mode information when possible. Some policies and profiles might have a slightly different order that the portal.
 
 The objects can be documented in three ways:
 
@@ -18,11 +18,11 @@ The objects can be documented in three ways:
 
   Document all supported objects. Initiated in the Bulk menu 
 
-Documentation is a very complex process. There are multiple types of objects, different languages, different types of properties etc. The best output is often based on a personal opinion. Some parts can be configured but not everything can be personalized.  The output of most properties is simple, there is a name and a value. This is not the case for some properties e.g. a firewall rule. The firewall rule is itself a table with lots of possible values. The documentation will add the multi-property values with a property separator, comma is the default setting. There are also properties that contains multiple values. These will be added with an object separator, new line as default. The separators can be changed e.g. it might be better to use | as a object separator when documenting to a CSV.  
+Documentation is a very complex process. There are multiple types of objects, different languages, different types of properties etc. The best output is often based on a personal opinion. Some parts can be configured but not everything can be personalized. The output of most properties is simple, there is a name and a value. This is not the case for some properties e.g. a firewall rule. The firewall rule is itself a table with lots of possible values. The documentation will add the multi-property values with a property separator, comma is the default setting. There are also properties that contains multiple values. These will be added with an object separator, new line as default. The separators can be changed e.g. it might be better to use | as a object separator when documenting to a CSV.  
 
 **Note:** The word document might need some manual post updates. Tables are auto generated but they might have to be tweaked for personal preferences.      
 
-Please read the [Deep Dive](#deep-dive) section  below for a detailed description of the documentation process.
+Please read the [Deep Dive](#deep-dive) section below for a detailed description of the documentation process.
 
 **Language Support**
 
@@ -66,13 +66,13 @@ The documentation is based on a two step process
 
   This will collection all the information about the object and add it to a PowerShell object in the code
 
-* Send the information to the selected output type
+* Send the information to the selected output provider
 
   This will send all the information gathered about the object to the selected output provider
 
 These steps are then repeated for each object that is being documented.
 
-An output provider then has an initial (PreProcess) and finish (PostProcess) step e.g. the Word provider will create a word document  in the initial task, document all properties and then update content tables, word properties and save the document in the finish task.
+An output provider then has an initial (PreProcess) and finish (PostProcess) step e.g. the Word provider will create a word document in the initial task, document all properties and then update content tables, word properties and save the document in the finish task.
 
 **Object Types**
 
@@ -97,7 +97,7 @@ Json files for translating property objects to documentation is located in the D
 
 The generated files sometimes requires additional manually created properties. These could be properties in the UI that has a Yes/No, Enabled/Not Configured etc. trigger associated with a specific value. These properties must be manually added to the object before the documentation. The `DocumentationCustom.psm1` file takes care of this. This file is also used for overriding the documentation of specific values and other custom required processing.    
 
-The json files contains a definition of each property to document. This includes information like type e.g. Boolean (Yes/No, Allow/Block, Enabled/Disabled etc.),  Options, DataTable etc. The script will use these files to translate each property into a PSCustomObject that is then used by the output provider. The functionality of these files has been extended to enhance the documentation options for the manually created files. Data types of 100 or above is custom functionality.  All data types below 100 is based on the same functionality as in the Intune portal. The data type engine in the script is created based on best effort of the generated json files. 
+The json files contains a definition of each property to document. This includes information like type e.g. Boolean (Yes/No, Allow/Block, Enabled/Disabled etc.), Options, DataTable etc. The script will use these files to translate each property into a PSCustomObject that is then used by the output provider. The functionality of these files has been extended to enhance the documentation options for the manually created files. Data types of 100 or above is custom functionality. All data types below 100 is based on the same functionality as in the Intune portal. The data type engine in the script is created based on best effort of the generated json files. 
 
 The `DocumentationCustom.psm1` file also takes care of custom documentation for some object types e.g. Conditional Access. App Configuration policies etc. These objects are documented via a PowerShell function in the script.
 
@@ -132,7 +132,7 @@ The priority order for object documentation is:
 
 **Documentation Provider**
 
-The documentation provider takes care of collecting all the information about the object. The `DocumentationCustom.psm1`file is an example of this. This file has examples of custom translation of properties for json files and examples of custom translation of objects via a PowerShell functions.
+The documentation provider takes care of collecting all the information about the object. The `DocumentationCustom.psm1` file is an example of this. This file has examples of custom translation of properties for json files and examples of custom translation of objects via a PowerShell functions.
 
 Documentation providers has a Priority property. This defines in what order the providers will be triggered. The provider with the lowest priority number will be executed first. The included custom documentation provider has a priority number of 1000. The information gathering of the provider can be overridden by creating a custom documentation provider with a lower priority number.
 
@@ -140,7 +140,7 @@ Documentation providers has a Priority property. This defines in what order the 
 
 Once the script has finished gathering all the data of an object, it sends it to the Documentation Output provider.  This will then document it to the specific output type of the provider. Word and CSV are included. There is also a "None" provider included. This will only add the gathered information in the UI. This is used for quick information or when building the translation files. This is also used by the comparison functionality.
 
-The`DocumentationWord.psm1` and `DocumentationWordOptions.xaml` files are example on how to create an output provider. The xaml file contains the configuration options in the UI. The psm1 file registers the provider and builds the Word document based on the gathered information.
+The `DocumentationWord.psm1` and `DocumentationWordOptions.xaml` files are example on how to create an output provider. The xaml file contains the configuration options in the UI. The psm1 file registers the provider and builds the Word document based on the gathered information.
 
 **Translation Files**
 

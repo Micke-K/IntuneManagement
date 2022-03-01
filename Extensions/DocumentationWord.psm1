@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.0.7'
+    '1.1.0'
 }
 
 function Invoke-InitializeModule
@@ -70,6 +70,14 @@ function Add-WordOptionsControl
     $global:spWordCustomProperties.Visibility = (?: ($global:cbWordDocumentationProperties.SelectedValue -ne "custom") "Collapsed" "Visible")
     $global:txtWordCustomProperties.Visibility = (?: ($global:cbWordDocumentationProperties.SelectedValue -ne "custom") "Collapsed" "Visible")
 
+    $global:cbWordDocumentationLevel.ItemsSource = ("[ { Name: `"Full`",Value: `"full`" }, { Name: `"Limited`",Value: `"limited`" }, { Name: `"Basic`",Value: `"basic`" }]" | ConvertFrom-Json)
+    $global:cbWordDocumentationLevel.SelectedValue = (Get-Setting "Documentation" "WordDocumentationLevel" "full")
+
+    $global:gdWordDocumentationLimitOptions.Visibility = (?: ($global:cbWordDocumentationLevel.SelectedValue -ne "limited") "Collapsed" "Visible")
+    $global:txtWordDocumentationLimitMaxLength.Text = Get-Setting "Documentation" "WordDocumentationLimitMaxLength" ""
+    $global:txtWordDocumentationLimitTruncateLength.Text = Get-Setting "Documentation" "WordDocumentationLimitTruncateLength" ""
+    $global:chkWordDocumentationLimitAttatch.IsChecked = ((Get-Setting "Documentation" "WordDocumentationLimitAttatch" "true") -ne "false")
+    
     $global:txtWordDocumentTemplate.Text = Get-Setting "Documentation" "WordDocumentTemplate" ""
     $global:txtWordDocumentName.Text = (Get-Setting "Documentation" "WordDocumentName" "%MyDocuments%\%Organization%-%Date%.docx")
     
@@ -88,6 +96,8 @@ function Add-WordOptionsControl
     
     $global:chkWordIncludeScripts.IsChecked = ((Get-Setting "Documentation" "WordIncludeScripts" "true") -ne "false")
     $global:chkWordExcludeScriptSignature.IsChecked = ((Get-Setting "Documentation" "WordExcludeScriptSignature" "false") -ne "false")
+    $global:chkWordAttatchJsonFile.IsChecked = ((Get-Setting "Documentation" "WordAttatchJsonFile" "false") -ne "false")
+    
     $global:txtWordScriptTableStyle.Text = Get-Setting "Documentation" "WordScriptTableStyle" ""
     $global:txtWordScriptStyle.Text = Get-Setting "Documentation" "WordScriptStyle" 
 
@@ -109,6 +119,10 @@ function Add-WordOptionsControl
         $global:txtWordCustomProperties.Visibility = (?: ($this.SelectedValue -ne "custom") "Collapsed" "Visible")
     }
 
+    Add-XamlEvent $script:wordForm "cbWordDocumentationLevel" "add_selectionChanged" {
+        $global:gdWordDocumentationLimitOptions.Visibility = (?: ($this.SelectedValue -ne "limited") "Collapsed" "Visible")
+    }
+    
     $script:wordForm
 }
 function Invoke-WordActivate
@@ -122,6 +136,11 @@ function Invoke-WordPreProcessItems
     Save-Setting "Documentation" "WordCustomDisplayProperties" $global:txtWordCustomProperties.Text
     Save-Setting "Documentation" "WordDocumentTemplate" $global:txtWordDocumentTemplate.Text
     Save-Setting "Documentation" "WordDocumentName" $global:txtWordDocumentName.Text
+
+    Save-Setting "Documentation" "WordDocumentationLevel" $global:cbWordDocumentationLevel.SelectedValue
+    Save-Setting "Documentation" "WordDocumentationLimitMaxLength" $global:txtWordDocumentationLimitMaxLength.Text
+    Save-Setting "Documentation" "WordDocumentationLimitTruncateLength" $global:txtWordDocumentationLimitTruncateLength.Text
+    Save-Setting "Documentation" "WordDocumentationLimitAttatch" $global:chkWordDocumentationLimitAttatch.IsChecked
 
     Save-Setting "Documentation" "WordAddCategories" $global:chkWordAddCategories.IsChecked
     Save-Setting "Documentation" "WordAddSubCategories" $global:chkWordAddSubCategories.IsChecked
@@ -139,8 +158,57 @@ function Invoke-WordPreProcessItems
 
     Save-Setting "Documentation" "WordIncludeScripts" $global:chkWordIncludeScripts.IsChecked
     Save-Setting "Documentation" "WordExcludeScriptSignature" $global:chkWordExcludeScriptSignature.IsChecked
+    Save-Setting "Documentation" "WordAttatchJsonFile" $global:chkWordAttatchJsonFile.IsChecked
+
     Save-Setting "Documentation" "WordScriptTableStyle" $global:txtWordScriptTableStyle.Text
     Save-Setting "Documentation" "WordScriptStyle" $global:txtWordScriptStyle.Text
+
+    $script:limitMaxValue = 100
+    $script:truncateValueLength = $script:limitMaxValue
+
+    if($global:cbWordDocumentationLevel.SelectedValue -eq "limited")
+    {
+        if($global:txtWordDocumentationLimitMaxLength.Text)    
+        {
+            try
+            {
+                $script:limitMaxValue = [int]::Parse($global:txtWordDocumentationLimitMaxLength.Text)
+            }
+            catch
+            {
+                Write-LogError "Failed to parse $($global:txtWordDocumentationLimitMaxLength.Text) to int. Max value length will be set to 100." $_.Exception
+            }
+        }
+
+        if($global:txtWordDocumentationLimitTruncateLength.Text)    
+        {
+            try
+            {
+                $script:truncateValueLength = [int]::Parse($global:txtWordDocumentationLimitTruncateLength.Text)
+            }
+            catch
+            {
+                Write-LogError "Failed to parse $($global:txtWordDocumentationLimitTruncateLength.Text) to int. Truncat length will be set to $script:limitMaxValue." $_.Exception
+            }
+        }
+        
+        if($script:limitMaxValue -lt 20)
+        {
+            Write-Log "Max value length must be 20 or more. Changed to 20" 2
+            $script:limitMaxValue = 0
+        }
+
+        if($script:truncateValueLength -lt 0)
+        {
+            Write-Log "Truncate length must be 0 or more. Changed to 0" 2
+            $script:truncateValueLength = 0
+        }        
+        elseif($script:truncateValueLength -gt $script:limitMaxValue)
+        {
+            Write-Log "Truncate length cannot be larger than Max value length. Canged to: $($script:limitMaxValue)" 2
+            $script:truncateValueLength = $script:limitMaxValue
+        }
+    }
 
     try
     {
@@ -283,6 +351,17 @@ function Invoke-WordPreProcessItems
                 Write-LogError "Failed to create Table of Contents" $_.Exception
             }
         }
+    }
+    else
+    {
+        if(($script:doc.TablesOfContents | measure).Count -eq 0)
+        {
+            # Where should it be added?
+            # $script:doc.TablesOfContents.Add($script:wordApp.Selection.Range) | out-null            
+        }
+        
+        Invoke-DocGoToEnd
+        $script:wordApp.Selection.InsertNewPage()
     }
 }
 
@@ -459,29 +538,38 @@ function Invoke-WordProcessItem
             {
                 $properties = (?? $documentedObj.DefaultDocumentationProperties (@("Name","Value")))
             }
+
+            if($global:cbWordDocumentationLevel.SelectedValue -eq "basic" -and $tableType -ne "BasicInfo")
+            {
+                continue
+            }
             
             $lngId = ?: ($tableType -eq "BasicInfo") "SettingDetails.basics" "TableHeaders.settings" -AddCategories
 
             Add-DocTableItems $obj $objectType ($documentedObj.$tableType) $properties $lngId `
                 -AddCategories:($global:chkWordAddCategories.IsChecked -eq $true) `
-                -AddSubcategories:($global:chkWordAddSubCategories.IsChecked -eq $true)
+                -AddSubcategories:($global:chkWordAddSubCategories.IsChecked -eq $true) `
+                -ForceFullValue:($tableType -eq "BasicInfo")
         }
 
-        if(($documentedObj.ComplianceActions | measure).Count -gt 0)
+        if($global:cbWordDocumentationLevel.SelectedValue -ne "basic")
         {
-            $properties = @("Action","Schedule","MessageTemplate","EmailCC")
+            if(($documentedObj.ComplianceActions | measure).Count -gt 0)
+            {
+                $properties = @("Action","Schedule","MessageTemplate","EmailCC")
 
-            Add-DocTableItems $obj $objectType $documentedObj.ComplianceActions $properties "Category.complianceActionsLabel"
+                Add-DocTableItems $obj $objectType $documentedObj.ComplianceActions $properties "Category.complianceActionsLabel"
+            }
+
+            if(($documentedObj.ApplicabilityRules | measure).Count -gt 0)
+            {
+                $properties = @("Rule","Property","Value")
+
+                Add-DocTableItems $obj $objectType $documentedObj.ApplicabilityRules $properties "SettingDetails.applicabilityRules"
+            }
+
+            Add-DocObjectSettings $obj $objectType $documentedObj
         }
-
-        if(($documentedObj.ApplicabilityRules | measure).Count -gt 0)
-        {
-            $properties = @("Rule","Property","Value")
-
-            Add-DocTableItems $obj $objectType $documentedObj.ApplicabilityRules $properties "SettingDetails.applicabilityRules"
-        }
-
-        Add-DocObjectSettings $obj $objectType $documentedObj
 
         if(($documentedObj.Assignments | measure).Count -gt 0)
         {
@@ -523,6 +611,20 @@ function Invoke-WordProcessItem
 
             Add-DocTableItems $obj $objectType $documentedObj.Assignments $properties "TableHeaders.assignments" @params
         }
+
+        if($global:chkWordAttatchJsonFile.IsChecked -eq $true)
+        {
+            $fileName = Export-GraphObject $obj $objectType ([IO.Path]::GetTempPath()) -IsFullObject -PassThru -SkipAddID
+            if($fileName)
+            {
+                $fi = [IO.FileInfo]$fileName
+                if($fi.Exists)
+                {
+                    $script:doc.Application.Selection.InlineShapes.AddOLEObject("",$fi.FullName,$false,$true,"$($env:WinDir)\System32\Notepad.exe",0,$fi.Name)
+                    try { $fi.Delete() } catch {} # Cleanup
+                }
+            }
+        }        
     }
     catch 
     {
@@ -606,7 +708,7 @@ function Set-WordColumnHeaderLanguageId
 
 function Add-DocTableItems
 {
-    param($obj, $objectType, $items, $properties, $lngId, [switch]$AddCategories, [switch]$AddSubcategories, $captionOverride)
+    param($obj, $objectType, $items, $properties, $lngId, [switch]$AddCategories, [switch]$AddSubcategories, $captionOverride, [switch]$forceFullValue)
 
     $tblHeaderStyle = $global:txtWordTableHeaderStyle.Text
     $tblCategoryStyle = $global:txtWordCategoryHeaderStyle.Text
@@ -665,7 +767,48 @@ function Add-DocTableItems
                     {
                         $tmpObj = $tmpObj."$($propArr[$x])"
                     }
-                    $script:docTable.Cell($row, $i).Range.Text = "$($tmpObj.$propName)"
+                    $propValue = "$($tmpObj.$propName)"
+                    $propValueFull = $null
+
+                    if($forceFullValue -ne $true -and $global:cbWordDocumentationLevel.SelectedValue -eq "limited" -and $propValue.Length -gt $script:limitMaxValue)
+                    {
+                        $propValueFull = $propValue
+                        if($script:truncateValueLength -gt 0)
+                        {
+                            $propValue = ($propValue.Substring(0, $script:truncateValueLength) + "...")
+                            if($global:chkWordDocumentationLimitAttatch.IsChecked -eq $true)
+                            {
+                                $propValue = ("`r`n" + $propValue)
+                            }                            
+                        }
+                        else
+                        {
+                            $propValue = $null
+                        }
+                    }
+
+                    if($null -ne $propValue)
+                    {
+                        $script:docTable.Cell($row, $i).Range.Text = $propValue
+                    }
+
+                    if($propValueFull -and $global:chkWordDocumentationLimitAttatch.IsChecked -eq $true)
+                    {
+                        if($null -ne $propValue)
+                        {
+                            #$script:doc.Application.Selection.TypeParagraph()
+                        }
+
+                        $tmpName = "$((Get-GraphObjectName $obj $objectType))-$propName"
+                                                
+                        $tmpFile = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "$($tmpName).txt")
+                        $tmpFile = Remove-InvalidFileNameChars $tmpFile
+                        $propValueFull | Out-File -LiteralPath $tmpFile -Force 
+                        $fi = [IO.FileInfo]$tmpFile
+                        [void]$script:docTable.Cell($row, $i).Range.InlineShapes.AddOLEObject("",$fi.FullName,$false,$true,"$($env:WinDir)\System32\Notepad.exe",0,"Full value")
+                        #$script:doc.Application.Selection.InlineShapes.AddOLEObject("",$fi.FullName,$false,$true,"$($env:WinDir)\System32\Notepad.exe",0,"Full value", $script:docTable.Cell($row, $i).Range)
+                        try { $fi.Delete() } catch {}
+                    }
                 }
                 catch
                 {

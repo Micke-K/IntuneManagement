@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.0.8'
+    '1.1.0'
 }
 
 function Invoke-InitializeModule
@@ -628,12 +628,21 @@ function Add-ScopeTagStrings
     if(($obj.roleScopeTagIds | measure).Count -gt 0)
     {
         foreach($scopeTagId in $obj.roleScopeTagIds)
-        {
-            $scopeTagObj = $script:scopeTags | Where Id -eq $scopeTagId
-            if($scopeTagObj)
+        {          
+            $scopeTagName = $scopeTagId
+            if($scopeTagId -eq "0")
             {
-                $objScopeTags += $scopeTagObj.displayName
+                $scopeTagName = (Get-LanguageString "SettingDetails.default")
             }
+            elseif($script:scopeTags)
+            {
+                $scopeTagObj = $script:scopeTags | Where Id -eq $scopeTagId
+                if($scopeTagObj.displayName)
+                {
+                    $scopeTagName = $scopeTagObj.displayName                
+                }
+            }
+            $objScopeTags += $scopeTagName
         }
     }
     if($objScopeTags.Count -gt 0)
@@ -1793,7 +1802,11 @@ function Invoke-TranslateSection
             elseif($rawValue -eq $null -and ![String]::IsNullOrEmpty($prop.defaultValue) -and $global:chkSetDefaultValue.IsChecked)
             {
                 $propValue = $prop.defaultValue
-            }            
+            }
+            elseif($rawValue -eq $null -and ![String]::IsNullOrEmpty($prop.emptyValueResourceKey) -and $global:chkSetDefaultValue.IsChecked)
+            {
+                $propValue = Get-LanguageString $prop.emptyValueResourceKey
+            }
             else
             {
                 $propValue = $rawValue
@@ -1832,6 +1845,11 @@ function Invoke-TranslateSection
                         {
                             $value = $cert.displayName
                         }
+                        $rawValue = $value
+                    }
+                    elseif($script:currentObject.'@ObjectFromFile' -eq $true)
+                    {
+                        $value = "##TBD - Linked Certificate"
                         $rawValue = $value
                     }
                 }
@@ -2064,6 +2082,8 @@ function Add-PropertyInfo
     }
 
     $script:objectSettingsData += Get-PropertyInfo $prop $value $originalValue $jsonValue
+
+    Invoke-CustomPostAddValue $prop
 }
 
 function Add-PropertyInfoObject
@@ -2110,6 +2130,15 @@ function Get-PropertyInfo
         $jsonValue = $rawValue | ConvertTo-Json -Depth 10 -Compress
     }
 
+    if($prop.emptyValueResourceKey)
+    {
+        $defValue = Get-LanguageString $prop.emptyValueResourceKey
+    }
+    else
+    {    
+        $defValue = $prop.defaultValue
+    }
+
     return New-Object PSObject -Property @{ 
         Name=$name
         Description=$description
@@ -2121,7 +2150,7 @@ function Get-PropertyInfo
         DataType=$prop.dataType
         RawValue=$originalValue
         RawJsonValue=$jsonValue
-        DefaultValue=$prop.defaultValue
+        DefaultValue=$defValue
         UnconfiguredValue=$prop.unconfiguredValue
         Enabled=$prop.Enabled 
         EntityKey=$prop.EntityKey
@@ -2148,6 +2177,23 @@ function Get-CustomProfileValue
         if($docProvider.GetCustomProfileValue)
         {
             $retObj = & $docProvider.GetCustomProfileValue $obj $prop $script:currentObject $script:propertySeparator $script:objectSeparator
+            if($retObj -ne $null)
+            {
+                return $retObj
+            }
+        }
+    }
+}
+
+function Invoke-CustomPostAddValue
+{
+    param($prop)
+
+    foreach($docProvider in ($global:documentationProviders | Sort -Property Priority))
+    {
+        if($docProvider.PostAddValue)
+        {
+            $retObj = & $docProvider.PostAddValue $script:currentObject $prop $script:propertySeparator $script:objectSeparator
             if($retObj -ne $null)
             {
                 return $retObj
@@ -2852,6 +2898,8 @@ function Invoke-TranslateAssignments
         }
     }
 
+    $groupInfo = $null
+
     if($groupIds.Count -gt 0)
     {
         $ht = @{}
@@ -2861,6 +2909,12 @@ function Invoke-TranslateAssignments
 
         $groupInfo = (Invoke-GraphRequest -Url "/directoryObjects/getByIds?`$select=displayName,id" -Content $body -Method "Post").Value
     }
+    
+    if(($null -eq $groupInfo -or ($groupInfo | measure).Count -eq 0) -and $obj."@ObjectFromFile" -eq $true -and $script:migTable)
+    {
+        ### Get group info from mig table when documenting from file if there's no access to the environment
+        $groupInfo = $script:migTable.Objects | Where Type -eq "Group"
+    }    
 
     if($filterIds.Count -gt 0)
     {
@@ -3152,7 +3206,10 @@ function Show-DocumentationForm
         $objectTypes,
         [Switch]
         [Parameter(Mandatory=$false,ParameterSetName = "Objects")]
-        $SelectedDocuments)
+        $SelectedDocuments,    
+        [Switch]
+        $ShowFolderSource 
+        )
 
     $objectList = @()
     
@@ -3224,6 +3281,22 @@ function Show-DocumentationForm
     {
         $global:btnClearDocumentationList.Visibility = "Collapsed"
         $global:btnAddToDocumentationList.Visibility = "Collapsed"
+    }
+
+    if($ShowFolderSource -ne $true)
+    {
+        $global:grdDocumentFromFolder.Visibility = "Collapsed"
+        $global:spDocumentFromFolder.Visibility = "Collapsed"       
+    }
+    else
+    {
+        Add-XamlEvent $script:docForm "browseDocumentFromFolder" "add_click" {
+            $folder = Get-Folder (Get-XamlProperty $script:docForm "txtDocumentFromFolder" "Text") "Select root folder for export files"
+            if($folder)
+            {
+                Set-XamlProperty $script:docForm "txtDocumentFromFolder" "Text" $folder
+            }
+        }        
     }
 
     $column = Get-GridCheckboxColumn "IsSelected"
@@ -3316,6 +3389,11 @@ function Show-DocumentationForm
 
         $txtDocumentationRawData.Text = ""
 
+        $loadExportedInfo = $true
+        $script:migTable = $null
+        $script:scopeTags = $null
+
+        $diSource = $nul
         $global:intentCategories = $null
         $global:catRecommendedSettings = $null
         $global:intentCategoryDefs = $null
@@ -3374,6 +3452,19 @@ function Show-DocumentationForm
         }
         elseif($global:grdDocumentObjects.Tag -eq "ObjectTypes")
         {
+            $fromExportFolder = $false
+            if($global:txtDocumentFromFolder.Text)
+            {
+                $diSource = [IO.DirectoryInfo]$global:txtDocumentFromFolder.Text
+                if($diSource.Exists -eq $false)
+                {
+                    [System.Windows.MessageBox]::Show("Source folder not found:`n`n$($diSource.FullName)", "Documentation", "OK", "Error")
+                    Write-Status ""
+                    return
+                }
+                $fromExportFolder = $true
+            }
+
             $sourceList = @()
             foreach($objGroup in ($global:grdDocumentObjects.ItemsSource | Where IsSelected -eq $true))
             {
@@ -3382,11 +3473,25 @@ function Show-DocumentationForm
                 {                    
                     Write-Status "Get $($objectType.Title) objects"
                 
-                    $graphObjects = @(Get-GraphObjects -property $objectType.ViewProperties -objectType $objectType)
-                
-                    if($objectType.PostListCommand)
+                    if($fromExportFolder -eq $false)
                     {
-                        $graphObjects = & $objectType.PostListCommand $graphObjects $objectType
+                        $graphObjects = @(Get-GraphObjects -property $objectType.ViewProperties -objectType $objectType)
+                    
+                        if($objectType.PostListCommand)
+                        {
+                            $graphObjects = & $objectType.PostListCommand $graphObjects $objectType
+                        }
+                    }
+                    else
+                    {
+                        $objectPath = [IO.Path]::Combine($diSource.FullName,$objectType.ID)
+                        if([IO.Directory]::Exists($objectPath) -eq $false)
+                        {
+                            Write-Log "Object path for $($objectType.Title) ($($objectType.ID)) not found. Skipping object type" 2 
+                            continue
+                        }
+                        $graphObjects = Get-GraphFileObjects $objectPath -ObjectType $objectType
+                        $graphObjects | ForEach-Object { $_.Object | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force }
                     }
                     $groupSourceList += $graphObjects
                 }
@@ -3410,6 +3515,39 @@ function Show-DocumentationForm
         else
         {
             return  
+        }
+
+        if($fromExportFolder -eq $true -and $diSource -and $loadExportedInfo -eq $true)
+        {
+            $loadExportedInfo = $false
+
+            $migFileName = [IO.Path]::Combine($diSource.FullName,"MigrationTable.json")
+            if([IO.File]::Exists($migFileName) -eq $false)
+            {
+                Write-Log "MigrationTable not found. Groups will be documented with GroupId" 2                 
+            }
+            else
+            {
+                Write-Log "Load Migration table from $migFileName"
+                $script:migTable = ConvertFrom-Json (Get-Content $migFileName -Raw)
+            }
+
+            $scopeTagObjectType = $global:currentViewObject.ViewItems | Where Id -eq "ScopeTags"
+            
+            if($scopeTagObjectType)
+            {
+                $scopePath = [IO.Path]::Combine($diSource.FullName,$scopeTagObjectType.Id)
+                if([IO.Directory]::Exists($scopePath) -eq $false)
+                {
+                    Write-Log "Object path for Scope (Tags) ($($scopePath)) not found" 2                 
+                }
+                else
+                {
+                
+                    $scopeTagObjects = Get-GraphFileObjects $scopePath -ObjectType $scopeTagObjectType
+                    $script:scopeTags = @(($scopeTagObjects | Select Object))
+                }
+            }
         }
 
         if($global:cbDocumentationType.SelectedItem.PreProcess)
@@ -3436,7 +3574,14 @@ function Show-DocumentationForm
                 }
             }
 
-            $obj = Get-GraphObject $tmpObj.Object $tmpObj.ObjectType            
+            if($tmpObj.Object."@ObjectFromFile" -eq $true)
+            {
+                $obj = $tmpObj
+            }
+            else
+            {
+                $obj = Get-GraphObject $tmpObj.Object $tmpObj.ObjectType            
+            }
 
             if($obj)
             {
@@ -3669,7 +3814,7 @@ function Set-OutputOptionsTabStatus
 
 function Invoke-DocumentObjectTypes
 {
-   Show-DocumentationForm -objectTypes $global:currentViewObject.ViewItems
+   Show-DocumentationForm -objectTypes $global:currentViewObject.ViewItems -ShowFolderSource
 }
 
 function Invoke-DocumentSelectedObjects

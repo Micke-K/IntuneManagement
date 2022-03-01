@@ -5,7 +5,20 @@ param(
     [switch]
     $JSonSettings,
     [string]
-    $JSonFile
+    $JSonFile,
+    [switch]
+    $Silent,
+    [string]
+    $SilentBatchFile = "",
+    [string]
+    $TenantId,
+    [string]
+    $AppId,
+    [string]
+    $Secret,
+    [string]
+    $Certificate
 )
 Import-Module ($PSScriptRoot + "\CloudAPIPowerShellManagement.psd1") -Force
-Initialize-CloudAPIManagement -View "IntuneGraphAPI" -ShowConsoleWindow:($ShowConsoleWindow) -JSonSettings:($JSonSettings) -JSonFile $JSonFile
+$param = $PSBoundParameters
+Initialize-CloudAPIManagement -View "IntuneGraphAPI" @param

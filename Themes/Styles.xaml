@@ -28,6 +28,65 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
+
+    <Style x:Key='ErrorControl' TargetType='ContentControl'>        
+        <Setter Property='Template'>
+            <Setter.Value>
+                <ControlTemplate TargetType='ContentControl'>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Width="16" Height="16" ToolTip="{Binding ToolTip}" Name="errorIcon" Visibility="Collapsed">
+                            <Rectangle.Fill>
+                            <DrawingBrush>
+                                <DrawingBrush.Drawing>
+                                <DrawingGroup>
+                                    <DrawingGroup.Children>
+                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M8,16C3.589,16 0,12.411 0,8 0,3.589 3.589,0 8,0 12.411,0 16,3.589 16,8 16,12.411 12.411,16 8,16" />
+                                    <GeometryDrawing Brush="#FFE41400" Geometry="F1M9,10L7,10 7,3 9,3z M9,13L7,13 7,11 9,11z M8,1C4.134,1 1,4.134 1,8 1,11.865 4.134,15 8,15 11.865,15 15,11.865 15,8 15,4.134 11.865,1 8,1" />
+                                    <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M9,11L7,11 7,13 9,13z M9,10L7,10 7,3 9,3z" />
+                                    </DrawingGroup.Children>
+                                </DrawingGroup>
+                                </DrawingBrush.Drawing>
+                            </DrawingBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                      
+                        <ContentPresenter Grid.Column="1" Name="errorControl" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource self},Path=Tag}" Value="True">
+                            <Setter TargetName="errorIcon" Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                    <ControlTemplate.Resources>
+                        <Style TargetType="TextBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Value="True">
+                                    <Setter Property="Border.BorderBrush" Value="Red" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>                    
+                    </ControlTemplate.Resources>                    
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>    
+
+    
+    <Style x:Key="ErrorBorder" TargetType="Control">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HasErrors}" Value="True">
+                <Setter Property="Border.BorderBrush" Value="Red"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
+    
 
     <Style x:Key="HoverUnderlineStyleWithBackground" TargetType="TextBlock">
         <Style.Triggers>
@@ -131,4 +190,5 @@
 			</Setter.Value>
 		</Setter>				
 	</Style>
+
 </ResourceDictionary>

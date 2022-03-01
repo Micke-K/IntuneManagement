@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.1.10'
+    '3.4.0'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -52,6 +52,12 @@ function Invoke-InitializeModule
     $global:appSettingSections += (New-Object PSObject -Property @{
         Title = "Import/Export"
         Id = "ImportExport"
+        Values = @()
+    })
+
+    $global:appSettingSections += (New-Object PSObject -Property @{
+        Title = "Silent/Batch Job"
+        Id = "GraphSilent"
         Values = @()
     })
 
@@ -176,11 +182,42 @@ function Invoke-InitializeModule
         Description = "This will refresh all objects when after a copy. If this is disabled, the list must be refreshed manually to see the new objects. Default is true"
     }) "ImportExport"
     
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "ApplicationId"
+        Key = "GraphAzureAppId"
+        Type = "String"
+        Description = "Azure App Id to use for log-in during silent operatons"
+    }) "GraphSilent"
+    
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Secret"
+        Key = "GraphAzureAppSecret"
+        Type = "String"
+        Description = "Secret for the Azure App"
+    }) "GraphSilent"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Certificate"
+        Key = "GraphAzureAppCert"
+        Type = "String"
+        Description = "Certificate for Azure App"
+    }) "GraphSilent"
 }
 
 function Get-GraphAppInfo
 {
     param($settingId, $defaultAppId, $prefix)
+
+    if($global:hideUI -eq $true)
+    {
+        # Set app info from custom settings
+        $appObj = New-Object PSObject -Property @{
+            ClientId = Get-SettingValue "$($PreFix)CustomAppId"
+            TenantId = $global:silentTenantId
+            RedirectUri = Get-SettingValue "$($PreFix)CustomAppRedirect"
+            Authority = Get-SettingValue "$($PreFix)CustomAuthority"
+        }
+    }
 
     $graphAppId = Get-SettingValue $settingId
 
@@ -316,7 +353,7 @@ function Invoke-GraphRequest
     {
         $dirName = [IO.Path]::GetDirectoryName($Outfile)
         try {
-            [IO.Directory]::CreateDirectory($dirName)            
+            [IO.Directory]::CreateDirectory($dirName) | Out-Null
         }
         catch {
             
@@ -467,10 +504,7 @@ function Get-GraphObjects
         $script:nextGraphPage = $graphObjects.'@odata.nextLink'
     }    
 
-    if($SingleObject -ne $true -and $objectType.PostListCommand)
-    {
-        $graphObjects = & $objectType.PostListCommand $graphObjects $objectType
-    }
+
         
     if($graphObjects -and ($graphObjects | GM -Name Value -MemberType NoteProperty))
     {
@@ -481,7 +515,14 @@ function Get-GraphObjects
         $retObjects = $graphObjects
     }
 
-    return (Add-GraphObectProperties $retObjects $objectType $property $exclude $SortProperty)
+    $graphObjects = Add-GraphObectProperties $retObjects $objectType $property $exclude $SortProperty
+
+    if($SingleObject -ne $true -and $objectType.PostListCommand)
+    {
+        $graphObjects = & $objectType.PostListCommand $graphObjects $objectType
+    }
+    
+    $graphObjects
 }
 
 function Add-GraphObectProperties
@@ -963,6 +1004,302 @@ function Show-GraphExportForm
     Show-ModalForm "Export $($global:curObjectType.Title) objects" $script:exportForm -HideButtons
 }
 
+function Invoke-InitSilentBatchJob
+{
+    $global:MSALToken = $null
+
+    if(-not $global:TenantId)
+    {
+        Write-Log "Tenant Id is missing. Use -TenantId <Tenant-guid> on the command line to run silent batch jobs" 3
+        return
+    }
+
+    if(-not $global:AzureAppId -or (-not $global:ClientSecret -and -not $global:ClientCert))
+    {
+        # Get login info for silet job from settings
+        $global:AzureAppId = Get-SettingValue "GraphAzureAppId" -TenantID $global:TenantId
+        $global:ClientSecret = Get-SettingValue "GraphAzureAppSecret" -TenantID $global:TenantId
+        $global:ClientCert = Get-SettingValue "GraphAzureAppCert" -TenantID $global:TenantId
+    }
+
+    if(-not $global:AzureAppId)
+    {
+        Write-Log "App Id is missing. Cannot run silent job without App Id. Either specify the AppId in Settings or Command Line (-AppId <AppId>)" 3
+        return
+    }    
+
+    if(-not $global:ClientSecret -and -not $global:ClientCert)
+    {
+        Write-Log "Secret or Certificate must be specified. Either specify Secret/Certificate in Settings or Command Line" 3
+        return
+    }    
+    Connect-MSALUser | Out-Null
+    if(-not $global:MSALToken)
+    {
+        Write-Log "Not autheticated. Batch job will be skipped" 3
+    }
+    else
+    {        
+        $accessToken = Get-JWTtoken $global:MSALToken.AccessToken
+        if($accessToken)
+        {
+            $global:Organization = (MSGraph\Invoke-GraphRequest -Url "Organization" -SkipAuthentication -ODataMetadata "Skip" -NoError).Value 
+            if($global:Organization)
+            {
+                if($global:Organization -is [array]) { $global:Organization = $global:Organization[0]}
+            }
+            else
+            {
+                Write-Log "Could not get Organization info. Verify that the app has permission to read Organization info (at least Organization.Read.All). Organization name wil not be set" 2
+                $global:Organization = [PSCustomObject]@{
+                    Id = $accessToken.Payload.tid
+                    displayName = ""
+                }
+            }
+            if($global:Organization.displayName)
+            {
+                $tenantInfo = "$($global:Organization.displayName) ($($global:Organization.id))"
+            }
+            else
+            {
+                $tenantInfo = $accessToken.Payload.tid
+            }
+
+            Write-Log "Successfully authenticated to tenant: $tenantInfo"
+            Write-Log "Azure App (for authentication): $($accessToken.Payload.app_displayname) ($($accessToken.Payload.appid))"
+            Write-Log "Permissions: $(($accessToken.Payload.roles -join ","))"
+        }
+    }
+}
+
+function Invoke-SilentBatchJob
+{
+    param($settingsObj)
+
+    if(-not $global:MSALToken) { return } # Skip if not authenticated
+
+    if(-not $settingsObj -or (-not $settingsObj.BulkExport -and -not $settingsObj.BulkImport))
+    {
+        return 
+    }
+
+    if($settingsObj.BulkExport)
+    {
+        Start-GraphSilentBulkExport $settingsObj
+    }
+
+    if($settingsObj.BulkImport)
+    {
+        Start-GraphSilentBulkImport $settingsObj
+    }    
+}
+
+function Start-GraphSilentBulkExport
+{
+    param($settingsObj)
+
+    $script:exportForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\BulkExportForm.xaml") -AddVariables
+    if(-not $script:exportForm) { return }
+
+    $script:exportObjects = Get-GraphBatchObjectTypes $settingsObj.BulkExport
+
+    foreach($viewObj in $script:exportObjects)
+    {
+        if(-not $viewObj.Title) { continue }
+
+        if($viewObj.ObjectType.ShowButtons -is [Object[]] -and $viewObj.ObjectType.ShowButtons -notcontains "Export") { continue }
+
+        Add-GraphExportExtensions $script:exportForm 0 $viewObj.ObjectType
+    }    
+
+    Set-BatchProperties $settingsObj.BulkExport $script:exportForm
+
+    $global:dgObjectsToExport.ItemsSource = @($script:exportObjects)
+
+    <#
+    # Select ObjectTypes based on batch config
+    $objTypes = $settingsObj.BulkExport | Where Name -eq ObjectTypes
+    if($objTypes)
+    {        
+        foreach($objTypeId in $objTypes.ObjectTypes)
+        {
+            $obj = $global:dgObjectsToExport.ItemsSource | Where { $_.ObjectType.Id -eq $objTypeId}
+            if($obj)
+            {
+                $obj.Selected = $true
+            }
+            else
+            {
+                Write-Log "No Object Type with id $objTypeId found" 2                    
+            }
+        }
+    }
+    #>
+
+    Start-GraphObjectExport
+}
+
+function Start-GraphSilentBulkImport
+{
+    param($settingsObj)
+
+    $script:importForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\BulkImportForm.xaml") -AddVariables
+    if(-not $script:importForm) { return }
+
+    # Get all objects but not selected
+    # This will allow dependencies
+    $script:importObjects = Get-GraphBatchObjectTypes $settingsObj.BulkImport -NotSelected -All
+    
+    $objTypes = $settingsObj.BulkImport | Where Name -eq ObjectTypes
+    if($objTypes)
+    {        
+        # Select object types from the batch file        
+        foreach($objTypeId in $objTypes.ObjectTypes)
+        {
+            $obj = $script:importObjects | Where { $_.ObjectType.Id -eq $objTypeId}
+            if($obj)
+            {
+                $obj.Selected = $true
+            }
+            else
+            {
+                Write-Log "No Object Type with id $objTypeId found" 2                    
+            }
+        }
+    }
+    
+    foreach($viewObj in $script:importObjects)
+    {
+        if(-not $viewObj.Title) { continue }
+
+        if($viewObj.ObjectType.ShowButtons -is [Object[]] -and $viewObj.ObjectType.ShowButtons -notcontains "Import") { continue }
+
+        Add-GraphImportExtensions $script:importForm 0 $viewObj.ObjectType
+    }    
+    
+    Set-BatchProperties $settingsObj.BulkImport $script:importForm
+
+    $global:dgObjectsToImport.ItemsSource = @($script:importObjects)
+
+    $importedObjects = Start-GraphObjectImport
+
+    if($importedObjects -eq 0)
+    {
+        Write-Log "No objects were imported. Verify import batch file settings" 2
+    }}
+
+function Get-GraphBatchObjectTypes
+{
+    param($settingsObj, [switch]$NotSelected, [switch]$All)
+
+    $silentViewObjects = @()
+
+    $intuneView = $global:viewObjects | Where { $_.ViewInfo.Id -eq "IntuneGraphAPI" }
+    if($All -ne $true)
+    {
+        $arrObjectTypes = ($settingsObj | Where Name -eq ObjectTypes).ObjectTypes
+    }
+    else
+    {
+        $arrObjectTypes = $intuneView.ViewItems.Id
+    }
+
+    foreach($objTypeId in $arrObjectTypes)
+    {
+        $objType = $intuneView.ViewItems | Where Id -eq $objTypeId
+        if(-not $objType) 
+        {
+            Write-Log "ViewObject with id $objTypeId not found" 2
+            continue
+        }
+
+        $silentViewObjects += New-Object PSObject -Property @{
+            Title = $objType.Title
+            Selected = ($NotSelected.IsPresent -ne $true)
+            ObjectType = $objType
+        }
+    } 
+    
+    $silentViewObjects
+}
+
+function Start-GraphObjectExport
+{
+    Write-Status "Export objects" -Block
+    Write-Log "****************************************************************"
+    Write-Log "Start bulk export"
+    Write-Log "****************************************************************"
+
+    $tmpFolder = Expand-FileName (Get-XamlProperty $script:exportForm "txtExportPath" "Text")
+    Write-Log "Export root folder: $tmpFolder"
+
+    $global:AADObjectCache = $null
+
+    foreach($item in $script:exportObjects)
+    { 
+        if($item.Selected -ne $true) { continue }
+
+        Write-Log "----------------------------------------------------------------"
+        Write-Log "Export $($item.ObjectType.Title) objects"
+        Write-Log "----------------------------------------------------------------"
+        
+        $txtNameFilter = $global:txtExportNameFilter.Text.Trim()
+        Save-Setting "" "ExportNameFilter" $txtNameFilter
+        if($txtNameFilter) { Write-Log "Name filter: $txtNameFilter" }
+        try 
+        {
+            $folder = Get-GraphObjectFolder $item.ObjectType (Get-XamlProperty $script:exportForm "txtExportPath" "Text") (Get-XamlProperty $script:exportForm "chkAddObjectType" "IsChecked") (Get-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked")
+
+            $folder = Expand-FileName $folder
+
+            Write-Status "Get a list of all $($item.ObjectType.Title) objects" -SkipLog -Force
+            $objects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType) 
+
+            if((Get-SettingValue "UseBatchAPI") -eq $true)
+            {
+                # Use batch to get details of each object
+                $batchObjects = Get-GraphBatchObjects $objects $txtNameFilter
+                $i = 1
+                $total = ($batchObjects | measure).Count
+                foreach($batchResult in $batchObjects)
+                {
+                    $objName = Get-GraphObjectName $batchResult.Object $batchResult.ObjectType
+                    Write-Status "Export $($item.Title): $objName ($($i)/$($total))" -Force
+                    Export-GraphObject $batchResult.Object $batchResult.ObjectType $folder -IsFullObject
+                    $i++
+                }                
+            }
+            else        
+            {
+                foreach($obj in $objects)
+                {
+                    # Export objects one by one
+                    $objName = Get-GraphObjectName $obj.Object $obj.ObjectType
+
+                    if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
+                    {
+                        continue
+                    }
+
+                    Write-Status "Export $($item.Title): $objName" -Force
+                    Export-GraphObject $obj.Object $item.ObjectType $folder
+                }
+            }
+            Save-Setting "" "LastUsedFullPath" $folder
+        }
+        catch 
+        {
+            Write-LogError "Failed when exporting $($item.Title) objects" $_.Exception
+        }
+    }
+    Save-Setting "" "LastUsedRoot" (Get-XamlProperty $script:exportForm "txtExportPath" "Text")
+
+    Write-Log "****************************************************************"
+    Write-Log "Bulk export finished"
+    Write-Log "****************************************************************"
+    Write-Status ""
+}
+
 function Show-GraphBulkExportForm
 {
     $script:exportForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\BulkExportForm.xaml") -AddVariables
@@ -1024,80 +1361,107 @@ function Show-GraphBulkExportForm
         $script:exportForm = $null
         Show-ModalObject
     })
-
+    
     Add-XamlEvent $script:exportForm "btnExport" "add_click" ({
-        Write-Status "Export objects" -Block
-        Write-Log "****************************************************************"
-        Write-Log "Start bulk export"
-        Write-Log "****************************************************************"
 
-        $global:AADObjectCache = $null
+        Start-GraphObjectExport        
+    })
 
-        foreach($item in $script:exportObjects)
-        { 
-            if($item.Selected -ne $true) { continue }
-
-            Write-Log "----------------------------------------------------------------"
-            Write-Log "Export $($item.ObjectType.Title) objects"
-            Write-Log "----------------------------------------------------------------"
-            
-            $txtNameFilter = $global:txtExportNameFilter.Text.Trim()
-            Save-Setting "" "ExportNameFilter" $txtNameFilter
-            if($txtNameFilter) { Write-Log "Name filter: $txtNameFilter" }
-
-            try 
-            {
-                $folder = Get-GraphObjectFolder $item.ObjectType (Get-XamlProperty $script:exportForm "txtExportPath" "Text") (Get-XamlProperty $script:exportForm "chkAddObjectType" "IsChecked") (Get-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked")
-
-                Write-Status "Get a list of all $($item.ObjectType.Title) objects" -SkipLog -Force
-                $objects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType) 
-
-                if((Get-SettingValue "UseBatchAPI") -eq $true)
-                {
-                    # Use batch to get details of each object
-                    $batchObjects = Get-GraphBatchObjects $objects $txtNameFilter
-                    $i = 1
-                    $total = ($batchObjects | measure).Count
-                    foreach($batchResult in $batchObjects)
-                    {
-                        $objName = Get-GraphObjectName $batchResult.Object $batchResult.ObjectType
-                        Write-Status "Export $($item.Title): $objName ($($i)/$($total))" -Force
-                        Export-GraphObject $batchResult.Object $batchResult.ObjectType $folder -IsFullObject
-                        $i++
-                    }                
-                }
-                else        
-                {
-                    foreach($obj in $objects)
-                    {
-                        # Export objects one by one
-                        $objName = Get-GraphObjectName $obj.Object $obj.ObjectType
-
-                        if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
-                        {
-                            continue
-                        }
-
-                        Write-Status "Export $($item.Title): $objName" -Force
-                        Export-GraphObject $obj.Object $item.ObjectType $folder
-                    }
-                }
-                Save-Setting "" "LastUsedFullPath" $folder
+    Add-XamlEvent $script:exportForm "btnExportSettingsForSilentExport" "add_click" ({
+        $sf = [System.Windows.Forms.SaveFileDialog]::new()
+        $sf.FileName = "BulkExport.json"
+        $sf.DefaultExt = "*.json"
+        $sf.Filter = "Json (*.json)|*.json|All files (*.*)|*.*"
+        if($sf.ShowDialog() -eq "OK")
+        {
+            $tmp = [PSCustomObject]@{
+                Name = "ObjectTypes"
+                Type = "Custom"
+                ObjectTypes = @()
             }
-            catch 
+            foreach($ot in ($script:exportObjects | Where Selected -eq $true))
             {
-                Write-LogError "Failed when exporting $($item.Title) objects" $_.Exception
+                $tmp.ObjectTypes += $ot.ObjectType.Id
             }
-        }
-        Save-Setting "" "LastUsedRoot" (Get-XamlProperty $script:exportForm "txtExportPath" "Text")
-
-        Write-Log "****************************************************************"
-        Write-Log "Bulk export finished"
-        Write-Log "****************************************************************"
-        Write-Status ""
+            Export-GraphBatchSettings $sf.FileName $script:exportForm "BulkExport" @($tmp)
+        }  
     })
 
     Show-ModalForm "Bulk Export" $script:exportForm -HideButtons
+}
+
+function Export-GraphBatchSettings
+{
+    param($fileName, $form, $batchType, $customProps)
+
+    $script:childObjects = @()
+    Get-XamlChildObjects $form
+
+    $outputObj = [PSCustomObject]@{
+        $batchType = @()
+    }
+
+    if($script:childObjects.Count -gt 0)
+    {
+        foreach($ctrl in $script:childObjects)
+        {
+            if(-not $ctrl.Name)
+            {
+                Write-Log  "Name not specified for a control with type: $(($ctrl.GetType().FullName)). Property skipped" 2
+                continue
+            }
+            elseif($ctrl -is [System.Windows.Controls.TextBox])
+            {
+                $value = $ctrl.Text
+            }
+            elseif($ctrl -is [System.Windows.Controls.CheckBox])
+            {
+                $value = $ctrl.IsChecked
+            }
+            elseif($ctrl -is [System.Windows.Controls.ComboBox])
+            {
+                $value = $ctrl.SelectedValue
+            }
+            else
+            {
+                Write-Log "Unsupported control type: $(($ctrl.GetType().FullName)). Property skipped" 2
+                continue    
+            }
+            #$focusable = $childObjects | Where Focusable -eq $true
+            $outputObj.$batchType += [PSCustomObject]@{
+                Name = $ctrl.Name
+                Value =  $value
+            }
+        }
+    }
+
+    if(($customProps | measure).Count -gt 0)
+    {
+        $outputObj.$batchType += $customProps
+    }
+
+    $json = $outputObj | ConvertTo-Json -Depth 20
+    $json | Out-File -LiteralPath $fileName -Force
+}
+
+function Get-XamlChildObjects
+{
+    param($parent)
+
+    foreach($child in [System.Windows.LogicalTreeHelper]::GetChildren($parent))
+    {
+        if($child -is [System.Windows.DependencyObject])
+        {
+            if(($child.Focusable -eq $true) -and
+                ($child -is [System.Windows.Controls.TextBox] -or 
+                $child -is [System.Windows.Controls.CheckBox] -or
+                $child -is [System.Windows.Controls.ComboBox]))
+            {
+                $script:childObjects += $child
+            }
+            Get-XamlChildObjects $child $collection
+        }
+    }
 }
 
 function Show-GraphImportForm
@@ -1295,77 +1659,9 @@ function Show-GraphBulkImportForm
     })
 
     Add-XamlEvent $script:importForm "btnImport" "add_click" ({
-        Write-Status "Import objects" -Block
-        Write-Log "****************************************************************"
-        Write-Log "Start bulk import"
-        Write-Log "****************************************************************"
-        Get-GraphDependencyDefaultObjects
-        $importedObjects = 0
-
-        $txtNameFilter = $global:txtImportNameFilter.Text.Trim()
-        Save-Setting "" "ImportNameFilter" $txtNameFilter
-        if($txtNameFilter) { Write-Log "Name filter: $txtNameFilter" }
-
-        $allowUpdate = ((Get-SettingValue "AllowUpdate") -eq $true)
-
-        foreach($item in ($script:importObjects | where Selected -eq $true | sort-object -property @{e={$_.ObjectType.ImportOrder}}))
-        { 
-            Write-Status "Import $($item.ObjectType.Title) objects" -Force
-            Write-Log "----------------------------------------------------------------"
-            Write-Log "Import $($item.ObjectType.Title) objects"
-            Write-Log "----------------------------------------------------------------"
-            $folder = Get-GraphObjectFolder $item.ObjectType (Get-XamlProperty $script:importForm "txtImportPath" "Text") (Get-XamlProperty $script:importForm "chkAddObjectType" "IsChecked")
-            
-            $graphObjects = $null
-
-            if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport")
-            {           
-                try 
-                {
-                    Write-Status "Get $($item.Title) objects" -Force
-                    $graphObjects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
-                }
-                catch {}
-            }
-
-            if([IO.Directory]::Exists($folder))
-            {
-                $filesToImport = Get-GraphFileObjects $folder -ObjectType $item.ObjectType
-                if($item.ObjectType.PreFilesImportCommand)
-                {
-                    $filesToImport = & $item.ObjectType.PreFilesImportCommand $item.ObjectType $filesToImport
-                }
         
-                foreach ($fileObj in @($filesToImport))
-                {
-                    $objName = Get-GraphObjectName $fileObj.Object $item.ObjectType
+        $importedObjects = Start-GraphObjectImport
 
-                    if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
-                    {
-                        continue
-                    }
-
-                    if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport" -and $graphObjects -and (Reset-GraphObjet $fileObj $graphObjects))
-                    {
-                        $importedObjects++ 
-                        continue
-                    }
-        
-                    Import-GraphFile $fileObj
-                    $importedObjects++
-                }
-                Save-Setting "" "LastUsedFullPath" $folder
-            }
-            else
-            {
-                Write-Log "Folder $folder not found. Skipping import" 2    
-            }
-        }
-
-        Write-Log "****************************************************************"
-        Write-Log "Bulk import finished"
-        Write-Log "****************************************************************"
-        Write-Status ""
         if($importedObjects -eq 0)
         {
             [System.Windows.MessageBox]::Show("No objects were imported. Verify folder and exported files", "Error", "OK", "Error")
@@ -1377,6 +1673,26 @@ function Show-GraphBulkImportForm
         }
     })
 
+    Add-XamlEvent $script:importForm "btnExportSettingsForSilentImport" "add_click" ({
+        $sf = [System.Windows.Forms.SaveFileDialog]::new()
+        $sf.FileName = "BulkImport.json"
+        $sf.DefaultExt = "*.json"
+        $sf.Filter = "Json (*.json)|*.json|All files (*.*)|*.*"
+        if($sf.ShowDialog() -eq "OK")
+        {
+            $tmp = [PSCustomObject]@{
+                Name = "ObjectTypes"
+                Type = "Custom"
+                ObjectTypes = @()
+            }
+            foreach($ot in ($script:importObjects | Where Selected -eq $true))
+            {
+                $tmp.ObjectTypes += $ot.ObjectType.Id
+            }
+            Export-GraphBatchSettings $sf.FileName $script:importForm "BulkImport" @($tmp)
+        }  
+    })    
+
     if((Get-XamlProperty $script:importForm "txtImportPath" "Text"))
     {
         Set-XamlProperty $script:importForm "lblMigrationTableInfo" "Content" (Get-MigrationTableInfo)
@@ -1385,30 +1701,119 @@ function Show-GraphBulkImportForm
     Show-ModalForm "Bulk Import" $script:importForm -HideButtons
 }
 
+function Start-GraphObjectImport
+{
+    
+    Write-Status "Import objects" -Block
+    Write-Log "****************************************************************"
+    Write-Log "Start bulk import"
+    Write-Log "****************************************************************"
+    
+    $tmpFolder = Expand-FileName (Get-XamlProperty $script:importForm "txtImportPath" "Text")
+    Write-Log "Import root folder: $tmpFolder"
+
+    Get-GraphDependencyDefaultObjects
+    $importedObjects = 0
+
+    $txtNameFilter = $global:txtImportNameFilter.Text.Trim()
+    Save-Setting "" "ImportNameFilter" $txtNameFilter
+    if($txtNameFilter) { Write-Log "Name filter: $txtNameFilter" }
+
+    $allowUpdate = ((Get-SettingValue "AllowUpdate") -eq $true)
+    
+    foreach($item in ($script:importObjects | where Selected -eq $true | sort-object -property @{e={$_.ObjectType.ImportOrder}}))
+    { 
+        Write-Status "Import $($item.ObjectType.Title) objects" -Force
+        Write-Log "----------------------------------------------------------------"
+        Write-Log "Import $($item.ObjectType.Title) objects"
+        Write-Log "----------------------------------------------------------------"
+        $folder = Get-GraphObjectFolder $item.ObjectType (Get-XamlProperty $script:importForm "txtImportPath" "Text") (Get-XamlProperty $script:importForm "chkAddObjectType" "IsChecked")
+        
+        $folder = Expand-FileName $folder
+
+        $graphObjects = $null        
+
+        if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport")
+        {           
+            try 
+            {
+                Write-Status "Get $($item.Title) objects" -Force
+                $graphObjects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
+            }
+            catch {}
+        }
+
+        if([IO.Directory]::Exists($folder))
+        {
+            $filesToImport = Get-GraphFileObjects $folder -ObjectType $item.ObjectType
+            if($item.ObjectType.PreFilesImportCommand)
+            {
+                $filesToImport = & $item.ObjectType.PreFilesImportCommand $item.ObjectType $filesToImport
+            }
+            
+            foreach ($fileObj in @($filesToImport))
+            {
+                $objName = Get-GraphObjectName $fileObj.Object $item.ObjectType
+
+                if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
+                {
+                    continue
+                }
+
+                if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport" -and $graphObjects -and (Reset-GraphObjet $fileObj $graphObjects))
+                {
+                    $importedObjects++ 
+                    continue
+                }
+    
+                Import-GraphFile $fileObj
+                $importedObjects++
+            }
+            Save-Setting "" "LastUsedFullPath" $folder
+        }
+        else
+        {
+            Write-Log "Folder $folder not found. Skipping import" 2    
+        }        
+    }
+
+    Write-Log "****************************************************************"
+    Write-Log "Bulk import finished"
+    Write-Log "****************************************************************"
+    Write-Status ""
+
+    $importedObjects
+}
+
 function Add-GraphExportExtensions
 {
     param($form, $buttonIndex = 0, $objectTypes)
        
     #$global:curObjectType
+    $grid = $form.FindName("grdExportProperties")
+
     foreach($objectType in $objectTypes)
     {
         if($objectType.ExportExtension)
-        {
-            $grid = $form.FindName("grdExportProperties")
+        {            
             $extraProperties = & $objectType.ExportExtension $form "spExportSubMenu" 1
             for($i=0;($i + 1) -lt (($extraProperties) | measure).Count;$i ++) 
             {            
                 $rd = [System.Windows.Controls.RowDefinition]::new()
                 $rd.Height = [double]::NaN            
                 $grid.RowDefinitions.Add($rd)
-                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
-                $grid.Children.Add($extraProperties[$i])
+                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,($grid.RowDefinitions.Count - 1))
+                $grid.Children.Add($extraProperties[$i]) | Out-Null
 
                 $i++            
-                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
+                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,($grid.RowDefinitions.Count - 1))
                 $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
-                $grid.Children.Add($extraProperties[$i])
-                
+                $grid.Children.Add($extraProperties[$i]) | Out-Null
+
+                if($extraProperties[$i].Name)
+                {
+                    $form.RegisterName($extraProperties[$i].Name, $extraProperties[$i])
+                }
             }
         }
     }    
@@ -1418,25 +1823,30 @@ function Add-GraphImportExtensions
 {
     param($form, $buttonIndex = 0, $objectTypes)
     
+    $grid = $form.FindName("grdImportProperties")
+
     foreach($objectType in $objectTypes)
     {
         if($objectType.ImportExtension)
-        {
-            $grid = $form.FindName("grdImportProperties")
-            $extraProperties = & $objectType.ImportExtension $form "spExportSubMenu" 1
+        {            
+            $extraProperties = & $objectType.ImportExtension $form "spImportSubMenu" 1
             for($i=0;($i + 1) -lt (($extraProperties) | measure).Count;$i ++) 
             {            
                 $rd = [System.Windows.Controls.RowDefinition]::new()
                 $rd.Height = [double]::NaN            
                 $grid.RowDefinitions.Add($rd)
-                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
-                $grid.Children.Add($extraProperties[$i])
+                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count - 1)
+                $grid.Children.Add($extraProperties[$i]) | Out-Null
 
                 $i++            
-                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count)
+                $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::RowProperty,$grid.RowDefinitions.Count - 1)
                 $extraProperties[$i].SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
-                $grid.Children.Add($extraProperties[$i])
-                
+                $grid.Children.Add($extraProperties[$i]) | Out-Null
+
+                if($extraProperties[$i].Name)
+                {
+                    $form.RegisterName($extraProperties[$i].Name, $extraProperties[$i])
+                }                
             }
         }
     }
@@ -2399,7 +2809,9 @@ function Export-GraphObject
     param($objToExport, 
             $objectType, 
             $exportFolder,
-            [switch]$IsFullObject)
+            [switch]$IsFullObject,
+            [switch]$SkipAddID,
+            [switch]$PassThru)
 
     if(-not $exportFolder) { return }
 
@@ -2424,7 +2836,7 @@ function Export-GraphObject
     {
         if([IO.Directory]::Exists($exportFolder) -eq $false)
         {
-            [IO.Directory]::CreateDirectory($exportFolder)
+            [IO.Directory]::CreateDirectory($exportFolder) | Out-Null
         }
 
         if($chkExportAssignments.IsChecked -ne $true -and $obj.Assignments)
@@ -2433,12 +2845,13 @@ function Export-GraphObject
         }
 
         $fileName = Get-GraphObjectName $obj $objectType
-        if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id -and $objectType.SkipAddIDOnExport -ne $true)
+        if($SkipAddID -ne $true -and (Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id -and $objectType.SkipAddIDOnExport -ne $true)
         {
             $fileName = ($fileName + "_" + $obj.Id)
         }
 
-        $obj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$($fileName).json"))) -Force
+        $fullPath = ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$($fileName).json")))
+        $obj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath $fullPath -Force
         
         if($objectType.PostExportCommand)
         {
@@ -2446,6 +2859,11 @@ function Export-GraphObject
         }
 
         Add-GraphMigrationInfo $obj
+
+        if($PassThru -eq $true)
+        {
+            $fullPath
+        }
     }
     catch 
     {
@@ -2768,6 +3186,8 @@ function Show-GraphObjectInfo
         $FormTitle = "",
         [switch]$NoLoadFull)
 
+    Add-ObjectColumnInfoClass
+
     if(-not $global:dgObjects.SelectedItem) { return }
     if(-not $global:dgObjects.SelectedItem.Object) { return }    
     
@@ -2809,7 +3229,276 @@ function Show-GraphObjectInfo
         Write-Status ""
     })
 
+    #Settings tab
+
+    Set-XamlProperty  $script:detailsForm "txtObjectName" "Text" (Get-GraphObjectName  $global:dgObjects.SelectedItem.Object $global:dgObjects.SelectedItem.ObjectType)
+
+    $descriptionProperty = $global:dgObjects.SelectedItem.Object | gm | Where { $_.Name -eq "Description" }
+    if($descriptionProperty)
+    {
+        Set-XamlProperty  $script:detailsForm "txtObjectDescription" "Text" $descriptionProperty.Value        
+    }
+    else
+    {
+        Set-XamlProperty  $script:detailsForm "txtObjectDescription" "IsEnabled" $false
+    }
+
+    Add-XamlEvent $script:detailsForm "btnObjectSettingsSave" "Add_Click" -scriptBlock ([scriptblock]{
+        
+        $curObjectName = (Get-GraphObjectName  $global:dgObjects.SelectedItem.Object $global:dgObjects.SelectedItem.ObjectType)
+        if(([System.Windows.MessageBox]::Show("Are you sure you want to upload object settings?`n`nCurrent name:`n$($curObjectName)", "Update object settings?", "YesNo", "Warning")) -ne "Yes")
+        {
+            return
+        }
+
+        Write-Status "Update object settings for $curObjectName"
+        $nameValue = (Get-XamlProperty  $script:detailsForm "txtObjectName" "Text")
+        if(-not $nameValue)
+        {
+            [System.Windows.MessageBox]::Show("Name property must not be empty!", "Error", "OK", "Error") 
+            return
+        }
+        # Save settings here...
+        $nameProp = (?? $global:dgObjects.SelectedItem.Object.NameProperty "displayName")
+        $idProp = (?? $global:dgObjects.SelectedItem.Object.IDProperty "id")
+
+        $updateObj = [PSCustomObject]@{
+            $idProp = $global:dgObjects.SelectedItem.Object."$idProp"
+            $nameProp = $nameValue
+        }
+
+        if(($global:dgObjects.SelectedItem.Object."@odata.type"))
+        {
+            $updateObj | Add-Member -NotePropertyName "@odata.type" -NotePropertyValue ($global:dgObjects.SelectedItem.Object."@odata.type")
+        }
+
+        if((Get-XamlProperty  $script:detailsForm "txtObjectDescription" "IsEnabled") -eq $true)
+        {
+            $updateObj | Add-Member -NotePropertyName "description" -NotePropertyValue (Get-XamlProperty  $script:detailsForm "txtObjectDescription" "Text")
+        }
+        
+        $api = "$($global:dgObjects.SelectedItem.ObjectType.API)/$($global:dgObjects.SelectedItem.Object."$idProp")"
+
+        $json = $updateObj | ConvertTo-Json -Depth 20 
+
+        $ret = Invoke-GraphRequest $api -HttpMethod "PATCH" -Content $json
+        Write-Status ""
+        if($ret -ne $true)
+        {
+            [System.Windows.MessageBox]::Show("Object settings conld not be verified!`n`nCheck the log file", "Update arning", "OK", "Warning")
+        }
+    })
+
+    #Columns tab
+    $script:colObjectProperties = [System.Collections.ObjectModel.ObservableCollection[object]]::new()
+    Set-XamlProperty  $script:detailsForm "lstObjectColumns" "ItemsSource" $script:colObjectProperties
+
+    $objProps = @()
+    $nameProp = (?? $global:dgObjects.SelectedItem.Object.DisplayProperty "displayName")
+    foreach($prop in ($global:dgObjects.SelectedItem.Object | gm | Where MemberType -eq "NoteProperty"))
+    {
+        if($prop.Name.Contains('@') -or $prop.Name.Contains('#')) { continue }
+        $objProps += ([PSCustomObject]@{ Name=$prop.Name;Value=$prop })        
+    }
+    $objProps = $objProps | sort -Property Name
+    Set-XamlProperty  $script:detailsForm "lstObjectProperties" "ItemsSource" $objProps
+
+    Add-XamlEvent $script:detailsForm "btnObjectColumnsReset" "Add_Click" -scriptBlock ([scriptblock]{
+        
+        $script:colObjectProperties.Clear()
+            
+        Show-ObjectDefaultColumnsSettings
+    })
+
+    Add-XamlEvent $script:detailsForm "lstObjectColumns" "Add_SelectionChanged" -scriptBlock ([scriptblock]{
+        
+        Set-XamlProperty  $script:detailsForm "grdObjectColumns" "DataContext" (Get-XamlProperty  $script:detailsForm "lstObjectColumns" "SelectedItem")    
+    })
+
+    Add-XamlEvent $script:detailsForm "btnObjectColumnsAdd" "Add_Click" -scriptBlock ([scriptblock]{
+        
+        $selectedItem = Get-XamlProperty  $script:detailsForm "lstObjectProperties" "SelectedItem"
+        if($selectedItem)
+        {
+            $script:colObjectProperties.Add(([ObjectColumnInfo]::new($selectedItem.Name, "")))
+        }        
+    })
+
+    Add-XamlEvent $script:detailsForm "btnObjectColumnsMoveUp" "Add_Click" -scriptBlock ([scriptblock]{
+        
+        $selectedIndex = Get-XamlProperty  $script:detailsForm "lstObjectColumns" "SelectedIndex"
+        if($selectedIndex -gt 0)
+        {
+            $tmpObj = $script:colObjectProperties[$selectedIndex]
+            $script:colObjectProperties.RemoveAt($selectedIndex)
+            $tmpObj = $script:colObjectProperties.Insert(($selectedIndex-1),$tmpObj)
+            Set-XamlProperty  $script:detailsForm "lstObjectColumns" "SelectedIndex" ($selectedIndex-1)
+        }
+    })
+
+    Add-XamlEvent $script:detailsForm "btnObjectColumnsMoveDown" "Add_Click" -scriptBlock ([scriptblock]{
+        
+        $selectedIndex = Get-XamlProperty  $script:detailsForm "lstObjectColumns" "SelectedIndex"
+        if($selectedIndex -ge 0 -and $selectedIndex -lt ($script:colObjectProperties.Count-1))
+        {
+            $tmpObj = $script:colObjectProperties[$selectedIndex]
+            $script:colObjectProperties.RemoveAt($selectedIndex)
+            $tmpObj = $script:colObjectProperties.Insert(($selectedIndex+1),$tmpObj)
+            Set-XamlProperty  $script:detailsForm "lstObjectColumns" "SelectedIndex" ($selectedIndex+1)
+        }
+    })
+
+    Add-XamlEvent $script:detailsForm "btnObjectColumnsDelete" "Add_Click" -scriptBlock ([scriptblock]{
+        
+        $selectedIndex = Get-XamlProperty $script:detailsForm "lstObjectColumns" "SelectedIndex"
+        if($selectedIndex -ge 0)
+        {
+            if(([System.Windows.MessageBox]::Show("Are you sure you want to remove selected column?", "Remove Columns?", "YesNo", "Warning")) -ne "Yes")
+            {
+                return
+            }
+            $script:colObjectProperties.Remove($tmpObj)
+        }
+    })    
+
+    Add-XamlEvent $script:detailsForm "btnObjectColumnsClear" "Add_Click" -scriptBlock ([scriptblock]{
+        
+            if(([System.Windows.MessageBox]::Show("Are you sure you want to clear custom column settings?", "Clear Custom Columns?", "YesNo", "Warning")) -ne "Yes")
+            {
+                return
+            }
+            $script:colObjectProperties.Clear()        
+    }) 
+    
+    Add-XamlEvent $script:detailsForm "btnObjectColumnsSave" "Add_Click" -scriptBlock ([scriptblock]{
+        
+        if(([System.Windows.MessageBox]::Show("Are you sure you want to save custom column settings?", "Save Custom Columns?", "YesNo", "Warning")) -ne "Yes")
+        {
+            return
+        }
+
+        if($script:colObjectProperties.Count -gt 0)
+        {
+            $arrCols = @()
+            if((Get-XamlProperty $script:detailsForm "chkObjectColumnOverride" "IsChecked") -eq $true)
+            {
+                $arrCols += "0"
+            }
+            
+            foreach($colProp in $script:colObjectProperties)
+            {
+                $tmp = $colProp.Property
+                if($colProp.Header -and $colProp.Header -cne $colProp.Property)
+                {
+                    $tmp = "$($tmp)=$($colProp.Header)"
+                }
+
+                $arrCols +=  $tmp
+            }
+            $strCols = $arrCols -join ","
+
+            Save-Setting "EndpointManager\ObjectColumns" "$($global:curObjectType.Id)" $strCols
+        }
+        else
+        {
+            $strCols = $null
+            Remove-Setting "EndpointManager\ObjectColumns" "$($global:curObjectType.Id)"
+        }
+
+        Show-ObjectDefaultColumnsSettings
+    })     
+    
+    Show-ObjectDefaultColumnsSettings
+
+    # Show dialog
     Show-ModalForm $FormTitle $detailsForm
+}
+
+function local:Add-ObjectColumnInfoClass
+{ 
+    if (("ObjectColumnInfo" -as [type]))
+    {
+        return
+    }
+
+    $classDef = @"
+    using System.ComponentModel;
+
+    public class ObjectColumnInfo : INotifyPropertyChanged
+    {
+        public string Property { get { return _property; } set { _property = value;  NotifyPropertyChanged("Property");  } }
+        private string _property = null;
+
+        public string Header { get { return _header; } set { _header = value;  NotifyPropertyChanged("Header");  } }
+        private string _header = null;
+
+        public ObjectColumnInfo(string Property, string Header)
+        {
+            _property = Property;
+            _header = Header;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;  
+
+        // This method is called by the Set accessor of each property.  
+        // The CallerMemberName attribute that is applied to the optional propertyName  
+        // parameter causes the property name of the caller to be substituted as an argument.  
+        private void NotifyPropertyChanged(string propertyName = "")  
+        {  
+            if(PropertyChanged != null) { PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName)); }
+        }        
+    }
+
+"@
+    [Reflection.Assembly]::LoadWithPartialName("System.ComponentModel") | Out-Null
+    Add-Type -TypeDefinition $classDef -IgnoreWarnings -ReferencedAssemblies @('System.ComponentModel')
+}
+
+function Local:Show-ObjectDefaultColumnsSettings
+{
+    $strColSettings = Get-Setting "EndpointManager\ObjectColumns" "$($global:curObjectType.Id)"
+    $script:colObjectProperties.Clear()
+    $defaultColumns = (?? $global:curObjectType.ViewProperties (@("displayName","description","id")))
+    if($strColSettings)
+    {                
+        $arrColSettings += $strColSettings.Split(@(',',';'))
+    
+        Set-XamlProperty  $script:detailsForm "chkObjectColumnOverride" "IsChecked" ($arrColSettings.Count -gt 0 -and $arrColSettings[0] -eq "0")
+        Set-XamlProperty $script:detailsForm "lblObjectColumnsConfig" "Content" $strColSettings
+
+        $start = 0
+        if($arrColSettings.Count -gt 0 -and ($arrColSettings[0] -eq "0" -or $arrColSettings[0] -eq "1"))
+        {
+            $start++
+        }
+
+        $colArr = @()
+
+        for($i = $start;$i -lt $arrColSettings.Count;$i++)
+        {
+            $colProp,$colHeader= $arrColSettings[$i].Split("=")
+            if(-not $colHeader)
+            {
+                $colHeader = $colProp
+            }
+            $script:colObjectProperties.Add([ObjectColumnInfo]::new($colProp,$colHeader))
+            $colArr += $colProp
+        }
+
+        if(($arrColSettings.Count -eq 0 -or $arrColSettings[0] -ne "0"))
+        {
+            $tmpArr = $defaultColumns
+            $tmpArr += $colArr
+
+            $colArr = $tmpArr
+        }
+
+        Set-XamlProperty $script:detailsForm "lblObjectColumnsConfig" "Content" ("$(($colArr-join ','))")
+    }
+    else
+    {
+        Set-XamlProperty $script:detailsForm "lblObjectColumnsConfig" "Content" "$(($defaultColumns -join ',')) (Default)"    
+    }
 }
 
 function Get-GraphObjectName

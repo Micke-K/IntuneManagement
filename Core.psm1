@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.3.2'
+    '3.4.0'
 }
 
 function Start-CoreApp
@@ -66,41 +66,77 @@ function Start-CoreApp
     $global:FirstTimeRunning = ((Get-Setting "" "FirstTimeRunning" "true") -eq "true")
     $global:MainAppStarted = $false
 
-    $global:txtSplashText.Text = "Initialize views"
+    Set-SplashWindowText  "Initialize views"
     [System.Windows.Forms.Application]::DoEvents()
 
     Invoke-ModuleFunction "Invoke-InitializeModule"
 
-    #Add menu group and items
-    $script:LogViewObject = (New-Object PSObject -Property @{ 
-        Title = "Log"
-        Description = "View log items"
-        ID = "CoreLog"
-        HideMenu = $true
-        Activating = { Show-LogView }
-        Permissions = @()
-        ViewPanel = $null
-    })
-
-    Add-ViewObject $script:LogViewObject
-
-    #This will load the main window
-    $global:txtSplashText.Text = "Load main window"
-    [System.Windows.Forms.Application]::DoEvents()
-    Get-MainWindow
-
-    if($global:window)
+    if($global:hideUI -ne $true)
     {
-        $global:txtSplashText.Text = "Open default view"
+        #Add menu group and items
+        $script:LogViewObject = (New-Object PSObject -Property @{ 
+            Title = "Log"
+            Description = "View log items"
+            ID = "CoreLog"
+            HideMenu = $true
+            Activating = { Show-LogView }
+            Permissions = @()
+            ViewPanel = $null
+        })
+
+        Add-ViewObject $script:LogViewObject
+
+        #This will load the main window
+        $global:txtSplashText.Text = "Load main window"
         [System.Windows.Forms.Application]::DoEvents()
+        Get-MainWindow
 
-        Show-View $View
+        if($global:window)
+        {
+            $global:txtSplashText.Text = "Open default view"
+            [System.Windows.Forms.Application]::DoEvents()
 
+            Show-View $View
+
+            Invoke-ModuleFunction "Invoke-ShowMainWindow"
+
+            $global:txtSplashText.Text = "Open main window"
+            [System.Windows.Forms.Application]::DoEvents()
+            $global:window.ShowDialog() | Out-Null
+        }
+    }
+    else
+    {
+        if(-not $global:SilentBatchFile)
+        {
+            Write-Log "SilentBatchFile must be specified" 3
+            return
+        }
+        $silentFI = [IO.FileInfo]$global:SilentBatchFile
+
+        if($silentFI.Exists -eq $false)
+        {
+            Write-Log "SilentBatchFile $($global:SilentBatchFile) not found" 3
+            return
+        }
         Invoke-ModuleFunction "Invoke-ShowMainWindow"
 
-        $global:txtSplashText.Text = "Open main window"
-        [System.Windows.Forms.Application]::DoEvents()
-        $global:window.ShowDialog() | Out-Null
+        Invoke-ModuleFunction "Invoke-InitSilentBatchJob"
+
+        Start-RunSilentBatchJob
+    }
+}
+
+function Start-RunSilentBatchJob
+{
+    try 
+    {
+        $settingObj = (ConvertFrom-Json (Get-Content -Path $global:SilentBatchFile -Raw -ErrorAction Stop))
+        Invoke-ModuleFunction "Invoke-SilentBatchJob" $settingObj            
+    }
+    catch 
+    {
+        Write-LogError "Failed to trigger silent batch job." $_.Exception
     }
 }
 
@@ -110,8 +146,8 @@ function Import-AllModules
     {      
         $fileName = [IO.Path]::GetFileName($file) 
         if($skipModules -contains $fileName) { Write-Warning "Module $fileName excluded"; continue; }
-
-        $global:txtSplashText.Text = "Import module $fileName"
+    
+        Set-SplashWindowText "Import module $fileName"
         [System.Windows.Forms.Application]::DoEvents()
 
         $module = Import-Module $file -PassThru -Force -Global -ErrorAction SilentlyContinue
@@ -125,6 +161,15 @@ function Import-AllModules
             Write-Warning "Failed to load module $file"
         }
     }
+}
+
+function Set-SplashWindowText
+{
+    param($text)
+
+    if($global:hideUI -eq $true) { return }
+
+    $global:txtSplashText.Text = $text
 }
 
 #region Log functions
@@ -242,6 +287,12 @@ function Write-LogError
 function Write-Status
 {
     param($Text, [switch]$SkipLog, [switch]$Block, [switch]$Force)
+
+    if($global:hideUI -eq $true) 
+    {
+        if($SkipLog -ne $true) { Write-Log $text }
+        return
+    }
     
     if(-not $text) { $global:BlockStatusUpdates = $false }    
     elseif($global:BlockStatusUpdates -eq $true -and $Force -ne $true) { return }
@@ -413,6 +464,64 @@ function Invoke-RegisterName
     }
 }
 
+#endregion
+
+#region Silent Functions
+function Set-BatchProperties
+{
+    param($settingsObj, $form)
+
+    if(-not $settingsObj -or -not $form)
+    {
+        return
+    }
+
+    foreach($prop in $settingsObj) #($settingsObj | GM | Where MemberType -eq NoteProperty))
+    {
+        if($prop.Type -eq "Custom") { continue }
+
+        $obj = $form.FindName($prop.Name)
+        if(-not $obj)
+        {
+            Write-Log "No setting for $($prop.Name) found" 2
+            continue
+        }
+
+        if(-not $prop.Value)
+        {
+            continue
+        }
+
+        try
+        {
+            if($obj -is [System.Windows.Controls.CheckBox])
+            {
+                $obj.IsChecked = $prop.Value -eq $true
+            }
+            elseif($obj -is [System.Windows.Controls.TextBox])
+            {
+                $obj.Text = $prop.Value
+            }
+            elseif($obj -is [System.Windows.Controls.ComboBox])
+            {
+                $obj.SelectedValue = $prop.Value
+            }
+            else
+            {
+                try
+                {
+                    Write-Log "Unsupported object type for silent batch job: $($obj.GetType().FullName)" 3
+                }
+                catch
+                {}
+            }
+        }
+        catch
+        {
+            Write-LogError "Failed to set batch job property for $($prop.Name)" $_.Exception
+        }
+    }
+}
 #endregion
 
 #region Dialogs
@@ -671,7 +780,7 @@ function Set-ObjectGrid
         
     if($obj)
     {       
-        $global:grdObject.Children.Add($obj)
+        $global:grdObject.Children.Add($obj) | Out-Null
         $global:grdObject.Visibility = "Visible"
     }
     else
@@ -920,6 +1029,8 @@ function Save-Setting
 {
     param($SubPath = "", $Key = "", $Value, $Type = "String")
 
+    if($global:hideUI -eq $true) { return }
+
     if($global:JsonSettingsObj -and $global:JSonSettingFile)
     {
         if($SubPath)
@@ -996,6 +1107,58 @@ function Save-Setting
         New-ItemProperty -Path $regPath -Name $Key -Value $Value -Type $Type -Force | Out-Null
     }
 }
+
+function Remove-Setting
+{
+    param($SubPath = "", $Key = "")
+
+    if($global:JsonSettingsObj)
+    {
+        if($SubPath)
+        {
+            $arrParts = $SubPath.TrimEnd(@('/','\')).Split(@('/','\'))
+        }
+        else
+        {
+            $arrParts = @()
+        }
+
+        $parentSetting = $global:JsonSettingsObj
+
+        foreach($part in $arrParts)
+        {
+            if(($parentSetting.PSObject.Properties | Where Name -eq $part))
+            {
+                $parentSetting = $parentSetting.$part
+            }
+            else
+            {     
+                return
+            }
+        }
+        
+        if(($parentSetting.PSObject.Properties | Where Name -eq $Key))
+        {
+            $parentSetting.PSObject.Properties.Remove($Key) 
+        }
+    }
+    else
+    {
+        $regPath = Get-RegPath $subPath
+        try
+        {
+            $temp = Get-Item -LiteralPath $regPath -ErrorAction SilentlyContinue
+            if(($temp.Property -contains $Key))
+            {
+                Remove-ItemProperty -Path $regPath -Name $Key -Force -ErrorAction Stop
+            }
+        }
+        catch
+        {
+            Write-LogError "Failed to remove reg value: $($Key) in key $($regPath)" $_.Exception
+        }
+    }
+} 
 
 function Get-Setting
 {    
@@ -2031,10 +2194,15 @@ function Get-MainWindow
 #region Module functions
 function Invoke-ModuleFunction
 {
-    param($function)
+    param($function, $arguments = $null)
 
     Write-Log "Trigger function $function"
 
+    $params = @{}
+    if($arguments)
+    {
+        $params.Add("ArgumentList",$arguments)
+    }
     foreach($module in $global:loadedModules)
     {
         # Get command with ExportedFunctions instead of Get-Command
@@ -2042,7 +2210,7 @@ function Invoke-ModuleFunction
         if($cmd) 
         {
             Write-Log "Trigger $function in $($module.Name)"
-            Invoke-Command -ScriptBlock $cmd.ScriptBlock
+            Invoke-Command -ScriptBlock $cmd.ScriptBlock  @params
         }
         else
         {

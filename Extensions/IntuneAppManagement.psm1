@@ -10,7 +10,7 @@ This module manages Application objects in Intune e.g. uploading application fil
 #>
 function Get-ModuleVersion
 {
-    '3.1.2'
+    '3.4.0'
 }
 
 #########################################################################################
@@ -209,6 +209,8 @@ function Copy-Win32LOBPackage
 
     Remove-Item -Path $tmpFile
 
+    $fi = [IO.FileInfo]$intunewinFile
+
     # Get encryption info from detection.xml and build encryptionInfo object
 
     $encryptionInfo = @{}
@@ -222,7 +224,7 @@ function Copy-Win32LOBPackage
 
     $tmpIntunewinPath = ([IO.Path]::GetTempPath() + [Guid]::NewGuid().ToString("n"))
     mkdir $tmpIntunewinPath | Out-Null
-    $tmpIntunewinFile = $tmpIntunewinPath + "\" + $DetectionXML.ApplicationInfo.FileName
+    $tmpIntunewinFile = $tmpIntunewinPath + "\" + $fi.Name
 
     # Extract the encrypted file from the intunewin file
     Export-IntunewinFileObject $intunewinFile $DetectionXML.ApplicationInfo.FileName $tmpIntunewinFile
@@ -250,8 +252,8 @@ function Add-FileToIntuneApp
 {
     param($appId, $appType, $appFile, $fileBody)
 
-    $contentVersion = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions"
-    $contentVersionId = $contentVersion.value[0].id
+    $contentVersion = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions" -HttpMethod POST -Content "{}"
+    $contentVersionId = $contentVersion.id
     $fileObj = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVersionId/files" -HttpMethod POST -Content (ConvertTo-Json $fileBody -Depth 5)
 
     if(-not $fileObj)
@@ -274,10 +276,12 @@ function Add-FileToIntuneApp
 
     Wait-IntuneFileState "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVersionId/files/$($fileObj.Id)" "CommitFile"
 
+    $fiUpload = [IO.FileInfo]$appFile
     # Commit the content version
     $commitAppBody = @{
             "@odata.type" = "#$appType"
             committedContentVersion = $contentVersionId
+            fileName = $fiUpload.Name
     }
 
     $reponse = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId" -HttpMethod PATCH -Content (ConvertTo-Json $commitAppBody -Depth 5)

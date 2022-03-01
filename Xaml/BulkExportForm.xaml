@@ -108,9 +108,19 @@
 -->        
     </Grid >
     
-    <StackPanel Name="spExportSubMenu" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row='2' Grid.ColumnSpan='2' >
-        <Button Name="btnExport" Content="Export" Width='100' Margin="5,0,0,0" />
-        <Button Name="btnClose" Content="Close" Width='100' Margin="5,0,0,0" />
-    </StackPanel>                
+    <Grid Grid.Row='2' Grid.ColumnSpan='2' >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+            <Button Name="btnExportSettingsForSilentExport" Content="Save" Width='100' Margin="5,0,0,0" ToolTip="Save settings for batch job" />
+        </StackPanel>
+
+        <StackPanel Name="spExportSubMenu" Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" >
+            <Button Name="btnExport" Content="Export" Width='100' Margin="5,0,0,0" />
+            <Button Name="btnClose" Content="Close" Width='100' Margin="5,0,0,0" />
+        </StackPanel>                
+    </Grid >
 
 </Grid >

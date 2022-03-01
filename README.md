@@ -29,11 +29,47 @@ Before starting the app:
 
 Before logging on:
 
-* The app will use the Intune PowerShell Azure Enterprise Application by default but request all permissions required by the script. The will most likely cause a consent prompt since it uses more permission than the Intune module. Enable **Use Default Permissions** in Settings to only request the current permissions granted to the Enterprise App. 
-  **Note:** Using default permission might reduce functionality e.g. permissions for one or more object types might be missing  
+* The app will use the Intune PowerShell Azure Enterprise Application by default and only use the permissions granted to that appliction. Disable **Use Default Permissions** in Settings to request additional permissions. The will cause a consent prompt if one or more permissions are missing for the app.
+  **Note:** If the app has not been approved for the organization, a consent prompt will be disablyed.  
 * Enable **Get Tenant List** in Settings if accessing multiple environments with the same account e.g. a guest account in other tenants. This might cause a Consent prompt
 
 Start the script by running **Start.cmd**, **Start-WithJson.cmd**, **Start-WithConsole.cmd** or **Start-IntuneManagement.ps1**. **Start-WithConsole.cmd** will leave the command prompt window open so you can see the log while running the app. 
+
+## Silent Batch Job (Beta)
+
+The script can be executed without UI. This is to support DevOps environment.
+
+Silent batch job is supported by the following features:
+
+* Export
+* Import
+
+The Silent Batch Job feature requires an Azure App to be configured with a secret or a certificate. The app must also be delegated with the required permissions to Graph objects used by the tool.
+
+The silent feature uses an exported json file with settings for the specified operation. This file can be generated in the Bulk Export/Import forms. Required settings for the silent job is configured in the form and then exported to a file. The path to the file is then passed on the command line. The file can be used for multiple environments if the **Add company name to the path** option is selected. Note that this requires that the appmust have at least read permission on the Organizations API.
+
+The following variables can be used in the path and filename:
+
+* %Date% - This will be translated to yyyy-MM-dd format (eg 2020-02-27)
+* %DateTime% - This will be translated to yyyyMMdd-HHmm format (eg 20200227-1750)
+* %Organization% - Name of the tenant
+* Any environment variable 
+
+The tool will by default generate the files; `BulkExport.json` and `BulkImport.json`. These files can be merged into one file but that must be done manually. These files can also be edited manually. Each setting represents a control in the UI form. When the script is triggered silently, it will create the form in the background, populate it with the values from the file and then trigger the bulk function.
+
+**Note** The Silent Batch feature use settings configured in the UI. If this is triggered in a DevOps envionment, it is recommended to generate a settings JSON file with the desired settings and then use that in the DevOps environment
+
+The app authentication can either be passed on the command line or stored in the settings. Tennant Settings is required for multiple environments.
+
+**Command line example:**
+
+Start-IntuneManagement.ps1 -Silent -TenantId "<*TenantID*>" -SilentBatchFile <*PathToFile*> [-AppId <*AppId*>] [-Secret <*Secret*> | -Certificate <*CertThumb*>]
+
+Start-IntuneManagement.ps1 -Silent -SilentBatchFile "C:\Temp\BatchImport.json" -TenantId "00000000-0000-0000-0000-000000000000" -AppId "00000000-0000-0000-0000-000000000001" -Secret "KJ76P~B9###9-.8I####-_MySecret"
+
+**Setting example:**
+
+Start-IntuneManagement.ps1 -Silent -SilentBatchFile "C:\Temp\BatchImport.json" -TenantId "00000000-0000-0000-0000-000000000000"
 
 ## Documentation
 
@@ -275,7 +311,7 @@ When multi tenant settings is Enabled/Disabled, the Profile Info is not updated 
 
 The *List Applications* API might not list an imported app immediately after the import. Click *Refresh* to reload the application objects.
 
-~~When using the filter box to search for items, the checkbox must be clicked twice to select an item.~~</br />
+~~When using the filter box to search for items, the checkbox must be clicked twice to select an item.~~<br />
 Issue fixed in 3.3.2 
 
 Logout will only clear the token from cache and not from the browser e.g. if login is triggered after a logout, the user will still be listed in the 'Select user' dialog.
