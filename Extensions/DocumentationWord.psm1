@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.1.0'
+    '1.2.0'
 }
 
 function Invoke-InitializeModule
@@ -31,32 +31,7 @@ function Invoke-InitializeModule
         Process = { Invoke-WordProcessItem @args }
         PostProcess = { Invoke-WordPostProcessItems @args }
         ProcessAllObjects = { Invoke-WordProcessAllObjects @args }
-    })
-
-    $script:columnHeaders = @{
-        Name="Inputs.displayNameLabel"
-        Value="TableHeaders.value"
-        Description="TableHeaders.description"
-        GroupMode="SettingDetails.modeTableHeader" #assignmentTypeSelectionLabel?
-        Group="TableHeaders.assignedGroups"
-        Groups="TableHeaders.groups"
-        useDeviceContext="SettingDetails.installContextLabel"
-        uninstallOnDeviceRemoval="SettingDetails.UninstallOnRemoval"
-        isRemovable="SettingDetails.installAsRemovable"
-        vpnConfigurationId="PolicyType.vpn"
-        Action="SettingDetails.actionColumnName"
-        Schedule="ScheduledAction.List.schedule"
-        MessageTemplate="ScheduledAction.Notification.messageTemplate"
-        EmailCC="ScheduledAction.Notification.additionalRecipients"
-        Filter="AssignmentFilters.assignmentFilterColumnHeader"
-        Rule="ApplicabilityRules.GridLabel.Rule"
-        ValueWithLabel="TableHeaders.value"
-        Status="TableHeaders.status"
-        CombinedValueWithLabel="TableHeaders.value"
-        CombinedValue="TableHeaders.value"
-        useDeviceLicensing="TableHeaders.licenseType"
-        #filterMode="Filter mode" # Not in any string file yet 
-    }    
+    })    
 }
 
 function Add-WordOptionsControl
@@ -90,6 +65,11 @@ function Add-WordOptionsControl
     $global:txtWordTableHeaderStyle.Text = Get-Setting "Documentation" "WordTableHeaderStyle" ""
     $global:txtWordCategoryHeaderStyle.Text = Get-Setting "Documentation" "WordCategoryHeaderStyle" ""
     $global:txtWordSubCategoryHeaderStyle.Text = Get-Setting "Documentation" "WordSubCategoryHeaderStyle" ""
+    $global:txtWordTableTextStyle.Text = Get-Setting "Documentation" "WordTableTextStyle" ""
+
+    $global:cbWordTableCaptionPosition.ItemsSource = ("[ { Name: `"Above`",Value: `"above`" }, { Name: `"Below`",Value: `"below`" }]" | ConvertFrom-Json)
+    $global:cbWordTableCaptionPosition.SelectedValue = (Get-Setting "Documentation" "WordTableCaptionPosition" "below")
+    
     $global:txtWordContentControls.Text = Get-Setting "Documentation" "WordContentControls" "Year=;Address="
     $global:txtWordTitleProperty.Text = Get-Setting "Documentation" "WordTitleProperty" "Intune documentation"
     $global:txtWordSubjectProperty.Text = Get-Setting "Documentation" "WordSubjectProperty" "Intune documentation"
@@ -152,6 +132,9 @@ function Invoke-WordPreProcessItems
     Save-Setting "Documentation" "WordTableHeaderStyle" $global:txtWordTableHeaderStyle.Text
     Save-Setting "Documentation" "WordCategoryHeaderStyle" $global:txtWordCategoryHeaderStyle.Text
     Save-Setting "Documentation" "WordSubCategoryHeaderStyle" $global:txtWordSubCategoryHeaderStyle.Text
+    Save-Setting "Documentation" "WordTableTextStyle" $global:txtWordTableTextStyle.Text
+    Save-Setting "Documentation" "WordTableCaptionPosition" $global:cbWordTableCaptionPosition.SelectedValue
+    
     Save-Setting "Documentation" "WordContentControls" $global:txtWordContentControls.Text
     Save-Setting "Documentation" "WordTitleProperty" $global:txtWordTitleProperty.Text
     Save-Setting "Documentation" "WordSubjectProperty" $global:txtWordSubjectProperty.Text
@@ -470,7 +453,7 @@ function Set-WordContentControlText
         }
         else
         {
-            Write-Log "No ContentControl found with name $controlName" 2
+            #Write-Log "No ContentControl found with name $controlName" 2
         }
     }
     catch
@@ -521,12 +504,12 @@ function Invoke-WordProcessItem
                 
                 foreach($prop in $global:txtWordCustomProperties.Text.Split(","))
                 {
-                    # This will add language support for custom columens (or replacing existing header)
+                    # This will add language support for custom columns (or replacing existing header)
                     $propInfo = $prop.Split('=')
                     if(($propInfo | measure).Count -gt 1)
                     {
                         $properties += $propInfo[0] 
-                        Set-WordColumnHeaderLanguageId $propInfo[0] $propInfo[1]
+                        Set-DocColumnHeaderLanguageId $propInfo[0] $propInfo[1]
                     }
                     else
                     {
@@ -574,9 +557,12 @@ function Invoke-WordProcessItem
         if(($documentedObj.Assignments | measure).Count -gt 0)
         {
             $params = @{}
+            $settingProps = $null
             if($documentedObj.Assignments[0].RawIntent)
             {
                 $properties = @("GroupMode","Group","Filter","FilterMode")
+
+                $settingProps = @("Filter","FilterMode")
             
                 $settingsObj = $documentedObj.Assignments | Where { $_.Settings -ne $null } | Select -First 1
 
@@ -586,7 +572,7 @@ function Invoke-WordProcessItem
                     {
                         if($objProp -in $properties) { continue }
                         if($objProp -in @("Category","RawIntent")) { continue }
-                        $properties += ("Settings." + $objProp)
+                        $settingProps += ("Settings." + $objProp)
                     }
                 }
             }
@@ -609,7 +595,14 @@ function Invoke-WordProcessItem
                 $params.Add("AddCategories", $true)
             }
 
+            # Creates a standard assignments table 
             Add-DocTableItems $obj $objectType $documentedObj.Assignments $properties "TableHeaders.assignments" @params
+
+            if($null -ne $settingProps)
+            {
+                # Adds additional values to the assignments table for Apps assignments 
+                Set-DocTableSettingsItems $obj $objectType $documentedObj.Assignments $settingProps 3
+            }
         }
 
         if($global:chkWordAttatchJsonFile.IsChecked -eq $true)
@@ -629,6 +622,44 @@ function Invoke-WordProcessItem
     catch 
     {
         Write-LogError "Failed to process object $objName" $_.Exception
+    }
+}
+
+function Set-DocTableSettingsItems
+{
+    param($obj, $objectType, $items, $properties, $firstColumn)
+
+    $secondColumn = $firstColumn + 1
+
+    $script:docTable.Cell(1, $firstColumn).Range.Text = (Invoke-WordTranslateColumnHeader "Settings")
+    $script:docTable.Cell(1, $secondColumn).Range.Text = ""
+
+    $row = 2
+    foreach($itemObj in $items)
+    {
+        $script:docTable.Cell($row, $firstColumn).Range.Text = ""
+        $script:docTable.Cell($row, $secondColumn).Range.Text = ""
+        $script:docTable.Cell($row, $firstColumn).Split($properties.Count,1)
+        $script:docTable.Cell($row, $secondColumn).Split($properties.Count,1)
+        
+        $cellRow = $row
+        foreach($settingProp in $properties)
+        {
+            $script:docTable.Cell($cellRow, $firstColumn).Range.Text =  (Invoke-WordTranslateColumnHeader ($settingProp.Split('.')[-1]))
+            
+            $propArr = $settingProp.Split('.')
+            $tmpObj = $itemObj
+            $propName = $propArr[-1]
+            for($x = 0; $x -lt ($propArr.Count - 1);$x++)
+            {
+                $tmpObj = $tmpObj."$($propArr[$x])"
+            }
+
+            $script:docTable.Cell($cellRow, $secondColumn).Column.Cells($cellRow).Range.Text = "$($tmpObj.$propName)"
+
+            $cellRow++
+        }
+        $row = $row + $properties.Count
     }
 }
 
@@ -671,54 +702,32 @@ function Invoke-WordProcessAllObjects
     }
 }
 
-function Invoke-WordTranslateColumnHeader
-{
-    param($columnName)
-
-    $lngText = ""
-    if($script:columnHeaders.ContainsKey($columnName))
-    {
-        $lngText = Get-LanguageString $script:columnHeaders[$columnName]
-    }
-
-    (?? $lngText $columnName)
-}
-
 function Invoke-WordCustomProcessItems
 {
     param($obj, $documentedObj)
 
 }
 
-function Set-WordColumnHeaderLanguageId
-{
-    param($columnName, $lngId)
-
-    if(-not $script:columnHeaders -or -not $lngId) { return }
-
-    if($script:columnHeaders.ContainsKey($columnName))
-    {
-        $script:columnHeaders[$columnName] = $lngId
-    }
-    else
-    {
-        $script:columnHeaders.Add($columnName, $lngId)
-    }
-}
-
 function Add-DocTableItems
 {
     param($obj, $objectType, $items, $properties, $lngId, [switch]$AddCategories, [switch]$AddSubcategories, $captionOverride, [switch]$forceFullValue)
 
+    if(($items | measure).Count -eq 0)
+    {
+        return
+    }
+
     $tblHeaderStyle = $global:txtWordTableHeaderStyle.Text
     $tblCategoryStyle = $global:txtWordCategoryHeaderStyle.Text
     $tblSubCategoryStyle = $global:txtWordSubCategoryHeaderStyle.Text
+    $tblTextStyle = $global:txtWordTableTextStyle.Text
+    $txtTableCaptionPosition = $global:cbWordTableCaptionPosition.SelectedValue
 
     $range = $script:doc.application.selection.range
     
     $script:docTable = $script:doc.Tables.Add($range, ($items.Count + 1), $properties.Count, [Microsoft.Office.Interop.Word.WdDefaultTableBehavior]::wdWord9TableBehavior, [Microsoft.Office.Interop.Word.WdAutoFitBehavior]::wdAutoFitWindow)
     $script:docTable.ApplyStyleHeadingRows = $true
-    Set-DocObjectStyle $script:docTable $global:txtWordTableStyle.Text
+    Set-DocObjectStyle $script:docTable $global:txtWordTableStyle.Text | Out-null
 
     if($captionOverride)
     {
@@ -736,7 +745,7 @@ function Add-DocTableItems
     $i = 1
     foreach($prop in $properties)
     {
-        $script:docTable.Cell(1, $i).Range.Text = (Invoke-WordTranslateColumnHeader ($prop.Split(".")[-1]))
+        $script:docTable.Cell(1, $i).Range.Text = (Invoke-DocTranslateColumnHeader ($prop.Split(".")[-1]))
         $i++
     }
 
@@ -816,6 +825,8 @@ function Add-DocTableItems
                 }
                 $i++
             }
+
+            Set-DocObjectStyle $script:docTable.Rows($row).Range $tblTextStyle
         
             if($itemObj.Category -and $curCategory -ne $itemObj.Category -and $AddCategories -eq $true)
             {
@@ -857,13 +868,22 @@ function Add-DocTableItems
         $row++
     }
     
-    # -2 = Table, 1 = Below
-    $script:docTable.Application.Selection.InsertCaption(-2, ". $caption", $null, 1)
+    # -2 = Table caption, 1 = Below / 0 = Above
+    if($txtTableCaptionPosition -eq "above")
+    {
+        $capPos = 0
+    }
+    else
+    {
+        $capPos = 1
+    }
+    $script:docTable.Application.Selection.InsertCaption(-2, ". $caption", $null, $capPos)
     
+    Invoke-DocGoToEnd
+
     # Add new row after the table
     #$script:doc.Application.Selection.InsertParagraphAfter()    
     $script:doc.Application.Selection.TypeParagraph()
-    #$script:doc.Application.Selection.TypeParagraph()
 }
 
 function Add-DocTableScript

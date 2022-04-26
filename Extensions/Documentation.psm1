@@ -20,11 +20,13 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.1.0'
+    '1.2.0'
 }
 
 function Invoke-InitializeModule
 {
+    $script:alwaysUseMigTableForTranslation = $false
+
     # Make sure we add the default Output types
     Add-OutputType
 
@@ -43,14 +45,20 @@ function Invoke-InitializeModule
         Schedule="ScheduledAction.List.schedule"
         MessageTemplate="ScheduledAction.Notification.messageTemplate"
         EmailCC="ScheduledAction.Notification.additionalRecipients"
-        Filter="AssignmentFilters.assignmentFilterColumnHeader"
         Rule="ApplicabilityRules.GridLabel.Rule"
         ValueWithLabel="TableHeaders.value"
         Status="TableHeaders.status"
         CombinedValueWithLabel="TableHeaders.value"
         CombinedValue="TableHeaders.value"
         useDeviceLicensing="TableHeaders.licenseType"
-        #filterMode="Filter mode" # Not in any string file yet 
+        Filter="AppResources.AppSettingsUx.assignmentFilterColumnHeader"
+        filterMode="AppResources.AppSettingsUx.assignmentFilterTypeColumnHeader"
+        deliveryOptimizationPriority="AppResources.AppSettingsUx.deliveryOptimizationPriorityHeader"
+        startTimeColumnLabel="AppResources.AppSettingsUx.startTimeColumnLabel"
+        installTimeSettings="AppResources.AppSettingsUx.deadlineTimeColumnLabel"
+        restartSettings="AppResources.AppSettingsUx.restartGracePeriodHeader"
+        notifications="AppResources.AppSettingsUx.assignmentToast"
+        Settings="TableHeaders.settings"
     }    
 }
 
@@ -199,7 +207,7 @@ function Get-ObjectDocumentation
     $status = $null
     $inputType = "Settings"    
 
-    if(-not $script:scopeTags)
+    if(-not $script:scopeTags -and $script:offlineDocumentation -ne $true)
     {
         $script:scopeTags = (Invoke-GraphRequest -Url "/deviceManagement/roleScopeTags").Value
     }   
@@ -209,7 +217,7 @@ function Get-ObjectDocumentation
     $script:currentObject = $obj
 
     $script:languageStrings = $null
-
+ 
     $script:CurrentSubCategory = $null
     $script:objectBasicInfo = @()
     $script:objectSettingsData = @()
@@ -587,19 +595,68 @@ function Add-BasicAdditionalValues
 
     if($obj.createdDateTime)
     {
-        $tmpDate = ([DateTime]::Parse($obj.createdDateTime))
-        Add-BasicPropertyValue (Get-LanguageString "Inputs.createdDateTime") "$($tmpDate.ToLongDateString()) $($tmpDate.ToLongTimeString())"
+        try
+        {
+            if($obj.createdDateTime -is [DateTime])
+            {
+                $tmpDate = $obj.createdDateTime
+            }
+            else
+            {
+                $tmpDate = ([DateTime]::Parse($obj.createdDateTime))
+            }
+            $tmpDateStr = "$($tmpDate.ToLongDateString()) $($tmpDate.ToLongTimeString())"
+            
+        }
+        catch
+        {
+            Write-Log "Failed to parse date from $($obj.createdDateTime) (Object type: $($obj.createdDateTime.GetType().Name))" 2
+            $tmpDateStr = $obj.createdDateTime
+        }
+        Add-BasicPropertyValue (Get-LanguageString "Inputs.createdDateTime") $tmpDateStr
     }
 
     if($obj.lastModifiedDateTime)
     {
-        $tmpDate = ([DateTime]::Parse($obj.lastModifiedDateTime))
-        Add-BasicPropertyValue (Get-LanguageString "TableHeaders.lastModified") "$($tmpDate.ToLongDateString()) $($tmpDate.ToLongTimeString())"
+        try
+        {
+            if($obj.lastModifiedDateTime -is [DateTime])
+            {
+                $tmpDate = $obj.lastModifiedDateTime
+            }
+            else
+            {
+                $tmpDate = ([DateTime]::Parse($obj.lastModifiedDateTime))
+            }
+            $tmpDateStr = "$($tmpDate.ToLongDateString()) $($tmpDate.ToLongTimeString())"
+        }
+        catch
+        {
+            Write-Log "Failed to parse date from $($obj.lastModifiedDateTime) (Object type: $($obj.lastModifiedDateTime.GetType().Name))" 2
+            $tmpDateStr = $obj.lastModifiedDateTime
+        }
+        Add-BasicPropertyValue (Get-LanguageString "TableHeaders.lastModified") $tmpDateStr
     }
     elseif($obj.modifiedDateTime)
     {
-        $tmpDate = ([DateTime]::Parse($obj.modifiedDateTime))
-        Add-BasicPropertyValue (Get-LanguageString "TableHeaders.lastModified") "$($tmpDate.ToLongDateString()) $($tmpDate.ToLongTimeString())"
+        try
+        {
+            if($obj.modifiedDateTime -is [DateTime])
+            {
+                $tmpDate = $obj.modifiedDateTime
+            }
+            else
+            {
+                $tmpDate = ([DateTime]::Parse($obj.modifiedDateTime))
+            }
+            $tmpDateStr = "$($tmpDate.ToLongDateString()) $($tmpDate.ToLongTimeString())"
+        }
+        catch
+        {
+            Write-Log "Failed to parse date from $($obj.modifiedDateTime) (Object type: $($obj.modifiedDateTime.GetType().Name))" 2
+            $tmpDateStr = $obj.modifiedDateTime
+        }
+        Add-BasicPropertyValue (Get-LanguageString "TableHeaders.lastModified") $tmpDateStr
     }
 
     if($obj.version)
@@ -1829,7 +1886,11 @@ function Invoke-TranslateSection
                     $useParentProp = $true
                     # Use $script:currentObject since $obj could be a property on the original object
                     # Cert links are always specified on the main object
-                    $cert = Invoke-GraphRequest -URL $script:currentObject."$($prop.entityKey)@odata.navigationLink" -ODataMetadata "minimal" -NoError
+                    $cert = $null
+                    if($script:offlineDocumentation -ne $true)
+                    {
+                        $cert = Invoke-GraphRequest -URL $script:currentObject."$($prop.entityKey)@odata.navigationLink" -ODataMetadata "minimal" -NoError
+                    }
                     if($cert)
                     {
                         if($cert.value -is [Object[]])
@@ -1849,7 +1910,22 @@ function Invoke-TranslateSection
                     }
                     elseif($script:currentObject.'@ObjectFromFile' -eq $true)
                     {
-                        $value = "##TBD - Linked Certificate"
+                        if($script:currentObject."#CustomRef_$($prop.entityKey)")
+                        {
+                            $idx = $script:currentObject."#CustomRef_$($prop.entityKey)".IndexOf("|:|")
+                            if($idx -gt -1)
+                            {
+                                $value = $script:currentObject."#CustomRef_$($prop.entityKey)".SubString(0,$idx)
+                            }
+                            else
+                            {
+                                $value = $script:currentObject."#CustomRef_$($prop.entityKey)"
+                            }
+                        }
+                        else
+                        {
+                            $value = "##TBD - Linked Certificate"
+                        }
                         $rawValue = $value
                     }
                 }
@@ -2240,6 +2316,17 @@ function Get-CustomChildObject
     }
 
     return $obj
+}
+
+function Invoke-InitDocumentation
+{
+    foreach($docProvider in ($global:documentationProviders | Sort -Property Priority))
+    {
+        if($docProvider.InitializeDocumentation)
+        {
+            & $docProvider.InitializeDocumentation
+        }
+    }
 }
 
 function Add-CustomProfileProperties
@@ -2900,7 +2987,7 @@ function Invoke-TranslateAssignments
 
     $groupInfo = $null
 
-    if($groupIds.Count -gt 0)
+    if($groupIds.Count -gt 0 -and $script:offlineDocumentation -ne $true)
     {
         $ht = @{}
         $ht.Add("ids", @($groupIds | Unique))
@@ -2913,26 +3000,40 @@ function Invoke-TranslateAssignments
     if(($null -eq $groupInfo -or ($groupInfo | measure).Count -eq 0) -and $obj."@ObjectFromFile" -eq $true -and $script:migTable)
     {
         ### Get group info from mig table when documenting from file if there's no access to the environment
-        $groupInfo = $script:migTable.Objects | Where Type -eq "Group"
+        $groupInfo = $script:migTable.Objects | Where Type -eq "Group" 
     }    
 
     if($filterIds.Count -gt 0)
-    {
-        $batchInfo = @{}
-        $requests = @()
-        #{"requests":[{"id":"<FilterID>","method":"GET","url":"deviceManagement/assignmentFilters/<FilterID>?$select=displayName"}]}
-        foreach($filterId in $filterIds)
+    {        
+        if($script:offlineDocumentation -eq $true)
         {
-            $requests += [PSCustomObject]@{
-                id = $filterIds
-                method = "GET"
-                "url" = "deviceManagement/assignmentFilters/$($filterId)?`$select=displayName"
+            if($script:offlineObjects["AssignmentFilters"])
+            {
+                $filtersInfo = $script:offlineObjects["AssignmentFilters"] | Where { $_.Id -in $filterIds }
+            }
+            else
+            {
+                Write-Log "No assignment filters loaded for Offline documentation. Check export folder" 2
             }
         }
-        $batchInfo = @{"requests"=$requests}
-        $jsonBody = $batchInfo | ConvertTo-Json
+        else
+        {
+            $batchInfo = @{}
+            $requests = @()
+            #{"requests":[{"id":"<FilterID>","method":"GET","url":"deviceManagement/assignmentFilters/<FilterID>?$select=displayName"}]}
+            foreach($filterId in $filterIds)
+            {
+                $requests += [PSCustomObject]@{
+                    id = $filterId
+                    method = "GET"
+                    "url" = "deviceManagement/assignmentFilters/$($filterId)?`$select=displayName"
+                }
+            }
+            $batchInfo = @{"requests"=$requests}
+            $jsonBody = $batchInfo | ConvertTo-Json
 
-        $filtersInfo = Invoke-GraphRequest -Url "/`$batch" -Content $jsonBody -Method "Post"
+            $filtersInfo = (Invoke-GraphRequest -Url "/`$batch" -Content $jsonBody -Method "Post").responses.body
+        }
     }
     
     foreach($assignment in $obj.assignments)
@@ -2987,12 +3088,12 @@ function Invoke-TranslateAssignments
             $filterName = $noFilter
             $filterMode = $noFilter
     
-            if($assignment.target.deviceAndAppManagementAssignmentFilterId -and $filtersInfo.responses)
+            if($assignment.target.deviceAndAppManagementAssignmentFilterId -and $filtersInfo)
             {
-                $filtersObj = $filtersInfo.responses | Where Id -eq $assignment.target.deviceAndAppManagementAssignmentFilterId
-                if($filtersObj.body.displayName)
+                $filtersObj = $filtersInfo | Where Id -eq $assignment.target.deviceAndAppManagementAssignmentFilterId
+                if($filtersObj.displayName)
                 {
-                    $filterName = $filtersObj.body.displayName
+                    $filterName = $filtersObj.displayName
                 }
 
                 if($assignment.target.deviceAndAppManagementAssignmentFilterType -eq "include")
@@ -3037,6 +3138,66 @@ function Invoke-TranslateAssignments
                             $value = Get-LanguageString "SettingDetails.licenseTypeUser"
                         }
                     }
+                    elseif($settingProp -eq "restartSettings" -and $null -eq $assignment.settings.$settingProp)
+                    {
+                        $value = Get-LanguageString "SettingDetails.disabledOption"
+                    }
+                    elseif($settingProp -eq "notifications")
+                    {
+                        $value = ?? (Get-LanguageString "AppResources.AssignmentToast.$($assignment.settings.$settingProp)") $assignment.settings.$settingProp
+                    }
+                    elseif($settingProp -eq "installTimeSettings")
+                    {
+                        $asap = Get-LanguageString "Assignment.SoftwareInstallationTime.defaultTime"
+                        $startValue = $asap
+                        $value = $asap
+
+                        if($assignment.settings.installTimeSettings)
+                        {
+                            if($assignment.settings.installTimeSettings.startDateTime)
+                            {
+                                $instTime = Get-Date $assignment.settings.installTimeSettings.startDateTime
+                                
+                                if($assignment.settings.installTimeSettings.useLocalTime -eq $false)
+                                {
+                                    $hours = ($instTime.ToUniversalTime() - $instTime).Hours
+                                    $instTime = $instTime.AddHours($hours)
+                                }
+                                $startValue = "$($instTime.ToShortDateString()) $($instTime.ToShortTimeString())" 
+                            }
+
+                            if($assignment.settings.installTimeSettings.deadlineDateTime)
+                            {
+                                $endTime = Get-Date $assignment.settings.installTimeSettings.deadlineDateTime
+                                
+                                if($assignment.settings.installTimeSettings.useLocalTime -eq $false)
+                                {
+                                    $hours = ($endTime.ToUniversalTime() - $endTime).Hours
+                                    $endTime = $endTime.AddHours($hours)
+                                }
+                                $value = "$($instTime.ToShortDateString()) $($instTime.ToShortTimeString())" 
+                            }
+                        }
+
+                        $assignmentSettingProps.Add("startTimeColumnLabel", $startValue)
+                    }                    
+                    elseif($settingProp -eq "deliveryOptimizationPriority")
+                    {
+                        $tmpStr = Get-LanguageString "AppResources.DeliveryOptimizationPriority.displayText"
+                        if($assignment.settings.$settingProp -ne "foreground")
+                        {
+                            $tmpType = Get-LanguageString "AppResources.DeliveryOptimizationPriority.backgroundNormal"
+                        }
+                        else
+                        {
+                            $tmpType = Get-LanguageString "AppResources.DeliveryOptimizationPriority.foreground"
+                        }
+                        $value = $tmpStr -f $tmpType
+                    }
+                    elseif($assignment.settings.$settingProp -eq "notConfigured")
+                    {
+                        $value = Get-LanguageString "BooleanActions.notConfigured"
+                    }                    
                     else
                     {
                         $value = $assignment.settings.$settingProp
@@ -3389,6 +3550,9 @@ function Show-DocumentationForm
 
         $txtDocumentationRawData.Text = ""
 
+        $script:offlineDocumentation = $false
+        $script:offlineObjects = @{}
+
         $loadExportedInfo = $true
         $script:migTable = $null
         $script:scopeTags = $null
@@ -3420,6 +3584,8 @@ function Show-DocumentationForm
         Save-Setting "Documentation" "NotConfiguredText" $global:cbNotConifugredText.SelectedValue
 
         Get-CustomIgnoredCategories $obj
+
+        Invoke-InitDocumentation
 
         if($global:grdDocumentObjects.Tag -eq "Objects")
         {
@@ -3532,21 +3698,20 @@ function Show-DocumentationForm
                 $script:migTable = ConvertFrom-Json (Get-Content $migFileName -Raw)
             }
 
-            $scopeTagObjectType = $global:currentViewObject.ViewItems | Where Id -eq "ScopeTags"
-            
-            if($scopeTagObjectType)
+            if($script:migTable.TenantId -and $script:migTable.TenantId -ne $global:organization.id)
             {
-                $scopePath = [IO.Path]::Combine($diSource.FullName,$scopeTagObjectType.Id)
-                if([IO.Directory]::Exists($scopePath) -eq $false)
+                $script:offlineDocumentation = $true
+            }
+
+            if($script:offlineDocumentation -eq $true)
+            {
+                Add-DocOfflineDependecies "ScopeTags" $diSource.FullName
+                Add-DocOfflineDependecies "AssignmentFilters" $diSource.FullName
+                Add-DocOfflineObjectTypeDependecies  $diSource.FullName
+                if($script:offlineObjects.ContainsKey("ScopeTags"))
                 {
-                    Write-Log "Object path for Scope (Tags) ($($scopePath)) not found" 2                 
-                }
-                else
-                {
-                
-                    $scopeTagObjects = Get-GraphFileObjects $scopePath -ObjectType $scopeTagObjectType
-                    $script:scopeTags = @(($scopeTagObjects | Select Object))
-                }
+                    $script:scopeTags = @($script:offlineObjects["ScopeTags"])
+                }                
             }
         }
 
@@ -3723,7 +3888,7 @@ function Show-DocumentationForm
                         }
                     }
                 }
-            }
+            } 
         }
 
         if($allObjectTypeObjects.Count -gt 0)
@@ -3745,7 +3910,13 @@ function Show-DocumentationForm
             Write-Status "Run PostProcess for $($global:cbDocumentationType.SelectedItem.Name)"
             & $global:cbDocumentationType.SelectedItem.PostProcess
         }
-        
+
+        if($script:offlineDocumentation -eq $true)
+        {
+            # Clear the dependecy objects loaded for Offline documentation
+            $global:LoadedDependencyObjects = $null
+        }
+        $script:offlineDocumentation = $false
         Write-Status ""
     }
     
@@ -3797,6 +3968,18 @@ function Show-DocumentationForm
     Show-ModalForm "Intune Documentation" $script:docForm -HideButtons
 }
 
+function Get-DocOfflineObjects
+{
+    param($objectName)
+
+    if($script:offlineDocumentation -eq $false) { return }
+
+    if($script:offlineObjects.ContainsKey($objectName))
+    {
+        $script:offlineObjects[$objectName]
+    }
+}
+
 function Set-OutputOptionsTabStatus
 {
     param($control)
@@ -3826,6 +4009,42 @@ function Invoke-DocumentSelectedObjects
     }
 
     Show-DocumentationForm -objects $script:selectedObjects -SelectedDocuments
+}
+
+function Add-DocOfflineObjectTypeDependecies 
+{
+    param($fromFolder)
+
+    foreacH($viewItem in $global:currentViewObject.ViewItems)
+    {
+        foreach($dep in $viewItem.Dependencies)
+        {
+            Add-DocOfflineDependecies $dep $fromFolder
+        }
+    }
+}
+
+function Add-DocOfflineDependecies 
+{
+    param($objectTypeName, $fromFolder)
+
+    if($script:offlineObjects.ContainsKey($objectTypeName)) { return }
+
+    $tmpObjType = $global:currentViewObject.ViewItems | Where Id -eq $objectTypeName
+
+    if($tmpObjType)
+    {
+        $objPath = [IO.Path]::Combine($fromFolder,$tmpObjType.Id)
+        if([IO.Directory]::Exists($objPath) -eq $false)
+        {
+            Write-Log "Object path for $($tmpObjType.Title) ($($objPath)) not found" 2                 
+        }
+        else
+        {                    
+            $tmpObjects = Get-GraphFileObjects $objPath -ObjectType $tmpObjType
+            $script:offlineObjects.Add($tmpObjType.Id, @(($tmpObjects | Select Object).Object))
+        }
+    }
 }
 
 function Add-DocumentationObjects

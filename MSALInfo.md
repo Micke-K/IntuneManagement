@@ -1,6 +1,6 @@
 # Microsoft Authentication Library (MSAL)
 
-Microsoft Authentication Library (MSAL) is used for authenticating to Microsoft Graph and other APIs used by the script. Microsoft.Identity.Client.dll** is the library file that contains the authentication functions. This script is depending on the file to be able to authenticate to Microsoft Graph. 
+Microsoft Authentication Library (MSAL) is used for authenticating to Microsoft Graph and other APIs used by the script. **Microsoft.Identity.Client.dll** is the library file that contains the authentication functions. This script is depending on the file to be able to authenticate to Microsoft Graph. 
 
 See the GitHub repository [MSAL.PS](https://github.com/AzureAD/MSAL.PS) for more information on using MSAL with PowerShell. This script does not use the module directly for various reasons but the MSAL.PS repository is a great source of information and the best place to start for using MSAL with PowerShell. 
 

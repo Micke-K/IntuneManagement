@@ -11,7 +11,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.4.0'
+    '3.5.0'
 }
 
 function Invoke-InitializeModule
@@ -86,7 +86,7 @@ function Invoke-InitializeModule
         ID="IntuneGraphAPI" 
         ViewPanel = $viewPanel
         AuthenticationID = "MSAL"
-        ItemChanged = { Show-GraphObjects; Invoke-ModuleFunction "Invoke-GraphObjectsChanged"; Write-Status ""}
+        ItemChanged = { Show-GraphObjects -ObjectTypeChanged; Invoke-ModuleFunction "Invoke-GraphObjectsChanged"; Write-Status ""}
         Deactivating = { Invoke-EMDeactivateView }
         Activating = { Invoke-EMActivatingView  }
         Authentication = (Get-MSALAuthenticationObject)
@@ -112,6 +112,7 @@ function Invoke-InitializeModule
         PostCopyCommand = { Start-PostCopyDeviceConfiguration @args }
         PostGetCommand = { Start-PostGetDeviceConfiguration @args }
         GroupId = "DeviceConfiguration"
+        NavigationProperties=$true
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -124,6 +125,8 @@ function Invoke-InitializeModule
         GroupId = "ConditionalAccess"
         ImportExtension = { Add-ConditionalAccessImportExtensions @args }
         PreImportCommand = { Start-PreImportConditionalAccess @args }
+        PostExportCommand = { Start-PostExportConditionalAccess  @args }
+        ExpandAssignmentsList = $false
     })
 
     if((Get-SettingValue "PreviewFeatures" $false) -eq $true)
@@ -150,6 +153,7 @@ function Invoke-InitializeModule
         Permissons=@("Policy.ReadWrite.ConditionalAccess")
         ImportOrder = 50
         GroupId = "ConditionalAccess"
+        ExpandAssignmentsList = $false
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -226,6 +230,7 @@ function Invoke-InitializeModule
         SkipRemoveProperties = @('Id')
         GroupId = "Azure"
         SkipAddIDOnExport = $true
+        ExpandAssignmentsList = $false
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -340,6 +345,7 @@ function Invoke-InitializeModule
         PostExportCommand = { Start-PostExportTermsAndConditions @args }
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsTermsAndConditions @args }
         GroupId = "TenantAdmin"
+        ExpandAssignmentsList = $false
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -359,6 +365,7 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementApps.ReadWrite.All")
         Dependencies = @("Applications")
         GroupId = "AppProtection"
+        ExpandAssignmentsList = $false
     })
 
     # These are also included in the managedAppPolicies API
@@ -377,6 +384,7 @@ function Invoke-InitializeModule
         Dependencies = @("Applications")
         Icon = "AppConfiguration"
         GroupId = "AppConfiguration"
+        ExpandAssignmentsList = $false
     })    
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -400,6 +408,7 @@ function Invoke-InitializeModule
         ViewID = "IntuneGraphAPI"
         PropertiesToRemove = @('uploadState','publishingState','isAssigned','dependentAppCount','supersedingAppCount','supersededAppCount','committedContentVersion','isFeatured','size','categories')
         QUERYLIST = "`$filter=(microsoft.graph.managedApp/appAvailability%20eq%20null%20or%20microsoft.graph.managedApp/appAvailability%20eq%20%27lineOfBusiness%27%20or%20isAssigned%20eq%20true)&`$orderby=displayName"
+        QuerySearch=$true
         Permissons=@("DeviceManagementApps.ReadWrite.All")
         AssignmentsType="mobileAppAssignments"
         AssignmentProperties = @("@odata.type","target","settings","intent")
@@ -437,10 +446,12 @@ function Invoke-InitializeModule
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsPolicySets @args }
         PreImportCommand = { Start-PreImportPolicySets @args }
         PreUpdateCommand = { Start-PreUpdatePolicySets @args }
+        PostListCommand = { Start-PostListPolicySets @args }
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         ImportOrder = 2000 # Policy Sets reference other objects so make sure it is imported last
         Dependencies = @("Applications","AppConfiguration","AppProtection","AutoPilot","EnrollmentRestrictions","EnrollmentStatusPage","DeviceConfiguration","AdministrativeTemplates","SettingsCatalog","CompliancePolicies")
         GroupId = "PolicySets"
+        ExpandAssignmentsList = $false # expand is not allowed, IsAssigned is set in PostListCommand
     })
     
     Add-ViewItem (New-Object PSObject -Property @{
@@ -485,6 +496,8 @@ function Invoke-InitializeModule
     # Property that needs to be updated on the Compliance Policy
     # deviceManagement/managementConditionStatements/$obj.conditionStatementId
     
+    # Location objects support removed from Intune
+    <#
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Locations"
         Id = "Locations"
@@ -495,6 +508,7 @@ function Invoke-InitializeModule
         ImportOrder = 30
         GroupId = "CompliancePolicies"
     })
+    #>
 
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Settings Catalog"
@@ -526,6 +540,8 @@ function Invoke-InitializeModule
         #expand=roleassignments
         PropertiesToRemoveForUpdate = @('isBuiltInRoleDefinition','isBuiltIn','roleAssignments') ### !!! ToDo: Add support for roleAssignments
         GroupId = "TenantAdmin"
+        ExpandAssignments = $false
+        ExpandAssignmentsList = $false
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -539,6 +555,7 @@ function Invoke-InitializeModule
         ImportOrder = 10
         DocumentAll = $true
         GroupId = "TenantAdmin"
+        ExpandAssignmentsList = $false # Adds the assignmnets property but always empty
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -554,6 +571,7 @@ function Invoke-InitializeModule
         PostCopyCommand = { Start-PostCopyNotifications @args }
         PropertiesToRemoveForUpdate = @('defaultLocale','localizedNotificationMessages') ### !!! ToDo: Add support for localizedNotificationMessages
         GroupId = "CompliancePolicies"
+        ExpandAssignmentsList = $false
     })    
     
     # This has some pre-reqs for working!
@@ -593,6 +611,7 @@ function Invoke-InitializeModule
         ImportOrder = 15
         GroupId = "TenantAdmin"
         PropertiesToRemoveForUpdate = @('platform')
+        ExpandAssignmentsList = $false
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -749,19 +768,34 @@ function Set-EMViewPanel
         $btnRefresh.SetValue([System.Windows.Controls.Grid]::ColumnProperty,$grdTitle.ColumnDefinitions.Count - 1)
         $btnRefresh.Margin = "0,0,5,3"
         $btnRefresh.Cursor = "Hand"
+        $btnRefresh.Name = "btnRefresh"
         $btnRefresh.Focusable = $false
         $grdTitle.Children.Add($btnRefresh) | Out-Null
 
         $tooltip = [System.Windows.Controls.ToolTip]::new()
-        $tooltip.Content = "Refresh"
+        $tooltip.Content = "Refresh all objects"
+        [System.Windows.Controls.ToolTipService]::SetToolTip($btnRefresh, $tooltip)           
+
+        $panel.RegisterName($btnRefresh.Name, $btnRefresh)
+
+        $tooltip = [System.Windows.Controls.ToolTip]::new()
+        $tooltip.Content = "Refresh objects"
+
         [System.Windows.Controls.ToolTipService]::SetToolTip($btnRefresh, $tooltip)
 
         $btnRefresh.Add_Click({
-            # ToDo: Move this to view view object
+            $txtFilterText = $null
             $txtFilter = $this.Parent.FindName("txtFilter")
-            if($txtFilter) { $txtFilter.Text = "" }
+            if($txtFilter) { $txtFilterText = $txtFilter.Text } #= "" }
             
-            Show-GraphObjects
+            Show-GraphObjects $txtFilterText
+
+            if($txtFilterText -and $txtFilter)
+            {
+                $txtFilter.Text = $txtFilterText
+                Invoke-FilterBoxChanged $txtFilter
+            }
+
             Write-Status ""
         })
     }
@@ -782,9 +816,27 @@ function Set-EMViewPanel
         $graphObjects | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null }
         $global:dgObjects.ItemsSource.CommitNew()
         Set-GraphPagesButtonStatus
-        Invoke-FilterBoxChanged $global:txtFilter -ForceUpdate
+        Invoke-FilterBoxChanged $global:txtFilter
         Write-Status ""
     })    
+}
+
+function Invoke-GraphObjectsChanged
+{
+    $btnRefresh = $global:EMViewObject.ViewPanel.FindName("btnRefresh")
+
+    if($btnRefresh)
+    {
+        $tooltip = [System.Windows.Controls.ToolTipService]::GetToolTip($btnRefresh)
+        if($global:lstMenuItems.SelectedItem.QuerySearch -eq $true)
+        {
+            $tooltip.Content = "Refresh objects based on filter. Note: Only filtered objects will be returned. Clear filter and press refresh to reload other objects"
+        }
+        else
+        {
+            $tooltip.Content = "Refresh all objects"
+        }
+    }
 }
 
 function Invoke-EMSelectedItemsChanged
@@ -2132,6 +2184,16 @@ function Update-EMPolicySetAssignment
     Invoke-GraphRequest -Url $api -HttpMethod "POST" -Content $json 
 }
 
+function Start-PostListPolicySets
+{
+    param($objList, $objectType)
+
+    foreach($obj in $objList)
+    {
+        $obj | Add-Member -MemberType NoteProperty -Name "IsAssigned" -Value ($obj.Object.status -ne "notAssigned")     
+    }
+    $objList    
+}
 #endregion
 
 #endregion Locations
@@ -2709,6 +2771,43 @@ function Start-PreImportConditionalAccess
     {
         $obj.state = $global:cbImportCAState.SelectedValue
     }
+}
+
+function Start-PostExportConditionalAccess
+{
+    param($obj, $objectType, $path)
+
+    $ids = @()
+    foreach($id in ($obj.conditions.users.includeGroups + $obj.conditions.users.excludeGroups))
+    {
+        if($id -in $ids) { continue }
+        elseif($id -eq "GuestsOrExternalUsers") { continue }
+        elseif($id -eq "All") { continue }
+        elseif($id -eq "None") { continue }
+        
+        $ids += $id
+        Add-GraphMigrationObject $id "/groups" "Group"
+    }
+    
+    foreach($id in ($obj.conditions.users.includeUsers +$obj.conditions.users.excludeUsers))
+    {
+        if($id -in $ids) { continue }
+        elseif($id -eq "GuestsOrExternalUsers") { continue }
+        elseif($id -eq "All") { continue }
+        elseif($id -eq "None") { continue }
+        
+        $ids += $id
+        Add-GraphMigrationObject $id "/users" "User"
+    }    
+
+    <#
+    $roleIds = @()
+    foreach($id in ($obj.conditions.users.includeRoles + $obj.conditions.users.excludeRoles))
+    {
+        if($id -in $ids) { continue }
+        $roleIds += $id
+    }
+    #>
 }
 #endregion
 

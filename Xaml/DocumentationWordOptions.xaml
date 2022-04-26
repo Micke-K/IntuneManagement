@@ -24,6 +24,7 @@
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
         <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
@@ -190,63 +191,76 @@
     <TextBox Grid.Column='2' Grid.Row='12' Name='txtWordSubCategoryHeaderStyle' Margin="0,5,5,5"/>
 
     <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="13">
+        <Label Content="Table text style" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Style of the text in a table. Default is current font" />
+    </StackPanel>
+    <TextBox Grid.Column='2' Grid.Row='13' Name='txtWordTableTextStyle' Margin="0,5,5,5"/>
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="14">
+        <Label Content="Table caption position" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify where the table captions should be. Above or below the table" />
+    </StackPanel>
+    <ComboBox Name="cbWordTableCaptionPosition" Margin="0,5,0,0" MinWidth="250" Grid.Row="14" Grid.Column="1" HorizontalAlignment="Left"
+            DisplayMemberPath="Name" SelectedValuePath="Value" />
+
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="15">
         <Label Content="Cover Page" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Cover page to use if the template property is not specified. Ion (Dark) is used if not specified" />
     </StackPanel>
-    <TextBox Grid.Column='1' Grid.Row='13' Name='txtWordCoverPage' Margin="0,5,5,5"/>
+    <TextBox Grid.Column='1' Grid.Row='15' Name='txtWordCoverPage' Margin="0,5,5,5"/>
 
-    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="14">
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="16">
         <Label Content="Title" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the title property for the document" />
     </StackPanel>
-    <TextBox Grid.Column='1' Grid.Row='14' Name='txtWordTitleProperty' Margin="0,5,5,5"/>
+    <TextBox Grid.Column='1' Grid.Row='16' Name='txtWordTitleProperty' Margin="0,5,5,5"/>
 
-    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="15">
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="17">
         <Label Content="Subject" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the subject property for the document" />
     </StackPanel>
-    <TextBox Grid.Column='1' Grid.Row='15' Name='txtWordSubjectProperty' Margin="0,5,5,5"/>
+    <TextBox Grid.Column='1' Grid.Row='17' Name='txtWordSubjectProperty' Margin="0,5,5,5"/>
 
-    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="16">
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="18">
         <Label Content="Content controls" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify content control values e.g. prop1=value;prop2=value;prop3=value" />
     </StackPanel>
-    <TextBox Grid.Column='1' Grid.Row='16' Name='txtWordContentControls' Margin="0,5,5,5"/>
+    <TextBox Grid.Column='1' Grid.Row='18' Name='txtWordContentControls' Margin="0,5,5,5"/>
 
-    <StackPanel Orientation="Horizontal" Grid.Row='17' Margin="0,0,5,0">
+    <StackPanel Orientation="Horizontal" Grid.Row='19' Margin="0,0,5,0">
         <Label Content="Open document" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will open the document and activate Word when finished" />
     </StackPanel>
-    <CheckBox Grid.Column='1' Grid.Row='17' Name='chkWordOpenDocument' VerticalAlignment="Center" IsChecked="true" />
+    <CheckBox Grid.Column='1' Grid.Row='19' Name='chkWordOpenDocument' VerticalAlignment="Center" IsChecked="true" />
 
-    <StackPanel Orientation="Horizontal" Grid.Row='18' Margin="0,0,5,0">
+    <StackPanel Orientation="Horizontal" Grid.Row='20' Margin="0,0,5,0">
         <Label Content="Document scripts" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Include scripts in the documentation" />
     </StackPanel>
-    <CheckBox Grid.Column='1' Grid.Row='18' Name='chkWordIncludeScripts' VerticalAlignment="Center" IsChecked="true" />    
+    <CheckBox Grid.Column='1' Grid.Row='20' Name='chkWordIncludeScripts' VerticalAlignment="Center" IsChecked="true" />    
 
-    <StackPanel Orientation="Horizontal" Grid.Row='19' Margin="0,0,5,0">
+    <StackPanel Orientation="Horizontal" Grid.Row='21' Margin="0,0,5,0">
         <Label Content="Remove script signature" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Remove signature block from PowerShell scripts to reduce script documentation size" />
     </StackPanel>
-    <CheckBox Grid.Column='1' Grid.Row='19' Name='chkWordExcludeScriptSignature' VerticalAlignment="Center" IsChecked="true" />    
+    <CheckBox Grid.Column='1' Grid.Row='21' Name='chkWordExcludeScriptSignature' VerticalAlignment="Center" IsChecked="true" />    
 
-    <StackPanel Orientation="Horizontal" Grid.Row='20' Margin="0,0,5,0">
+    <StackPanel Orientation="Horizontal" Grid.Row='22' Margin="0,0,5,0">
         <Label Content="Attatch Json file" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Attatch the Json file to the documentation" />
     </StackPanel>
-    <CheckBox Grid.Column='1' Grid.Row='20' Name='chkWordAttatchJsonFile' VerticalAlignment="Center" IsChecked="false" />    
+    <CheckBox Grid.Column='1' Grid.Row='22' Name='chkWordAttatchJsonFile' VerticalAlignment="Center" IsChecked="false" />    
 
-    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="21">
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="23">
         <Label Content="Script table style" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the table style to use for scripts. Ducument table style will be use as default" />
     </StackPanel>
-    <TextBox Grid.Column='1' Grid.Row='21' Name='txtWordScriptTableStyle' Margin="0,5,5,5"/>
+    <TextBox Grid.Column='1' Grid.Row='23' Name='txtWordScriptTableStyle' Margin="0,5,5,5"/>
 
-    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="22">
+    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="24">
         <Label Content="Script font style" />
         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the font style to use for documenting scripts. HTML Code is used as default" />
     </StackPanel>
-    <TextBox Grid.Column='1' Grid.Row='22' Name='txtWordScriptStyle' Margin="0,5,5,5"/>
+    <TextBox Grid.Column='1' Grid.Row='24' Name='txtWordScriptStyle' Margin="0,5,5,5"/>
 
 </Grid>

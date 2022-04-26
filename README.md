@@ -30,7 +30,7 @@ Before starting the app:
 Before logging on:
 
 * The app will use the Intune PowerShell Azure Enterprise Application by default and only use the permissions granted to that appliction. Disable **Use Default Permissions** in Settings to request additional permissions. The will cause a consent prompt if one or more permissions are missing for the app.
-  **Note:** If the app has not been approved for the organization, a consent prompt will be disablyed.  
+  **Note:** If the app has not been approved for the organization, a consent prompt will be displayed.  
 * Enable **Get Tenant List** in Settings if accessing multiple environments with the same account e.g. a guest account in other tenants. This might cause a Consent prompt
 
 Start the script by running **Start.cmd**, **Start-WithJson.cmd**, **Start-WithConsole.cmd** or **Start-IntuneManagement.ps1**. **Start-WithConsole.cmd** will leave the command prompt window open so you can see the log while running the app. 
@@ -282,7 +282,7 @@ Start-WithJson.cmd is included as an example on how to start the script with jso
 * .Net 4.7
 * PowerShell 5.1
 * MSAL
-  * Microsoft.Identity.Client.dll version 4.29.0.0 is included in this version
+  * Microsoft.Identity.Client.dll version 4.42.1.0 is included in this version
 * License and permissions in Azure to manage objects in Intune and Azure 
 
 ## References

@@ -10,7 +10,7 @@ This module is for the Endpoint Info View. It shows read-only objects in Intune
 #>
 function Get-ModuleVersion
 {
-    '3.1.4'
+    '3.5.0'
 }
 
 function Invoke-InitializeModule
@@ -22,7 +22,7 @@ function Invoke-InitializeModule
         ID = "EMInfoGraphAPI" 
         ViewPanel = $viewPanel 
         AuthenticationID = "MSAL"
-        ItemChanged = { Show-GraphObjects; Invoke-ModuleFunction "Invoke-GraphObjectsChanged"; Write-Status ""}
+        ItemChanged = { Show-GraphObjects -ObjectTypeChanged; Invoke-ModuleFunction "Invoke-GraphObjectsChanged"; Write-Status ""}
         Activating = { Invoke-EMInfoActivatingView }
         Authentication = (Get-MSALAuthenticationObject)
         Authenticate = { Invoke-EMInfoAuthenticateToMSAL }
@@ -40,7 +40,8 @@ function Invoke-InitializeModule
         API = "/deviceManagement/templates"
         ShowButtons = @("Export","View")
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
-        Icon="EndpointSecurity"        
+        Icon="EndpointSecurity"
+        ExpandAssignmentsList = $false
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -50,7 +51,8 @@ function Invoke-InitializeModule
         ViewProperties = @("bindStatus", "lastAppSyncDateTime", "ownerUserPrincipalName")
         API = "/deviceManagement/androidManagedStoreAccountEnterpriseSettings"
         ShowButtons = @("Export","View")
-        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")    
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        ExpandAssignmentsList = $false   
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -61,6 +63,7 @@ function Invoke-InitializeModule
         ShowButtons = @("Export","View")
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon = "AndroidCOWP"
+        ExpandAssignmentsList = $false
     })    
     
     Add-ViewItem (New-Object PSObject -Property @{
@@ -70,7 +73,8 @@ function Invoke-InitializeModule
         ViewProperties = @("appleId", "state", "appleId", "id")
         API = "/deviceAppManagement/vppTokens"
         ShowButtons = @("Export","View")
-        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")    
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        ExpandAssignmentsList = $false
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -80,9 +84,9 @@ function Invoke-InitializeModule
         ViewProperties = @("tokenName", "appleIdentifier", "tokenExpirationDateTime", "id")
         API = "/deviceManagement/depOnboardingSettings/?`$top=100"
         ShowButtons = @("Export","View")
-        Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")    
+        Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
+        ExpandAssignmentsList = $false
     })
-
 }
 
 function Invoke-EMInfoActivatingView

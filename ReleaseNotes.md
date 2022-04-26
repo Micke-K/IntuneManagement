@@ -1,4 +1,78 @@
 # Release Notes
+## 3.5.0  - 2022-04-26
+
+**New features**
+
+- **Automatic update check**<br />
+  The app will check GitHub at start-up if there is a new version available<br />
+  This can be disabled in settings<br />
+
+- **Use PowerShell 5**<br />
+  Command files will now use PowerShell 5 (-version 5 in the command line)<br />
+  This is based on [Issue 44](https://github.com/Micke-K/IntuneManagement/issues/44)<br />
+
+- **Documentation**<br />
+  - New Word settings: Table text style and table caption location<br />
+  This is based on an additional request in [Issue 37](https://github.com/Micke-K/IntuneManagement/issues/37)<br />
+  - Terms of Use info when documenting Conditional Access<br />
+  - Added documentation support for Terms of Use<br />
+  - Added additional support for offline documentation<br />
+  **Note:** Offline is defined as documenting an exported folder while logged in to another tenant.<br /> 
+  If logged in to the same tenant as the exported folder, "online" documentation will be used<br />
+  - Changed the layout for the assignment table on Win32 Applications. There were too many columns so additional info is changed to a table in the value column<br />
+  - Filter / Filter Mode column headers are now set from language files<br />
+
+<br />
+
+- **Export/Import**<br />
+  - Users in Conditional Access are now added to the Migration Table<br />
+  This is so the user IDs can be translated during Offline documentation<br />
+  - Referenced settings are now included in the export<br />
+  This is to support referenced settings during import, copy and offline documentation (Certs on VPN profiles etc.)<br />
+  These properties are named #CustomRef_*PropertyName* in the json file<br />
+  **Note:** This might cause export/copy to take longer once every second week since it requires the MetaData XML for Graph to be downloaded.<br />
+  This feature can be turned off by unchecking 'Resolve reference info' in Settings<br />
+<br />
+
+- **Copy**<br />
+  - New dialog when copying an object. Description can now be changed during the copy<br />
+<br />
+- **Authentication**<br />
+  - Full authentication support for US Government and China clouds<br />
+  This requires that 'Show Azure AD login menu' is enabled in Settings<br />
+  - Consent can be requested for missing permissions. This can be triggered via the 'Request Consent' link in the user profile info<br />
+  - New version of MSAL.DLL, version 4.42.1<br />
+  - Object types with only Read permissions are now supported. These will be orange in the menu<br />
+  Buttons like Import and Delete will still be available but they will not work<br />
+<br />
+
+- **List objects**<br />
+  - IsAssigned column is added to objects that supports it (property on the Graph object)<br />
+  - Enable 'Expand assignments' in Settings to include Assignments when getting a full list of objects from Graph<br />
+  This can be used for adding Custom columns based on assignment info<br />
+  It is also used for setting the IsAssigned column for objects that doesn't have the info in Graph<br />
+  This is based on [Issue 30](https://github.com/Micke-K/IntuneManagement/issues/30)<br />
+  - Apps can be filtered in the request<br />
+  If there are more than 1000 applications in the environment, the filter box can be used to return only matched items<br />
+  Enter the filter in the text box and press the Refresh button. Clear the filter box and click Refresh to reload other objects<br />
+  This is based on [Issue 28](https://github.com/Micke-K/IntuneManagement/issues/28)<br />
+<br />
+
+**Fixes**
+
+- **Documentation**<br />
+
+  - Fixed bug in *Conditional Access* documentation that caused some Grant information to be excluded from documentation
+  - Fixed missing properties when documenting *Device restrictions (Windows 10 Team)* profiles 
+  - Fixed some Offline Documentation issues<br />
+  Get dependency info from exported folders instead of Graph<br />
+  Offline documentation is not 100% fully supported yet. Dependency applications for Win32 apps are not included in this version<br />
+  and there might be more properties missing. Please report anything missing for offline documentation to [Issue 37](https://github.com/Micke-K/IntuneManagement/issues/37)<br />
+  **Note** Offline documentation will always require online access. Some information like language text, Azure roles, Mobile apps etc. will use Graph API<br /><br />
+
+- **Authentication**<br />
+  - First login with last used account could fail if the user domain was changed after the initial token was cached<br />
+<br />
 
 ## 3.4.0  - 2022-03-01
 

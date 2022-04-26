@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.4.0'
+    '3.5.0'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -60,6 +60,12 @@ function Invoke-InitializeModule
         Id = "GraphSilent"
         Values = @()
     })
+
+    $global:appSettingSections += (New-Object PSObject -Property @{
+        Title = "MS Graph General"
+        Id = "GraphGeneral"
+        Values = @()
+    })    
 
     Add-SettingsObject (New-Object PSObject -Property @{
         Title = "Root folder"
@@ -133,30 +139,12 @@ function Invoke-InitializeModule
     }) "ImportExport"
 
     Add-SettingsObject (New-Object PSObject -Property @{
-        Title = "Show Delete button"
-        Key = "EMAllowDelete"
-        Type = "Boolean"
-        DefaultValue = $false
-        Description = "Allow deleting individual objectes"
-    }) "ImportExport"
-
-    Add-SettingsObject (New-Object PSObject -Property @{
-        Title = "Show Bulk Delete "
-        Key = "EMAllowBulkDelete"
-        Type = "Boolean"
-        DefaultValue = $false
-        Description = "Allow using bulk delete to delete all objects of selected types"
-    }) "ImportExport"
-    
-
-    Add-SettingsObject (New-Object PSObject -Property @{
         Title = "Allow update on import (Preview)"
         Key = "AllowUpdate"
         Type = "Boolean"
         DefaultValue = $false
         Description = "This will enable the option to update/replace an existing object during import"
     }) "ImportExport"
-
 
     Add-SettingsObject (New-Object PSObject -Property @{
         Title = "Add ID to export file"
@@ -171,17 +159,17 @@ function Invoke-InitializeModule
         Key = "UseBatchAPI"
         Type = "Boolean"
         DefaultValue = $false
-        Description = "This will use batch API to call up to extport 20 objects on each API call"
+        Description = "This will use batch API to export up to 20 objects on each API call"
     }) "ImportExport"
 
     Add-SettingsObject (New-Object PSObject -Property @{
-        Title = "Refresh Objects after copy"
-        Key = "RefreshObjectsAfterCopy"
+        Title = "Resolve reference info"
+        Key = "ResolveReferenceInfo"
         Type = "Boolean"
         DefaultValue = $true
-        Description = "This will refresh all objects when after a copy. If this is disabled, the list must be refreshed manually to see the new objects. Default is true"
+        Description = "This will export/import info for referenced/navigation properties eg certificates in VPN profiles etc."
     }) "ImportExport"
-    
+        
     Add-SettingsObject (New-Object PSObject -Property @{
         Title = "ApplicationId"
         Key = "GraphAzureAppId"
@@ -202,6 +190,38 @@ function Invoke-InitializeModule
         Type = "String"
         Description = "Certificate for Azure App"
     }) "GraphSilent"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Refresh Objects after copy"
+        Key = "RefreshObjectsAfterCopy"
+        Type = "Boolean"
+        DefaultValue = $true
+        Description = "This will refresh all objects when after a copy. If this is disabled, the list must be refreshed manually to see the new objects. Default is true"
+    }) "GraphGeneral"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Show Delete button"
+        Key = "EMAllowDelete"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Allow deleting individual objectes"
+    }) "GraphGeneral"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Show Bulk Delete "
+        Key = "EMAllowBulkDelete"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Allow using bulk delete to delete all objects of selected types"
+    }) "GraphGeneral"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Expand assignments"
+        Key = "ExpandAssignments"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Expand assignments when listing objects. This can be used in custom columns based on assignment info"
+    }) "GraphGeneral"
 }
 
 function Get-GraphAppInfo
@@ -210,13 +230,8 @@ function Get-GraphAppInfo
 
     if($global:hideUI -eq $true)
     {
-        # Set app info from custom settings
-        $appObj = New-Object PSObject -Property @{
-            ClientId = Get-SettingValue "$($PreFix)CustomAppId"
-            TenantId = $global:silentTenantId
-            RedirectUri = Get-SettingValue "$($PreFix)CustomAppRedirect"
-            Authority = Get-SettingValue "$($PreFix)CustomAuthority"
-        }
+        # Taken care of by authentication function
+        return
     }
 
     $graphAppId = Get-SettingValue $settingId
@@ -288,8 +303,8 @@ function Invoke-GraphRequest
 
             $ODataMetadata = "full", # full, minimal, none or skip
 
-            [ValidateSet("BETA","v1.0")]
-            $GraphVersion = "BETA",
+            [ValidateSet("beta","v1.0")]
+            $GraphVersion = "beta",
 
             [switch]
             $AllPages,
@@ -452,7 +467,9 @@ function Get-GraphObjects
     [switch]
     $AllPages,
     [switch]
-    $SingleObject)
+    $SingleObject,
+    [string]
+    $filter)
         
     $params = @{}
     if($objectType.ODataMetadata)
@@ -486,7 +503,7 @@ function Get-GraphObjects
     if($SinglePage -eq $true)
     {
         #Use default page size or use below for a specific page size for testing
-        #$params.Add("pageSize",100)
+        #$params.Add("pageSize",10) #!!!
     }
     elseif($SingleObject -ne $true -and $SinglePage -ne $true)
     {
@@ -498,14 +515,36 @@ function Get-GraphObjects
         $url = $script:nextGraphPage
     }
 
+    if($SingleObject -ne $true -and (Get-SettingValue "ExpandAssignments") -eq $true -and $objectType.ExpandAssignmentsList -ne $false)
+    {
+        # Expand assignments so they can be used in custom columns
+        if(($url.IndexOf('expand',[System.StringComparison]::InvariantCultureIgnoreCase)) -eq -1)
+        {
+            $url += (?: (($url.IndexOf('?')) -eq -1) "?" "&")
+            $url = "$($url)`$expand=assignments"
+        }
+    }
+
+    if($script:multipleGraphPages -eq $true -and $SingleObject -ne $true -and $filter -and $objectType.QuerySearch -eq $true)
+    {
+        # QuerySearch is only reqired when there are more pages to load
+        if(($url.IndexOf('search',[System.StringComparison]::InvariantCultureIgnoreCase)) -eq -1)
+        {
+            $url += (?: (($url.IndexOf('?')) -eq -1) "?" "&")
+            $url = "$($url)`$search=`"$($filter)`""
+        }
+    }    
+    
     $graphObjects = Invoke-GraphRequest -Url $url @params
     if($SinglePage -eq $true -or $AllPages -eq $true)
     {
         $script:nextGraphPage = $graphObjects.'@odata.nextLink'
-    }    
+        if($null -eq $script:multipleGraphPages)
+        {
+            $script:multipleGraphPages = $null -ne $script:nextGraphPage
+        }
+    }
 
-
-        
     if($graphObjects -and ($graphObjects | GM -Name Value -MemberType NoteProperty))
     {
         $retObjects = $graphObjects.Value            
@@ -515,7 +554,7 @@ function Get-GraphObjects
         $retObjects = $graphObjects
     }
 
-    $graphObjects = Add-GraphObectProperties $retObjects $objectType $property $exclude $SortProperty
+    $graphObjects = Add-GraphObjectProperties $retObjects $objectType $property $exclude $SortProperty
 
     if($SingleObject -ne $true -and $objectType.PostListCommand)
     {
@@ -525,7 +564,7 @@ function Get-GraphObjects
     $graphObjects
 }
 
-function Add-GraphObectProperties
+function Add-GraphObjectProperties
 {
     param($graphObjects, 
             $objectType, 
@@ -548,6 +587,8 @@ function Add-GraphObectProperties
         $retObjects = $graphObjects
     }
 
+    $getAssignmentInfo = ((Get-SettingValue "ExpandAssignments") -eq $true -and $objectType.ExpandAssignmentsList -ne $false)
+
     foreach($graphObject in $retObjects)
     {
         $params = @{}
@@ -559,7 +600,16 @@ function Add-GraphObectProperties
             $objTmp | Add-Member -NotePropertyName "Object" -NotePropertyValue $graphObject
             $objTmp | Add-Member -NotePropertyName "ObjectType" -NotePropertyValue $objectType
             $objects += $objTmp
-        }            
+        }
+        
+        if($null -ne $graphObject.isAssigned)
+        {
+            $objTmp | Add-Member -NotePropertyName "IsAssigned" -NotePropertyValue $graphObject.isAssigned
+        }
+        elseif($getAssignmentInfo)
+        {
+            $objTmp | Add-Member -NotePropertyName "IsAssigned" -NotePropertyValue (($graphObject.assignments | measure).Count -gt 0)
+        }        
     }    
 
     if($objects.Count -gt 0 -and $SortProperty -and ($objects[0] | GM -MemberType NoteProperty -Name $SortProperty))
@@ -572,7 +622,14 @@ function Add-GraphObectProperties
 
 function Show-GraphObjects
 {
+    param($filter, [switch]$ObjectTypeChanged)
+
     $global:curObjectType = $global:lstMenuItems.SelectedItem
+
+    if($ObjectTypeChanged -eq $true)
+    {
+        $script:multipleGraphPages = $null
+    }
 
     Clear-GraphObjects
 
@@ -585,7 +642,17 @@ function Show-GraphObjects
     }
     elseif($global:curObjectType.'@AccessType' -eq "None")
     {
-        $global:txtNotLoggedIn.Content = "You don't have the required permissons to access $($global:curObjectType.Title).`n`nRequired perimssons: $($global:curObjectType.Permissons)" 
+        $requiredPermissions = ($global:curObjectType.Permissons -join ",")
+        $missingScopes = ?? $global:curObjectType.'@MissingScopes' $requiredPermissions
+        if($requiredPermissions -ne $missingScopes)
+        {
+            $requiredPermissions = "`nRequired permissions: $requiredPermissions"
+        }
+        else
+        {
+            $requiredPermissions = ""
+        }
+        $global:txtNotLoggedIn.Content = "You don't have the required permissons to access $($global:curObjectType.Title).$($requiredPermissions)`n`Missing perimssons: $missingScopes`n`nRequest consent from the 'Request Consent' link in the user login info`nor`nDisable the 'Use Default Permissions' setting to trigger consent prompt.`nNote: Changing the 'Use Default Permissions' setting will require a restart of the app`nand a 'manual' login" 
         $global:grdNotLoggedIn.Visibility = "Visible"
         $global:grdData.Visibility = "Collapsed"
         return
@@ -593,7 +660,7 @@ function Show-GraphObjects
     $global:grdNotLoggedIn.Visibility = "Collapsed"
     $global:grdData.Visibility = "Visible"
 
-    # Always show Import is an item is selected
+    # Always show Import if an item is selected
     $global:btnImport.IsEnabled = $global:lstMenuItems.SelectedItem -ne $null
 
     if(-not $global:lstMenuItems.SelectedItem) { return }
@@ -612,9 +679,9 @@ function Show-GraphObjects
         $global:grdTitle.Visibility = "Visible"
     }
 
-    $script:nextGraphPage = $null
+    $script:nextGraphPage = $null    
 
-    $graphObjects = @(Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage)
+    $graphObjects = @(Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage -Filter $filter)
 
     $dgObjects.AutoGenerateColumns = $false
     $dgObjects.Columns.Clear()
@@ -857,7 +924,7 @@ function Start-GraphPreImport
     }
 
     # Remove OData properties
-    foreach($odataProp in ($obj.PSObject.Properties | Where { $_.Name -like "*@Odata*Link" -or $_.Name -like "*@odata.context" -or $_.Name -like "*@odata.id" -or ($_.Name -like "*@odata.type" -and $_.Name -ne "@odata.type")}))
+    foreach($odataProp in ($obj.PSObject.Properties | Where { $_.Name -like "*@Odata*Link" -or $_.Name -like "*@odata.context" -or $_.Name -like "*@odata.id" -or ($_.Name -like "*@odata.type" -and $_.Name -ne "@odata.type")})) # -or $_.Name -like "#CustomRef*"
     {        
         $removeProperties += $odataProp.Name
     }
@@ -890,10 +957,11 @@ function Get-GraphMetaData
     {
         # Graph metadata does not support Content-Length in response so size can not be used to check if it is updated
         # There also no other version information in response headers. Use file date to update every week
+        Write-Log "Load Graph MetaData file"
         $url = "https://graph.microsoft.com/beta/`$metadata"
         $fileFullPath = [Environment]::ExpandEnvironmentVariables("%LOCALAPPDATA%\CloudAPIPowerShellManagement\GraphMetaData.xml")
         $fi = [IO.FileInfo]$fileFullPath
-        $maxAge = (Get-Date).AddDays(-7)
+        $maxAge = (Get-Date).AddDays(-14)
         if($fi.Exists -and ($fi.LastWriteTime -gt $maxAge -or $fi.CreationTime -gt $maxAge))
         {            
             try 
@@ -905,6 +973,7 @@ function Get-GraphMetaData
 
         if(-not $global:metaDataXML)
         {
+            Write-Log "Download Graph MetaData file"
             [void][System.Reflection.Assembly]::LoadWithPartialName("System.Web.Extensions")
             $wc = New-Object System.Net.WebClient
             $wc.Encoding = [System.Text.Encoding]::UTF8
@@ -1538,6 +1607,7 @@ function Show-GraphImportForm
             $filesToImport = & $global:curObjectType.PreFilesImportCommand $global:curObjectType $filesToImport
         }
 
+        $navigationPropObjects = @()
         foreach ($fileObj in $filesToImport)
         {
             if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport" -and (Reset-GraphObjet $fileObj $global:dgObjects.ItemsSource))
@@ -1545,7 +1615,22 @@ function Show-GraphImportForm
                 continue
             }
 
-            Import-GraphFile $fileObj
+            $importedObj = Import-GraphFile $fileObj -PassThru
+            if($importedObj -and $global:curObjectType.NavigationProperties -eq $true)
+            {
+                $navigationPropObjects += [PSCustomObject]@{
+                    File =  $fileObj   
+                    ImportedObject = $importedObj
+                }
+            }
+        }
+
+        if($navigationPropObjects)
+        {
+            foreach($navPropObj in $navigationPropObjects)
+            {
+                Set-GraphNavigationPropertiesFromFile $navPropObj
+            }
         }
         Show-GraphObjects
         Show-ModalObject
@@ -1554,8 +1639,9 @@ function Show-GraphImportForm
 
     Add-XamlEvent $script:importForm "btnGetFiles" "add_click" {
         # Used when the user manually updates the path and the press Get Files
-        $global:dgObjectsToImport.ItemsSource = @(Get-GraphFileObjects $global:txtImportPath.Text)
-        if([IO.Directory]::Exists($global:txtImportPath.Text))
+        $path = Expand-FileName $global:txtImportPath.Text
+        $global:dgObjectsToImport.ItemsSource = @(Get-GraphFileObjects $path)
+        if([IO.Directory]::Exists($path))
         {
             Save-Setting "" "LastUsedFullPath" $global:txtImportPath.Text
             Set-XamlProperty $script:importForm "lblMigrationTableInfo" "Content" (Get-MigrationTableInfo)
@@ -1566,7 +1652,8 @@ function Show-GraphImportForm
 
     if($global:txtImportPath.Text)
     {
-        $global:dgObjectsToImport.ItemsSource = @(Get-GraphFileObjects $global:txtImportPath.Text)
+        $path = Expand-FileName $global:txtImportPath.Text
+        $global:dgObjectsToImport.ItemsSource = @(Get-GraphFileObjects $path)
         Set-XamlProperty $script:importForm "lblMigrationTableInfo" "Content" (Get-MigrationTableInfo)
     }
     
@@ -1750,7 +1837,8 @@ function Start-GraphObjectImport
             {
                 $filesToImport = & $item.ObjectType.PreFilesImportCommand $item.ObjectType $filesToImport
             }
-            
+            $navigationPropObjects = @()
+
             foreach ($fileObj in @($filesToImport))
             {
                 $objName = Get-GraphObjectName $fileObj.Object $item.ObjectType
@@ -1766,10 +1854,25 @@ function Start-GraphObjectImport
                     continue
                 }
     
-                Import-GraphFile $fileObj
+                $importedObj = Import-GraphFile $fileObj -PassThru
+                if($importedObj -and $item.ObjectType.NavigationProperties -eq $true)
+                {
+                    $navigationPropObjects += [PSCustomObject]@{
+                        File =  $fileObj   
+                        ImportedObject = $importedObj
+                    }
+                }
+
                 $importedObjects++
             }
             Save-Setting "" "LastUsedFullPath" $folder
+            if($navigationPropObjects)
+            {
+                foreach($navPropObj in $navigationPropObjects)
+                {
+                    Set-GraphNavigationPropertiesFromFile $navPropObj
+                }
+            }            
         }
         else
         {
@@ -2010,7 +2113,7 @@ function Get-GraphFileObjects
 
 function Import-GraphFile
 {
-    param($file, $objectType) 
+    param($file, $objectType, [switch]$PassThru) 
 
     if([IO.File]::Exists($file.FileInfo.FullName) -eq $false)
     {
@@ -2050,7 +2153,12 @@ function Import-GraphFile
         if($newObj -and $objClone.Assignments -and $global:chkImportAssignments.IsChecked -eq $true)
         {
             Import-GraphObjectAssignment $newObj $file.ObjectType $objClone.Assignments $file.FileInfo.FullName | Out-Null
-        }        
+        }
+
+        if($PassThru -eq $true -and $newObj)
+        {
+            $newObj
+        }
     } 
     catch 
     {
@@ -2347,7 +2455,8 @@ function Add-GraphMigrationInfo
             if($objType -eq "#microsoft.graph.groupAssignmentTarget" -or
                 $objType -eq "#microsoft.graph.exclusionGroupAssignmentTarget")
             {
-                Add-GroupMigrationObject $objInfo.groupid
+                #Add-GroupMigrationObject $objInfo.groupid
+                Add-GraphMigrationObject $objInfo.groupid "/groups" "Group"
             }
             elseif($objType -eq "#microsoft.graph.allLicensedUsersAssignmentTarget" -or
                 $objType -eq "#microsoft.graph.allDevicesAssignmentTarget")
@@ -2420,6 +2529,8 @@ function Add-GroupMigrationObject
 
     if(-not $path) { return }
 
+    $path = Expand-FileName $path
+
     # Check if group is already processed
     $groupObj = Get-GraphMigrationObject $groupId
     if(-not $groupObj)
@@ -2434,13 +2545,53 @@ function Add-GroupMigrationObject
         if($global:AADObjectCache.ContainsKey($groupId) -eq $false) { $global:AADObjectCache.Add($groupId, $groupObj) }
 
         # Add group to migration file
-        if((Add-GraphMigrationObject $groupObj $path "Group"))
+        if((Add-GraphMigrationObjectToFile $groupObj $path "Group"))
         {
             # Export group info to json file for possible import
             $grouspPath = Join-Path $path "Groups"
             if(-not (Test-Path $grouspPath)) { mkdir -Path $grouspPath -Force -ErrorAction SilentlyContinue | Out-Null }
             $fileName = "$grouspPath\$((Remove-InvalidFileNameChars $groupObj.displayName)).json"
             ConvertTo-Json $groupObj -Depth 10 | Out-File $fileName -Force            
+        }
+    }
+}
+
+function Add-GraphMigrationObject
+{
+    param($objId, $grapAPI, $objTypeName)
+
+    if(-not $objId) { return }
+
+    $path = Get-GraphMigrationTableFile $global:txtExportPath.Text
+
+    if(-not $path) { return }
+
+    $path = Expand-FileName $path
+
+    # Check if object is already processed
+    $graphObj = Get-GraphMigrationObject $objId
+    if(-not $graphObj)
+    {
+        # Get object info
+        $graphObj = Invoke-GraphRequest "$($grapAPI)/$objId" -ODataMetadata "none"
+    }
+
+    if($graphObj)
+    {
+        # Add object to cache
+        if($global:AADObjectCache.ContainsKey($objId) -eq $false) { $global:AADObjectCache.Add($objId, $ugraphObjserObj) }
+
+        # Add object to migration file
+        if((Add-GraphMigrationObjectToFile $graphObj $path $objTypeName))
+        {
+            if($objTypeName -eq "Group")
+            {
+                # Export group info to json file for possible import
+                $grouspPath = Join-Path $path "Groups"
+                if(-not (Test-Path $grouspPath)) { mkdir -Path $grouspPath -Force -ErrorAction SilentlyContinue | Out-Null }
+                $fileName = "$grouspPath\$((Remove-InvalidFileNameChars $graphObj.displayName)).json"
+                ConvertTo-Json $graphObj -Depth 10 | Out-File $fileName -Force
+            }
         }
     }
 }
@@ -2458,7 +2609,7 @@ function Get-GraphMigrationObject
 }
 
 # Adds an object to migration file if not added previously 
-function Add-GraphMigrationObject
+function Add-GraphMigrationObjectToFile
 {
     param($obj, $path, $objType)
 
@@ -2517,6 +2668,7 @@ function Get-GraphMigrationTableForImport
     $global:GraphMigrationTable = $null
     # Migration table must be located in the root of the import path
     $path = $global:txtImportPath.Text
+    $path = Expand-FileName $path
     
     for($i = 0;$i -lt 2;$i++)
     {
@@ -2659,7 +2811,7 @@ function Update-JsonForEnvironment
 #region Dependency Functions
 function Get-GraphDependencyDefaultObjects
 {
-    Add-GraphDependencyObjects @("ScopeTags")
+    Add-GraphDependencyObjects @("ScopeTags","AssignmentFilters")
 }
 
 function Get-GraphDependencyObjects
@@ -2771,6 +2923,8 @@ function Export-GraphObjects
 
     $global:ExportRoot = (Get-XamlProperty $script:exportForm "txtExportPath" "Text")
     $folder = Get-GraphObjectFolder  $objectType $global:ExportRoot (Get-XamlProperty $script:exportForm "chkAddObjectType" "IsChecked") (Get-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked")
+    
+    $folder = Expand-FileName $folder
 
     $objectsToExport = @()
     if($Selected -ne $true)
@@ -2831,6 +2985,8 @@ function Export-GraphObject
         Write-Log "No object to export" 3
         return
     }
+    
+    Add-GraphNavigationProperties $obj $objectType 
 
     try 
     {
@@ -2868,6 +3024,177 @@ function Export-GraphObject
     catch 
     {
         Write-LogError "Failed to export object" $_.Exception
+    }
+}
+
+<#
+    Update the navigation references for an object
+#>
+function Set-GraphNavigationPropertiesFromFile
+{
+    param($navPropObject)
+
+    if(-not $navPropObject.File -or -not $navPropObject.ImportedObject)
+    {
+        return
+    }
+
+    # Reload data from file. Some object properties was removed before import...
+    $objFileInfo = (ConvertFrom-Json (Get-Content -LiteralPath $navPropObject.File.FileInfo.FullName -Raw))
+
+    if(-not ($objFileInfo.PSObject.Properties | Where { $_.Name -like "#CustomRef_*" })) { return }
+
+    Set-GraphNavigationProperties $navPropObject.ImportedObject $objFileInfo $navPropObject.File.ObjectType
+    
+}
+
+function Set-GraphNavigationProperties
+{
+    param($newObj, $oldObj, $objectType, [switch]$FromOldObject)
+
+    if($objectType.NavigationProperties -ne $true) { return }
+
+    if(-not $newObj -or -not $oldObj -or -not $objectType)
+    {
+        return
+    }
+
+    if((Get-SettingValue "ResolveReferenceInfo") -ne $true) { return }
+
+    $entityName = $oldObj.'@odata.type'.Split('.')[-1]
+
+    $nameProp = ?? $objectType.NameProperty "displayName"
+
+    $props = Get-GraphEntityTypeProperties $entityName
+    
+    foreach($prop in ($props | Where LocalName -eq "NavigationProperty" ))
+    {
+        # Is this the correct way of filter out Assignments, summaries etc.?
+        if($prop.ContainsTarget -eq $true) { continue }
+
+        if(-not ($oldObj."$($prop.Name)@odata.associationLink")) { continue }
+
+        $associationLink = $oldObj."$($prop.Name)@odata.associationLink" -replace $oldObj.Id,$newObj.Id
+        $refBodyObjs = $null #@()
+        $refObjName = $null
+        $refObjId = $null
+
+        if($FromOldObject -eq $true)
+        {
+            $navProp = Invoke-GraphRequest -URL $oldObj."$($prop.Name)@odata.navigationLink" -ODataMetadata "minimal" -NoError
+
+            if(-not $navProp) { continue }
+
+            $refObjName = Get-GraphObjectName $navProp $navProp
+            $refObjId = $navProp.Id
+
+            $refBodyObjs = ([PSCustomObject]@{
+                "@odata.id" = ("https://$global:MSALGraphEnvironment/beta/$($objectType.API)('$($navProp.Id)')")
+            })
+        }
+        else
+        {
+            if(-not ($oldObj."#CustomRef_$($prop.Name)")) { continue } # Not included in the export file
+
+            $idx = $oldObj."#CustomRef_$($prop.Name)".IndexOf("|:|")
+            if($idx -gt -1)
+            {
+                $refObjName = $oldObj."#CustomRef_$($prop.Name)".SubString(0,$idx)
+            }
+            else
+            {
+                $refObjName = $oldObj."#CustomRef_$($prop.Name)"
+            }        
+            
+            $refObjects = Invoke-GraphRequest -URL "$($objectType.API)?`$filter=$($nameProp) eq '$($refObjName)'" -NoError
+
+            $objectsFound = ($refObjects.value | measure).Count
+
+            if($objectsFound -eq 1)
+            {
+                # Are there any references that allows multiple ref objects?                
+                foreach($refObj in $refObjects.value)
+                {
+                    $refBodyObjs = ([PSCustomObject]@{
+                        "@odata.id" = ("https://$global:MSALGraphEnvironment/beta/$($objectType.API)('$($refObj.Id)')")
+                    })
+                    $refObjId = $refObj.Id
+                }
+            }
+            elseif($objectsFound -gt 1)
+            {
+                Write-Log "Multiple objects ($objectsFound) found with $nameProp $refObjName. Skipping reference." 2
+                continue
+            }
+            else
+            {
+                Write-Log "No object found with $nameProp $refObjName" 2
+                continue
+            }
+        }
+
+        Write-Log "Add $refObjName ($refObjId) to navigation property $($prop.Name)"
+
+        $body = $refBodyObjs | ConvertTo-Json -Depth 10
+        Invoke-GraphRequest -URL $associationLink -HttpMethod "PUT" -Content $body | Out-Null
+    }    
+}
+
+
+<#
+    Add Navigation Property data to the object so it included in the exported json file
+#>
+function Add-GraphNavigationProperties
+{
+    param($obj, $objType)
+    
+    if($objectType.NavigationProperties -ne $true) { return }
+
+    if(-not $obj.'@odata.type') { return }
+
+    if((Get-SettingValue "ResolveReferenceInfo") -ne $true) { return }
+
+    $entityName = $obj.'@odata.type'.Split('.')[-1]
+
+    $props = Get-GraphEntityTypeProperties $entityName
+
+    foreach($prop in ($props | Where LocalName -eq "NavigationProperty" ))
+    {
+        # Is this the correct way of filter out Assignments, summaries etc.?
+        if($prop.ContainsTarget -eq $true) { continue }
+
+        if(-not ($obj."$($prop.Name)@odata.navigationLink")) { continue }
+        $navProp = Invoke-GraphRequest -URL $obj."$($prop.Name)@odata.navigationLink" -ODataMetadata "minimal" -NoError
+        if($navProp)
+        {
+            $value = $null
+            $refType = ""
+            if($navProp.value -is [Object[]])
+            {
+                if($navProp.value.Count -gt 0 -and $navProp.value[0].'@odata.type') { $refType = $navProp.value[0].'@odata.type' }
+                $refValues = @()
+                $navProp.value | ForEach-Object { $refValues += (Get-GraphObjectName $_ $objType) }
+                if($refValues.Count -gt 0)
+                {
+                    if(($refValues -join "") -like "*,*")
+                    {
+                        Write-Log "One or mor referenced objects has the comma (,) character in the name. Cannot add navigation property $($prop.Name)" 3
+                    }
+                    $value = ($refValues -join ",") 
+                }
+            }
+            else
+            {
+                if($navProp.'@odata.type') { $refType = $navProp.'@odata.type' }
+                $value = (Get-GraphObjectName $navProp $objType)
+            }
+            if($refType -and $value)
+            {
+                $value = ($value + "|:|" + $refType)
+            }
+            
+            $obj | Add-Member -NotePropertyName "#CustomRef_$($prop.Name)" -NotePropertyValue $value
+        }
     }
 }
 
@@ -2932,7 +3259,7 @@ function Get-GraphBatchObjects
     if($objectType -and $batchResults.Count -gt 0)
     {
         $batchResultsTmp = $batchResults
-        $batchResults = Add-GraphObectProperties $batchResultsTmp $objectType -property $objectType.ViewProperties
+        $batchResults = Add-GraphObjectProperties $batchResultsTmp $objectType -property $objectType.ViewProperties
         
         $curObj = 1
         foreach($obj in $batchResults)
@@ -3120,6 +3447,8 @@ function Copy-GraphObject
         [System.Windows.MessageBox]::Show("No object selected`n`nSelect the $($global:curObjectType.Title) item you want to copy", "Error", "OK", "Error") 
         return 
     }
+    $script:copyForm = Initialize-Window ($global:AppRootFolder + "\Xaml\CopyDialog.xaml")
+    if(-not $script:copyForm) { return }    
 
     $newName = "$((Get-GraphObjectName $dgObjects.SelectedItem $global:curObjectType)) - Copy"
     if($global:curObjectType.CopyDefaultName)
@@ -3127,10 +3456,44 @@ function Copy-GraphObject
         $newName = $global:curObjectType.CopyDefaultName
         $dgObjects.SelectedItem.PSObject.Properties | foreach { $newName =  $newName -replace "%$($_.Name)%", $dgObjects.SelectedItem."$($_.Name)" }
     }
-    $ret = Show-InputDialog "Copy $($global:curObjectType.Title)" "Select name for the new object" $newName
+
+    Set-XamlProperty $script:copyForm "txtObjectName" "Text" $newName
+    $descriptionProperty = $global:dgObjects.SelectedItem.Object | gm | Where { $_.Name -eq "Description" }
+    if($descriptionProperty)
+    {
+        Set-XamlProperty $script:copyForm "txtObjectDescription" "Text" $global:dgObjects.SelectedItem.Object.Description
+    }
+    else
+    {
+        Set-XamlProperty $script:copyForm "txtObjectDescription" "IsEnabled" $false
+    }
+
+    $script:copyForm.Add_ContentRendered({
+        $txtName = $script:copyForm.FindName("txtObjectName")
+        if($txtName)
+        {
+            $txtName.SelectAll();
+        }
+    })
+
+    Add-XamlEvent $script:copyForm "btnOk" "Add_Click" -scriptBlock ([scriptblock]{
+        $script:copyForm.DialogResult = $true;	
+    })
+
+    $script:copyForm.Owner = $global:window
+    $script:copyForm.Icon = $global:Window.Icon     
+    $ret = $script:copyForm.ShowDialog()
 
     if($ret)
     {
+        $newName = Get-XamlProperty $script:copyForm "txtObjectName" "Text"
+        if(-not $newName)
+        {
+            Write-Log "New name cannot be empty. Copy object skipped" 2
+            Write-Status ""
+            return 
+        }
+
         # Export profile
         Write-Status "Export $((Get-GraphObjectName $dgObjects.SelectedItem $global:curObjectType))"
 
@@ -3138,7 +3501,7 @@ function Copy-GraphObject
 
         if($global:curObjectType.PreCopyCommand)
         {
-            if((& $global:curObjectType.PreCopyCommand $exportObj $global:curObjectType $ret))
+            if((& $global:curObjectType.PreCopyCommand $exportObj $global:curObjectType $newName))
             {
                 if((Get-SettingValue "RefreshObjectsAfterCopy") -eq $true)
                 {
@@ -3154,15 +3517,22 @@ function Copy-GraphObject
         if($obj)
         {
             # Import new profile
-            Set-GraphObjectName $obj $global:curObjectType $ret
+            Set-GraphObjectName $obj $global:curObjectType $newName
+            if((Get-XamlProperty  $script:copyForm "txtObjectDescription" "IsEnabled" $false) -eq $true)
+            {
+                $obj.Description = Get-XamlProperty  $script:copyForm "txtObjectDescription" "Text"
+            }
 
             $newObj = Import-GraphObject $obj $global:curObjectType
             if($newObj)
             {
+                Set-GraphNavigationProperties $newObj $exportObj $global:curObjectType -FromOldObject
+
                 if($global:curObjectType.PostCopyCommand)
                 {
                     & $global:curObjectType.PostCopyCommand $exportObj $newObj $global:curObjectType
                 }
+
                 if((Get-SettingValue "RefreshObjectsAfterCopy") -eq $true)
                 {
                     Show-GraphObjects
@@ -3236,7 +3606,7 @@ function Show-GraphObjectInfo
     $descriptionProperty = $global:dgObjects.SelectedItem.Object | gm | Where { $_.Name -eq "Description" }
     if($descriptionProperty)
     {
-        Set-XamlProperty  $script:detailsForm "txtObjectDescription" "Text" $descriptionProperty.Value        
+        Set-XamlProperty  $script:detailsForm "txtObjectDescription" "Text" $global:dgObjects.SelectedItem.Object.Description       
     }
     else
     {
@@ -3612,6 +3982,11 @@ function Get-GraphEntityTypeProperties
 {
     param($entityType, $xml)
 
+    Get-GraphMetaData
+
+    if(-not $xml) { $xml = $global:metaDataXML }
+    if(-not $xml) { return }
+
     $tmpEntity = $xml.SelectSingleNode("//*[name()='EntityType' and @Name='$entityType']")
     if(-not $tmpEntity) { return }
 
@@ -3631,7 +4006,7 @@ function Get-GraphEntityTypeProperties
     [array]::Reverse($entities)
     foreach($enitiy in $entities)
     {
-        $properties += $enitiy.SelectNodes("*[name()='Property']")
+        $properties += $enitiy.SelectNodes("*[name()='Property' or name()='NavigationProperty']")
     }
     
     $properties 

@@ -11,7 +11,40 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.4.0'
+    '3.5.0'
+}
+
+function Initialize-Window
+{
+    param($xamlFile)
+
+    try 
+    {
+        [xml]$xaml = Get-Content $xamlFile
+        [xml]$styles = Get-Content ($global:AppRootFolder + "\Themes\Styles.xaml")
+
+        ### Update relative path to full path for ResourceDictionary
+        [System.Xml.XmlNamespaceManager] $nsm = $xaml.NameTable;
+        $nsm.AddNamespace("s", 'http://schemas.microsoft.com/winfx/2006/xaml/presentation');
+        foreach($rsdNode in ($xaml.SelectNodes("//s:ResourceDictionary[@Source]", $nsm)))
+        {
+            $rsdNode.Source = (Join-Path ($global:AppRootFolder) ($rsdNode.Source)).ToString()
+        }
+        
+        # Add Styles 
+        foreach($node in $styles.DocumentElement.ChildNodes)
+        {
+            $tmpNode = $xaml.CreateElement("Temp")
+            $tmpNode.InnerXml = $node.OuterXml
+            $xaml.Window.'Window.Resources'.ResourceDictionary.AppendChild($tmpNode.Style) | Out-Null
+        }
+        return ([Windows.Markup.XamlReader]::Load((New-Object System.Xml.XmlNodeReader $xaml)))
+    }
+    catch
+    {
+        Write-LogError "Failed to initialize window" $_.Exception
+        return 
+    }     
 }
 
 function Start-CoreApp
@@ -50,6 +83,23 @@ function Start-CoreApp
     Write-Log "#####################################################################################"
     Write-Log "Application started"
     Write-Log "#####################################################################################"
+
+    Write-Log "PowerShell version: $($PSVersionTable.PSVersion.ToString())"
+    Write-Log "PowerShell build: $($PSVersionTable.BuildVersion.ToString())"
+    Write-Log "PowerShell CLR: $($PSVersionTable.CLRVersion.ToString())"
+    Write-Log "PowerShell edition: $($PSVersionTable.PSEdition)"
+
+    try
+    {
+        $osName = Get-ItemPropertyValue "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ProductName" -ErrorAction Stop
+        $patchLevel = Get-ItemPropertyValue "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "UBR" -ErrorAction Stop
+        $ver  = [Version]::new([Environment]::OSVersion.Version.Major,[Environment]::OSVersion.Version.Minor, [Environment]::OSVersion.Version.Build, $patchLevel)
+        Write-Log "OS: $osName $ver"
+    }
+    catch
+    {
+        Write-Log "OS version: $([environment]::OSVersion.VersionString)"
+    }
 
     if(Test-Path $global:modulesPath)
     { 
@@ -97,6 +147,8 @@ function Start-CoreApp
             [System.Windows.Forms.Application]::DoEvents()
 
             Show-View $View
+
+            if((Get-SettingValue "CheckForUpdates") -eq $true) { Get-IsLatestVersion }
 
             Invoke-ModuleFunction "Invoke-ShowMainWindow"
 
@@ -600,7 +652,6 @@ function Show-UpdatesDialog
         Show-ModalObject 
     }    
 
-    #Get-Module | Where Name -eq "Core"
     $fileContent = Get-Content -Raw -Path ($global:AppRootFolder + "\ReleaseNotes.md")
     try
     {
@@ -613,14 +664,6 @@ function Show-UpdatesDialog
     {
         if($mystream) { $mystream.Dispose() }
     }
-
-    <#
-    $latest = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/releases/latest"
-    if($latest)
-    {
-
-    }
-    #>
 
     $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/contents/ReleaseNotes.md"
     if($content)
@@ -647,6 +690,102 @@ function Show-UpdatesDialog
     Show-ModalForm "Release Notes" $script:dlgUpdates -HideButtons
 }
 
+function Get-IsLatestVersion
+{
+    if($global:MainAppStarted -ne $true)
+    {
+        $global:txtSplashText.Text = "Check for updates"
+        [System.Windows.Forms.Application]::DoEvents()
+    }
+
+    $gitHubVer = $null
+
+    $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/releases/latest"
+    if($content.Name)
+    {
+        try
+        {
+            $gitHubVer = [version]$content.Name
+        }
+        catch {}
+    }
+
+    if($null -eq $gitHubVer)
+    {
+        $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/contents/CloudAPIPowerShellManagement.psd1"
+        $gitHubText = [System.Text.Encoding]::UTF8.GetString(([System.Convert]::FromBase64String($content.content)))
+        $gitHubInfo = Get-ModuleDataTable $gitHubText
+        try
+        {
+            $gitHubVer = [version]$gitHubInfo.ModuleVersion
+        }
+        catch {}
+    }
+
+    if(-not $gitHubVer)
+    {
+        Write-log "Failed to get version info in GitHub" 2
+        return
+    }
+
+    $LocalInfo = $null
+    $localVer = $null
+    try
+    {        
+        Import-LocalizedData -BindingVariable LocalInfo -BaseDirectory $global:AppRootFolder -FileName "CloudAPIPowerShellManagement.psd1" -ErrorAction Stop
+        $localVer = [version]$LocalInfo.ModuleVersion
+    }
+    catch { }
+
+    if(-not $localVer)
+    {
+        Write-log "Failed to get version info from local file" 2
+        return
+    }
+    
+    if($localVer -lt $gitHubVer)
+    {
+        Write-Log "Local version and GitHub version does not match" 2
+        Write-Log "Local version: $($localVer.ToString())"
+        Write-Log "GitHub version: $($gitHubVer.ToString())"
+        [System.Windows.MessageBox]::Show("There is a new version available on GitHub $($gitHubVer.ToString())`n`nCurrent version is $($localVer.ToString())", "Old version!", "OK", "Warning")
+    }
+    else
+    {
+        Write-Log "Running latest version: $($localVer.ToString())"
+    }
+}
+
+function Get-ModuleDataTable
+{
+    param($moduleText)
+    
+    $result = $null
+
+    if(-not $moduleText) { return }
+    
+    try
+    {
+        $Path = [IO.path]::ChangeExtension([IO.Path]::GetTempFileName(), "psd1")
+        $FI = [io.FileInfo]$path
+        $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
+        [System.IO.File]::WriteAllLines($FI.FullName, $moduleText, $Utf8NoBomEncoding)
+        $Result = $null
+        Import-LocalizedData -BindingVariable Result -BaseDirectory $FI.DirectoryName -FileName $fi.Name
+    }
+    catch 
+    {
+
+    }
+    finally 
+    {
+        try { [IO.File]::Delete(([IO.path]::ChangeExtension($FI.FullName, "tmp"))) } catch {}
+        try { $FI.Delete() } catch{}
+    }
+    
+    $Result    
+}
+
 function Show-InputDialog
 {
     param(
@@ -654,7 +793,7 @@ function Show-InputDialog
         $FormText,
         $DefaultValue)
 
-    $script:inputBox = Get-XamlObject ($global:AppRootFolder + "\Xaml\InputDialog.xaml")
+    $script:inputBox = Initialize-Window ($global:AppRootFolder + "\Xaml\InputDialog.xaml")
     if(-not $script:inputBox) { return }
     
     $script:inputBox.Title = $FormTitle
@@ -672,6 +811,9 @@ function Show-InputDialog
         $script:txtValue.Focus();
     })
 
+    $inputBox.Owner = $global:window
+    $inputBox.Icon = $global:Window.Icon     
+    
     $inputBox.ShowDialog() | Out-null
 
     return $script:txtValue.Text
@@ -1674,7 +1816,7 @@ function Show-SettingsForm
         }
     }
 
-    foreach($section in $global:appSettingSections)
+    foreach($settingObj in $global:appSettingSections)
     {
         if(-not ($settingObj | Get-Member -MemberType NoteProperty -Name "Priority"))
         {
@@ -1738,8 +1880,16 @@ function Add-DefaultSettings
         Key = "PreviewFeatures"
         Type = "Boolean"
         DefaultValue = $false
-        Description = "Enable featurs that are marked as Preview. This might require a restart and prompt for consent"
+        Description = "Enable features that are marked as Preview. This might require a restart and prompt for consent"
     }) "General"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Check for updates"
+        Key = "CheckForUpdates"
+        Type = "Boolean"
+        DefaultValue = $true
+        Description = "Check GitHub if there is a later version available"
+    }) "General"    
 }
 
 function Add-SettingsObject
@@ -1752,7 +1902,12 @@ function Add-SettingsObject
         Write-Log "Could not find section $section" 3
         return 
     }
-    $section.Values += $obj
+
+    try
+    {
+        $section.Values += $obj
+    }
+    catch { }
 }
 
 function Save-AllSettings
@@ -2168,10 +2323,10 @@ function Get-MainWindow
                 {
                     $window.Close()                    
                 }
-            }
+            }            
 
-            Show-ModalForm $window.Title $script:welcomeForm -HideButtons
-        }
+            Show-ModalForm $window.Title $script:welcomeForm -HideButtons            
+        }            
     })
 
     foreach($view in $global:viewObjects)
@@ -2186,7 +2341,8 @@ function Get-MainWindow
             }
         })
         $global:mnuViews.AddChild($subItem) | Out-Null
-    }    
+    }
+    
 }
 
 #endregion
@@ -2229,7 +2385,12 @@ function Get-JWTtoken
 { 
     param($token)
 
-    if(-not $token -or -not $token.StartsWith("eyJ"))  { Write-Log "Invalid token" 3; return }
+    if(-not $token) { return }
+    
+    if(-not $token.StartsWith("eyJ"))  
+    {
+        Write-Log "Invalid JWT token" 3; return
+    }
 
     # First part is the header. Second part is the payload. Third part is the signature
     $arr = $token.Split(".")

@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.4.0'
+    '3.5.0'
 }
 
 $global:msalAuthenticator = $null
@@ -78,7 +78,7 @@ function Invoke-InitializeModule
         Key = "CacheMSALToken"
         Type = "Boolean"
         DefaultValue = $true
-        Description = "Store the MSAL token in an encrypted file an automatically log on at next logon. Store in the users profile and can only be decrypted by the user that created it. Note: Requires restart"
+        Description = "Store the MSAL token in an encrypted file and automatically log when the script starts. The token is stored in the users profile and can only be decrypted by the user that created it. Note: Requires restart"
     }) "MSAL"
 
     Add-SettingsObject (New-Object PSObject -Property @{
@@ -106,20 +106,12 @@ function Invoke-InitializeModule
     }) "MSAL"
 
     Add-SettingsObject (New-Object PSObject -Property @{
-        Title = "Azure Login"
-        Key = "AzureLogin"
-        Type = "List" 
-        ItemsSource = $script:lstAADEnvironments
-        DefaultValue = "public"
-    }) "MSAL" 
-
-    Add-SettingsObject (New-Object PSObject -Property @{
-        Title = "GCC Environment"
-        Key = "GCCEnvironment"
-        Type = "List" 
-        ItemsSource = $script:lstGCCEnvironments
-        DefaultValue = "gcc"
-    }) "MSAL" 
+        Title = "Show Azure AD login menu"
+        Key = "AzureADLoginMenu"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Use this to login to US Government or China cloud. If not enabled, it will directly prompt for Public cloud login"
+    }) "MSAL"
 
     Add-SettingsObject (New-Object PSObject -Property @{
         Title = "Sort Account List"
@@ -156,6 +148,7 @@ function Get-MSALAuthenticationObject
 function Invoke-SettingsUpdated
 {
     Initialize-MSALSettings
+    Invoke-MSALCheckObjectViewAccess 
 }
 
 function Initialize-MSALSettings
@@ -192,19 +185,19 @@ function Set-MSALGraphEnvironment
 
     $graphEnv = "graph.microsoft.com"
     
+    
     if($user)
     {
         $curAADEnv = $script:lstAADEnvironments | Where URL -eq $user.Environment
     }
     else
     {
-        $loginValue = Get-SettingValue "AzureLogin" "public" -TenantID (?? $tenantId $loginHint.user.TenantId)
-        $curAADEnv = $script:lstAADEnvironments | Where value -eq $loginValue
-    }
+        $curAADEnv = $script:lstAADEnvironments | Where value -eq (Get-Setting "" "MSALCloudType" "public")
+    }    
 
     if($curAADEnv.Value -eq "usGov")
     {
-        $gccEnv = Get-SettingValue "GCCEnvironment" "gcc" -TenantID (?? $tenantId $loginHint.user.TenantId)
+        $gccEnv = (Get-Setting "" "MSALGCCType" "gcc")
         if($gccEnv)
         {
             $GCCEnvObj = $script:lstGCCEnvironments | Where Value -eq $gccEnv
@@ -527,13 +520,29 @@ function Add-MSALPrereq
         return 
     }
 
+    $fiLoaded = $null
+    if(("Microsoft.Identity.Client.TokenCache" -as [type]))
+    {
+        $fiLoaded = [IO.FileInfo]"$([Microsoft.Identity.Client.TokenCache].Assembly.Location)"
+    } 
+
     $fi = [IO.FileInfo]$msalPath
-    [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 
-    Write-Log "Using MSAL file $msalPath. Version: $($fi.VersionInfo.FileVersion)"
-    [void][System.Reflection.Assembly]::LoadFile($msalPath)
 
     [System.Collections.Generic.List[string]] $RequiredAssemblies = New-Object System.Collections.Generic.List[string]
-    $RequiredAssemblies.Add($msalPath)
+    if($fiLoaded -and $fiLoaded.VersionInfo.FileVersion -ne $fi.VersionInfo.FileVersion)
+    {
+        Write-Log "Wrong version of MSAL.DLL is loaded - Version $($fiLoaded.VersionInfo.FileVersion). DLL: $($fiLoaded.FullName)" 3
+        Write-Log "Expected version: $($fi.VersionInfo.FileVersion) from DLL $msalPath" 3
+        Write-Log "Some MSAL features might not work!" 3
+        Write-Log "This could happen if another version of MSAL.DLL was loaded beforethe script tried to load it" 3
+        $RequiredAssemblies.Add($fiLoaded.FullName)
+    }
+    else
+    {    
+        Write-Log "Using MSAL file $msalPath. Version: $($fi.VersionInfo.FileVersion)"
+        [void][System.Reflection.Assembly]::LoadFile($msalPath)
+        $RequiredAssemblies.Add($msalPath)
+    }
     $RequiredAssemblies.Add('System.Security.dll')
 
     try
@@ -545,6 +554,7 @@ function Add-MSALPrereq
         $global:SkipTokenCacheHelperEx = $true
         Write-LogError "Failed to compile TokenCacheHelperEx. The access token will not be cached. Check write access to the CS folder and ASR policies" $_.Exception
     }
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 
 }
 
 function Connect-MSALClientApp
@@ -650,9 +660,8 @@ function Get-MsalAuthenticationToken
 
 function Get-MSALLoginEnvironment
 {
-    $loginValue = Get-SettingValue "AzureLogin" "public"
-    $loginEnv = $script:lstAADEnvironments | Where value -eq $loginValue
-    return (?? $loginEnv.Environment "login.microsoftonline.com")
+    $loginEnv = $script:lstAADEnvironments | Where value -eq (Get-Setting "" "MSALCloudType" "public")
+    return (?? $loginEnv.URL "login.microsoftonline.com")
 }
 function Get-MSALApp
 {
@@ -687,7 +696,10 @@ function Get-MSALApp
         if($appInfo.RedirectUri) { [void]$appBuilder.WithRedirectUri($appInfo.RedirectUri) }
 
         [void] $appBuilder.WithClientName("CloudAPIPowerShellManagement") 
-        [void] $appBuilder.WithClientVersion($PSVersionTable.PSVersion) 
+        [void] $appBuilder.WithClientVersion($PSVersionTable.PSVersion)
+        
+        # Ceck if correct version...
+        #$appBuilder.WithMultiCloudSupport($true)        
         
         $msalApp = $appBuilder.Build()
 
@@ -732,6 +744,9 @@ function Connect-MSALUser
 
         $Account,
 
+        [switch]
+        $ShowMenu,
+
         $Tenant
     )
 
@@ -750,7 +765,7 @@ function Connect-MSALUser
         }
         else
         {
-            Write-Log "Azure AppId, Tenant Id and Sercret/Cert must be specified for batch login" 3
+            Write-Log "Azure AppId, Tenant Id and Sercret/Cert must be specified for batch jobs" 3
         }
         
         return 
@@ -758,27 +773,22 @@ function Connect-MSALUser
 
     Write-LogDebug "Authenticate"
 
+    if($ShowMenu -eq $true -and ((Get-SettingValue "AzureADLoginMenu") -eq $true))
+    {
+        if((Show-MSALLoginMenu) -eq $false) { return }
+        $global:MSALGraphEnvironment = $null
+    }
+
     if(-not $global:appObj.ClientId)
     {
         Write-Log "Application id is missing. Cannot authenticate" 3
         return
     }
 
-    #if(-not $global:appObj.TenantId -and -not $global:appObj.Authority)
-    #{
-    #    Write-Log "Tenant id/Authority is missing. Cannot authenticate" 3
-    #}
-
     if ($global:SkipTokenCacheHelperEx -ne $true -and -not ("TokenCacheHelperEx" -as [type])) 
     {
         Add-MSALPrereq
     }
-
-    #if (-not ("TokenCacheHelperEx" -as [type])) 
-    #{
-    #    Write-Log "Failed to compile TokenCacheHelperEx class"
-    #    return
-    #}
 
     $curTicks = $global:MSALToken.ExpiresOn.LocalDateTime.Ticks
 
@@ -818,10 +828,20 @@ function Connect-MSALUser
             }
             else
             {
-                $lastUser = Get-Setting "" "LastLoggedOnUser"
-                if($lastUser)
+                $lastUser = 
+                $lastUserId = Get-Setting "" "LastLoggedOnUserId"
+                if($lastUserId)
                 {
-                    $loginHint = $global:MSALAccounts | Where { $_.HomeAccountId.Identifier -eq $lastUser }
+                    # Try to get user based on Id - to allow alias login...
+                    $loginHint = $global:MSALAccounts | Where { $_.HomeAccountId.ObjectId -eq $lastUserId }
+                }
+                if(-not $loginHint)
+                {   
+                    $lastUser = Get-Setting "" "LastLoggedOnUser"
+                    if($lastUser)
+                    {
+                        $loginHint = $global:MSALAccounts | Where { $_.HomeAccountId.Identifier -eq $lastUser }
+                    }
                 }
                 if(-not $loginHint)
                 {   
@@ -842,34 +862,12 @@ function Connect-MSALUser
     Set-MSALGraphEnvironment $loginHint $tenantId
     $useDefaultPermissions = (Get-SettingValue "UseDefaultPermissions" -TenantID (?? $tenantId $loginHint.HomeAccountId.TenantId)) 
 
-    if($useDefaultPermissions -eq $true -or ($global:currentViewObject.ViewInfo.Permissions | measure).Count -eq 0)
-    {
-        [string[]] $Scopes = "https://$($global:MSALGraphEnvironment)/.default"
-        $useDefaultPermissions = $true
-    }
-    else
-    {
-        #$Scopes = [string[]]$global:PermissionScope
-        $reqScopes = [string[]]$global:msalAuthenticator.Permissions
-        $useDefaultPermissions = $false
-        
-        $resolveRoles = ((Get-SettingValue "AzureADRoleRead" $false -TenantID (?? $tenantId $loginHint.HomeAccountId.TenantId)) -eq $true)
-
-        if($resolveRoles -and $global:msalAuthenticator.Permissions -notcontains "RoleManagement.Read.Directory")
-        {
-            # Adds the required permission for reading AAD directory roles
-            $reqScopes += "RoleManagement.Read.Directory"
-        }
-
-        $script:curViewPermissions = $global:currentViewObject.ViewInfo.Permissions
-
-        foreach($tmpScope in $script:curViewPermissions)
-        {
-            if($reqScopes -notcontains $tmpScope) { $reqScopes += $tmpScope }
-        }        
-        $Scopes = [String[]]$reqScopes
-    }    
-
+    # Always login with default scopes
+    # The app will check if there are any missing scopes
+    # Full Consent prompt will be triggered if app is not approved in the environment
+    # Consent prompt for additional scopes will be forced or available depending on the 'Use Default Permissions' setting
+    [string[]] $Scopes = "https://$($global:MSALGraphEnvironment)/.default"
+    $useDefaultPermissions = ($useDefaultPermissions -eq $true -or ($global:currentViewObject.ViewInfo.Permissions | measure).Count -eq 0)
 
     $prompConsent = $false
     $authResult  = $null
@@ -911,32 +909,51 @@ function Connect-MSALUser
             #AADSTS65001
             if($script:authenticationFailure.Classification -eq "ConsentRequired")
             {
-                $Scopes = [string[]]$reqScopes
+                # Will this ever happen? Cached credentials but original app consent removed...
+                $prompConsent = $true
             }
-            else
+            elseif($authResult -and $useDefaultPermissions -eq $false -and ($null -eq $currentLoggedInUserId -or $currentLoggedInUserId -ne $global:MSALToken.Account.HomeAccountId.Identifier))
             {
-                if($useDefaultPermissions -eq $false -and $authResult -and ($reqScopes | measure).Count -gt 0 -and $global:promptConsentRequested -notcontains $authResult.TenantId)
-                {
-                    $missingScopes = @()
-                    foreach($scope in $reqScopes)
-                    {
-                        $tmpScope = $scope.Split('/')[-1]
-                        if($tmpScope -eq ".default") { continue }
-                        if($authResult.Scopes -contains $tmpScope) { continue }
-                        $missingScopes += $tmpScope 
-                        Write-LogDebug "Adding missing scope $tmpScope"
+                # If 'Use Default Permissions' is not checked and new user logs in...
+                # Check if there are any missing permissions
+                # Only prompt for consent if the app is fully started
+                # "Cancel" login if the app is starting
+                Get-MSALMissingScopes $authResult
+                if(($script:missingPermissions | measure).Count -gt 0)
+                {                    
+                    if($global:MainAppStarted)
+                    {                    
+                        # App started...force full consent prompt
+                        $tmpAuthResult = Start-MSALConsentPrompt -PassThru -authToken $authResult
+                        if($tmpAuthResult)
+                        {
+                            # Consent successfull so update the authResult with new token
+                            $authResult = $tmpAuthResult
+                        }
+                        else
+                        {
+                            # Consent cancelled by the user or failed...continue with successful silent login
+                            # Note: This will not have full permissions
+                            if($currentLoggedInUserApp -eq ($global:MSALToken.Account.HomeAccountId.Identifier + $global:MSALToken.TenantId + $global:MSALApp.ClientId))
+                            {
+                                # Only need to update if it is the same user
+                                # If it is a new user, the code below will take care of this e.g. this could happen if clicked on cached user
+                                Invoke-MSALCheckObjectViewAccess $authResult
+                            }
+                        }
                     }
-
-                    if($missingScopes)
+                    else
                     {
-                        # This will prompt for consent for the missing scopes
-                        $prompConsent = $true
-                        $global:promptConsentRequested += $authResult.TenantId
-                        $Scopes = $authResult.Scopes
-                        $extraScopesToConsent = [string[]]$missingScopes
-                        $loginHint = $authResult.Account
-                    }        
-                }
+                        # Silent login was successfull but cancel it since Use Default Permission is set to false
+                        # One or more permissions are missing
+                        # This will force an additional login that will prompt for consent
+                        Write-Log "Silent login was successful but one or more scopes are missing. Aborting login to force Consent Prompt" 2
+                        $authResult = $null
+                        Get-MSALUserInfo 
+                        Clear-MSALCurentUserVaiables
+                        return
+                    }
+                }                
             }
         }
     }
@@ -952,6 +969,12 @@ function Connect-MSALUser
         ### Interactive Login
         #########################################################################################################
         Write-Log "Initiate interactive logon"
+
+        if($useDefaultPermissions -eq $false) 
+        {
+            [string[]]$Scopes = Get-MSALRequiredScopes            
+        }
+
         Write-Log "Scopes: $(($Scopes -join ","))"
         $loginHintName = (?? $loginHint.Username $loginHint)
 
@@ -986,19 +1009,18 @@ function Connect-MSALUser
             [void]$aquireTokenObj.WithParentActivityOrWindow($ParentWindow)            
         }
 
-        # If we need a consent (e.g. App is not approved in the environment), prompt for consent with all reqruied permissions
-        # Extra scopes to consent is only required when new perissions should be added
+        # If we need a consent (e.g. App is not approved in the environment)
         if ($script:authenticationFailure.Classification -eq "ConsentRequired") 
         {
             Write-Log "Interactive login with Consent prompt" 
             [void]$aquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::Consent) 
         }
-        elseif ($extraScopesToConsent) 
+        elseif(-not $loginHintName)
         {
-            Write-Log "Interactive login with extra scopes consent prompt: $(($extraScopesToConsent -join ","))" 
-            [void] $aquireTokenObj.WithExtraScopesToConsent($extraScopesToConsent)
+            Write-Log "Interactive login with Select account prompt" 
+            [void]$AquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::SelectAccount)
         }
-        
+
         $authResult = Get-MsalAuthenticationToken $aquireTokenObj
         if($authResult)
         {        
@@ -1022,7 +1044,8 @@ function Connect-MSALUser
                 $appBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::Create($global:appObj.ClientID)
                 if($tenantId) { [void]$appBuilder.WithAuthority("https://$((Get-MSALAppAuthority))/$($tenantId)") }
                 else { [void]$appBuilder.WithAuthority($global:MSALApp.Authority) }
-                if($global:appObj.RedirectUri) { [void]$appBuilder.WithRedirectUri($global:appObj.RedirectUri) }            
+                if($global:appObj.RedirectUri) { [void]$appBuilder.WithRedirectUri($global:appObj.RedirectUri) }     
+                
                 $app = $appBuilder.Build()
 
                 if((Get-SettingValue "CacheMSALToken"))
@@ -1039,6 +1062,7 @@ function Connect-MSALUser
                     $AquireTokenObj = $app.AcquireTokenInteractive($tmpScope)
                     #[void]$AquireTokenObj.WithAccount($authResult.Account)
                     [void]$AquireTokenObj.WithLoginHint($authResult.Account.Username)
+                    [void]$AquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::NoPrompt) 
                     $tmpResults = Get-MsalAuthenticationToken $AquireTokenObj
                 }
 
@@ -1070,81 +1094,228 @@ function Connect-MSALUser
         if($authResult) 
         {
             Save-Setting "" "LastLoggedOnUser" $authResult.Account.UserName
+            Save-Setting "" "LastLoggedOnUserId" $authResult.Account.HomeAccountId.ObjectId
         }
-
+        
         Write-LogDebug "User, tenant or app has changed"
         Get-MSALUserInfo
-        Invoke-MSALCheckObjectViewAccess
+        if($authResult)
+        {
+            Invoke-MSALCheckObjectViewAccess $authResult
+        }        
         Invoke-ModuleFunction "Invoke-GraphAuthenticationUpdated"
+    }
+}
+
+function Start-MSALConsentPrompt
+{
+    param([switch]$PassThru, $authToken)
+    Write-Log "Initiate consent prompt"
+
+    if(($script:missingPermissions | measure).Count -eq 0) { return } 
+
+    if(-not $authToken -and $global:MSALToken)
+    {
+        $authToken = $global:MSALToken
+    }
+
+    [string[]] $Scopes = $script:missingPermissions
+
+    $loginHintName = $authToken.Account.UserName
+    $tenantId = $authToken.TenantId
+
+    if(-not $loginHintName -or -not $tenantId)
+    {
+        return
+    }    
+
+    $aquireTokenObj = $global:MSALApp.AcquireTokenInteractive($Scopes)
+    [void]$aquireTokenObj.WithAuthority("https://$((Get-MSALAppAuthority))/$tenantId/")
+    [void]$AquireTokenObj.WithLoginHint($loginHintName) 
+    
+    [IntPtr]$ParentWindow = [System.Diagnostics.Process]::GetCurrentProcess().MainWindowHandle
+    if ($ParentWindow)
+    {
+        [void]$aquireTokenObj.WithParentActivityOrWindow($ParentWindow) 
+    }
+    [void]$aquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::NoPrompt)
+    
+    Write-Log "Consent prompt for the following scopes: $(($script:missingPermissions -join ","))" 
+    [void] $aquireTokenObj.WithExtraScopesToConsent(([string[]]$script:missingPermissions))
+    
+    $authResult = Get-MsalAuthenticationToken $aquireTokenObj
+    if($authResult)
+    {
+        Write-Log "Consent for additional scopes added successfully"
+        if($PassThru -eq $true)
+        {
+            # The calling function will take care of the authResult
+            $authResult
+        }
+        else
+        {
+            $global:MSALToken = $authResult
+            Invoke-MSALCheckObjectViewAccess $authResult
+        }
     }
 }
 
 function Invoke-MSALCheckObjectViewAccess
 {
+    param($authToken)
+
+    if(-not $authToken -and $global:MSALToken)
+    {
+        $authToken = $global:MSALToken
+    }
+
+    if($authToken)
+    {
+        Get-MSALMissingScopes $authToken
+    }
+
+    if($script:userEllipsGrid -and ($script:missingPermissions | measure).Count -eq 0)
+    {
+        Set-XamlProperty $script:userEllipsGrid "lnkRequestConsent" "Visibility" "Collapsed"
+    }
+    elseif($script:userEllipsGrid)
+    {
+        Set-XamlProperty $script:userEllipsGrid "lnkRequestConsent" "Visibility" "Visible"
+    }
+
     foreach($viewObjInfo in ($global:viewObjects | Where { $_.ViewInfo.AuthenticationID -eq "MSAL" }))
     {
         $viewObjInfo = $global:viewObjects | Where { $_.ViewInfo.Id -eq $global:EMViewObject.Id }
         
         if($viewObjInfo)
         {
-            $accessToken = Get-JWTtoken $global:MSALToken.AccessToken
-            if($accessToken.Payload.scp)
+            if($authToken)
             {
-                $curPermissions = $accessToken.Payload.scp.Split(" ")
+                $accessToken = Get-JWTtoken $authToken.AccessToken
+                if($accessToken.Payload.scp)
+                {
+                    $curPermissions = $accessToken.Payload.scp.Split(" ")
+                    foreach($viewItem in $viewObjInfo.ViewItems)
+                    {
+                        $full = 0
+                        $partial = 0
+                        $missingScopes = @()
+                        
+
+                        foreach($permission in $viewItem.Permissons)
+                        {
+                            if($curPermissions -contains $permission)
+                            {
+                                $full++
+                                continue
+                            }
+                            # Check read access
+                            $permissionRead = $null 
+                            $arrTemp = $permission.Split('.') 
+                            if($arrTemp[1] -eq "ReadWrite")
+                            {
+                                $arrTemp[1] = "Read"
+                                $permissionRead = $arrTemp -join "."
+                                if($null -ne $permissionRead -and $curPermissions -contains $permissionRead)
+                                {
+                                    # ReadWrite permission required but the user only has Read
+                                    $partial++
+                                    continue                                
+                                }
+                            }
+                            elseif($arrTemp[1] -eq "Read")
+                            {                            
+                                $arrTemp[1] = "ReadWrite"
+                                $permissionRW = $arrTemp -join "."
+                                if($null -ne $permissionRW -and $curPermissions -contains $permissionRW)
+                                {
+                                    # Only Read permission required but the user has ReadWrite
+                                    $full++
+                                    continue
+                                }
+                            }
+                            $missingScopes += $permission
+                        }
+                        $hasAccess = $false
+                        if($viewItem.Permissons.Count -eq $full)
+                        {
+                            $accessType = "Full"
+                            $hasAccess = $true
+                        }
+                        elseif($partial -gt 0)
+                        {
+                            $accessType = "Limited"
+                        }
+                        else
+                        {
+                            $accessType = "None"
+                        }
+
+                        if(-not ($viewItem.PSObject.Properties | Where Name -eq "@HasPermissions"))
+                        {
+                            $viewItem | Add-Member -NotePropertyName "@HasPermissions" -NotePropertyValue $hasAccess
+                            $viewItem | Add-Member -NotePropertyName "@AccessType" -NotePropertyValue $accessType
+                            $viewItem | Add-Member -NotePropertyName "@MissingScopes" -NotePropertyValue ($missingScopes -join ",")
+                            
+                        }
+                        else
+                        {
+                            $viewItem."@HasPermissions" = $hasAccess
+                            $viewItem."@AccessType" = $accessType
+                            $viewItem."@MissingScopes" = ($missingScopes -join ",")
+                        }
+                    }
+                }
+            }
+            else
+            {
                 foreach($viewItem in $viewObjInfo.ViewItems)
                 {
-                    $full = 0
-                    $partial = 0
-
-                    foreach($permission in $viewItem.Permissons)
+                    if(($viewItem.PSObject.Properties | Where Name -eq "@HasPermissions"))
                     {
-                        if($curPermissions -contains $permission)
-                        {
-                            $full++
-                            continue
-                        }
-                        # Check read access
-                        $arrTemp = $permission.Split('.') 
-                        if($arrTemp[1] -eq "ReadWrite")
-                        {
-                            $arrTemp[1] = "Read"
-                            $arrTemp -join "."
-                        }
-                        if($curPermissions -contains $permission)
-                        {
-                            $partial++
-                        }
-                    }
-                    $hasAccess = $false
-                    if($viewItem.Permissons.Count -eq $full)
-                    {
-                        $accessType = "Full"
-                        $hasAccess = $true
-                    }
-                    elseif($partial -gt 0)
-                    {
-                        $accessType = "Limited"
-                    }
-                    else
-                    {
-                        $accessType = "None"
-                    }
-
-                    if(-not ($viewItem.PSObject.Properties | Where Name -eq "@HasPermissions"))
-                    {
-                        $viewItem | Add-Member -NotePropertyName "@HasPermissions" -NotePropertyValue $hasAccess
-                        $viewItem | Add-Member -NotePropertyName "@AccessType" -NotePropertyValue $accessType
-                    }
-                    else
-                    {
-                        $viewItem."@HasPermissions" = $hasAccess
-                        $viewItem."@AccessType" = $accessType
-                    }
+                        $viewItem."@HasPermissions" = $null
+                        $viewItem."@AccessType" = $null
+                        $viewItem."@MissingScopes" = $null
+                    }                    
                 }
             }
         }
     }
     Show-ViewMenu
+}
+
+function Show-MSALLoginMenu
+{
+    $script:loginMenuForm = Initialize-Window ($global:AppRootFolder + "\Xaml\MSALLoginMenu.xaml")
+    if(-not $script:loginMenuForm) { return }
+    
+    Set-XamlProperty  $script:loginMenuForm "cbMSALCloudType" "ItemsSource" $script:lstAADEnvironments
+    Set-XamlProperty  $script:loginMenuForm "cbMSALGCCType" "ItemsSource" $script:lstGCCEnvironments
+
+    Set-XamlProperty $script:loginMenuForm "cbMSALCloudType" "SelectedValue" (Get-Setting "" "MSALCloudType" "public")
+    Set-XamlProperty $script:loginMenuForm "cbMSALGCCType" "SelectedValue" (Get-Setting "" "MSALGCCType" "gcc")
+
+    Set-XamlProperty $script:loginMenuForm "cbMSALGCCType" "IsEnabled" ((Get-Setting "" "MSALCloudType" "public") -eq "usGov")
+
+    Add-XamlEvent $script:loginMenuForm "cbMSALCloudType" "add_selectionChanged" {
+        Set-XamlProperty $script:loginMenuForm "cbMSALGCCType" "IsEnabled" ($this.SelectedValue -eq "usGov")
+    }
+
+    Add-XamlEvent $script:loginMenuForm "btnLogin" "Add_Click" -scriptBlock ([scriptblock]{
+        Save-Setting "" "MSALCloudType" (Get-XamlProperty $script:loginMenuForm "cbMSALCloudType" "SelectedValue")
+        Save-Setting "" "MSALGCCType" (Get-XamlProperty $script:loginMenuForm "cbMSALGCCType" "SelectedValue")
+
+        $script:loginMenuForm.DialogResult = $true
+        $script:loginMenuForm.Close()
+    })
+
+    Add-XamlEvent $script:loginMenuForm "btnCancel" "Add_Click" -scriptBlock ([scriptblock]{
+        $script:loginMenuForm.Close()
+    })    
+
+    $script:loginMenuForm.Owner = $global:window
+    $script:loginMenuForm.Icon = $Window.Icon 
+    return ($script:loginMenuForm.ShowDialog())
 }
 
 function Disconnect-MSALUser
@@ -1232,9 +1403,11 @@ function Get-MSALProfileEllipse
                 Show-MSALError
                 return
             }
+            
             if(($global:MSALAccounts | measure).Count -eq 0)
             {
-                Connect-MSALUser -Interactive
+                # No cached users
+                Connect-MSALUser -Interactive -ShowMenu
                 if($global:curObjectType)
                 {
                     Show-GraphObjects 
@@ -1243,57 +1416,14 @@ function Get-MSALProfileEllipse
             }
             else
             {
+                # Add list of cached users + a 'Sign in with a different account' option
+
                 $xaml = Get-Content ($global:AppRootFolder + "\Xaml\LoginPanel.Xaml")
                 $loginPanel = [Windows.Markup.XamlReader]::Parse($xaml)
                 $otherLogins = $loginPanel.FindName("grdAccounts")
                 foreach($account in $global:MSALAccounts)
                 {
-                    try
-                    {
-                        #########################################################################################################
-                        ### Add cached users to the list of logins
-                        #########################################################################################################
-                        $grdAccount = [System.Windows.Controls.Grid]::new()
-                        $cd = [System.Windows.Controls.ColumnDefinition]::new()
-                        $grdAccount.ColumnDefinitions.Add($cd)
-                        $cd = [System.Windows.Controls.ColumnDefinition]::new()
-                        $cd.Width = [double]::NaN   
-                        $grdAccount.ColumnDefinitions.Add($cd)
-
-                        $icon = Get-XamlObject ($global:AppRootFolder + "\Xaml\Icons\LoggedOnUser.xaml")
-                        $icon.Width = 24
-                        $icon.Height = 24
-                        $icon.Margin = "0,0,5,0"
-                        $grdAccount.Children.Add($icon) | Out-Null
-
-                        $tenantName = Get-Setting $account.HomeAccountId.TenantId "_Name" $account.HomeAccountId.TenantId
-
-                        $lbObj = [Windows.Markup.XamlReader]::Parse("<TextBlock $wpfNS>$($account.UserName)<LineBreak/>$($tenantName)</TextBlock>")
-                        $lbObj.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
-                        $grdAccount.Children.Add($lbObj) | Out-Null
-
-                        $lnkButton = [System.Windows.Controls.Button]::new()
-                        $lnkButton.Content = $grdAccount
-                        $lnkButton.Style = $window.TryFindResource("LinkButton") 
-                        $lnkButton.Margin = "0,5,0,0"
-                        $lnkButton.Cursor = "Hand"
-                        $lnkButton.Tag = $account
-                        $lnkButton.add_Click({
-                            Write-Status "Logging in with $($this.Tag.UserName)"
-                            Hide-Popup
-                            Clear-MSALCurentUserVaiables
-                            Connect-MSALUser -Account $this.Tag #!!!.UserName
-
-                            if($global:curObjectType)
-                            {
-                                Show-GraphObjects
-                            }
-                            Write-Status ""
-                        })
-                        
-                        Add-GridObject $otherLogins $lnkButton
-                    }
-                    catch {}                    
+                    Add-CachedUser $account $otherLogins                             
                 }           
                 
                 #########################################################################################################
@@ -1325,7 +1455,7 @@ function Get-MSALProfileEllipse
                 $lnkButton.add_Click({
                     Write-Status "Logging in..."
                     Hide-Popup
-                    Connect-MSALUser -Interactive
+                    Connect-MSALUser -Interactive -ShowMenu
                     if($global:curObjectType)
                     {
                         Show-GraphObjects 
@@ -1363,49 +1493,8 @@ function Get-MSALProfileEllipse
         $initials = "$($global:me.userPrincipalName[0])".ToUpper()    
     }
 
-    $grd = [System.Windows.Controls.Grid]::new()
-
-    $ellipse = [System.Windows.Shapes.Ellipse]::new()
-    $ellipse.Width = $size
-    $ellipse.Height = $size
-    $ellipse.Fill = $Color
-    $ellipse.Stroke = "#FFFF00FF"
-    $ellipse.StrokeThickness = "0"
-
-    $grd.Children.Add($ellipse) | Out-Null
-
-    $tb = [System.Windows.Controls.TextBlock]::new()
-    $tb.FontSize = $fontSize
-    $tb.Foreground = "White"
-    #$tb.FontFamily=""
-    $tb.FontWeight = "Bold"
-    #$tb.TextLineBounds="Tight"
-    $tb.VerticalAlignment="Center"
-    $tb.HorizontalAlignment="Center"
-    #$tb.IsTextScaleFactorEnabled="False"
-    $tb.Text = $initials
-
-    $grd.Children.Add($tb) | Out-Null
-
-    if($global:profilePhoto -and [IO.File]::Exists($global:profilePhoto))   
-    {        
-        Write-LogDebug "Create image"
-        $img = [System.Windows.Media.Imaging.BitmapImage]::new()
-        $img.BeginInit()
-        $img.CacheOption = [System.Windows.Media.Imaging.BitmapCacheOption]::OnLoad
-        $img.UriSource = [System.Uri]::new($global:profilePhoto)
-        $img.EndInit()        
-        $ib = [System.Windows.Media.ImageBrush]::new()
-        $ib.ImageSource = $img
-
-        $ellipse = [System.Windows.Shapes.Ellipse]::new()
-        $ellipse.Width = $size
-        $ellipse.Height = $size
-        $ellipse.FlowDirection="LeftToRight"
-        $ellipse.Fill = $ib
-        $grd.Children.Add($ellipse) | Out-Null
-    }
-
+    $grd = Get-MSALUserPhotoEllips -size $size -fontSize $fontSize -Color $Color 
+    
     if($Popup)
     {
         # Hide the popup when mouse button is clicked anywhere
@@ -1437,7 +1526,9 @@ function Get-MSALProfileEllipse
                 Set-XamlProperty $global:grdProfileInfo "txtAppId" "Text" $global:tokenInfo.Payload.appid 
             }
 
-            $tmpObj = Get-MSALProfileEllipse -size 64 -fontSize 32
+            # Get the elips with only the photo in a larger size for the popup info
+            $tmpObj = Get-MSALUserPhotoEllips -size 64 -fontSize 32
+            #$tmpObj = Get-MSALProfileEllipse -size 64 -fontSize 32
             $profileGrid =  $global:grdProfileInfo.FindName("ProfileInfo")
             if($tmpObj -and $profileGrid)
             {
@@ -1456,8 +1547,20 @@ function Get-MSALProfileEllipse
                 [System.Windows.Controls.Canvas]::SetTop($obj,($point.Y + $obj.Tag.ActualHeight))
             })
 
-            $otherLogins = $global:grdProfileInfo.FindName("grdCachedAccounts")
+            #########################################################################################################
+            ### Show / Hide consent button
+            #########################################################################################################
+            $script:userEllipsGrid = $tmpObj
+            if(($script:missingPermissions | measure).Count -eq 0)
+            {
+                Set-XamlProperty $script:userEllipsGrid "lnkRequestConsent" "Visibility" "Collapsed"
+            }
+            Add-XamlEvent $script:userEllipsGrid "lnkRequestConsent" "add_Click" {
+                Start-MSALConsentPrompt
+            }
             
+            $otherLogins = $global:grdProfileInfo.FindName("grdCachedAccounts")
+
             #########################################################################################################
             ### Add cached users
             #########################################################################################################
@@ -1473,88 +1576,10 @@ function Get-MSALProfileEllipse
             foreach($account in $accounts)
             {
                 # Skip current logged on user
-                if($global:MSALToken.Account.Username -eq $Account.Username) { continue }
+                if($global:MSALToken.Account.Username -eq $Account.Username -or 
+                $global:MSALToken.Account.HomeAccountId.ObjectId -eq $Account.HomeAccountId.ObjectId) { continue }
 
-                try
-                {
-                    $grdAccount = [System.Windows.Controls.Grid]::new()
-
-                    $cd = [System.Windows.Controls.ColumnDefinition]::new()
-                    $grdAccount.ColumnDefinitions.Add($cd) # Login
-
-                    $cd = [System.Windows.Controls.ColumnDefinition]::new()
-                    $cd.Width = [double]::NaN   
-                    $grdAccount.ColumnDefinitions.Add($cd) # Forget
-
-                    $grdLogin = [System.Windows.Controls.Grid]::new()
-                    $cd = [System.Windows.Controls.ColumnDefinition]::new()
-                    $grdLogin.ColumnDefinitions.Add($cd)
-                    $cd = [System.Windows.Controls.ColumnDefinition]::new()
-                    $cd.Width = [double]::NaN   
-                    $grdLogin.ColumnDefinitions.Add($cd)
-
-                    $icon = Get-XamlObject ($global:AppRootFolder + "\Xaml\Icons\LoggedOnUser.xaml")
-                    $icon.Width = 24
-                    $icon.Height = 24
-                    $icon.Margin = "0,0,5,0"
-                    $grdLogin.Children.Add($icon) | Out-Null
-
-                    $tenantName = Get-Setting $account.HomeAccountId.TenantId "_Name" $account.HomeAccountId.TenantId
-
-                    $lbObj = [Windows.Markup.XamlReader]::Parse("<TextBlock $wpfNS>$($account.UserName)<LineBreak/>$($tenantName)</TextBlock>")
-                    $lbObj.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
-                    $grdLogin.Children.Add($lbObj) | Out-Null
-
-                    $lnkButton = [System.Windows.Controls.Button]::new()
-                    $lnkButton.Content = $grdLogin
-                    $lnkButton.Style = $window.TryFindResource("LinkButton") 
-                    $lnkButton.Margin = "0,5,0,0"
-                    $lnkButton.Cursor = "Hand"
-                    $lnkButton.Tag = $account
-                    $lnkButton.add_Click({
-                        Write-Status "Logging in with $($this.Tag.UserName)"
-                        Hide-Popup
-                        Clear-MSALCurentUserVaiables
-                        Connect-MSALUser -Account $this.Tag #!!!.UserName
-
-                        if($global:curObjectType)
-                        {
-                            Show-GraphObjects
-                        }
-                        Write-Status ""
-                    })
-
-                    $grdAccount.Children.Add($lnkButton) | Out-Null
-
-                    # Add Forget user icon
-                    $icon = Get-XamlObject ($global:AppRootFolder + "\Xaml\Icons\Bin.xaml")
-                    $icon.Width = 16
-                    $icon.Height = 16
-                    $icon.Margin = "5,5,0,0"
-                    
-                    $lnkButton = [System.Windows.Controls.Button]::new()
-                    $lnkButton.ToolTip = "Forget"
-                    $lnkButton.Content = $icon
-                    $lnkButton.Style = $window.TryFindResource("LinkButton") 
-                    $lnkButton.Margin = "0,5,0,0"
-                    $lnkButton.Cursor = "Hand"
-                    $lnkButton.Tag = $account
-                    $lnkButton.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
-                    $lnkButton.add_Click({
-                        Write-Status "Logging out $($this.Tag.UserName)"
-                        if((Disconnect-MSALUser $this.Tag -PassThru))
-                        {
-                            $this.Parent.Parent.Children.Remove($this.Parent)
-                        }
-                        
-                        Write-Status ""
-                    })
-                                        
-                    $grdAccount.Children.Add($lnkButton) | Out-Null                    
-                    
-                    Add-GridObject $otherLogins $grdAccount
-                }
-                catch {}                    
+                Add-CachedUser $account $otherLogins                
             }           
             
             #########################################################################################################
@@ -1587,7 +1612,7 @@ function Get-MSALProfileEllipse
             $lnkButton.add_Click({
                 Write-Status "Logging in..."
                 Hide-Popup
-                Connect-MSALUser -Interactive
+                Connect-MSALUser -Interactive -ShowMenu
                 if($global:curObjectType)
                 {
                     Show-GraphObjects 
@@ -1677,7 +1702,7 @@ function Get-MSALProfileEllipse
                 $dg.ItemsSource = ($tokenArr | Select Name, Value)
                 Show-ModalForm "Token info" $dg
             }
-            
+
             Add-XamlEvent $tmpObj "lnkAccessTokenInfo" "add_Click" {
                 #Hide-Popup
                 Show-MSALDecodedToken (Get-JWTtoken $global:MSALToken.AccessToken) "Access Token Info"
@@ -1697,6 +1722,10 @@ function Get-MSALProfileEllipse
                     Show-GraphObjects
                     Hide-Popup                    
                 }
+                else
+                {                    
+                    Invoke-MSALCheckObjectViewAccess $global:MSALToken
+                }
                 Write-Status ""
             }
             
@@ -1715,6 +1744,196 @@ function Get-MSALProfileEllipse
     }
 
     $grd
+}
+
+function local:Add-CachedUser 
+{
+    param($account, $parentObj)
+
+    try
+    {
+        $grdAccount = [System.Windows.Controls.Grid]::new()
+
+        $cd = [System.Windows.Controls.ColumnDefinition]::new()
+        $grdAccount.ColumnDefinitions.Add($cd) # Login
+
+        $cd = [System.Windows.Controls.ColumnDefinition]::new()
+        $cd.Width = [double]::NaN   
+        $grdAccount.ColumnDefinitions.Add($cd) # Forget
+
+        $grdLogin = [System.Windows.Controls.Grid]::new()
+        $cd = [System.Windows.Controls.ColumnDefinition]::new()
+        $grdLogin.ColumnDefinitions.Add($cd)
+        $cd = [System.Windows.Controls.ColumnDefinition]::new()
+        $cd.Width = [double]::NaN   
+        $grdLogin.ColumnDefinitions.Add($cd)
+
+        $icon = Get-XamlObject ($global:AppRootFolder + "\Xaml\Icons\LoggedOnUser.xaml")
+        $icon.Width = 24
+        $icon.Height = 24
+        $icon.Margin = "0,0,5,0"
+        $grdLogin.Children.Add($icon) | Out-Null
+
+        $tenantName = Get-Setting $account.HomeAccountId.TenantId "_Name" $account.HomeAccountId.TenantId
+
+        $lbObj = [Windows.Markup.XamlReader]::Parse("<TextBlock $wpfNS>$($account.UserName)<LineBreak/>$($tenantName)</TextBlock>")
+        $lbObj.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
+        $grdLogin.Children.Add($lbObj) | Out-Null
+
+        $lnkButton = [System.Windows.Controls.Button]::new()
+        $lnkButton.Content = $grdLogin
+        $lnkButton.Style = $window.TryFindResource("LinkButton") 
+        $lnkButton.Margin = "0,5,0,0"
+        $lnkButton.Cursor = "Hand"
+        $lnkButton.Tag = $account
+        $lnkButton.add_Click({
+            Write-Status "Logging in with $($this.Tag.UserName)"
+            Hide-Popup
+            Clear-MSALCurentUserVaiables
+            Connect-MSALUser -Account $this.Tag #!!!.UserName
+
+            if($global:curObjectType)
+            {
+                Show-GraphObjects
+            }
+            Write-Status ""
+        })
+
+        $grdAccount.Children.Add($lnkButton) | Out-Null
+
+        # Add Forget user icon
+        $icon = Get-XamlObject ($global:AppRootFolder + "\Xaml\Icons\Bin.xaml")
+        $icon.Width = 16
+        $icon.Height = 16
+        $icon.Margin = "5,5,0,0"
+        
+        $lnkButton = [System.Windows.Controls.Button]::new()
+        $lnkButton.ToolTip = "Forget"
+        $lnkButton.Content = $icon
+        $lnkButton.Style = $window.TryFindResource("LinkButton") 
+        $lnkButton.Margin = "0,5,0,0"
+        $lnkButton.Cursor = "Hand"
+        $lnkButton.Tag = $account
+        $lnkButton.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
+        $lnkButton.add_Click({
+            Write-Status "Logging out $($this.Tag.UserName)"
+            if((Disconnect-MSALUser $this.Tag -PassThru))
+            {
+                $this.Parent.Parent.Children.Remove($this.Parent)
+            }
+            
+            Write-Status ""
+        })
+                            
+        $grdAccount.Children.Add($lnkButton) | Out-Null                    
+        
+        Add-GridObject $parentObj $grdAccount
+    }
+    catch {}     
+}
+
+function local:Get-MSALUserPhotoEllips
+{
+    param($size = 32, $fontSize = 20, $Color = "Blue")
+
+    $grd = [System.Windows.Controls.Grid]::new()
+
+    $ellipse = [System.Windows.Shapes.Ellipse]::new()
+    $ellipse.Width = $size
+    $ellipse.Height = $size
+    $ellipse.Fill = $Color
+    $ellipse.Stroke = "#FFFF00FF"
+    $ellipse.StrokeThickness = "0"
+
+    $grd.Children.Add($ellipse) | Out-Null
+
+    $tb = [System.Windows.Controls.TextBlock]::new()
+    $tb.FontSize = $fontSize
+    $tb.Foreground = "White"
+    #$tb.FontFamily=""
+    $tb.FontWeight = "Bold"
+    #$tb.TextLineBounds="Tight"
+    $tb.VerticalAlignment="Center"
+    $tb.HorizontalAlignment="Center"
+    #$tb.IsTextScaleFactorEnabled="False"
+    $tb.Text = $initials
+
+    $grd.Children.Add($tb) | Out-Null
+
+    if($global:profilePhoto -and [IO.File]::Exists($global:profilePhoto))   
+    {        
+        Write-LogDebug "Create image"
+        $img = [System.Windows.Media.Imaging.BitmapImage]::new()
+        $img.BeginInit()
+        $img.CacheOption = [System.Windows.Media.Imaging.BitmapCacheOption]::OnLoad
+        $img.UriSource = [System.Uri]::new($global:profilePhoto)
+        $img.EndInit()        
+        $ib = [System.Windows.Media.ImageBrush]::new()
+        $ib.ImageSource = $img
+
+        $ellipse = [System.Windows.Shapes.Ellipse]::new()
+        $ellipse.Width = $size
+        $ellipse.Height = $size
+        $ellipse.FlowDirection="LeftToRight"
+        $ellipse.Fill = $ib
+        $grd.Children.Add($ellipse) | Out-Null
+    }
+
+    $grd
+}
+
+function Get-MSALRequiredScopes
+{
+    $reqScopes = [string[]]$global:msalAuthenticator.Permissions
+
+    $resolveRoles = ((Get-SettingValue "AzureADRoleRead" $false -TenantID (?? $tenantId $loginHint.HomeAccountId.TenantId)) -eq $true)
+
+    if($resolveRoles -and $global:msalAuthenticator.Permissions -notcontains "RoleManagement.Read.Directory")
+    {
+        # Adds the required permission for reading AAD directory roles
+        $reqScopes += "RoleManagement.Read.Directory"
+    }
+
+    $script:curViewPermissions = $global:currentViewObject.ViewInfo.Permissions
+
+    foreach($tmpScope in $script:curViewPermissions)
+    {
+        if($reqScopes -notcontains $tmpScope) { $reqScopes += $tmpScope }
+    }
+    $reqScopes
+}
+function Get-MSALMissingScopes
+{
+    param($authToken)
+
+    $reqScopes = Get-MSALRequiredScopes
+    
+    if(($reqScopes | measure).Count -eq 0) { return }
+
+    $script:missingPermissions = @()
+
+    foreach($scope in $reqScopes)
+    {
+        $tmpScope = $scope.Split('/')[-1]
+        if($tmpScope -eq ".default") { continue }
+        if($authToken.Scopes -contains $tmpScope) { continue }
+        if(($authToken.Scopes -like "*/$tmpScope")) { continue }
+        $arrTemp = $tmpScope.Split(".")
+        if($arrTemp[1] -eq "Read")
+        {
+            # Check if we have "more" permissions than required eg ReadWrite when only Read is required                            
+            $arrTemp[1] = "ReadWrite"
+            $permissionRW = $arrTemp -join "."
+            if($authToken.Scopes -contains $permissionRW) { continue }
+            if(($authToken.Scopes -like "*/$permissionRW")) { continue }            
+        }        
+        $script:missingPermissions += $tmpScope
+    }
+
+    if($script:missingPermissions.Count -gt 0)
+    {
+        Write-Log "Missing scopes: $(($script:missingPermissions -join ","))" 2
+    }
 }
 
 function Show-MSALDecodedToken {

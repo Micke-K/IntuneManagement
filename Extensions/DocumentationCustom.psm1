@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.1.0'
+    '1.2.0'
 }
 
 function Invoke-InitializeModule
@@ -18,6 +18,7 @@ function Invoke-InitializeModule
     Add-DocumentationProvicer ([PSCustomObject]@{
         Name="Custom"
         Priority = 1000 # The priority of the Provider. Lower number has higher priority.
+        InitializeDocumentation = { Initialize-CDDocumentation @args } 
         DocumentObject = { Invoke-CDDocumentObject @args }
         GetCustomProfileValue = { Add-CDDocumentCustomProfileValue @args }
         GetCustomChildObject = { Get-CDDocumentCustomChildObjet  @args }
@@ -25,6 +26,12 @@ function Invoke-InitializeModule
         AddCustomProfileProperty = { Add-CDDocumentCustomProfileProperty @args }
         PostAddValue = { Invoke-CDDocumentCustomPostAdd @args }
     })
+}
+
+function Initialize-CDDocumentation
+{
+    $script:allTenantApps = $null
+    $script:allTermsOfUse = $null 
 }
 
 function Invoke-CDDocumentObject
@@ -42,6 +49,13 @@ function Invoke-CDDocumentObject
             Properties = @("Name","Value","Category","SubCategory") #,"RawValue","Description"
         }
     }
+    elseif($type -eq '#microsoft.graph.agreement')
+    {
+        Invoke-CDDocumentTermsOfUse $documentationObj
+        return [PSCustomObject]@{
+            Properties = @("Name","Value") #,"RawValue","Description"
+        }
+    }    
     elseif($type -eq '#microsoft.graph.countryNamedLocation')
     {
         Invoke-CDDocumentCountryNamedLocation $documentationObj
@@ -116,7 +130,7 @@ function Get-CDAllCloudApps
 {
     if(-not $script:allCloudApps)
     {
-        $script:allCloudApps =(Invoke-GraphRequest -url "/servicePrincipals?`$select=displayName,appId&top=999" -ODataMetadata "minimal").value
+        $script:allCloudApps = (Invoke-GraphRequest -url "/servicePrincipals?`$select=displayName,appId&top=999" -ODataMetadata "minimal").value
     }
     $script:allCloudApps
 }
@@ -125,7 +139,11 @@ function Get-CDAllTenantApps
 {
     if(-not $script:allTenantApps)
     {
-        $script:allTenantApps =(Invoke-GraphRequest -url "/deviceAppManagement/mobileApps?`$select=displayName,id&top=999" -ODataMetadata "minimal").value
+        $script:allTenantApps = Get-DocOfflineObjects "Applications"
+        if(-not $script:allTenantApps)
+        {
+            $script:allTenantApps =(Invoke-GraphRequest -url "/deviceAppManagement/mobileApps?`$select=displayName,id&top=999" -ODataMetadata "minimal").value
+        }
     }
     $script:allTenantApps
 }
@@ -750,13 +768,26 @@ function Add-CDDocumentCustomProfileProperty
     {
         if($obj.authenticationMethod -ne "derivedCredential")
         {
-            $idCert = Invoke-GraphRequest -URL $obj."identityCertificateForClientAuthentication@odata.navigationLink" -ODataMetadata "minimal" -NoError
+            if($obj."#CustomRef_identityCertificateForClientAuthentication" -and $obj.'@ObjectFromFile' -eq $true)
+            {
+                $idCert = $obj."#CustomRef_identityCertificateForClientAuthentication"
+                $idx = $idCert.IndexOf("|:|")
+                if($idx -gt -1)
+                {
+                    $idCertType =  $idCert.SubString($idx + 3)
+                }                                             
+            }
+            else
+            {
+                $idCert = Invoke-GraphRequest -URL $obj."identityCertificateForClientAuthentication@odata.navigationLink" -ODataMetadata "minimal" -NoError
+                $idCertType = $idCert.'@OData.Type'
+            }
 
-            if($idCert.'@OData.Type' -like "*Pkcs*")
+            if($idCertType -like "*Pkcs*")
             {
                 $clientCertType = "PKCS certificate"
             }
-            elseif($idCert.'@OData.Type' -like "*SCEP*")
+            elseif($idCertType -like "*SCEP*")
             {
                 $clientCertType = "SCEP certificate"
             }
@@ -1102,6 +1133,7 @@ function Add-CDDocumentCustomProfileProperty
         $supersededApps = @()
         if($obj.dependentAppCount -gt 0 -or $obj.supersededAppCount -gt 0)
         {
+            # ToDo: Add support for Offline documentation
             $relationships = (Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$($obj.Id)/relationships?`$filter=targetType%20eq%20microsoft.graph.mobileAppRelationshipType%27child%27").value
             foreach($rel in $relationships)
             {
@@ -1186,6 +1218,11 @@ function Add-CDDocumentCustomProfileProperty
             $obj | Add-Member Noteproperty -Name "remediationScriptContentString" -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(($obj.remediationScriptContent))))
         }
 
+    }
+    elseif($obj.'@OData.Type' -eq "#microsoft.graph.windows10TeamGeneralConfiguration")
+    {
+        $obj | Add-Member Noteproperty -Name "syntheticAzureOperationalInsightsEnabled" -Value ($obj.azureOperationalInsightsBlockTelemetry -eq $false)
+        $obj | Add-Member Noteproperty -Name "syntheticMaintenanceWindowEnabled" -Value ($obj.maintenanceWindowBlocked -eq $false)
     }
 
     if(($obj.PSObject.Properties | where Name -eq "securityRequireSafetyNetAttestationBasicIntegrity") -and 
@@ -1478,7 +1515,7 @@ function Invoke-CDDocumentCountryNamedLocation
     $countryList = @()
     foreach($country in $obj.countriesAndRegions)
     {
-        $countryList += Get-LanguageString "Countries.$($country.ToLower())"
+        $countryList += Get-LanguageString "AzureIAMCommon.CountryNames.countryName$($country.ToLower())"
     }
 
     Add-CustomSettingObject ([PSCustomObject]@{
@@ -1525,6 +1562,117 @@ function Invoke-CDDocumentIPNamedLocation
     })         
 }
 
+# Document Terms of Use
+function Invoke-CDDocumentTermsOfUse
+{
+    param($documentationObj)
+
+    $obj = $documentationObj.Object
+    $objectType = $documentationObj.ObjectType
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+    
+    $offLabel = Get-LanguageString "SettingDetails.offOption"
+    $onLabel = Get-LanguageString "SettingDetails.onOption"
+
+    ###################################################
+    # Basic info
+    ###################################################
+
+    Add-BasicPropertyValue (Get-LanguageString "SettingDetails.nameName") $obj.displayName
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureIAM.menuItemTermsOfUse") 
+        
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = Get-LanguageString "TermsOfUse.Wizard.agreementIsViewingBeforeAcceptanceRequiredLabel"
+        Value = ?: $obj.isViewingBeforeAcceptanceRequired $onLabel $offLabel
+        Category = $null
+        SubCategory = $null
+        EntityKey = "isViewingBeforeAcceptanceRequired"
+    })
+
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = Get-LanguageString "TermsOfUse.Wizard.agreementIsPerDeviceAcceptanceRequiredLabel"
+        Value = ?: $obj.isPerDeviceAcceptanceRequired $onLabel $offLabel
+        Category = $null
+        SubCategory = $null
+        EntityKey = "isPerDeviceAcceptanceRequired"
+    })
+
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = Get-LanguageString "TermsOfUse.Wizard.isAcceptanceExpirationEnabledLabel"
+        Value = ?: $obj.termsExpiration $onLabel $offLabel
+        Category = $null
+        SubCategory = $null
+        EntityKey = "isAcceptanceExpirationEnabledLabel"
+    })
+    
+    if($obj.termsExpiration.startDateTime)
+    {
+        try
+        {
+            if($obj.termsExpiration.startDateTime -is [DateTime])
+            {
+                $tmpDate = $obj.termsExpiration.startDateTime
+            }
+            else
+            {
+                $tmpDate = ([DateTime]::Parse($obj.termsExpiration.startDateTime))
+            }
+            $tmpDateStr = ($tmpDate).ToShortDateString()
+        }
+        catch
+        {
+            Write-Log "Failed to parse date from string $($obj.termsExpiration.startDateTime)" 2
+            $tmpDateStr = $obj.termsExpiration.startDateTime
+        }
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "TermsOfUse.Wizard.acceptanceExpirationStartDateTimeLabel"
+            Value = $tmpDateStr
+            Category = $null
+            SubCategory = $null
+            EntityKey = "startDateTime"
+        })
+
+        if($obj.termsExpiration.frequency -eq "P365D")
+        {
+            $value = Get-LanguageString "TermsOfUse.AcceptanceExpirationFrequency.annually"
+        }
+        elseif($obj.termsExpiration.frequency -eq "P180D")
+        {
+            $value = Get-LanguageString "TermsOfUse.AcceptanceExpirationFrequency.biannually"
+        }
+        elseif($obj.termsExpiration.frequency -eq "P30D")
+        {
+            $value = Get-LanguageString "TermsOfUse.AcceptanceExpirationFrequency.monthly"
+        }
+        elseif($obj.termsExpiration.frequency -eq "P90D")
+        {
+            $value = Get-LanguageString "TermsOfUse.AcceptanceExpirationFrequency.quarterly"
+        }
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "TermsOfUse.Wizard.acceptanceExpirationFrequencyLabel"
+            Value = $value
+            Category = $null
+            SubCategory = $null
+            EntityKey = "frequency"
+        })        
+    }
+    if($null -ne $obj.userReacceptRequiredFrequency)
+    {
+        $days = Get-DurationValue $obj.userReacceptRequiredFrequency
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "TermsOfUse.Wizard.acceptanceDurationLabel"
+            Value = $days
+            Category = $null
+            SubCategory = $null
+            EntityKey = "userReacceptRequiredFrequency"
+        })
+    } 
+}
+
 # Document Conditional Access policy
 function Invoke-CDDocumentConditionalAccess
 {
@@ -1540,7 +1688,9 @@ function Invoke-CDDocumentConditionalAccess
     # Basic info
     ###################################################
 
-    Add-BasicDefaultValues $obj $objectType
+    #Add-BasicDefaultValues $obj $objectType
+    Add-BasicPropertyValue (Get-LanguageString "SettingDetails.nameName") $obj.displayName
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureIAM.conditionalAccessBladeTitle") 
 
     if($obj.state -eq "enabledForReportingButNotEnforced")
     {
@@ -1590,6 +1740,7 @@ function Invoke-CDDocumentConditionalAccess
 
         $body = $ht | ConvertTo-Json
 
+        # ToDo: Get from MigFile for Offline
         $idInfo = (Invoke-GraphRequest -Url "/directoryObjects/getByIds?`$select=displayName,id" -Content $body -Method "Post").Value
     }
 
@@ -1719,6 +1870,7 @@ function Invoke-CDDocumentConditionalAccess
             $idObj = $idInfo | Where Id -eq $id
             $tmpObjs += ?? $idObj.displayName $id
         }
+        
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = $category
             Value = $tmpObjs -join $script:objectSeparator
@@ -1916,8 +2068,12 @@ function Invoke-CDDocumentConditionalAccess
     
     if(-not $script:allNamedLocations -and ($obj.conditions.locations.includeLocations.Count -gt 0 -or $obj.conditions.locations.excludeLocations.Count))
     {
-        # Might be better to get them one by one
-        $script:allNamedLocations = (Invoke-GraphRequest -url "/identity/conditionalAccess/namedLocations?`$select=displayName,Id&top=999" -ODataMetadata "minimal").value
+        $script:allNamedLocations = Get-DocOfflineObjects "NamedLocations"
+        if(-not $script:allNamedLocations)
+        {
+            # Might be better to get them one by one
+            $script:allNamedLocations = (Invoke-GraphRequest -url "/identity/conditionalAccess/namedLocations?`$select=displayName,Id&top=999" -ODataMetadata "minimal").value
+        }
         if(-not $script:allNamedLocations) {  $script:allNamedLocations = @()}
         elseif($script:allNamedLocations -isnot [Object[]]) {  $script:allNamedLocations = @($script:allNamedLocations) }
 
@@ -1925,6 +2081,17 @@ function Invoke-CDDocumentConditionalAccess
             displayName = Get-LanguageString "AzureIAM.chooseLocationTrustedIpsItem"
             id =  "00000000-0000-0000-0000-000000000000"
         }
+    }
+
+    if(-not $script:allTermsOfUse -and (($obj.grantControls.termsOfUse | measure).Count -gt 0))
+    {
+        $script:allTermsOfUse = Get-DocOfflineObjects "TermsOfUse"
+        if(-not $script:allTermsOfUse)
+        {
+            $script:allTermsOfUse  = (Invoke-GraphRequest -url "/identityGovernance/termsOfUse/agreements?`$select=displayName,Id&top=999" -ODataMetadata "minimal").value
+        }
+        if(-not $script:allTermsOfUse ) {  $script:allTermsOfUse  = @()}
+        elseif($script:allTermsOfUse  -isnot [Object[]]) {  $script:allTermsOfUse  = @($script:allTermsOfUse ) }
     }
 
     if($obj.conditions.locations.includeLocations.Count -gt 0)
@@ -2056,82 +2223,103 @@ function Invoke-CDDocumentConditionalAccess
         EntityKey = "policyControl"
     })
 
-    if(($obj.grantControls.builtInControls | Where { $_ -eq "block"}))
+    if($null -eq (($obj.grantControls.builtInControls | Where { $_ -eq "block"}) ))
     {
-        if(($obj.grantControls.builtInControls | Where { $_ -eq "mfa"}))
+        if(($obj.grantControls.builtInControls | measure).Count -gt 0)
         {
-            Add-CustomSettingObject ([PSCustomObject]@{
-                Name = Get-LanguageString "AzureIAM.policyControlMfaChallengeDisplayedName"
-                Value =   Get-LanguageString "Inputs.enabled"
-                Category = $category
-                SubCategory = ""
-                EntityKey = "mfa"
-            })
+            if(($obj.grantControls.builtInControls | Where { $_ -eq "mfa"}))
+            {
+                Add-CustomSettingObject ([PSCustomObject]@{
+                    Name = Get-LanguageString "AzureIAM.policyControlMfaChallengeDisplayedName"
+                    Value =   Get-LanguageString "Inputs.enabled"
+                    Category = $category
+                    SubCategory = ""
+                    EntityKey = "mfa"
+                })
+            }
+
+            if(($obj.grantControls.builtInControls | Where { $_ -eq "compliantDevice"}))
+            {
+                Add-CustomSettingObject ([PSCustomObject]@{
+                    Name = Get-LanguageString "AzureIAM.policyControlCompliantDeviceDisplayedName"
+                    Value =   Get-LanguageString "Inputs.enabled"
+                    Category = $category
+                    SubCategory = ""
+                    EntityKey = "compliantDevice"
+                })
+            }
+
+            if(($obj.grantControls.builtInControls | Where { $_ -eq "domainJoinedDevice"}))
+            {
+                Add-CustomSettingObject ([PSCustomObject]@{
+                    Name = Get-LanguageString "AzureIAM.policyControlRequireDomainJoinedDisplayedName"
+                    Value =   Get-LanguageString "Inputs.enabled"
+                    Category = $category
+                    SubCategory = ""
+                    EntityKey = "domainJoinedDevice"
+                })
+            }
+            
+            if(($obj.grantControls.builtInControls | Where { $_ -eq "approvedApplication"}))
+            {
+                Add-CustomSettingObject ([PSCustomObject]@{
+                    Name = Get-LanguageString "AzureIAM.policyControlRequireMamDisplayedName"
+                    Value =   Get-LanguageString "Inputs.enabled"
+                    Category = $category
+                    SubCategory = ""
+                    EntityKey = "approvedApplication"
+                })
+            }
+            
+            if(($obj.grantControls.builtInControls | Where { $_ -eq "compliantApplication"}))
+            {
+                Add-CustomSettingObject ([PSCustomObject]@{
+                    Name = Get-LanguageString "AzureIAM.policyControlRequireCompliantAppDisplayedName"
+                    Value =   Get-LanguageString "Inputs.enabled"
+                    Category = $category
+                    SubCategory = ""
+                    EntityKey = "compliantApplication"
+                })
+            }
+
+            if(($obj.grantControls.builtInControls | Where { $_ -eq "passwordChange"}))
+            {
+                Add-CustomSettingObject ([PSCustomObject]@{
+                    Name = Get-LanguageString "AzureIAM.policyControlRequiredPasswordChangeDisplayedName"
+                    Value =   Get-LanguageString "Inputs.enabled"
+                    Category = $category
+                    SubCategory = ""
+                    EntityKey = "passwordChange"
+                })
+            }
         }
 
-        if(($obj.grantControls.builtInControls | Where { $_ -eq "compliantDevice"}))
+        if(($obj.grantControls.termsOfUse | measure).Count -gt 0)
         {
+            $termsOfUse = @()
+            foreach($tmpId in $obj.grantControls.termsOfUse)
+            {
+                $touObj = $script:allTermsOfUse | Where Id -eq $tmpId
+                $termsOfUse += ?? $touObj.displayName $tmpId
+            }
+    
             Add-CustomSettingObject ([PSCustomObject]@{
-                Name = Get-LanguageString "AzureIAM.policyControlCompliantDeviceDisplayedName"
-                Value =   Get-LanguageString "Inputs.enabled"
+                Name = Get-LanguageString "AzureIAM.menuItemTermsOfUse"
+                Value =   $termsOfUse -join $script:objectSeparator
                 Category = $category
                 SubCategory = ""
-                EntityKey = "compliantDevice"
-            })
+                EntityKey = "termsOfUse"
+            })            
         }
-
-        if(($obj.grantControls.builtInControls | Where { $_ -eq "domainJoinedDevice"}))
-        {
-            Add-CustomSettingObject ([PSCustomObject]@{
-                Name = Get-LanguageString "AzureIAM.policyControlRequireDomainJoinedDisplayedName"
-                Value =   Get-LanguageString "Inputs.enabled"
-                Category = $category
-                SubCategory = ""
-                EntityKey = "domainJoinedDevice"
-            })
-        }
-        
-        if(($obj.grantControls.builtInControls | Where { $_ -eq "approvedApplication"}))
-        {
-            Add-CustomSettingObject ([PSCustomObject]@{
-                Name = Get-LanguageString "AzureIAM.policyControlRequireMamDisplayedName"
-                Value =   Get-LanguageString "Inputs.enabled"
-                Category = $category
-                SubCategory = ""
-                EntityKey = "approvedApplication"
-            })
-        }
-        
-        if(($obj.grantControls.builtInControls | Where { $_ -eq "compliantApplication"}))
-        {
-            Add-CustomSettingObject ([PSCustomObject]@{
-                Name = Get-LanguageString "AzureIAM.policyControlRequireCompliantAppDisplayedName"
-                Value =   Get-LanguageString "Inputs.enabled"
-                Category = $category
-                SubCategory = ""
-                EntityKey = "compliantApplication"
-            })
-        }
-
-        if(($obj.grantControls.builtInControls | Where { $_ -eq "passwordChange"}))
-        {
-            Add-CustomSettingObject ([PSCustomObject]@{
-                Name = Get-LanguageString "AzureIAM.policyControlRequiredPasswordChangeDisplayedName"
-                Value =   Get-LanguageString "Inputs.enabled"
-                Category = $category
-                SubCategory = ""
-                EntityKey = "passwordChange"
-            })
-        }
-        
+    
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = Get-LanguageString "AzureIAM.descriptionContentForControlsAndOr"
             Value =   Get-LanguageString "AzureIAM.$((?: ($obj.grantControls.operator -eq "OR") "requireOneControlText" "requireAllControlsText"))" 
             Category = $category
             SubCategory = ""
             EntityKey = "grantOperator"
-        })
-}
+        }) 
+    }       
 
     ###################################################
     # Session
@@ -2644,12 +2832,11 @@ function Invoke-CDDocumentAssignmentFilter
 
     $label = Get-LanguageString "ApplicabilityRules.GridLabel.rule"
 
-    # "Rules" is not in the translation file
-    $category = "Rules"
+    $category = Get-LanguageString "SettingDetails.rules"
 
     Add-CustomSettingObject ([PSCustomObject]@{
         Name = $label
-        Value =  $obj.rule          
+        Value =  $obj.rule
         EntityKey = "rule"
         Category = $category
         SubCategory = $null
