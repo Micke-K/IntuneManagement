@@ -66,9 +66,20 @@
             {
                 "nameResourceKey":  "Autopilot.directoryServiceLabel",
                 "descriptionResourceKey":  "",
-                "dataType":  101,
+                "dataType":  16,
+                "entityKey":  "azureADJoinType",
                 "category":  "Autopilot.OOBE.title",
-                "value":  "Autopilot.DirectoryService.azureAD"
+                "booleanActions":  0,
+                "options":  [                                
+                                {
+                                    "nameResourceKey":  "Autopilot.DirectoryService.activeDirectoryAD",
+                                    "value":  "hybrid"
+                                },
+                                {
+                                    "nameResourceKey":  "Autopilot.DirectoryService.azureAD",
+                                    "value":  "azureAD"
+                                }
+                ]
             }            
         ]
     },    
@@ -111,7 +122,16 @@
                 "entityKey":  "skipKeyboardSelectionPage",
                 "dataType":  0,
                 "booleanActions":  109,
-                "category": "Autopilot.OOBE.title"
+                "category": "Autopilot.OOBE.title",
+                "Condition": {
+                    "type": "or",
+                    "Expressions": [
+                        {
+                            "property": "isLanguageSet",
+                            "value": true
+                        }
+                    ]
+                }
             },
             {
                 "nameResourceKey":  "Autopilot.OOBE.licenseAgreement",

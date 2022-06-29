@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.5.0'
+    '3.6.0'
 }
 
 function Initialize-Window
@@ -521,7 +521,7 @@ function Invoke-RegisterName
 #region Silent Functions
 function Set-BatchProperties
 {
-    param($settingsObj, $form)
+    param($settingsObj, $form, [switch]$SkipMissingControlWarning)
 
     if(-not $settingsObj -or -not $form)
     {
@@ -535,11 +535,14 @@ function Set-BatchProperties
         $obj = $form.FindName($prop.Name)
         if(-not $obj)
         {
-            Write-Log "No setting for $($prop.Name) found" 2
+            if($SkipMissingControlWarning -ne $true)
+            {
+                Write-Log "No setting for $($prop.Name) found" 2
+            }
             continue
         }
 
-        if(-not $prop.Value)
+        if($prop.Value -is [String] -and [string]::IsNullOrEmpty($prop.Value))
         {
             continue
         }

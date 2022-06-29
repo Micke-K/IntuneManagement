@@ -1,4 +1,4 @@
-﻿{
+{
     "OutlookAppConfig":  {
                              "DataProtectionConfiguration":  {
                                                                  "header":  "Configuration de la protection des données"
@@ -329,7 +329,7 @@
                      "contentCaching":  "Mise en cache du contenu",
                      "controlPanelAndSettings":  "Panneau de configuration et paramètres",
                      "credentialGuard":  "Microsoft Defender Credential Guard",
-                     "customCompliance":  "Conformité personnalisée",
+                     "customCompliance":  "Conformité personnalisée (préversion)",
                      "customCompliancePreview":  "Conformité personnalisée (préversion)",
                      "customConfiguration":  "Profil de configuration personnalisé",
                      "customOMASettings":  "Paramètres OMA-URI personnalisés",
@@ -786,6 +786,7 @@
                                      "SurfaceHub":  {
                                                         "friendlyNameRequired":  "Un nom convivial est requis",
                                                         "pwdRequired":  "Un mot de passe est requis",
+                                                        "pwdValidFormat":  "Impossible de mettre à jour le mot de passe. La valeur fournie pour le nouveau mot de passe ne répond pas aux exigences de longueur ou de complexité du domaine.",
                                                         "upnRequired":  "Un compte d’appareil est requis",
                                                         "upnValidFormat":  "Les valeurs peuvent contenir des lettres (a-z, A-Z), des chiffres (0-9) et des traits d’union. Les valeurs ne peuvent pas inclure d’espace vide."
                                                     }
@@ -920,8 +921,8 @@
                       "assignedDevicesResourceAccountStatusBarMessage":  "Ce tableau liste uniquement les appareils Surface Hub 2 auxquels ce profil a été attribué.",
                       "assigningDescription":  "Mise à jour des affectations de {0}.",
                       "assigningTitle":  "Mise à jour des affectations de profil AutoPilot.",
-                      "autoremediationContext":  "We've detected a hardware change on this device. We're trying to automatically register the new hardware. You don't need to do anything now; the status will be updated at the next check in with the result. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Learn more about resetting the profile.</a>",
-                      "autoremediationTitle":  "Device {0} has a fix pending",
+                      "autoremediationContext":  "Nous avons détecté un changement matériel sur cet appareil. Nous essayons d’enregistrer automatiquement le nouveau matériel. Vous n'avez rien à faire maintenant ; le statut sera mis à jour lors de la prochaine vérification avec le résultat. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">En savoir plus sur la réinitialisation du profil.</a>",
+                      "autoremediationTitle":  "Un correctif est en attente pour l’appareil {0}.",
                       "cannotDeleteMessage":  "Ce profil est affecté à des groupes. Vous devez annuler l'affectation de tous les groupes de ce profil pour pouvoir le supprimer.",
                       "cannotDeleteTitle":  "Impossible de supprimer {0}",
                       "createdDateTime":  "Création",
@@ -944,8 +945,8 @@
                       "invalidProfileNameMessage":  "Le caractère « {0} » n'est pas autorisé",
                       "joinTypeLabel":  "Joindre Azure AD comme",
                       "lastModifiedDateTime":  "Dernière modification le :",
-                      "manualRemediationContext":  "We've detected a hardware change on this device. It won't automatically receive an Autopilot profile when it's reset unless you register the device again. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Learn more about resetting the profile.</a>",
-                      "manualRemediationTitle":  "Device {0} needs your attention",
+                      "manualRemediationContext":  "Nous avons détecté une modification matérielle sur cet appareil. Il ne recevra pas automatiquement un profil Autopilot lorsqu’il sera réinitialisé, sauf si vous réinscrivez l’appareil. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">En savoir plus sur la réinitialisation du profil.</a>",
+                      "manualRemediationTitle":  "L’appareil {0} requiert votre attention.",
                       "name":  "Nom",
                       "noAutopilotProfile":  "Aucun profil AutoPilot",
                       "notEnoughPermissionAssignedError":  "Vous n'avez pas les autorisations suffisantes pour affecter ce profil à un ou plusieurs groupes sélectionnés. Contactez votre administrateur.",
@@ -958,6 +959,13 @@
                       "windowsPCCommandMenu":  "PC Windows",
                       "directoryServiceLabel":  "Joindre à Azure AD comme"
                   },
+    "RoleAssignment":  {
+                           "RoleAssignmentAdmin":  "Groupes d'administrateurs",
+                           "RoleAssignmentAdminDesc":  "Les utilisateurs du groupe d'administrateurs sont les administrateurs affectés à ce rôle.",
+                           "rolesMenuTitle":  "Rôles Endpoint Manager",
+                           "RoleAssignmentScopeDesc":  "Les administrateurs de cette attribution de rôle peuvent cibler des stratégies, des applications et des tâches distantes",
+                           "RoleAssignmentScope":  "Groupes d'étendue"
+                       },
     "MinimumOperatingSystem":  {
                                    "Android":  {
                                                    "v10":  "Android 10.0",
@@ -983,6 +991,7 @@
                                                "v12":  "iOS 12.0",
                                                "v13":  "iOS 13.0",
                                                "v14":  "iOS 14.0",
+                                               "v15":  "iOS 15.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -1178,6 +1187,61 @@
                              "includeAllDevicesVirtualGroup":  "Inclus",
                              "includeAllUsersVirtualGroup":  "Inclus"
                          },
+    "CoManagementAuthority":  {
+                                  "Confirmation":  {
+                                                       "deleteMessage":  "Les utilisateurs concernés sont limités par la page d’autorité de cogestion suivante avec la priorité la plus haute ou par la page d’autorité de cogestion par défaut, si aucune autre page d’autorité de cogestion n’est affectée.",
+                                                       "deleteTitle":  "{0} est le nom d’affichage d’une stratégie d’autorité de cogestion configurée"
+                                                   },
+                                  "Grid":  {
+                                               "description":  "La page de l’autorité de cogestion s’affiche pendant la configuration initiale de l’appareil et lors de la première connexion de l’utilisateur. Si cette option est activée, les utilisateurs peuvent voir la progression de la configuration des applications et profils attribués ciblés sur leur appareil.",
+                                               "hyperlink":  "https://go.microsoft.com/fwlink/?linkid=86016",
+                                               "label":  "Autorité de cogestion"
+                                           },
+                                  "Header":  {
+                                                 "description":  "La page de l’autorité de cogestion s’affiche pendant la configuration initiale de l’appareil et lors de la première connexion de l’utilisateur. Si cette option est activée, les utilisateurs peuvent voir la progression de la configuration des applications et profils attribués ciblés sur leur appareil."
+                                             },
+                                  "Main":  {
+                                               "title":  "Autorité de cogestion"
+                                           },
+                                  "MessageSaved":  {
+                                                       "body":  "La stratégie de l’autorité de cogestion a été créée."
+                                                   },
+                                  "Notification":  {
+                                                       "createError":  "Une erreur s’est produite pendant la création de la stratégie d’autorité de cogestion « {0} »",
+                                                       "created":  "Cette stratégie d’autorité de cogestion n’a été affectée à aucun utilisateur.",
+                                                       "creating":  "Création de la stratégie d’autorité de cogestion",
+                                                       "creatingMessage":  "Création de la stratégie d’autorité de cogestion {0}",
+                                                       "deleteError":  "Une erreur s’est produite lors de la suppression de la stratégie d’autorité de cogestion",
+                                                       "deleted":  "La stratégie d’autorité de cogestion a été supprimée.",
+                                                       "deletedMessage":  "La stratégie d’autorité de cogestion {0} est supprimée.",
+                                                       "deleting":  "Suppression de la stratégie d’autorité de cogestion",
+                                                       "deletingMessage":  "Suppression de la stratégie d’autorité de cogestion {0}",
+                                                       "fetchError":  "Une erreur s’est produite lors de l’affichage des stratégies d’autorité de cogestion",
+                                                       "saved":  "Autorité de cogestion enregistrée.",
+                                                       "savedMessage":  "La stratégie d’autorité de cogestion {0} a été enregistrée avec succès.",
+                                                       "saving":  "Enregistrement de l’autorité de cogestion",
+                                                       "savingMessage":  "Enregistrement de la stratégie d’autorité de cogestion {0}"
+                                                   },
+                                  "Priority":  {
+                                                   "saveError":  "Une erreur s’est produite pendant l’enregistrement des priorités de l’autorité de cogestion",
+                                                   "saved":  "Les priorités de l’autorité de cogestion ont été enregistrées avec succès."
+                                               },
+                                  "ReloadNotification":  {
+                                                             "description":  "Rechargez la stratégie d’autorité de cogestion, puis réessayez.",
+                                                             "title":  "Recharger le panneau d’autorité de cogestion"
+                                                         },
+                                  "advancedProperty":  "Avancé",
+                                  "commandLineArgs":  "Arguments de la ligne de commande d’installation du client.",
+                                  "deviceGroupOnlyMessage":  "Les profils de page d’autorité de cogestion peuvent être attribués uniquement à des groupes d’utilisateurs. Les appareils attribués n’affichent pas la page d’autorité de cogestion.",
+                                  "enterArgument":  "Entrer un argument",
+                                  "installAgent":  "Installez automatiquement l’agent Configuration Manager.",
+                                  "managedDeviceOwnership":  "Remplacez la stratégie de cogestion et utilisez Intune pour toutes les charges de travail.",
+                                  "noAssignmentMessage":  "Attribuez une stratégie d’autorité de gestion à au moins un groupe. Cliquez sur Propriétés.",
+                                  "pageDescription":  "Profils d’autorité de cogestion",
+                                  "pageSetting":  "Paramètre de l’autorité de cogestion",
+                                  "pageTitle":  "Autorité de cogestion",
+                                  "settingDescription":  "Les paramètres de cogestion déterminent le propriétaire des charges de travail."
+                              },
     "AppType":  {
                     "androidEnterpriseSystemApp":  "Application système Android Enterprise",
                     "androidForWorkApp":  "Application du store Google Play géré",
@@ -1356,6 +1420,14 @@
                                                    "label":  "Revérifier les exigences d'accès après (minutes d'inactivité)\r\n\r\n",
                                                    "tooltip":  "Si l'application gérée par stratégie est inactive pendant une durée supérieure au nombre de minutes d'inactivité spécifié, l'application demande la revérification des conditions d'accès (p. ex. : code PIN, paramètres de lancement conditionnel) après le lancement de l'application."
                                                },
+                        "RequireClass3Biometrics":  {
+                                                        "label":  "Class 3 Biometrics (Android 9.0+)",
+                                                        "tooltip":  "For more information on class 3 biometrics refer to the documentation available <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">here</a>"
+                                                    },
+                        "RequirePinAfterBiometricChange":  {
+                                                               "label":  "Override Biometrics with PIN after biometric updates",
+                                                               "tooltip":  "If class 3 biometrics are supported by the device (more info <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>), when a change in biometrics is detected, a PIN prompt will override biometric prompts."
+                                                           },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "L’ID de package doit être unique.",
                                                   "invalidPackageError":  "ID de package non valide",
@@ -1454,6 +1526,8 @@
                       },
     "EnrollmentStatusScreen":  {
                                    "Apps":  {
+                                                "apps":  "applications",
+                                                "appsListName":  "Liste des applications",
                                                 "managedApps":  "Applications gérées",
                                                 "noApps":  "Aucune application",
                                                 "noAppsError":  "Erreur de récupération des applications",
@@ -1692,7 +1766,8 @@
                                                       "windowsDomainJoin":  "De nombreux environnements utilisent Active Directory (AD) en local. Quand des appareils joints à un domaine AD sont également joints à Azure AD, ils sont appelés appareils joints à une version hybride d’Azure AD. À l’aide de Windows AutoPilot, vous pouvez inscrire des appareils hybrides Azure AD associés dans Intune. Pour l’inscription, vous avez également besoin d’un profil de configuration de jonction de domaine. Ce dernier inclut des informations sur le domaine Active Directory local. Quand les appareils sont provisionnés (et généralement hors connexion), ce profil déploie les détails du domaine Active Directory pour que les appareils sachent quel domaine local joindre. Si vous ne créez pas de profil de jonction de domaine, le déploiement de ces appareils risque d’échouer.",
                                                       "windowsEditionUpgrade":  "Dans le cadre de votre solution de gestion des appareils mobiles (MDM), vous pouvez mettre à niveau vos appareils Windows 10/11. Par exemple, vous voulez mettre à niveau vos appareils Windows 10/11 Professionnel vers Windows 10/11 Entreprise. Ou, vous souhaitez que l’appareil sorte du mode S. Le mode S Windows 10/11 est conçu pour la sécurité et les performances. Vous pouvez utiliser Intune pour basculer en mode S. Le basculement hors du mode S est unidirectionnel. Et une fois que vous avez basculé en mode S, vous ne pouvez pas revenir en mode S Windows 10/11. Cette fonctionnalité s’applique à Windows 10 et versions ultérieures, Windows 10 1809 ou ultérieur pour le mode S et Windows Holographic for Business. Ces fonctionnalités sont disponibles dans Intune et peuvent être configurées par l’administrateur. Intune utilise des profils de configuration pour créer et personnaliser ces paramètres pour les besoins de votre organisation. Une fois que vous avez ajouté ces fonctionnalités dans un profil, vous pouvez effectuer un push ou un déploiement du profil sur les appareils exécutant Windows 10 ou une version ultérieure de votre organisation. Quand vous déployez le profil, Intune met automatiquement à niveau les appareils ou les commutateurs hors du mode S.",
                                                       "windowsHealthMonitoring":  "Microsoft peut collecter des données d’événement et fournir des recommandations pour améliorer les performances sur vos appareils Windows. Endpoint Analytics analyse ces données et peut recommander des logiciels, contribuer à l’amélioration des performances de démarrage et résoudre les problèmes de support courants. Dans Intune, vous pouvez créer un profil de configuration d’appareil de monitoring de l’intégrité Windows pour activer cette collecte de données, puis déployer ce profil sur vos appareils. Utilisez ce profil dans le cadre de votre solution de gestion des appareils mobiles (MDM) pour optimiser vos appareils Windows.",
-                                                      "windowsIdentityProtection":  "Avec Intune, vous pouvez utiliser ce profil de configuration d’appareil pour gérer les paramètres de Windows Hello Entreprise sur les appareils Windows. <br><br>Le saviez-vous ? Accédez à l’option de menu <a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\">Sécurité du point de terminaison</a> pour créer un profil de sécurité de point de terminaison ou un profil de base de référence de sécurité pour configurer vos fonctionnalités de sécurité de point de terminaison communes. <br><br>Les profils de sécurité de point de terminaison fournissent un ensemble concis et organisé de modèles de sécurité, notamment le Pare-feu, BitLocker, l’antivirus et plus encore.  Les profils de base de référence de sécurité sont des modèles avec des valeurs de paramètres préconfigurées recommandées par les experts en sécurité."
+                                                      "windowsIdentityProtection":  "Avec Intune, vous pouvez utiliser ce profil de configuration d’appareil pour gérer les paramètres de Windows Hello Entreprise sur les appareils Windows. <br><br>Le saviez-vous ? Accédez à l’option de menu <a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\">Sécurité du point de terminaison</a> pour créer un profil de sécurité de point de terminaison ou un profil de base de référence de sécurité pour configurer vos fonctionnalités de sécurité de point de terminaison communes. <br><br>Les profils de sécurité de point de terminaison fournissent un ensemble concis et organisé de modèles de sécurité, notamment le Pare-feu, BitLocker, l’antivirus et plus encore.  Les profils de base de référence de sécurité sont des modèles avec des valeurs de paramètres préconfigurées recommandées par les experts en sécurité.",
+                                                      "wiredNetwork":  "Configurez un réseau câblé auquel les gens peuvent accéder."
                                                   },
                            "TrustedCert":  {
                                                "uploadControlPlaceHolderText":  "Sélectionner un fichier .cer valide"
@@ -1855,7 +1930,7 @@
                            "androidZebraMxConfigurationXmlName":  "Profil MX au format .xml",
                            "anonymousIdentityPrivacyName":  "Identité anonyme",
                            "any":  "Tous",
-                           "anyDNSAddressesInList":  "Utiliser les serveurs DNS suivants pour résoudre ces domaines (facultatif)",
+                           "anyDNSAddressesInList":  "Utilisez les serveurs DNS suivants pour résoudre les domaines que vous avez saisis (facultatif)",
                            "anyDayOption":  "N'importe quel jour",
                            "anyEthernet":  "Tout port Ethernet",
                            "anywhereOption":  "Partout",
@@ -2831,10 +2906,10 @@
                            "connectAppBlockAutoLaunchDescription":  "Bloque le lancement automatique de l'application Connexion. Si cette option est activée, les utilisateurs peuvent lancer manuellement l'application Connexion à partir des paramètres du Hub.",
                            "connectAppBlockAutoLaunchName":  "Lancer automatiquement Connexion",
                            "connectIfNeeded":  "Se connecter si nécessaire",
-                           "connectIfNeededDNSListDescription":  "Une fois configurés, ces serveurs DNS sont utilisés pour résoudre les domaines de la liste. L’échec de la résolution du domaine entraîne l’établissement d’une connexion VPN.",
-                           "connectIfNeededDomainsDescription":  "Lorsqu’un utilisateur accède à un domaine dans cette liste, l’appareil tente de résoudre le domaine à l’aide de DNS. L’échec de la résolution du domaine entraîne l’établissement d’une connexion VPN.",
+                           "connectIfNeededDNSListDescription":  "Saisissez la ou les adresses IP des serveurs DNS qui résoudront les domaines de la liste. Ce paramètre s’applique uniquement aux domaines de la liste. Les domaines et les serveurs DNS sont des ressources internes qui ne sont pas accessibles sur les réseaux externes. Donc, si le domaine ne se résout pas, la connexion VPN est créée à la demande.",
+                           "connectIfNeededDomainsDescription":  "Lorsque les utilisateurs accèdent à un domaine de cette liste, l’appareil essaie de résoudre le domaine à l’aide de DNS. Les domaines sont des ressources internes qui ne sont pas résolues par le DNS public. Ainsi, si le domaine ne se résout pas, c’est-à-dire qu’il n’a pas accès aux ressources internes, une connexion VPN est créée à la demande.",
                            "connectIfNeededOption":  "Se connecter si nécessaire",
-                           "connectOption":  "Établir le VPN",
+                           "connectOption":  "Connecter le VPN",
                            "connectionHeading":  "Connexion",
                            "consumerFeaturesDescription":  "Permet aux administrateurs informatiques d'activer les fonctionnalités destinées au grand public uniquement, telles que les suggestions de démarrage, les notifications d'abonnement, l'installation d'application post-OOBE et les vignettes de redirection.",
                            "consumerFeaturesName":  "Fonctionnalités grand public",
@@ -3888,6 +3963,7 @@
                            "gatekeeperAllowedAppSourceName":  "Autoriser les applications téléchargées à partir de ces emplacements",
                            "gatekeeperBlockOverrideDescription":  "Empêche l'utilisateur de remplacer temporairement le paramètre Gatekeeper en appuyant sur la touche CTRL et en cliquant sur une application pour l'installer.",
                            "gatekeeperBlockOverrideName":  "Ne pas autoriser l’utilisateur à substituer Gatekeeper",
+                           "generalAvailabilityChannel":  "Canal de disponibilité générale",
                            "generalNetworkSettingsHeader":  "Général",
                            "genericLocalUsersOrGroupsName":  "Utilisateurs ou groupes locaux génériques",
                            "globalConfigurationsDescription":  "Configurez les paramètres de pare-feu Microsoft Defender applicables à tous les types de réseau.",
@@ -3999,7 +4075,7 @@
                            "iPsecSecuredPacketExemptionName":  "Exemption de paquets sécurisés IPsec avec mode furtif",
                            "iPv4Option":  "IPv4",
                            "iPv6Option":  "IPv6",
-                           "iWantToDescription":  "Sélectionnez l'action à effectuer si un résultat correspond à cette règle.",
+                           "iWantToDescription":  "Les actions Connecter VPN, Déconnecter VPN et Ignorer s'appliquent lorsqu'un utilisateur se connecte à un réseau. Ces actions continuent de s'appliquer tant que l'utilisateur est connecté au réseau. L'action Évaluer chaque tentative de connexion s'applique à toutes les connexions aux domaines que vous entrez pour l'action mais seulement si le VPN n'est pas déjà connecté.",
                            "iWantToName":  "Je veux faire ceci",
                            "iconSortOrderAlphabetic":  "Alphabétique",
                            "iconSortOrderDescription":  "",
@@ -4924,6 +5000,7 @@
                            "mustBeAValidProductKey":  "Doit être une clé de produit valide (format : 12345-22345-32345-42345-52345)",
                            "mustBeAValidTeamId":  "Doit être un ID d'équipe valide",
                            "mustBeAValidUrl":  "Doit être une URL valide",
+                           "mustBeAValidUrlNoProtocol":  "Doit être une URL ou une adresse IP valide sans protocole (pas de http ou https)",
                            "mustBeAValidUrlOrIP":  "Doit être une URL ou une adresse IP valide",
                            "mustBeAValidUrlWithIdParameter":  "Doit être un URI valide avec un paramètre de requête Id. Exemple : https://play.google.com/store/apps/details?id=com.microsoft.test2",
                            "mustBeAWellFormedXMLString":  "Doit être une chaîne XML bien formée",
@@ -4937,11 +5014,14 @@
                            "mustBeValidBuildVersionFormat":  "Doit respecter un format de version de build valide. Exemple : 18A391, 16G1114, etc.",
                            "mustBeValidDNSSuffix":  "Doit être un suffixe DNS valide. Par exemple : itgproxy.com",
                            "mustBeValidDateFormat":  "Doit être un format de date valide (AAAA-MM-JJ). Exemple : 2016-10-01, 2016-10-31, etc.",
+                           "mustBeValidDomain":  "Doit être un domaine valide. Exemple : contoso.com",
                            "mustBeValidEmail":  "Doit être une adresse e-mail valide. Exemple : username@example.com, etc.",
                            "mustBeValidEmailList":  "Doit être dans un format de liste d'e-mails valide : utilisateur1@gmail.com; utilisateur2@gmail.com.",
                            "mustBeValidFloatingPoint":  "Doit être un nombre à virgule flottante valide. Exemple : 1,0, 4,3, etc.",
                            "mustBeValidGuid":  "Doit être un UUID valide. Exemple : 782AFCFC-7CAA-436C-8BF0-78CD0FFBD4AF, etc.",
                            "mustBeValidHost":  "Doit être un hôte valide. Exemple : www.host.com, etc.",
+                           "mustBeValidHttpURL":  "Doit être une URL HTTP ou HTTPS valide. Exemple : https://www.contoso.com",
+                           "mustBeValidIpAddress":  "Doit être une adresse IP valide. Exemple : 4.3.6.0",
                            "mustBeValidKaiserWifiFormat":  "Le format est incorrect. Exemple de format d'utilisateur : abcd{{WifiMacAddress}}, Exemple de format de mot de passe : abcd{{WifiMacAddress}}{{PreSharedKey}}",
                            "mustBeValidMonthDayDateFormat":  "Doit être un format de date valide (MM/JJ). Exemple : 31/01, 02/28, etc.",
                            "mustBeValidObjectIdentifierFormat":  "Doit être un format d'identificateur d'objet valide. Exemple : 4.3.6.0, 7.01.4, etc.",
@@ -5107,7 +5187,7 @@
                            "omaBase64Name":  "Fichier de certificat",
                            "onDemandDefaultRule":  "Règle par défaut : Ne rien faire",
                            "onDemandRuleName":  "Règle {0}",
-                           "onDemandRulesDescription":  "Chaque fois qu’une connexion réseau est tentée par des appareils iOS, certaines conditions, telles que le SSID WiFi ou le nom de domaine, sont mises en correspondance avec ces règles. S’il existe une correspondance, l’action appropriée sera effectuée sur l’appareil.",
+                           "onDemandRulesDescription":  "Ces paramètres sont utilisés pour créer une règle. S’il y a une correspondance avec votre règle, l’appareil effectue l’action que vous choisissez, comme créer une connexion VPN à la demande.",
                            "onDemandRulesExample":  "Exemple : Déconnecter le VPN sur le Wi-Fi de l'entreprise",
                            "onDemandRulesInfo":  "Découvrez plus d'informations sur l'élaboration des règles à la demande.",
                            "onDemandRulesName":  "Règles à la demande",
@@ -5371,9 +5451,9 @@
                            "privateShieldedSummaryLabel":  "Protection maximale (réseaux privés)",
                            "privateStealthModeSummaryLabel":  "Mode furtif (réseaux privés)",
                            "privateUnicastResponsesToMulticastBroadcastsSummaryLabel":  "Réponses en monodiffusion au trafic en multidiffusion (réseaux privés)",
-                           "probeUrlOptionalDescription":  "Il doit s’agir d’une URL HTTP ou HTTPS (préférée). Il est détecté chaque fois qu’une tentative d’accès à un domaine dans la liste des domaines de cette règle est effectuée. Si la sonde échoue, car l’URL est inaccessible ou ne retourne pas de code d’état HTTP 200, une connexion VPN est établie.",
-                           "probeUrlOptionalExample":  "Exemple : URLincorrecte.com",
-                           "probeUrlOptionalName":  "Quand cette URL est inaccessible, permet de forcer la connexion du VPN.",
+                           "probeUrlOptionalDescription":  "Cette URL est un test et détermine si l’appareil est sur un réseau externe. L’URL est sondée chaque fois qu’un utilisateur tente d’accéder à un domaine de la liste des domaines. Si la sonde échoue parce que l’URL est inaccessible ou ne renvoie pas de code d’état HTTP 200, une connexion VPN est créée. Par exemple, entrez https://corp.contoso.com/internalprobe, accessible uniquement lorsque l’appareil est connecté au réseau interne.",
+                           "probeUrlOptionalExample":  "par exemple. https://corp.contoso.com/internalprobe",
+                           "probeUrlOptionalName":  "Entrez l’URL de vérification HTTP ou HTTPS",
                            "processesColumn":  "Processus",
                            "processesColumnExamples":  "Exemple : %ProgramFiles%\\chemin\\mon_application.exe",
                            "processesToExcludeName":  "Processus à exclure des analyses et de la protection en temps réel",
@@ -5514,6 +5594,8 @@
                            "requiredPasswordComplexityName":  "Complexité du mot de passe",
                            "requiredPasswordTypeDescription":  "Spécifie le type de mot de passe obligatoire.",
                            "requiredPasswordTypeName":  "Type de mot de passe obligatoire",
+                           "requiredPasswordUnlockDailyOption":  "24 heures depuis le dernier déverrouillage du code PIN, du mot de passe ou du modèle",
+                           "requiredPasswordUnlockName":  "Fréquence de déverrouillage obligatoire",
                            "requiredURLStringProbeName":  "URL de la sonde de préconnexion",
                            "resetToDefaultOption":  "Rétablir les valeurs par défaut",
                            "resourcePath":  "Chemin de ressource",
@@ -5533,7 +5615,6 @@
                            "restrictedAppsName":  "Applications restreintes",
                            "restrictedSitesSecurityLevelDescription":  "Applique une sécurité élevée aux sites sensibles.",
                            "restrictedSitesSecurityLevelName":  "Sécurité élevée pour les sites sensibles",
-                           "retailChannel":  "Canal de vente au détail",
                            "revokeEncryptionKeysOnUnEnrollDescription":  "Révoque les clés de chiffrement quand l'appareil est désinscrit (recommandé).",
                            "revokeEncryptionKeysOnUnEnrollName":  "Révoquer les clés de chiffrement quand l'appareil est désinscrit",
                            "roleAndRealmDescription":  "Paires de valeurs rôle-domaine, comme demandé par le fournisseur.",
@@ -6974,7 +7055,7 @@
                            "wipOption":  "Associer une protection des informations Windows à cette connexion",
                            "wirelessOption":  "Sans fil",
                            "with":  "Choisir de se connecter",
-                           "withDescription":  "Cela va se produire à chaque tentative de connexion",
+                           "withDescription":  "S’il n’y a pas de connexion VPN existante, pour chaque tentative de connexion à un domaine que vous entrez, décidez si les utilisateurs doivent se connecter au VPN ou ne jamais se connecter au VPN. L’action que vous sélectionnez se produit à chaque tentative de connexion.",
                            "workFoldersURLDescription":  "Utilisez Dossiers de travail pour accéder à vos fichiers professionnels sur tous vos appareils, même hors connexion.",
                            "workFoldersURLName":  "URL de Dossiers de travail",
                            "workProfileAllowAppInstallsFromUnknownSourcesInWorkProfileName":  "Autoriser les installations d’applications à partir de sources inconnues dans le profil professionnel",
@@ -7075,6 +7156,7 @@
                            "add":  "Ajouter",
                            "addAppConfiguration":  "Ajouter la configuration de l'application",
                            "addApps":  "Ajouter des applications",
+                           "addCondition":  "Add condition",
                            "addConfigCommandLabel":  "Ajouter la configuration",
                            "addPolicyBladeTitle":  "Ajouter une stratégie",
                            "addPolicyError":  "Échec d'ajout de la stratégie : {0}",
@@ -7135,6 +7217,9 @@
                            "appsCountSelectorDisplayTextPlural":  "{0} applications sélectionnées",
                            "appsCountSelectorDisplayTextSingular":  "{0} application sélectionnée",
                            "appsInAndroidWorkProfile":  "Applications dans le profil professionnel Android",
+                           "appsOnAndroidEnterpriseDedicatedDevicesWithAzureAdSharedMode":  "Applications sur des appareils Android Enterprise dédiés avec Azure AD mode partagé​",
+                           "appsOnAndroidOpenSourceProjectUserAssociated":  "Applications sur les appareils AOSP associés à l’utilisateur",
+                           "appsOnAndroidOpenSourceProjectUserless":  "Applications sur des appareils sans utilisateur AOSP",
                            "appsOnIntuneManagedDevices":  "Applications sur les appareils gérés par Intune",
                            "appsOnUnmanagedDevices":  "Applications sur les appareils non gérés",
                            "appsSelectorLabel":  "Applications",
@@ -7240,6 +7325,7 @@
                            "deviceConditionsInfoParagraph2":  "Vous pouvez configurer des paramètres similaires basés sur l'appareil pour les appareils inscrits.",
                            "deviceConditionsInfoParagraph2LinkText":  "Découvrez-en plus sur la configuration des paramètres de conformité d'appareil pour les appareils inscrits.",
                            "deviceId":  "ID de l'appareil",
+                           "deviceLockComplexityValidationFailureNotes":  "<p><b>Remarques :</b></p>\r\n<ul type=\"disc\">\r\n    <li>Le verrouillage de l’appareil peut nécessiter une complexité de mot de passe : FAIBLE, MOYENNE ou ÉLEVÉE destinée à Android 11+. Pour les appareils fonctionnant sous Android 10 et versions antérieures, la définition d’une valeur de complexité Faible/Moyenne/Élevée default to the expected behavior for \"Low Complexity\".</li>\r\n    <li>Les définitions de mots de passe ci-dessous sont susceptibles d’être modifiées. Veuillez vous référer à <a href='https://developer.android.com/reference/android/app/admin/DevicePolicyManager#getPasswordComplexity%28%29'>DevicePolicyManager|Android Developers</a> pour les définitions les plus récentes du différents niveaux de complexité de mot de passe.</li>\r\n</ul>\r\n\r\n<p><b>Faible</b></p>\r\n<ul type=\"disc\">\r\n    <li>Le mot de passe peut être un schéma ou un code PIN avec des séquences répétitives (4444) ou ordonnées (1234, 4321, 2468).</li>\r\n</ul>\r\n\r\n<p><b>Medium</b></p>\r\n<ul type=\"disc\">\r\n    <li>Code PIN sans séquences répétitives (4444) ou ordonnées (1234, 4321, 2468) d’une longueur minimale d’au moins 4 caractères</li>\r\n    <li>Mots de passe alphabétiques d’une longueur minimale d’au moins 4 caractères</li>\r\n    <li>Mots de passe alphanumériques d’une longueur minimale d’au moins 4 caractères</li>\r\n</ul>\r\n\r\n<p><b>Haut</b></p>\r\n<ul type=\"disc\">\r\n    <li>Code PIN sans séquences répétitives (4444) ou ordonnées (1234, 4321, 2468) d’une longueur minimale d’au moins 8 caractères</li>\r\n    <li>Mots de passe alphabétiques d’une longueur minimale d’au moins 6 caractères</li>\r\n    <li>Mots de passe alphanumériques d’une longueur minimale d’au moins 6 caractères</li>\r\n</ul>\r\n<p></p>",
                            "deviceLockedOpenFilesOptionsText":  "Quand l'appareil est verrouillé et que des fichiers sont ouverts",
                            "deviceLockedOptionText":  "Quand l'appareil est verrouillé",
                            "deviceManufacturer":  "Fabricant du périphérique",
@@ -7356,6 +7442,7 @@
                            "guidedTemplate2":  "Nous vous demanderons le niveau de protection que vous souhaitez déployer sur vos utilisateurs. Pour plus d’informations, consultez <a href = \"https://go.microsoft.com/fwlink/?linkid=2131582 \">Framework de protection des données avec des stratégies de protection des applications. </a>",
                            "guidediOSLabel":  "Protection d'applications iOS",
                            "hardwareBackedKey":  "Clé sauvegardée sur du matériel",
+                           "healthCheck":  "Health Checks",
                            "helpAndSupport":  "Aide et support",
                            "hideOverrides":  "Masquer le choix d'ignorer les avertissements",
                            "highDataProtectionGuidedString":  "Protection élevée des données : développez les paramètres définis dans la protection avancée des données en introduisant des paramètres d’accès plus complexes (par exemple pour désactiver le code confidentiel simple), des paramètres de protection des données (par exemple, la désactivation des claviers tiers).",
@@ -7468,6 +7555,7 @@
                            "overview":  "Vue d'ensemble",
                            "packageId":  "ID du package",
                            "pendingDeleteContentStateText":  "Suppression...",
+                           "photoLibrary":  "Photothèque",
                            "pinCharSettingTooltip":  "Un code PIN numérique peut contenir seulement des caractères numériques.\r\n\r\nUn code secret doit contenir tous les éléments suivants : des caractères alphanumériques et des symboles autorisés.",
                            "pinToDashboard":  "Dummy string, don't translate",
                            "platformColumnLabel":  "Plateforme",
@@ -7537,7 +7625,7 @@
                            "reporting":  "Rapports",
                            "reports":  "Rapports",
                            "require":  "Exiger",
-                           "requireDeviceLockOnApps":  "Require device lock",
+                           "requireDeviceLockComplexityOnApps":  "Exiger le verrouillage de l’appareil",
                            "requireThreatScanOnApps":  "Exiger l'analyse des menaces sur les applications",
                            "requiredField":  "Ce champ ne peut pas être vide",
                            "requiredSafetyNetEvaluationType":  "Type d’évaluation SafetyNet obligatoire",
@@ -7701,7 +7789,7 @@
                            "wipPolicyExemptAppsTitle":  "Applications exemptes",
                            "wipPolicyImportApps":  "Importer des applications",
                            "wipPolicyProtectedAppsTitle":  "Applications protégées",
-                           "wipPotocolsWarningMessage":  "Attention : la modification de ces paramètres change la façon dont Intune bloque ou autorise le transfert de données vers d’autres applications. Ne modifiez pas ces paramètres, sauf si vous êtes en mesure de gérer les fuites de données éventuelles. Vous pouvez en savoir plus <a target=\"_blank\" href={0} aria-label=\"Learn more about exampt apps\">ici</a>.",
+                           "wipPotocolsWarningMessage":  "Attention: la modification de ces paramètres change la façon dont Intune bloque ou autorise le transfert de données vers d’autres applications. Ne modifiez pas ces paramètres, sauf si vous êtes en mesure de gérer les fuites de données éventuelles. Vous pouvez en savoir plus <a target=\"_blank\" href={0} aria-label=\"Learn more about exampt apps\">ici</a>.",
                            "wipPotocolsWarningMessageIos":  "Attention : la modification de ces paramètres modifie la manière dont Intune bloque ou autorise le transfert de données vers d’autres applications. Ne modifiez pas ces paramètres, sauf si vous êtes en mesure de gérer les fuites de données éventuelles. Pour en savoir plus, cliquez <a target=\"_blank\" href={0}>ici</a>. <br /><br />Pour les stratégies plus récentes, les protocoles de télécommunication ne sont plus ajoutés à la liste des applications exemptées par défaut. Si l’application utilise une version plus récente du SDK Intune (version 12.7.0+), utilisez le paramètre <b>Transférer les données de télécommunications vers</b> sous <b>Envoyer les données d’organisation à d’autres applications</b> pour résoudre les paramètres de transfert de télécommunication. Pour les applications utilisant une version antérieure du SDK Intune, ajoutez le protocole de télécommunication (tel et telprompt) à cette liste. <a target=\"_blank\" href={1} aria-label=\"Learn more about app protection setting\">En savoir plus</a>.",
                            "wipProtectedAppsInfo":  "Ce sont les applications qui doivent être conformes à cette stratégie.",
                            "wipRecommendedApps":  "Applications recommandées",
@@ -7913,9 +8001,9 @@
                            "selectorLabel":  "Règles de détection"
                        },
     "PolicyType":  {
-                       "AttackSurfaceReductionRules":  {
-                                                           "configMgr":  "Règles de réduction de la surface d'attaque (ConfigMgr)"
-                                                       },
+                       "EdgeSmartScreenSettings":  {
+                                                       "description":  "Microsoft Edge paramètres SmartScreen recommandés par l’application : Windows 10 dans le modèle de configuration cloud. https://aka.ms/CloudConfigGuide"
+                                                   },
                        "EndpointDetectionandResponse":  {
                                                             "mDE":  "Détection de point de terminaison et réponse"
                                                         },
@@ -7945,7 +8033,7 @@
                                                         "mDMSecurityBaseline1810PreviewBeta":  "Préversion : base de référence de sécurité MDM pour Windows 10 pour octobre 2018 (bêta)",
                                                         "mDMSecurityBaseline1906":  "Base de référence de sécurité MDM pour Windows 10 et versions ultérieures pour mai 2019",
                                                         "mDMSecurityBaseline2004":  "Base de référence de sécurité MDM pour Windows 10 et versions ultérieures pour août 2020",
-                                                        "mDMSecurityBaseline2101":  "Base de référence de sécurité MDM pour Windows 10 et versions ultérieures de décembre 2020",
+                                                        "mDMSecurityBaseline2101":  "Base de référence de sécurité GPM pour Windows 10 et versions ultérieures de décembre 2020",
                                                         "macOSAntivirus":  "Antivirus",
                                                         "macOSDiskEncryption":  "FileVault",
                                                         "macOSFirewall":  "Pare-feu macOS",
@@ -7964,13 +8052,20 @@
                        "FirewallRules":  {
                                              "mDE":  "Règles de pare-feu Microsoft Defender"
                                          },
+                       "OneDriveKnownFolderMove":  {
+                                                       "description":  "Paramètres de déplacement de dossiers connus de OneDrive : Modèle de configuration de Windows 10 dans le nuage. https://aka.ms/CloudConfigGuide"
+                                                   },
+                       "accountProtection":  "Protection de compte",
                        "administrativeTemplates":  "Modèles d'administration",
                        "androidCompliancePolicy":  "Stratégie de conformité Android",
                        "aospDeviceOwnerCompliancePolicy":  "Stratégie de conformité Android (AOSP)",
                        "applicationControl":  "Contrôle d’application",
+                       "attackSurfaceReductionRules":  "Règles de réduction de la surface d'attaque",
+                       "bitlocker":  "BitLocker",
                        "custom":  "Personnalisé",
                        "deliveryOptimization":  "Optimisation de livraison",
                        "derivedPersonalIdentityVerificationCredential":  "Information d’identification dérivée",
+                       "deviceControl":  "Contrôle de l'appareil",
                        "deviceFeatures":  "Fonctionnalités de l'appareil",
                        "deviceFirmwareConfigurationInterface":  "Interface de configuration du microprogramme d'appareil",
                        "deviceLock":  "Verrouillage de l’appareil",
@@ -7990,6 +8085,7 @@
                        "identityProtection":  "Identity Protection",
                        "iosCompliancePolicy":  "Stratégie de conformité iOS",
                        "kiosk":  "Kiosque",
+                       "localUsersAndGroups":  "Modifier l’appartenance au groupe de l’utilisateur",
                        "macCompliancePolicy":  "Stratégie de conformité Mac",
                        "microsoftDefenderAntivirus":  "Antivirus Microsoft Defender",
                        "microsoftDefenderAntivirusexclusions":  "Exclusions de l’antivirus Microsoft Defender",
@@ -8112,7 +8208,7 @@
     "AzureIAM":  {
                      "AdrsUserActionSelectionWarning":  {
                                                             "conditions":  "Les conditions nécessitant l’inscription de l’appareil ne sont pas disponibles avec l’action utilisateur « Inscrire ou joindre des appareils ».",
-                                                            "message":  "Seule l’action Exiger l’authentification multifacteur peut être utilisée dans les stratégies créées pour l’action utilisateur Inscrire ou joindre des appareils.{0}"
+                                                            "message":  "Seul « Exiger une authentification multifacteur » peut être utilisé dans les stratégies créées pour l’action utilisateur « Inscrire ou joindre des appareils ».{0}"
                                                         },
                      "AuthContext":  {
                                          "Delete":  {
@@ -8144,11 +8240,12 @@
                                                         "selected":  "Contexte d’authentification inclus"
                                                     },
                                          "addNewStepUp":  "Nouveau contexte d’authentification",
+                                         "bannerText":  "Créez vos propres valeurs de contexte d’authentification et stratégies d’accès conditionnel avec Azure AD Premium",
                                          "checkBoxInfo":  "Sélectionner les contextes d'authentification auxquels cette stratégie s'applique",
                                          "configure":  "Configurer les contextes d’authentification",
                                          "createCA":  "Attribuer des stratégies d’accès conditionnel au contexte d’authentification",
                                          "dataGrid":  "Liste des contextes d’authentification",
-                                         "deleteFailedByReference":  "You cannot delete this authentication context because it is being referenced by CA policies.",
+                                         "deleteFailedByReference":  "Vous ne pouvez pas supprimer ce contexte d’authentification, car il est référencé par des stratégies d’autorité de certification.",
                                          "description":  "Description",
                                          "documentation":  "Documentation",
                                          "getStarted":  "Démarrer",
@@ -8166,49 +8263,34 @@
                      "AuthenticationStrength":  {
                                                     "Mode":  {
                                                                  "deviceBasedPush":  "Microsoft Authenticator (connexion par téléphone)",
-                                                                 "deviceBasedPushFido2X509Certificate":  "Microsoft Authenticator (connexion par téléphone) + Fido 2 + Authentification par certificat",
-                                                                 "deviceBasedPushX509CertificateSingleFactor":  "Microsoft Authenticator (connexion par téléphone) + Fido 2 + Authentification par certificat (facteur unique)",
-                                                                 "email":  "Envoyer un code secret à usage unique par e-mail",
-                                                                 "emailOtp":  "Envoyer un code secret à usage unique par e-mail",
+                                                                 "email":  "Code secret à usage unique par e-mail",
                                                                  "federatedMultiFactor":  "Multifacteur fédéré",
                                                                  "federatedSingleFactor":  "Facteur unique fédéré",
-                                                                 "federatedSingleFactorFederatedMultiFactor":  "Facteur unique fédéré + multifacteur fédéré",
-                                                                 "fido2":  "Clé de sécurité FIDO 2",
-                                                                 "fido2X509CertificateSingleFactor":  "Clé de sécurité FIDO 2 + Authentification basée sur un certificat (facteur unique)",
+                                                                 "fido2":  "Clé de sécurité FIDO2",
                                                                  "hardwareOath":  "Jetons OATH matériels",
-                                                                 "hardwareOathEmail":  "Jetons OATH matériels + Code secret à usage unique par e-mail",
-                                                                 "hardwareOathX509CertificateSingleFactor":  "Jetons OATH matériels+ Authentification par certificat (facteur unique)",
-                                                                 "microsoftAuthenticatorPSIX509CertificateSingleFactor":  "Microsoft Authenticator (connexion par téléphone) + Authentification par certificat (facteur unique)",
-                                                                 "microsoftAuthenticatorPsi":  "Microsoft Authenticator (connexion par téléphone)",
+                                                                 "hardwareOathEmail":  "Jeton OATH matériel + code secret à usage unique par e-mail",
+                                                                 "hardwareOathFederatedSingleFactor":  "Jeton OATH à facteur unique fédéré + matériel",
                                                                  "microsoftAuthenticatorPush":  "Microsoft Authenticator (notification Push)",
                                                                  "microsoftAuthenticatorPushEmail":  "Microsoft Authenticator (notification Push) + Code secret à usage unique par e-mail",
-                                                                 "microsoftAuthenticatorPushX509CertificateSingleFactor":  "Microsoft Authenticator (notification Push) + Authentification basée sur un certificat (facteur unique)",
+                                                                 "microsoftAuthenticatorPushFederatedSingleFactor":  "Facteur unique fédéré + Microsoft Authenticator (Notification Push)",
                                                                  "none":  "Aucun",
                                                                  "password":  "Mot de passe",
-                                                                 "passwordDeviceBasedPush":  "Mot de passe + Microsoft Authenticator (connexion par téléphone)",
-                                                                 "passwordFido2":  "Mot de passe + clé de sécurité FIDO 2",
-                                                                 "passwordHardwareOath":  "Mot de passe + jetons OATH matériels",
-                                                                 "passwordMicrosoftAuthenticatorPSI":  "Mot de passe + Microsoft Authenticator (connexion par téléphone)",
+                                                                 "passwordHardwareOath":  "Mot de passe + jeton OATH matériel",
                                                                  "passwordMicrosoftAuthenticatorPush":  "Mot de passe + Microsoft Authenticator (notification Push)",
                                                                  "passwordSms":  "Mot de passe + SMS",
-                                                                 "passwordSoftwareOath":  "Mot de passe + jetons OATH logiciels",
-                                                                 "passwordTemporaryAccessPassMultiUse":  "Mot de passe + Passe d'accès temporaire (multi-utilisation)",
-                                                                 "passwordTemporaryAccessPassOneTime":  "Mot de passe + Passe d'accès temporaire (utilisation unique)",
+                                                                 "passwordSoftwareOath":  "Mot de passe + jeton OATH logiciel",
                                                                  "passwordVoice":  "Mot de passe + voix",
                                                                  "sms":  "SMS",
                                                                  "smsEmail":  "SMS + Envoyer un code secret à usage unique par e-mail",
-                                                                 "smsSignIn":  "Connexion par SMS",
-                                                                 "smsX509CertificateSingleFactor":  "SMS + Authentification par certificat (facteur unique)",
+                                                                 "smsFederatedSingleFactor":  "Facteur unique fédéré + SMS",
                                                                  "softwareOath":  "Jetons OATH logiciels",
-                                                                 "softwareOathEmail":  "Jetons OATH logiciels + Code secret à usage unique par e-mail",
-                                                                 "softwareOathX509CertificateSingleFactor":  "Jetons OATH logiciels + Authentification par certificat (facteur unique)",
+                                                                 "softwareOathEmail":  "Jeton OATH logiciel + Code secret à usage unique par e-mail",
+                                                                 "softwareOathFederatedSingleFactor":  "Jeton OATH à facteur unique fédéré + logiciel",
                                                                  "temporaryAccessPassMultiUse":  "Passe d'accès temporaire (multi-utilisation)",
-                                                                 "temporaryAccessPassMultiUseX509CertificateSingleFactor":  "Passe d'accès temporaire (multi-utilisation) + Authentification par certificat (facteur unique)",
                                                                  "temporaryAccessPassOneTime":  "Passe d'accès temporaire (utilisation unique)",
-                                                                 "temporaryAccessPassOneTimeX509CertificateSingleFactor":  "Passe d'accès temporaire (utilisation unique) + Authentification par certificat (facteur unique)",
                                                                  "voice":  "Voix",
                                                                  "voiceEmail":  "Voice + Envoyer un code secret à usage unique par e-mail",
-                                                                 "voiceX509CertificateSingleFactor":  "Voix + Authentification basée sur un certificat (facteur unique)",
+                                                                 "voiceFederatedSingleFactor":  "Facteur unique fédéré + Voice",
                                                                  "windowsHelloForBusiness":  "Windows Hello Entreprise",
                                                                  "x509CertificateMultiFactor":  "Authentification basée sur un certificat (multifacteur)",
                                                                  "x509CertificateSingleFactor":  "Authentification basée sur un certificat (facteur unique)"
@@ -8240,7 +8322,8 @@
                                              "Validation":  {
                                                                 "failed":  "Avec « Emplacements sélectionnés », vous devez choisir au moins un emplacement.",
                                                                 "selector":  "Choisir au moins un emplacement"
-                                                            }
+                                                            },
+                                             "privateLinksInfo":  "Private Link pour Azure AD est la plus adaptée aux services Azure. Vérifiez que les principaux auxquels cette stratégie est appliquée n’ont pas besoin d’accéder à des services publics tels que M365."
                                          },
                      "ClientApp":  {
                                        "Clients":  {
@@ -8276,6 +8359,7 @@
                                                   "infoBalloon":  "Action utilisateur ou application cloud que vous voulez tester. Par exemple, 'SharePoint Online'",
                                                   "learnMore":  "Contrôlez l’accès en fonction des actions ou applications cloud globales ou spécifiques.",
                                                   "learnMoreB2C":  "Contrôlez l'accès en fonction de toutes les applications ou d'applications cloud spécifiques.",
+                                                  "learnMoreNetworkAccess":  "Contrôlez l’accès en fonction du trafic d’accès réseau, des applications cloud ou des actions spécifiques.",
                                                   "title":  "Applications ou actions cloud"
                                               },
                      "CloudappsSelectionBlade":  {
@@ -8292,6 +8376,7 @@
                                                                   },
                                                      "Validation":  {
                                                                         "authContext":  "Avec « contexte d'authentification », vous devez configurer au moins un sous-élément.",
+                                                                        "networkAccess":  "Avec « Accès réseau », vous devez configurer au moins un profil de trafic.",
                                                                         "selectApps":  "« {0} » doit être configuré",
                                                                         "selector":  "Sélectionnez au moins une application.",
                                                                         "userActions":  "Avec « Actions utilisateur », vous devez configurer au moins un sous-élément."
@@ -8307,12 +8392,12 @@
                                     "notFoundDetailed":  "La stratégie « {0} » n’existe plus. Elle a peut-être été supprimée."
                                 },
                      "GuestsOrExternalUsers":  {
-                                                   "allExternalTenantsLabel":  "Toutes les organisations Azure AD",
+                                                   "allExternalTenantsLabel":  "Tout",
                                                    "b2bCollaborationGuestLabel":  "Utilisateurs invités B2B Collaboration",
                                                    "b2bCollaborationMemberLabel":  "Utilisateurs membres de B2B Collaboration",
                                                    "b2bDirectConnectUserLabel":  "Utilisateurs de connexion directe B2B",
                                                    "enumeratedExternalTenantsError":  "Sélectionnez au moins un locataire externe",
-                                                   "enumeratedExternalTenantsLabel":  "Sélectionner les organisations Azure AD",
+                                                   "enumeratedExternalTenantsLabel":  "Sélectionner",
                                                    "externalTenantsLabel":  "Spécifier des organisations Azure AD externes",
                                                    "externalUserDropdownLabel":  "Choisir les types d’utilisateurs invités ou externes",
                                                    "externalUsersError":  "Sélectionner au moins un type d’invité ou d’utilisateur externe",
@@ -8432,6 +8517,22 @@
                                                        "gridAria":  "Liste des emplacements nommés"
                                                    }
                                       },
+                     "NetworkAccess":  {
+                                           "Included":  {
+                                                            "none":  "Aucune ressource cible sélectionnée",
+                                                            "plural":  "{0} profils de trafic réseau sélectionnés",
+                                                            "singular":  "1 profil de trafic réseau sélectionné"
+                                                        },
+                                           "internetOptionText":  "Trafic public",
+                                           "label":  "Accès réseau (préversion)",
+                                           "m365OptionText":  "Trafic M365",
+                                           "privateOptionText":  "Trafic privé",
+                                           "selectTrafficProfilesLabel":  "Sélectionner les profils de trafic auquel s’applique cette stratégie",
+                                           "targetResourcesBalloonContext":  "Ressources cibles",
+                                           "targetResourcesSelectorTitle":  "Ressources cibles",
+                                           "trafficProfilesLearnMoreTooltip":  "Pour afficher les profils de trafic additionnel, ajoutez d’autres licences NaaS.",
+                                           "ztnaEnableLearnMore":  "Zero Trust Cloud Edge doit être activé pour utiliser les contrôles d'accès au réseau. "
+                                       },
                      "Policies":  {
                                       "Grid":  {
                                                    "aria":  "Liste des stratégies d’accès conditionnel"
@@ -8449,10 +8550,25 @@
                                                                                }
                                                   }
                                 },
+                     "PolicyCondition":  {
+                                             "SignInRiskDetections":  {
+                                                                          "ApplyCondition":  {
+                                                                                                 "info":  "Configurez les détections de risques pour appliquer la stratégie aux détections de risques de connexion en temps réel sélectionnées."
+                                                                                             },
+                                                                          "LearnMore":  {
+                                                                                            "message":  "Contrôler l’accès utilisateur pour répondre à des détections de risques de connexion en temps réel spécifiques."
+                                                                                        },
+                                                                          "description":  "Cette condition est satisfaite si l’une des détections de risque incluses détecte le risque. Cela n’affecte pas le calcul du niveau de risque de connexion.",
+                                                                          "header":  "Détections de risques intégrés en temps réel",
+                                                                          "info":  "Détections qui détectent les risques pendant les connexions.",
+                                                                          "label":  "Détections des risques de connexion (Préversion)",
+                                                                          "title":  "Détections des risques de connexion"
+                                                                      }
+                                         },
                      "PolicyControlAuthStrength":  {
                                                        "MultiFactorAuthentication":  {
                                                                                          "description":  "Combinaisons de méthodes qui répondent à une authentification forte, telles que Mot de passe + SMS",
-                                                                                         "displayName":  "Authentification multifacteur (MFA)"
+                                                                                         "displayName":  "Authentification multifacteur"
                                                                                      },
                                                        "Passwordless":  {
                                                                             "description":  "Méthodes sans mot de passe qui répondent à une authentification forte, comme Microsoft Authenticator ",
@@ -8460,7 +8576,7 @@
                                                                         },
                                                        "PhishingResistant":  {
                                                                                  "description":  "Méthodes sans mot de passe sans hameçonnage pour l’authentification la plus forte, comme la clé de sécurité FIDO2",
-                                                                                 "displayName":  "MFA anti-hameçonnage"
+                                                                                 "displayName":  "Authentification multifacteur anti-hameçonnage"
                                                                              }
                                                    },
                      "PolicyControlFedAuthMethod":  {
@@ -8559,33 +8675,33 @@
                                                                                                      },
                                                                 "RequireCompliantOrHybridADAllUsers":  {
                                                                                                            "description":  "Protégez l’accès aux ressources de l’entreprise en demandant aux utilisateurs d’utiliser un appareil géré ou d’effectuer une authentification multifacteur. (macOS ou Windows uniquement)",
-                                                                                                           "name":  "CA013 : exiger une authentification multifacteur ou un appareil conforme ou jointure hybride Azure AD pour tous les utilisateurs",
-                                                                                                           "title":  "Exiger un appareil conforme ou jointure hybride Azure AD ou une authentification multifacteur pour tous les utilisateurs"
+                                                                                                           "name":  "CA013 : exiger une authentification multifacteur ou un appareil joint Azure AD conforme ou hybride pour tous les utilisateurs",
+                                                                                                           "title":  "Exiger un appareil ou une authentification multifacteur Azure AD compatible ou hybride pour tous les utilisateurs"
                                                                                                        },
                                                                 "RequireMFAAllUsers":  {
-                                                                                           "description":  "Exigez l’authentification multifacteur pour tous les comptes d’utilisateur afin de réduire le risque de compromission.",
-                                                                                           "name":  "CA004 : exiger l’authentification multifacteur pour tous les utilisateurs",
+                                                                                           "description":  "Exiger une authentification multifacteur pour tous les comptes d’utilisateur afin de réduire le risque de compromission.",
+                                                                                           "name":  "CA004 : exiger une authentification multifacteur pour tous les utilisateurs",
                                                                                            "title":  "Exiger l’authentification multifacteur pour tous les utilisateurs"
                                                                                        },
                                                                 "RequireMFAForAdmins":  {
-                                                                                            "description":  "Exigez une authentification multifacteur pour les comptes d'administration privilégiés afin de réduire le risque de compromission. Cette stratégie va cibler les mêmes rôles que la valeur par défaut de sécurité.",
-                                                                                            "name":  "CA001 : exiger l’authentification multifacteur pour les administrateurs",
-                                                                                            "title":  "Exigez l’authentification multifacteur pour les administrateurs"
+                                                                                            "description":  "Exiger une authentification multifacteur pour les comptes d’administration privilégiés afin de réduire le risque de compromission. Cette stratégie cible les mêmes rôles que par défaut de sécurité.",
+                                                                                            "name":  "CA001 : exiger une authentification multifacteur pour les administrateurs",
+                                                                                            "title":  "Exiger l’authentification multifacteur pour les administrateurs"
                                                                                         },
                                                                 "RequireMFAForAzureManagement":  {
-                                                                                                     "description":  "Exiger l’authentification multifacteur pour protéger l’accès privilégié aux ressources Azure.",
-                                                                                                     "name":  "CA006 : exiger l’authentification multifacteur pour la gestion Azure",
-                                                                                                     "title":  "Exiger l’authentification multifacteur pour la gestion Azure"
+                                                                                                     "description":  "Exiger une authentification multifacteur pour protéger l’accès privilégié aux ressources Azure.",
+                                                                                                     "name":  "CA006 : exiger une authentification multifacteur pour la gestion Azure",
+                                                                                                     "title":  "Exiger une authentification multifacteur pour la gestion Azure"
                                                                                                  },
                                                                 "RequireMFAForGuestAccess":  {
-                                                                                                 "description":  "Exiger que les utilisateurs invités exécutent Multi-Factor Authentication lors de l’accès aux ressources de votre entreprise.",
-                                                                                                 "name":  "CA005 : exiger l’authentification multifacteur pour l’accès invité",
-                                                                                                 "title":  "Exiger l’authentification multifacteur pour l’accès invité"
+                                                                                                 "description":  "Demander aux utilisateurs invités d’effectuer une authentification multifacteur lors de l’accès aux ressources de votre entreprise.",
+                                                                                                 "name":  "CA005 : exiger une authentification multifacteur pour l’accès invité",
+                                                                                                 "title":  "Exiger une authentification multifacteur pour l’accès invité"
                                                                                              },
                                                                 "RequireMFAForRiskySignIn":  {
-                                                                                                 "description":  "Exiger l’authentification multifacteur si le risque de connexion est détecté comme étant moyen ou élevé. (Nécessite une licence Azure AD Premium 2)",
-                                                                                                 "name":  "CA007 : exiger l’authentification multifacteur pour les connexions à risque",
-                                                                                                 "title":  "Exiger l’authentification multifacteur pour les connexions à risque"
+                                                                                                 "description":  "Exiger une authentification multifacteur si le risque de connexion est détecté comme étant moyen ou élevé. (Nécessite une licence Azure AD Premium 2)",
+                                                                                                 "name":  "CA007 : exiger une authentification multifacteur pour les connexions à risque",
+                                                                                                 "title":  "Exiger une authentification multifacteur pour les connexions à risque"
                                                                                              },
                                                                 "RequirePasswordChangeForHighRiskUsers":  {
                                                                                                               "description":  "Obliger l’utilisateur à modifier son mot de passe si le risque utilisateur est détecté comme étant élevé. (Nécessite une licence Azure AD Premium 2)",
@@ -8593,7 +8709,7 @@
                                                                                                               "title":  "Exiger la modification du mot de passe pour les utilisateurs à haut risque"
                                                                                                           },
                                                                 "RequireSecurityInfo":  {
-                                                                                            "description":  "Sécurisez quand et comment les utilisateurs s'inscrivent à l'authentification multifacteur Azure AD et au mot de passe en libre-service. ",
+                                                                                            "description":  "Sécurisez quand et comment les utilisateurs s’inscrivent pour Azure AD l’authentification multifacteur et le mot de passe libre-service. ",
                                                                                             "name":  "CA002 : sécurisation de l’inscription des informations de sécurité",
                                                                                             "title":  "Sécurisation de l’inscription des informations de sécurité"
                                                                                         }
@@ -8621,7 +8737,7 @@
                                                                                                                                   "on":  "Cette stratégie affecte tous les utilisateurs à l’exception de l’administrateur actuellement connecté. Envisagez d’utiliser le mode rapport uniquement pour commencer avant d’avoir confirmé que cela n’aura pas d’impact sur vos utilisateurs."
                                                                                                                               },
                                                                                                               "Title":  {
-                                                                                                                            "on":  "Ne boquez pas votre accès ! Assurez-vous que votre appareil est conforme ou jointure hybride Azure AD ou que vous avez configuré l’authentification multifacteur.",
+                                                                                                                            "on":  "Ne vous bloquez pas ! Assurez-vous que votre appareil est conforme, ou hybride Azure AD rejoint ou que vous avez configuré l'authentification multifacteur. ",
                                                                                                                             "reportOnly":  "Les stratégies en mode rapport uniquement qui requièrent des appareils conformes peuvent inviter les utilisateurs de Mac, iOS et Android à sélectionner un certificat d’appareil lors de l’évaluation de la stratégie, même si la conformité des appareils n’est pas appliquée. Ces invites peuvent se répéter jusqu'à ce que l’appareil est rendu conforme."
                                                                                                                         }
                                                                                                           },
@@ -8634,7 +8750,7 @@
                                                                                         },
                                                                    "RequireMfaAllUsers":  {
                                                                                               "description":  "Envisagez d’utiliser le mode rapport uniquement pour commencer jusqu’à ce que vous ayez planifié et communiqué cette modification à tous vos utilisateurs.",
-                                                                                              "title":  "L’activation de cette stratégie appliquera l’authentification multifacteur pour tous vos utilisateurs."
+                                                                                              "title":  "L’activation de cette stratégie applique l’authentification multifacteur pour tous vos utilisateurs."
                                                                                           },
                                                                    "RequireSecurityInfo":  {
                                                                                                "description":  "Vérifiez votre configuration pour protéger ces comptes en fonction des besoins de votre entreprise.",
@@ -8787,6 +8903,13 @@
                                                           "message":  "Contrôlez l’accès utilisateur pour répondre à des niveaux de risque de connexion spécifiques."
                                                       }
                                     },
+                     "SigninRiskLevel":  {
+                                             "NoRiskSelected":  {
+                                                                    "warning":  "Lorsque « {0} » est sélectionné, la condition de « {1} » ne peut pas être configurée."
+                                                                },
+                                             "description":  "Le niveau de risque de connexion est généré en fonction de toutes les détections de risques en temps réel.",
+                                             "header":  "Sélectionner le niveau de risque de connexion auquel cette stratégie s'applique"
+                                         },
                      "SingleSelectorActive":  {
                                                   "failed":  "Désolé... Nous n’avons pas pu charger ces données.",
                                                   "reattempt":  "Chargement des données. Retentez l' {0} sur {1}."
@@ -8853,12 +8976,14 @@
                                               "invalidDevicesCondition":  "Configuration d’appareil non valide. Probablement une configuration non valide du « {0} ».",
                                               "invalidGrantControlPolicy":  "Contrôle d'octroi non valide",
                                               "invalidLocationsCondition":  "Emplacements non valides sélectionnés",
+                                              "invalidNetworkAccessSecurityPolicyId":  "Stratégie attachée au contrôle réseau de session non valide.",
                                               "invalidPolicy":  "Les attributions ne sont pas sélectionnées",
                                               "invalidSessionControlPolicy":  "Contrôle de session non valide",
                                               "invalidSignInRisksCondition":  "Risque de connexion non valide sélectionné",
                                               "invalidUserRisksCondition":  "Risque utilisateur non valide sélectionné",
                                               "invalidUsersCondition":  "Utilisateurs non valides sélectionnés",
                                               "mamPolicyShouldOnlyTargetAndroidOrIosPlatforms":  "La stratégie MAM ne peut être appliquée qu'aux plateformes clientes Android ou iOS.",
+                                              "networkAccessControlNeedsNetworkAccessTargetedTrafficProfile":  "La stratégie de session d’accès réseau fonctionne correctement uniquement lorsqu’un profil de trafic d’accès réseau est ciblé. Mettez à jour la section de vos ressources ciblées.",
                                               "notSupportedCombination":  "La configuration de stratégie n'est pas prise en charge. En savoir plus sur les stratégies prises en charge.",
                                               "pending":  "Validation de la stratégie",
                                               "requireComplianceEveryonePolicy":  "La configuration de stratégie exige la conformité des appareils pour tous les utilisateurs. Passez en revue les attributions sélectionnées.",
@@ -8871,10 +8996,12 @@
                                  },
                      "WarningsInfo":  {
                                           "Controls":  {
+                                                           "AuthStrengthXtap":  {
+                                                                                    "allUsers":  "Configurez les paramètres d’accès entre locataires pour accepter les revendications provenant de Azure AD locataires pour que l’utilisateur externe utilise les forces d’authentification intégrées. Les forces d’authentification personnalisées ne peuvent pas être configurées pour les utilisateurs externes.",
+                                                                                    "externalUsers":  "Pour activer toutes les forces d’authentification intégrées, configurez les paramètres d’accès inter-locataires pour accepter les revendications provenant de Azure AD locataires pour les utilisateurs externes."
+                                                                                },
                                                            "compliantDeviceEnabled":  "Ne bloquez pas votre accès ! Assurez-vous que votre appareil est conforme.",
                                                            "domainJoinedDeviceEnabled":  "Ne boquez pas votre accès ! Assurez-vous que votre appareil est joint Azure AD hybride.",
-                                                           "exchangeDisabled":  "Exchange ActiveSync prend uniquement en charge les contrôles « Appareil conforme » et « Application cliente approuvée ». Cliquez ici pour en savoir plus.",
-                                                           "exchangeDisabled2":  "Exchange ActiveSync prend uniquement en charge les contrôles « Appareil conforme », « Application cliente approuvée » et « Application cliente conforme ». Cliquez ici pour en savoir plus.",
                                                            "notAvailableForSP":  "Certaines contrôles ne sont pas disponibles en raison de la sélection de « {0} » dans l’affectation de la stratégie",
                                                            "requireAuthOrMfa":  "« {0} » ne peut pas s'utiliser avec « {1} »",
                                                            "requireMfa":  "Envisagez de tester la nouvelle préversion publique « {0} »",
@@ -8904,7 +9031,8 @@
                                                                     "teamsBlocked":  "Microsoft Teams est également affecté quand des applications telles que SharePoint Online et Exchange Online sont incluses dans la stratégie."
                                                                 },
                                           "Users":  {
-                                                        "blockAllUsers":  "Ne bloquez pas votre accès ! Cette stratégie aura une incidence sur tous vos utilisateurs. Nous vous recommandons d'appliquer d'abord une stratégie à un petit ensemble d'utilisateurs pour vérifier qu'elle se comporte comme prévu."
+                                                        "blockAllUsers":  "Ne bloquez pas votre accès ! Cette stratégie aura une incidence sur tous vos utilisateurs. Nous vous recommandons d'appliquer d'abord une stratégie à un petit ensemble d'utilisateurs pour vérifier qu'elle se comporte comme prévu.",
+                                                        "xtap":  " Votre configuration « Exiger des forces d’authentification » dans le contrôle d’octroi peut ne pas être valide pour les utilisateurs externes."
                                                     }
                                       },
                      "WhatIf":  {
@@ -8958,7 +9086,7 @@
                      "certDurationCol":  "Expiration",
                      "certDurationStartCol":  "Valide depuis",
                      "certName":  "VpnCert",
-                     "certainApps":  "Seules certaines applications sont prises en charge pour « Fréquence de connexion à chaque fois » si les octrois « Exiger l’authentification multifacteur » et « Exiger une modification du mot de passe » ne sont pas sélectionnés",
+                     "certainApps":  "Seules les applications spécifiquement prises en charge sont activées pour « Fréquence de connexion à chaque fois » si les octrois « Exiger une authentification multifacteur » et « Exiger une modification de mot de passe » ne sont pas sélectionnés",
                      "chooseApplicationsBladeSubtitle":  "",
                      "chooseApplicationsBladeTitle":  "Choisir les applications",
                      "chooseApplicationsCartSubitle":  "",
@@ -8981,7 +9109,7 @@
                      "chooseApplicationsTooMany":  "Impossible d'afficher tous les résultats. Filtrez à l’aide de la zone de recherche.",
                      "chooseLocationCorpnetItem":  "Réseau d'entreprise",
                      "chooseLocationSelectedLocationsLabel":  "Emplacements sélectionnés",
-                     "chooseLocationTrustedIpsItem":  "Adresses IP approuvées MFA",
+                     "chooseLocationTrustedIpsItem":  "Adresses IP approuvées pour l’authentification multifacteur",
                      "chooseLocationsBladeSubtitle":  "",
                      "chooseLocationsBladeTitle":  "Choisir les emplacements",
                      "chooseLocationsCartSubitle":  "",
@@ -9059,7 +9187,7 @@
                      "classicPolicyControlRequireCompliantDevice":  "Exiger un appareil conforme",
                      "classicPolicyControlRequireDomainJoinedDevice":  "Exiger un appareil joint au domaine",
                      "classicPolicyControlRequireMfa":  "Exiger une authentification multifacteur",
-                     "classicPolicyControlRequireMfaWhenNotAtWork":  "Exiger l'authentification multifacteur à l'extérieur de l'entreprise",
+                     "classicPolicyControlRequireMfaWhenNotAtWork":  "Exiger une authentification multifacteur lorsqu’il n’est pas au travail",
                      "classicPolicyDeleteCommand":  "Supprimer",
                      "classicPolicyDeleteFailTitle":  "Échec de la suppression de la stratégie classique",
                      "classicPolicyDeleteInProgressTitle":  "Suppression de la stratégie classique",
@@ -9105,7 +9233,6 @@
                      "clientAppBladeTitle":  "Applications clientes",
                      "clientAppDescription":  "Sélectionner les applications clientes auxquelles cette stratégie s'applique",
                      "clientAppExchangeActiveSync":  "Exchange ActiveSync",
-                     "clientAppExchangeDisabledInfo":  "Exchange ActiveSync est disponible lorsque Exchange Online est la seule application cloud sélectionnée. Cliquez ici pour en savoir plus.",
                      "clientAppExchangeWarning":  "Exchange ActiveSync ne prend pas actuellement en charge toutes les autres conditions.",
                      "clientAppLearnMore":  "Contrôlez l’accès utilisateur à des applications clientes spécifiques cibles qui n’utilisent pas l’authentification moderne.",
                      "clientAppLegacyHeader":  "Clients d’authentification hérités",
@@ -9113,7 +9240,6 @@
                      "clientAppModernHeader":  "Clients d'authentification modernes",
                      "clientAppOnlySupportedPlatforms":  "Appliquer la stratégie uniquement aux plateformes prises en charge",
                      "clientAppSelectSpecificClientApps":  "Sélectionner des applications clientes",
-                     "clientAppV2BladeTitle":  "Applications clientes (préversion)",
                      "clientAppWebBrowser":  "Navigateur",
                      "clientAppsSelectedLabel":  "{0} inclus",
                      "clientTypeBrowser":  "Navigateur",
@@ -9161,7 +9287,7 @@
                      "controlsRequireCompliantAppAriaLabel":  "En savoir plus sur la nécessité d’applications protégées par une stratégie.",
                      "controlsRequireCompliantAppInfoBubble":  "L’appareil doit utiliser des applications protégées par une stratégie.",
                      "controlsRequirePasswordResetAriaLabel":  "En savoir plus sur l’obligation de modifier le mot de passe.",
-                     "controlsRequirePasswordResetInfoBubble":  "Exigez la modification du mot de passe pour réduire le risque utilisateur. Cette option nécessite également l’authentification multifacteur. Impossible d’utiliser d’autres commandes.",
+                     "controlsRequirePasswordResetInfoBubble":  "Exiger la modification du mot de passe pour réduire le risque utilisateur. Cette option nécessite également une authentification multifacteur. Les autres contrôles ne peuvent pas être utilisés.",
                      "countriesRadiobuttonInfoBalloonContent":  "Le pays ou la région d'où provient la connexion est déterminé par l'adresse IP de l'utilisateur.",
                      "createNewVpnCert":  "Nouveau certificat",
                      "createdTimeLabel":  "Heure de création",
@@ -9224,7 +9350,7 @@
                      "helpCondition1":  "Quand un utilisateur est en dehors du réseau de société",
                      "helpCondition2":  "Quand des utilisateurs du groupe 'Responsables' se connectent",
                      "helpConditionsTitle":  "Conditions",
-                     "helpControl1":  "Ils doivent se connecter avec l'authentification multifacteur",
+                     "helpControl1":  "Ils doivent se connecter avec l’authentification multifacteur",
                      "helpControl2":  "Ils doivent être sur un appareil Intune ou joint au domaine",
                      "helpControlsTitle":  "Contrôle ",
                      "helpIntroText":  "L’accès conditionnel vous donne la possibilité d’appliquer des exigences d’accès quand des conditions spécifiques se produisent. Examinons quelques exemples",
@@ -9260,6 +9386,7 @@
                      "lowRisk":  "Bas",
                      "macOsDisplayName":  "Mac OS",
                      "managePoliciesLicenseText":  "Pour gérer les stratégies d'accès conditionnel, votre organisation doit avoir Azure AD Premium P1 ou P2.",
+                     "manageSecurityDefaultsAriaLabel":  "Gérez les paramètres de sécurité par défaut.",
                      "markAsTrustedCheckboxInfoBalloonContent":  "La connexion à partir d'un emplacement approuvé réduit le risque de connexion d'un utilisateur. Marquez uniquement cet emplacement comme approuvé si vous savez que les plages d'adresses IP entrées sont établies et crédibles dans votre organisation.",
                      "markAsTrustedCheckboxLabel":  "Marquer comme emplacement approuvé",
                      "mediumRisk":  "Moyen",
@@ -9291,7 +9418,7 @@
                      "namedNetworkIpRangesDescriptionContent":  "Configurer les plages d'adresses IP de votre organisation",
                      "namedNetworkIpRangesTab":  "Plages d'adresses IP",
                      "namedNetworkListAdd":  "Nouvel emplacement",
-                     "namedNetworkListConfigureTrustedIps":  "Configurer des adresses IP approuvées MFA",
+                     "namedNetworkListConfigureTrustedIps":  "Configurer des adresses IP approuvées pour l’authentification multifacteur",
                      "namedNetworkNameDescription":  "Exemple : « Bureau de Paris »",
                      "namedNetworkNameInvalid":  "Le nom fourni n'est pas valide.",
                      "namedNetworkNameRequired":  "Vous devez fournir un nom pour cet emplacement.",
@@ -9363,12 +9490,12 @@
                      "policyConditionDevicePlatformDescription":  "Plateforme sur laquelle l'utilisateur se connecte. Par exemple iOS",
                      "policyConditionLocation":  "Emplacements",
                      "policyConditionLocationDescription":  "Emplacement (déterminé à l'aide de la plage d'adresses IP) à partir duquel l'utilisateur se connecte",
-                     "policyConditionSigninRisk":  "Risque de connexion",
+                     "policyConditionLocationPreview":  "Emplacements (préversion)",
+                     "policyConditionSigninRisk":  "Niveau de risque de connexion",
                      "policyConditionSigninRiskDescription":  "Probabilité pour que la connexion provienne d'une autre personne que l'utilisateur. Le niveau de risque peut être élevé, moyen ou faible. Nécessite une licence Azure AD Premium 2.",
-                     "policyConditionUserRisk":  "Risque de l’utilisateur",
+                     "policyConditionUserRisk":  "Niveau de risque utilisateur",
                      "policyConditionUserRiskDescription":  "Configurez les niveaux de risque utilisateur nécessaires à l’application de la stratégie",
                      "policyConditioniClientApp":  "Applications clientes",
-                     "policyConditioniClientAppV2":  "Applications clientes (préversion)",
                      "policyControlAllowAccessDisplayedName":  "Accorder l'accès",
                      "policyControlAuthenticationStrengthDisplayedName":  "Exiger la force de l’authentification (préversion)",
                      "policyControlBladeTitle":  "Octroyer",
@@ -9405,7 +9532,7 @@
                      "policyNameDevice":  "Stratégie de l'appareil",
                      "policyNameFormat":  "[{0}] {1}",
                      "policyNameMam":  "Stratégie de gestion des applications mobiles",
-                     "policyNameMfaLocation":  "Stratégie MFA et emplacement",
+                     "policyNameMfaLocation":  "Authentification multifacteur et stratégie d’emplacement",
                      "policyNamePlaceholderText":  "Exemple : « stratégie d'application de conformité d'appareil »",
                      "policyNameTooLongError":  "Le nom de la stratégie est trop long. 256 caractères maximum",
                      "policyOff":  "Désactivé",
@@ -9433,12 +9560,15 @@
                      "requireAllControlsText":  "Demander tous les contrôles sélectionnés",
                      "requireCompliantDevice":  "Exiger un appareil conforme",
                      "requireDomainJoined":  "Exiger un appareil joint au domaine",
-                     "requireGrantReauth":  "Le contrôle de session « Fréquence de connexion à chaque fois » nécessite un contrôle d’octroi « exiger une authentification multifacteur » ou « exiger une modification du mot de passe » lorsque « Toutes les applications cloud » est sélectionné",
-                     "requireMFA":  "Exiger l'authentification multifacteur",
-                     "requireMfaReauth":  "Le contrôle de session « Fréquence de connexion à chaque fois » requiert le contrôle d’octroi « exiger l’authentification multifacteur » pour « risque de connexion »",
+                     "requireGrantReauth":  "Le contrôle de session « Fréquence de connexion à chaque fois » requiert un contrôle d’octroi « exiger une authentification multifacteur » ou « exiger une modification du mot de passe » lorsque « Toutes les applications cloud » sont sélectionnées",
+                     "requireMFA":  "Exiger une authentification multifacteur",
+                     "requireMfaReauth":  "Le contrôle de session « Fréquence de connexion à chaque fois » requiert le contrôle d’octroi « exiger l’authentification multifacteur » pour « risque de connexion »",
                      "requireOneControlText":  "Demander un des contrôles sélectionnés",
                      "requirePasswordChangeReauth":  "Le contrôle de session « Fréquence de connexion à chaque fois » nécessite le contrôle d’octroi « exiger une modification du mot de passe » pour « risque utilisateur »",
                      "requireRiskReauth":  "Le contrôle de session « Fréquence de connexion à chaque fois » requiert le contrôle de session « Risque utilisateur » ou « Risque de connexion » lorsque « toutes les applications cloud » sont sélectionnées.",
+                     "requireRiskReauthRiskNotEnabled":  "Le contrôle de session « Fréquence de connexion à chaque fois » n’est pas disponible lorsque « toutes les applications cloud » sont sélectionnées.",
+                     "requireRiskReauthSignInOnly":  "Le contrôle de session « Fréquence de connexion à chaque fois » requiert le contrôle de session « Risque de connexion » lorsque « toutes les applications cloud » sont sélectionnées.",
+                     "requireRiskReauthUserOnly":  "Le contrôle de session « Fréquence de connexion à chaque fois » requiert le contrôle de session « Risque utilisateur » lorsque « toutes les applications cloud » sont sélectionnées.",
                      "resetFilters":  "Réinitialiser les filtres",
                      "sPRequired":  "Le principal du service est obligatoire",
                      "sPSelectorInfoBalloon":  "Utilisateur ou principal du service que vous souhaitez tester",
@@ -9446,7 +9576,8 @@
                      "searchTextTooLongError":  "Le texte de la recherche est trop long. Maximum 256 caractères",
                      "securityDefaultsPolicyName":  "Paramètres de sécurité par défaut",
                      "securityDefaultsTextMessage":  "Les paramètres de sécurité par défaut doivent être désactivés pour activer la stratégie d’accès conditionnel.",
-                     "securityDefaultsWarningMessage":  "Il semble que vous êtes sur le point de gérer les configurations de sécurité de votre organisation. Excellent ! Vous devez d’abord désactiver les paramètres de sécurité par défaut avant d’activer une stratégie d’accès conditionnel.",
+                     "securityDefaultsUpdateInProgressText":  "Une mise à jour des paramètres de sécurité par défaut est en cours. Veuillez patienter quelques instants et réessayer.",
+                     "securityDefaultsWarningMessage":  "Il semble que vous êtes sur le point de gérer les configurations de sécurité de votre organisation. Excellent ! Vous devez d’abord {0}désactiver les paramètres de sécurité par défaut{1} avant d’activer une stratégie d’accès conditionnel.",
                      "selectDevicePlatforms":  "Sélectionner des plateformes d'appareil",
                      "selectNamedNetworksSubtitle":  "",
                      "selectNamedNetworksTitle":  "Sélectionner les emplacements",
@@ -9460,6 +9591,7 @@
                      "servicePrincipalSelectorAria":  "Liste des principaux du service choisis",
                      "servicePrincipalSelectorMultiple":  "{0} principaux du service sélectionnés",
                      "servicePrincipalSelectorSingle":  "1 principal du service sélectionné",
+                     "servicePrincipalSpecificExc":  "Principaux de service spécifiques exclus",
                      "servicePrincipalSpecificInc":  "Principaux du service spécifiques inclus",
                      "servicePrincipals":  "Principaux du service",
                      "sessionControlBladeTitle":  "Session",
@@ -9471,9 +9603,8 @@
                      "sessionControlsCasLabel":  "Utiliser le contrôle d'application par accès conditionnel",
                      "sessionControlsSecureSignInLabel":  "Exiger une liaison de jeton",
                      "sharepointAppName":  "SharePoint",
-                     "signinRiskDescription":  "Sélectionner le niveau de risque de connexion auquel cette stratégie s'applique",
                      "signinRiskInclude":  "{0} inclus",
-                     "signinRiskReauth":  "La condition « Risque de connexion » doit être sélectionnée quand le contrôle de session « Exiger l’authentification multifacteur » et « Fréquence de connexion à chaque fois » sont sélectionnés",
+                     "signinRiskReauth":  "La condition « Risque de connexion » doit être sélectionnée lorsque le contrôle de session « Exiger l’authentification multifacteur » et la « fréquence de connexion à chaque fois » sont sélectionnés",
                      "signinRiskTriggerDescriptionContent":  "Sélectionner le niveau de risque de connexion",
                      "singleTenantServicePrincipalInfoBallonText":  "La stratégie s’applique uniquement aux principaux de service à locataire unique appartenant à votre organisation. Cliquez ici pour en savoir plus ",
                      "specificSigninRiskLevelsOption":  "Sélectionner des niveaux de risque de connexion spécifiques",
@@ -9503,13 +9634,13 @@
                      "trustedLocationStatusIconEnabled":  "Icône d'état Approuvé",
                      "tuesday":  "Mardi",
                      "uploadInBadState":  "Impossible de charger le fichier spécifié.",
-                     "upsellAppsDescription":  "Exigez l'authentification multifacteur pour les applications sensibles tout le temps ou seulement à partir de l'extérieur du réseau de société.",
+                     "upsellAppsDescription":  "Exiger l’authentification multifacteur pour les applications sensibles en permanence ou uniquement en dehors du réseau de l’entreprise.",
                      "upsellAppsTitle":  "Sécuriser les applications",
                      "upsellBannerText":  "Obtenir une version d’évaluation Premium gratuite pour utiliser cette fonctionnalité",
                      "upsellDataDescription":  "Exigez que l'appareil soit marqué comme conforme ou joint Azure AD hybride pour autoriser l'accès aux ressources de l'entreprise.",
                      "upsellDataTitle":  "Sécuriser les données",
                      "upsellDescription":  "L’accès conditionnel fournit le contrôle et la protection dont vous avez besoin pour protéger les données de votre entreprise, tout en offrant à vos utilisateurs une expérience qui leur permet de mieux travailler à partir de n’importe quel appareil. Par exemple, vous pouvez limiter l’accès depuis l’extérieur du réseau de société ou restreindre l’accès aux appareils qui répondent aux stratégies de conformité.",
-                     "upsellRiskDescription":  "Exigez l'authentification multifacteur pour les événements à risque détectés par le système Machine Learning de Microsoft.",
+                     "upsellRiskDescription":  "Exiger une authentification multifacteur pour les événements à risque détectés par le système Machine Learning de Microsoft.",
                      "upsellRiskTitle":  "Protéger contre les risques",
                      "upsellTitle":  "Accès conditionnel",
                      "upsellWhyTitle":  "Pourquoi utiliser l'accès conditionnel ?",
@@ -9551,6 +9682,7 @@
                      "usersGroupsLabel":  "Utilisateurs et groupes",
                      "viewApprovedAppsText":  "Voir la liste des applications clientes approuvées",
                      "viewCompliantAppsText":  "Voir la liste des applications clientes protégées par une stratégie",
+                     "viewPolicyInformation":  "Afficher les informations de stratégie",
                      "vpnBladeTitle":  "Connectivité VPN",
                      "vpnCertCreateFailedMessage":  "Erreur : {0}",
                      "vpnCertCreateFailedTitle":  "Impossible de créer {0}",
@@ -9653,6 +9785,7 @@
                                          "builtInAndroid":  "Application Android intégrée",
                                          "builtInApp":  "Application intégrée",
                                          "builtInIos":  "Application iOS intégrée",
+                                         "iosIPadOSWebClip":  "iOS/iPadOS web clip",
                                          "iosLobApp":  "Application métier iOS",
                                          "iosStoreApp":  "Application de l'App Store iOS",
                                          "iosVppApp":  "Application du programme d'achat en volume (VPP) iOS",
@@ -9677,6 +9810,8 @@
                                          "sharePointApp":  "Application SharePoint",
                                          "teamsApp":  "Application Teams",
                                          "webApp":  "Lien web",
+                                         "winGetPublicApp":  "Référentiel de communauté du gestionnaire de package Windows",
+                                         "winGetStoreApp":  "Référentiel Microsoft Store",
                                          "windowsAppXLobApp":  "Application métier appx Windows",
                                          "windowsClassicApp":  "Application Windows (Win32)",
                                          "windowsEdgeApp":  "Microsoft Edge (Windows 10 et versions ultérieures)",
@@ -9687,7 +9822,8 @@
                                          "windowsPhoneXapLobApp":  "Application métier XAP Windows Phone",
                                          "windowsStoreApp":  "Application de Microsoft Store",
                                          "windowsUniversalAppXLobApp":  "Application métier appx Windows Universal",
-                                         "windowsUniversalLobApp":  "Application métier Windows universelle"
+                                         "windowsUniversalLobApp":  "Application métier Windows universelle",
+                                         "windowsWebApp":  "Lien web Windows"
                                      },
                          "AppTypePlatform":  {
                                                  "android":  "Android",
@@ -11028,6 +11164,10 @@
                                "xLanguagesSelectedLabel":  "{0} langue(s) sélectionnée(s)",
                                "xmlConfigurationLabel":  "Configuration XML"
                            },
+    "Filters":  {
+                    "ruleSyntax":  "Syntaxe de la règle",
+                    "filters":  "Filtres"
+                },
     "EnrollmentRestrictions":  {
                                    "DeletePayloadLink":  {
                                                              "content":  "{0} est inclus dans un ou plusieurs ensembles de stratégies. Si vous supprimez {0}, vous ne serez plus en mesure de l'affecter par l'intermédiaire de ces ensembles de stratégies. Supprimer quand même ?",
@@ -11135,9 +11275,12 @@
                                           "gettingStarted":  "Mise en route",
                                           "messages":  "Messages",
                                           "onlineResources":  "Ressources en ligne",
+                                          "releaseManagement":  "Release management",
                                           "serviceRequests":  "Demandes de service",
                                           "settings":  "Paramètres",
-                                          "tenantEnrollment":  "Inscription des locataires"
+                                          "supportRequests":  "Support requests",
+                                          "tenantEnrollment":  "Inscription des locataires",
+                                          "tenantManagement":  "TenantManagement"
                                       },
                    "actions":  "Actions en cas de non-conformité",
                    "advancedExchangeSettings":  "Paramètres Exchange Online",
@@ -11237,7 +11380,7 @@
                    "properties":  "Propriétés",
                    "reports":  "Rapports",
                    "retireNoncompliantDevices":  "Mettre hors service les appareils non conformes",
-                   "retireNoncompliantDevicesPreview":  "Retire noncompliant devices (preview)",
+                   "retireNoncompliantDevicesPreview":  "Mettre hors service les appareils non conformes (aperçu)",
                    "role":  "Rôle",
                    "scriptManagement":  "Scripts",
                    "securityBaselines":  "Bases de référence de sécurité",
@@ -11249,7 +11392,11 @@
                    "tenantAdministration":  "Administration de locataire",
                    "termsAndConditions":  "Conditions générales",
                    "titles":  "Titres",
+                   "troubleshoot":  "Résoudre des problèmes",
+                   "troubleshootDevice":  "Appareil",
+                   "troubleshootGroup":  "Groupe",
                    "troubleshootSupport":  "Dépannage + support",
+                   "troubleshootUser":  "Utilisateur",
                    "user":  "Utilisateur",
                    "userExecutionStatus":  "État de l'utilisateur",
                    "warranty":  "Fournisseurs de garantie",

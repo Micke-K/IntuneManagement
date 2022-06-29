@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.5.0'
+    '3.6.0'
 }
 
 $global:msalAuthenticator = $null
@@ -122,8 +122,6 @@ function Invoke-InitializeModule
     }) "MSAL"    
 
     Add-MSALPrereq
-
-    #$script:MSALDLLMissing = $true #!!!!
 }
 
 function Get-MSALAuthenticationObject
@@ -569,11 +567,11 @@ function Connect-MSALClientApp
         
         if($secret)
         {
-            $ClientApplicationBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::Create($clientId).WithClientSecret($ClientSecret).WithAuthority([URI]::new($authority)) #.WithRedirectUri($redirectUri)
+            $ClientApplicationBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::Create($clientId).WithClientSecret($secret).WithAuthority([URI]::new($authority)) #.WithRedirectUri($redirectUri)
         }
         elseif($Certificate)
         {
-            $ClientApplicationBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::Create($clientId).WithCertificate($ClientSecret).WithAuthority([URI]::new($authority)) #.WithRedirectUri($redirectUri)
+            $ClientApplicationBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::Create($clientId).WithCertificate($Certificate).WithAuthority([URI]::new($authority)) #.WithRedirectUri($redirectUri)
         }
         else 
         {
@@ -750,9 +748,6 @@ function Connect-MSALUser
         $Tenant
     )
 
-    # No login during first time the app is started
-    if($global:FirstTimeRunning -and $global:MainAppStarted -eq $false) { return }
-
     if($global:hideUI -eq $true)
     {
         if($global:AzureAppId -and $global:ClientSecret -and $global:TenantId)
@@ -770,6 +765,9 @@ function Connect-MSALUser
         
         return 
     }
+
+    # No login during first time the app is started
+    if($global:FirstTimeRunning -and $global:MainAppStarted -eq $false) { return }
 
     Write-LogDebug "Authenticate"
 
@@ -1336,7 +1334,7 @@ function Disconnect-MSALUser
     }
     else
     {
-        $msg = "Are you sure you want to forget user $($user.UserName)?" #!!!
+        $msg = "Are you sure you want to forget user $($user.UserName)?"
         $title = "Forget user?"
     }
 
@@ -1790,7 +1788,7 @@ function local:Add-CachedUser
             Write-Status "Logging in with $($this.Tag.UserName)"
             Hide-Popup
             Clear-MSALCurentUserVaiables
-            Connect-MSALUser -Account $this.Tag #!!!.UserName
+            Connect-MSALUser -Account $this.Tag
 
             if($global:curObjectType)
             {

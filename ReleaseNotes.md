@@ -1,4 +1,48 @@
 # Release Notes
+## 3.6.0  - 2022-06-29
+
+**New features**
+
+**Silent batch job**<br />
+  - Added support for silent batch documentation<br />
+  Based on [Issue 39](https://github.com/Micke-K/IntuneManagement/issues/39)<br />
+
+**Support for Co-management Settings**<br />
+  - Added support for Export,Import and Document **Co-management Settings** profiles<br />
+
+**Documentation**<br />
+  - Re-generated language files and translation files<br />
+  Some changes in Android profiles, iOS VPN and Windows Wired Network
+  - Add support for documenting the following profiles - [Issue 57](https://github.com/Micke-K/IntuneManagement/issues/57)<br />
+    -  Intune Roles<br />
+    -  Custom Device Type Restrictions<br />
+<br /> 
+
+**Fixes**
+
+- **UI Fixes**<br />
+  - View did not show properties below 10 levels<br />
+- **Silent batch job - [Issue 39](https://github.com/Micke-K/IntuneManagement/issues/39)**<br />
+  - Unchecking default values was not working<br />
+  - Failed to start without configuration file<br />
+  - Failed to authenticate with certificate<br />
+- **Documentation Fixes**<br />
+  - Autopilot Profiles ([Issue 50](https://github.com/Micke-K/IntuneManagement/issues/50))<br />
+  - Kiosk Template Profiles ([Issue 49](https://github.com/Micke-K/IntuneManagement/issues/49))<br />
+  - Endpoint Protection Template Profiles ([Issue 51](https://github.com/Micke-K/IntuneManagement/issues/51))<br />
+  - All User/All Devices Assignments ([Issue 54](https://github.com/Micke-K/IntuneManagement/issues/54))<br /> 
+  - Scope Tags for Filters and PolicySets ([Issue 52](https://github.com/Micke-K/IntuneManagement/issues/52))<br /> 
+  - Local User Group Membership - members were not listed
+- **Export\Import Fixes**<br />
+  - AssignmentFilters were not assigned during import (Twitter reported issue)<br />
+  - Failed to assigned dependencies during import when dependency objects existed in the environment (Twitter reported issue)<br />
+  - Failed to import/export lots of policies (Twitter reported issue)<br />
+    429 - Too many requests. Graph API throttling kicked in.<br />
+  - PowerShell script exported with wrong encoding ([Issue 48](https://github.com/Micke-K/IntuneManagement/issues/48))<br />
+
+<br />
+
+# Release Notes
 ## 3.5.0  - 2022-04-26
 
 **New features**

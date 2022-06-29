@@ -1,4 +1,4 @@
-﻿{
+{
     "OutlookAppConfig":  {
                              "DataProtectionConfiguration":  {
                                                                  "header":  "Data Protection configuration"
@@ -329,7 +329,7 @@
                      "contentCaching":  "Content caching",
                      "controlPanelAndSettings":  "Control Panel and Settings",
                      "credentialGuard":  "Microsoft Defender Credential Guard",
-                     "customCompliance":  "Custom Compliance",
+                     "customCompliance":  "Custom Compliance (Preview)",
                      "customCompliancePreview":  "Custom Compliance (Preview)",
                      "customConfiguration":  "Custom Configuration Profile",
                      "customOMASettings":  "Custom OMA-URI Settings",
@@ -786,6 +786,7 @@
                                      "SurfaceHub":  {
                                                         "friendlyNameRequired":  "A friendly name is required",
                                                         "pwdRequired":  "A password is required",
+                                                        "pwdValidFormat":  "Unable to update the password. The value provided for the new password does not meet the lenght or complexity requirements of the domain.",
                                                         "upnRequired":  "A device account is required",
                                                         "upnValidFormat":  "Values can contain letters (a-z, A-Z), numbers (0-9), and hyphens. Values cannot include a blank space."
                                                     }
@@ -958,6 +959,13 @@
                       "windowsPCCommandMenu":  "Windows PC",
                       "directoryServiceLabel":  "Join to Azure AD as"
                   },
+    "RoleAssignment":  {
+                           "RoleAssignmentAdmin":  "Admin Groups",
+                           "RoleAssignmentAdminDesc":  "Admin group users are the administrators assigned to this role",
+                           "rolesMenuTitle":  "Endpoint Manager roles",
+                           "RoleAssignmentScopeDesc":  "Administrators in this role assignment can target policies, applications and remote tasks",
+                           "RoleAssignmentScope":  "Scope Groups"
+                       },
     "MinimumOperatingSystem":  {
                                    "Android":  {
                                                    "v10":  "Android 10.0",
@@ -983,6 +991,7 @@
                                                "v12":  "iOS 12.0",
                                                "v13":  "iOS 13.0",
                                                "v14":  "iOS 14.0",
+                                               "v15":  "iOS 15.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -1178,6 +1187,61 @@
                              "includeAllDevicesVirtualGroup":  "Included",
                              "includeAllUsersVirtualGroup":  "Included"
                          },
+    "CoManagementAuthority":  {
+                                  "Confirmation":  {
+                                                       "deleteMessage":  "Affected users will be restricted by the next highest priority co-management authority page assigned or the default co-management authority page, if no other co-management authority page is assigned.",
+                                                       "deleteTitle":  "{0} is the display name of a configured Co-management authority policy"
+                                                   },
+                                  "Grid":  {
+                                               "description":  "The co-management authority page appears during initial device setup and during first user sign in. If enabled, users can see the configuration progress of assigned apps and profiles targeted to their device.",
+                                               "hyperlink":  "https://go.microsoft.com/fwlink/?linkid=86016",
+                                               "label":  "Co-management authority"
+                                           },
+                                  "Header":  {
+                                                 "description":  "The co-management authority page appears during initial device setup and during first user sign in. If enabled, users can see the configuration progress of assigned apps and profiles targeted to their device."
+                                             },
+                                  "Main":  {
+                                               "title":  "Co-management Authority"
+                                           },
+                                  "MessageSaved":  {
+                                                       "body":  "Co-management authority policy created."
+                                                   },
+                                  "Notification":  {
+                                                       "createError":  "An error occurred while creating Co-management authority policy \"{0}\"",
+                                                       "created":  "This Co-management authority policy has not been assigned to any users.",
+                                                       "creating":  "Creating Co-management authority policy",
+                                                       "creatingMessage":  "Creating {0} Co-management authority policy",
+                                                       "deleteError":  "An error occurred while deleting Co-management authority policy",
+                                                       "deleted":  "Co-management authority policy deleted.",
+                                                       "deletedMessage":  "{0} Co-management authority policy is deleted.",
+                                                       "deleting":  "Deleting Co-management Authority policy",
+                                                       "deletingMessage":  "Deleting {0} Co-management Authority policy",
+                                                       "fetchError":  "An error occurred while displaying Co-management authority policies",
+                                                       "saved":  "Co-management Authority saved.",
+                                                       "savedMessage":  "{0} Co-management Authority policy successfully saved.",
+                                                       "saving":  "Saving Co-management authority",
+                                                       "savingMessage":  "Saving {0} Co-management authority policy"
+                                                   },
+                                  "Priority":  {
+                                                   "saveError":  "An error occurred while saving Co-management authority priorities",
+                                                   "saved":  "Co-management authority priorities were successfully saved."
+                                               },
+                                  "ReloadNotification":  {
+                                                             "description":  "Reload the Co-management authority policy to try again.",
+                                                             "title":  "Reload the Co-management authority blade"
+                                                         },
+                                  "advancedProperty":  "Advanced",
+                                  "commandLineArgs":  "Client installation command line arguments.",
+                                  "deviceGroupOnlyMessage":  "Co-management authority page profiles can only be assigned to user groups. The devices assigned won't display the co-management authority page.",
+                                  "enterArgument":  "Enter argument",
+                                  "installAgent":  "Automatically install Configuration Manager agent.",
+                                  "managedDeviceOwnership":  "Override co-management policy and use Intune for all workloads.",
+                                  "noAssignmentMessage":  "Assign Co-management authority policy to at least one group. Click Properties.",
+                                  "pageDescription":  "Co-management authority profiles",
+                                  "pageSetting":  "Co-management authority Setting",
+                                  "pageTitle":  "Co-management authority",
+                                  "settingDescription":  "The co-management settings determine who owns the workloads."
+                              },
     "AppType":  {
                     "androidEnterpriseSystemApp":  "Android Enterprise system app",
                     "androidForWorkApp":  "Managed Google Play store app",
@@ -1231,7 +1295,7 @@
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "Biometrics instead of PIN for access",
-                                                               "tooltip":  "Choose which android authentication methods people can use, if any, in place of an app PIN."
+                                                               "tooltip":  "Allows use of Android biometric authentication methods, if any, in place of an app PIN."
                                                            },
                         "AndroidFingerprint":  {
                                                    "label":  "Fingerprint instead of PIN for access (Android 6.0+)",
@@ -1356,6 +1420,14 @@
                                                    "label":  "Recheck the access requirements after (minutes of inactivity)\n\n",
                                                    "tooltip":  "If the policy-managed app is inactive for longer than the number of minutes of inactivity specified, the app will prompt the access requirements (i.e PIN, conditional launch settings) to be rechecked after the app is launched."
                                                },
+                        "RequireClass3Biometrics":  {
+                                                        "label":  "Class 3 Biometrics (Android 9.0+)",
+                                                        "tooltip":  "For more information on class 3 biometrics refer to the documentation available <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">here</a>"
+                                                    },
+                        "RequirePinAfterBiometricChange":  {
+                                                               "label":  "Override Biometrics with PIN after biometric updates",
+                                                               "tooltip":  "If class 3 biometrics are supported by the device (more info <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>), when a change in biometrics is detected, a PIN prompt will override biometric prompts."
+                                                           },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "The package ID must be unique.",
                                                   "invalidPackageError":  "Invalid package ID",
@@ -1454,6 +1526,8 @@
                       },
     "EnrollmentStatusScreen":  {
                                    "Apps":  {
+                                                "apps":  "apps",
+                                                "appsListName":  "Application list",
                                                 "managedApps":  "Managed apps",
                                                 "noApps":  "No applications",
                                                 "noAppsError":  "Error retrieving applications",
@@ -1692,7 +1766,8 @@
                                                       "windowsDomainJoin":  "Many environments use on-premises Active Directory (AD). When AD domain-joined devices are also joined to Azure AD, they're called hybrid Azure AD joined devices. Using Windows Autopilot, you can enroll hybrid Azure AD joined devices in Intune. To enroll, you also need a Domain Join configuration profile. A Domain Join configuration profile includes on-premises Active Directory domain information. When devices are provisioning (and typically offline), this profile deploys the AD domain details so devices know which on-premises domain to join. If you don't create a domain join profile, these devices might fail to deploy.",
                                                       "windowsEditionUpgrade":  "As part of your mobile device management (MDM) solution, you may want to upgrade your Windows 10/11 devices. For example, you want to upgrade your Windows 10/11 Professional devices to Windows 10/11 Enterprise. Or, you want the device to switch out of S mode. Windows 10/11 S mode is designed for security and performance. You can use Intune to switch out of S mode. Switching out of S mode is one way. And once you switch out of S mode, you can't go back to Windows 10/11 S mode. This feature applies to: Windows 10 and later, Windows 10 1809 or later for S mode and Windows Holographic for Business. These features are available in Intune, and are configurable by the administrator. Intune uses configuration profiles to create and customize these settings for your organization's needs. After you add these features in a profile, you can then push or deploy the profile to devices running Windows 10 or later in your organization. When you deploy the profile, Intune automatically upgrades the devices or switches out of S mode.",
                                                       "windowsHealthMonitoring":  "Microsoft can collect event data, and provide recommendations to improve performance on your Windows devices. Endpoint Analytics analyzes this data, and can recommend software, help improve startup performance, and fix common support issues. In Intune, you can create a Windows Health Monitoring device configuration profile to enable this data collection, and then deploy this profile to your devices. Use this profile as part of your mobile device management (MDM) solution to optimize your Windows devices.",
-                                                      "windowsIdentityProtection":  "With Intune, you can use this device configuration profile to manage Windows Hello for Business settings on Windows devices. <br><br>Did you know? Consider going to <a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\"> Endpoint security </a>to create an endpoint security profile or security baseline profile to configure your common endpoint protection security features. <br><br>Endpoint security profiles provide a concise, curated set of security templates including Firewall, BitLocker, Antivirus and more. Security baseline profiles are templates with pre-configured settings values recommended by security experts."
+                                                      "windowsIdentityProtection":  "With Intune, you can use this device configuration profile to manage Windows Hello for Business settings on Windows devices. <br><br>Did you know? Consider going to <a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\"> Endpoint security </a>to create an endpoint security profile or security baseline profile to configure your common endpoint protection security features. <br><br>Endpoint security profiles provide a concise, curated set of security templates including Firewall, BitLocker, Antivirus and more. Security baseline profiles are templates with pre-configured settings values recommended by security experts.",
+                                                      "wiredNetwork":  "Set up a wired network for people to access."
                                                   },
                            "TrustedCert":  {
                                                "uploadControlPlaceHolderText":  "Select a valid .cer file"
@@ -1855,7 +1930,7 @@
                            "androidZebraMxConfigurationXmlName":  "MX profile in .xml format",
                            "anonymousIdentityPrivacyName":  "Anonymous identity",
                            "any":  "Any",
-                           "anyDNSAddressesInList":  "Use the folowing DNS servers to resolve these domains (optional)",
+                           "anyDNSAddressesInList":  "Use the following DNS servers to resolve the domains you entered (optional)",
                            "anyDayOption":  "Any Day",
                            "anyEthernet":  "Any Ethernet",
                            "anywhereOption":  "Anywhere",
@@ -2831,10 +2906,10 @@
                            "connectAppBlockAutoLaunchDescription":  "Blocks the Connect app from automatically launching. If blocked, users can manually launch the Connect app from the Hub's settings.",
                            "connectAppBlockAutoLaunchName":  "Auto-launch Connect",
                            "connectIfNeeded":  "Connect if needed",
-                           "connectIfNeededDNSListDescription":  "When configured, these DNS servers will be used to resolve domains in the list. Failure to resolve the domain will cause a VPN connection to be established.",
-                           "connectIfNeededDomainsDescription":  "When a user accesses a domain in this list, the device will attempt to resolve the domain using DNS. Failure to resolve the domain will cause a VPN connection to be established.",
+                           "connectIfNeededDNSListDescription":  "Enter the IP address(es) of the DNS servers that will resolve the domains in the list. This setting only applies to domains in the list. Domains and DNS servers are internal resources that cannot be accessed on external networks. So if the domain doesn't resolve, then the VPN connection is created on-demand.",
+                           "connectIfNeededDomainsDescription":  "When users access a domain in this list, the device tries to resolve the domain using DNS. Domains are internal resources that aren't resolved by public DNS. So if the domain doesn't resolve, meaning it doesn't have access to internal resources, then a VPN connection is created on-demand.",
                            "connectIfNeededOption":  "Connect if needed",
-                           "connectOption":  "Establish VPN",
+                           "connectOption":  "Connect VPN",
                            "connectionHeading":  "Connection",
                            "consumerFeaturesDescription":  "Allows IT admins to turn on experiences that are typically for consumers only, such as Start suggestions, Membership notifications, Post-OOBE app install and redirect tiles.",
                            "consumerFeaturesName":  "Consumer Features",
@@ -3888,6 +3963,7 @@
                            "gatekeeperAllowedAppSourceName":  "Allow apps downloaded from these locations",
                            "gatekeeperBlockOverrideDescription":  "Prevent the user from temporarily overriding the Gatekeeper setting by control-clicking to install any app.",
                            "gatekeeperBlockOverrideName":  "Do not allow user to override Gatekeeper",
+                           "generalAvailabilityChannel":  "General Availability channel",
                            "generalNetworkSettingsHeader":  "General",
                            "genericLocalUsersOrGroupsName":  "Generic local users or groups",
                            "globalConfigurationsDescription":  "Configure Microsoft Defender Firewall settings applicable to all network types.",
@@ -3999,7 +4075,7 @@
                            "iPsecSecuredPacketExemptionName":  "IPsec secured packet exemption with Stealth Mode",
                            "iPv4Option":  "IPv4",
                            "iPv6Option":  "IPv6",
-                           "iWantToDescription":  "Select the action that will be taken if this rule matches.",
+                           "iWantToDescription":  "The Connect VPN, Disconnect VPN and Ignore actions apply when a user connects to a network. These actions continue to apply while the user is connected to the network. The Evaluate each connection attempt action applies to all connections to the domains you enter for the action but only if the VPN isn’t already connected.",
                            "iWantToName":  "I want to do the following",
                            "iconSortOrderAlphabetic":  "Alphabetic",
                            "iconSortOrderDescription":  "",
@@ -4924,6 +5000,7 @@
                            "mustBeAValidProductKey":  "Must be a valid product key (format: 12345-22345-32345-42345-52345)",
                            "mustBeAValidTeamId":  "Must be a valid team id",
                            "mustBeAValidUrl":  "Must be a valid url",
+                           "mustBeAValidUrlNoProtocol":  "Must be a valid url or IP address with no protocol (no http or https)",
                            "mustBeAValidUrlOrIP":  "Must be a valid url or IP address",
                            "mustBeAValidUrlWithIdParameter":  "Must be a valid URI with an id query parameter. Example: https://play.google.com/store/apps/details?id=com.microsoft.test2",
                            "mustBeAWellFormedXMLString":  "Must be a well formed XML string",
@@ -4937,11 +5014,14 @@
                            "mustBeValidBuildVersionFormat":  "Must be a valid build version format. Example: 18A391, 16G1114, etc.",
                            "mustBeValidDNSSuffix":  "Must be a valid DNS suffix. Example: itgproxy.com",
                            "mustBeValidDateFormat":  "Must be a valid date format (YYYY-MM-DD). Example: 2016-10-01, 2016-10-31 etc.",
+                           "mustBeValidDomain":  "Must be a valid domain. Example: contoso.com",
                            "mustBeValidEmail":  "Must be a valid Email address. Example: username@example.com etc.",
                            "mustBeValidEmailList":  "Must be in a valid email list format of user1@gmail.com; user2@gmail.com.",
                            "mustBeValidFloatingPoint":  "Must be a valid floating point number. Example: 1.0, 4.3, etc.",
                            "mustBeValidGuid":  "Must be a valid UUID. Example: 782AFCFC-7CAA-436C-8BF0-78CD0FFBD4AF, etc.",
                            "mustBeValidHost":  "Must be a valid host. Example: www.host.com etc.",
+                           "mustBeValidHttpURL":  "Must be a valid HTTP or HTTPS URL. Example: https://www.contoso.com",
+                           "mustBeValidIpAddress":  "Must be a valid IP address. Example: 4.3.6.0",
                            "mustBeValidKaiserWifiFormat":  "The format is incorrect. User format example: abcd{{WifiMacAddress}}, Password format example: abcd{{WifiMacAddress}}{{PreSharedKey}}",
                            "mustBeValidMonthDayDateFormat":  "Must be a valid date format (MM/DD). Example: 01/31, 02/28 etc.",
                            "mustBeValidObjectIdentifierFormat":  "Must be a valid Object Identifier format. Example: 4.3.6.0, 7.01.4, etc.",
@@ -5107,7 +5187,7 @@
                            "omaBase64Name":  "Certificate file",
                            "onDemandDefaultRule":  "Default Rule: Do nothing",
                            "onDemandRuleName":  "Rule {0}",
-                           "onDemandRulesDescription":  "Whenever a network connection is attempted by iOS devices, certain conditions, such as Wifi SSID or domain name, are matched against these rules. If there is a match, the appropriate action will be taken on the device.",
+                           "onDemandRulesDescription":  "These settings are used to create a rule. If there is a match with your rule, then the device does the action you choose, like create an on-demand VPN connection.",
                            "onDemandRulesExample":  "e.g. disconnect VPN on corp Wi-Fi",
                            "onDemandRulesInfo":  "Learn more about crafting on-demand rules.",
                            "onDemandRulesName":  "On-demand rules",
@@ -5371,9 +5451,9 @@
                            "privateShieldedSummaryLabel":  "Shielded (Private networks)",
                            "privateStealthModeSummaryLabel":  "Stealth mode (Private networks)",
                            "privateUnicastResponsesToMulticastBroadcastsSummaryLabel":  "Unicast responses to multicast broadcasts (Private networks)",
-                           "probeUrlOptionalDescription":  "This should be an HTTP or HTTPS (preferred) URL. It is probed anytime an attempt to access a domain in this rule’s domains list is made. If the probe fails because the URL is unreachable or does not return a 200 HTTP status code, a VPN connection is established.",
-                           "probeUrlOptionalExample":  "e.g. badURL.com",
-                           "probeUrlOptionalName":  "When this URL is unreachable, force-connect the VPN.",
+                           "probeUrlOptionalDescription":  "This URL is a test and determines if the device is on an external network. The URL is probed every time a user tries to access a domain in the domains list. If the probe fails because the URL is unreachable or doesn't return a 200 HTTP status code, then a VPN connection is created. For example, enter https://corp.contoso.com/internalprobe, which can only be accessed when the device is joined to the internal network.",
+                           "probeUrlOptionalExample":  "e.g. https://corp.contoso.com/internalprobe",
+                           "probeUrlOptionalName":  "Enter the HTTP or HTTPS probing URL",
                            "processesColumn":  "Processes",
                            "processesColumnExamples":  "Example: %ProgramFiles%\\path\\myapp.exe",
                            "processesToExcludeName":  "Processes to exclude from scans and real-time protection",
@@ -5514,6 +5594,8 @@
                            "requiredPasswordComplexityName":  "Password complexity",
                            "requiredPasswordTypeDescription":  "Specify the type of password required.",
                            "requiredPasswordTypeName":  "Required password type",
+                           "requiredPasswordUnlockDailyOption":  "24 hours since last PIN, password, or pattern unlock",
+                           "requiredPasswordUnlockName":  "Required unlock frequency",
                            "requiredURLStringProbeName":  "Pre-connection probe URL",
                            "resetToDefaultOption":  "Reset to default",
                            "resourcePath":  "Resource path",
@@ -5533,7 +5615,6 @@
                            "restrictedAppsName":  "Restricted apps",
                            "restrictedSitesSecurityLevelDescription":  "Enforce high security for restricted sites.",
                            "restrictedSitesSecurityLevelName":  "High security for restricted sites",
-                           "retailChannel":  "Retail channel",
                            "revokeEncryptionKeysOnUnEnrollDescription":  "Revoke encryption keys when device is unenrolled (Yes recommended).",
                            "revokeEncryptionKeysOnUnEnrollName":  "Revoke encryption keys when device is unenrolled",
                            "roleAndRealmDescription":  "Role and realm value pairs, as required by vendor.",
@@ -6974,7 +7055,7 @@
                            "wipOption":  "Associate a WIP with this connection",
                            "wirelessOption":  "Wireless",
                            "with":  "Choose whether to connect",
-                           "withDescription":  "This will happen at each connection attempt",
+                           "withDescription":  "If there isn't an existing VPN connection, then for each connection attempt to a domain you enter, decide if users should connect to the VPN or never connect to the VPN. The action you select happens for every connection attempt.",
                            "workFoldersURLDescription":  "Use Work Folders to make your work files available on all devices you use, even when offline.",
                            "workFoldersURLName":  "Work folders URL",
                            "workProfileAllowAppInstallsFromUnknownSourcesInWorkProfileName":  "Allow app installations from unknown sources in the work profile",
@@ -7075,6 +7156,7 @@
                            "add":  "Add",
                            "addAppConfiguration":  "Add App configuration",
                            "addApps":  "Add apps",
+                           "addCondition":  "Add condition",
                            "addConfigCommandLabel":  "Add Config",
                            "addPolicyBladeTitle":  "Add a policy",
                            "addPolicyError":  "Failed to add policy: {0}",
@@ -7135,6 +7217,9 @@
                            "appsCountSelectorDisplayTextPlural":  "{0} apps selected",
                            "appsCountSelectorDisplayTextSingular":  "{0} app selected",
                            "appsInAndroidWorkProfile":  "Apps in Android Work Profile",
+                           "appsOnAndroidEnterpriseDedicatedDevicesWithAzureAdSharedMode":  "Apps on Android Enterprise dedicated devices with Azure AD shared mode​",
+                           "appsOnAndroidOpenSourceProjectUserAssociated":  "Apps on AOSP user-associated devices",
+                           "appsOnAndroidOpenSourceProjectUserless":  "Apps on AOSP userless devices",
                            "appsOnIntuneManagedDevices":  "Apps on Intune managed devices",
                            "appsOnUnmanagedDevices":  "Apps on unmanaged devices",
                            "appsSelectorLabel":  "Apps",
@@ -7240,6 +7325,7 @@
                            "deviceConditionsInfoParagraph2":  "Similar device based settings can be configured for enrolled devices.",
                            "deviceConditionsInfoParagraph2LinkText":  "Learn more about configuring device compliance settings for enrolled devices.",
                            "deviceId":  "Device ID",
+                           "deviceLockComplexityValidationFailureNotes":  "<p><b>Notes:</b></p>\n<ul type=\"disc\">\n    <li>The device lock can require a password complexity of: LOW, MEDIUM, or HIGH targeted to Android 11+. For devices operating on Android 10 and earlier, setting a complexity value of Low/Medium/High will default to the expected behavior for \"Low Complexity\".</li>\n    <li>The password definitions below are subject to change. Please refer to <a href='https://developer.android.com/reference/android/app/admin/DevicePolicyManager#getPasswordComplexity%28%29'>DevicePolicyManager|Android Developers</a> for the most updated definitions of the different password complexity levels.</li>\n</ul>\n\n<p><b>Low</b></p>\n<ul type=\"disc\">\n    <li>Password can be a pattern or PIN with repeating (4444) or ordered (1234, 4321, 2468) sequences.</li>\n</ul>\n\n<p><b>Medium</b></p>\n<ul type=\"disc\">\n    <li>PIN with no repeating (4444) or ordered (1234, 4321, 2468) sequences with a minimum length of at least 4 characters</li>\n    <li>Alphabetic passwords with a minimum length of at least 4 characters</li>\n    <li>Alphanumeric passwords with a minimum length of at least 4 characters</li>\n</ul>\n\n<p><b>High</b></p>\n<ul type=\"disc\">\n    <li>PIN with no repeating (4444) or ordered (1234, 4321, 2468) sequences with a minimum length of at least 8 characters</li>\n    <li>Alphabetic passwords with a minimum length of at least 6 characters</li>\n    <li>Alphanumeric passwords with a minimum length of at least 6 characters</li>\n</ul>\n<p></p>",
                            "deviceLockedOpenFilesOptionsText":  "When device is locked and there are open files",
                            "deviceLockedOptionText":  "When device is locked",
                            "deviceManufacturer":  "Device manufacturer",
@@ -7356,6 +7442,7 @@
                            "guidedTemplate2":  "We’ll ask you which protection level you would like to deploy to your users. For more information, see <a href = \"https://go.microsoft.com/fwlink/?linkid=2131582 \">Data protection framework with app protection policies. </a>",
                            "guidediOSLabel":  "iOS app protection",
                            "hardwareBackedKey":  "Hardware-backed key",
+                           "healthCheck":  "Health Checks",
                            "helpAndSupport":  "Help and support",
                            "hideOverrides":  "Hide Overrides",
                            "highDataProtectionGuidedString":  "High data protection – expand upon the settings defined in enhanced data protection by introducing more complex access requirements settings (e.g., disables simple PIN), data protection settings (for example, disabling third-party keyboards).",
@@ -7468,6 +7555,7 @@
                            "overview":  "Overview",
                            "packageId":  "Package ID",
                            "pendingDeleteContentStateText":  "Deleting...",
+                           "photoLibrary":  "Photo Library",
                            "pinCharSettingTooltip":  "A numeric PIN only allows numeric characters.\n\nA passcode requires all of the following: Alphanumeric characters and allowed symbols.",
                            "pinToDashboard":  "Dummy string, don't translate",
                            "platformColumnLabel":  "Platform",
@@ -7537,7 +7625,7 @@
                            "reporting":  "Reporting",
                            "reports":  "Reports",
                            "require":  "Require",
-                           "requireDeviceLockOnApps":  "Require device lock",
+                           "requireDeviceLockComplexityOnApps":  "Require device lock",
                            "requireThreatScanOnApps":  "Require threat scan on apps",
                            "requiredField":  "This field can't be empty",
                            "requiredSafetyNetEvaluationType":  "Required SafetyNet evaluation type",
@@ -7913,9 +8001,9 @@
                            "selectorLabel":  "Detection rules"
                        },
     "PolicyType":  {
-                       "AttackSurfaceReductionRules":  {
-                                                           "configMgr":  "Attack Surface Reduction Rules (ConfigMgr)"
-                                                       },
+                       "EdgeSmartScreenSettings":  {
+                                                       "description":  "Microsoft Edge app recommended SmartScreen settings: Windows 10 in cloud configuration template. https://aka.ms/CloudConfigGuide"
+                                                   },
                        "EndpointDetectionandResponse":  {
                                                             "mDE":  "Endpoint detection and response"
                                                         },
@@ -7945,7 +8033,7 @@
                                                         "mDMSecurityBaseline1810PreviewBeta":  "Preview: MDM Security Baseline for Windows 10 for October 2018 (beta)",
                                                         "mDMSecurityBaseline1906":  "MDM Security Baseline for Windows 10 and later for May 2019",
                                                         "mDMSecurityBaseline2004":  "MDM Security Baseline for Windows 10 and later for August 2020",
-                                                        "mDMSecurityBaseline2101":  "MDM Security Baseline for Windows 10 and later Decemeber 2020",
+                                                        "mDMSecurityBaseline2101":  "MDM Security Baseline for Windows 10 and later December 2020",
                                                         "macOSAntivirus":  "Antivirus",
                                                         "macOSDiskEncryption":  "FileVault",
                                                         "macOSFirewall":  "macOS firewall",
@@ -7964,13 +8052,20 @@
                        "FirewallRules":  {
                                              "mDE":  "Microsoft Defender Firewall Rules"
                                          },
+                       "OneDriveKnownFolderMove":  {
+                                                       "description":  "OneDrive Known Folder Move settings: Windows 10 in cloud configuration template. https://aka.ms/CloudConfigGuide"
+                                                   },
+                       "accountProtection":  "Account Protection",
                        "administrativeTemplates":  "Administrative Templates",
                        "androidCompliancePolicy":  "Android compliance policy",
                        "aospDeviceOwnerCompliancePolicy":  "Android (AOSP) compliance policy",
                        "applicationControl":  "Application Control",
+                       "attackSurfaceReductionRules":  "Attack Surface Reduction Rules",
+                       "bitlocker":  "BitLocker",
                        "custom":  "Custom",
                        "deliveryOptimization":  "Delivery Optimization",
                        "derivedPersonalIdentityVerificationCredential":  "Derived credential",
+                       "deviceControl":  "Device Control",
                        "deviceFeatures":  "Device features",
                        "deviceFirmwareConfigurationInterface":  "Device Firmware Configuration Interface",
                        "deviceLock":  "Device Lock",
@@ -7990,6 +8085,7 @@
                        "identityProtection":  "Identity protection",
                        "iosCompliancePolicy":  "iOS compliance policy",
                        "kiosk":  "Kiosk",
+                       "localUsersAndGroups":  "Local user group membership",
                        "macCompliancePolicy":  "Mac compliance policy",
                        "microsoftDefenderAntivirus":  "Microsoft Defender Antivirus",
                        "microsoftDefenderAntivirusexclusions":  "Microsoft Defender Antivirus exclusions",
@@ -8112,7 +8208,7 @@
     "AzureIAM":  {
                      "AdrsUserActionSelectionWarning":  {
                                                             "conditions":  "Conditions that require device registration are not available with \"Register or join devices\" user action.",
-                                                            "message":  "Only \"Require multi-factor authentication\" can be used in policies created for the \"Register or join devices\" user action.{0}"
+                                                            "message":  "Only \"Require multifactor authentication\" can be used in policies created for the \"Register or join devices\" user action.{0}"
                                                         },
                      "AuthContext":  {
                                          "Delete":  {
@@ -8144,6 +8240,7 @@
                                                         "selected":  "Authentication context included"
                                                     },
                                          "addNewStepUp":  "New authentication context",
+                                         "bannerText":  "Create your own authentication context values and Conditional Access policies with Azure AD Premium",
                                          "checkBoxInfo":  "Select the authentication contexts this policy will apply to",
                                          "configure":  "Configure authentication contexts",
                                          "createCA":  "Assign Conditional Access policies to the authentication context",
@@ -8166,49 +8263,34 @@
                      "AuthenticationStrength":  {
                                                     "Mode":  {
                                                                  "deviceBasedPush":  "Microsoft Authenticator (Phone Sign-in)",
-                                                                 "deviceBasedPushFido2X509Certificate":  "Microsoft Authenticator (Phone Sign-in) + Fido 2 + Certificate Based Authentication",
-                                                                 "deviceBasedPushX509CertificateSingleFactor":  "Microsoft Authenticator (Phone Sign-in) + Fido 2 + Certificate Based Authentication (Single Factor)",
-                                                                 "email":  "Email one-time passcode",
-                                                                 "emailOtp":  "Email one-time passcode",
+                                                                 "email":  "Email One-Time Passcode",
                                                                  "federatedMultiFactor":  "Federated Multi-Factor",
-                                                                 "federatedSingleFactor":  "Federated single factor",
-                                                                 "federatedSingleFactorFederatedMultiFactor":  "Federated single factor + Federated Multi-Factor",
-                                                                 "fido2":  "FIDO 2 security key",
-                                                                 "fido2X509CertificateSingleFactor":  "FIDO 2 security key + Certificate Based Authentication (Single Factor)",
+                                                                 "federatedSingleFactor":  "Federated Single-Factor",
+                                                                 "fido2":  "FIDO2 Security Key",
                                                                  "hardwareOath":  "Hardware OATH tokens",
-                                                                 "hardwareOathEmail":  "Hardware OATH tokens + Email one-time passcode",
-                                                                 "hardwareOathX509CertificateSingleFactor":  "Hardware OATH tokens + Certificate Based Authentication (Single Factor)",
-                                                                 "microsoftAuthenticatorPSIX509CertificateSingleFactor":  "Microsoft Authenticator (Phone Sign-in) + Certificate Based Authentication (Single Factor)",
-                                                                 "microsoftAuthenticatorPsi":  "Microsoft Authenticator (Phone Sign-in)",
+                                                                 "hardwareOathEmail":  "Hardware OATH token + Email one-time passcode",
+                                                                 "hardwareOathFederatedSingleFactor":  "Federated Single-Factor + Hardware OATH token",
                                                                  "microsoftAuthenticatorPush":  "Microsoft Authenticator (Push Notification)",
                                                                  "microsoftAuthenticatorPushEmail":  "Microsoft Authenticator (Push Notification) + Email one-time passcode",
-                                                                 "microsoftAuthenticatorPushX509CertificateSingleFactor":  "Microsoft Authenticator (Push Notification) + Certificate Based Authentication (Single Factor)",
+                                                                 "microsoftAuthenticatorPushFederatedSingleFactor":  "Federated Single-Factor + Microsoft Authenticator (Push Notification)",
                                                                  "none":  "None",
                                                                  "password":  "Password",
-                                                                 "passwordDeviceBasedPush":  "Password + Microsoft Authenticator (Phone Sign-in)",
-                                                                 "passwordFido2":  "Password + FIDO 2 security key",
-                                                                 "passwordHardwareOath":  "Password + Hardware OATH tokens",
-                                                                 "passwordMicrosoftAuthenticatorPSI":  "Password + Microsoft Authenticator (Phone Sign-in)",
+                                                                 "passwordHardwareOath":  "Password + Hardware OATH token",
                                                                  "passwordMicrosoftAuthenticatorPush":  "Password + Microsoft Authenticator (Push Notification)",
                                                                  "passwordSms":  "Password + SMS",
-                                                                 "passwordSoftwareOath":  "Password + Software OATH tokens",
-                                                                 "passwordTemporaryAccessPassMultiUse":  "Password + Temporary Access Pass (Multi-use)",
-                                                                 "passwordTemporaryAccessPassOneTime":  "Password + Temporary Access Pass (One-time use)",
+                                                                 "passwordSoftwareOath":  "Password + Software OATH token",
                                                                  "passwordVoice":  "Password + Voice",
                                                                  "sms":  "SMS",
                                                                  "smsEmail":  "SMS + Email one-time passcode",
-                                                                 "smsSignIn":  "SMS sign in",
-                                                                 "smsX509CertificateSingleFactor":  "SMS + Certificate Based Authentication (Single Factor)",
+                                                                 "smsFederatedSingleFactor":  "Federated Single-Factor + SMS",
                                                                  "softwareOath":  "Software OATH tokens",
-                                                                 "softwareOathEmail":  "Software OATH tokens + Email one-time passcode",
-                                                                 "softwareOathX509CertificateSingleFactor":  "Software OATH tokens + Certificate Based Authentication (Single Factor)",
+                                                                 "softwareOathEmail":  "Software OATH token + Email one-time passcode",
+                                                                 "softwareOathFederatedSingleFactor":  "Federated Single-Factor + Software OATH token",
                                                                  "temporaryAccessPassMultiUse":  "Temporary Access Pass (Multi-use)",
-                                                                 "temporaryAccessPassMultiUseX509CertificateSingleFactor":  "Temporary Access Pass (Multi-use) + Certificate Based Authentication (Single Factor)",
                                                                  "temporaryAccessPassOneTime":  "Temporary Access Pass (One-time use)",
-                                                                 "temporaryAccessPassOneTimeX509CertificateSingleFactor":  "Temporary Access Pass (One-time use) + Certificate Based Authentication (Single Factor)",
                                                                  "voice":  "Voice",
                                                                  "voiceEmail":  "Voice + Email one-time passcode",
-                                                                 "voiceX509CertificateSingleFactor":  "Voice + Certificate Based Authentication (Single Factor)",
+                                                                 "voiceFederatedSingleFactor":  "Federated Single-Factor + Voice",
                                                                  "windowsHelloForBusiness":  "Windows Hello For Business",
                                                                  "x509CertificateMultiFactor":  "Certificate Based Authentication (Multi-Factor)",
                                                                  "x509CertificateSingleFactor":  "Certificate Based Authentication (Single Factor)"
@@ -8240,7 +8322,8 @@
                                              "Validation":  {
                                                                 "failed":  "With \"Selected locations\" you must choose at least one location.",
                                                                 "selector":  "Choose at least one location"
-                                                            }
+                                                            },
+                                             "privateLinksInfo":  "Private Link for Azure AD is best suited for Azure services. Ensure that the principals on which this policy is applied do not have requirement to hit any public services like M365."
                                          },
                      "ClientApp":  {
                                        "Clients":  {
@@ -8276,6 +8359,7 @@
                                                   "infoBalloon":  "Cloud app or user action you want to test. For example, 'SharePoint Online'",
                                                   "learnMore":  "Control access based on all or specific cloud apps or actions.",
                                                   "learnMoreB2C":  "Control access based on all or specific cloud apps.",
+                                                  "learnMoreNetworkAccess":  "Control access based on all or specific network access traffic, cloud apps or actions.",
                                                   "title":  "Cloud apps or actions"
                                               },
                      "CloudappsSelectionBlade":  {
@@ -8292,6 +8376,7 @@
                                                                   },
                                                      "Validation":  {
                                                                         "authContext":  "With \"authentication context\" you must configure at least one sub-item.",
+                                                                        "networkAccess":  "With \"Network Access\" you must configure at least one traffic profile.",
                                                                         "selectApps":  "\"{0}\" must be configured",
                                                                         "selector":  "Select at least one app.",
                                                                         "userActions":  "With \"User actions\" you must configure at least one sub-item."
@@ -8307,12 +8392,12 @@
                                     "notFoundDetailed":  "The policy \"{0}\" no longer exists. It may have been deleted."
                                 },
                      "GuestsOrExternalUsers":  {
-                                                   "allExternalTenantsLabel":  "All Azure AD organizations",
+                                                   "allExternalTenantsLabel":  "All",
                                                    "b2bCollaborationGuestLabel":  "B2B collaboration guest users",
                                                    "b2bCollaborationMemberLabel":  "B2B collaboration member users",
                                                    "b2bDirectConnectUserLabel":  "B2B direct connect users",
                                                    "enumeratedExternalTenantsError":  "Please select at least one external tenant",
-                                                   "enumeratedExternalTenantsLabel":  "Select Azure AD organizations",
+                                                   "enumeratedExternalTenantsLabel":  "Select",
                                                    "externalTenantsLabel":  "Specify external Azure AD organizations",
                                                    "externalUserDropdownLabel":  "Choose guest or external user types",
                                                    "externalUsersError":  "Select at least one external guest or user type",
@@ -8432,6 +8517,22 @@
                                                        "gridAria":  "List of named locations"
                                                    }
                                       },
+                     "NetworkAccess":  {
+                                           "Included":  {
+                                                            "none":  "No target resources selected",
+                                                            "plural":  "{0} network traffic profiles selected",
+                                                            "singular":  "1 network traffic profile selected"
+                                                        },
+                                           "internetOptionText":  "Public traffic",
+                                           "label":  "Network Access (Preview)",
+                                           "m365OptionText":  "M365 traffic",
+                                           "privateOptionText":  "Private traffic",
+                                           "selectTrafficProfilesLabel":  "Select the traffic profiles this policy applies to",
+                                           "targetResourcesBalloonContext":  "Target Resources",
+                                           "targetResourcesSelectorTitle":  "Target Resources",
+                                           "trafficProfilesLearnMoreTooltip":  "To see aditional traffic profiles, add more NaaS licenses.",
+                                           "ztnaEnableLearnMore":  "Zero Trust Cloud Edge needs to be turned on to use network access controls. "
+                                       },
                      "Policies":  {
                                       "Grid":  {
                                                    "aria":  "List of Conditional Access policies"
@@ -8449,25 +8550,40 @@
                                                                                }
                                                   }
                                 },
+                     "PolicyCondition":  {
+                                             "SignInRiskDetections":  {
+                                                                          "ApplyCondition":  {
+                                                                                                 "info":  "Configure risk detections to apply the policy to selected real-time sign-in risk detection(s)."
+                                                                                             },
+                                                                          "LearnMore":  {
+                                                                                            "message":  "Control user access to respond to specific real-time sign-in risk detections."
+                                                                                        },
+                                                                          "description":  "This condition is satisfied if any of the included risk detections detect risk. This does not affect the sign-in risk level calculation.",
+                                                                          "header":  "Real-time built-in risk detections",
+                                                                          "info":  "Detections that detect risks during sign-ins.",
+                                                                          "label":  "Sign-in risk detections (Preview)",
+                                                                          "title":  "Sign-in risk detections"
+                                                                      }
+                                         },
                      "PolicyControlAuthStrength":  {
                                                        "MultiFactorAuthentication":  {
                                                                                          "description":  "Combinations of methods that satisfy strong authentication, such as Password + SMS",
-                                                                                         "displayName":  "Multi-factor authentication (MFA)"
+                                                                                         "displayName":  "Multifactor authentication"
                                                                                      },
                                                        "Passwordless":  {
                                                                             "description":  "Passwordless methods that satisfy strong authentication, such as Microsoft Authenticator ",
-                                                                            "displayName":  "Passwordless MFA"
+                                                                            "displayName":  "Passwordless multifactor authentication"
                                                                         },
                                                        "PhishingResistant":  {
                                                                                  "description":  "Phishing-resistant Passwordless methods for the strongest authentication, such as FIDO2 Security Key",
-                                                                                 "displayName":  "Phishing resistant MFA"
+                                                                                 "displayName":  "Phishing-resistant multifactor authentication"
                                                                              }
                                                    },
                      "PolicyControlFedAuthMethod":  {
                                                         "ariaLabel":  "Learn more about requiring authentication methods satisfied by federation providers.",
                                                         "certificate":  "Certificate authentication",
                                                         "infoBubble":  "Specify a required authentication method, that must be satisfied by federation provider, such as ADFS.",
-                                                        "multifactor":  "Multi-factor authentication",
+                                                        "multifactor":  "Multifactor authentication",
                                                         "require":  "Require federated authentication method (Preview)",
                                                         "whatIfFormat":  "{0} - {1}"
                                                     },
@@ -8507,7 +8623,7 @@
                                                                            "appProtectionPolicy":  "Require app protection policy",
                                                                            "approvedClientApp":  "Require approved client app",
                                                                            "blockAccess":  "Block access",
-                                                                           "mfa":  "Require multi-factor authentication",
+                                                                           "mfa":  "Require multifactor authentication",
                                                                            "passwordChange":  "Require password change",
                                                                            "requireCompliantDevice":  "Require device to be marked as compliant",
                                                                            "requireHybridAzureADDevice":  "Require hybrid Azure AD joined device"
@@ -8543,7 +8659,7 @@
                                                                                               "title":  "Block access for unknown or unsupported device platform"
                                                                                           },
                                                                 "BlockLegacyAuth":  {
-                                                                                        "description":  "Block legacy authentication endpoints that can be used to bypass multi-factor authentication. ",
+                                                                                        "description":  "Block legacy authentication endpoints that can be used to bypass multifactor authentication. ",
                                                                                         "name":  "CA003: Block legacy authentication",
                                                                                         "title":  "Block legacy authentication"
                                                                                     },
@@ -8558,34 +8674,34 @@
                                                                                                          "title":  "Require compliant or hybrid Azure AD joined device for admins"
                                                                                                      },
                                                                 "RequireCompliantOrHybridADAllUsers":  {
-                                                                                                           "description":  "Protect access to company resources by requiring users to use a managed device or perform multi-factor authentication. (macOS or Windows only)",
-                                                                                                           "name":  "CA013: Require compliant or hybrid Azure AD joined device or multi-factor authentication for all users",
-                                                                                                           "title":  "Require compliant or hybrid Azure AD joined device or multi-factor authentication for all users"
+                                                                                                           "description":  "Protect access to company resources by requiring users to use a managed device or perform multifactor authentication. (macOS or Windows only)",
+                                                                                                           "name":  "CA013: Require compliant or hybrid Azure AD joined device or multifactor authentication for all users",
+                                                                                                           "title":  "Require compliant or hybrid Azure AD joined device or multifactor authentication for all users"
                                                                                                        },
                                                                 "RequireMFAAllUsers":  {
-                                                                                           "description":  "Require multi-factor authentication for all user accounts to reduce risk of compromise.",
-                                                                                           "name":  "CA004: Require multi-factor authentication for all users",
-                                                                                           "title":  "Require multi-factor authentication for all users"
+                                                                                           "description":  "Require multifactor authentication for all user accounts to reduce risk of compromise.",
+                                                                                           "name":  "CA004: Require multifactor authentication for all users",
+                                                                                           "title":  "Require multifactor authentication for all users"
                                                                                        },
                                                                 "RequireMFAForAdmins":  {
-                                                                                            "description":  "Require multi-factor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as Security Default.",
-                                                                                            "name":  "CA001: Require multi-factor authentication for admins",
-                                                                                            "title":  "Require multi-factor authentication for admins"
+                                                                                            "description":  "Require multifactor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as Security Default.",
+                                                                                            "name":  "CA001: Require multifactor authentication for admins",
+                                                                                            "title":  "Require multifactor authentication for admins"
                                                                                         },
                                                                 "RequireMFAForAzureManagement":  {
-                                                                                                     "description":  "Require multi-factor authentication to protect privileged access to Azure resources.",
-                                                                                                     "name":  "CA006: Require multi-factor authentication for Azure management",
-                                                                                                     "title":  "Require multi-factor authentication for Azure management"
+                                                                                                     "description":  "Require multifactor authentication to protect privileged access to Azure resources.",
+                                                                                                     "name":  "CA006: Require multifactor authentication for Azure management",
+                                                                                                     "title":  "Require multifactor authentication for Azure management"
                                                                                                  },
                                                                 "RequireMFAForGuestAccess":  {
-                                                                                                 "description":  "Require guest users perform multi-factor authentication when accessing your company resources.",
-                                                                                                 "name":  "CA005: Require multi-factor authentication for guest access",
-                                                                                                 "title":  "Require multi-factor authentication for guest access"
+                                                                                                 "description":  "Require guest users perform multifactor authentication when accessing your company resources.",
+                                                                                                 "name":  "CA005: Require multifactor authentication for guest access",
+                                                                                                 "title":  "Require multifactor authentication for guest access"
                                                                                              },
                                                                 "RequireMFAForRiskySignIn":  {
-                                                                                                 "description":  "Require multi-factor authentication if the sign-in risk is detected to be medium or high. (Requires an Azure AD Premium 2 License)",
-                                                                                                 "name":  "CA007: Require multi-factor authentication for risky sign-ins",
-                                                                                                 "title":  "Require multi-factor authentication for risky sign-ins"
+                                                                                                 "description":  "Require multifactor authentication if the sign-in risk is detected to be medium or high. (Requires an Azure AD Premium 2 License)",
+                                                                                                 "name":  "CA007: Require multifactor authentication for risky sign-ins",
+                                                                                                 "title":  "Require multifactor authentication for risky sign-ins"
                                                                                              },
                                                                 "RequirePasswordChangeForHighRiskUsers":  {
                                                                                                               "description":  "Require the user to change their password if the user risk is detected to be high. (Requires an Azure AD Premium 2 License)",
@@ -8593,7 +8709,7 @@
                                                                                                               "title":  "Require password change for high-risk users"
                                                                                                           },
                                                                 "RequireSecurityInfo":  {
-                                                                                            "description":  "Secure when and how users register for Azure AD multi-factor authentication and self-service password. ",
+                                                                                            "description":  "Secure when and how users register for Azure AD multifactor authentication and self-service password. ",
                                                                                             "name":  "CA002: Securing security info registration",
                                                                                             "title":  "Securing security info registration"
                                                                                         }
@@ -8621,7 +8737,7 @@
                                                                                                                                   "on":  "This policy will affect all users except the current logged in Administrator. Consider using report only mode to begin with until you have confirmed this will not impact your users."
                                                                                                                               },
                                                                                                               "Title":  {
-                                                                                                                            "on":  "Don't lock yourself out! Make sure that your device is compliant, or hybrid Azure AD Joined or you have configured multi-factor authentication. ",
+                                                                                                                            "on":  "Don't lock yourself out! Make sure that your device is compliant, or hybrid Azure AD Joined or you have configured multifactor authentication. ",
                                                                                                                             "reportOnly":  "Policies in report-only mode that require compliant devices may prompt users on Mac, iOS, and Android to select a device certificate during policy evaluation, even though device compliance is not enforced. These prompts may repeat untli the device is made compliant."
                                                                                                                         }
                                                                                                           },
@@ -8634,7 +8750,7 @@
                                                                                         },
                                                                    "RequireMfaAllUsers":  {
                                                                                               "description":  "Consider using report only mode to begin with until you have planned and communicated this change to all your users.",
-                                                                                              "title":  "Enabling this policy will enforce multi-factor authentication for all your users."
+                                                                                              "title":  "Enabling this policy will enforce multifactor authentication for all your users."
                                                                                           },
                                                                    "RequireSecurityInfo":  {
                                                                                                "description":  "Please ensure you review your configuration to protect these accounts based on your company needs.",
@@ -8787,6 +8903,13 @@
                                                           "message":  "Control user access to respond to specific sign-in risk levels."
                                                       }
                                     },
+                     "SigninRiskLevel":  {
+                                             "NoRiskSelected":  {
+                                                                    "warning":  "When \"{0}\" is selected, the \"{1}\" condition will not be configurable."
+                                                                },
+                                             "description":  "Sign-in risk level is generated based on all real-time risk detections.",
+                                             "header":  "Select the sign-in risk level this policy will apply to"
+                                         },
                      "SingleSelectorActive":  {
                                                   "failed":  "Unable to load this data.",
                                                   "reattempt":  "Loading data. Reattempt {0} of {1}."
@@ -8853,12 +8976,14 @@
                                               "invalidDevicesCondition":  "Invalid device configuration. Likely an invalid \"{0}\" configuration.",
                                               "invalidGrantControlPolicy":  "Invalid grant control",
                                               "invalidLocationsCondition":  "Invalid locations selected",
+                                              "invalidNetworkAccessSecurityPolicyId":  "Policy attached to session network control in invalid.",
                                               "invalidPolicy":  "Assignments are not selected",
                                               "invalidSessionControlPolicy":  "Invalid session control",
                                               "invalidSignInRisksCondition":  "Invalid sign-in risk selected",
                                               "invalidUserRisksCondition":  "Invalid user risk selected",
                                               "invalidUsersCondition":  "Invalid users selected",
                                               "mamPolicyShouldOnlyTargetAndroidOrIosPlatforms":  "MAM policy can only be applied to Android or iOS client platforms.",
+                                              "networkAccessControlNeedsNetworkAccessTargetedTrafficProfile":  "Network Access session policy only works correctly when a network access traffic profile is targeted. Please update your targeted resources section.",
                                               "notSupportedCombination":  "Policy configuration is not supported. Learn more about supported policies.",
                                               "pending":  "Validating policy",
                                               "requireComplianceEveryonePolicy":  "Policy configuration will require device compliance for all users. Review the assignments selected.",
@@ -8871,10 +8996,12 @@
                                  },
                      "WarningsInfo":  {
                                           "Controls":  {
+                                                           "AuthStrengthXtap":  {
+                                                                                    "allUsers":  "Configure cross-tenant access settings to accept claims coming from Azure AD tenants for external user to use built-in authentication strengths. Custom authentication strengths cannot be configured for external users.",
+                                                                                    "externalUsers":  "To enable all built-in authentication strengths, configure cross-tenant access settings to accept claims coming from Azure AD tenants for external users."
+                                                                                },
                                                            "compliantDeviceEnabled":  "Don't lock yourself out! Make sure that your device is compliant.",
                                                            "domainJoinedDeviceEnabled":  "Don't lock yourself out! Make sure that your device is Hybrid Azure AD Joined.",
-                                                           "exchangeDisabled":  "Exchange ActiveSync only supports \"Compliant device\" and \"Approved client app\" controls. Click to learn more.",
-                                                           "exchangeDisabled2":  "Exchange ActiveSync only supports \"Compliant device\", \"Approved client app\" and \"Compliant client app\" controls. Click to learn more.",
                                                            "notAvailableForSP":  "Some controls are not available due to '{0}' selection in policy assignment",
                                                            "requireAuthOrMfa":  "\"{0}\" cannot be used with \"{1}\"",
                                                            "requireMfa":  "Consider testing the new \"{0}\" public preview",
@@ -8904,7 +9031,8 @@
                                                                     "teamsBlocked":  "Microsoft Teams will also be affected when apps such as SharePoint Online and Exchange Online are included in policy."
                                                                 },
                                           "Users":  {
-                                                        "blockAllUsers":  "Don't lock yourself out! This policy will affect all of your users. We recommend applying a policy to a small set of users first to verify it behaves as expected."
+                                                        "blockAllUsers":  "Don't lock yourself out! This policy will affect all of your users. We recommend applying a policy to a small set of users first to verify it behaves as expected.",
+                                                        "xtap":  " Your \"Require authentication strengths\" configuration in grant control might not be valid for external users."
                                                     }
                                       },
                      "WhatIf":  {
@@ -8958,7 +9086,7 @@
                      "certDurationCol":  "Expiry",
                      "certDurationStartCol":  "Valid from",
                      "certName":  "VpnCert",
-                     "certainApps":  "Only specifically-supported apps are enabled for \"Sign-in frequency every time\" if \"Require multi-factor authentication\" and \"Require password change\" grants are not selected",
+                     "certainApps":  "Only specifically-supported apps are enabled for \"Sign-in frequency every time\" if \"Require multifactor authentication\" and \"Require password change\" grants are not selected",
                      "chooseApplicationsBladeSubtitle":  "",
                      "chooseApplicationsBladeTitle":  "Choose Applications",
                      "chooseApplicationsCartSubitle":  "",
@@ -8981,7 +9109,7 @@
                      "chooseApplicationsTooMany":  "More results than can be shown. Please filter using the search box.",
                      "chooseLocationCorpnetItem":  "Corporate network",
                      "chooseLocationSelectedLocationsLabel":  "Selected locations",
-                     "chooseLocationTrustedIpsItem":  "MFA Trusted IPs",
+                     "chooseLocationTrustedIpsItem":  "Multifactor authentication trusted IPs",
                      "chooseLocationsBladeSubtitle":  "",
                      "chooseLocationsBladeTitle":  "Choose Locations",
                      "chooseLocationsCartSubitle":  "",
@@ -9058,8 +9186,8 @@
                      "classicPolicyControlBlockWhenNotAtWork":  "Block access when not at work",
                      "classicPolicyControlRequireCompliantDevice":  "Require compliant device",
                      "classicPolicyControlRequireDomainJoinedDevice":  "Require domain joined device",
-                     "classicPolicyControlRequireMfa":  "Require multi-factor authentication",
-                     "classicPolicyControlRequireMfaWhenNotAtWork":  "Require multi-factor authentication when not at work",
+                     "classicPolicyControlRequireMfa":  "Require multifactor authentication",
+                     "classicPolicyControlRequireMfaWhenNotAtWork":  "Require multifactor authentication when not at work",
                      "classicPolicyDeleteCommand":  "Delete",
                      "classicPolicyDeleteFailTitle":  "Failed to delete classic policy",
                      "classicPolicyDeleteInProgressTitle":  "Deleting classic policy",
@@ -9105,7 +9233,6 @@
                      "clientAppBladeTitle":  "Client apps",
                      "clientAppDescription":  "Select the client apps this policy will apply to",
                      "clientAppExchangeActiveSync":  "Exchange ActiveSync",
-                     "clientAppExchangeDisabledInfo":  "Exchange ActiveSync is available when Exchange Online is the only cloud app selected. Click to learn more",
                      "clientAppExchangeWarning":  "Exchange ActiveSync currently does not support all other conditions",
                      "clientAppLearnMore":  "Control user access to target specific client applications not using modern authentication.",
                      "clientAppLegacyHeader":  "Legacy authentication clients",
@@ -9113,7 +9240,6 @@
                      "clientAppModernHeader":  "Modern authentication clients",
                      "clientAppOnlySupportedPlatforms":  "Apply policy only to supported platforms",
                      "clientAppSelectSpecificClientApps":  "Select client apps",
-                     "clientAppV2BladeTitle":  "Client apps (Preview)",
                      "clientAppWebBrowser":  "Browser",
                      "clientAppsSelectedLabel":  "{0} included",
                      "clientTypeBrowser":  "Browser",
@@ -9142,7 +9268,7 @@
                      "conditionLabelOne":  "1 condition selected",
                      "conditionalAccessBladeTitle":  "Conditional Access",
                      "conditionsNotSelectedLabel":  "Not configured",
-                     "conditionsReqMfaReauthSet":  "Some options are not available due to the \"Require multi-factor authentication\" grant and \"sign-in frequency every time\" session control currently being selected",
+                     "conditionsReqMfaReauthSet":  "Some options are not available due to the \"Require multifactor authentication\" grant and \"sign-in frequency every time\" session control currently being selected",
                      "conditionsReqPwSet":  "Some options are not available due to the \"Require password change\" grant currently being selected",
                      "configureCasText":  "Configure Cloud App Security",
                      "configureCustomControlsText":  "Configure custom policy",
@@ -9161,7 +9287,7 @@
                      "controlsRequireCompliantAppAriaLabel":  "Learn more about requiring policy protected apps.",
                      "controlsRequireCompliantAppInfoBubble":  "Device must use policy protected apps.",
                      "controlsRequirePasswordResetAriaLabel":  "Learn more about requiring a password change.",
-                     "controlsRequirePasswordResetInfoBubble":  "Require password change to lower user risk. This option also requires multi-factor authentication. Other controls can't be used.",
+                     "controlsRequirePasswordResetInfoBubble":  "Require password change to lower user risk. This option also requires multifactor authentication. Other controls can't be used.",
                      "countriesRadiobuttonInfoBalloonContent":  "The country/region a sign-in is coming from is determined by the user's IP address.",
                      "createNewVpnCert":  "New certificate",
                      "createdTimeLabel":  "Creation time",
@@ -9224,7 +9350,7 @@
                      "helpCondition1":  "When any user is outside the company network",
                      "helpCondition2":  "When users in the 'Managers' group sign-in",
                      "helpConditionsTitle":  "Conditions",
-                     "helpControl1":  "They're required to sign in with multi-factor authentication",
+                     "helpControl1":  "They're required to sign in with multifactor authentication",
                      "helpControl2":  "They are required be on an Intune compliant or domain-joined device",
                      "helpControlsTitle":  "Controls",
                      "helpIntroText":  "Conditional Access gives you the ability to enforce access requirements when specific conditions occur. Let's take a few examples",
@@ -9260,6 +9386,7 @@
                      "lowRisk":  "Low",
                      "macOsDisplayName":  "macOS",
                      "managePoliciesLicenseText":  "To manage Conditional Access policies, your organization needs Azure AD Premium P1 or P2.",
+                     "manageSecurityDefaultsAriaLabel":  "Manage security defaults settings.",
                      "markAsTrustedCheckboxInfoBalloonContent":  "Signing in from a trusted location lowers a user's sign-in risk. Only mark this location as trusted if you know the IP ranges entered are established and credible in your organization.",
                      "markAsTrustedCheckboxLabel":  "Mark as trusted location",
                      "mediumRisk":  "Medium",
@@ -9291,7 +9418,7 @@
                      "namedNetworkIpRangesDescriptionContent":  "Configure your organization's IP ranges",
                      "namedNetworkIpRangesTab":  "IP ranges",
                      "namedNetworkListAdd":  "New location",
-                     "namedNetworkListConfigureTrustedIps":  "Configure MFA trusted IPs",
+                     "namedNetworkListConfigureTrustedIps":  "Configure multifactor authentication trusted IPs",
                      "namedNetworkNameDescription":  "Example: 'Redmond office'",
                      "namedNetworkNameInvalid":  "The supplied name is invalid.",
                      "namedNetworkNameRequired":  "You must supply a name for this location.",
@@ -9334,7 +9461,7 @@
                      "namednetworkExceedingSizeErrorBladeTitle":  "Error details",
                      "namednetworkExceedingSizeErrorDetailText":  "Click here for more details.",
                      "namednetworkExceedingSizeErrorMessage":  "You have exceeded the maximum allowed storage for named locations. Try again with a shorter list. Click here to view more details.",
-                     "needMfaSecondary":  "\"Require multi-factor authentication\" must be selected when \"Sign-in frequency every time\" is selected with \"Secondary authentication methods only\"",
+                     "needMfaSecondary":  "\"Require multifactor authentication\" must be selected when \"Sign-in frequency every time\" is selected with \"Secondary authentication methods only\"",
                      "newCertName":  "new cert",
                      "noAttributePermissionsError":  "Insufficient privileges to create or update policy. Attribute definition reader role is required to add/edit dynamic filters.",
                      "noPolicyRowMessage":  "No policies",
@@ -9363,12 +9490,12 @@
                      "policyConditionDevicePlatformDescription":  "Platform the user is signing in from. For example, 'iOS'",
                      "policyConditionLocation":  "Locations",
                      "policyConditionLocationDescription":  "Location (determined using IP address range) the user is signing in from",
-                     "policyConditionSigninRisk":  "Sign-in risk",
+                     "policyConditionLocationPreview":  "Locations (Preview)",
+                     "policyConditionSigninRisk":  "Sign-in risk level",
                      "policyConditionSigninRiskDescription":  "Likelihood that the sign-in is coming from someone other than the user. Risk level can be high, medium or low. Requires Azure AD Premium 2 license.",
-                     "policyConditionUserRisk":  "User risk",
+                     "policyConditionUserRisk":  "User risk level",
                      "policyConditionUserRiskDescription":  "Configure user risk levels needed for policy to be enforced",
                      "policyConditioniClientApp":  "Client apps",
-                     "policyConditioniClientAppV2":  "Client apps (Preview)",
                      "policyControlAllowAccessDisplayedName":  "Grant access",
                      "policyControlAuthenticationStrengthDisplayedName":  "Require authentication strength (Preview)",
                      "policyControlBladeTitle":  "Grant",
@@ -9376,7 +9503,7 @@
                      "policyControlCompliantDeviceDisplayedName":  "Require device to be marked as compliant",
                      "policyControlContentDescription":  "Control access enforcement to block or grant access.",
                      "policyControlInfoBallonText":  "Block access or select additional requirements which need to be satisfied to allow access",
-                     "policyControlMfaChallengeDisplayedName":  "Require multi-factor authentication",
+                     "policyControlMfaChallengeDisplayedName":  "Require multifactor authentication",
                      "policyControlRequireCompliantAppDisplayedName":  "Require app protection policy",
                      "policyControlRequireDomainJoinedDisplayedName":  "Require Hybrid Azure AD joined device",
                      "policyControlRequireMamDisplayedName":  "Require approved client app",
@@ -9405,7 +9532,7 @@
                      "policyNameDevice":  "Device policy",
                      "policyNameFormat":  "[{0}] {1}",
                      "policyNameMam":  "Mobile App Management policy",
-                     "policyNameMfaLocation":  "MFA and location policy",
+                     "policyNameMfaLocation":  "Multifactor authentication and location policy",
                      "policyNamePlaceholderText":  "Example: 'Device compliance app policy'",
                      "policyNameTooLongError":  "Policy name is too long. Maximum 256 characters",
                      "policyOff":  "Off",
@@ -9433,12 +9560,15 @@
                      "requireAllControlsText":  "Require all the selected controls",
                      "requireCompliantDevice":  "Require compliant device",
                      "requireDomainJoined":  "Require domain-joined device",
-                     "requireGrantReauth":  "The \"sign-in frequency every time\" session control requires a \"require multi-factor authentication\" or \"require password change\" grant control when \"All cloud apps\" is selected",
-                     "requireMFA":  "Require multi-factor authentication ",
-                     "requireMfaReauth":  "The \"sign-in frequency every time\" session control requires the \"require multi-factor authentication\" grant control for \"sign-in risk\"",
+                     "requireGrantReauth":  "The \"sign-in frequency every time\" session control requires a \"require multifactor authentication\" or \"require password change\" grant control when \"All cloud apps\" is selected",
+                     "requireMFA":  "Require multifactor authentication",
+                     "requireMfaReauth":  "The \"sign-in frequency every time\" session control requires the \"require multifactor authentication\" grant control for \"sign-in risk\"",
                      "requireOneControlText":  "Require one of the selected controls",
                      "requirePasswordChangeReauth":  "The \"sign-in frequency every time\" session control requires the \"require password change\" grant control for \"user risk\"",
                      "requireRiskReauth":  "The \"sign-in frequency every time\" session control requires the \"user risk\" or \"sign-in risk\" session control when \"all cloud apps\" is selected.",
+                     "requireRiskReauthRiskNotEnabled":  "The \"sign-in frequency every time\" session control is not available when \"all cloud apps\" is selected.",
+                     "requireRiskReauthSignInOnly":  "The \"sign-in frequency every time\" session control requires the \"sign-in risk\" session control when \"all cloud apps\" is selected.",
+                     "requireRiskReauthUserOnly":  "The \"sign-in frequency every time\" session control requires the \"user risk\" session control when \"all cloud apps\" is selected.",
                      "resetFilters":  "Reset filters",
                      "sPRequired":  "Service principal required",
                      "sPSelectorInfoBalloon":  "User or Service Principal you want to test",
@@ -9446,7 +9576,8 @@
                      "searchTextTooLongError":  "The search text is too long. Maximum 256 characters",
                      "securityDefaultsPolicyName":  "Security defaults",
                      "securityDefaultsTextMessage":  "Security defaults must be disabled to enable Conditional Access policy.",
-                     "securityDefaultsWarningMessage":  "It looks like you're about to manage your organization's security configurations. That's great! You must first disable Security defaults before enabling a Conditional Access policy.",
+                     "securityDefaultsUpdateInProgressText":  "A security defaults update is in progress, please wait a moment and try again.",
+                     "securityDefaultsWarningMessage":  "It looks like you're about to manage your organization's security configurations. That's great! You must first {0}disable security defaults{1} before enabling a Conditional Access policy.",
                      "selectDevicePlatforms":  "Select device platforms",
                      "selectNamedNetworksSubtitle":  "",
                      "selectNamedNetworksTitle":  "Select locations",
@@ -9460,6 +9591,7 @@
                      "servicePrincipalSelectorAria":  "List of chosen service principals",
                      "servicePrincipalSelectorMultiple":  "{0} service principals selected",
                      "servicePrincipalSelectorSingle":  "1 service principal selected",
+                     "servicePrincipalSpecificExc":  "Specific service principals excluded",
                      "servicePrincipalSpecificInc":  "Specific service principals included",
                      "servicePrincipals":  "Service principals",
                      "sessionControlBladeTitle":  "Session",
@@ -9471,9 +9603,8 @@
                      "sessionControlsCasLabel":  "Use Conditional Access App Control",
                      "sessionControlsSecureSignInLabel":  "Require token binding",
                      "sharepointAppName":  "SharePoint",
-                     "signinRiskDescription":  "Select the sign-in risk level this policy will apply to",
                      "signinRiskInclude":  "{0} included",
-                     "signinRiskReauth":  "\"Sign-in risk\" condition must be selected when \"Require multi-factor authentication\" grant and \"sign-in frequency every time\" session control are selected",
+                     "signinRiskReauth":  "\"Sign-in risk\" condition must be selected when \"Require multifactor authentication\" grant and \"sign-in frequency every time\" session control are selected",
                      "signinRiskTriggerDescriptionContent":  "Select the sign-in risk level",
                      "singleTenantServicePrincipalInfoBallonText":  "Policy only applies to single tenant service principals owned by your organization. Click here to learn more ",
                      "specificSigninRiskLevelsOption":  "Select specific sign-in risk levels",
@@ -9503,13 +9634,13 @@
                      "trustedLocationStatusIconEnabled":  "Trusted status icon",
                      "tuesday":  "Tuesday",
                      "uploadInBadState":  "Unable to upload the specified file.",
-                     "upsellAppsDescription":  "Require multi-factor authentication for sensitive applications all the time or only from outside the company network.",
+                     "upsellAppsDescription":  "Require multifactor authentication for sensitive applications all the time or only from outside the company network.",
                      "upsellAppsTitle":  "Secure applications",
                      "upsellBannerText":  "Get a free Premium trial to use this feature",
                      "upsellDataDescription":  "Require device to be marked as compliant or Hybrid Azure AD joined to allow access to company resources.",
                      "upsellDataTitle":  "Secure data",
                      "upsellDescription":  "Conditional Access provides the control and protection you need to keep your corporate data secure, while giving your people an experience that allows them to do their best work from any device. For instance, you can restrict access from outside the company network or restrict access to devices which meet the compliance policies.",
-                     "upsellRiskDescription":  "Require multi-factor authentication for risk events detected by Microsoft's machine learning system.",
+                     "upsellRiskDescription":  "Require multifactor authentication for risk events detected by Microsoft's machine learning system.",
                      "upsellRiskTitle":  "Protect against risk",
                      "upsellTitle":  "Conditional Access",
                      "upsellWhyTitle":  "Why use Conditional Access?",
@@ -9551,6 +9682,7 @@
                      "usersGroupsLabel":  "Users and groups",
                      "viewApprovedAppsText":  "See list of approved client apps",
                      "viewCompliantAppsText":  "See list of policy protected client apps",
+                     "viewPolicyInformation":  "View policy information",
                      "vpnBladeTitle":  "VPN connectivity",
                      "vpnCertCreateFailedMessage":  "Error: {0}",
                      "vpnCertCreateFailedTitle":  "Failed to create {0}",
@@ -9653,6 +9785,7 @@
                                          "builtInAndroid":  "Built-In Android app",
                                          "builtInApp":  "Built-In app",
                                          "builtInIos":  "Built-In iOS app",
+                                         "iosIPadOSWebClip":  "iOS/iPadOS web clip",
                                          "iosLobApp":  "iOS line-of-business app",
                                          "iosStoreApp":  "iOS store app",
                                          "iosVppApp":  "iOS volume purchase program app",
@@ -9677,6 +9810,8 @@
                                          "sharePointApp":  "SharePoint app",
                                          "teamsApp":  "Teams app",
                                          "webApp":  "Web link",
+                                         "winGetPublicApp":  "Windows Package Manager Community Repository",
+                                         "winGetStoreApp":  "Microsoft Store Repository",
                                          "windowsAppXLobApp":  "Windows AppX line-of-business app",
                                          "windowsClassicApp":  "Windows app (Win32)",
                                          "windowsEdgeApp":  "Microsoft Edge (Windows 10 and later)",
@@ -9687,7 +9822,8 @@
                                          "windowsPhoneXapLobApp":  "Windows Phone XAP line-of-business app",
                                          "windowsStoreApp":  "Microsoft Store app",
                                          "windowsUniversalAppXLobApp":  "Windows Universal AppX line-of-business app",
-                                         "windowsUniversalLobApp":  "Windows Universal line-of-business app"
+                                         "windowsUniversalLobApp":  "Windows Universal line-of-business app",
+                                         "windowsWebApp":  "Windows web link"
                                      },
                          "AppTypePlatform":  {
                                                  "android":  "Android",
@@ -11028,6 +11164,10 @@
                                "xLanguagesSelectedLabel":  "{0} language(s) selected",
                                "xmlConfigurationLabel":  "XML Configuration"
                            },
+    "Filters":  {
+                    "ruleSyntax":  "Rule syntax",
+                    "filters":  "Filters"
+                },
     "EnrollmentRestrictions":  {
                                    "DeletePayloadLink":  {
                                                              "content":  "{0} is included in one or more policy sets. If you delete {0}, you'll no longer be able to assign it via these policy sets. Delete anyway?",
@@ -11135,9 +11275,12 @@
                                           "gettingStarted":  "Getting started",
                                           "messages":  "Messages",
                                           "onlineResources":  "Online resources",
+                                          "releaseManagement":  "Release management",
                                           "serviceRequests":  "Service requests",
                                           "settings":  "Settings",
-                                          "tenantEnrollment":  "Tenant enrollment"
+                                          "supportRequests":  "Support requests",
+                                          "tenantEnrollment":  "Tenant enrollment",
+                                          "tenantManagement":  "Tenant management"
                                       },
                    "actions":  "Actions for Non-Compliance",
                    "advancedExchangeSettings":  "Exchange online settings",
@@ -11249,7 +11392,11 @@
                    "tenantAdministration":  "Tenant administration",
                    "termsAndConditions":  "Terms and conditions",
                    "titles":  "Titles",
+                   "troubleshoot":  "Troubleshoot",
+                   "troubleshootDevice":  "Device",
+                   "troubleshootGroup":  "Group",
                    "troubleshootSupport":  "Troubleshooting + support",
+                   "troubleshootUser":  "User",
                    "user":  "User",
                    "userExecutionStatus":  "User status",
                    "warranty":  "Warranty vendors",

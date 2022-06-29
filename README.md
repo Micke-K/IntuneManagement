@@ -269,6 +269,7 @@ Start-WithJson.cmd is included as an example on how to start the script with jso
 * Terms and Conditions
 * Terms of Use
 * Update Policies
+* Co-management Settings
 
 
 **Note:** The scripts are using the BETA version of the Graph API which might change at any time.

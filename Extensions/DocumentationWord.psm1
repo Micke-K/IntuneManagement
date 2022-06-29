@@ -202,7 +202,6 @@ function Invoke-WordPreProcessItems
         Write-LogError "Failed to create Word App object. Word documentation aborted..." $_.Exception
         return $false
     }
-
     
     #$wordApp.Visible = $true
 
@@ -406,7 +405,7 @@ function Invoke-WordPostProcessItems
         Write-LogError "Failed to save file $fileName" $_.Excption
     }
 
-    if($global:chkWordOpenDocument.IsChecked -eq $true)
+    if($global:chkWordOpenDocument.IsChecked -eq $true -and $global:hideUI -ne $true)
     {
         $script:wordApp.Visible = $true
         $script:wordApp.WindowState = [Microsoft.Office.Interop.Word.WdWindowState]::wdWindowStateMaximize
@@ -481,7 +480,7 @@ function Invoke-WordProcessItem
 
     Add-DocText $objName $global:txtWordHeader2Style.Text
     
-    $script:doc.Application.Selection.TypeParagraph()  
+    $script:doc.Application.Selection.TypeParagraph()
 
     try 
     {
@@ -826,7 +825,7 @@ function Add-DocTableItems
                 $i++
             }
 
-            Set-DocObjectStyle $script:docTable.Rows($row).Range $tblTextStyle
+            Set-DocObjectStyle $script:docTable.Rows($row).Range $tblTextStyle | Out-Null
         
             if($itemObj.Category -and $curCategory -ne $itemObj.Category -and $AddCategories -eq $true)
             {

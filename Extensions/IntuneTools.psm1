@@ -1610,7 +1610,7 @@ function Show-ADMXRegSettings
 
         Set-ADMXRegAttributeControls
 
-        [System.Windows.Forms.Application]::DoEvents()        
+        [System.Windows.Forms.Application]::DoEvents()
     })  
 
     $global:cbADMXRegElementDataType.ItemsSource = @(

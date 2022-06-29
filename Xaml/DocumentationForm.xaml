@@ -176,11 +176,22 @@
         </TabItem>
     </TabControl>
 
-    <StackPanel Name="spDocSubMenu" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row='1'>
-        <Button Name="btnClearDocumentationList" Content="Clear list" ToolTip="Clear items in the document list" Width='100' Margin="5,0,0,0" Visibility="Collapsed" />
-        <Button Name="btnAddToDocumentationList" Content="Add to list" ToolTip="Add selected items to the list to document later" Width='100' Margin="5,0,0,0" Visibility="Collapsed" />
-        <Button Name="btnStartDocumentation" Content="Start" ToolTip="Start docmentation" Width='100' Margin="5,0,0,0" />
-        <Button Name="btnClose" Content="Close" Width='100' Margin="5,0,0,0" />
-    </StackPanel>                
+
+    <Grid Grid.Row='1' >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+            <Button Name="btnExportSettingsForSilentExport" Content="Save" Width='100' Margin="5,0,0,0" ToolTip="Save settings for batch job" Visibility="Collapsed"/>
+        </StackPanel>
+
+        <StackPanel Name="spDocSubMenu" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column='1'>
+            <Button Name="btnClearDocumentationList" Content="Clear list" ToolTip="Clear items in the document list" Width='100' Margin="5,0,0,0" Visibility="Collapsed" />
+            <Button Name="btnAddToDocumentationList" Content="Add to list" ToolTip="Add selected items to the list to document later" Width='100' Margin="5,0,0,0" Visibility="Collapsed" />
+            <Button Name="btnStartDocumentation" Content="Start" ToolTip="Start docmentation" Width='100' Margin="5,0,0,0" />
+            <Button Name="btnClose" Content="Close" Width='100' Margin="5,0,0,0" />
+        </StackPanel>
+    </Grid>
 
 </Grid >    

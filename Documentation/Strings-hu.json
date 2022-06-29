@@ -1,4 +1,4 @@
-﻿{
+{
     "OutlookAppConfig":  {
                              "DataProtectionConfiguration":  {
                                                                  "header":  "Adatvédelmi konfiguráció"
@@ -329,7 +329,7 @@
                      "contentCaching":  "Tartalom-gyorsítótárazás",
                      "controlPanelAndSettings":  "Vezérlőpult és Gépház",
                      "credentialGuard":  "Microsoft Defender Credential Guard",
-                     "customCompliance":  "Egyéni megfelelőség",
+                     "customCompliance":  "Egyéni megfelelőség (előzetes verzió)",
                      "customCompliancePreview":  "Egyéni megfelelőség (előzetes verzió)",
                      "customConfiguration":  "Egyéni konfigurációs profil",
                      "customOMASettings":  "Egyéni OMA-URI beállítások",
@@ -786,6 +786,7 @@
                                      "SurfaceHub":  {
                                                         "friendlyNameRequired":  "Felhasználóbarát név megadása kötelező!",
                                                         "pwdRequired":  "Kötelező megadni a jelszót.",
+                                                        "pwdValidFormat":  "Nem sikerült frissíteni a jelszót. Az új jelszóként megadott érték nem felel meg a tartomány hosszúsági vagy összetettségi követelményeinek.",
                                                         "upnRequired":  "Az eszközfiók megadása kötelező",
                                                         "upnValidFormat":  "Az értékek betűket (a-z, A-Z), számokat (0-9) és kötőjeleket tartalmazhatnak. Az értékek nem tartalmazhatnak üres szóközt."
                                                     }
@@ -920,8 +921,8 @@
                       "assignedDevicesResourceAccountStatusBarMessage":  "Ez a tábla csak a profilhoz hozzárendelt Surface Hub 2 eszközöket sorolja fel.",
                       "assigningDescription":  "A(z) {0} hozzárendeléseinek frissítése folyamatban van.",
                       "assigningTitle":  "Az AutoPilot-profil hozzárendeléseinek frissítése folyamatban van.",
-                      "autoremediationContext":  "We've detected a hardware change on this device. We're trying to automatically register the new hardware. You don't need to do anything now; the status will be updated at the next check in with the result. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Learn more about resetting the profile.</a>",
-                      "autoremediationTitle":  "Device {0} has a fix pending",
+                      "autoremediationContext":  "Hardverváltozást észleltünk az eszközön. Megpróbáljuk automatikusan regisztrálni az új hardvert. Most nincs teendője, az állapot a következő bejelentkezéskor frissül az eredménnyel. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">További információ a profil alaphelyzetbe állításáról.</a>",
+                      "autoremediationTitle":  "A(z) {0}. eszköz javítása függőben van",
                       "cannotDeleteMessage":  "A profil csoportokhoz van hozzárendelve. Minden csoport a profilhoz való hozzárendelését meg kell szüntetni ahhoz, hogy azt törölni lehessen.",
                       "cannotDeleteTitle":  "Nem törölhető: {0}",
                       "createdDateTime":  "Létrehozva",
@@ -944,8 +945,8 @@
                       "invalidProfileNameMessage":  "A(z) {0} karakter használata nem engedélyezett",
                       "joinTypeLabel":  "Csatlakozás az Azure AD-hez másként",
                       "lastModifiedDateTime":  "Utolsó módosítás:",
-                      "manualRemediationContext":  "We've detected a hardware change on this device. It won't automatically receive an Autopilot profile when it's reset unless you register the device again. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Learn more about resetting the profile.</a>",
-                      "manualRemediationTitle":  "Device {0} needs your attention",
+                      "manualRemediationContext":  "Hardverváltozást észleltünk az eszközön. Alaphelyzetbe állításakor nem kap automatikusan Autopilot-profilt, hacsak nem regisztrálja újra az eszközt. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">További információ a profil alaphelyzetbe állításáról.</a>",
+                      "manualRemediationTitle":  "A(z) {0}. eszköz beavatkozást igényel",
                       "name":  "Név",
                       "noAutopilotProfile":  "Nincsenek AutoPilot-profilok",
                       "notEnoughPermissionAssignedError":  "Nem rendelkezik a megfelelő engedélyekkel a profil egy vagy több kiválasztott csoporthoz történő hozzárendeléséhez. Forduljon a rendszergazdához.",
@@ -958,6 +959,13 @@
                       "windowsPCCommandMenu":  "Windows rendszerű számítógép",
                       "directoryServiceLabel":  "Csatlakozás az Azure AD-hez mint:"
                   },
+    "RoleAssignment":  {
+                           "RoleAssignmentAdmin":  "Adminisztrátori csoportok",
+                           "RoleAssignmentAdminDesc":  "Az adminisztrátori csoportnak azon rendszergazdák a felhasználói, akik hozzá vannak rendelve ehhez a szerepkörhöz",
+                           "rolesMenuTitle":  "Endpoint Manager szerepkörök",
+                           "RoleAssignmentScopeDesc":  "A szerepkör-hozzárendelésben szereplő rendszergazdák megcélozhatják a szabályzatokat, az alkalmazásokat és a távoli feladatokat",
+                           "RoleAssignmentScope":  "Hatókörbe tartozó csoportok"
+                       },
     "MinimumOperatingSystem":  {
                                    "Android":  {
                                                    "v10":  "Android 10.0",
@@ -983,6 +991,7 @@
                                                "v12":  "iOS 12.0",
                                                "v13":  "iOS 13.0",
                                                "v14":  "iOS 14.0",
+                                               "v15":  "iOS 15.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -1178,6 +1187,61 @@
                              "includeAllDevicesVirtualGroup":  "Belefoglalva",
                              "includeAllUsersVirtualGroup":  "Belefoglalva"
                          },
+    "CoManagementAuthority":  {
+                                  "Confirmation":  {
+                                                       "deleteMessage":  "Az érintett felhasználók a következő legmagasabb prioritású hozzárendelt közös felügyeleti lap korlátozásai alá tartoznak, vagy ha más közös felügyeleti lap nincs hozzárendelve, az alapértelmezett közös felügyeleti lap korlátozásai alá tartoznak.",
+                                                       "deleteTitle":  "A(z) {0} a közös felügyeleti hatóság konfigurált szabályzatának megjelenített neve"
+                                                   },
+                                  "Grid":  {
+                                               "description":  "A közös felügyeleti lap az eszköz kezdeti telepítésekor és az első felhasználói bejelentkezés alkalmával jelenik meg. Ha engedélyezve van, a felhasználók nyomon követhetik az eszközhöz hozzárendelt alkalmazások és profilok konfigurációs folyamatát.",
+                                               "hyperlink":  "https://go.microsoft.com/fwlink/?linkid=86016",
+                                               "label":  "Közös felügyeleti hatóság"
+                                           },
+                                  "Header":  {
+                                                 "description":  "A közös felügyeleti lap az eszköz kezdeti telepítésekor és az első felhasználói bejelentkezés alkalmával jelenik meg. Ha engedélyezve van, a felhasználók nyomon követhetik az eszközhöz hozzárendelt alkalmazások és profilok konfigurációs folyamatát."
+                                             },
+                                  "Main":  {
+                                               "title":  "Közös felügyeleti hatóság"
+                                           },
+                                  "MessageSaved":  {
+                                                       "body":  "A közös felügyeleti hatóság szabályzata létrejött."
+                                                   },
+                                  "Notification":  {
+                                                       "createError":  "Hiba történt a közös felügyeleti hatóság {0} nevű szabályzatának létrehozása közben",
+                                                       "created":  "A közös felügyeleti hatóság ezen szabályzata nincs hozzárendelve egy felhasználóhoz sem.",
+                                                       "creating":  "A közös felügyeleti hatóság szabályzatának létrehozása",
+                                                       "creatingMessage":  "A közös felügyeleti hatóság {0} nevű szabályzatának létrehozása",
+                                                       "deleteError":  "Hiba történt a közös felügyeleti hatóság szabályzatának törlése közben",
+                                                       "deleted":  "A közös felügyeleti hatóság szabályzatának törlése megtörtént.",
+                                                       "deletedMessage":  "A közös felügyeleti hatóság {0} nevű szabályzata törölve.",
+                                                       "deleting":  "A közös felügyeleti hatóság szabályzatának törlése",
+                                                       "deletingMessage":  "A közös felügyeleti hatóság {0} nevű szabályzatának törlése",
+                                                       "fetchError":  "Hiba történt a közös felügyeleti hatóság szabályzatainak megjelenítése közben",
+                                                       "saved":  "A közös felügyeleti hatóság mentése megtörtént.",
+                                                       "savedMessage":  "A közös felügyeleti hatóság {0} nevű szabályzatának mentése sikeresen megtörtént.",
+                                                       "saving":  "A közös felügyeleti hatóság mentése",
+                                                       "savingMessage":  "A közös felügyeleti hatóság {0} nevű szabályzatának mentése"
+                                                   },
+                                  "Priority":  {
+                                                   "saveError":  "Hiba történt a közös felügyeleti hatóság prioritásainak mentése közben",
+                                                   "saved":  "A közös felügyeleti hatóság prioritásainak mentése sikeresen megtörtént."
+                                               },
+                                  "ReloadNotification":  {
+                                                             "description":  "Az ismételt próbálkozáshoz töltse be újra a közös felügyeleti hatóság szabályzatát.",
+                                                             "title":  "A közös felügyeleti hatóság panelének ismételt betöltése"
+                                                         },
+                                  "advancedProperty":  "Speciális",
+                                  "commandLineArgs":  "Ügyféltelepítési parancssori argumentumok.",
+                                  "deviceGroupOnlyMessage":  "A közös felügyeleti hatóság lapjának profiljai csak felhasználói csoportokhoz rendelhetők hozzá. A hozzárendelt eszközök nem fogják megjeleníteni a közös felügyeleti hatóság lapját.",
+                                  "enterArgument":  "Argumentum megadása",
+                                  "installAgent":  "Configuration Manager-ügynök automatikus telepítése",
+                                  "managedDeviceOwnership":  "Bírálja felül a közös felügyeleti szabályzatot, és használja az Intune-t minden számítási feladathoz.",
+                                  "noAssignmentMessage":  "Rendelje hozzá a közös felügyeleti hatóság szabályzatát legalább egy csoporthoz. Kattintson a Tulajdonságok elemre.",
+                                  "pageDescription":  "Közös felügyeleti hatóság profiljai",
+                                  "pageSetting":  "Közös felügyeleti hatóság beállítása",
+                                  "pageTitle":  "Közös felügyeleti hatóság",
+                                  "settingDescription":  "A közös felügyeleti beállítások határozzák meg, hogy ki birtokolja a számítási feladatokat."
+                              },
     "AppType":  {
                     "androidEnterpriseSystemApp":  "Android Enterprise-rendszeralkalmazás",
                     "androidForWorkApp":  "Felügyelt Google Play Áruházbeli alkalmazás",
@@ -1356,6 +1420,14 @@
                                                    "label":  "Hozzáférési követelmények újbóli ellenőrzése a megadott idő elteltével (perc inaktivitás után)\r\n\r\n",
                                                    "tooltip":  "Ha a szabályzattal felügyelt alkalmazás hosszabb ideig inaktív, mint a megadott inaktív percek száma, az alkalmazás az indítása után kérni fogja a hozzáférési követelmények (pl. PIN-kód, feltételes indítási beállítások) újbóli ellenőrzését."
                                                },
+                        "RequireClass3Biometrics":  {
+                                                        "label":  "Class 3 Biometrics (Android 9.0+)",
+                                                        "tooltip":  "For more information on class 3 biometrics refer to the documentation available <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">here</a>"
+                                                    },
+                        "RequirePinAfterBiometricChange":  {
+                                                               "label":  "Override Biometrics with PIN after biometric updates",
+                                                               "tooltip":  "If class 3 biometrics are supported by the device (more info <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>), when a change in biometrics is detected, a PIN prompt will override biometric prompts."
+                                                           },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "A csomag azonosítójának egyedinek kell lennie.",
                                                   "invalidPackageError":  "Érvénytelen csomagazonosító",
@@ -1454,6 +1526,8 @@
                       },
     "EnrollmentStatusScreen":  {
                                    "Apps":  {
+                                                "apps":  "alkalmazások",
+                                                "appsListName":  "Alkalmazáslista",
                                                 "managedApps":  "Felügyelt alkalmazások",
                                                 "noApps":  "Nincsenek alkalmazások",
                                                 "noAppsError":  "Hiba történt az alkalmazások beolvasásakor",
@@ -1692,7 +1766,8 @@
                                                       "windowsDomainJoin":  "Sok környezet használ helyszíni Active Directoryt (AD). Ha AD-tartományhoz csatlakoztatott eszközök az Azure AD-hez is társítva vannak, hibrid Azure AD-társított eszközöknek nevezik őket. A Windows Autopilot használatával regisztrálhat hibrid Azure AD-társított eszközöket az Intune-ba. A regisztrációhoz egy tartománycsatlakozási konfigurációs profilra lesz szüksége. A tartománycsatlakozási konfigurációs profil a helyszíni Active Directory-tartomány információit tartalmazza. Amikor az eszközök üzembe helyezés alatt állnak (általában offline állapotban), ez a profil üzembe helyezi az AD-tartomány adatait, hogy az eszközök tudják, melyik helyszíni tartományhoz kell csatlakozniuk. Ha nem hoz létre tartománycsatlakozási profilt, előfordulhat, hogy az eszközök üzembe helyezése sikertelen lesz.",
                                                       "windowsEditionUpgrade":  "A mobileszköz-felügyeleti (MDM-) megoldása részeként érdemes frissítenie a Windows 10/11-eszközeit. Például ha Windows 10/11 Professional-eszközöket kíván Windows 10/11 Enterprise verzióra frissíteni, vagy ha azt szeretné, hogy az eszköz kilépjen az S-módból. A Windows 10/11 S-módot a biztonság és a teljesítmény növelésére tervezték. Az Intune segítségével kiléptetheti az S-módból. Az S-módból való kiléptetés egyirányú. Ha egyszer már kiléptette az S-módból, nem térhet vissza a Windows 10/11 S-módhoz. Ez a funkció az alábbiakra vonatkozik: Windows 10 és újabb verziók, S-mód esetén Windows 10 1809-es vagy újabb verziók, Windows Holographic for Business. Ezek a funkciók elérhetők az Intune-ban, és a rendszergazda kezelheti őket. Az Intune konfigurációs profilokat használ e beállítások létrehozásához és a szervezet igényei szerinti testreszabásához. Ha hozzáadja ezeket a funkciókat egy profilhoz, a profilt leküldheti vagy üzembe helyezheti a szervezete Windows 10 vagy újabb rendszereket futtató eszközein. Ha üzembe helyezi a profilt, az Intune automatikusan frissíti az eszközöket, és kilép az S-módból.",
                                                       "windowsHealthMonitoring":  "A Microsoft gyűjthet eseményadatokat, és javaslatokat tehet a Windows-eszközei teljesítményének javítására. A végpontelemzés elemzi ezeket az adatokat, majd szoftvereket javasolhat, segíthet az indítási teljesítmény javításában, és kijavíthat gyakori támogatási problémákat. Ha engedélyezni szeretné az adatgyűjtést, az Intune-ban hozzon létre egy Windows-állapotmonitorozási eszközkonfigurációs profilt, majd helyezze üzembe a profilt az eszközein. Ezt a profilt használhatja a mobileszköz-felügyeleti (MDM-) megoldásának részeként a Windows-eszközei optimalizálásához.",
-                                                      "windowsIdentityProtection":  "Az Intune-nal lehetőség nyílik az eszközkonfigurációs profil használatára a Windows Hello for Business beállításainak Windows-eszközökön történő kezeléséhez. <br><br>Tudta? Érdemes felkeresnie a <a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\"> végpontbiztonsági</a> oldalt, ahol végponti biztonsági profilt vagy biztonsági alapkonfigurációs profilt hozhat létre a gyakori végpontvédelmi biztonsági funkciók konfigurálásához. <br><br>A végponti biztonsági profilok tömör, válogatott biztonsági sablonokat biztosítanak, például tűzfalat, BitLockert és víruskeresőt. A biztonsági alapkonfigurációs profilok a biztonsági szakértők által ajánlott, előre konfigurált beállításértékekkel rendelkező sablonok."
+                                                      "windowsIdentityProtection":  "Az Intune-nal lehetőség nyílik az eszközkonfigurációs profil használatára a Windows Hello for Business beállításainak Windows-eszközökön történő kezeléséhez. <br><br>Tudta? Érdemes felkeresnie a <a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\"> végpontbiztonsági</a> oldalt, ahol végponti biztonsági profilt vagy biztonsági alapkonfigurációs profilt hozhat létre a gyakori végpontvédelmi biztonsági funkciók konfigurálásához. <br><br>A végponti biztonsági profilok tömör, válogatott biztonsági sablonokat biztosítanak, például tűzfalat, BitLockert és víruskeresőt. A biztonsági alapkonfigurációs profilok a biztonsági szakértők által ajánlott, előre konfigurált beállításértékekkel rendelkező sablonok.",
+                                                      "wiredNetwork":  "Beállíthat egy vezetékes hálózatot, amelyhez a felhasználók hozzáférhetnek."
                                                   },
                            "TrustedCert":  {
                                                "uploadControlPlaceHolderText":  "Válasszon egy érvényes .cer fájlt."
@@ -1855,7 +1930,7 @@
                            "androidZebraMxConfigurationXmlName":  "MX-profil .xml-formátumban",
                            "anonymousIdentityPrivacyName":  "Névtelen identitás",
                            "any":  "Bármely",
-                           "anyDNSAddressesInList":  "Használja a következő DNS-kiszolgálókat a tartományok feloldásához (nem kötelező)",
+                           "anyDNSAddressesInList":  "Használja a következő DNS-kiszolgálókat a megadott tartományok feloldásához (nem kötelező)",
                            "anyDayOption":  "Bármelyik nap",
                            "anyEthernet":  "Bármely Ethernet",
                            "anywhereOption":  "Bárhol",
@@ -2831,10 +2906,10 @@
                            "connectAppBlockAutoLaunchDescription":  "Ezzel a beállítással letilthatja a Csatlakozás alkalmazás automatikus elindítását. Ha a beállítás le van tiltva, a felhasználók a Központ beállításaiban indíthatják el a Csatlakozás alkalmazást manuálisan.",
                            "connectAppBlockAutoLaunchName":  "Csatlakozás automatikus elindítása",
                            "connectIfNeeded":  "Szükség esetén kapcsolódás",
-                           "connectIfNeededDNSListDescription":  "Amikor konfigurálva van, a rendszer ezekkel a DNS-kiszolgálókkal oldja fel a listában szereplő tartományokat. Ha a tartomány nem oldható fel, VPN-kapcsolat jön létre.",
-                           "connectIfNeededDomainsDescription":  "Amikor egy felhasználó a listában szereplő tartományt ér el, a eszköz megpróbálja feloldani a tartományt a DNS segítségével. Ha a tartomány nem oldható fel, VPN-kapcsolat jön létre.",
+                           "connectIfNeededDNSListDescription":  "Adja meg a listában szereplő tartományokat feloldó DNS-kiszolgálók IP-címét (IP-címeit). Ez a beállítás csak a listában szereplő tartományokra vonatkozik. A tartományok és a DNS-kiszolgálók belső erőforrások, amelyek külső hálózatokon nem érhetők el. Ha tehát a tartomány nem oldható fel, akkor a VPN-kapcsolat igény szerint jön létre.",
+                           "connectIfNeededDomainsDescription":  "Amikor a felhasználók a listában szereplő tartományt elérik, a eszköz megpróbálja feloldani a tartományt a DNS segítségével. A tartományok olyan belső erőforrások, amelyeket a nyilvános DNS nem old fel. Ha tehát a tartomány nem oldható fel, vagyis nem fér hozzá a belső erőforrásokhoz, akkor a rendszer igény szerint VPN-kapcsolatot hoz létre.",
                            "connectIfNeededOption":  "Szükség esetén kapcsolódás",
-                           "connectOption":  "VPN-kapcsolat létesítése",
+                           "connectOption":  "VPN csatlakoztatása",
                            "connectionHeading":  "Kapcsolat",
                            "consumerFeaturesDescription":  "Ez a beállítás lehetővé teszi a rendszergazdának, hogy általában csak a fogyasztók számára elérhető felületeket kapcsoljon be. Ilyenek például a kezdőképernyőn megjelenő javaslatok, a tagsági értesítések, a kezdőélmény futtatása után megjelenő telepítési és átirányítási csempék.",
                            "consumerFeaturesName":  "Fogyasztói funkciók",
@@ -3888,6 +3963,7 @@
                            "gatekeeperAllowedAppSourceName":  "Alkalmazások ezen helyekről való letöltésének engedélyezése",
                            "gatekeeperBlockOverrideDescription":  "Annak megakadályozása, hogy a felhasználó ideiglenesen felülbírálja a Forgalomirányító beállítást a CTRL + kattintás billentyűkombinációval alkalmazás telepítése céljából.",
                            "gatekeeperBlockOverrideName":  "A felhasználók nem bírálhatják felül a Gatekeepert",
+                           "generalAvailabilityChannel":  "Általános rendelkezésre állási csatorna",
                            "generalNetworkSettingsHeader":  "Általános",
                            "genericLocalUsersOrGroupsName":  "Általános helyi felhasználók vagy csoportok",
                            "globalConfigurationsDescription":  "Az összes hálózati típusra alkalmazható Microsoft Defender-tűzfalbeállítások konfigurálása.",
@@ -3999,7 +4075,7 @@
                            "iPsecSecuredPacketExemptionName":  "IPsec-et használó csomagok mentessége rejtett üzemmód esetén",
                            "iPv4Option":  "IPv4",
                            "iPv6Option":  "IPv6",
-                           "iWantToDescription":  "Válassza ki a szabállyal való egyezés esetén végrehajtandó műveletet.",
+                           "iWantToDescription":  "A VPN csatlakoztatása, a VPN leválasztása és a Figyelmen kívül hagyás műveletek akkor lépnek életbe, amikor egy felhasználó csatlakozik egy hálózathoz. A műveletek továbbra is érvényben maradnak, amíg a felhasználó kapcsolódik a hálózathoz. Az Egyes kapcsolódási kísérletek kiértékelése művelet a művelethez megadott tartományokhoz tartozó összes kapcsolatra vonatkozik, de csak akkor, ha a VPN még nincs csatlakoztatva.",
                            "iWantToName":  "A következő műveletet szeretném végrehajtani",
                            "iconSortOrderAlphabetic":  "Ábécérend",
                            "iconSortOrderDescription":  "",
@@ -4924,6 +5000,7 @@
                            "mustBeAValidProductKey":  "Érvényes termékkulcsnak kell lennie (formátum: 12345-22345-32345-42345-52345)",
                            "mustBeAValidTeamId":  "Érvényes csoportazonosítónak kell lennie",
                            "mustBeAValidUrl":  "Érvényes URL-címnek kell lennie",
+                           "mustBeAValidUrlNoProtocol":  "Érvényes URL-címnek vagy IP-címnek kell lennie, a protokoll (http vagy https) megadása nélkül",
                            "mustBeAValidUrlOrIP":  "Érvényes URL-címnek vagy IP-címnek kell lennie",
                            "mustBeAValidUrlWithIdParameter":  "Érvényes, id lekérdezési paraméterrel rendelkező URI azonosítónak kell lennie. Példa: https://play.google.com/store/apps/details?id=com.microsoft.test2",
                            "mustBeAWellFormedXMLString":  "Jól formázott XML-sztringnek kell lennie",
@@ -4937,11 +5014,14 @@
                            "mustBeValidBuildVersionFormat":  "Érvényes buildszám-formátumnak kell lennie. Példa: 18A391, 16G1114 stb.",
                            "mustBeValidDNSSuffix":  "Érvényes DNS-utótagnak kell lennie. Példa: itgproxy.com",
                            "mustBeValidDateFormat":  "Érvényes dátumformátumnak kell lennie (ÉÉÉÉ-HH-NN). Példa: 2016-10-01, 2016-10-31, stb.",
+                           "mustBeValidDomain":  "Érvényes tartománynak kell lennie. Példa: contoso.com",
                            "mustBeValidEmail":  "Érvényes e-mail-címnek kell lennie. Példa: felhasznalonev@example.com, stb.",
                            "mustBeValidEmailList":  "Érvényes e-mail-listának kell lennie, a következő formátumban: felhasznalo1@gmail.com; felhasznaló2@gmail.com.",
                            "mustBeValidFloatingPoint":  "Érvényes lebegőpontos számnak kell lennie. Példa: 1,0; 4,3; stb.",
                            "mustBeValidGuid":  "Érvényes UUID értéknek kell lennie. Például: 782AFCFC-7CAA-436C-8BF0-78CD0FFBD4AF stb.",
                            "mustBeValidHost":  "Érvényes gazdagépnek kell lennie. Példa: www.host.com stb.",
+                           "mustBeValidHttpURL":  "Érvényes HTTP vagy HTTPS URL-címnek kell lennie. Példa: https://www.contoso.com",
+                           "mustBeValidIpAddress":  "Érvényes IP-címnek kell lennie. Példa: 4.3.6.0",
                            "mustBeValidKaiserWifiFormat":  "A formátum nem megfelelő. Példa felhasználói formátumra: abcd{{WifiMacAddress}}, például jelszóformátumra: abcd{{WifiMacAddress}}{{PreSharedKey}}",
                            "mustBeValidMonthDayDateFormat":  "Érvényes dátumformátumnak (HH/NN) kell lennie. Példa: 01/31, 02/28 stb.",
                            "mustBeValidObjectIdentifierFormat":  "Érvényes objektumazonosító-formátumnak kell lennie. Példa: 4.3.6.0, 7.01.4 stb.",
@@ -5107,7 +5187,7 @@
                            "omaBase64Name":  "Tanúsítványfájl",
                            "onDemandDefaultRule":  "Alapértelmezett szabály: Nincs művelet",
                            "onDemandRuleName":  "Szabály: {0}",
-                           "onDemandRulesDescription":  "Amikor az iOS-eszközök megpróbálnak hálózati kapcsolatot létesíteni, bizonyos feltételek, például a Wifi SSID vagy a tartománynév, összevetésre kerülnek ezekkel a szabályokkal. Egyezés esetén az eszközön a megfelelő műveletre kerül sor.",
+                           "onDemandRulesDescription":  "Ezek a beállítások szabály létrehozására szolgálnak. Ha egyezik a szabállyal, akkor az eszköz végrehajtja az Ön által választott műveletet, például létrehoz egy igény szerinti VPN-kapcsolatot.",
                            "onDemandRulesExample":  "példa: VPN-kapcsolat bontása a céges Wi-Fi-hálózaton",
                            "onDemandRulesInfo":  "További információ az igény szerinti szabályok létrehozásáról.",
                            "onDemandRulesName":  "Igény szerinti használati szabályok",
@@ -5371,9 +5451,9 @@
                            "privateShieldedSummaryLabel":  "Védett (magánhálózatok)",
                            "privateStealthModeSummaryLabel":  "Rejtett üzemmód (magánhálózatok)",
                            "privateUnicastResponsesToMulticastBroadcastsSummaryLabel":  "Egyedi küldésű válaszok a csoportos küldésű szórásokra (magánhálózatok)",
-                           "probeUrlOptionalDescription":  "Ennek egy HTTP vagy HTTPS (előnyben részesített) URL-címnek kell lennie. A rendszer minden olyan esetben tesztet végez, amikor a szabály tartománylistájában szereplő tartományt próbálnak elérni. Ha a teszt sikertelen, mert az URL elérhetetlen, vagy nem válaszol 200-as HTTP státuszkóddal, a VPN-kapcsolat létrejön.",
-                           "probeUrlOptionalExample":  "példa: rosszURL.com",
-                           "probeUrlOptionalName":  "A VPN-hez való csatlakozás kényszerítése, ha ez az URL-cím nem érhető el.",
+                           "probeUrlOptionalDescription":  "Ez az URL-cím tesztelésre szolgál, és segítségével meghatározható, hogy az eszköz külső hálózaton van-e. Az URL-t minden alkalommal megvizsgálja a rendszer, amikor a felhasználó megpróbál elérni egy tartományt a tartományok listáján. Ha a teszt sikertelen, mert az URL elérhetetlen, vagy nem ad vissza 200-as HTTP állapotkódot, akkor VPN-kapcsolat jön létre. Adja meg például a https://corp.contoso.com/internalprobe címet, amely csak akkor érhető el, ha az eszköz csatlakozik a belső hálózathoz.",
+                           "probeUrlOptionalExample":  "például https://corp.contoso.com/internalprobe",
+                           "probeUrlOptionalName":  "Adja meg a HTTP vagy HTTPS állapotteszt URL-címét.",
                            "processesColumn":  "Folyamatok",
                            "processesColumnExamples":  "Példa: %ProgramFiles%\\elérésiút\\sajátalkalmazás.exe",
                            "processesToExcludeName":  "A vizsgálatokból és a valós idejű védelemből kizárandó folyamatok",
@@ -5514,6 +5594,8 @@
                            "requiredPasswordComplexityName":  "Jelszó bonyolultsága",
                            "requiredPasswordTypeDescription":  "A kötelező jelszó típusának megadása.",
                            "requiredPasswordTypeName":  "Kötelező jelszó típusa",
+                           "requiredPasswordUnlockDailyOption":  "24 órával az utolsó PIN-kóddal, jelszóval vagy mintával elvégzett feloldás után",
+                           "requiredPasswordUnlockName":  "Kötelező feloldási gyakoriság",
                            "requiredURLStringProbeName":  "Kapcsolódás előtti teszt URL-címe",
                            "resetToDefaultOption":  "Visszaállítás alapértelmezettre",
                            "resourcePath":  "Erőforrás elérési útja",
@@ -5533,7 +5615,6 @@
                            "restrictedAppsName":  "Korlátozott alkalmazások",
                            "restrictedSitesSecurityLevelDescription":  "Magas biztonsági szint kikényszerítése korlátozott webhelyek esetén.",
                            "restrictedSitesSecurityLevelName":  "Magas biztonsági szint korlátozott webhelyek esetén",
-                           "retailChannel":  "Kiskereskedelmi csatorna",
                            "revokeEncryptionKeysOnUnEnrollDescription":  "A titkosítási kulcsok visszavonása az eszköz regisztrációjának törlésekor (javasolt érték: Igen).",
                            "revokeEncryptionKeysOnUnEnrollName":  "Titkosítási kulcsok visszavonása az eszközregisztráció törlésekor",
                            "roleAndRealmDescription":  "Szerepkör és tartomány szállító által előírt értékpárjai.",
@@ -6974,7 +7055,7 @@
                            "wipOption":  "WIP társítása ehhez a kapcsolathoz",
                            "wirelessOption":  "Vezeték nélküli hálózat",
                            "with":  "Annak kiválasztása, hogy csatlakozni kell-e",
-                           "withDescription":  "Ez történik minden csatlakozási kísérletnél",
+                           "withDescription":  "Ha nincs meglévő VPN-kapcsolat, akkor minden egyes megadott tartományhoz való csatlakozási kísérletnél döntse el, hogy a felhasználóknak csatlakozniuk kell-e a VPN-hez, vagy soha ne csatlakozzanak a VPN-hez. A kiválasztott művelet minden egyes csatlakozási kísérlet esetén megtörténik.",
                            "workFoldersURLDescription":  "A Munkahelyi mappákkal munkafájljait bármelyik eszközéről elérheti, még akkor is, ha offline állapotban van.",
                            "workFoldersURLName":  "Munkamappák URL-címe",
                            "workProfileAllowAppInstallsFromUnknownSourcesInWorkProfileName":  "Ismeretlen forrásból származó alkalmazások munkahelyi profilban történő telepítésének engedélyezése",
@@ -7075,6 +7156,7 @@
                            "add":  "Hozzáadás",
                            "addAppConfiguration":  "Alkalmazáskonfiguráció hozzáadása",
                            "addApps":  "Alkalmazások felvétele",
+                           "addCondition":  "Add condition",
                            "addConfigCommandLabel":  "Konfiguráció hozzáadása",
                            "addPolicyBladeTitle":  "Házirend hozzáadása",
                            "addPolicyError":  "Nem sikerült hozzáadni a(z) {0} szabályzatot",
@@ -7135,6 +7217,9 @@
                            "appsCountSelectorDisplayTextPlural":  "{0} alkalmazás kijelölve",
                            "appsCountSelectorDisplayTextSingular":  "{0} alkalmazás kijelölve",
                            "appsInAndroidWorkProfile":  "Androidos munkahelyi profilban lévő alkalmazások",
+                           "appsOnAndroidEnterpriseDedicatedDevicesWithAzureAdSharedMode":  "Alkalmazások Android Enterprise dedikált eszközökön Azure AD megosztott móddal​",
+                           "appsOnAndroidOpenSourceProjectUserAssociated":  "Felhasználókhoz társított AOSP-eszközökön futó alkalmazások",
+                           "appsOnAndroidOpenSourceProjectUserless":  "Alkalmazások felhasználó nélküli AOSP-eszközökön",
                            "appsOnIntuneManagedDevices":  "Az Intune által felügyelt eszközökön lévő alkalmazások",
                            "appsOnUnmanagedDevices":  "A nem felügyelt eszközökön lévő alkalmazások",
                            "appsSelectorLabel":  "Alkalmazások",
@@ -7240,6 +7325,7 @@
                            "deviceConditionsInfoParagraph2":  "Hasonló eszközalapú beállítások konfigurálhatók a regisztrált eszközök esetében.",
                            "deviceConditionsInfoParagraph2LinkText":  "További információ a regisztrált eszközök eszközmegfelelőségi beállításainak konfigurálásáról.",
                            "deviceId":  "Eszközazonosító",
+                           "deviceLockComplexityValidationFailureNotes":  "<p><b>Megjegyzések:</b></p>\r\n<ul type=\"disc\">\r\n    <li>Az eszköz zárolásához a következő jelszóbonyolultságra lehet szükség: ALACSONY, KÖZEPES vagy MAGAS, Android 11+ rendszerre célzottan. A 10-es vagy korábbi Android rendszert futtató eszközök esetében az alacsony/közepes/magas bonyolultság beállításakor az alacsony bonyolultság beállítás esetében várt viselkedés lesz az alapértelmezett.</li>\r\n    <li>A lenti jelszódefiníciók esetében fenntartjuk a változtatások jogát. A különböző jelszóbonyolultsági szintek legfrissebb definícióit itt találja: <a href='https://developer.android.com/reference/android/app/admin/DevicePolicyManager#getPasswordComplexity%28%29'>DevicePolicyManager|Android Developers</a>.</li>\r\n</ul>\r\n\r\n<p><b>Alacsony</b></p>\r\n<ul type=\"disc\">\r\n    <li>A jelszó lehet minta vagy PIN-kód, ismétlődő (4444) vagy rendezett (1234, 4321, 2468) szekvenciákkal.</li>\r\n</ul>\r\n\r\n<p><b>Közepes</b></p>\r\n<ul type=\"disc\">\r\n    <li>PIN-kód, amely nem rendelkezik ismétlődő (4444) vagy rendezett (1234, 4321, 2468) szekvenciákkal, és legalább 4 karakter hosszú</li>\r\n    <li>Alfabetikus, legalább 4 karakter hosszú jelszavak</li>\r\n    <li>Alfanumerikus, legalább 4 karakter hosszú jelszavak</li>\r\n</ul>\r\n\r\n<p><b>Magas</b></p>\r\n<ul type=\"disc\">\r\n    <li>PIN-kód, amely nem rendelkezik ismétlődő (4444) vagy rendezett (1234, 4321, 2468) szekvenciákkal, és legalább 8 karakter hosszú</li>\r\n    <li>Alfabetikus, legalább 6 karakter hosszú jelszavak</li>\r\n    <li>Alfanumerikus, legalább 6 karakter hosszú jelszavak</li>\r\n</ul>\r\n<p></p>",
                            "deviceLockedOpenFilesOptionsText":  "Amikor az eszköz zárolva van és vannak megnyitott fájlok",
                            "deviceLockedOptionText":  "Amikor az eszköz zárolva van",
                            "deviceManufacturer":  "Eszköz gyártója",
@@ -7356,6 +7442,7 @@
                            "guidedTemplate2":  "Megkérdezzük, hogy melyik védelmi szintet szeretné üzembe helyezni a felhasználók számára. További információért tekintse meg a következőt: <a href = \"https://go.microsoft.com/fwlink/?linkid=2131582 \">Adatvédelmi keretrendszer alkalmazásvédelmi szabályzatokkal. </a>",
                            "guidediOSLabel":  "iOS-es alkalmazásvédelem",
                            "hardwareBackedKey":  "Hardveralapú kulcs",
+                           "healthCheck":  "Health Checks",
                            "helpAndSupport":  "Súgó és támogatás",
                            "hideOverrides":  "Felülbírálások elrejtése",
                            "highDataProtectionGuidedString":  "Magas szintű adatvédelem – a bővített adatvédelemben meghatározott beállítások kiterjesztése az összetettebb hozzáférési követelmények beállításainak (például az egyszerű PIN-kód letiltása) és az adatvédelmi beállítások (például a külső féltől származó billentyűzetek letiltása) megadásával.",
@@ -7468,6 +7555,7 @@
                            "overview":  "Áttekintés",
                            "packageId":  "Csomagazonosító",
                            "pendingDeleteContentStateText":  "Törlés...",
+                           "photoLibrary":  "Fotókönyvtár",
                            "pinCharSettingTooltip":  "A numerikus PIN-kód csak numerikus karaktereket tartalmazhat. \r\n \r\nA PIN-kódnak a következők mindegyikét tartalmaznia kell: alfanumerikus karakterek és engedélyezett szimbólumok.",
                            "pinToDashboard":  "Dummy string, don't translate",
                            "platformColumnLabel":  "Platform",
@@ -7537,7 +7625,7 @@
                            "reporting":  "Jelentéskészítés",
                            "reports":  "Jelentések",
                            "require":  "Kötelező",
-                           "requireDeviceLockOnApps":  "Require device lock",
+                           "requireDeviceLockComplexityOnApps":  "Eszközzárolás szükséges",
                            "requireThreatScanOnApps":  "Kártevők keresésének megkövetelése az alkalmazásokban",
                            "requiredField":  "Ez a mező nem hagyható üresen",
                            "requiredSafetyNetEvaluationType":  "A kötelező SafetyNet-értékelés típusa",
@@ -7913,9 +8001,9 @@
                            "selectorLabel":  "Észlelési szabályok"
                        },
     "PolicyType":  {
-                       "AttackSurfaceReductionRules":  {
-                                                           "configMgr":  "Támadásifelület-csökkentési szabályok (ConfigMgr)"
-                                                       },
+                       "EdgeSmartScreenSettings":  {
+                                                       "description":  "Microsoft Edge alkalmazás által ajánlott SmartScreen-beállítások: Windows 10 a felhőkonfigurációs sablonban. https://aka.ms/CloudConfigGuide"
+                                                   },
                        "EndpointDetectionandResponse":  {
                                                             "mDE":  "Végpontészlelés és -válasz"
                                                         },
@@ -7945,7 +8033,7 @@
                                                         "mDMSecurityBaseline1810PreviewBeta":  "Előzetes verzió: MDM biztonsági alapkonfiguráció Windows 10-es rendszerhez 2018 október (bétaverzió)",
                                                         "mDMSecurityBaseline1906":  "MDM biztonsági alapkonfiguráció Windows 10-es és újabb rendszerekhez 2019 május",
                                                         "mDMSecurityBaseline2004":  "MDM biztonsági alapkonfiguráció Windows 10-es és újabb rendszerekhez 2020 augusztus",
-                                                        "mDMSecurityBaseline2101":  "MDM biztonsági alapkonfiguráció Windows 10-es és újabb rendszerekhez 2020 december",
+                                                        "mDMSecurityBaseline2101":  "MDM biztonsági alapkonfiguráció Windows 10 és újabb rendszerekhez – 2020. december",
                                                         "macOSAntivirus":  "Vírusvédelem",
                                                         "macOSDiskEncryption":  "FileVault",
                                                         "macOSFirewall":  "macOS-tűzfal",
@@ -7964,13 +8052,20 @@
                        "FirewallRules":  {
                                              "mDE":  "Microsoft Defender-tűzfalszabályok"
                                          },
+                       "OneDriveKnownFolderMove":  {
+                                                       "description":  "A OneDrive ismert mappaáthelyezési beállításai: Windows 10 a felhőkonfigurációs sablonban. https://aka.ms/CloudConfigGuide"
+                                                   },
+                       "accountProtection":  "Fiókvédelem",
                        "administrativeTemplates":  "Felügyeleti sablonok",
                        "androidCompliancePolicy":  "Androidos megfelelőségi szabályzat",
                        "aospDeviceOwnerCompliancePolicy":  "Androidos (AOSP) megfelelőségi szabályzat",
                        "applicationControl":  "Alkalmazásfelügyelet",
+                       "attackSurfaceReductionRules":  "Támadási felület csökkentésére szolgáló szabályok",
+                       "bitlocker":  "BitLocker",
                        "custom":  "Egyéni",
                        "deliveryOptimization":  "Kézbesítésoptimalizálás",
                        "derivedPersonalIdentityVerificationCredential":  "Származtatott hitelesítő adat",
+                       "deviceControl":  "Eszközvezérlés",
                        "deviceFeatures":  "Eszközfunkciók",
                        "deviceFirmwareConfigurationInterface":  "Device Firmware Configuration Interface",
                        "deviceLock":  "Eszközzárolás",
@@ -7990,6 +8085,7 @@
                        "identityProtection":  "Identitásvédelem",
                        "iosCompliancePolicy":  "iOS-es megfelelőségi szabályzat",
                        "kiosk":  "Kioszkmód",
+                       "localUsersAndGroups":  "Felhasználói csoporttagság szerkesztése",
                        "macCompliancePolicy":  "Mac-es megfelelőségi szabályzat",
                        "microsoftDefenderAntivirus":  "Microsoft Defender víruskereső",
                        "microsoftDefenderAntivirusexclusions":  "Microsoft Defender víruskereső – kizárások",
@@ -8112,7 +8208,7 @@
     "AzureIAM":  {
                      "AdrsUserActionSelectionWarning":  {
                                                             "conditions":  "Az eszköz regisztrációját igénylő feltételek nem érhetők el az „Eszközök regisztrálása vagy csatlakoztatása” felhasználói művelettel.",
-                                                            "message":  "Csak a Többtényezős hitelesítés megkövetelése beállítás használható az Eszközök regisztrálása vagy csatlakoztatása nevű felhasználói művelethez létrehozott szabályzatokban.{0}"
+                                                            "message":  "Csak a „Többtényezős hitelesítés megkövetelése“ beállítás használható az „Eszközök regisztrálása vagy csatlakoztatása“ nevű felhasználói művelethez létrehozott szabályzatokban.{0}"
                                                         },
                      "AuthContext":  {
                                          "Delete":  {
@@ -8144,11 +8240,12 @@
                                                         "selected":  "Tartalmazza a hitelesítési környezetet"
                                                     },
                                          "addNewStepUp":  "Új hitelesítési környezet",
+                                         "bannerText":  "Saját hitelesítési környezeti értékek és feltételes hozzáférési szabályzatok létrehozása a prémium szintű Azure AD-vel",
                                          "checkBoxInfo":  "Adja meg azokat a hitelesítési környezeteket, amelyekre érvényes lesz a szabályzat",
                                          "configure":  "Hitelesítési környezetek konfigurálása",
                                          "createCA":  "Feltételes hozzáférési szabályzatok hozzárendelése a hitelesítési környezethez",
                                          "dataGrid":  "Hitelesítési környezetek listája",
-                                         "deleteFailedByReference":  "You cannot delete this authentication context because it is being referenced by CA policies.",
+                                         "deleteFailedByReference":  "Ez a hitelesítési környezet nem törölhető, mert hitelesítésszolgáltatói házirendek hivatkoznak rá.",
                                          "description":  "Leírás",
                                          "documentation":  "Dokumentáció",
                                          "getStarted":  "Első lépések",
@@ -8166,49 +8263,34 @@
                      "AuthenticationStrength":  {
                                                     "Mode":  {
                                                                  "deviceBasedPush":  "Microsoft Authenticator (telefonos bejelentkezés)",
-                                                                 "deviceBasedPushFido2X509Certificate":  "Microsoft Authenticator (telefonos bejelentkezés) + Fido 2 + tanúsítványalapú hitelesítés",
-                                                                 "deviceBasedPushX509CertificateSingleFactor":  "Microsoft Authenticator (telefonos bejelentkezés) + Fido 2 + tanúsítványalapú hitelesítés (egytényezős)",
                                                                  "email":  "Egyszer használható hitelesítő kód küldése e-mailben",
-                                                                 "emailOtp":  "Egyszer használható hitelesítő kód küldése e-mailben",
                                                                  "federatedMultiFactor":  "Összevont többtényezős",
                                                                  "federatedSingleFactor":  "Összevont egytényezős",
-                                                                 "federatedSingleFactorFederatedMultiFactor":  "Összevont egytényezős + összevont többtényezős",
-                                                                 "fido2":  "FIDO 2 biztonsági kulcs",
-                                                                 "fido2X509CertificateSingleFactor":  "FIDO 2 biztonsági kulcs + tanúsítványalapú hitelesítés (egytényezős)",
+                                                                 "fido2":  "FIDO2 alapú biztonsági kulcs",
                                                                  "hardwareOath":  "Hardveres OATH-tokenek",
-                                                                 "hardwareOathEmail":  "Hardveres OATH-tokenek és egyszer használható hitelesítő kód küldése e-mailben",
-                                                                 "hardwareOathX509CertificateSingleFactor":  "Hardveres OATH-tokenek és tanúsítványalapú hitelesítés (egytényezős)",
-                                                                 "microsoftAuthenticatorPSIX509CertificateSingleFactor":  "Microsoft Authenticator (telefonos bejelentkezés) + tanúsítványalapú hitelesítés (egytényezős)",
-                                                                 "microsoftAuthenticatorPsi":  "Microsoft Authenticator (telefonos bejelentkezés)",
+                                                                 "hardwareOathEmail":  "Hardveres OATH-token + egyszer használható hitelesítő kód küldése e-mailben",
+                                                                 "hardwareOathFederatedSingleFactor":  "Összevont egytényezős + hardveres OATH-token",
                                                                  "microsoftAuthenticatorPush":  "Microsoft Authenticator (leküldéses értesítés)",
                                                                  "microsoftAuthenticatorPushEmail":  "Microsoft Authenticator (leküldéses értesítés) és egyszer használható hitelesítő kód küldése e-mailben",
-                                                                 "microsoftAuthenticatorPushX509CertificateSingleFactor":  "Microsoft Authenticator (leküldéses értesítés) + tanúsítványalapú hitelesítés (egytényezős)",
+                                                                 "microsoftAuthenticatorPushFederatedSingleFactor":  "Összevont egytényezős + Microsoft Authenticator (leküldéses értesítés)",
                                                                  "none":  "Egyik sem",
                                                                  "password":  "Jelszó",
-                                                                 "passwordDeviceBasedPush":  "Jelszó + Microsoft Authenticator (telefonos bejelentkezés)",
-                                                                 "passwordFido2":  "Jelszó + FIDO 2 biztonsági kulcs",
-                                                                 "passwordHardwareOath":  "Jelszó és hardveres OATH-tokenek",
-                                                                 "passwordMicrosoftAuthenticatorPSI":  "Jelszó + Microsoft Authenticator (telefonos bejelentkezés)",
+                                                                 "passwordHardwareOath":  "Jelszó + hardveres OATH-token",
                                                                  "passwordMicrosoftAuthenticatorPush":  "Jelszó + Microsoft Authenticator (leküldéses értesítés)",
                                                                  "passwordSms":  "Jelszó + SMS",
-                                                                 "passwordSoftwareOath":  "Jelszó és szoftveres OATH-tokenek",
-                                                                 "passwordTemporaryAccessPassMultiUse":  "Jelszó + ideiglenes hozzáférési kód (többször használatos)",
-                                                                 "passwordTemporaryAccessPassOneTime":  "Jelszó + ideiglenes hozzáférési kód (egyszer használatos)",
+                                                                 "passwordSoftwareOath":  "Jelszó + szoftveres OATH-token",
                                                                  "passwordVoice":  "Jelszó + hanghívás",
                                                                  "sms":  "SMS",
                                                                  "smsEmail":  "SMS és egyszer használható hitelesítő kód küldése e-mailben",
-                                                                 "smsSignIn":  "SMS alapú bejelentkezés",
-                                                                 "smsX509CertificateSingleFactor":  "SMS + tanúsítványalapú hitelesítés (egytényezős)",
+                                                                 "smsFederatedSingleFactor":  "Összevont egytényezős + SMS",
                                                                  "softwareOath":  "Szoftveres OATH-tokenek",
-                                                                 "softwareOathEmail":  "Szoftveres OATH-tokenek és egyszer használható hitelesítő kód küldése e-mailben",
-                                                                 "softwareOathX509CertificateSingleFactor":  "Szoftveres OATH-tokenek és tanúsítványalapú hitelesítés (egytényezős)",
+                                                                 "softwareOathEmail":  "Szoftveres OATH-token + egyszer használható hitelesítő kód küldése e-mailben",
+                                                                 "softwareOathFederatedSingleFactor":  "Összevont egytényezős + szoftveres OATH-token",
                                                                  "temporaryAccessPassMultiUse":  "Ideiglenes hozzáférési kód (többször használatos)",
-                                                                 "temporaryAccessPassMultiUseX509CertificateSingleFactor":  "Ideiglenes hozzáférési kód (többször használatos) + tanúsítványalapú hitelesítés (egytényezős)",
                                                                  "temporaryAccessPassOneTime":  "Ideiglenes hozzáférési kód (egyszer használatos)",
-                                                                 "temporaryAccessPassOneTimeX509CertificateSingleFactor":  "Ideiglenes hozzáférési kód (egyszer használatos) + tanúsítványalapú hitelesítés (egytényezős)",
                                                                  "voice":  "Hang",
                                                                  "voiceEmail":  "Hanghívás és egyszer használható hitelesítő kód küldése e-mailben",
-                                                                 "voiceX509CertificateSingleFactor":  "Hanghívás + tanúsítványalapú hitelesítés (egytényezős)",
+                                                                 "voiceFederatedSingleFactor":  "Összevont egytényezős + hang",
                                                                  "windowsHelloForBusiness":  "Vállalati Windows Hello",
                                                                  "x509CertificateMultiFactor":  "Tanúsítványalapú hitelesítés (többtényezős)",
                                                                  "x509CertificateSingleFactor":  "Tanúsítványalapú hitelesítés (egytényezős)"
@@ -8240,7 +8322,8 @@
                                              "Validation":  {
                                                                 "failed":  "A „Kiválasztott helyek” esetében legalább egy helyet ki kell választania.",
                                                                 "selector":  "Válasszon ki legalább egy helyet"
-                                                            }
+                                                            },
+                                             "privateLinksInfo":  "Az Azure AD-hez készült Private Link az Azure-szolgáltatásokhoz a legmegfelelőbb. Gondoskodjon róla, hogy azokon az alkalmazáspéldányokon, amelyeken ez a szabályzat engedélyezve van, nincs olyan követelmény, amely szükségessé tenné a hozzáférést egy olyan nyilvános szolgáltatáshoz, mint például az M365."
                                          },
                      "ClientApp":  {
                                        "Clients":  {
@@ -8276,6 +8359,7 @@
                                                   "infoBalloon":  "A tesztelni kívánt felhőalkalmazás vagy felhasználói művelet, például SharePoint Online",
                                                   "learnMore":  "Az összes vagy néhány felhőbeli alkalmazás vagy művelet elérésének korlátozása.",
                                                   "learnMoreB2C":  "Az összes vagy néhány felhőalkalmazás elérésének korlátozása.",
+                                                  "learnMoreNetworkAccess":  "A hozzáférés ellenőrzése az összes vagy bizonyos hálózati hozzáférési forgalom, felhőalkalmazások vagy műveletek alapján.",
                                                   "title":  "Felhőalkalmazások vagy -műveletek"
                                               },
                      "CloudappsSelectionBlade":  {
@@ -8292,6 +8376,7 @@
                                                                   },
                                                      "Validation":  {
                                                                         "authContext":  "A hitelesítési környezettel legalább egy alelemet konfigurálni kell.",
+                                                                        "networkAccess":  "A „Hálózati hozzáférés“ beállítás esetén legalább egy forgalmi profilt konfigurálni kell.",
                                                                         "selectApps":  "A(z) „{0}” konfigurálása kötelező",
                                                                         "selector":  "Válasszon ki legalább egy alkalmazást.",
                                                                         "userActions":  "A Felhasználói műveletek beállítással legalább egy alelemet konfigurálni kell."
@@ -8307,12 +8392,12 @@
                                     "notFoundDetailed":  "A(z) {0} szabályzat már nem létezik. Lehet, hogy törölték."
                                 },
                      "GuestsOrExternalUsers":  {
-                                                   "allExternalTenantsLabel":  "Az összes Azure AD-beli szervezet",
+                                                   "allExternalTenantsLabel":  "Az összes",
                                                    "b2bCollaborationGuestLabel":  "B2B-együttműködésben részt vevő vendégfelhasználók",
                                                    "b2bCollaborationMemberLabel":  "B2B-együttműködésben részt vevő tagfelhasználók",
                                                    "b2bDirectConnectUserLabel":  "Közvetlen B2B-kapcsolattal rendelkező felhasználók",
                                                    "enumeratedExternalTenantsError":  "Kérjük, válasszon ki legalább egy külső bérlőt.",
-                                                   "enumeratedExternalTenantsLabel":  "Azure AD-beli kiválasztott szervezetek",
+                                                   "enumeratedExternalTenantsLabel":  "Kijelölés",
                                                    "externalTenantsLabel":  "Azure AD-beli külső szervezetek megadása",
                                                    "externalUserDropdownLabel":  "Vendég- vagy külső felhasználók típusainak kiválasztása",
                                                    "externalUsersError":  "Kérjük, válassza ki a vendég- vagy külső felhasználók legalább egy típusát.",
@@ -8432,6 +8517,22 @@
                                                        "gridAria":  "Elnevezett helyek listája"
                                                    }
                                       },
+                     "NetworkAccess":  {
+                                           "Included":  {
+                                                            "none":  "Nincsenek kijelölt célerőforrások",
+                                                            "plural":  "{0} kiválasztott hálózati forgalmi profil",
+                                                            "singular":  "1 hálózati forgalmi profil kiválasztva"
+                                                        },
+                                           "internetOptionText":  "Nyilvános forgalom",
+                                           "label":  "Hálózati hozzáférés (előzetes verzió)",
+                                           "m365OptionText":  "M365-forgalom",
+                                           "privateOptionText":  "Magánhálózati forgalom",
+                                           "selectTrafficProfilesLabel":  "Válassza ki azokat a forgalmi profilokat, amelyekre ez a házirend vonatkozik",
+                                           "targetResourcesBalloonContext":  "Célerőforrások",
+                                           "targetResourcesSelectorTitle":  "Célerőforrások",
+                                           "trafficProfilesLearnMoreTooltip":  "További forgalmi profilok megtekintéséhez adjon hozzá újabb NaaS-licenceket.",
+                                           "ztnaEnableLearnMore":  "A Teljes felügyelet Cloud Edge funkciót be kell kapcsolni a hálózati hozzáférés-vezérlés használatához. "
+                                       },
                      "Policies":  {
                                       "Grid":  {
                                                    "aria":  "Feltételes hozzáférési szabályzatok listája"
@@ -8449,10 +8550,25 @@
                                                                                }
                                                   }
                                 },
+                     "PolicyCondition":  {
+                                             "SignInRiskDetections":  {
+                                                                          "ApplyCondition":  {
+                                                                                                 "info":  "A kockázatészlelés konfigurálásához alkalmazza a házirendet a kiválasztott valós idejű bejelentkezési kockázatészlelés(ek)re."
+                                                                                             },
+                                                                          "LearnMore":  {
+                                                                                            "message":  "A felhasználók hozzáférésének vezérlése, hogy válaszolhasson a valós idejű bejelentkezési kockázatészlelésekre."
+                                                                                        },
+                                                                          "description":  "Ez a feltétel akkor teljesül, ha a belefoglalt kockázatérzékelések bármelyike kockázatot észlel. Ez nem befolyásolja a bejelentkezési kockázati szint kiszámítását.",
+                                                                          "header":  "Valós idejű beépített kockázatészlelések",
+                                                                          "info":  "Érzékelések, amelyek a kockázatokat a bejelentkezések során észlelik.",
+                                                                          "label":  "Bejelentkezési kockázatészlelések (előzetes verzió)",
+                                                                          "title":  "Bejelentkezési kockázat észlelései"
+                                                                      }
+                                         },
                      "PolicyControlAuthStrength":  {
                                                        "MultiFactorAuthentication":  {
                                                                                          "description":  "Az erős hitelesítésnek megfelelő módszerek kombinációi, például jelszó és SMS",
-                                                                                         "displayName":  "Többtényezős hitelesítés (MFA)"
+                                                                                         "displayName":  "Többtényezős hitelesítés"
                                                                                      },
                                                        "Passwordless":  {
                                                                             "description":  "Jelszó nélküli módszerek, amelyek megfelelnek az erős hitelesítésnek, mint például a Microsoft Authenticator ",
@@ -8460,11 +8576,11 @@
                                                                         },
                                                        "PhishingResistant":  {
                                                                                  "description":  "Adathalászat ellen védett jelszó nélküli módszerek a legerősebb hitelesítéshez, például FIDO2 biztonsági kulcs",
-                                                                                 "displayName":  "Adathalászat ellen védett többtényezős hitelesítés"
+                                                                                 "displayName":  "Adathalászatnak ellenálló többtényezős hitelesítés"
                                                                              }
                                                    },
                      "PolicyControlFedAuthMethod":  {
-                                                        "ariaLabel":  "Learn more about requiring authentication methods satisfied by federation providers.",
+                                                        "ariaLabel":  "További információ az összevonási szolgáltatók előírásainak megfelelő hitelesítési módszerek megköveteléséről.",
                                                         "certificate":  "Tanúsítványalapú hitelesítés",
                                                         "infoBubble":  "Adja meg az összevonási szolgáltatóra (például az AD FS-re) nézve kötelezően használandó hitelesítési módszert.",
                                                         "multifactor":  "Többtényezős hitelesítés",
@@ -8543,7 +8659,7 @@
                                                                                               "title":  "Ismeretlen vagy nem támogatott eszközplatformokhoz való hozzáférés letiltása"
                                                                                           },
                                                                 "BlockLegacyAuth":  {
-                                                                                        "description":  "A többtényezős hitelesítés megkerüléséhez használható örökölt hitelesítési végpontok blokkolása. ",
+                                                                                        "description":  "A többtényezős hitelesítés mellőzésére használható örökölt hitelesítési végpontok letiltása. ",
                                                                                         "name":  "CA003: Örökölt hitelesítés letiltása",
                                                                                         "title":  "Örökölt hitelesítés letiltása"
                                                                                     },
@@ -8558,7 +8674,7 @@
                                                                                                          "title":  "Követelményeknek megfelelő vagy hibrid Azure Active Directoryhoz csatlakozó eszközök használatának megkövetelése a rendszergazdáktól"
                                                                                                      },
                                                                 "RequireCompliantOrHybridADAllUsers":  {
-                                                                                                           "description":  "A vállalati erőforrásokhoz való hozzáférés védelme egy felügyelt eszköz használatának vagy többtényezős hitelesítés végrehajtásának megkövetelésével biztosítható. (csak macOS vagy Windows)",
+                                                                                                           "description":  "A vállalati erőforrásokhoz való hozzáférés védelme azáltal, hogy megköveteli a felhasználóktól egy felügyelt eszköz használatát vagy a többtényezős hitelesítést.(csak macOS vagy Windows)",
                                                                                                            "name":  "CA013: Követelményeknek megfelelő, illetve hibrid Azure Active Directoryhoz csatlakozó eszköz vagy a többtényezős hitelesítés használatának megkövetelése minden felhasználótól",
                                                                                                            "title":  "Követelményeknek megfelelő, illetve hibrid Azure Active Directoryhoz csatlakozó eszköz vagy a többtényezős hitelesítés használatának megkövetelése minden felhasználótól"
                                                                                                        },
@@ -8569,21 +8685,21 @@
                                                                                        },
                                                                 "RequireMFAForAdmins":  {
                                                                                             "description":  "Többtényezős hitelesítés megkövetelése kiemelt jogosultságú rendszergazdai fiókok esetében a kockázatok csökkentése érdekében. Ez a szabályzat ugyanazokat a szerepköröket célozza meg, mint az alapértelmezett biztonsági szabályzatok.",
-                                                                                            "name":  "CA001: Többtényezős hitelesítés megkövetelése a rendszergazdáktól",
+                                                                                            "name":  "CA001: Többfaktoros hitelesítés megkövetelése a rendszergazdáktól",
                                                                                             "title":  "Többtényezős hitelesítés megkövetelése a rendszergazdáktól"
                                                                                         },
                                                                 "RequireMFAForAzureManagement":  {
-                                                                                                     "description":  "Megkövetelheti a többtényezős hitelesítést, hogy megóvja az Azure-erőforrásokhoz való emelt szintű hozzáférést.",
-                                                                                                     "name":  "CA006: Többtényezős hitelesítés megkövetelése Azure-beli felügyelet esetén",
-                                                                                                     "title":  "Többtényezős hitelesítés megkövetelése Azure-beli felügyelet esetén"
+                                                                                                     "description":  "Többtényezős hitelesítés megkövetelése az Azure-erőforrásokhoz való emelt szintű hozzáférés védelme érdekében.",
+                                                                                                     "name":  "CA006: Többtényezős hitelesítés megkövetelése az Azure-felügyelethez",
+                                                                                                     "title":  "Többtényezős hitelesítés megkövetelése az Azure-felügyelethez"
                                                                                                  },
                                                                 "RequireMFAForGuestAccess":  {
-                                                                                                 "description":  "Megkövetelheti a vendégfelhasználók többtényezős hitelesítését, amikor hozzáférnek a vállalati erőforrásokhoz.",
-                                                                                                 "name":  "CA005: Többtényezős hitelesítés megkövetelése vendéghozzáférés esetén",
-                                                                                                 "title":  "Többtényezős hitelesítés megkövetelése vendéghozzáférés esetén"
+                                                                                                 "description":  "A vendégfelhasználók többtényezős hitelesítésének megkövetelése a vállalati erőforrásokhoz történő hozzáféréskor.",
+                                                                                                 "name":  "CA005: Többtényezős hitelesítés megkövetelése a vendéghozzáféréshez",
+                                                                                                 "title":  "Többtényezős hitelesítés megkövetelése a vendéghozzáféréshez"
                                                                                              },
                                                                 "RequireMFAForRiskySignIn":  {
-                                                                                                 "description":  "Megkövetelheti a többtényezős hitelesítést, ha az észlelt bejelentkezési kockázat közepes vagy magas. (Prémium szintű Azure AD 2-licenc szükséges)",
+                                                                                                 "description":  "Többtényezős hitelesítés megkövetelése, ha a bejelentkezési kockázat közepes vagy magas. (prémium szintű Azure AD 2 licenc szükséges)",
                                                                                                  "name":  "CA007: Többtényezős hitelesítés megkövetelése kockázatos bejelentkezések esetén",
                                                                                                  "title":  "Többtényezős hitelesítés megkövetelése kockázatos bejelentkezések esetén"
                                                                                              },
@@ -8621,7 +8737,7 @@
                                                                                                                                   "on":  "Ez a szabályzat minden felhasználóra hatással lesz, kivéve a jelenleg bejelentkezett rendszergazdát. Javasoljuk, hogy kezdje a folyamatot csak jelentéskészítési módban, amíg meg nem győződik róla, hogy a felhasználókra nem lesz hatással."
                                                                                                                               },
                                                                                                               "Title":  {
-                                                                                                                            "on":  "Ne zárja ki magát! Győződjön meg arról, hogy az eszköze megfelelő vagy csatlakoztatva van a hibrid Azure AD-hez, vagy hogy konfigurálta a többtényezős hitelesítést. ",
+                                                                                                                            "on":  "Ne zárja ki magát! Győződjön meg arról, hogy az eszköze megfelelő vagy csatlakoztatva van a hibrid Azure Active Directoryhoz, illetve, hogy konfigurálta a többtényezős hitelesítést. ",
                                                                                                                             "reportOnly":  "A megfelelő eszközöket megkövetelő, „csak jelentés” módban üzemelő szabályzatok kérhetik a Mac-, iOS- és Android-eszközök felhasználóitól, hogy válasszanak egy eszköztanúsítványt az eszközök megfelelőségének vizsgálatához, még ha a megfelelőség nem is kötelező. Ezek a kérések egészen addig ismétlődhetnek, amíg az eszköz megfelelővé nem válik."
                                                                                                                         }
                                                                                                           },
@@ -8787,6 +8903,13 @@
                                                           "message":  "A felhasználói hozzáférés vezérlésével reagálhat bizonyos bejelentkezési kockázati szintekre."
                                                       }
                                     },
+                     "SigninRiskLevel":  {
+                                             "NoRiskSelected":  {
+                                                                    "warning":  "Ha a „{0}“ van kiválasztva, a „{1}“ feltétel nem lesz konfigurálható."
+                                                                },
+                                             "description":  "A bejelentkezési kockázati szint az összes valós idejű kockázatészlelés alapján jön létre.",
+                                             "header":  "Válassza ki a bejelentkezési kockázati szintet, amelyre érvényes lesz a házirend"
+                                         },
                      "SingleSelectorActive":  {
                                                   "failed":  "Nem sikerült betölteni ezeket az adatokat.",
                                                   "reattempt":  "Adatok betöltése: {0}. újbóli kísérlet összesen {1} kísérletből."
@@ -8853,12 +8976,14 @@
                                               "invalidDevicesCondition":  "Érvénytelen eszközkonfiguráció. Valószínűleg érvénytelen a(z) {0} konfigurálása.",
                                               "invalidGrantControlPolicy":  "Érvénytelen engedélyezési vezérlő",
                                               "invalidLocationsCondition":  "Érvénytelen helyfeltételek vannak kijelölve",
+                                              "invalidNetworkAccessSecurityPolicyId":  "A munkamenet-hálózati vezérlőhöz csatolt házirend érvénytelen.",
                                               "invalidPolicy":  "Nincsenek kijelölve hozzárendelések",
                                               "invalidSessionControlPolicy":  "Érvénytelen munkamenet-vezérlő",
                                               "invalidSignInRisksCondition":  "Érvénytelen a kijelölt bejelentkezési kockázat",
                                               "invalidUserRisksCondition":  "Érvénytelen a kijelölt felhasználói kockázat",
                                               "invalidUsersCondition":  "Érvénytelen felhasználók vannak kijelölve",
                                               "mamPolicyShouldOnlyTargetAndroidOrIosPlatforms":  "Kizárólag androidos vagy iOS-es ügyfélplatformokhoz használhat MAM-szabályzatokat.",
+                                              "networkAccessControlNeedsNetworkAccessTargetedTrafficProfile":  "A hálózati hozzáférési munkamenet-házirend csak akkor működik megfelelően, ha egy hálózati hozzáférési forgalmi profil van megcélozva. Kérjük, frissítse a célzott erőforrások szakaszát.",
                                               "notSupportedCombination":  "A szabályzatkonfiguráció nem támogatott. Tájékozódjon részletesebben a támogatott szabályzatokról.",
                                               "pending":  "Szabályzat érvényesítése",
                                               "requireComplianceEveryonePolicy":  "A szabályzatkonfiguráció eszközmegfelelőséget ír elő az összes felhasználó számára. Vizsgálja felül a kijelölt hozzárendeléseket.",
@@ -8871,10 +8996,12 @@
                                  },
                      "WarningsInfo":  {
                                           "Controls":  {
+                                                           "AuthStrengthXtap":  {
+                                                                                    "allUsers":  "Konfigurálja a bérlők közötti hozzáférés beállításait úgy, hogy elfogadják az Azure AD-bérlőktől érkező igényeket a külső felhasználó esetében, hogy használhassa a beépített hitelesítési erősségeket. Külső felhasználók számára nem konfigurálhatók egyéni hitelesítési erősségek.",
+                                                                                    "externalUsers":  "Az összes beépített hitelesítési erősség engedélyezéséhez konfigurálja a bérlők közötti hozzáférés beállításait úgy, hogy elfogadják az Azure AD bérlőkből érkező igényeket a külső felhasználók esetében."
+                                                                                },
                                                            "compliantDeviceEnabled":  "Ne zárja ki magát a fiókjából! Győződjön meg arról, hogy eszköze megfelel az előírásoknak.",
                                                            "domainJoinedDeviceEnabled":  "Ne zárja ki magát a fiókjából! Győződjön meg arról, hogy eszköze a hibrid Azure Active Directoryhoz csatlakozó eszköz.",
-                                                           "exchangeDisabled":  "Az Exchange ActiveSync csak a Szabályzatnak megfelelő eszköz és a Jóváhagyott ügyfélalkalmazás vezérlő használatát támogatja. További információkért kattintson ide.",
-                                                           "exchangeDisabled2":  "Az Exchange ActiveSync csak a Szabályzatnak megfelelő eszköz, a Jóváhagyott ügyfélalkalmazás és a Szabályzatnak megfelelő ügyfélalkalmazás vezérlő használatát támogatja. További információkért kattintson ide.",
                                                            "notAvailableForSP":  "Bizonyos vezérlők a szabályzat-hozzárendelésben megadott „{0}” választás miatt nem érhetők el",
                                                            "requireAuthOrMfa":  "A(z) {0} nem használható a következővel: {1}",
                                                            "requireMfa":  "Fontolja meg az új „{0}“ nyilvános előzetes verziójának tesztelését",
@@ -8904,7 +9031,8 @@
                                                                     "teamsBlocked":  "A Microsoft Teams akkor is érintett, ha a szabályzat tartalmazza a SharePoint Online és az Exchange Online alkalmazásokat."
                                                                 },
                                           "Users":  {
-                                                        "blockAllUsers":  "Ne zárja ki saját magát! Ez a szabályzat minden felhasználót érinteni fog. Azt javasoljuk, hogy először a felhasználók egy kisebb csoportjára alkalmazza a szabályzatot, és ellenőrizze, hogy az elvárásoknak megfelelően működik-e."
+                                                        "blockAllUsers":  "Ne zárja ki saját magát! Ez a szabályzat minden felhasználót érinteni fog. Azt javasoljuk, hogy először a felhasználók egy kisebb csoportjára alkalmazza a szabályzatot, és ellenőrizze, hogy az elvárásoknak megfelelően működik-e.",
+                                                        "xtap":  " Az engedélyezési vezérlőben található „Hitelesítési erősségek megkövetelése” konfigurációja lehet, hogy nem érvényes a külső felhasználók számára."
                                                     }
                                       },
                      "WhatIf":  {
@@ -8958,7 +9086,7 @@
                      "certDurationCol":  "Lejárat",
                      "certDurationStartCol":  "Érvényesség kezdete",
                      "certName":  "VPN-tanúsítvány",
-                     "certainApps":  "Csak bizonyos alkalmazások támogatottak a „Bejelentkezési gyakoriság minden alkalommal” beállítás esetében, ha a „Többtényezős hitelesítés megkövetelése” és a „Jelszómódosítás megkövetelése” engedély nincs kiválasztva",
+                     "certainApps":  "Csak bizonyos alkalmazások támogatottak a „Bejelentkezési gyakoriság minden alkalommal“ beállítás esetében, ha a „Többtényezős hitelesítés megkövetelése“ és a „Jelszómódosítás megkövetelése“ engedély nincs kiválasztva",
                      "chooseApplicationsBladeSubtitle":  "",
                      "chooseApplicationsBladeTitle":  "Alkalmazások kiválasztása",
                      "chooseApplicationsCartSubitle":  "",
@@ -8981,7 +9109,7 @@
                      "chooseApplicationsTooMany":  "Nem jeleníthető meg az összes eredmény. Szűrje az eredményeket a keresési mező használatával.",
                      "chooseLocationCorpnetItem":  "Vállalati hálózat",
                      "chooseLocationSelectedLocationsLabel":  "Kijelölt helyek",
-                     "chooseLocationTrustedIpsItem":  "MFA megbízható IP-címei",
+                     "chooseLocationTrustedIpsItem":  "Többtényezős hitelesítés megbízható IP-címei",
                      "chooseLocationsBladeSubtitle":  "",
                      "chooseLocationsBladeTitle":  "Helyek kiválasztása",
                      "chooseLocationsCartSubitle":  "",
@@ -9105,7 +9233,6 @@
                      "clientAppBladeTitle":  "Ügyfélalkalmazások",
                      "clientAppDescription":  "Válassza ki az ügyfélalkalmazásokat, melyekre érvényes lesz a házirend",
                      "clientAppExchangeActiveSync":  "Exchange ActiveSync",
-                     "clientAppExchangeDisabledInfo":  "Az Exchange ActiveSync akkor érhető el, ha az Exchange Online az egyetlen kijelölt felhőalkalmazás. További információkért kattintson ide",
                      "clientAppExchangeWarning":  "Az Exchange ActiveSync jelenleg semmilyen más feltételt nem támogat",
                      "clientAppLearnMore":  "A felhasználói hozzáférés vezérlésével megcélozhat olyan ügyfélalkalmazásokat, amelyek nem használnak modern hitelesítést.",
                      "clientAppLegacyHeader":  "Örökölt hitelesítési ügyfelek",
@@ -9113,7 +9240,6 @@
                      "clientAppModernHeader":  "Modern hitelesítési ügyfelek",
                      "clientAppOnlySupportedPlatforms":  "Házirend alkalmazása csak a támogatott platformokra",
                      "clientAppSelectSpecificClientApps":  "Ügyfélalkalmazások kijelölése",
-                     "clientAppV2BladeTitle":  "Ügyfélalkalmazások (Előzetes verzió)",
                      "clientAppWebBrowser":  "Böngésző",
                      "clientAppsSelectedLabel":  "{0} belefoglalva",
                      "clientTypeBrowser":  "Böngésző",
@@ -9142,7 +9268,7 @@
                      "conditionLabelOne":  "1 kijelölt feltétel",
                      "conditionalAccessBladeTitle":  "Feltételes hozzáférés",
                      "conditionsNotSelectedLabel":  "Nincs konfigurálva",
-                     "conditionsReqMfaReauthSet":  "Néhány beállítás nem érhető el, mert jelenleg a „Többtényezős hitelesítés megkövetelése” és a „Bejelentkezési gyakoriság minden alkalommal” munkamenet-vezérlő van kiválasztva",
+                     "conditionsReqMfaReauthSet":  "Néhány beállítás nem érhető el, mert jelenleg a „Többtényezős hitelesítés megkövetelése“ engedély és a „Bejelentkezési gyakoriság minden alkalommal“ munkamenet-vezérlő van kiválasztva",
                      "conditionsReqPwSet":  "Néhány lehetőség nem érhető el, mert jelenleg a Jelszómódosítás megkövetelése engedély van kiválasztva",
                      "configureCasText":  "Cloud App Security konfigurálása",
                      "configureCustomControlsText":  "Egyéni szabályzat konfigurálása",
@@ -9150,18 +9276,18 @@
                      "controlLabelOne":  "1 kijelölt vezérlő",
                      "controlValidatorText":  "Jelöljön ki legalább egy vezérlőt",
                      "controlsBlockAccessInfoBubble":  "ControlsBlockAccessInfoBubble",
-                     "controlsDeviceComplianceAriaLabel":  "Learn more about requiring compliant devices.",
-                     "controlsDeviceComplianceInfoBubble":  "Device must be Intune compliant. If the device is non-compliant, the user will be prompted to bring the device under compliance.",
-                     "controlsDomainJoinedAriaLabel":  "Learn more about requiring hybrid Azure AD joined devices.",
+                     "controlsDeviceComplianceAriaLabel":  "További információ a megfelelő eszközök megköveteléséről.",
+                     "controlsDeviceComplianceInfoBubble":  "Az eszköznek Intune-kompatibilisnek kell lennie. Ha az eszköz nem megfelelő, a rendszer kérni fogja a felhasználót, hogy tegye megfelelővé az eszközt.",
+                     "controlsDomainJoinedAriaLabel":  "További információ a hibrid Azure AD-hez csatlakozó eszközök megköveteléséről.",
                      "controlsDomainJoinedInfoBubble":  "Az eszközöknek hibrid Azure Active Directoryhoz csatlakozónak kell lenniük.",
-                     "controlsMamAriaLabel":  "Learn more about requiring approved client applications.",
+                     "controlsMamAriaLabel":  "További információ a jóváhagyott ügyfélalkalmazások megköveteléséről.",
                      "controlsMamInfoBubble":  "Az eszköznek a következő jóváhagyott ügyfélalkalmazásokat kell használnia.",
                      "controlsMfaInfoBubble":  "A felhasználónak további biztonság követelményeket kell teljesítenie, például telefonhívás, szöveg",
                      "controlsOrAndInfoBubble":  "ControlsOrAndInfoBubble",
-                     "controlsRequireCompliantAppAriaLabel":  "Learn more about requiring policy protected apps.",
+                     "controlsRequireCompliantAppAriaLabel":  "További információ a szabályzattal védett alkalmazások megköveteléséről.",
                      "controlsRequireCompliantAppInfoBubble":  "Az eszköznek szabályzat által védett alkalmazásokat kell használnia.",
-                     "controlsRequirePasswordResetAriaLabel":  "Learn more about requiring a password change.",
-                     "controlsRequirePasswordResetInfoBubble":  "Jelszómódosítás megkövetelése a felhasználói kockázat csökkentése érdekében. Ehhez a beállításhoz többtényezős hitelesítés is szükséges. Más szabályozók nem használhatók.",
+                     "controlsRequirePasswordResetAriaLabel":  "További információ a jelszómódosítás megköveteléséről.",
+                     "controlsRequirePasswordResetInfoBubble":  "Jelszómódosítás megkövetelése a felhasználói kockázat csökkentése érdekében. Ehhez a beállításhoz többtényezős hitelesítés is szükséges. Más vezérlők nem használhatók.",
                      "countriesRadiobuttonInfoBalloonContent":  "A felhasználó IP-címe határozza meg, hogy az adott bejelentkezés mely országból/régióból történik.",
                      "createNewVpnCert":  "Új tanúsítvány",
                      "createdTimeLabel":  "Létrehozás időpontja",
@@ -9260,6 +9386,7 @@
                      "lowRisk":  "Kicsi",
                      "macOsDisplayName":  "macOS",
                      "managePoliciesLicenseText":  "A Feltételes hozzáférési szabályzatok kezeléséhez a szervezetnek Prémium P1 vagy P2 szintű Azure AD-re van szüksége.",
+                     "manageSecurityDefaultsAriaLabel":  "Javasolt biztonsági beállítások kezelése.",
                      "markAsTrustedCheckboxInfoBalloonContent":  "A megbízható helyről való bejelentkezés csökkenti az adott felhasználó bejelentkezési kockázatát. A helyet csak akkor jelölje meg megbízhatóként, ha tudja, hogy a megadott IP-címtartományok használata megalapozott és hihető a szervezetben.",
                      "markAsTrustedCheckboxLabel":  "Megjelölés megbízható helyként",
                      "mediumRisk":  "Közepes",
@@ -9291,7 +9418,7 @@
                      "namedNetworkIpRangesDescriptionContent":  "A szervezet IP-címtartományainak konfigurálása",
                      "namedNetworkIpRangesTab":  "IP-címtartományok",
                      "namedNetworkListAdd":  "Új hely",
-                     "namedNetworkListConfigureTrustedIps":  "MFA megbízható IP-címeinek konfigurálása",
+                     "namedNetworkListConfigureTrustedIps":  "Többtényezős hitelesítés megbízható IP-címeinek konfigurálása",
                      "namedNetworkNameDescription":  "Példa: Budapesti iroda",
                      "namedNetworkNameInvalid":  "A megadott név érvénytelen.",
                      "namedNetworkNameRequired":  "A hely nevét kötelező megadni.",
@@ -9334,7 +9461,7 @@
                      "namednetworkExceedingSizeErrorBladeTitle":  "Hibaüzenet részletei",
                      "namednetworkExceedingSizeErrorDetailText":  "További részletekért kattintson ide.",
                      "namednetworkExceedingSizeErrorMessage":  "Túllépte a nevesített helyek esetében maximálisan engedélyezett tárhelyet. Próbálkozzon újra egy rövidebb listával. További részletek megtekintéséhez kattintson ide.",
-                     "needMfaSecondary":  "A „Többtényezős hitelesítés megkövetelése” lehetőséget kell kiválasztani, ha a „Bejelentkezési gyakoriság minden alkalommal“ van kiválasztva a „Csak másodlagos hitelesítési módszerek” beállítással együtt.",
+                     "needMfaSecondary":  "A „Többtényezős hitelesítés megkövetelése“ beállítást akkor kell kiválasztani, ha a „Bejelentkezési gyakoriság minden alkalommal“ lehetőséget a „Csak másodlagos hitelesítési módszerek“ opcióval együtt választja ki.",
                      "newCertName":  "új tanúsítvány",
                      "noAttributePermissionsError":  "Nincs megfelelő jogosultsága a szabályzat létrehozásához vagy frissítéséhez. Dinamikus szűrők hozzáadásához vagy szerkesztéséhez attribútumdefiníció-olvasói szerepkör szükséges.",
                      "noPolicyRowMessage":  "Nem találhatók házirendek",
@@ -9363,12 +9490,12 @@
                      "policyConditionDevicePlatformDescription":  "A platform, amelyről a felhasználó bejelentkezik. Példa: 'iOS'",
                      "policyConditionLocation":  "Helyszínek",
                      "policyConditionLocationDescription":  "A hely (az IP-címtartomány használatával megállapítva), ahonnan a felhasználó bejelentkezik",
-                     "policyConditionSigninRisk":  "Bejelentkezési kockázat",
+                     "policyConditionLocationPreview":  "Helyek (Előzetes verzió)",
+                     "policyConditionSigninRisk":  "Bejelentkezés kockázati szintje",
                      "policyConditionSigninRiskDescription":  "Annak valószínűsége, hogy a bejelentkezés nem a felhasználó részéről történt. A kockázati szint lehet magas, közepes vagy alacsony. A beállításhoz Azure AD Premium 2-licenc szükséges.",
-                     "policyConditionUserRisk":  "Felhasználói kockázat",
+                     "policyConditionUserRisk":  "Felhasználói kockázati szint",
                      "policyConditionUserRiskDescription":  "A szabályzat érvényesítéséhez szükséges felhasználói kockázati szintek konfigurálása",
                      "policyConditioniClientApp":  "Ügyfélalkalmazások",
-                     "policyConditioniClientAppV2":  "Ügyfélalkalmazások (Előzetes verzió)",
                      "policyControlAllowAccessDisplayedName":  "Hozzáférés biztosítása",
                      "policyControlAuthenticationStrengthDisplayedName":  "Hitelesítés erősségének megkövetelése (Előzetes verzió)",
                      "policyControlBladeTitle":  "Hozzáférés",
@@ -9405,7 +9532,7 @@
                      "policyNameDevice":  "Eszközszabályzat",
                      "policyNameFormat":  "[{0}] {1}",
                      "policyNameMam":  "Mobilalkalmazás-kezelési szabályzat",
-                     "policyNameMfaLocation":  "MFA- és helyszabályzat",
+                     "policyNameMfaLocation":  "Többtényezős hitelesítésre és helymeghatározásra vonatkozó szabályzat",
                      "policyNamePlaceholderText":  "Példa: Eszközmegfelelőségi alkalmazásszabályzat",
                      "policyNameTooLongError":  "A szabályzat neve túl hosszú, legfeljebb 256 karakter lehet",
                      "policyOff":  "Kikapcsolva",
@@ -9433,12 +9560,15 @@
                      "requireAllControlsText":  "Az összes kijelölt vezérlő megkövetelése",
                      "requireCompliantDevice":  "Megfelelő eszköz megkövetelése",
                      "requireDomainJoined":  "Tartományhoz csatlakoztatott eszköz megkövetelése",
-                     "requireGrantReauth":  "A „Bejelentkezési gyakoriság minden alkalommal” munkamenet-vezérlő megköveteli a „Többtényezős hitelesítés megkövetelése” vagy a „Jelszómódosítás megkövetelése” engedélyezési vezérlőt, ha a „Minden felhőalkalmazás” beállítás van kiválasztva",
-                     "requireMFA":  "Többtényezős hitelesítés megkövetelése ",
-                     "requireMfaReauth":  "A „Bejelentkezési gyakoriság minden alkalommal” munkamenet-vezérlő megköveteli a „Többtényezős hitelesítés megkövetelése” engedélyezési vezérlőt a „bejelentkezési kockázat” esetében",
+                     "requireGrantReauth":  "A „bejelentkezési gyakoriság minden alkalommal“ munkamenet-vezérlő megköveteli a „többtényezős hitelesítés megkövetelése“ vagy a „jelszómódosítás megkövetelése“ engedélyezési vezérlőt, ha a „Minden felhőalkalmazás“ beállítás van kiválasztva",
+                     "requireMFA":  "Többtényezős hitelesítés megkövetelése",
+                     "requireMfaReauth":  "A „bejelentkezési gyakoriság minden alkalommal” munkamenet-vezérlő megköveteli a „többtényezős hitelesítés megkövetelése” engedélyezési vezérlőt a „bejelentkezési kockázat” esetében",
                      "requireOneControlText":  "Az egyik kijelölt vezérlő megkövetelése",
                      "requirePasswordChangeReauth":  "A „Bejelentkezési gyakoriság minden alkalommal” munkamenet-vezérlő megköveteli a „Jelszómódosítás megkövetelése” engedélyezési vezérlőt a „felhasználói kockázat” esetében",
                      "requireRiskReauth":  "A „Bejelentkezési gyakoriság minden alkalommal” munkamenet-vezérlő megköveteli a „Felhasználói kockázat” vagy a „Bejelentkezési kockázat” munkamenet-vezérlőt, ha az „Összes felhőalkalmazás” beállítás van kiválasztva.",
+                     "requireRiskReauthRiskNotEnabled":  "A „Bejelentkezés gyakorisága minden alkalommal” munkamenet-vezérlő nem érhető el, ha a „Minden felhőalkalmazás” beállítás van kiválasztva.",
+                     "requireRiskReauthSignInOnly":  "A „Bejelentkezés gyakorisága minden alkalommal” munkamenet-vezérlő megköveteli a „Bejelentkezési kockázat” munkamenet-vezérlő meglétét, ha a „Minden felhőalkalmazás” beállítás van kiválasztva.",
+                     "requireRiskReauthUserOnly":  "A „Bejelentkezés gyakorisága minden alkalommal” munkamenet-vezérlő megköveteli a „Felhasználói kockázat” munkamenet-vezérlő meglétét, ha a „Minden felhőalkalmazás” beállítás van kiválasztva.",
                      "resetFilters":  "Szűrők alaphelyzetbe állítása",
                      "sPRequired":  "A szolgáltatásnév megadása kötelező",
                      "sPSelectorInfoBalloon":  "A tesztelni kívánt felhasználó vagy szolgáltatásnév",
@@ -9446,7 +9576,8 @@
                      "searchTextTooLongError":  "A keresett szöveg túl hosszú. Legfeljebb 256 karaktert tartalmazhat.",
                      "securityDefaultsPolicyName":  "Javasolt biztonsági beállítások",
                      "securityDefaultsTextMessage":  "A javasolt biztonsági beállításokat le kell tiltani egy feltételes hozzáférési szabályzat engedélyezéséhez.",
-                     "securityDefaultsWarningMessage":  "Úgy tűnik, hogy a cég biztonsági konfigurációit szeretné kezelni. Ez nagyszerű! A feltételes hozzáférési szabályzat engedélyezéséhez le kell tiltania a javasolt biztonsági beállításokat.",
+                     "securityDefaultsUpdateInProgressText":  "A javasolt biztonsági beállítások frissítése folyamatban van, várjon egy kicsit, és próbálkozzon újra.",
+                     "securityDefaultsWarningMessage":  "Úgy tűnik, hogy a cég biztonsági konfigurációit szeretné kezelni. Ez nagyszerű! A feltételes hozzáférési szabályzat engedélyezéséhez először {0}le kell tiltania a javasolt biztonsági beállításokat{1}.",
                      "selectDevicePlatforms":  "Eszközplatformok kiválasztása",
                      "selectNamedNetworksSubtitle":  "",
                      "selectNamedNetworksTitle":  "Helyek kiválasztása",
@@ -9460,6 +9591,7 @@
                      "servicePrincipalSelectorAria":  "Választott szolgáltatásnevek listája",
                      "servicePrincipalSelectorMultiple":  "{0} szolgáltatásnév kijelölve",
                      "servicePrincipalSelectorSingle":  "1 szolgáltatásnév kijelölve",
+                     "servicePrincipalSpecificExc":  "Megadott szolgáltatásnevek kizárva",
                      "servicePrincipalSpecificInc":  "Megadott szolgáltatásnevekre érvényes",
                      "servicePrincipals":  "Szolgáltatásnevek",
                      "sessionControlBladeTitle":  "Munkamenet",
@@ -9471,9 +9603,8 @@
                      "sessionControlsCasLabel":  "Feltételes hozzáférést biztosító alkalmazás-vezérlő használata",
                      "sessionControlsSecureSignInLabel":  "Jogkivonatkötés megkövetelése",
                      "sharepointAppName":  "SharePoint",
-                     "signinRiskDescription":  "Válassza ki a bejelentkezési kockázati szintet, amelyre érvényes lesz a házirend",
                      "signinRiskInclude":  "{0} belefoglalva",
-                     "signinRiskReauth":  "A „Bejelentkezési kockázat” beállítást be kell jelölni, ha a „Bejelentkezési gyakoriság minden alkalommal” munkamenet-vezérlő és a „Többtényezős hitelesítés megkövetelése” engedély van kiválasztva",
+                     "signinRiskReauth":  "A „Bejelentkezési kockázat“ feltételt akkor kell kiválasztani, ha a „Többtényezős hitelesítés megkövetelése“ engedély és a „Bejelentkezési gyakoriság minden alkalommal“ munkamenet-vezérlő van kiválasztva.",
                      "signinRiskTriggerDescriptionContent":  "A bejelentkezési kockázat szintjének kiválasztása",
                      "singleTenantServicePrincipalInfoBallonText":  "A szabályzat csak a szervezet tulajdonában álló egybérlős szolgáltatásnevekre vonatkozik. További információért kattintson ide ",
                      "specificSigninRiskLevelsOption":  "Konkrét bejelentkezési kockázati szintek kiválasztása",
@@ -9503,7 +9634,7 @@
                      "trustedLocationStatusIconEnabled":  "Megbízható állapotikon",
                      "tuesday":  "kedd",
                      "uploadInBadState":  "Nem sikerült feltölteni a megadott fájlt.",
-                     "upsellAppsDescription":  "Többtényezős hitelesítés megkövetelése az érzékeny alkalmazásokhoz minden esetben vagy csak a vállalati hálózaton kívülről.",
+                     "upsellAppsDescription":  "Többtényezős hitelesítés megkövetelése a bizalmas alkalmazásokhoz minden esetben vagy csak a vállalati hálózaton kívülről.",
                      "upsellAppsTitle":  "Alkalmazások védelme",
                      "upsellBannerText":  "A szolgáltatás használatához szerezze be az ingyenes Prémium szintű próbaverziót",
                      "upsellDataDescription":  "Annak megkövetelése a vállalati erőforrások elérésének engedélyezéséhez, hogy az eszköz megfelelőként megjelölt vagy hibrid Azure Active Directoryhoz csatlakozó legyen.",
@@ -9551,6 +9682,7 @@
                      "usersGroupsLabel":  "Felhasználók és csoportok",
                      "viewApprovedAppsText":  "A jóváhagyott ügyfélalkalmazások listájának megtekintése",
                      "viewCompliantAppsText":  "A szabályzat által védett ügyfélalkalmazások listájának megtekintése",
+                     "viewPolicyInformation":  "Házirend adatainak megtekintése",
                      "vpnBladeTitle":  "VPN-kapcsolat",
                      "vpnCertCreateFailedMessage":  "Hiba: {0}",
                      "vpnCertCreateFailedTitle":  "A(z) {0} létrehozása nem sikerült",
@@ -9653,6 +9785,7 @@
                                          "builtInAndroid":  "Beépített Android-alkalmazás",
                                          "builtInApp":  "Beépített alkalmazás",
                                          "builtInIos":  "Beépített iOS-alkalmazás",
+                                         "iosIPadOSWebClip":  "iOS/iPadOS-webklip",
                                          "iosLobApp":  "Üzletági iOS-alkalmazás",
                                          "iosStoreApp":  "iOS Store-alkalmazás",
                                          "iosVppApp":  "Volume Purchase Program-alkalmazás iOS rendszerhez",
@@ -9677,6 +9810,8 @@
                                          "sharePointApp":  "SharePoint-app",
                                          "teamsApp":  "Teams alkalmazás",
                                          "webApp":  "Webhivatkozás",
+                                         "winGetPublicApp":  "Windows-csomagkezelő közösségi adattár",
+                                         "winGetStoreApp":  "Microsoft Store adattár",
                                          "windowsAppXLobApp":  "AppX-alapú üzletági Windows-alkalmazás",
                                          "windowsClassicApp":  "Windows-alkalmazás (Win32)",
                                          "windowsEdgeApp":  "Microsoft Edge (Windows 10 és újabb)",
@@ -9687,7 +9822,8 @@
                                          "windowsPhoneXapLobApp":  "XAP-alapú üzletági Windows Phone-alkalmazás",
                                          "windowsStoreApp":  "Microsoft Store-alkalmazás",
                                          "windowsUniversalAppXLobApp":  "Univerzális AppX-alapú üzletági Windows-alkalmazás",
-                                         "windowsUniversalLobApp":  "Univerzális üzletági Windows-alkalmazás"
+                                         "windowsUniversalLobApp":  "Univerzális üzletági Windows-alkalmazás",
+                                         "windowsWebApp":  "Windows webes hivatkozás"
                                      },
                          "AppTypePlatform":  {
                                                  "android":  "Android",
@@ -11028,6 +11164,10 @@
                                "xLanguagesSelectedLabel":  "{0} nyelv kiválasztva",
                                "xmlConfigurationLabel":  "XML-konfiguráció"
                            },
+    "Filters":  {
+                    "ruleSyntax":  "Szabály szintaxisa",
+                    "filters":  "Szűrők"
+                },
     "EnrollmentRestrictions":  {
                                    "DeletePayloadLink":  {
                                                              "content":  "A(z) {0} egy vagy több szabályzatkészletben szerepel. A(z) {0} törlése után a továbbiakban nem tudja hozzárendelni ezeken a szabályzatkészleteken keresztül. Biztosan törli?",
@@ -11135,9 +11275,12 @@
                                           "gettingStarted":  "Kezdeti lépések",
                                           "messages":  "Üzenetek",
                                           "onlineResources":  "Online erőforrások",
+                                          "releaseManagement":  "Release management",
                                           "serviceRequests":  "Szolgáltatáskérelmek",
                                           "settings":  "Beállítások",
-                                          "tenantEnrollment":  "Bérlői regisztráció"
+                                          "supportRequests":  "Support requests",
+                                          "tenantEnrollment":  "Bérlői regisztráció",
+                                          "tenantManagement":  "TenantManagement"
                                       },
                    "actions":  "Meg nem felelés esetén végrehajtandó műveletek",
                    "advancedExchangeSettings":  "Exchange Online-beállítások",
@@ -11237,7 +11380,7 @@
                    "properties":  "Tulajdonságok",
                    "reports":  "Jelentések",
                    "retireNoncompliantDevices":  "Nem megfelelő eszközök kivonása",
-                   "retireNoncompliantDevicesPreview":  "Retire noncompliant devices (preview)",
+                   "retireNoncompliantDevicesPreview":  "Nem megfelelő eszközök kivonása (előzetes verzió)",
                    "role":  "Szerepkör",
                    "scriptManagement":  "Parancsfájlok",
                    "securityBaselines":  "Biztonsági alapkonfigurációk",
@@ -11249,7 +11392,11 @@
                    "tenantAdministration":  "Bérlői felügyelet",
                    "termsAndConditions":  "Feltételek és kikötések",
                    "titles":  "Címek",
+                   "troubleshoot":  "Hibaelhárítás",
+                   "troubleshootDevice":  "Eszköz",
+                   "troubleshootGroup":  "Csoport",
                    "troubleshootSupport":  "Hibaelhárítás + ügyfélszolgálat",
+                   "troubleshootUser":  "Felhasználó",
                    "user":  "Felhasználó",
                    "userExecutionStatus":  "Felhasználó állapota",
                    "warranty":  "Jótállási szállítók",

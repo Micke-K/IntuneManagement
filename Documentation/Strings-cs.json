@@ -1,4 +1,4 @@
-﻿{
+{
     "OutlookAppConfig":  {
                              "DataProtectionConfiguration":  {
                                                                  "header":  "Konfigurace ochrany dat"
@@ -329,7 +329,7 @@
                      "contentCaching":  "Zachytávání obsahu",
                      "controlPanelAndSettings":  "Ovládací panely a nastavení",
                      "credentialGuard":  "Ochrana Credential Guard v programu Microsoft Defender",
-                     "customCompliance":  "Vlastní dodržování předpisů",
+                     "customCompliance":  "Vlastní dodržování předpisů (Preview)",
                      "customCompliancePreview":  "Vlastní dodržování předpisů (Preview)",
                      "customConfiguration":  "Vlastní konfigurační profil",
                      "customOMASettings":  "Vlastní nastavení OMA-URI",
@@ -786,6 +786,7 @@
                                      "SurfaceHub":  {
                                                         "friendlyNameRequired":  "Popisný název je povinný.",
                                                         "pwdRequired":  "Heslo je povinné.",
+                                                        "pwdValidFormat":  "Heslo se nepovedlo aktualizovat. Hodnota zadaná pro nové heslo nesplňuje požadavky domény na délku nebo složitost.",
                                                         "upnRequired":  "Účet zařízení je povinný.",
                                                         "upnValidFormat":  "Hodnoty můžou obsahovat písmena (a–z, A–Z), číslice (0–9) a spojovníky. Hodnoty nesmí obsahovat mezeru."
                                                     }
@@ -920,8 +921,8 @@
                       "assignedDevicesResourceAccountStatusBarMessage":  "V této tabulce se uvádějí jen zařízení Surface Hub 2, kterým se přiřadil tento profil.",
                       "assigningDescription":  "Aktualizuje se přiřazení pro {0}.",
                       "assigningTitle":  "Aktualizují se přiřazení profilů AutoPilot",
-                      "autoremediationContext":  "We've detected a hardware change on this device. We're trying to automatically register the new hardware. You don't need to do anything now; the status will be updated at the next check in with the result. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Learn more about resetting the profile.</a>",
-                      "autoremediationTitle":  "Device {0} has a fix pending",
+                      "autoremediationContext":  "Na tomto zařízení jsme zjistili změnu hardwaru. Pokoušíme se automaticky zaregistrovat nový hardware. Teď nemusíte nic dělat. Stav se aktualizuje při příštím ohlášení. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Další informace o resetování profilu.</a>",
+                      "autoremediationTitle":  "Zařízení {0} čeká na opravu",
                       "cannotDeleteMessage":  "Tento profil je přidružený ke skupinám. Než budete moct profil odstranit, bude nutné zrušit v něm přiřazení všech skupin.",
                       "cannotDeleteTitle":  "Nejde odstranit {0}",
                       "createdDateTime":  "Vytvořeno",
@@ -944,8 +945,8 @@
                       "invalidProfileNameMessage":  "Znak {0} není povolený.",
                       "joinTypeLabel":  "Připojit se k Azure AD jako",
                       "lastModifiedDateTime":  "Poslední změna:",
-                      "manualRemediationContext":  "We've detected a hardware change on this device. It won't automatically receive an Autopilot profile when it's reset unless you register the device again. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Learn more about resetting the profile.</a>",
-                      "manualRemediationTitle":  "Device {0} needs your attention",
+                      "manualRemediationContext":  "Na tomto zařízení jsme zjistili změnu hardwaru. Pokud zařízení znovu nezaregistrujete, při obnovení do továrního nastavení automaticky neobdrží profil Autopilot. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Další informace o resetování profilu.</a>",
+                      "manualRemediationTitle":  "Zařízení {0} vyžaduje vaši pozornost",
                       "name":  "Název",
                       "noAutopilotProfile":  "Žádné profily AutoPilot",
                       "notEnoughPermissionAssignedError":  "K přiřazení tohoto profilu do jedné nebo více vybraných skupin nemáte dostatečná oprávnění. Obraťte se prosím na svého správce.",
@@ -958,6 +959,13 @@
                       "windowsPCCommandMenu":  "Počítač s Windows",
                       "directoryServiceLabel":  "Připojit k Azure AD jako"
                   },
+    "RoleAssignment":  {
+                           "RoleAssignmentAdmin":  "Skupiny správců",
+                           "RoleAssignmentAdminDesc":  "Uživatelé ze skupiny správců jsou správci přiřazení k této roli",
+                           "rolesMenuTitle":  "Role Endpoint Manager",
+                           "RoleAssignmentScopeDesc":  "Cílem správců v tomto přiřazení rolí můžou být zásady, aplikace a vzdálené úlohy",
+                           "RoleAssignmentScope":  "Skupiny oborů"
+                       },
     "MinimumOperatingSystem":  {
                                    "Android":  {
                                                    "v10":  "Android 10.0",
@@ -983,6 +991,7 @@
                                                "v12":  "iOS 12.0",
                                                "v13":  "iOS 13.0",
                                                "v14":  "iOS 14.0",
+                                               "v15":  "iOS 15.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -1178,6 +1187,61 @@
                              "includeAllDevicesVirtualGroup":  "Zahrnuto",
                              "includeAllUsersVirtualGroup":  "Zahrnuto"
                          },
+    "CoManagementAuthority":  {
+                                  "Confirmation":  {
+                                                       "deleteMessage":  "Ovlivnění uživatelé se omezí prostřednictvím přiřazené stránky autority pro spolusprávu s následující nejvyšší prioritou, nebo výchozí stránky autority pro spolusprávu, pokud není přiřazená žádná jiná.",
+                                                       "deleteTitle":  "{0} je zobrazované jméno konfigurované zásady autority pro spolusprávu"
+                                                   },
+                                  "Grid":  {
+                                               "description":  "Stránka autority pro spolusprávu se zobrazuje během počáteční instalace zařízení a prvního přihlášení uživatele. Pokud je tato možnost povolená, uživatelé uvidí průběh konfigurace přiřazených aplikací a profilů určených pro jejich zařízení.",
+                                               "hyperlink":  "https://go.microsoft.com/fwlink/?linkid=86016",
+                                               "label":  "Autorita pro spolusprávu"
+                                           },
+                                  "Header":  {
+                                                 "description":  "Stránka autority pro spolusprávu se zobrazuje během počáteční instalace zařízení a prvního přihlášení uživatele. Pokud je tato možnost povolená, uživatelé uvidí průběh konfigurace přiřazených aplikací a profilů určených pro jejich zařízení."
+                                             },
+                                  "Main":  {
+                                               "title":  "Autorita pro spolusprávu"
+                                           },
+                                  "MessageSaved":  {
+                                                       "body":  "Zásada autority pro spolusprávu se vytvořila."
+                                                   },
+                                  "Notification":  {
+                                                       "createError":  "Při vytváření zásady autority pro spolusprávu {0} došlo k chybě.",
+                                                       "created":  "Tato zásada pro spolusprávu se nepřiřadila k žádným uživatelům.",
+                                                       "creating":  "Vytváří se zásada autority pro spolusprávu",
+                                                       "creatingMessage":  "Vytváří se zásada autority pro spolusprávu {0}",
+                                                       "deleteError":  "Při odstraňování zásady autority pro spolusprávu došlo k chybě",
+                                                       "deleted":  "Zásada autority pro spolusprávu se odstranila.",
+                                                       "deletedMessage":  "Zásada autority pro spolusprávu {0} se odstranila.",
+                                                       "deleting":  "Odstraňuje se zásada autority pro spolusprávu",
+                                                       "deletingMessage":  "Odstraňuje se zásada autority pro spolusprávu {0}",
+                                                       "fetchError":  "Při zobrazování zásady autority pro spolusprávu došlo k chybě",
+                                                       "saved":  "Autorita pro spolusprávu se uložila.",
+                                                       "savedMessage":  "Zásada autority pro spolusprávu {0} se úspěšně uložila.",
+                                                       "saving":  "Ukládá se autorita pro spolusprávu",
+                                                       "savingMessage":  "Ukládá se zásada autority pro spolusprávu {0}"
+                                                   },
+                                  "Priority":  {
+                                                   "saveError":  "Při ukládání priorit autority pro spolusprávu došlo k chybě",
+                                                   "saved":  "Priority autority pro spolusprávu se úspěšně uložily."
+                                               },
+                                  "ReloadNotification":  {
+                                                             "description":  "Znovu načtěte zásadu autority pro spolusprávu a zkuste to znovu.",
+                                                             "title":  "Znovu načíst okno autority pro spolusprávu"
+                                                         },
+                                  "advancedProperty":  "Rozšířené",
+                                  "commandLineArgs":  "Argumenty příkazového řádku instalace klienta",
+                                  "deviceGroupOnlyMessage":  "Profily stránek autority pro spolusprávu se dají přiřadit jenom skupinám uživatelů. Přiřazená zařízení nebudou stránku autority pro spolusprávu zobrazovat.",
+                                  "enterArgument":  "Zadat argument",
+                                  "installAgent":  "Agenta Configuration Manageru můžete instalovat automaticky.",
+                                  "managedDeviceOwnership":  "Přepsat zásadu pro spolusprávu a použít Intune pro všechny úlohy.",
+                                  "noAssignmentMessage":  "Přiřaďte zásadu autority pro spolusprávu aspoň k jedné skupině. Klikněte na Vlastnosti.",
+                                  "pageDescription":  "Profily autority pro spolusprávu",
+                                  "pageSetting":  "Nastavení autority pro spolusprávu",
+                                  "pageTitle":  "Autorita pro spolusprávu",
+                                  "settingDescription":  "Nastavení spolusprávy určuje, kdo bude vlastnit úlohy."
+                              },
     "AppType":  {
                     "androidEnterpriseSystemApp":  "Aplikace systému Android Enterprise",
                     "androidForWorkApp":  "Aplikace spravovaného obchodu Google Play",
@@ -1356,6 +1420,14 @@
                                                    "label":  "Znovu zkontrolovat požadavky na přístup po (počet minut neaktivity)\r\n\r\n",
                                                    "tooltip":  "Pokud je aplikace spravovaná zásadami neaktivní déle než zadaný počet minut, aplikace po spuštění vyzve, aby se znovu zkontrolovaly požadavky na přístup (tj. PIN kód, nastavení podmíněného spuštění)."
                                                },
+                        "RequireClass3Biometrics":  {
+                                                        "label":  "Class 3 Biometrics (Android 9.0+)",
+                                                        "tooltip":  "For more information on class 3 biometrics refer to the documentation available <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">here</a>"
+                                                    },
+                        "RequirePinAfterBiometricChange":  {
+                                                               "label":  "Override Biometrics with PIN after biometric updates",
+                                                               "tooltip":  "If class 3 biometrics are supported by the device (more info <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>), when a change in biometrics is detected, a PIN prompt will override biometric prompts."
+                                                           },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "ID balíčku musí být jedinečné.",
                                                   "invalidPackageError":  "Neplatné ID balíčku",
@@ -1454,6 +1526,8 @@
                       },
     "EnrollmentStatusScreen":  {
                                    "Apps":  {
+                                                "apps":  "aplikace",
+                                                "appsListName":  "Seznam aplikací",
                                                 "managedApps":  "Spravované aplikace",
                                                 "noApps":  "Žádné aplikace",
                                                 "noAppsError":  "Při načítání aplikací došlo k chybě.",
@@ -1692,7 +1766,8 @@
                                                       "windowsDomainJoin":  "Místní Active Directory (AD) používá řada prostředí. Když jsou zařízení připojená k doméně AD připojená i k Azure AD, nazývají se zařízení připojená službou Hybrid Azure AD Join. Tato zařízení můžete zaregistrovat do Intune pomocí Windows Autopilot. K registraci ještě potřebujete konfigurační profil připojení k doméně. Konfigurační profil připojení k doméně zahrnuje informace o místním Active Directory. Když se zařízení zřizují (obvykle offline), nasadí tento profil podrobnosti domény AD, aby zařízení věděla, ke které místní doméně se mají připojit. Pokud profil připojení k doméně nevytvoříte, může dojít k selhání nasazení těchto zařízení.",
                                                       "windowsEditionUpgrade":  "Je možné, že jako součást řešení pro správu mobilních zařízení (MDM) budete chtít upgradovat zařízení s Windows 10/11. Chcete například upgradovat vaše zařízení s Windows 10/11 Professional na Windows 10/11 Enterprise. Nebo chcete zařízení přepnout z režimu S. Režim Windows 10/11 S je navržený pro zabezpečení a výkon. Pomocí Intune můžete přepnout z režimu S. Přepnutí z režimu S je jednosměrné. A když z režimu S přepnete, nebudete se moct k režimu Windows 10/11 S vrátit. Tato funkce se použije na systémy: Windows 10 a novější, Windows 10 1809 nebo novější pro režim S a Windows Holographic pro firmy. Tyto funkce jsou k dispozici v Intune. Konfigurovat je může správce. Intune používá konfigurační profily k vytvoření a přizpůsobení těchto nastavení potřebám vaší organizace. Po přidání těchto funkcí do profilu můžete nasdílet změny profilu nebo profil nasadit na zařízení se systémem Windows 10 nebo novějším ve vaší organizaci. Když profil nasadíte, Intune zařízení automaticky upgraduje nebo přepne z režimu S.",
                                                       "windowsHealthMonitoring":  "Microsoft může shromažďovat data o událostech a poskytnout doporučení ke zvýšení výkonu vašich zařízení s Windows. Analýza koncového bodu tato data analyzuje a může doporučit software, pomoci zlepšit výkon spouštění a opravit běžné problémy podpory. V Intune můžete vytvořit konfigurační profil zařízení pro monitorování stavu Windows, který toto shromažďování dat povolí, a pak tento profil nasadit na zařízení. Tento profil použijte jako součást řešení pro správu mobilních zařízení (MDM) a optimalizujte svá zařízení s Windows.",
-                                                      "windowsIdentityProtection":  "S Intune můžete pomocí tohoto profilu konfigurace zařízení spravovat nastavení Windows Hello pro firmy na zařízeních s Windows. <br><br>Věděli jste, že ke konfiguraci běžných funkcí zabezpečení ochrany koncového bodu můžete přejít do <a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\">Zabezpečení koncového bodu</a> a vytvořit profil zabezpečení koncového bodu nebo profil standardní hodnoty zabezpečení? <br><br>Profily zabezpečení koncového bodu představují stručnou, kurátorovanou sadu šablon zabezpečení, včetně brány firewall, nástroje BitLocker, antivirového programu a dalších. Profily standardních hodnot zabezpečení jsou šablony s předem nakonfigurovanými hodnotami nastavení doporučenými odborníky na zabezpečení."
+                                                      "windowsIdentityProtection":  "S Intune můžete pomocí tohoto profilu konfigurace zařízení spravovat nastavení Windows Hello pro firmy na zařízeních s Windows. <br><br>Věděli jste, že ke konfiguraci běžných funkcí zabezpečení ochrany koncového bodu můžete přejít do <a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\">Zabezpečení koncového bodu</a> a vytvořit profil zabezpečení koncového bodu nebo profil standardní hodnoty zabezpečení? <br><br>Profily zabezpečení koncového bodu představují stručnou, kurátorovanou sadu šablon zabezpečení, včetně brány firewall, nástroje BitLocker, antivirového programu a dalších. Profily standardních hodnot zabezpečení jsou šablony s předem nakonfigurovanými hodnotami nastavení doporučenými odborníky na zabezpečení.",
+                                                      "wiredNetwork":  "Nastavte drátovou síť, ke které budou mít lidé přístup."
                                                   },
                            "TrustedCert":  {
                                                "uploadControlPlaceHolderText":  "Vyberte platný soubor s příponou .cer"
@@ -1855,7 +1930,7 @@
                            "androidZebraMxConfigurationXmlName":  "Profil MX ve formátu .xml",
                            "anonymousIdentityPrivacyName":  "Anonymní identita",
                            "any":  "Libovolný",
-                           "anyDNSAddressesInList":  "K překladu těchto domén použijte následující servery DNS (nepovinné).",
+                           "anyDNSAddressesInList":  "K překladu zadaných domén použijte následující servery DNS (nepovinné).",
                            "anyDayOption":  "Libovolný den",
                            "anyEthernet":  "Libovolná síť Ethernet",
                            "anywhereOption":  "Kdekoliv",
@@ -2831,10 +2906,10 @@
                            "connectAppBlockAutoLaunchDescription":  "Zablokuje automatické spouštění aplikace Connect. Pokud se zablokuje, uživatelé můžou aplikaci Connect spustit ručně z nastavení centra.",
                            "connectAppBlockAutoLaunchName":  "Automaticky spouštět Connect",
                            "connectIfNeeded":  "Připojit v případě potřeby",
-                           "connectIfNeededDNSListDescription":  "Po nakonfigurování se tyto servery DNS použijí k překladu domén v seznamu. Selhání překladu domény povede k navázání připojení VPN.",
-                           "connectIfNeededDomainsDescription":  "Když uživatel získá přístup k doméně v tomto seznamu, zařízení se pokusí přeložit doménu pomocí DNS. Selhání překladu domény povede k navázání připojení VPN.",
+                           "connectIfNeededDNSListDescription":  "Zadejte IP adresy serverů DNS, které přeloží domény v seznamu. Toto nastavení platí pouze pro domény v seznamu. Domény a servery DNS jsou interní prostředky, ke kterým se nedá přistupovat z externích sítí. Pokud se tedy doména nepřeloží, vytvoří se připojení sítě VPN na vyžádání.",
+                           "connectIfNeededDomainsDescription":  "Když uživatelé přistupují k doméně v tomto seznamu, zařízení se pokusí přeložit doménu pomocí DNS. Domény jsou interní prostředky, které se veřejnou DNS nepřeloží. Pokud se tedy doména nepřeloží, což znamená, že nemá přístup k interním prostředkům, vytvoří se připojení sítě VPN na vyžádání.",
                            "connectIfNeededOption":  "Připojit v případě potřeby",
-                           "connectOption":  "Připojit VPN",
+                           "connectOption":  "Připojit síť VPN",
                            "connectionHeading":  "Připojení",
                            "consumerFeaturesDescription":  "Umožňuje správcům IT zapnout prostředí, která jsou k dispozici obvykle jenom uživatelům, třeba návrhy nabídky Start, oznámení o členství, instalace aplikací po prvním spuštění počítače a dlaždice pro přesměrování.",
                            "consumerFeaturesName":  "Uživatelské funkce",
@@ -3888,6 +3963,7 @@
                            "gatekeeperAllowedAppSourceName":  "Povolit aplikace stažené z těchto míst",
                            "gatekeeperBlockOverrideDescription":  "Zabrání uživateli v dočasném přepsání nastavení Gatekeeperu po klepnutí na ovládací prvek k instalaci jakékoliv aplikace.",
                            "gatekeeperBlockOverrideName":  "Nepovolit uživateli přepsat Gatekeeper",
+                           "generalAvailabilityChannel":  "Kanál obecné dostupnosti",
                            "generalNetworkSettingsHeader":  "Obecné",
                            "genericLocalUsersOrGroupsName":  "Obecní místní uživatelé nebo skupiny",
                            "globalConfigurationsDescription":  "Nakonfiguruje nastavení Firewallu v programu Microsoft Defender, která budou platit pro všechny typy sítě.",
@@ -3999,7 +4075,7 @@
                            "iPsecSecuredPacketExemptionName":  "Výjimka zabezpečených paketů protokolu IPsec s neviditelným režimem",
                            "iPv4Option":  "Protokol IPv4",
                            "iPv6Option":  "Protokol IPv6",
-                           "iWantToDescription":  "Vyberte akci, která se provede, pokud se dodrží toto pravidlo.",
+                           "iWantToDescription":  "Akce Připojit síť VPN, Odpojit síť VPN a Ignorovat se použijí, když se uživatel připojuje k síti. Tyto akce pokračují po dobu, kdy je uživatel připojený. Akce Vyhodnotit každý pokus o připojení se vztahuje na všechna připojení k doménám, které pro akci zadáte, ale pouze v případě, že síť VPN ještě není připojena.",
                            "iWantToName":  "Chci udělat následující",
                            "iconSortOrderAlphabetic":  "Abecední",
                            "iconSortOrderDescription":  "",
@@ -4924,6 +5000,7 @@
                            "mustBeAValidProductKey":  "Musí jít o platný kód Product Key (formát: 12345-22345-32345-42345-52345).",
                            "mustBeAValidTeamId":  "Musí to být platné ID týmu.",
                            "mustBeAValidUrl":  "Musí jít o platnou adresu URL.",
+                           "mustBeAValidUrlNoProtocol":  "Musí to být platná adresa URL nebo IP adresa bez protokolu (bez protokolu HTTP nebo HTTPS).",
                            "mustBeAValidUrlOrIP":  "Musí se jednat o platnou URL nebo IP adresu",
                            "mustBeAValidUrlWithIdParameter":  "Musí to být platný identifikátor URI s parametrem dotazu ID. Příklad: https://play.google.com/store/apps/details?id=com.microsoft.test2",
                            "mustBeAWellFormedXMLString":  "Musí se jednat o řetězec XML ve správném formátu",
@@ -4937,11 +5014,14 @@
                            "mustBeValidBuildVersionFormat":  "Musí být platný formát verze buildu. Příklad: 18A391, 16G1114 atd.",
                            "mustBeValidDNSSuffix":  "Musí se jednat o platnou příponu DNS. Příklad: itgproxy.com",
                            "mustBeValidDateFormat":  "Musí být platným formátem data (RRRR-MM-DD). Příklad: 2016-10-01, 2016-10-31 atd.",
+                           "mustBeValidDomain":  "Musí se jednat o platnou doménu. Příklad: contoso.com",
                            "mustBeValidEmail":  "Musí se jednat o platnou e-mailovou adresu. Příklad: adresa@example.com atd.",
                            "mustBeValidEmailList":  "Musí být ve formátu platného seznamu e-mailů: uzivatel1@gmail.com; uzivatel2@gmail.com",
                            "mustBeValidFloatingPoint":  "Musí jít o platné číslo s plovoucí desetinnou tečkou. Příklad: 1.0, 4.3 atd.",
                            "mustBeValidGuid":  "Musí jít o platný identifikátor UUID. Příklad: 782AFCFC-7CAA-436C-8BF0-78CD0FFBD4AF atd.",
                            "mustBeValidHost":  "Musí se jednat o platného hostitele. Příklad: www.host.com atd.",
+                           "mustBeValidHttpURL":  "Musí se jednat o platnou adresu URL protokolu HTTP nebo HTTPS. Příklad: https://www.contoso.com",
+                           "mustBeValidIpAddress":  "Musí se jednat o platnou IP adresu. Příklad: 4.3.6.0",
                            "mustBeValidKaiserWifiFormat":  "Formát není správný. Příklad formátu uživatele: abcd{{WifiMacAddress}}, příklad formátu hesla: abcd{{WifiMacAddress}}{{PreSharedKey}}",
                            "mustBeValidMonthDayDateFormat":  "Musí to být platný formát data (MM/DD). Příklad: 01/31, 02/28 atd.",
                            "mustBeValidObjectIdentifierFormat":  "Musí jít o identifikátor objektu v platném formátu. Příklad: 4.3.6.0, 7.01.4 atd.",
@@ -5107,7 +5187,7 @@
                            "omaBase64Name":  "Soubor certifikátu",
                            "onDemandDefaultRule":  "Výchozí pravidlo: Nedělat nic",
                            "onDemandRuleName":  "Pravidlo {0}",
-                           "onDemandRulesDescription":  "Pokaždé, když se zařízení s iOSem pokusí o připojení k síti, budou se tato pravidla porovnávat s určitými podmínkami, jako je identifikátor SSID Wi-Fi nebo název domény. Pokud se najde shoda, provede se na zařízení příslušná akce.",
+                           "onDemandRulesDescription":  "Tato nastavení slouží k vytvoření pravidla. Pokud se najde shoda s vaším pravidlem, pak zařízení provede akci, kterou zvolíte, třeba na vyžádání vytvoří připojení sítě VPN.",
                            "onDemandRulesExample":  "třeba odpojit VPN na firemní Wi-Fi",
                            "onDemandRulesInfo":  "Další informace o vytváření pravidel na vyžádání",
                            "onDemandRulesName":  "Pravidla na vyžádání",
@@ -5371,9 +5451,9 @@
                            "privateShieldedSummaryLabel":  "Chráněné (Privátní sítě)",
                            "privateStealthModeSummaryLabel":  "Neviditelný režim (Privátní sítě)",
                            "privateUnicastResponsesToMulticastBroadcastsSummaryLabel":  "Jednosměrové odpovědi na vícesměrová vysílání (Privátní sítě)",
-                           "probeUrlOptionalDescription":  "Toto by měla být adresa URL protokolu HTTP nebo HTTPS (upřednostňované). Testuje se při každém pokusu o přístup k doméně v seznamu domén tohoto pravidla. Pokud test selže, protože je adresa URL nedostupná nebo nevrací stavový kód HTTP 200, naváže se připojení VPN.",
-                           "probeUrlOptionalExample":  "třeba badURL.com",
-                           "probeUrlOptionalName":  "Když tato adresa URL nebude dostupná, vynutí se připojení VPN.",
+                           "probeUrlOptionalDescription":  "Tato adresa URL je testovací a určuje, jestli je zařízení v externí síti. Adresa URL je testována pokaždé, když se uživatel pokusí o přístup k doméně v seznamu domén. Pokud test selže, protože adresa URL je nedostupná nebo nevrací stavový kód HTTP 200, vytvoří se připojení sítě VPN. Zadejte například adresu https://corp.contoso.com/internalprobe, ke které je možné přistupovat pouze tehdy, když je zařízení připojeno k interní síti.",
+                           "probeUrlOptionalExample":  "e.g. https://corp.contoso.com/internalprobe",
+                           "probeUrlOptionalName":  "Zadejte HTTP nebo HTTPS testovací adresy URL.",
                            "processesColumn":  "Procesy",
                            "processesColumnExamples":  "Příklad: %ProgramFiles%\\cesta\\mojeaplikace.exe",
                            "processesToExcludeName":  "Procesy, které chcete vyloučit z kontrol a ochrany v reálném čase",
@@ -5514,6 +5594,8 @@
                            "requiredPasswordComplexityName":  "Složitost hesla",
                            "requiredPasswordTypeDescription":  "Zadejte požadovaný typ hesla.",
                            "requiredPasswordTypeName":  "Požadovaný typ hesla",
+                           "requiredPasswordUnlockDailyOption":  "24 hodin od posledního odemknutí kódem PIN, heslem nebo vzorem",
+                           "requiredPasswordUnlockName":  "Požadovaná frekvence odemknutí",
                            "requiredURLStringProbeName":  "Adresa URL testu před připojením",
                            "resetToDefaultOption":  "Obnovit na výchozí",
                            "resourcePath":  "Cesta k prostředku",
@@ -5533,7 +5615,6 @@
                            "restrictedAppsName":  "Omezené aplikace",
                            "restrictedSitesSecurityLevelDescription":  "Vynutí vysoké zabezpečení pro weby s omezeným přístupem.",
                            "restrictedSitesSecurityLevelName":  "Vysoké zabezpečení pro weby s omezeným přístupem",
-                           "retailChannel":  "Prodejní kanál",
                            "revokeEncryptionKeysOnUnEnrollDescription":  "Odvolá šifrovací klíče při zrušení zápisu zařízení (doporučuje se nastavit Ano).",
                            "revokeEncryptionKeysOnUnEnrollName":  "Odvolat šifrovací klíče při zrušení zápisu zařízení ",
                            "roleAndRealmDescription":  "Páry hodnot role a sféry tak, jak je vyžaduje dodavatel.",
@@ -6974,7 +7055,7 @@
                            "wipOption":  "Přidružit WIP k tomuto připojení",
                            "wirelessOption":  "Bezdrátové",
                            "with":  "Zvolte, jestli se má navázat spojení.",
-                           "withDescription":  "To se provede při každém pokusu o přihlášení.",
+                           "withDescription":  "Pokud neexistuje připojení sítě VPN, pak pro každý pokus o připojení k doméně, kterou zadáte, rozhodněte, jestli se uživatelé mají připojit k síti VPN, nebo se k ní nikdy nepřipojovat. Akce, kterou vyberete, se provede při každém pokusu o připojení.",
                            "workFoldersURLDescription":  "Pomocí Pracovních složek můžete zpřístupnit svoje pracovní soubory na všech zařízeních, která používáte, dokonce i offline.",
                            "workFoldersURLName":  "Adresa URL pracovních složek",
                            "workProfileAllowAppInstallsFromUnknownSourcesInWorkProfileName":  "Povolit instalace aplikací z neznámých zdrojů v pracovním profilu",
@@ -7075,6 +7156,7 @@
                            "add":  "Přidat",
                            "addAppConfiguration":  "Přidat konfiguraci aplikace",
                            "addApps":  "Přidat aplikace",
+                           "addCondition":  "Add condition",
                            "addConfigCommandLabel":  "Přidat konfiguraci",
                            "addPolicyBladeTitle":  "Přidat zásadu",
                            "addPolicyError":  "Nepovedlo se přidat zásady: {0}",
@@ -7135,6 +7217,9 @@
                            "appsCountSelectorDisplayTextPlural":  "Počet vybraných aplikací: {0}",
                            "appsCountSelectorDisplayTextSingular":  "Je vybraná {0} aplikace.",
                            "appsInAndroidWorkProfile":  "Aplikace v pracovním profilu Androidu",
+                           "appsOnAndroidEnterpriseDedicatedDevicesWithAzureAdSharedMode":  "Aplikace na vyhrazených zařízeních s Androidem Enterprise se sdíleným režimem Azure AD​",
+                           "appsOnAndroidOpenSourceProjectUserAssociated":  "Aplikace na zařízeních AOSP přidružených uživateli",
+                           "appsOnAndroidOpenSourceProjectUserless":  "Aplikace na zařízeních AOSP bez uživatelů",
                            "appsOnIntuneManagedDevices":  "Aplikace na spravovaných zařízeních Intune",
                            "appsOnUnmanagedDevices":  "Aplikace na nespravovaných zařízeních",
                            "appsSelectorLabel":  "Aplikace",
@@ -7240,6 +7325,7 @@
                            "deviceConditionsInfoParagraph2":  "Podobná nastavení, která se zakládají na zařízení, se dají nakonfigurovat i pro zaregistrovaná zařízení.",
                            "deviceConditionsInfoParagraph2LinkText":  "Další informace o konfiguraci nastavení dodržování předpisů registrovanými zařízeními",
                            "deviceId":  "ID zařízení",
+                           "deviceLockComplexityValidationFailureNotes":  "<p><b>Poznámky:</b></p>\r\n<ul type=\"disc\">\r\n    <li>Zámek zařízení může vyžadovat složitost hesla NÍZKÁ, STŘEDNÍ nebo VYSOKÁ cílenou na Android 11 a novější. Když se na zařízeních, která používají Android 10 nebo starší, nastaví hodnota složitosti na nízkou, střední nebo vysokou, použije se výchozí očekávané chování pro nízkou složitost.</li>\r\n    <li>Definice hesel níže se můžou změnit. Nejaktuálnější definice pro různé úrovně složitosti hesel najdete v části <a href='https://developer.android.com/reference/android/app/admin/DevicePolicyManager#getPasswordComplexity%28%29'>DevicePolicyManager|Vývojáři pro Android</a>.</li>\r\n</ul>\r\n\r\n<p><b>Nízká</b></p>\r\n<ul type=\"disc\">\r\n    <li>Heslo může představovat vzor nebo PIN kód s opakujícími se (4444) nebo seřazenými (1234, 4321, 2468) posloupnostmi.</li>\r\n</ul>\r\n\r\n<p><b>Střední</b></p>\r\n<ul type=\"disc\">\r\n    <li>PIN kód bez opakujících se (4444) nebo seřazených (1234, 4321, 2468) posloupností s minimální délkou alespoň 4 znaky</li>\r\n    <li>Hesla ze znaků abecedy s minimální délkou alespoň 4 znaky</li>\r\n    <li>Alfanumerická hesla s minimální délkou alespoň 4 znaky</li>\r\n</ul>\r\n\r\n<p><b>Vysoká</b></p>\r\n<ul type=\"disc\">\r\n    <li>PIN kód bez opakujících se (4444) nebo seřazených (1234, 4321, 2468) posloupností s minimální délkou 8 znaků</li>\r\n    <li>Hesla ze znaků abecedy s minimální délkou 6 znaků</li>\r\n    <li>Alfanumerická hesla s minimální délkou 6 znaků</li>\r\n</ul>\r\n<p></p>",
                            "deviceLockedOpenFilesOptionsText":  "Když je zařízení uzamčené a existují otevřené soubory",
                            "deviceLockedOptionText":  "Když je zařízení blokované",
                            "deviceManufacturer":  "Výrobce zařízení",
@@ -7356,6 +7442,7 @@
                            "guidedTemplate2":  "Zeptáme se vás, kterou úroveň ochrany budete chtít uživatelům nasadit. Další informace viz <a href = \"https://go.microsoft.com/fwlink/?linkid=2131582 \">Architektura ochrany dat se zásadami ochrany aplikací. </a>",
                            "guidediOSLabel":  "Ochrana aplikací pro iOS",
                            "hardwareBackedKey":  "Hardwarově podpořený klíč",
+                           "healthCheck":  "Health Checks",
                            "helpAndSupport":  "Nápověda a podpora",
                            "hideOverrides":  "Skrýt potlačení",
                            "highDataProtectionGuidedString":  "Vysoká ochrana dat – Rozšiřuje nastavení definovaná v rozšířené ochraně dat tak, že zavede složitější nastavení požadavků na přístup (např. že zakáže jednoduchý PIN kód) a nastavení ochrany dat (například že zakáže klávesnice třetích stran).",
@@ -7468,6 +7555,7 @@
                            "overview":  "Přehled",
                            "packageId":  "ID balíčku",
                            "pendingDeleteContentStateText":  "Probíhá odstraňování...",
+                           "photoLibrary":  "Knihovna fotografií",
                            "pinCharSettingTooltip":  "Číselný PIN kód povoluje jen číselné znaky.\r\n\r\nHeslo musí mít všechny tyto vlastnosti: alfanumerické znaky a povolené symboly",
                            "pinToDashboard":  "Dummy string, don't translate",
                            "platformColumnLabel":  "Platforma",
@@ -7537,7 +7625,7 @@
                            "reporting":  "Sestavy",
                            "reports":  "Sestavy",
                            "require":  "Vyžadovat",
-                           "requireDeviceLockOnApps":  "Require device lock",
+                           "requireDeviceLockComplexityOnApps":  "Vyžadovat zámek zařízení",
                            "requireThreatScanOnApps":  "Vyžadovat kontrolu hrozeb u aplikací",
                            "requiredField":  "Toto pole nemůže být prázdné.",
                            "requiredSafetyNetEvaluationType":  "Požadovaný typ vyhodnocení SafetyNet",
@@ -7913,9 +8001,9 @@
                            "selectorLabel":  "Pravidla detekce"
                        },
     "PolicyType":  {
-                       "AttackSurfaceReductionRules":  {
-                                                           "configMgr":  "Pravidla pro omezení potenciální oblasti útoku (ConfigMgr)"
-                                                       },
+                       "EdgeSmartScreenSettings":  {
+                                                       "description":  "Doporučené nastavení filtru SmartScreen aplikace Microsoft Edge: Windows 10 v šabloně konfigurace cloudu. https://aka.ms/CloudConfigGuide"
+                                                   },
                        "EndpointDetectionandResponse":  {
                                                             "mDE":  "Zjišťování koncových bodů a odpověď"
                                                         },
@@ -7945,7 +8033,7 @@
                                                         "mDMSecurityBaseline1810PreviewBeta":  "Preview: Základní úroveň zabezpečení MDM pro Windows 10 pro říjen 2018 (beta verze)",
                                                         "mDMSecurityBaseline1906":  "Základní úroveň zabezpečení MDM pro Windows 10 a novější pro květen 2019",
                                                         "mDMSecurityBaseline2004":  "Základní úroveň zabezpečení MDM pro Windows 10 a novější pro srpen 2020",
-                                                        "mDMSecurityBaseline2101":  "Základní plán zabezpečení MDM pro Windows 10 a novější, prosinec 2020",
+                                                        "mDMSecurityBaseline2101":  "Základní úroveň zabezpečení MDM pro Windows 10 a novější, prosinec 2020",
                                                         "macOSAntivirus":  "Antivirus",
                                                         "macOSDiskEncryption":  "FileVault",
                                                         "macOSFirewall":  "Brána firewall macOS",
@@ -7964,13 +8052,20 @@
                        "FirewallRules":  {
                                              "mDE":  "Pravidla Firewallu v programu Microsoft Defender"
                                          },
+                       "OneDriveKnownFolderMove":  {
+                                                       "description":  "Nastavení přesunutí známých složek na OneDrivu: Windows 10 v šabloně konfigurace cloudu. https://aka.ms/CloudConfigGuide"
+                                                   },
+                       "accountProtection":  "Ochrana účtu",
                        "administrativeTemplates":  "Šablony pro správu",
                        "androidCompliancePolicy":  "Zásady dodržování předpisů v Androidu",
                        "aospDeviceOwnerCompliancePolicy":  "Zásady dodržování předpisů v Androidu (AOSP)",
                        "applicationControl":  "Řízení aplikací",
+                       "attackSurfaceReductionRules":  "Pravidla pro omezení možností útoku",
+                       "bitlocker":  "Nástroj BitLocker",
                        "custom":  "Vlastní",
                        "deliveryOptimization":  "Optimalizace doručení",
                        "derivedPersonalIdentityVerificationCredential":  "Odvozené přihlašovací údaje",
+                       "deviceControl":  "Řízení zařízení",
                        "deviceFeatures":  "Funkce zařízení",
                        "deviceFirmwareConfigurationInterface":  "Rozhraní DFCI (Device Firmware Configuration Interface)",
                        "deviceLock":  "Zámek zařízení",
@@ -7990,6 +8085,7 @@
                        "identityProtection":  "Identity Protection",
                        "iosCompliancePolicy":  "Zásady dodržování předpisů v iOSu",
                        "kiosk":  "Veřejný terminál",
+                       "localUsersAndGroups":  "Členství uživatelů ve skupinách",
                        "macCompliancePolicy":  "Zásady dodržování předpisů na Macu",
                        "microsoftDefenderAntivirus":  "Antivirová ochrana v programu Microsoft Defender",
                        "microsoftDefenderAntivirusexclusions":  "Výjimky Antivirové ochrany v programu Microsoft Defender",
@@ -8112,7 +8208,7 @@
     "AzureIAM":  {
                      "AdrsUserActionSelectionWarning":  {
                                                             "conditions":  "Podmínky, které vyžadují registraci zařízení, nejsou k dispozici u uživatelské akce Registrovat nebo připojit zařízení.",
-                                                            "message":  "V zásadách vytvořených pro akci uživatele „Zaregistrovat nebo připojit zařízení“ je možné použít jen možnost „Vyžadovat vícefaktorové ověřování“.{0}"
+                                                            "message":  "V zásadách vytvořených pro akci uživatele Zaregistrovat nebo připojit zařízení je možné použít jen možnost Vyžadovat vícefaktorové ověřování.{0}"
                                                         },
                      "AuthContext":  {
                                          "Delete":  {
@@ -8144,11 +8240,12 @@
                                                         "selected":  "Zahrnutý kontext ověřování"
                                                     },
                                          "addNewStepUp":  "Nový kontext ověřování",
+                                         "bannerText":  "Vytvořte vlastní hodnoty kontextu ověřování a zásady podmíněného přístupu pomocí Azure AD Premium",
                                          "checkBoxInfo":  "Vyberte kontext ověřování, na které se tyto zásady budou vztahovat.",
                                          "configure":  "Nakonfigurovat kontexty ověřování",
                                          "createCA":  "Přiřadit zásady podmíněného přístupu ke kontextu ověřování",
                                          "dataGrid":  "Seznam kontextů ověřování",
-                                         "deleteFailedByReference":  "You cannot delete this authentication context because it is being referenced by CA policies.",
+                                         "deleteFailedByReference":  "Tento kontext ověřování nelze odstranit, protože na něj odkazují zásady certifikační autority.",
                                          "description":  "Popis",
                                          "documentation":  "Dokumentace",
                                          "getStarted":  "Začínáme",
@@ -8166,49 +8263,34 @@
                      "AuthenticationStrength":  {
                                                     "Mode":  {
                                                                  "deviceBasedPush":  "Microsoft Authenticator (přihlášení telefonem)",
-                                                                 "deviceBasedPushFido2X509Certificate":  "Microsoft Authenticator (přihlášení telefonem) + Fido 2 + ověřování na základě certifikátu",
-                                                                 "deviceBasedPushX509CertificateSingleFactor":  "Microsoft Authenticator (přihlášení telefonem) + Fido 2 + ověřování na základě certifikátu (jednofaktorové)",
-                                                                 "email":  "Jednorázové heslo poslané e-mailem",
-                                                                 "emailOtp":  "Jednorázové heslo poslané e-mailem",
+                                                                 "email":  "Jednorázový přístupový kód poslaný e-mailem",
                                                                  "federatedMultiFactor":  "Federované vícefaktorové",
-                                                                 "federatedSingleFactor":  "Federovaný jeden faktor",
-                                                                 "federatedSingleFactorFederatedMultiFactor":  "Federované jednofaktorové + federované vícefaktorové",
-                                                                 "fido2":  "Klíč zabezpečení FIDO 2",
-                                                                 "fido2X509CertificateSingleFactor":  "Klíč zabezpečení FIDO 2 + ověřování na základě certifikátu (jednofaktorové)",
+                                                                 "federatedSingleFactor":  "Federovaný jednofaktorové ověřování",
+                                                                 "fido2":  "Klíč zabezpečení FIDO2",
                                                                  "hardwareOath":  "Hardwarové tokeny OATH",
-                                                                 "hardwareOathEmail":  "Hardwarové tokeny OATH + jednorázové heslo poslané e-mailem",
-                                                                 "hardwareOathX509CertificateSingleFactor":  "Hardwarové tokeny OATH + ověřování na základě certifikátu (jednofaktorové)",
-                                                                 "microsoftAuthenticatorPSIX509CertificateSingleFactor":  "Microsoft Authenticator (přihlášení telefonem) + ověřování na základě certifikátu (jednofaktorové)",
-                                                                 "microsoftAuthenticatorPsi":  "Microsoft Authenticator (přihlášení telefonem)",
+                                                                 "hardwareOathEmail":  "Hardwarový token OATH + jednorázový přístupový kód poslaný e-mailem",
+                                                                 "hardwareOathFederatedSingleFactor":  "Federované jednofaktorové ověřování + hardwarový token OATH",
                                                                  "microsoftAuthenticatorPush":  "Microsoft Authenticator (nabízené oznámení)",
                                                                  "microsoftAuthenticatorPushEmail":  "Microsoft Authenticator (nabízené oznámení) + jednorázové heslo poslané e-mailem",
-                                                                 "microsoftAuthenticatorPushX509CertificateSingleFactor":  "Microsoft Authenticator (nabízené oznámení) + ověřování na základě certifikátu (jednofaktorové)",
+                                                                 "microsoftAuthenticatorPushFederatedSingleFactor":  "Federované jednofaktorové ověřování + Microsoft Authenticator (nabízené oznámení)",
                                                                  "none":  "Žádný",
                                                                  "password":  "Heslo",
-                                                                 "passwordDeviceBasedPush":  "Heslo + Microsoft Authenticator (přihlášení telefonem)",
-                                                                 "passwordFido2":  "Heslo + klíč zabezpečení FIDO 2",
-                                                                 "passwordHardwareOath":  "Heslo + hardwarové tokeny OATH",
-                                                                 "passwordMicrosoftAuthenticatorPSI":  "Heslo + Microsoft Authenticator (přihlášení telefonem)",
+                                                                 "passwordHardwareOath":  "Heslo + hardwarový token OATH",
                                                                  "passwordMicrosoftAuthenticatorPush":  "Heslo + Microsoft Authenticator (nabízené oznámení)",
                                                                  "passwordSms":  "Heslo + SMS",
-                                                                 "passwordSoftwareOath":  "Heslo + softwarové tokeny OATH",
-                                                                 "passwordTemporaryAccessPassMultiUse":  "Heslo + dočasné předplatné (více užití)",
-                                                                 "passwordTemporaryAccessPassOneTime":  "Heslo + dočasné předplatné (jednorázové užití)",
+                                                                 "passwordSoftwareOath":  "Heslo + softwarový token OATH",
                                                                  "passwordVoice":  "Heslo + hlas",
                                                                  "sms":  "SMS",
                                                                  "smsEmail":  "SMS + jednorázové heslo poslané e-mailem",
-                                                                 "smsSignIn":  "Přihlašování zprávou SMS",
-                                                                 "smsX509CertificateSingleFactor":  "SMS + ověřování na základě certifikátu (jednofaktorové)",
+                                                                 "smsFederatedSingleFactor":  "Federované jednofaktorové ověřování + SMS",
                                                                  "softwareOath":  "Softwarové tokeny OATH",
-                                                                 "softwareOathEmail":  "Softwarové tokeny OATH + jednorázové heslo poslané e-mailem",
-                                                                 "softwareOathX509CertificateSingleFactor":  "Softwarové tokeny OATH + ověřování na základě certifikátu (jednofaktorové)",
-                                                                 "temporaryAccessPassMultiUse":  "Dočasné předplatné (více užití)",
-                                                                 "temporaryAccessPassMultiUseX509CertificateSingleFactor":  "Dočasné předplatné (více užití) + ověřování na základě certifikátu (jednofaktorové)",
-                                                                 "temporaryAccessPassOneTime":  "Dočasné předplatné (jednorázové užití)",
-                                                                 "temporaryAccessPassOneTimeX509CertificateSingleFactor":  "Dočasné předplatné (jednorázové užití) + ověřování na základě certifikátu (jednofaktorové)",
+                                                                 "softwareOathEmail":  "Softwarový token OATH + jednorázový přístupový kód poslaný e-mailem",
+                                                                 "softwareOathFederatedSingleFactor":  "Federované jednofaktorové ověřování + softwarový token OATH",
+                                                                 "temporaryAccessPassMultiUse":  "Dočasný přístupový kód (více užití)",
+                                                                 "temporaryAccessPassOneTime":  "Dočasný přístupový kód (jednorázové užití)",
                                                                  "voice":  "Hlas",
                                                                  "voiceEmail":  "Telefonát + jednorázové heslo poslané e-mailem",
-                                                                 "voiceX509CertificateSingleFactor":  "Hlas + ověřování na základě certifikátu (jednofaktorové)",
+                                                                 "voiceFederatedSingleFactor":  "Federované jednofaktorové ověřování + Voice",
                                                                  "windowsHelloForBusiness":  "Windows Hello pro firmy",
                                                                  "x509CertificateMultiFactor":  "Ověřování na základě certifikátu (vícefaktorové)",
                                                                  "x509CertificateSingleFactor":  "Ověřování na základě certifikátu (jednofaktorové)"
@@ -8240,7 +8322,8 @@
                                              "Validation":  {
                                                                 "failed":  "Ve Vybraných lokalitách musíte zvolit alespoň jednu lokalitu.",
                                                                 "selector":  "Zvolte alespoň jedno umístění."
-                                                            }
+                                                            },
+                                             "privateLinksInfo":  "Private Link pro Azure AD je nejvhodnější pro služby Azure. Ujistěte se, že objekty zabezpečení, pro které se tyto zásady používají, nemají požadavek na přístup k žádným veřejným službám, jako je M365."
                                          },
                      "ClientApp":  {
                                        "Clients":  {
@@ -8276,6 +8359,7 @@
                                                   "infoBalloon":  "Cloudová aplikace nebo akce uživatele, kterou chcete otestovat. Příklad: SharePoint Online",
                                                   "learnMore":  "Umožňuje nastavit přístup podle všech nebo konkrétních cloudových aplikací nebo akcí.",
                                                   "learnMoreB2C":  "Umožňuje nastavit přístup podle všech nebo konkrétních cloudových aplikací.",
+                                                  "learnMoreNetworkAccess":  "Řízení přístupu na základě veškerého nebo konkrétního provozu síťového přístupu, cloudových aplikací nebo akcí.",
                                                   "title":  "Cloudové aplikace nebo akce"
                                               },
                      "CloudappsSelectionBlade":  {
@@ -8292,6 +8376,7 @@
                                                                   },
                                                      "Validation":  {
                                                                         "authContext":  "S kontextem ověřování je nutné nakonfigurovat alespoň jednu podřízenou položku.",
+                                                                        "networkAccess":  "U přístupu k síti musíte nakonfigurovat alespoň jeden profil provozu.",
                                                                         "selectApps":  "{0} se musí nakonfigurovat.",
                                                                         "selector":  "Vyberte alespoň jednu aplikaci.",
                                                                         "userActions":  "S Akcemi uživatelů je zapotřebí nakonfigurovat alespoň jednu podřízenou položku."
@@ -8307,12 +8392,12 @@
                                     "notFoundDetailed":  "Zásady {0} už neexistují. Je možné, že se odstranily."
                                 },
                      "GuestsOrExternalUsers":  {
-                                                   "allExternalTenantsLabel":  "Všechny organizace Azure Active Directory",
+                                                   "allExternalTenantsLabel":  "Vše",
                                                    "b2bCollaborationGuestLabel":  "Uživatel typu host pro B2B Collaboration",
                                                    "b2bCollaborationMemberLabel":  "Uživatelé členů B2B Collaboration",
                                                    "b2bDirectConnectUserLabel":  "Přímé připojení B2B",
                                                    "enumeratedExternalTenantsError":  "Vyberte prosím alespoň jednoho externího tenanta.",
-                                                   "enumeratedExternalTenantsLabel":  "Vybrat organizace Azure Active Directory",
+                                                   "enumeratedExternalTenantsLabel":  "Vybrat",
                                                    "externalTenantsLabel":  "Zadat externí organizace Azure Active Directory",
                                                    "externalUserDropdownLabel":  "Zvolit typy hosta nebo externích uživatelů",
                                                    "externalUsersError":  "Vyberte aspoň jeden typ externího hosta nebo uživatele.",
@@ -8432,6 +8517,22 @@
                                                        "gridAria":  "Seznam pojmenovaných umístění"
                                                    }
                                       },
+                     "NetworkAccess":  {
+                                           "Included":  {
+                                                            "none":  "Nevybraly se žádné cílové prostředky",
+                                                            "plural":  "Vybrané profily síťového provozu: {0}",
+                                                            "singular":  "Vybrané profily síťového provozu: 1"
+                                                        },
+                                           "internetOptionText":  "Veřejný provoz",
+                                           "label":  "Přístup k síti (Preview)",
+                                           "m365OptionText":  "Provoz M365",
+                                           "privateOptionText":  "Soukromý provoz",
+                                           "selectTrafficProfilesLabel":  "Vyberte profily přenosů, na které se tyto zásady vztahují",
+                                           "targetResourcesBalloonContext":  "Cílové prostředky",
+                                           "targetResourcesSelectorTitle":  "Cílové prostředky",
+                                           "trafficProfilesLearnMoreTooltip":  "Pokud chcete zobrazit další profily provozu, přidejte další licence NaaS.",
+                                           "ztnaEnableLearnMore":  "Cloud Edge s nulovou důvěrou (Zero Trust) musí být zapnutý, aby bylo možné používat řízení přístupu k síti. "
+                                       },
                      "Policies":  {
                                       "Grid":  {
                                                    "aria":  "Seznam zásad podmíněného přístupu"
@@ -8449,22 +8550,37 @@
                                                                                }
                                                   }
                                 },
+                     "PolicyCondition":  {
+                                             "SignInRiskDetections":  {
+                                                                          "ApplyCondition":  {
+                                                                                                 "info":  "Nakonfigurujte detekce rizik a použijte zásady u vybraných detekcí rizik přihlášení v reálném čase."
+                                                                                             },
+                                                                          "LearnMore":  {
+                                                                                            "message":  "Umožňuje řídit přístup uživatelů a reagovat na konkrétní detekce rizika přihlášení v reálném čase."
+                                                                                        },
+                                                                          "description":  "Tento stav se splní, pokud některá ze zahrnutých detekcí rizik detekuje riziko. Toto nastavení nemá vliv na výpočet úrovně rizika přihlášení.",
+                                                                          "header":  "Integrované detekce rizik v reálném čase",
+                                                                          "info":  "Detekce, které zjišťují rizika během přihlašování.",
+                                                                          "label":  "Detekce rizika přihlášení (Preview)",
+                                                                          "title":  "Detekce rizika přihlášení"
+                                                                      }
+                                         },
                      "PolicyControlAuthStrength":  {
                                                        "MultiFactorAuthentication":  {
                                                                                          "description":  "Kombinace metod, které splňují požadavky silného ověřování, jako je heslo + SMS.",
-                                                                                         "displayName":  "Vícefaktorové ověřování (MFA)"
+                                                                                         "displayName":  "Vícefaktorové ověřování"
                                                                                      },
                                                        "Passwordless":  {
                                                                             "description":  "Bezheslové metody, které splňují požadavky silného ověřování, například Microsoft Authenticator. ",
-                                                                            "displayName":  "Bezheslový MFA"
+                                                                            "displayName":  "Vícefaktorové ověřování bez hesla"
                                                                         },
                                                        "PhishingResistant":  {
                                                                                  "description":  "Bezheslové metody odolné proti útokům phishing pro nejsilnější úroveň ověřování, jako je například klíč zabezpečení FIDO2.",
-                                                                                 "displayName":  "MFA odolné vůči útoku phishing"
+                                                                                 "displayName":  "Vícefaktorové ověřování odolné proti útokům phishing"
                                                                              }
                                                    },
                      "PolicyControlFedAuthMethod":  {
-                                                        "ariaLabel":  "Learn more about requiring authentication methods satisfied by federation providers.",
+                                                        "ariaLabel":  "Další informace o vyžadování metod ověřování, které plní zprostředkovatelé federace.",
                                                         "certificate":  "Ověřování certifikátem",
                                                         "infoBubble":  "Zadejte požadovanou metodu ověřování, kterou musí splnit poskytovatel federace, třeba ADFS.",
                                                         "multifactor":  "Vícefaktorové ověřování",
@@ -8563,27 +8679,27 @@
                                                                                                            "title":  "Vyžadovat odpovídající nebo službou Hybrid Azure AD Join připojené zařízení nebo vícefaktorové ověřování pro všechny uživatele"
                                                                                                        },
                                                                 "RequireMFAAllUsers":  {
-                                                                                           "description":  "Vyžadujte vícefaktorové ověřování pro všechny uživatelské účty, abyste snížili riziko ohrožení zabezpečení.",
+                                                                                           "description":  "Umožňuje vyžadovat vícefaktorové ověřování pro všechny uživatelské účty, aby se snížilo riziko ohrožení zabezpečení.",
                                                                                            "name":  "CA004: Vyžadovat vícefaktorové ověřování pro všechny uživatele",
                                                                                            "title":  "Vyžadovat vícefaktorové ověřování pro všechny uživatele"
                                                                                        },
                                                                 "RequireMFAForAdmins":  {
-                                                                                            "description":  "Vyžadovat vícefaktorové ověřování pro privilegované účty pro správu, aby se snížilo riziko ohrožení zabezpečení. Tato zásada bude cílit na stejné role jako výchozí zabezpečení.",
+                                                                                            "description":  "Umožňuje vyžadovat vícefaktorové ověřování pro privilegované účty pro správu, aby se snížilo riziko ohrožení zabezpečení. Tato zásada bude cílit na stejné role jako výchozí zabezpečení.",
                                                                                             "name":  "CA001: Vyžadovat vícefaktorové ověřování pro správce",
                                                                                             "title":  "Vyžadovat vícefaktorové ověřování pro správce"
                                                                                         },
                                                                 "RequireMFAForAzureManagement":  {
-                                                                                                     "description":  "K ochraně privilegovaného přístupu k prostředkům Azure se vyžaduje vícefaktorové ověřování.",
+                                                                                                     "description":  "K ochraně privilegovaného přístupu k prostředkům Azure můžete vyžadovat vícefaktorové ověřování.",
                                                                                                      "name":  "CA006: Vyžadovat vícefaktorové ověřování pro správu Azure",
                                                                                                      "title":  "Vyžadovat vícefaktorové ověřování pro správu Azure"
                                                                                                  },
                                                                 "RequireMFAForGuestAccess":  {
-                                                                                                 "description":  "Vyžadovat, aby uživatelé typu host při přístupu k firemním prostředkům provedli vícefaktorové ověřování.",
+                                                                                                 "description":  "Umožňuje vyžadovat, aby uživatelé typu host při přístupu k firemním prostředkům provedli vícefaktorové ověřování.",
                                                                                                  "name":  "CA005: Vyžadovat vícefaktorové ověřování pro přístup hostů",
                                                                                                  "title":  "Vyžadovat vícefaktorové ověřování pro přístup hostů"
                                                                                              },
                                                                 "RequireMFAForRiskySignIn":  {
-                                                                                                 "description":  "Vyžadovat vícefaktorové ověřování, pokud se zjistí, že riziko přihlášení je střední nebo vysoké. (vyžaduje licenci Azure AD Premium 2).",
+                                                                                                 "description":  "Umožňuje vyžadovat vícefaktorové ověřování, pokud se zjistí, že riziko přihlášení je střední nebo vysoké (vyžaduje licenci Azure AD Premium 2).",
                                                                                                  "name":  "CA007: Vyžadovat vícefaktorové ověřování pro riziková přihlášení",
                                                                                                  "title":  "Vyžadovat vícefaktorové ověřování pro riziková přihlášení"
                                                                                              },
@@ -8621,7 +8737,7 @@
                                                                                                                                   "on":  "Tato zásada bude mít vliv na všechny uživatele kromě aktuálně přihlášeného správce. Zvažte použití režimu jenom pro sestavy, který bude začínat, dokud neověříte, že to nebude mít dopad na vaše uživatele."
                                                                                                                               },
                                                                                                               "Title":  {
-                                                                                                                            "on":  "Nezablokujte se! Ujistěte se, že vaše zařízení dodržuje předpisy, že je připojené k hybridní službě Azure AD, nebo jste nakonfigurovali vícefaktorové ověřování. ",
+                                                                                                                            "on":  "Nezablokujte se! Ujistěte se, že vaše zařízení dodržuje předpisy, že je připojené službou Hybrid Azure AD Join, nebo jste nakonfigurovali vícefaktorové ověřování. ",
                                                                                                                             "reportOnly":  "Zásady v režimu pouze sestava, které vyžadují kompatibilní zařízení, mohou uživatele počítačů Mac, iOS a Android vyzvat, aby během vyhodnocování zásad vybrali certifikát zařízení, i když není vynucován soulad zařízení. Tyto výzvy se mohou opakovat, dokud není zařízení kompatibilní."
                                                                                                                         }
                                                                                                           },
@@ -8787,6 +8903,13 @@
                                                           "message":  "Umožňuje nastavit přístup uživatelů, aby bylo možné reagovat na konkrétní úrovně rizika uživatelů."
                                                       }
                                     },
+                     "SigninRiskLevel":  {
+                                             "NoRiskSelected":  {
+                                                                    "warning":  "Pokud je vybraná možnost {0}, podmínka {1} nebude konfigurovatelná."
+                                                                },
+                                             "description":  "Úroveň rizika přihlášení se generuje na základě všech detekcí rizik v reálném čase.",
+                                             "header":  "Vyberte úroveň rizika přihlášení, na kterou se budou tyto zásady vztahovat."
+                                         },
                      "SingleSelectorActive":  {
                                                   "failed":  "Tato data se nedaří načíst.",
                                                   "reattempt":  "Načítají se data. Opakovaný pokus {0} z {1}."
@@ -8853,12 +8976,14 @@
                                               "invalidDevicesCondition":  "Neplatná konfigurace zařízení. Pravděpodobně jde o neplatnou konfiguraci{0}.",
                                               "invalidGrantControlPolicy":  "Neplatný ovládací prvek udělení",
                                               "invalidLocationsCondition":  "Jsou vybraná neplatná umístění.",
+                                              "invalidNetworkAccessSecurityPolicyId":  "Zásada připojená k řízení síťové relace je neplatná.",
                                               "invalidPolicy":  "Přiřazení nejsou vybraná.",
                                               "invalidSessionControlPolicy":  "Neplatný ovládací prvek relace",
                                               "invalidSignInRisksCondition":  "Jsou vybraná neplatná rizika přihlášení.",
                                               "invalidUserRisksCondition":  "Je vybrané neplatné riziko uživatele.",
                                               "invalidUsersCondition":  "Jsou vybraní neplatní uživatelé.",
                                               "mamPolicyShouldOnlyTargetAndroidOrIosPlatforms":  "Zásady MAM se dají použít jen pro platformy klientů Android a iOS.",
+                                              "networkAccessControlNeedsNetworkAccessTargetedTrafficProfile":  "Zásady relace přístupu k síti fungují správně jenom v případě, že cílí na profil provozu přístupu k síti. Aktualizujte prosím oddíl cílených prostředků.",
                                               "notSupportedCombination":  "Konfigurace zásad není podporovaná. Další informace o podporovaných zásadách",
                                               "pending":  "Ověřují se zásady",
                                               "requireComplianceEveryonePolicy":  "Konfigurace zásad bude vyžadovat dodržování předpisů u zařízení všech uživatelů. Zkontrolujte vybraná přiřazení.",
@@ -8871,10 +8996,12 @@
                                  },
                      "WarningsInfo":  {
                                           "Controls":  {
+                                                           "AuthStrengthXtap":  {
+                                                                                    "allUsers":  "Nakonfigurujte nastavení přístupu mezi tenanty tak, aby se přijímaly deklarace identity pocházející z tenantů Azure AD, na základě čehož bude externí uživatel používat integrované silné stránky ověřování. Pro externí uživatele nelze nakonfigurovat vlastní silné stránky ověřování.",
+                                                                                    "externalUsers":  "Pokud chcete povolit všechny integrované silné stránky ověřování, nakonfigurujte nastavení přístupu mezi tenanty tak, aby pro externí uživatele přijímala deklarace identity pocházející z tenantů Azure AD."
+                                                                                },
                                                            "compliantDeviceEnabled":  "Nezablokujte si přístup! Ujistěte se, že vaše zařízení dodržuje předpisy.",
                                                            "domainJoinedDeviceEnabled":  "Nezablokujte si přístup! Ujistěte se, že vaše zařízení je připojené službou Hybrid Azure AD Join.",
-                                                           "exchangeDisabled":  "Exchange ActiveSync podporuje jenom řízení kompatibilních zařízení a klientem schválených aplikací. Kliknutím získáte další informace.",
-                                                           "exchangeDisabled2":  "Exchange ActiveSync podporuje jen ovládací prvky Vyhovující zařízení, Schválená klientská aplikace a Vyhovující klientská aplikace. Kliknutím získáte další informace.",
                                                            "notAvailableForSP":  "Některé ovládací prvky nejsou k dispozici kvůli výběru {0} v přiřazení zásad.",
                                                            "requireAuthOrMfa":  "{0} nejde používat s {1}.",
                                                            "requireMfa":  "Zvažte možnost otestovat novou veřejnou verzi náhledu {0}.",
@@ -8904,7 +9031,8 @@
                                                                     "teamsBlocked":  "Když se do zásad zahrnou aplikace, jako jsou SharePoint Online a Exchange Online, bude to mít vliv i na Microsoft Teams."
                                                                 },
                                           "Users":  {
-                                                        "blockAllUsers":  "Nezablokujte si přístup! Tyto zásady budou mít vliv na všechny uživatele. Doporučujeme je nejdříve použít jen na malou část uživatelů, abyste mohli ověřit, že se zásady chovají, jak mají."
+                                                        "blockAllUsers":  "Nezablokujte si přístup! Tyto zásady budou mít vliv na všechny uživatele. Doporučujeme je nejdříve použít jen na malou část uživatelů, abyste mohli ověřit, že se zásady chovají, jak mají.",
+                                                        "xtap":  " Vaše konfigurace Vyžadovat silné stránky ověřování v řízení udělování oprávnění nemusí být pro externí uživatele platná."
                                                     }
                                       },
                      "WhatIf":  {
@@ -8981,7 +9109,7 @@
                      "chooseApplicationsTooMany":  "Více výsledků, než se dá zobrazit. Pomocí vyhledávacího pole prosím nastavte filtr.",
                      "chooseLocationCorpnetItem":  "Podniková síť",
                      "chooseLocationSelectedLocationsLabel":  "Vybraná umístění",
-                     "chooseLocationTrustedIpsItem":  "Důvěryhodné IP adresy MFA",
+                     "chooseLocationTrustedIpsItem":  "Důvěryhodné IP adresy vícefaktorového ověřování",
                      "chooseLocationsBladeSubtitle":  "",
                      "chooseLocationsBladeTitle":  "Zvolte umístění",
                      "chooseLocationsCartSubitle":  "",
@@ -9105,7 +9233,6 @@
                      "clientAppBladeTitle":  "Klientské aplikace",
                      "clientAppDescription":  "Vyberte klientské aplikace, na které se budou tyto zásady vztahovat.",
                      "clientAppExchangeActiveSync":  "Exchange ActiveSync",
-                     "clientAppExchangeDisabledInfo":  "Exchange ActiveSync je k dispozici v případě, že Exchange Online je vybraný jako jediná cloudová aplikace. Kliknutím získáte další informace.",
                      "clientAppExchangeWarning":  "Exchange ActiveSync v tuto chvíli nepodporuje všechny ostatní podmínky.",
                      "clientAppLearnMore":  "Umožňuje nastavit přístup uživatelů na cílení na konkrétní klientské aplikace, které nepoužívají moderní ověřování.",
                      "clientAppLegacyHeader":  "Starší verze klientů ověřování",
@@ -9113,7 +9240,6 @@
                      "clientAppModernHeader":  "Moderní klienti ověřování",
                      "clientAppOnlySupportedPlatforms":  "Použít zásady jenom na podporovaných platformách",
                      "clientAppSelectSpecificClientApps":  "Vyberte klientské aplikace.",
-                     "clientAppV2BladeTitle":  "Klientské aplikace (Preview)",
                      "clientAppWebBrowser":  "Prohlížeč",
                      "clientAppsSelectedLabel":  "Zahrnuto: {0}",
                      "clientTypeBrowser":  "Prohlížeč",
@@ -9150,17 +9276,17 @@
                      "controlLabelOne":  "Počet vybraných ovládacích prvků: 1",
                      "controlValidatorText":  "Vyberte prosím aspoň jeden ovládací prvek.",
                      "controlsBlockAccessInfoBubble":  "ControlsBlockAccessInfoBubble",
-                     "controlsDeviceComplianceAriaLabel":  "Learn more about requiring compliant devices.",
-                     "controlsDeviceComplianceInfoBubble":  "Device must be Intune compliant. If the device is non-compliant, the user will be prompted to bring the device under compliance.",
-                     "controlsDomainJoinedAriaLabel":  "Learn more about requiring hybrid Azure AD joined devices.",
+                     "controlsDeviceComplianceAriaLabel":  "Přečtěte si další informace o vyžadování zařízení dodržujících předpisy.",
+                     "controlsDeviceComplianceInfoBubble":  "Zařízení musí dodržovat předpisy Intune. Pokud je nedodržuje, zobrazí se uživateli výzva, aby zařízení nastavil tak, aby předpisy dodržovalo.",
+                     "controlsDomainJoinedAriaLabel":  "Další informace o vyžadování zařízeních připojených službou Hybrid Azure AD Join.",
                      "controlsDomainJoinedInfoBubble":  "Zařízení musí být připojené službou Hybrid Azure AD Join.",
-                     "controlsMamAriaLabel":  "Learn more about requiring approved client applications.",
+                     "controlsMamAriaLabel":  "Další informace o vyžadování schválených klientských aplikací.",
                      "controlsMamInfoBubble":  "Zařízení musí používat tyto aplikace schválené klientem.",
                      "controlsMfaInfoBubble":  "Uživatelé musí splnit další požadavky na zabezpečení, třeba telefonní hovor nebo textovou zprávu.",
                      "controlsOrAndInfoBubble":  "ControlsOrAndInfoBubble",
-                     "controlsRequireCompliantAppAriaLabel":  "Learn more about requiring policy protected apps.",
+                     "controlsRequireCompliantAppAriaLabel":  "Další informace o vyžadování aplikací chráněných zásadami.",
                      "controlsRequireCompliantAppInfoBubble":  "Zařízení musí používat aplikace chráněné zásadami.",
-                     "controlsRequirePasswordResetAriaLabel":  "Learn more about requiring a password change.",
+                     "controlsRequirePasswordResetAriaLabel":  "Další informace o vyžadování změny hesla.",
                      "controlsRequirePasswordResetInfoBubble":  "Umožňuje požadovat změnu hesla, aby se snížilo riziko uživatele. Tato možnost navíc vyžaduje vícefaktorové ověřování. Jiné ovládací prvky se nedají použít.",
                      "countriesRadiobuttonInfoBalloonContent":  "Země nebo oblast, ze které pochází přihlášení, je určená IP adresou uživatele.",
                      "createNewVpnCert":  "Nový certifikát",
@@ -9224,7 +9350,7 @@
                      "helpCondition1":  "Když je libovolný uživatel mimo síť společnosti",
                      "helpCondition2":  "Když se přihlásí uživatelé ze skupiny Manažeři",
                      "helpConditionsTitle":  "Podmínky",
-                     "helpControl1":  "Musí se přihlašovat pomocí vícefaktorového ověřování.",
+                     "helpControl1":  "Musí se přihlašovat pomocí vícefaktorového ověřování",
                      "helpControl2":  "Musí být na zařízení, které dodržuje předpisy Intune nebo na zařízení připojeném do domény.",
                      "helpControlsTitle":  "Ovládací prvky",
                      "helpIntroText":  "Podmíněný přístup umožňuje vynucovat specifické požadavky na přístup na základě splnění konkrétních podmínek. Podívejme se na pár příkladů.",
@@ -9260,6 +9386,7 @@
                      "lowRisk":  "Nízká",
                      "macOsDisplayName":  "macOS",
                      "managePoliciesLicenseText":  "Pokud chcete spravovat zásady Podmíněného přístupu, vaše organizace potřebuje Azure AD Premium P1 nebo P2.",
+                     "manageSecurityDefaultsAriaLabel":  "Umožňuje spravovat výchozí nastavení zabezpečení.",
                      "markAsTrustedCheckboxInfoBalloonContent":  "Přihlášení z důvěryhodného umístění snižuje riziko přihlášení uživatele. Toto umístění jako důvěryhodné označte jenom tehdy, pokud víte, že zadané rozsahy IP adres jsou zřízené a důvěryhodné ve vaší organizaci.",
                      "markAsTrustedCheckboxLabel":  "Označit jako důvěryhodné umístění",
                      "mediumRisk":  "Střední",
@@ -9291,7 +9418,7 @@
                      "namedNetworkIpRangesDescriptionContent":  "Nakonfigurujte rozsahy IP adres vaší organizace.",
                      "namedNetworkIpRangesTab":  "Rozsahy IP adres",
                      "namedNetworkListAdd":  "Nové umístění",
-                     "namedNetworkListConfigureTrustedIps":  "Konfigurovat důvěryhodné IP adresy MFA",
+                     "namedNetworkListConfigureTrustedIps":  "Konfigurace důvěryhodných IP adres vícefaktorového ověřování",
                      "namedNetworkNameDescription":  "Příklad: Pobočka Pardubice",
                      "namedNetworkNameInvalid":  "Zadaný název není platný.",
                      "namedNetworkNameRequired":  "Pro toto umístění musíte zadat název.",
@@ -9363,12 +9490,12 @@
                      "policyConditionDevicePlatformDescription":  "Platforma, ze které se uživatel přihlašuje. Třeba iOS.",
                      "policyConditionLocation":  "Umístění",
                      "policyConditionLocationDescription":  "Lokalita, ze které se uživatel přihlašuje (určuje se podle rozsahu IP adres)",
-                     "policyConditionSigninRisk":  "Riziko přihlášení",
+                     "policyConditionLocationPreview":  "Umístění (Preview)",
+                     "policyConditionSigninRisk":  "Úroveň rizika přihlášení",
                      "policyConditionSigninRiskDescription":  "Pravděpodobnost, že se přihlašuje někdo jiný než daný uživatel. Úroveň rizika může být vysoká, střední nebo nízká. Vyžaduje licenci Azure AD Premium 2.",
-                     "policyConditionUserRisk":  "Riziko uživatele",
+                     "policyConditionUserRisk":  "Úroveň rizika uživatele",
                      "policyConditionUserRiskDescription":  "Umožňuje nakonfigurovat úrovně rizika uživatelů potřebné k vynucování zásad.",
                      "policyConditioniClientApp":  "Klientské aplikace",
-                     "policyConditioniClientAppV2":  "Klientské aplikace (Preview)",
                      "policyControlAllowAccessDisplayedName":  "Udělit přístup",
                      "policyControlAuthenticationStrengthDisplayedName":  "Vyžadovat sílu ověřování (Preview)",
                      "policyControlBladeTitle":  "Udělení",
@@ -9405,7 +9532,7 @@
                      "policyNameDevice":  "Zásady zařízení",
                      "policyNameFormat":  "[{0}] {1}",
                      "policyNameMam":  "Zásady správy mobilních aplikací",
-                     "policyNameMfaLocation":  "Zásady MFA a polohy",
+                     "policyNameMfaLocation":  "Zásady vícefaktorového ověřování a umístění",
                      "policyNamePlaceholderText":  "Příklad: Zásady aplikace pro dodržování předpisů zařízením",
                      "policyNameTooLongError":  "Název zásad je moc dlouhý. Maximum je 256 znaků.",
                      "policyOff":  "Vypnuté",
@@ -9433,12 +9560,15 @@
                      "requireAllControlsText":  "Vyžadovat všechny vybrané ovládací prvky",
                      "requireCompliantDevice":  "Vyžaduje zařízení, které splňuje požadavky.",
                      "requireDomainJoined":  "Vyžadovat zařízení připojené k doméně",
-                     "requireGrantReauth":  "Řízení relace „frekvence přihlašování pokaždé“ vyžaduje řízení udělování „vyžadovat vícefaktorové ověřování“ nebo „vyžadovat změnu hesla“, když je vybráno „Všechny cloudové aplikace“.",
-                     "requireMFA":  "Vyžadovat vícefaktorové ověřování ",
-                     "requireMfaReauth":  "Řízení relace „frekvence přihlašování pokaždé“ vyžaduje řízení udělování „vyžadovat vícefaktorové ověřování“ pro „riziko přihlášení“.",
+                     "requireGrantReauth":  "Řízení relace s frekvencí přihlašování typu pokaždé vyžaduje, aby oprávnění Vyžadovat vícefaktorové ověřování nebo Vyžadovat změnu hesla udělilo oprávnění pro řízení, když je vybraná možnost Všechny cloudové aplikace",
+                     "requireMFA":  "Vyžadovat vícefaktorové ověřování",
+                     "requireMfaReauth":  "Řízení relace s frekvencí přihlašování typu pokaždé vyžaduje, aby oprávnění Vyžadovat vícefaktorové ověřování udělilo oprávnění pro řízení rizika přihlašování",
                      "requireOneControlText":  "Vyžadovat jeden z vybraných ovládacích prvků",
                      "requirePasswordChangeReauth":  "Řízení relace „frekvence přihlašování pokaždé“ vyžaduje řízení udělování „vyžadovat změnu hesla“ pro „riziko uživatele“.",
                      "requireRiskReauth":  "Řízení relace „frekvence přihlašování pokaždé“ vyžaduje řízení relace „riziko uživatele“ nebo „riziko přihlášení“, když je vybráno „všechny cloudové aplikace“.",
+                     "requireRiskReauthRiskNotEnabled":  "Řízení relace „frekvence přihlašování pokaždé“ není k dispozici, když je vybráno „všechny cloudové aplikace“.",
+                     "requireRiskReauthSignInOnly":  "Řízení relace „frekvence přihlašování pokaždé“ vyžaduje řízení relace „riziko přihlášení“, když je vybráno „všechny cloudové aplikace“.",
+                     "requireRiskReauthUserOnly":  "Řízení relace „frekvence přihlašování pokaždé“ vyžaduje řízení relace „riziko uživatele“, když je vybráno „všechny cloudové aplikace“.",
                      "resetFilters":  "Resetovat filtry",
                      "sPRequired":  "Vyžaduje se objekt služby",
                      "sPSelectorInfoBalloon":  "Uživatel nebo objekt služby, který chcete otestovat",
@@ -9446,7 +9576,8 @@
                      "searchTextTooLongError":  "Hledaný text je příliš dlouhý. Maximum je 256 znaků.",
                      "securityDefaultsPolicyName":  "Výchozí nastavení zabezpečení",
                      "securityDefaultsTextMessage":  "Aby bylo možné povolit zásady podmíněného přístupu, musí se zakázat výchozí nastavení zabezpečení.",
-                     "securityDefaultsWarningMessage":  "Vypadá to, že se chystáte spravovat konfigurace zabezpečení organizace. Výborně! Abyste mohli povolit zásady podmíněného přístupu, musí se zakázat výchozí nastavení zabezpečení.",
+                     "securityDefaultsUpdateInProgressText":  "Probíhá aktualizace výchozího nastavení zabezpečení. Počkejte prosím chvíli a zkuste to znovu.",
+                     "securityDefaultsWarningMessage":  "Vypadá to, že se chystáte spravovat konfigurace zabezpečení organizace. Výborně! Abyste mohli povolit zásady podmíněného přístupu, musí se nejprve {0}zakázat výchozí nastavení zabezpečení{1}.",
                      "selectDevicePlatforms":  "Vybrat platformy zařízení",
                      "selectNamedNetworksSubtitle":  "",
                      "selectNamedNetworksTitle":  "Vybrat umístění",
@@ -9460,6 +9591,7 @@
                      "servicePrincipalSelectorAria":  "Seznam vybraných objektů služby",
                      "servicePrincipalSelectorMultiple":  "Počet vybraných objektů služby: {0}",
                      "servicePrincipalSelectorSingle":  "1 vybraný objekt služby",
+                     "servicePrincipalSpecificExc":  "Konkrétní objekty služby jsou vyloučeny",
                      "servicePrincipalSpecificInc":  "Včetně konkrétních objektů služby",
                      "servicePrincipals":  "Objekty služby",
                      "sessionControlBladeTitle":  "Relace",
@@ -9471,7 +9603,6 @@
                      "sessionControlsCasLabel":  "Používat Řízení podmíněného přístupu k aplikacím",
                      "sessionControlsSecureSignInLabel":  "Vyžadovat vazbu tokenu",
                      "sharepointAppName":  "SharePoint",
-                     "signinRiskDescription":  "Vyberte úroveň rizika přihlášení, na kterou se budou tyto zásady vztahovat.",
                      "signinRiskInclude":  "Zahrnuto: {0}",
                      "signinRiskReauth":  "Pokud je vybrané oprávnění typu Vyžadovat vícefaktorové ověřování a řízení relace s frekvencí přihlašování typu pokaždé, musíte vybrat podmínku Riziko přihlašování.",
                      "signinRiskTriggerDescriptionContent":  "Vyberte úroveň rizika přihlášení.",
@@ -9551,6 +9682,7 @@
                      "usersGroupsLabel":  "Uživatelé a skupiny",
                      "viewApprovedAppsText":  "Zobrazit seznam klientem schválených aplikací",
                      "viewCompliantAppsText":  "Zobrazit seznam klientských aplikací chráněných zásadami",
+                     "viewPolicyInformation":  "Zobrazit informace o zásadě",
                      "vpnBladeTitle":  "Připojení VPN",
                      "vpnCertCreateFailedMessage":  "Chyba: {0}",
                      "vpnCertCreateFailedTitle":  "Nepovedlo se vytvořit {0}",
@@ -9653,6 +9785,7 @@
                                          "builtInAndroid":  "Integrovaná aplikace pro Android",
                                          "builtInApp":  "Integrovaná aplikace",
                                          "builtInIos":  "Integrovaná aplikace pro iOS",
+                                         "iosIPadOSWebClip":  "Webový klip pro iOS/iPadOS",
                                          "iosLobApp":  "Obchodní aplikace iOS",
                                          "iosStoreApp":  "Aplikace z obchodu pro iOS",
                                          "iosVppApp":  "Aplikace iOS koupená přes Volume Purchase Program",
@@ -9677,6 +9810,8 @@
                                          "sharePointApp":  "Aplikace SharePoint",
                                          "teamsApp":  "Aplikace Teams",
                                          "webApp":  "Webový odkaz",
+                                         "winGetPublicApp":  "Úložiště komunity Správce balíčků systému Windows",
+                                         "winGetStoreApp":  "Úložiště Microsoft Store",
                                          "windowsAppXLobApp":  "Obchodní aplikace Windows AppX",
                                          "windowsClassicApp":  "Aplikace pro Windows (Win32)",
                                          "windowsEdgeApp":  "Microsoft Edge (Windows 10 a novější)",
@@ -9687,7 +9822,8 @@
                                          "windowsPhoneXapLobApp":  "Obchodní aplikace Windows Phone XAP",
                                          "windowsStoreApp":  "Aplikace pro Microsoft Store",
                                          "windowsUniversalAppXLobApp":  "Obchodní aplikace Windows Universal AppX",
-                                         "windowsUniversalLobApp":  "Univerzální obchodní aplikace pro Windows"
+                                         "windowsUniversalLobApp":  "Univerzální obchodní aplikace pro Windows",
+                                         "windowsWebApp":  "Webový odkaz Windows"
                                      },
                          "AppTypePlatform":  {
                                                  "android":  "Android",
@@ -11028,6 +11164,10 @@
                                "xLanguagesSelectedLabel":  "Vybrané jazyky: {0}",
                                "xmlConfigurationLabel":  "Konfigurace souboru XML"
                            },
+    "Filters":  {
+                    "ruleSyntax":  "Syntaxe pravidel",
+                    "filters":  "Filtry"
+                },
     "EnrollmentRestrictions":  {
                                    "DeletePayloadLink":  {
                                                              "content":  "Profil {0} je zahrnutý v jedné nebo více sadách zásad. Pokud profil {0} odstraníte, nebudete už jej moct přiřazovat prostřednictvím těchto sad zásad. Chcete jej přesto odstranit?",
@@ -11135,16 +11275,19 @@
                                           "gettingStarted":  "Začínáme",
                                           "messages":  "Zprávy",
                                           "onlineResources":  "Prostředky online",
+                                          "releaseManagement":  "Release management",
                                           "serviceRequests":  "Žádosti o služby",
                                           "settings":  "Nastavení",
-                                          "tenantEnrollment":  "Registrace tenanta"
+                                          "supportRequests":  "Support requests",
+                                          "tenantEnrollment":  "Registrace tenanta",
+                                          "tenantManagement":  "TenantManagement"
                                       },
                    "actions":  "Akce při nedodržení předpisů",
                    "advancedExchangeSettings":  "Nastavení Exchange Online",
                    "advancedThreatProtection":  "Microsoft Defender pro koncový bod",
                    "allApps":  "Všechny aplikace",
                    "allDevices":  "Všechna zařízení",
-                   "androidFotaDeployments":  "Nasazení FOTA pro Android",
+                   "androidFotaDeployments":  "Nasazení Android FOTA",
                    "appBundles":  "Sady prostředků aplikace",
                    "appCategories":  "Kategorie aplikací",
                    "appConfigPolicies":  "Zásady konfigurace aplikací",
@@ -11236,8 +11379,8 @@
                    "profiles":  "Profily",
                    "properties":  "Vlastnosti",
                    "reports":  "Sestavy",
-                   "retireNoncompliantDevices":  "Vyřadit (z provozu) zařízení nesplňující požadavky",
-                   "retireNoncompliantDevicesPreview":  "Retire noncompliant devices (preview)",
+                   "retireNoncompliantDevices":  "Vyřadit zařízení nesplňující požadavky",
+                   "retireNoncompliantDevicesPreview":  "Vyřazení zařízení nesplňujících požadavky (Preview)",
                    "role":  "Role",
                    "scriptManagement":  "Skripty",
                    "securityBaselines":  "Standardní hodnoty zabezpečení",
@@ -11249,7 +11392,11 @@
                    "tenantAdministration":  "Správa tenanta",
                    "termsAndConditions":  "Podmínky a ujednání",
                    "titles":  "Názvy",
+                   "troubleshoot":  "Odstranit potíže",
+                   "troubleshootDevice":  "Zařízení",
+                   "troubleshootGroup":  "Skupina",
                    "troubleshootSupport":  "Řešení problémů a podpora",
+                   "troubleshootUser":  "Uživatel",
                    "user":  "Uživatel",
                    "userExecutionStatus":  "Stav uživatele",
                    "warranty":  "Dodavatelé se zárukou",

@@ -11,7 +11,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.5.0'
+    '3.6.0'
 }
 
 function Invoke-InitializeModule
@@ -274,6 +274,21 @@ function Invoke-InitializeModule
         AssignmentsType = "enrollmentConfigurationAssignments"
         GroupId = "EnrollmentRestrictions"
         ViewProperties = @("displayName","platformType","description","Id")
+    })
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Co-Management Settings"
+        Id = "CoManagementSettings"
+        ViewID = "IntuneGraphAPI"        
+        API = "/deviceManagement/deviceEnrollmentConfigurations"
+        PostReplaceCommand = { Start-PostReplaceEnrollmentRestrictions @args } # Note: Uses same PostReplaceCommand as restrictions
+        PreFilesImportCommand = { Start-PreFilesImportEnrollmentRestrictions @args } # Note: Uses same PreFilesImportCommand as restrictions
+        PostListCommand = { Start-PostListCoManagementSettings @args }
+        PropertiesToRemoveForUpdate = @('priority')
+        Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
+        SkipRemoveProperties = @('Id')        
+        GroupId = "WinEnrollment"
+        Icon = "EnrollmentStatusPage"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -1407,7 +1422,7 @@ function Start-PostExportScripts
     {
         Write-Log "Export script $($obj.FileName)"
         $fileName = [IO.Path]::Combine($exportPath, $obj.FileName)
-        [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.scriptContent)) | Out-File -LiteralPath $fileName -Force
+        [IO.File]::WriteAllBytes($fileName, ([System.Convert]::FromBase64String($obj.scriptContent)))
     }
 }
 
@@ -1459,6 +1474,13 @@ function Invoke-EditScript
 
     Add-XamlEvent $script:editForm "btnSaveScriptEdit" "add_click" ({
         $scriptText = Get-XamlProperty $script:editForm "txtScriptText" "Text"
+        $pre = [System.Text.Encoding]::UTF8.GetPreamble()
+        $utfBOM = [System.Text.Encoding]::UTF8.GetString($pre)
+        if($scriptText.startsWith($utfBOM))
+        {
+            # Remove UTF8 BOM bytes
+            $scriptText = $scriptText.Remove(0, $utfBOM.Length)
+        }
         $bytes = [System.Text.Encoding]::UTF8.GetBytes($scriptText)
         $encodedText = [Convert]::ToBase64String($bytes)
 
@@ -1662,7 +1684,7 @@ function Start-PreUpdateAppConfigurationApp
             Write-Log "Update App Configuruation Apps"
 
             $json = [PSCustomObject]@{ apps = @($obj.Apps) } | ConvertTo-Json -Depth 10
-            $objectClass = 'targetedManagedAppConfigurations' #!!!Get-GraphObjectClassName $obj
+            $objectClass = 'targetedManagedAppConfigurations'
 
             Invoke-GraphRequest -Url "/deviceAppManagement/$objectClass/$($curObject.Object.Id)/targetApps" -Content $json -HttpMethod POST | Out-Null
         }
@@ -2488,6 +2510,16 @@ function Start-PostListEnrollmentRestrictions
     }
 }
 
+#endregion
+
+#region 
+function Start-PostListCoManagementSettings
+{
+    param($objList, $objectType)
+
+    # endswith not working so filter them out
+    $objList | Where { $_.Object.'@OData.Type' -eq '#microsoft.graph.deviceComanagementAuthorityConfiguration' }
+}
 #endregion
 
 #region ScopeTags

@@ -1,4 +1,4 @@
-﻿{
+{
     "OutlookAppConfig":  {
                              "DataProtectionConfiguration":  {
                                                                  "header":  "データ保護の構成"
@@ -329,7 +329,7 @@
                      "contentCaching":  "コンテンツ キャッシング",
                      "controlPanelAndSettings":  "コントロール パネルと設定",
                      "credentialGuard":  "Microsoft Defender Credential Guard",
-                     "customCompliance":  "カスタム コンプライアンス",
+                     "customCompliance":  "カスタム コンプライアンス (プレビュー)",
                      "customCompliancePreview":  "カスタム コンプライアンス (プレビュー)",
                      "customConfiguration":  "カスタム構成プロファイル",
                      "customOMASettings":  "OMA-URI のカスタム設定",
@@ -786,6 +786,7 @@
                                      "SurfaceHub":  {
                                                         "friendlyNameRequired":  "フレンドリ名は必須です。",
                                                         "pwdRequired":  "パスワードが必要です。",
+                                                        "pwdValidFormat":  "パスワードを更新できません。指定された新しいパスワードの値は、ドメインの長さまたは複雑さの要件を満たしていません。",
                                                         "upnRequired":  "デバイス アカウントが必要です",
                                                         "upnValidFormat":  "値には、文字 (a から z、A から Z)、数字 (0 から 9)、ハイフンを含めることができます。値に空白スペースを含めることはできません。"
                                                     }
@@ -920,8 +921,8 @@
                       "assignedDevicesResourceAccountStatusBarMessage":  "このテーブルには、このプロファイルが割り当てられている Surface Hub 2 デバイスのみが一覧表示されます。",
                       "assigningDescription":  "{0} の割り当てを更新中です。",
                       "assigningTitle":  "AutoPilot プロファイル割り当てを更新しています。",
-                      "autoremediationContext":  "We've detected a hardware change on this device. We're trying to automatically register the new hardware. You don't need to do anything now; the status will be updated at the next check in with the result. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Learn more about resetting the profile.</a>",
-                      "autoremediationTitle":  "Device {0} has a fix pending",
+                      "autoremediationContext":  "このデバイスでハードウェアの変更が検出されました。新しいハードウェアを自動的に登録しようとしています。状態は、次回チェックイン時に結果と共に更新されるため、今は何もする必要はありません。<a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">プロファイルのリセットに関する詳細はこちら。</a>",
+                      "autoremediationTitle":  "デバイス {0} に保留中の修正があります",
                       "cannotDeleteMessage":  "このプロファイルは、グループに割り当てられます。このプロファイルを削除する前に、このプロファイルからすべてのグループの割り当てを解除する必要があります。",
                       "cannotDeleteTitle":  "'{0}' を削除できない",
                       "createdDateTime":  "作成済み",
@@ -944,8 +945,8 @@
                       "invalidProfileNameMessage":  "文字 \"{0}\" は許可されていません",
                       "joinTypeLabel":  "Azure AD への参加の種類",
                       "lastModifiedDateTime":  "最終更新:",
-                      "manualRemediationContext":  "We've detected a hardware change on this device. It won't automatically receive an Autopilot profile when it's reset unless you register the device again. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Learn more about resetting the profile.</a>",
-                      "manualRemediationTitle":  "Device {0} needs your attention",
+                      "manualRemediationContext":  "このデバイスでハードウェアの変更が検出されました。デバイスをもう一度登録しない限り、リセット時に Autopilot プロファイルを自動的に受信することはありません。<a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">プロファイルのリセットに関する詳細はこちら。</a>",
+                      "manualRemediationTitle":  "デバイス {0} で注意が必要です",
                       "name":  "名前",
                       "noAutopilotProfile":  "AutoPilot プロファイルがありません",
                       "notEnoughPermissionAssignedError":  "選択した 1 つ以上のグループにこのプロファイルを割り当てるためのアクセス許可が不十分です。管理者にお問い合わせください。",
@@ -958,6 +959,13 @@
                       "windowsPCCommandMenu":  "Windows PC",
                       "directoryServiceLabel":  "Azure AD への参加の種類"
                   },
+    "RoleAssignment":  {
+                           "RoleAssignmentAdmin":  "管理者グループ",
+                           "RoleAssignmentAdminDesc":  "管理者グループのユーザーは、このロールに割り当てられている管理者です",
+                           "rolesMenuTitle":  "エンドポイント マネージャー ロール",
+                           "RoleAssignmentScopeDesc":  "このロールの割り当ての管理者は、ポリシー、アプリケーション、リモート タスクをターゲットにすることができます",
+                           "RoleAssignmentScope":  "スコープ グループ"
+                       },
     "MinimumOperatingSystem":  {
                                    "Android":  {
                                                    "v10":  "Android 10.0",
@@ -983,6 +991,7 @@
                                                "v12":  "iOS 12.0",
                                                "v13":  "iOS 13.0",
                                                "v14":  "iOS 14.0",
+                                               "v15":  "iOS 15.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -1178,6 +1187,61 @@
                              "includeAllDevicesVirtualGroup":  "含まれるアクセス許可",
                              "includeAllUsersVirtualGroup":  "含まれるアクセス許可"
                          },
+    "CoManagementAuthority":  {
+                                  "Confirmation":  {
+                                                       "deleteMessage":  "影響を受けるユーザーは、割り当てられている共同管理機関ページのうち優先順位が次に高いページによって制限されるか、他の共同管理機関ページが割り当てられていない場合には既定の共同管理機関ページによって制限されます。",
+                                                       "deleteTitle":  "{0} は構成された共同管理機関ポリシーの表示名"
+                                                   },
+                                  "Grid":  {
+                                               "description":  "共同管理機関ページは、初期デバイス セットアップ中およびユーザーの初回サインイン時に表示されます。有効にすると、ユーザーは、使用するデバイスを対象とする、割り当てられたアプリとプロファイルの構成の進行状況を確認できます。",
+                                               "hyperlink":  "https://go.microsoft.com/fwlink/?linkid=86016",
+                                               "label":  "共同管理機関"
+                                           },
+                                  "Header":  {
+                                                 "description":  "共同管理機関ページは、初期デバイス セットアップ中およびユーザーの初回サインイン時に表示されます。有効にすると、ユーザーは、使用するデバイスを対象とする、割り当てられたアプリとプロファイルの構成の進行状況を確認できます。"
+                                             },
+                                  "Main":  {
+                                               "title":  "共同管理機関"
+                                           },
+                                  "MessageSaved":  {
+                                                       "body":  "共同管理機関ポリシーが作成されました。"
+                                                   },
+                                  "Notification":  {
+                                                       "createError":  "共同管理機関ポリシー \"{0}\" の作成中にエラーが発生しました",
+                                                       "created":  "この共同管理機関ポリシーはどのユーザーにも割り当てられていません。",
+                                                       "creating":  "共同管理機関ポリシーを作成しています",
+                                                       "creatingMessage":  "{0} 共同管理機関ポリシーを作成しています",
+                                                       "deleteError":  "共同管理機関ポリシーの削除中にエラーが発生しました",
+                                                       "deleted":  "共同管理機関ポリシーが削除されました。",
+                                                       "deletedMessage":  "{0} 共同管理機関ポリシーが削除されました。",
+                                                       "deleting":  "共同管理機関ポリシーを削除しています",
+                                                       "deletingMessage":  "{0} 共同管理機関ポリシーを削除しています",
+                                                       "fetchError":  "共同管理機関ポリシーの表示中にエラーが発生しました",
+                                                       "saved":  "共同管理機関が保存されました。",
+                                                       "savedMessage":  "{0} 共同管理機関ポリシーが正常に保存されました。",
+                                                       "saving":  "共同管理機関を保存しています",
+                                                       "savingMessage":  "{0} 共同管理機関ポリシーを保存しています"
+                                                   },
+                                  "Priority":  {
+                                                   "saveError":  "共同管理機関の優先順位の保存中にエラーが発生しました",
+                                                   "saved":  "共同管理機関の優先順位が正常に保存されました。"
+                                               },
+                                  "ReloadNotification":  {
+                                                             "description":  "共同管理機関ポリシーを再度読み込んでもう一度お試しください。",
+                                                             "title":  "共同管理機関ブレードの再読み込み"
+                                                         },
+                                  "advancedProperty":  "詳細",
+                                  "commandLineArgs":  "クライアント インストールのコマンド ライン引数。",
+                                  "deviceGroupOnlyMessage":  "共同管理機関ページのプロファイルは、ユーザー グループにのみ割り当てることができます。割り当てられているデバイスには、共同管理機関ページは表示されません。",
+                                  "enterArgument":  "引数を入力",
+                                  "installAgent":  "Configuration Manager エージェントを自動的にインストールします。",
+                                  "managedDeviceOwnership":  "共同管理ポリシーをオーバーライドし、すべてのワークロードに対して Intune を使用します。",
+                                  "noAssignmentMessage":  "共同管理機関ポリシーを少なくとも 1 つのグループに割り当てます。[プロパティ] をクリックします。",
+                                  "pageDescription":  "共同管理機関のプロファイル",
+                                  "pageSetting":  "共同管理機関の設定",
+                                  "pageTitle":  "共同管理機関",
+                                  "settingDescription":  "共同管理の設定によって、ワークロードの所有者が決まります。"
+                              },
     "AppType":  {
                     "androidEnterpriseSystemApp":  "Android Enterprise システム アプリ",
                     "androidForWorkApp":  "マネージド Google Play ストア アプリ",
@@ -1246,7 +1310,7 @@
                                    },
                         "BlockDataIngestionIntoOrganizationDocuments":  {
                                                                             "label":  "データを開いて組織ドキュメントに読み込む",
-                                                                            "tooltip1":  "このアプリで <i>[開く]</i> オプションや他のオプションを使用してアカウント間でのデータの共有を行うことを禁止する場合は、<b>[ブロック]</b> を選択します。このアプリで <i>[開く]</i> オプションや他のオプションを使用してアカウント間でのデータの共有を行うことを許可する場合は、<b>[許可]</b> を選択します。",
+                                                                            "tooltip1":  "このアプリで <i>[開く]</i> オプションや他のオプションを使用してアカウント間でのデータの共有を行うことを禁止する場合は、<b>[ブロック]</b> を選択します。このアプリで <i>[開く]</i> オプションや他のオプションを使用してアカウント間でのデータの共有を行うことを許可する場合は、<b>[許可]</b> を選択します。",
                                                                             "tooltip2":  "<b>[ブロック]</b> に設定する場合、<i>[選択したサービスからユーザーがデータを開くことを許可する]</i> の設定を構成して、組織のデータの場所として許可するサービスを指定できます。",
                                                                             "tooltip3":  "<b>注意:</b> この設定は、[他のアプリからデータを受信] の設定が [ポリシーで管理されているアプリ] に設定されている場合にのみ適用されます。<br />\r\n<b>注意:</b> この設定はすべてのアプリケーションに適用されるわけではありません。詳細については、<a href=\"{0}\" target=\"_blank\">{0}</a> をご覧ください。",
                                                                             "tooltip4":  "<b>注意:</b> この設定は、[他のアプリからデータを受信] の設定が [ポリシーで管理されているアプリ] に設定されている場合にのみ適用されます。<br />\r\n<b>注意:</b> この設定はすべてのアプリケーションに適用されるわけではありません。詳細については、<a href=\"{0}\" target=\"_blank\">{0}</a> または <a href=\"{0}\" target=\"_blank\">{0}</a> をご覧ください。"
@@ -1356,6 +1420,14 @@
                                                    "label":  "非アクティブの時間（分）後にアクセス権を再確認します\r\n\r\n",
                                                    "tooltip":  "ポリシーで管理されているアプリが非アクティブな状態のまま、指定された非アクティブ分数を超過すると、アプリが起動した後、再確認すべきアクセス要件 (つまり、PIN、条件付き起動設定) を入力するよう求めるプロンプトが表示されます。"
                                                },
+                        "RequireClass3Biometrics":  {
+                                                        "label":  "Class 3 Biometrics (Android 9.0+)",
+                                                        "tooltip":  "For more information on class 3 biometrics refer to the documentation available <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">here</a>"
+                                                    },
+                        "RequirePinAfterBiometricChange":  {
+                                                               "label":  "Override Biometrics with PIN after biometric updates",
+                                                               "tooltip":  "If class 3 biometrics are supported by the device (more info <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>), when a change in biometrics is detected, a PIN prompt will override biometric prompts."
+                                                           },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "パッケージ ID は一意である必要があります。",
                                                   "invalidPackageError":  "パッケージ ID が無効です",
@@ -1454,6 +1526,8 @@
                       },
     "EnrollmentStatusScreen":  {
                                    "Apps":  {
+                                                "apps":  "アプリ",
+                                                "appsListName":  "アプリケーションの一覧",
                                                 "managedApps":  "マネージド アプリ",
                                                 "noApps":  "アプリケーションがありません",
                                                 "noAppsError":  "アプリケーションの取得でエラーが発生しました",
@@ -1692,7 +1766,8 @@
                                                       "windowsDomainJoin":  "多くの環境ではオンプレミスの Active Directory (AD) が使用されています。AD ドメイン参加済みのデバイスが Azure AD にも参加している場合、Hybrid Azure AD Join を使用したデバイスと呼ばれます。Windows Autopilot を使用すると、Hybrid Azure AD Join を使用したデバイスを Intune に登録できます。登録するには、ドメイン参加構成プロファイルも必要です。ドメイン参加構成プロファイルには、オンプレミスの Active Directory ドメイン情報が含まれています。デバイスのプロビジョニング時に (通常はオフライン)、このプロファイルによって AD ドメインの詳細が展開されるので、デバイスでは参加するオンプレミス ドメインを確認できます。ドメイン参加プロファイルを作成しない場合、これらのデバイスでは展開が失敗するおそれがあります。",
                                                       "windowsEditionUpgrade":  "モバイル デバイス管理 (MDM) ソリューションの一部として、Windows 10/11 デバイスをアップグレードすることもできます。たとえば、Windows 10 Professional デバイスを Windows 10/11 Enterprise にアップグレードします。または、デバイスを切り替えて S モードを解除します。Windows 10/11 S モードは、セキュリティとパフォーマンスを向上させるために設計されています。Intune を使用して、S モードを解除できます。S モードの解除は一方向です。S モードを解除すると、Windows 10/11 S モードに戻ることはできません。この機能は、Windows 10/11 以降、S モードの Windows 10 1809 以降、Windows Holographic for Business に適用されます。これらの機能は Intune で利用でき、管理者が構成できます。Intune では、構成プロファイルを使用して、組織のニーズに合わせてこれらの設定が作成およびカスタマイズされます。プロファイルにこれらの機能を追加した後、組織内の Windows 10 以降を実行するデバイスにプロファイルをプッシュまたは展開できます。プロファイルを展開すると、Intune により自動的にデバイスのアップグレードや S モードの解除が行われます。",
                                                       "windowsHealthMonitoring":  "Microsoft では、イベント データを収集し、Windows デバイスのパフォーマンスを向上させるための推奨事項を提供できます。エンドポイント分析によってこのデータが分析され、ソフトウェアの推奨や、スタートアップのパフォーマンスを向上させるための支援、一般的なサポート問題の解決が行えます。Intune 内で Windows の正常性の監視デバイス構成プロファイルを作成し、このデータ収集を有効にして、このプロファイルをデバイスに展開できます。Windows デバイスを最適化するには、このプロファイルをモバイルデバイス管理 (MDM) ソリューションの一部として使用します。",
-                                                      "windowsIdentityProtection":  "Intune では、このデバイス構成プロファイルを使用して、Windows デバイス上の Windows Hello for Business 設定を管理できることをご存じでしたか。<br><br><a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\">エンドポイント セキュリティ</a>に移動してエンドポイント セキュリティ プロファイルまたはセキュリティ ベースライン プロファイルを作成し、一般的なエンドポイント保護のセキュリティ機能を構成することをご検討ください。<br><br>エンドポイント セキュリティ プロファイルを使用すると、ファイアウォール、BitLocker、ウイルス対策などのセキュリティ テンプレートのキュレーションされた簡潔なセットが提供されます。セキュリティ ベースライン プロファイルは、セキュリティの専門家により推奨された構成済み設定値を持つテンプレートです。"
+                                                      "windowsIdentityProtection":  "Intune では、このデバイス構成プロファイルを使用して、Windows デバイス上の Windows Hello for Business 設定を管理できることをご存じでしたか。<br><br><a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\">エンドポイント セキュリティ</a>に移動してエンドポイント セキュリティ プロファイルまたはセキュリティ ベースライン プロファイルを作成し、一般的なエンドポイント保護のセキュリティ機能を構成することをご検討ください。<br><br>エンドポイント セキュリティ プロファイルを使用すると、ファイアウォール、BitLocker、ウイルス対策などのセキュリティ テンプレートのキュレーションされた簡潔なセットが提供されます。セキュリティ ベースライン プロファイルは、セキュリティの専門家により推奨された構成済み設定値を持つテンプレートです。",
+                                                      "wiredNetwork":  "ユーザーがアクセスするための有線ネットワークを設定します。"
                                                   },
                            "TrustedCert":  {
                                                "uploadControlPlaceHolderText":  "有効な .cer ファイルを選択"
@@ -1855,7 +1930,7 @@
                            "androidZebraMxConfigurationXmlName":  ".xml 形式の MX プロファイル",
                            "anonymousIdentityPrivacyName":  "匿名の ID",
                            "any":  "任意",
-                           "anyDNSAddressesInList":  "次の DNS サーバーを使用して、これらのドメインを解決する (オプション)",
+                           "anyDNSAddressesInList":  "次の DNS サーバーを使用して、入力したドメインを解決します (オプション)",
                            "anyDayOption":  "任意の日",
                            "anyEthernet":  "任意のイーサネット",
                            "anywhereOption":  "どこでも",
@@ -2831,10 +2906,10 @@
                            "connectAppBlockAutoLaunchDescription":  "接続アプリが自動的に起動するのをブロックします。ブロックされている場合、ユーザーはハブの設定から接続アプリを手動で起動できます。",
                            "connectAppBlockAutoLaunchName":  "接続の自動起動",
                            "connectIfNeeded":  "必要な場合に接続する",
-                           "connectIfNeededDNSListDescription":  "構成されると、これらの DNS サーバーは一覧にあるドメインを解決するために使用されます。ドメインが解決できない場合は、VPN 接続が確立されます。",
-                           "connectIfNeededDomainsDescription":  "ユーザーがこの一覧のドメインにアクセスすると、デバイスは DNS を使用してドメインの解決を試行します。ドメインを解決できない場合は、VPN 接続が確立されます。",
+                           "connectIfNeededDNSListDescription":  "一覧のドメインを解決する DNS サーバーの IP アドレスを入力します。この設定は、リスト内のドメインにのみ適用されます。ドメインと DNS サーバーは、外部ネットワークでアクセスできない内部リソースです。そのため、ドメインが解決しない場合は、VPN 接続がオンデマンドで作成されます。",
+                           "connectIfNeededDomainsDescription":  "ユーザーがこの一覧のドメインにアクセスすると、デバイスは DNS を使用してドメインの解決を試みます。ドメインは、パブリック DNS によって解決されない内部リソースです。そのため、ドメインが解決しない場合 (つまり、内部リソースにアクセスできない場合)、VPN 接続はオンデマンドで作成されます。",
                            "connectIfNeededOption":  "必要な場合に接続する",
-                           "connectOption":  "VPN を確立する",
+                           "connectOption":  "VPN の接続",
                            "connectionHeading":  "接続",
                            "consumerFeaturesDescription":  "通常はコンシューマー向けのエクスペリエンスを IT 管理者がオンにできるようにします。たとえば、開始時の提案、メンバーシップ通知、OOBE 後のアプリ インストール、リダイレクト タイルなどです。",
                            "consumerFeaturesName":  "コンシューマー向けの機能",
@@ -3888,6 +3963,7 @@
                            "gatekeeperAllowedAppSourceName":  "これらの場所からダウンロードされたアプリを許可します",
                            "gatekeeperBlockOverrideDescription":  "アプリをインストールするために Ctrl キーを押しながらクリックしてゲートキーパーの設定を一時的にオーバーライドすることをユーザーに禁止します。",
                            "gatekeeperBlockOverrideName":  "ユーザーが Gatekeeper を上書きすることを許可しない",
+                           "generalAvailabilityChannel":  "一般提供チャネル",
                            "generalNetworkSettingsHeader":  "全般",
                            "genericLocalUsersOrGroupsName":  "汎用のローカル ユーザーまたはグループ",
                            "globalConfigurationsDescription":  "すべてのネットワークの種類に適用される Microsoft Defender ファイアウォールの設定を構成します。",
@@ -3999,7 +4075,7 @@
                            "iPsecSecuredPacketExemptionName":  "IPsec でセキュリティ保護されたパケットのステルス モードでの適用除外",
                            "iPv4Option":  "IPv4",
                            "iPv6Option":  "IPv6",
-                           "iWantToDescription":  "このルールに一致した場合に実行されるアクションを選択します。",
+                           "iWantToDescription":  "VPN の接続、VPN の切断、無視の各アクションは、ユーザーがネットワークに接続するときに適用されます。これらのアクションは、ユーザーがネットワークに接続している間は引き続き適用されます。[各接続試行の評価] アクションは、VPN がまだ接続されていない場合にのみ、アクションに対して入力したドメインへのすべての接続に適用されます。",
                            "iWantToName":  "次を実行します",
                            "iconSortOrderAlphabetic":  "英字",
                            "iconSortOrderDescription":  "",
@@ -4924,6 +5000,7 @@
                            "mustBeAValidProductKey":  "有効なプロダクト キーである必要があります (形式: 12345-22345-32345-42345-52345)",
                            "mustBeAValidTeamId":  "有効なチーム ID にする必要があります",
                            "mustBeAValidUrl":  "有効な URL である必要があります",
+                           "mustBeAValidUrlNoProtocol":  "プロトコルのない有効な URL または IP アドレスである必要があります (http または https なし)",
                            "mustBeAValidUrlOrIP":  "有効な URL または IP アドレスである必要があります",
                            "mustBeAValidUrlWithIdParameter":  "ID クエリ パラメーターを持つ有効な URI である必要があります。例: https://play.google.com/store/apps/details?id=com.microsoft.test2",
                            "mustBeAWellFormedXMLString":  "整形式の XML 文字列である必要があります",
@@ -4937,11 +5014,14 @@
                            "mustBeValidBuildVersionFormat":  "有効なビルド バージョン形式にする必要があります。例: 18A391、16G1114 などです。",
                            "mustBeValidDNSSuffix":  "有効な DNS サフィックスである必要があります。例: itgproxy.com",
                            "mustBeValidDateFormat":  "正しい日付の形式 (YYYY-MM-DD) にする必要があります。たとえば、2016-10-01、2016-10-31 にします。",
+                           "mustBeValidDomain":  "有効なドメインである必要があります。例: contoso.com",
                            "mustBeValidEmail":  "有効なメール アドレスにする必要があります。例: username@example.com。",
                            "mustBeValidEmailList":  "user1@gmail.com; user2@gmail.com の有効な電子メール一覧の形式である必要があります。",
                            "mustBeValidFloatingPoint":  "有効な浮動小数点数でなければなりません。例: 1.0、4.3 など。",
                            "mustBeValidGuid":  "有効な UUID である必要があります。例: 782AFCFC-7CAA-436C-8BF0-78CD0FFBD4AF など",
                            "mustBeValidHost":  "有効なホストである必要があります。例: www.host.com など",
+                           "mustBeValidHttpURL":  "有効な HTTP または HTTPS URL である必要があります。例: https://www.contoso.com",
+                           "mustBeValidIpAddress":  "有効な IP アドレスである必要があります。例: 4.3.6.0",
                            "mustBeValidKaiserWifiFormat":  "形式が正しくありません。ユーザーの形式の例: abcd{{WifiMacAddress}}、パスワードの形式の例: abcd{{WifiMacAddress}}{{PreSharedKey}}",
                            "mustBeValidMonthDayDateFormat":  "有効な日付形式 (MM/DD) である必要があります。例: 01/31、02/28 など。",
                            "mustBeValidObjectIdentifierFormat":  "有効なオブジェクト識別子の形式である必要があります。例: 4.3.6.0、7.01.4 など。",
@@ -5107,7 +5187,7 @@
                            "omaBase64Name":  "証明書ファイル",
                            "onDemandDefaultRule":  "既定のルール: 何もしない",
                            "onDemandRuleName":  "ルール {0}",
-                           "onDemandRulesDescription":  "iOS デバイスでネットワーク接続を試みるたびに、WiFi SSID やドメイン名などの特定の条件が、これらの規則に対して一致します。一致した場合は、デバイスで適切な措置が実行されます。",
+                           "onDemandRulesDescription":  "これらの設定は、ルールの作成に使用されます。ルールと一致する場合、デバイスによって、オンデマンド VPN 接続の作成など、選択したアクションが実行されます。",
                            "onDemandRulesExample":  "例: 会社の Wi-Fi では VPN を切断する",
                            "onDemandRulesInfo":  "オンデマンド ルールの作成について説明します。",
                            "onDemandRulesName":  "オンデマンド ルール",
@@ -5371,9 +5451,9 @@
                            "privateShieldedSummaryLabel":  "シールド (プライベート ネットワーク)",
                            "privateStealthModeSummaryLabel":  "ステルス モード (プライベート ネットワーク)",
                            "privateUnicastResponsesToMulticastBroadcastsSummaryLabel":  "マルチキャスト ブロードキャストへのユニキャスト応答 (プライベート ネットワーク)",
-                           "probeUrlOptionalDescription":  "これは HTTP または HTTPS (推奨) URL である必要があります。このルールのドメイン一覧にあるドメインにアクセスしようとすると、常に精査されます。URL にアクセスできないか、200 HTTP 状態コードを返さないために精査できなかった場合は、VPN 接続が確立されます。",
-                           "probeUrlOptionalExample":  "例: badURL.com",
-                           "probeUrlOptionalName":  "この URL が到達不能な場合、VPN を強制接続します。",
+                           "probeUrlOptionalDescription":  "この URL はテストであり、デバイスが外部ネットワーク上にあるかどうかを判断します。URL は、ユーザーがドメイン リスト内のドメインにアクセスしようとするたびにプローブされます。URL に到達できないためにプローブが失敗した場合、または 200 HTTP 状態コードが返されない場合は、VPN 接続が作成されます。たとえば、「https://corp.contoso.com/internalprobe」と入力します。これは、デバイスが内部ネットワークに参加している場合にのみアクセスできます。",
+                           "probeUrlOptionalExample":  "例: https://corp.contoso.com/internalprobe",
+                           "probeUrlOptionalName":  "HTTP または HTTPS プローブ URL を入力します",
                            "processesColumn":  "プロセス",
                            "processesColumnExamples":  "例: %ProgramFiles%\\path\\myapp.exe",
                            "processesToExcludeName":  "スキャンとリアルタイム保護から除外するプロセス",
@@ -5514,6 +5594,8 @@
                            "requiredPasswordComplexityName":  "パスワードの複雑さ",
                            "requiredPasswordTypeDescription":  "必要なパスワードの種類を指定します。",
                            "requiredPasswordTypeName":  "必要なパスワードの種類",
+                           "requiredPasswordUnlockDailyOption":  "最後の PIN、パスワード、またはパターンのロック解除から 24 時間",
+                           "requiredPasswordUnlockName":  "必要なロック解除の頻度",
                            "requiredURLStringProbeName":  "接続前のプローブ URL",
                            "resetToDefaultOption":  "既定値にリセット",
                            "resourcePath":  "リソース パス",
@@ -5533,7 +5615,6 @@
                            "restrictedAppsName":  "制限アプリ",
                            "restrictedSitesSecurityLevelDescription":  "制限付きサイトに高度なセキュリティを適用します。",
                            "restrictedSitesSecurityLevelName":  "制限付きサイトの高度なセキュリティ",
-                           "retailChannel":  "小売チャンネル",
                            "revokeEncryptionKeysOnUnEnrollDescription":  "デバイスの登録解除時に暗号化キーを取り消す (推奨: はい)。",
                            "revokeEncryptionKeysOnUnEnrollName":  "デバイスの登録解除時に暗号化キーを取り消す",
                            "roleAndRealmDescription":  "ベンダーによって必要とされる役割と領域の値のペア。",
@@ -6974,7 +7055,7 @@
                            "wipOption":  "WIP をこの接続に関連付ける",
                            "wirelessOption":  "ワイヤレス",
                            "with":  "接続するかどうかを選択します",
-                           "withDescription":  "これは接続が試みられるたびに発生します",
+                           "withDescription":  "既存の VPN 接続がない場合は、入力したドメインへの接続試行ごとに、ユーザーが VPN に接続するか、VPN に接続しないかを決定します。選択したアクションは、接続の試行ごとに実行されます。",
                            "workFoldersURLDescription":  "作業フォルダーを使用すると、オフラインの場合でも、使用するすべてのデバイスで作業ファイルを利用できます。",
                            "workFoldersURLName":  "作業フォルダーの URL",
                            "workProfileAllowAppInstallsFromUnknownSourcesInWorkProfileName":  "仕事用プロファイルで不明なソースからのアプリのインストールを許可",
@@ -7075,6 +7156,7 @@
                            "add":  "追加",
                            "addAppConfiguration":  "アプリの構成を追加する",
                            "addApps":  "アプリの追加",
+                           "addCondition":  "Add condition",
                            "addConfigCommandLabel":  "構成の追加",
                            "addPolicyBladeTitle":  "ポリシーの追加",
                            "addPolicyError":  "ポリシーを追加できませんでした: {0}",
@@ -7135,6 +7217,9 @@
                            "appsCountSelectorDisplayTextPlural":  "{0} 個のアプリが選択されています",
                            "appsCountSelectorDisplayTextSingular":  "{0} 個のアプリが選択されています",
                            "appsInAndroidWorkProfile":  "Android 作業プロファイルでのアプリ",
+                           "appsOnAndroidEnterpriseDedicatedDevicesWithAzureAdSharedMode":  "Azure AD 共有モードの Android Enterprise 専用デバイス上のアプリ​",
+                           "appsOnAndroidOpenSourceProjectUserAssociated":  "AOSP ユーザー関連付け済みのデバイス上のアプリ",
+                           "appsOnAndroidOpenSourceProjectUserless":  "AOSP ユーザーレス デバイス上のアプリ",
                            "appsOnIntuneManagedDevices":  "Intune マネージド デバイス上のアプリ",
                            "appsOnUnmanagedDevices":  "アンマネージド デバイス上のアプリ",
                            "appsSelectorLabel":  "アプリ",
@@ -7240,6 +7325,7 @@
                            "deviceConditionsInfoParagraph2":  "登録済みデバイスについて類似のデバイス ベースの設定を構成できます。",
                            "deviceConditionsInfoParagraph2LinkText":  "登録済みデバイスのデバイス コンプライアンス設定の構成については、こちらを参照してください。",
                            "deviceId":  "デバイス ID",
+                           "deviceLockComplexityValidationFailureNotes":  "<p><b>注:</b></p>\r\n<ul type=\"disc\">\r\n    <li>デバイスのロックでは、 Android 11 以降を対象とした 低、中または高のパスワードの複雑性を必須にすることができます。Android 10 以前で動作しているデバイスでは、複雑性の値を 低/中/高 に設定すると、 既定で低い複雑性に対して予期される動作になります。</li>\r\n    <li>以下のパスワード定義は変更される可能性があります。様々なパスワードの複雑性レベルの最新の定義に関しては<a href='https://developer.android.com/reference/android/app/admin/DevicePolicyManager#getPasswordComplexity%28%29'>DevicePolicyManager|Android Developers</a>を参照してください。</li>\r\n</ul>\r\n\r\n<p><b>低</b></p>\r\n<ul type=\"disc\">\r\n    <li>パスワードは、繰り返しシーケンス (4444) または順序シーケンス (1234、4321、2468) のパターンや PIN になりえます。</li>\r\n</ul>\r\n\r\n<p><b>中</b></p>\r\n<ul type=\"disc\">\r\n    <li>繰り返しシーケンス (4444) や順序シーケンス (1234, 4321, 2468) ではなく、少なくとも 4 文字以上の PIN </li>\r\n    <li>英文字のパスワード、少なくとも4 文字以上</li>\r\n    <li>英数字のパスワード、少なくとも 4 文字以上</li>\r\n</ul>\r\n\r\n<p><b>高</b></p>\r\n<ul type=\"disc\">\r\n    <li>繰り返しシーケンス (4444) や順序シーケンス (1234, 4321, 2468) のない、少なくとも 8 文字以上の PIN</li>\r\n    <li>英文字のパスワード、長さが 6 文字以上</li>\r\n    <li>英数字のパスワード、長さが 6 文字以上</li>\r\n</ul>\r\n<p></p>",
                            "deviceLockedOpenFilesOptionsText":  "デバイスがロックされていて、開いているファイルがあるとき",
                            "deviceLockedOptionText":  "デバイスのロック時",
                            "deviceManufacturer":  "デバイス製造元",
@@ -7356,6 +7442,7 @@
                            "guidedTemplate2":  "ユーザーに対してどの保護レベルをデプロイするかを指定してください。詳細については、<a href = \"https://go.microsoft.com/fwlink/?linkid=2131582 \">アプリ保護ポリシーを使用するデータ保護フレームワーク</a>を参照してください。",
                            "guidediOSLabel":  "iOS アプリの保護",
                            "hardwareBackedKey":  "ハードウェアを利用するキー",
+                           "healthCheck":  "Health Checks",
                            "helpAndSupport":  "ヘルプとサポート",
                            "hideOverrides":  "オーバーライドの非表示",
                            "highDataProtectionGuidedString":  "高データ保護 – より複雑なアクセス要件設定 (単純な PIN を無効にするなど)、データ保護設定 (サードパーティ製のキーボードを無効にするなど) を使用して、拡張データ保護に定義された設定を拡張します。",
@@ -7468,6 +7555,7 @@
                            "overview":  "概要",
                            "packageId":  "パッケージ ID",
                            "pendingDeleteContentStateText":  "削除しています...",
+                           "photoLibrary":  "フォト ライブラリ",
                            "pinCharSettingTooltip":  "数字 PIN には、数字のみを使用できます。\r\n\r\nパスコードには、英数字と使用可能な記号の両方を含める必要があります。",
                            "pinToDashboard":  "Dummy string, don't translate",
                            "platformColumnLabel":  "プラットフォーム",
@@ -7537,7 +7625,7 @@
                            "reporting":  "レポート",
                            "reports":  "レポート",
                            "require":  "必要",
-                           "requireDeviceLockOnApps":  "Require device lock",
+                           "requireDeviceLockComplexityOnApps":  "デバイス ロックの要求",
                            "requireThreatScanOnApps":  "アプリの脅威のスキャンが必須",
                            "requiredField":  "このフィールドを空にすることはできません",
                            "requiredSafetyNetEvaluationType":  "必要な SafetyNet 評価の種類",
@@ -7913,9 +8001,9 @@
                            "selectorLabel":  "検出規則"
                        },
     "PolicyType":  {
-                       "AttackSurfaceReductionRules":  {
-                                                           "configMgr":  "攻撃の回避規則 (ConfigMgr)"
-                                                       },
+                       "EdgeSmartScreenSettings":  {
+                                                       "description":  "Microsoft Edge は SmartScreen 設定を提案しました: Windows 10 クラウド構成テンプレート。https://aka.ms/CloudConfigGuide"
+                                                   },
                        "EndpointDetectionandResponse":  {
                                                             "mDE":  "エンドポイントの検出と応答"
                                                         },
@@ -7964,13 +8052,20 @@
                        "FirewallRules":  {
                                              "mDE":  "Microsoft Defender ファイアウォール規則"
                                          },
+                       "OneDriveKnownFolderMove":  {
+                                                       "description":  "OneDrive 既知のフォルダー移動設定: Windows 10 クラウド構成テンプレート。https://aka.ms/CloudConfigGuide"
+                                                   },
+                       "accountProtection":  "アカウント保護",
                        "administrativeTemplates":  "管理用テンプレート",
                        "androidCompliancePolicy":  "Android コンプライアンス ポリシー",
                        "aospDeviceOwnerCompliancePolicy":  "Android (AOSP) コンプライアンス ポリシー",
                        "applicationControl":  "アプリケーション制御",
+                       "attackSurfaceReductionRules":  "攻撃の回避規則",
+                       "bitlocker":  "BitLocker",
                        "custom":  "カスタム",
                        "deliveryOptimization":  "配信の最適化",
                        "derivedPersonalIdentityVerificationCredential":  "派生資格情報",
+                       "deviceControl":  "デバイス コントロール",
                        "deviceFeatures":  "デバイス機能",
                        "deviceFirmwareConfigurationInterface":  "デバイスのファームウェア構成インターフェイス",
                        "deviceLock":  "デバイス ロック",
@@ -7990,6 +8085,7 @@
                        "identityProtection":  "Identity Protection",
                        "iosCompliancePolicy":  "iOS コンプライアンス ポリシー",
                        "kiosk":  "キオスク",
+                       "localUsersAndGroups":  "ローカル ユーザー グループ メンバーシップ",
                        "macCompliancePolicy":  "Mac コンプライアンス ポリシー",
                        "microsoftDefenderAntivirus":  "Microsoft Defender ウイルス対策",
                        "microsoftDefenderAntivirusexclusions":  "Microsoft Defender ウイルス対策の除外",
@@ -8112,7 +8208,7 @@
     "AzureIAM":  {
                      "AdrsUserActionSelectionWarning":  {
                                                             "conditions":  "デバイスの登録が必要な条件は、\"デバイスの登録または参加\" ユーザー操作では利用できません。",
-                                                            "message":  "\"デバイスの登録または参加\" ユーザー アクション用に作成されたポリシーで使用できるのは \"多要素認証を要求する\" のみです。{0}"
+                                                            "message":  "[デバイスの登録または参加] ユーザー アクション用に作成されたポリシーで使用できるのは [多要素認証を要求する] のみです。{0}"
                                                         },
                      "AuthContext":  {
                                          "Delete":  {
@@ -8144,11 +8240,12 @@
                                                         "selected":  "含まれる認証コンテキスト"
                                                     },
                                          "addNewStepUp":  "新しい認証コンテキスト",
+                                         "bannerText":  "Azure AD Premium を使用して、独自の認証コンテキスト値と条件付きアクセス ポリシーを作成します",
                                          "checkBoxInfo":  "このポリシーが適用される認証コンテキストを選択します",
                                          "configure":  "認証コンテキストの構成",
                                          "createCA":  "条件付きアクセス ポリシーを認証コンテキストに割り当てる",
                                          "dataGrid":  "認証コンテキストの一覧",
-                                         "deleteFailedByReference":  "You cannot delete this authentication context because it is being referenced by CA policies.",
+                                         "deleteFailedByReference":  "この認証コンテキストは CA ポリシーによって参照されているため、削除できません。",
                                          "description":  "説明",
                                          "documentation":  "ドキュメント",
                                          "getStarted":  "概要",
@@ -8166,49 +8263,34 @@
                      "AuthenticationStrength":  {
                                                     "Mode":  {
                                                                  "deviceBasedPush":  "Microsoft Authenticator (電話によるサインイン)",
-                                                                 "deviceBasedPushFido2X509Certificate":  "Microsoft Authenticator (電話によるサインイン) + FIDO 2 + 証明書ベースの認証",
-                                                                 "deviceBasedPushX509CertificateSingleFactor":  "Microsoft Authenticator (電話によるサインイン) + FIDO 2 + 証明書ベースの認証 (単一要素)",
                                                                  "email":  "メールのワンタイム パスコード",
-                                                                 "emailOtp":  "メールのワンタイム パスコード",
                                                                  "federatedMultiFactor":  "フェデレーション多要素",
-                                                                 "federatedSingleFactor":  "フェデレーション単一要因",
-                                                                 "federatedSingleFactorFederatedMultiFactor":  "フェデレーション単一要素 + フェデレーション多要素",
-                                                                 "fido2":  "FIDO 2 セキュリティ キー",
-                                                                 "fido2X509CertificateSingleFactor":  "FIDO 2 セキュリティ キー + 証明書ベースの認証 (単一要素)",
+                                                                 "federatedSingleFactor":  "フェデレーション単一要素",
+                                                                 "fido2":  "FIDO2 セキュリティ キー",
                                                                  "hardwareOath":  "ハードウェア OATH トークン",
                                                                  "hardwareOathEmail":  "ハードウェア OATH トークン + メールのワンタイム パスコード",
-                                                                 "hardwareOathX509CertificateSingleFactor":  "ハードウェア OATH トークン + 証明書ベース認証 (単一要素)",
-                                                                 "microsoftAuthenticatorPSIX509CertificateSingleFactor":  "Microsoft Authenticator (電話によるサインイン) + 証明書ベースの認証 (単一要素)",
-                                                                 "microsoftAuthenticatorPsi":  "Microsoft Authenticator (電話によるサインイン)",
+                                                                 "hardwareOathFederatedSingleFactor":  "フェデレーション単一要素 + ハードウェア OATH トークン",
                                                                  "microsoftAuthenticatorPush":  "Microsoft Authenticator (プッシュ通知)",
                                                                  "microsoftAuthenticatorPushEmail":  "Microsoft Authenticator (プッシュ通知) + メールのワンタイム パスコード",
-                                                                 "microsoftAuthenticatorPushX509CertificateSingleFactor":  "Microsoft Authenticator (プッシュ通知) + 証明書ベースの認証 (単一要素)",
+                                                                 "microsoftAuthenticatorPushFederatedSingleFactor":  "フェデレーション単一要素 + Microsoft Authenticator (プッシュ通知)",
                                                                  "none":  "なし",
                                                                  "password":  "パスワード",
-                                                                 "passwordDeviceBasedPush":  "パスワード + Microsoft Authenticator (電話によるサインイン)",
-                                                                 "passwordFido2":  "パスワード + FIDO 2 セキュリティ キー",
                                                                  "passwordHardwareOath":  "パスワード + ハードウェア OATH トークン",
-                                                                 "passwordMicrosoftAuthenticatorPSI":  "パスワード + Microsoft Authenticator (電話によるサインイン)",
                                                                  "passwordMicrosoftAuthenticatorPush":  "パスワード + Microsoft Authenticator (プッシュ通知)",
                                                                  "passwordSms":  "パスワード + SMS",
                                                                  "passwordSoftwareOath":  "パスワード + ソフトウェア OATH トークン",
-                                                                 "passwordTemporaryAccessPassMultiUse":  "パスワード + 一時アクセス パス (複数使用)",
-                                                                 "passwordTemporaryAccessPassOneTime":  "パスワード + 一時アクセス パス (1 回限りの使用)",
                                                                  "passwordVoice":  "パスワード + 音声",
                                                                  "sms":  "SMS",
                                                                  "smsEmail":  "SMS + メールのワンタイム パスコード",
-                                                                 "smsSignIn":  "SMS サインイン",
-                                                                 "smsX509CertificateSingleFactor":  "SMS + 証明書ベースの認証 (単一要素)",
+                                                                 "smsFederatedSingleFactor":  "フェデレーション単一要素 + SMS",
                                                                  "softwareOath":  "ソフトウェア OATH トークン",
                                                                  "softwareOathEmail":  "ソフトウェア OATH トークン + メールのワンタイム パスコード",
-                                                                 "softwareOathX509CertificateSingleFactor":  "ソフトウェア OATH トークン + 証明書ベースの認証 (単一要素)",
+                                                                 "softwareOathFederatedSingleFactor":  "フェデレーション単一要素 + ソフトウェア OATH トークン",
                                                                  "temporaryAccessPassMultiUse":  "一時アクセス パス (複数使用)",
-                                                                 "temporaryAccessPassMultiUseX509CertificateSingleFactor":  "一時アクセス パス (複数使用) + 証明書ベースの認証 (単一要素)",
                                                                  "temporaryAccessPassOneTime":  "一時アクセス パス (1 回限りの使用)",
-                                                                 "temporaryAccessPassOneTimeX509CertificateSingleFactor":  "一時アクセス パス (1 回限りの使用) + 証明書ベースの認証 (単一要素)",
                                                                  "voice":  "音声",
                                                                  "voiceEmail":  "音声 + メールのワンタイム パスコード",
-                                                                 "voiceX509CertificateSingleFactor":  "音声 + 証明書ベースの認証 (単一要素)",
+                                                                 "voiceFederatedSingleFactor":  "フェデレーション単一要素 + 音声",
                                                                  "windowsHelloForBusiness":  "Windows Hello for Business",
                                                                  "x509CertificateMultiFactor":  "証明書ベースの認証 (多要素)",
                                                                  "x509CertificateSingleFactor":  "証明書ベースの認証 (単一要素)"
@@ -8240,7 +8322,8 @@
                                              "Validation":  {
                                                                 "failed":  "[選択された場所] を使用する場合、少なくとも 1 つの場所を選択する必要があります。",
                                                                 "selector":  "少なくとも 1 つの場所を選択してください"
-                                                            }
+                                                            },
+                                             "privateLinksInfo":  "Azure AD の Private Link は、Azure サービスに最適です。このポリシーが適用されるプリンシパルに、M365 などのパブリック サービスに至る要件がないことを確認してください。"
                                          },
                      "ClientApp":  {
                                        "Clients":  {
@@ -8276,6 +8359,7 @@
                                                   "infoBalloon":  "テストするクラウド アプリまたはユーザー アクション。例: 'SharePoint Online'",
                                                   "learnMore":  "すべてまたは特定のクラウド アプリまたはアクションに基づいて、アクセスを制御します。",
                                                   "learnMoreB2C":  "すべてまたは特定のクラウド アプリに基づいて、アクセスを制御します。",
+                                                  "learnMoreNetworkAccess":  "すべてまたは特定のネットワーク アクセス トラフィック、クラウド アプリまたはアクションに基づいて、アクセスを制御します。",
                                                   "title":  "クラウド アプリまたは操作"
                                               },
                      "CloudappsSelectionBlade":  {
@@ -8292,6 +8376,7 @@
                                                                   },
                                                      "Validation":  {
                                                                         "authContext":  "[認証コンテキスト] では、少なくとも 1 つのサブ項目を構成する必要があります。",
+                                                                        "networkAccess":  "[ネットワーク アクセス] では、少なくとも 1 つのトラフィック プロファイルを構成する必要があります。",
                                                                         "selectApps":  "\"{0}\" を構成する必要があります",
                                                                         "selector":  "少なくとも 1 つのアプリを選択してください。",
                                                                         "userActions":  "[ユーザー操作] では、少なくとも 1 つのサブ項目を構成する必要があります。"
@@ -8307,12 +8392,12 @@
                                     "notFoundDetailed":  "ポリシー \"{0}\" が存在しません。削除された可能性があります。"
                                 },
                      "GuestsOrExternalUsers":  {
-                                                   "allExternalTenantsLabel":  "すべての Azure AD 組織",
+                                                   "allExternalTenantsLabel":  "すべて",
                                                    "b2bCollaborationGuestLabel":  "B2B Collaboration ゲスト ユーザー",
                                                    "b2bCollaborationMemberLabel":  "B2B Collaboration メンバー ユーザー",
                                                    "b2bDirectConnectUserLabel":  "B2B 直接接続ユーザー",
                                                    "enumeratedExternalTenantsError":  "外部テナントを少なくとも 1 つ選択してください。",
-                                                   "enumeratedExternalTenantsLabel":  "Azure AD 組織の選択",
+                                                   "enumeratedExternalTenantsLabel":  "選択",
                                                    "externalTenantsLabel":  "外部 Azure AD 組織の指定",
                                                    "externalUserDropdownLabel":  "ゲストまたは外部ユーザーの種類の選択",
                                                    "externalUsersError":  "外部ゲストまたはユーザーの種類を少なくとも 1 つ選択してください",
@@ -8432,6 +8517,22 @@
                                                        "gridAria":  "名前付きの場所のリスト"
                                                    }
                                       },
+                     "NetworkAccess":  {
+                                           "Included":  {
+                                                            "none":  "ターゲット リソースが選択されていません",
+                                                            "plural":  "{0}ネットワーク トラフィック プロファイルが選択されました",
+                                                            "singular":  "1 個のネットワーク トラフィック プロファイルが選択されました"
+                                                        },
+                                           "internetOptionText":  "パブリック トラフィック",
+                                           "label":  "ネットワーク アクセス （プレビュー）",
+                                           "m365OptionText":  "M365 トラフィック",
+                                           "privateOptionText":  "プライベート トラフィック",
+                                           "selectTrafficProfilesLabel":  "このポリシーが適用されるトラフィック プロファイルを選択します",
+                                           "targetResourcesBalloonContext":  "ターゲット リソース",
+                                           "targetResourcesSelectorTitle":  "ターゲット リソース",
+                                           "trafficProfilesLearnMoreTooltip":  "追加のトラフィック プロファイルを表示するには、NaaS ライセンスをさらに追加します。",
+                                           "ztnaEnableLearnMore":  "ネットワーク アクセス制御を使用するには、ゼロ トラスト Cloud Edge を有効にする必要があります。"
+                                       },
                      "Policies":  {
                                       "Grid":  {
                                                    "aria":  "条件付きアクセス ポリシーの一覧"
@@ -8449,22 +8550,37 @@
                                                                                }
                                                   }
                                 },
+                     "PolicyCondition":  {
+                                             "SignInRiskDetections":  {
+                                                                          "ApplyCondition":  {
+                                                                                                 "info":  "選択したリアルタイム サインイン リスク検出にポリシーを適用するようにリスク検出を構成します。"
+                                                                                             },
+                                                                          "LearnMore":  {
+                                                                                            "message":  "特定のリアルタイム サインイン リスク検出に対応するため、ユーザー アクセスを制御します。"
+                                                                                        },
+                                                                          "description":  "含まれているいずれかのリスク検出でリスクが検出された場合、この条件は満たされます。これは、サインイン リスク レベルの計算には影響を与えません。",
+                                                                          "header":  "リアルタイムの組み込みリスク検出",
+                                                                          "info":  "サインイン中にリスクを検出する検出。",
+                                                                          "label":  "サインイン リスクの検出 (プレビュー)",
+                                                                          "title":  "サインイン リスクの検出"
+                                                                      }
+                                         },
                      "PolicyControlAuthStrength":  {
                                                        "MultiFactorAuthentication":  {
                                                                                          "description":  "強力な認証を満たす方法の組み合わせ (パスワード + SMS など)",
-                                                                                         "displayName":  "多要素認証 (MFA)"
+                                                                                         "displayName":  "多要素認証"
                                                                                      },
                                                        "Passwordless":  {
                                                                             "description":  "強力な認証に適合するパスワードレスの方法 (Microsoft Authenticator など) ",
-                                                                            "displayName":  "パスワードレス MFA"
+                                                                            "displayName":  "パスワードレスの多要素認証"
                                                                         },
                                                        "PhishingResistant":  {
                                                                                  "description":  "最も強力な認証のためのフィッシング防止のパスワードレス メソッド (FIDO2 セキュリティ キーなど)",
-                                                                                 "displayName":  "フィッシング防止 MFA"
+                                                                                 "displayName":  "フィッシングに強い多要素認証"
                                                                              }
                                                    },
                      "PolicyControlFedAuthMethod":  {
-                                                        "ariaLabel":  "Learn more about requiring authentication methods satisfied by federation providers.",
+                                                        "ariaLabel":  "フェデレーション プロバイダーが満たす認証方法の要求に関する詳細情報を表示します。",
                                                         "certificate":  "証明書の認証",
                                                         "infoBubble":  "必要な認証方法を指定してください。これは、ADFS などのフェデレーション プロバイダーが満たす必要があります。",
                                                         "multifactor":  "多要素認証",
@@ -8543,7 +8659,7 @@
                                                                                               "title":  "不明なまたはサポートされていないデバイス プラットフォームのアクセスをブロックする"
                                                                                           },
                                                                 "BlockLegacyAuth":  {
-                                                                                        "description":  "多要素認証をバイパスするために使用できるレガシ認証エンドポイントをブロックします。",
+                                                                                        "description":  "多要素認証をバイパスするために使用できるレガシ認証エンドポイントをブロックします。 ",
                                                                                         "name":  "CA003: レガシ認証をブロックする",
                                                                                         "title":  "レガシ認証をブロックする"
                                                                                     },
@@ -8558,18 +8674,18 @@
                                                                                                          "title":  "準拠しているか、Hybrid Azure AD Join を使用したデバイスを管理者に要求する"
                                                                                                      },
                                                                 "RequireCompliantOrHybridADAllUsers":  {
-                                                                                                           "description":  "ユーザーにマネージド デバイスの使用または多要素認証の実行を要求することで、会社のリソースへのアクセスを保護します (macOS または Windows のみ)。",
-                                                                                                           "name":  "CA013: 準拠しているか、Hybrid Azure AD Join を使用したデバイス、または多要素認証をすべてのユーザーに要求する",
-                                                                                                           "title":  "準拠しているか、Hybrid Azure AD Join を使用したデバイス、または多要素認証をすべてのユーザーに要求する"
+                                                                                                           "description":  "ユーザーにマネージド デバイスの使用または多要素認証の実行を要求することで、会社のリソースへのアクセスを保護します (macOS または Windows のみ)",
+                                                                                                           "name":  "CA013: 準拠していること、Hybrid Azure AD Join を使用したデバイス、または多要素認証をすべてのユーザーに要求する",
+                                                                                                           "title":  "準拠していること、Hybrid Azure AD Join を使用したデバイス、または多要素認証をすべてのユーザーに要求する"
                                                                                                        },
                                                                 "RequireMFAAllUsers":  {
-                                                                                           "description":  "侵害のリスクを減らすために、すべてのユーザー アカウントに多要素認証を要求します。",
+                                                                                           "description":  "侵害のリスクを軽減するために、すべてのユーザー アカウントに多要素認証を要求します。",
                                                                                            "name":  "CA004: すべてのユーザーに多要素認証を要求する",
                                                                                            "title":  "すべてのユーザーに多要素認証を要求する"
                                                                                        },
                                                                 "RequireMFAForAdmins":  {
                                                                                             "description":  "侵害のリスクを軽減するために、特権のある管理アカウントに多要素認証を要求します。このポリシーは、セキュリティの既定値と同じロールを対象とします。",
-                                                                                            "name":  "CA001: すべての管理者に多要素認証を要求する",
+                                                                                            "name":  "CA001: 管理者に多要素認証を要求する",
                                                                                             "title":  "管理者に多要素認証を要求する"
                                                                                         },
                                                                 "RequireMFAForAzureManagement":  {
@@ -8593,7 +8709,7 @@
                                                                                                               "title":  "危険性の高いユーザーにパスワードの変更を要求する"
                                                                                                           },
                                                                 "RequireSecurityInfo":  {
-                                                                                            "description":  "ユーザーが Azure AD 多要素認証とセルフサービス パスワードに登録するタイミングと方法をセキュリティで保護します。",
+                                                                                            "description":  "ユーザーが Azure AD 多要素認証とセルフサービス パスワードに登録するタイミングと方法をセキュリティで保護します。 ",
                                                                                             "name":  "CA002: セキュリティ情報登録の保護",
                                                                                             "title":  "セキュリティ情報登録の保護"
                                                                                         }
@@ -8621,7 +8737,7 @@
                                                                                                                                   "on":  "このポリシーは、現在ログインしている管理者を除くすべてのユーザーに影響します。これがユーザーに影響しないことを確認するまで、レポート専用モードを使用して開始することを検討してください。"
                                                                                                                               },
                                                                                                               "Title":  {
-                                                                                                                            "on":  "ご自分をロックアウトしないでください。デバイスが準拠または Hybrid Azure AD Join を使用しているか、または多要素認証を構成しているかを確認してください。",
+                                                                                                                            "on":  "ご自分をロックアウトしないでください。お使いのデバイスが準拠しているか、Hybrid Azure AD Join を使用しているか、または多要素認証を構成していることを確認してください。 ",
                                                                                                                             "reportOnly":  "準拠デバイスが必要なレポート専用モードのポリシーでは、デバイス コンプライアンスが強制されていない場合でも、ポリシーの評価時に、Mac、iOS、Android のユーザーにデバイス証明書を選択するよう求めるメッセージが表示される場合があります。このメッセージは、デバイスが準拠するまで繰り返される可能性があります。"
                                                                                                                         }
                                                                                                           },
@@ -8787,6 +8903,13 @@
                                                           "message":  "特定のサインイン リスク レベルに対応するため、ユーザー アクセスを制御します。"
                                                       }
                                     },
+                     "SigninRiskLevel":  {
+                                             "NoRiskSelected":  {
+                                                                    "warning":  "\"{0}\" を選択すると、\"{1}\" 条件は構成できなくなります。"
+                                                                },
+                                             "description":  "サインイン リスク レベルは、すべてのリアルタイム リスク検出に基づいて生成されます。",
+                                             "header":  "このポリシーを適用するサインイン リスク レベルを選択します"
+                                         },
                      "SingleSelectorActive":  {
                                                   "failed":  "このデータを読み込めません。",
                                                   "reattempt":  "データを読み込んでいます。{1} 個中 {0} 個を再試行します。"
@@ -8853,12 +8976,14 @@
                                               "invalidDevicesCondition":  "デバイスの構成が無効です。\"{0}\" の構成が無効である可能性があります。",
                                               "invalidGrantControlPolicy":  "許可の制御が無効です",
                                               "invalidLocationsCondition":  "無効な場所が選択されました",
+                                              "invalidNetworkAccessSecurityPolicyId":  "セッション ネットワーク制御にアタッチされた Azure Policy が無効です。",
                                               "invalidPolicy":  "割り当てが選択されていません",
                                               "invalidSessionControlPolicy":  "セッションの制御が無効です",
                                               "invalidSignInRisksCondition":  "無効なサインイン リスクが選択されました",
                                               "invalidUserRisksCondition":  "無効なユーザー リスクが選択されました",
                                               "invalidUsersCondition":  "無効なユーザーが選択されました",
                                               "mamPolicyShouldOnlyTargetAndroidOrIosPlatforms":  "MAM ポリシーは Android または iOS クライアント プラットフォームにのみ適用されます。",
+                                              "networkAccessControlNeedsNetworkAccessTargetedTrafficProfile":  "ネットワーク アクセス セッション ポリシーは、ネットワーク アクセス トラフィック プロファイルが対象になっている場合にのみ正しく機能します。ターゲット リソース セクションを更新してください。",
                                               "notSupportedCombination":  "ポリシーの構成はサポートされていません。サポートされているポリシーの詳細を確認してください。",
                                               "pending":  "ポリシーを検証しています",
                                               "requireComplianceEveryonePolicy":  "ポリシーの構成では、すべてのユーザーがデバイスに準拠する必要があります。選択した割り当てを確認してください。",
@@ -8871,10 +8996,12 @@
                                  },
                      "WarningsInfo":  {
                                           "Controls":  {
+                                                           "AuthStrengthXtap":  {
+                                                                                    "allUsers":  "外部ユーザーが組み込みの認証強度を使用するには、Azure AD テナントからの要求を受け入れるようにテナント間アクセス設定を構成します。外部ユーザーに対してカスタムの認証強度を構成することはできません。",
+                                                                                    "externalUsers":  "すべての組み込みの認証強度を有効にするには、外部ユーザーの Azure AD テナントからの要求を受け入れるようにテナント間アクセス設定を構成します。"
+                                                                                },
                                                            "compliantDeviceEnabled":  "自分自身をロックアウトしないでください。デバイスが準拠していることをご確認ください。",
                                                            "domainJoinedDeviceEnabled":  "自分自身をロックアウトしないでください。デバイスが Hybrid Azure AD Join を使用したであることをご確認ください。",
-                                                           "exchangeDisabled":  "Exchange ActiveSync は、\"準拠しているデバイス\" と \"承認されたクライアント アプリ\" の制御のみをサポートしています。詳細については、ここをクリックしてください。",
-                                                           "exchangeDisabled2":  "Exchange ActiveSync は、\"準拠しているデバイス\"、\"承認されたクライアント アプリ\"、\"準拠しているクライアント アプリ\" の制御のみをサポートしています。詳細については、ここをクリックしてください。",
                                                            "notAvailableForSP":  "ポリシーの割り当てで '{0}' が選択されているため、一部のコントロールを使用できません",
                                                            "requireAuthOrMfa":  "'{0}' と '{1}' は同時に使用できません。",
                                                            "requireMfa":  "新しい \"{0}\" パブリック プレビューのテストを行うことを検討してください",
@@ -8904,7 +9031,8 @@
                                                                     "teamsBlocked":  "SharePoint Online や Exchange Online などのアプリがポリシーに含まれている場合は、Microsoft Teams も影響を受けます。"
                                                                 },
                                           "Users":  {
-                                                        "blockAllUsers":  "自分自身をロックアウトしないでください。このポリシーは、すべてのユーザーに影響します。まずは少数のユーザーにポリシーを適用して、想定どおりに動作するかどうかを確認することをお勧めします。"
+                                                        "blockAllUsers":  "自分自身をロックアウトしないでください。このポリシーは、すべてのユーザーに影響します。まずは少数のユーザーにポリシーを適用して、想定どおりに動作するかどうかを確認することをお勧めします。",
+                                                        "xtap":  "許可制御における \"認証強度を要求する\" 構成は、外部ユーザーに対して有効でない可能性があります。"
                                                     }
                                       },
                      "WhatIf":  {
@@ -8958,7 +9086,7 @@
                      "certDurationCol":  "有効期限",
                      "certDurationStartCol":  "有効期間の開始日",
                      "certName":  "VpnCert",
-                     "certainApps":  "[多要素認証が必要] と [パスワードの変更を要求する] の許可が選択されていない場合、[サインインの頻度 (毎回)] が有効になるのは特にサポートされているアプリのみです",
+                     "certainApps":  "[多要素認証を要求する] と [パスワードの変更を要求する] の許可が選択されていない場合、[サインインの頻度 (毎回)] が有効になるのは特にサポートされているアプリのみです",
                      "chooseApplicationsBladeSubtitle":  "",
                      "chooseApplicationsBladeTitle":  "アプリケーションの選択",
                      "chooseApplicationsCartSubitle":  "",
@@ -8981,7 +9109,7 @@
                      "chooseApplicationsTooMany":  "結果が多すぎて表示できません。検索ボックスを使用してフィルター処理してください。",
                      "chooseLocationCorpnetItem":  "企業ネットワーク",
                      "chooseLocationSelectedLocationsLabel":  "選択された場所",
-                     "chooseLocationTrustedIpsItem":  "MFA 信頼済み IP",
+                     "chooseLocationTrustedIpsItem":  "多要素認証の信頼済み IP",
                      "chooseLocationsBladeSubtitle":  "",
                      "chooseLocationsBladeTitle":  "場所の選択",
                      "chooseLocationsCartSubitle":  "",
@@ -9105,7 +9233,6 @@
                      "clientAppBladeTitle":  "クライアント アプリ",
                      "clientAppDescription":  "このポリシーを適用するクライアント アプリを選択します",
                      "clientAppExchangeActiveSync":  "Exchange ActiveSync",
-                     "clientAppExchangeDisabledInfo":  "Exchange ActiveSync は、Exchange Online が、選択されている唯一のクラウド アプリである場合に使用できます。詳細については、ここをクリックしてください",
                      "clientAppExchangeWarning":  "Exchange ActiveSync は、現在、その他すべての条件をサポートしていません",
                      "clientAppLearnMore":  "最新の認証を使用しない特定のクライアント アプリケーションを対象とするようユーザー アクセスを制御します。",
                      "clientAppLegacyHeader":  "レガシ認証クライアント",
@@ -9113,7 +9240,6 @@
                      "clientAppModernHeader":  "先進認証クライアント",
                      "clientAppOnlySupportedPlatforms":  "サポートされているプラットフォームのみにポリシーを適用する",
                      "clientAppSelectSpecificClientApps":  "クライアント アプリの選択",
-                     "clientAppV2BladeTitle":  "クライアント アプリ (プレビュー)",
                      "clientAppWebBrowser":  "ブラウザー",
                      "clientAppsSelectedLabel":  "{0} 件を含む",
                      "clientTypeBrowser":  "ブラウザー",
@@ -9142,7 +9268,7 @@
                      "conditionLabelOne":  "1 個の条件が選択されました",
                      "conditionalAccessBladeTitle":  "条件付きアクセス",
                      "conditionsNotSelectedLabel":  "未構成",
-                     "conditionsReqMfaReauthSet":  "[多要素認証が必要] 許可と [サインインの頻度 (毎回)] セッション制御が現在選択されているため、一部のオプションは使用できません",
+                     "conditionsReqMfaReauthSet":  "[多要素認証を要求する] 許可と [サインインの頻度 (毎回)] セッション制御が現在選択されているため、一部のオプションは使用できません",
                      "conditionsReqPwSet":  "\"パスワードの変更が必要\" 許可が現在選択されているため、一部のオプションは使用できません",
                      "configureCasText":  "Cloud App Security の構成",
                      "configureCustomControlsText":  "カスタム ポリシーの構成",
@@ -9150,17 +9276,17 @@
                      "controlLabelOne":  "1 個のコントロールが選択されました",
                      "controlValidatorText":  "少なくとも 1 つのコントロールを選択してください",
                      "controlsBlockAccessInfoBubble":  "ControlsBlockAccessInfoBubble",
-                     "controlsDeviceComplianceAriaLabel":  "Learn more about requiring compliant devices.",
-                     "controlsDeviceComplianceInfoBubble":  "Device must be Intune compliant. If the device is non-compliant, the user will be prompted to bring the device under compliance.",
-                     "controlsDomainJoinedAriaLabel":  "Learn more about requiring hybrid Azure AD joined devices.",
+                     "controlsDeviceComplianceAriaLabel":  "準拠しているデバイスの要求に関する詳細情報を表示します。",
+                     "controlsDeviceComplianceInfoBubble":  "デバイスは Intune に準拠している必要があります。デバイスが準拠していない場合、ユーザーはデバイスを準拠した状態にするよう求められます。",
+                     "controlsDomainJoinedAriaLabel":  "Hybrid Azure AD Join を使用したデバイスの要求に関する詳細情報を表示します。",
                      "controlsDomainJoinedInfoBubble":  "デバイスは Hybrid Azure AD Join を使用したである必要があります。",
-                     "controlsMamAriaLabel":  "Learn more about requiring approved client applications.",
+                     "controlsMamAriaLabel":  "承認済みのクライアント アプリケーションの要求に関する詳細情報を表示します。",
                      "controlsMamInfoBubble":  "デバイスは、これらの承認されたクライアント アプリケーションを使用する必要があります。",
                      "controlsMfaInfoBubble":  "ユーザーは、電話やテキスト メッセージなど、追加のセキュリティ要件を完了する必要があります",
                      "controlsOrAndInfoBubble":  "ControlsOrAndInfoBubble",
-                     "controlsRequireCompliantAppAriaLabel":  "Learn more about requiring policy protected apps.",
+                     "controlsRequireCompliantAppAriaLabel":  "ポリシーで保護されたアプリの要求に関する詳細情報を表示します。",
                      "controlsRequireCompliantAppInfoBubble":  "デバイスでは、ポリシーで保護されたアプリを使用する必要があります。",
-                     "controlsRequirePasswordResetAriaLabel":  "Learn more about requiring a password change.",
+                     "controlsRequirePasswordResetAriaLabel":  "パスワード変更の要求に関する詳細情報を表示します。",
                      "controlsRequirePasswordResetInfoBubble":  "ユーザー リスクを軽減するために、パスワードを変更する必要があります。このオプションでは多要素認証も必要です。他のコントロールは使用できません。",
                      "countriesRadiobuttonInfoBalloonContent":  "サインインが行われている国/地域は、そのユーザーの IP アドレスで特定されます。",
                      "createNewVpnCert":  "新しい証明書",
@@ -9260,6 +9386,7 @@
                      "lowRisk":  "低",
                      "macOsDisplayName":  "macOS",
                      "managePoliciesLicenseText":  "条件付きアクセス ポリシーを管理するには、組織で Azure AD Premium P1 または P2 が必要です。",
+                     "manageSecurityDefaultsAriaLabel":  "セキュリティの既定値群の設定の管理。",
                      "markAsTrustedCheckboxInfoBalloonContent":  "信頼できる場所からサインインすると、ユーザーのサインイン リスクが低くなります。入力した IP 範囲が確立され、組織内で信用されていることがわかる場合のみ、この場所を信頼できる場所とマークしてください。",
                      "markAsTrustedCheckboxLabel":  "信頼できる場所としてマークする",
                      "mediumRisk":  "中",
@@ -9291,7 +9418,7 @@
                      "namedNetworkIpRangesDescriptionContent":  "組織の IP 範囲を構成します",
                      "namedNetworkIpRangesTab":  "IP 範囲",
                      "namedNetworkListAdd":  "新しい場所",
-                     "namedNetworkListConfigureTrustedIps":  "MFA 信頼済み IP の構成",
+                     "namedNetworkListConfigureTrustedIps":  "多要素認証の信頼済み IP の構成",
                      "namedNetworkNameDescription":  "例: 'Redmond オフィス'",
                      "namedNetworkNameInvalid":  "指定された名前が無効です。",
                      "namedNetworkNameRequired":  "この場所に名前を指定する必要があります。",
@@ -9334,7 +9461,7 @@
                      "namednetworkExceedingSizeErrorBladeTitle":  "エラーの詳細",
                      "namednetworkExceedingSizeErrorDetailText":  "詳細については、ここをクリックしてください。",
                      "namednetworkExceedingSizeErrorMessage":  "ネームド ロケーションに許可されている最大ストレージを超えました。リストを短くしてもう一度試してください。ここをクリックすると、詳細が表示されます。",
-                     "needMfaSecondary":  "[サインインの頻度 (毎回)] が [セカンダリ認証方法のみ] と一緒に選択されている場合は、[多要素認証が必要] を選択する必要があります",
+                     "needMfaSecondary":  "[サインインの頻度 (毎回)] が [セカンダリ認証方法のみ] と一緒に選択されている場合は、[多要素認証を要求する] を選択する必要があります",
                      "newCertName":  "新しい証明書",
                      "noAttributePermissionsError":  "ポリシーを作成または更新するための十分な特権がありません。動的フィルターを追加または編集するには、属性定義の閲覧者ロールが必要です。",
                      "noPolicyRowMessage":  "ポリシーがありません",
@@ -9363,12 +9490,12 @@
                      "policyConditionDevicePlatformDescription":  "ユーザーがサインインしているプラットフォーム。例: 'iOS'",
                      "policyConditionLocation":  "場所",
                      "policyConditionLocationDescription":  "ユーザーがサインインしている場所 (IP アドレスの範囲を使用して特定)",
-                     "policyConditionSigninRisk":  "サインインのリスク",
+                     "policyConditionLocationPreview":  "場所 (プレビュー)",
+                     "policyConditionSigninRisk":  "サインインのリスク レベル",
                      "policyConditionSigninRiskDescription":  "対象ユーザー以外からのサインインの可能性。リスク レベルは高、中、または低になります。Azure AD Premium 2 ライセンスが必要です。",
-                     "policyConditionUserRisk":  "ユーザーのリスク",
+                     "policyConditionUserRisk":  "ユーザーのリスク レベル",
                      "policyConditionUserRiskDescription":  "ポリシーを適用するために必要なユーザー リスクのレベルを構成します",
                      "policyConditioniClientApp":  "クライアント アプリ",
-                     "policyConditioniClientAppV2":  "クライアント アプリ (プレビュー)",
                      "policyControlAllowAccessDisplayedName":  "アクセス権の付与",
                      "policyControlAuthenticationStrengthDisplayedName":  "認証強度が必要 (プレビュー)",
                      "policyControlBladeTitle":  "許可",
@@ -9405,7 +9532,7 @@
                      "policyNameDevice":  "デバイス ポリシー",
                      "policyNameFormat":  "[{0}] {1}",
                      "policyNameMam":  "モバイル アプリの管理ポリシー",
-                     "policyNameMfaLocation":  "MFA および場所ポリシー",
+                     "policyNameMfaLocation":  "多要素認証と場所のポリシー",
                      "policyNamePlaceholderText":  "例: 'デバイス準拠アプリ ポリシー'",
                      "policyNameTooLongError":  "ポリシー名が長すぎます。最大 256 文字です",
                      "policyOff":  "オフ",
@@ -9433,12 +9560,15 @@
                      "requireAllControlsText":  "選択したコントロールすべてが必要",
                      "requireCompliantDevice":  "準拠しているデバイスが必要です",
                      "requireDomainJoined":  "ドメインに参加しているデバイスが必要",
-                     "requireGrantReauth":  "[サインインの頻度 (毎回)] セッション コントロールには、[すべてのクラウド アプリ] が選択されている場合、[多要素認証が必要] または [パスワードの変更を要求する] 許可コントロールが必要です",
-                     "requireMFA":  "多要素認証が必要",
-                     "requireMfaReauth":  "[サインインの頻度 (毎回)] セッション コントロールには、[サインイン リスク] に対して [多要素認証が必要] 許可コントロールが必要です",
+                     "requireGrantReauth":  "[サインインの頻度 (毎回)] セッション制御には、[すべてのクラウド アプリ] が選択されている場合、[多要素認証を要求する] または [パスワードの変更を要求する] 許可制御が必要です",
+                     "requireMFA":  "多要素認証を要求する",
+                     "requireMfaReauth":  "[サインインの頻度 (毎回)] セッション制御には、[サインイン リスク] に対して [多要素認証を要求する] 許可制御が必要です",
                      "requireOneControlText":  "選択したコントロールのいずれかが必要",
                      "requirePasswordChangeReauth":  "[サインインの頻度 (毎回)] セッション コントロールには、[ユーザー リスク] に対して [パスワードの変更を要求する] 許可コントロールが必要です",
                      "requireRiskReauth":  "[サインインの頻度 (毎回)] セッション コントロールには、[すべてのクラウド アプリ] が選択されている場合、[ユーザー リスク] または [サインイン リスク] セッション コントロールが必要です。",
+                     "requireRiskReauthRiskNotEnabled":  "[すべてのクラウド アプリ] が選択されている場合、[サインインの頻度 (毎回)] セッション コントロールは利用できません。",
+                     "requireRiskReauthSignInOnly":  "[すべてのクラウド アプリ] が選択されている場合、[サインインの頻度 (毎回)] セッション コントロールには、[サインイン リスク] セッション コントロールが必要です。",
+                     "requireRiskReauthUserOnly":  "[すべてのクラウド アプリ] が選択されている場合、[サインインの頻度 (毎回)] セッション コントロールには、[ユーザー リスク] セッション コントロールが必要です。",
                      "resetFilters":  "フィルターのリセット",
                      "sPRequired":  "サービス プリンシパルは必須です",
                      "sPSelectorInfoBalloon":  "テストするユーザーまたはサービス プリンシパル",
@@ -9446,7 +9576,8 @@
                      "searchTextTooLongError":  "検索テキストが長すぎます。最大 256 文字",
                      "securityDefaultsPolicyName":  "セキュリティの既定値群",
                      "securityDefaultsTextMessage":  "条件付きアクセス ポリシーを有効にするには、セキュリティの既定値群を無効にする必要があります。",
-                     "securityDefaultsWarningMessage":  "組織のセキュリティ構成を管理しようとしているようです。条件付きアクセス ポリシーを有効にする前に、まずセキュリティの既定値群を無効にする必要があります。",
+                     "securityDefaultsUpdateInProgressText":  "セキュリティの既定値群の更新が進行中です。しばらく待ってから、もう一度お試しください。",
+                     "securityDefaultsWarningMessage":  "組織のセキュリティ構成を管理しようとしているようです。条件付きアクセス ポリシーを有効にする前に、まず{0}セキュリティの既定値群を無効にする{1}必要があります。",
                      "selectDevicePlatforms":  "デバイス プラットフォームの選択",
                      "selectNamedNetworksSubtitle":  "",
                      "selectNamedNetworksTitle":  "場所の選択",
@@ -9460,6 +9591,7 @@
                      "servicePrincipalSelectorAria":  "選択されたサービス プリンシパルの一覧",
                      "servicePrincipalSelectorMultiple":  "{0} 個のサービス プリンシパルが選択済み",
                      "servicePrincipalSelectorSingle":  "1 つのサービス プリンシパルが選択済み",
+                     "servicePrincipalSpecificExc":  "特定のサービス プリンシパルが除外されている",
                      "servicePrincipalSpecificInc":  "特定のサービス プリンシパルが含まれている",
                      "servicePrincipals":  "サービス プリンシパル",
                      "sessionControlBladeTitle":  "セッション",
@@ -9471,9 +9603,8 @@
                      "sessionControlsCasLabel":  "アプリの条件付きアクセス制御を使う",
                      "sessionControlsSecureSignInLabel":  "トークンのバインドが必要",
                      "sharepointAppName":  "SharePoint",
-                     "signinRiskDescription":  "このポリシーを適用するサインイン リスク レベルを選択します",
                      "signinRiskInclude":  "{0} 件を含む",
-                     "signinRiskReauth":  "[多要素認証が必要] 許可と [サインインの頻度 (毎回)] セッション制御が選択されている場合は、[サインイン リスク] 条件を選択する必要があります",
+                     "signinRiskReauth":  "[多要素認証を要求する] 許可と [サインインの頻度 (毎回)] セッション制御が選択されている場合は、[サインイン リスク] 条件を選択する必要があります",
                      "signinRiskTriggerDescriptionContent":  "サインイン リスク レベルの選択",
                      "singleTenantServicePrincipalInfoBallonText":  "ポリシーは、組織が所有するシングル テナントのサービス プリンシパルにのみ適用されます。詳細については、ここをクリックしてください ",
                      "specificSigninRiskLevelsOption":  "特定のサインイン リスク レベルを選択する",
@@ -9551,6 +9682,7 @@
                      "usersGroupsLabel":  "ユーザーとグループ",
                      "viewApprovedAppsText":  "承認されたクライアント アプリの一覧を表示します",
                      "viewCompliantAppsText":  "ポリシーで保護されたクライアント アプリの一覧を表示します",
+                     "viewPolicyInformation":  "ポリシー情報の表示",
                      "vpnBladeTitle":  "VPN 接続",
                      "vpnCertCreateFailedMessage":  "エラー: {0}",
                      "vpnCertCreateFailedTitle":  "{0} の作成に失敗しました",
@@ -9653,6 +9785,7 @@
                                          "builtInAndroid":  "組み込み Android アプリ",
                                          "builtInApp":  "組み込みアプリ",
                                          "builtInIos":  "組み込みの iOS アプリ",
+                                         "iosIPadOSWebClip":  "iOS/iPadOS Web クリップ",
                                          "iosLobApp":  "iOS 基幹業務アプリ",
                                          "iosStoreApp":  "iOS ストア アプリ",
                                          "iosVppApp":  "iOS Volume Purchase Program アプリ",
@@ -9677,6 +9810,8 @@
                                          "sharePointApp":  "SharePoint アプリ",
                                          "teamsApp":  "Teams アプリ",
                                          "webApp":  "Web リンク",
+                                         "winGetPublicApp":  "Windows パッケージ マネージャーのコミュニティ リポジトリ",
+                                         "winGetStoreApp":  "Microsoft Store リポジトリ",
                                          "windowsAppXLobApp":  "Windows AppX 基幹業務アプリ",
                                          "windowsClassicApp":  "Windows アプリ (Win32)",
                                          "windowsEdgeApp":  "Microsoft Edge (Windows 10 以降)",
@@ -9687,7 +9822,8 @@
                                          "windowsPhoneXapLobApp":  "Windows Phone XAP 基幹業務アプリ",
                                          "windowsStoreApp":  "Microsoft Store アプリ",
                                          "windowsUniversalAppXLobApp":  "Windows Universal AppX 基幹業務アプリ",
-                                         "windowsUniversalLobApp":  "Windows Universal 基幹業務アプリ"
+                                         "windowsUniversalLobApp":  "Windows Universal 基幹業務アプリ",
+                                         "windowsWebApp":  "Windows Web リンク"
                                      },
                          "AppTypePlatform":  {
                                                  "android":  "Android",
@@ -11028,6 +11164,10 @@
                                "xLanguagesSelectedLabel":  "{0} 個の言語が選択済み",
                                "xmlConfigurationLabel":  "XML 構成"
                            },
+    "Filters":  {
+                    "ruleSyntax":  "規則の構文",
+                    "filters":  "フィルター"
+                },
     "EnrollmentRestrictions":  {
                                    "DeletePayloadLink":  {
                                                              "content":  "{0} は、1 つ以上のポリシー セットに含まれています。{0} を削除すると、これらのポリシー セットを使用してそれを割り当てることができなくなります。削除しますか?",
@@ -11135,9 +11275,12 @@
                                           "gettingStarted":  "はじめに",
                                           "messages":  "メッセージ",
                                           "onlineResources":  "オンライン リソース",
+                                          "releaseManagement":  "Release management",
                                           "serviceRequests":  "サービス要求",
                                           "settings":  "設定",
-                                          "tenantEnrollment":  "テナント登録"
+                                          "supportRequests":  "Support requests",
+                                          "tenantEnrollment":  "テナント登録",
+                                          "tenantManagement":  "Tenant management"
                                       },
                    "actions":  "コンプライアンス非対応に対するアクション",
                    "advancedExchangeSettings":  "Exchange Online の設定",
@@ -11236,8 +11379,8 @@
                    "profiles":  "プロファイル",
                    "properties":  "プロパティ",
                    "reports":  "レポート",
-                   "retireNoncompliantDevices":  "準拠していないデバイスの削除",
-                   "retireNoncompliantDevicesPreview":  "Retire noncompliant devices (preview)",
+                   "retireNoncompliantDevices":  "準拠していないデバイスの廃止",
+                   "retireNoncompliantDevicesPreview":  "準拠していないデバイスの廃止 (プレビュー)",
                    "role":  "ロール",
                    "scriptManagement":  "スクリプト",
                    "securityBaselines":  "セキュリティのベースライン",
@@ -11249,7 +11392,11 @@
                    "tenantAdministration":  "テナント管理",
                    "termsAndConditions":  "使用条件",
                    "titles":  "タイトル",
+                   "troubleshoot":  "トラブルシューティング",
+                   "troubleshootDevice":  "デバイス",
+                   "troubleshootGroup":  "グループ",
                    "troubleshootSupport":  "トラブルシューティング + サポート",
+                   "troubleshootUser":  "ユーザー",
                    "user":  "ユーザー",
                    "userExecutionStatus":  "ユーザーの状態",
                    "warranty":  "保証ベンダー",

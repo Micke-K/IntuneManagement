@@ -1,4 +1,4 @@
-﻿{
+{
     "OutlookAppConfig":  {
                              "DataProtectionConfiguration":  {
                                                                  "header":  "資料保護設定"
@@ -329,7 +329,7 @@
                      "contentCaching":  "內容快取",
                      "controlPanelAndSettings":  "控制台與設定",
                      "credentialGuard":  "Microsoft Defender Credential Guard",
-                     "customCompliance":  "自訂合規性",
+                     "customCompliance":  "自訂合規性 (預覽)",
                      "customCompliancePreview":  "自訂合規性 (預覽)",
                      "customConfiguration":  "自訂組態設定檔",
                      "customOMASettings":  "自訂 OMA-URI 設定",
@@ -786,6 +786,7 @@
                                      "SurfaceHub":  {
                                                         "friendlyNameRequired":  "需要易記名稱",
                                                         "pwdRequired":  "密碼為必要項。",
+                                                        "pwdValidFormat":  "無法更新密碼。為新密碼提供的值不符合網域的長度或複雜性需求。",
                                                         "upnRequired":  "需要裝置帳戶",
                                                         "upnValidFormat":  "值可以包含字母 (a-z、A-Z)、數字 (0-9)和連字號。值不能包含空白。"
                                                     }
@@ -920,8 +921,8 @@
                       "assignedDevicesResourceAccountStatusBarMessage":  "這個表格只會列出已指派給此設定檔的 Surface Hub 2 裝置。",
                       "assigningDescription":  "正在更新 {0} 的指派。",
                       "assigningTitle":  "正在更新 Autopilot 設定檔指派。",
-                      "autoremediationContext":  "We've detected a hardware change on this device. We're trying to automatically register the new hardware. You don't need to do anything now; the status will be updated at the next check in with the result. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Learn more about resetting the profile.</a>",
-                      "autoremediationTitle":  "Device {0} has a fix pending",
+                      "autoremediationContext":  "我們偵測到此裝置上有硬體變更。我們正在嘗試自動註冊新硬體。您現在不需要執行任何動作；狀態將在下次簽入時隨結果更新。<a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">深入了解重設設定檔。</a>",
+                      "autoremediationTitle":  "裝置 {0} 有擱置中的修正程式",
                       "cannotDeleteMessage":  "此設定檔已指派至群組。您必須取消此設定檔在所有群組的指派，才能予以刪除。",
                       "cannotDeleteTitle":  "無法刪除 {0}",
                       "createdDateTime":  "已建立",
@@ -944,8 +945,8 @@
                       "invalidProfileNameMessage":  "不允許字元 \"{0}\"",
                       "joinTypeLabel":  "加入 Azure AD 的身分",
                       "lastModifiedDateTime":  "上次修改日期:",
-                      "manualRemediationContext":  "We've detected a hardware change on this device. It won't automatically receive an Autopilot profile when it's reset unless you register the device again. <a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">Learn more about resetting the profile.</a>",
-                      "manualRemediationTitle":  "Device {0} needs your attention",
+                      "manualRemediationContext":  "我們偵測到此裝置上有硬體變更。在其重設後，它不會自動接收 Autopilot 設定檔，除非您再次註冊裝置。<a href=\"https://go.microsoft.com/fwlink/?linkid=2169163\">深入了解重設設定檔。</a>",
+                      "manualRemediationTitle":  "裝置 {0} 需要您的注意",
                       "name":  "名稱",
                       "noAutopilotProfile":  "沒有任何 AutoPilot 設定檔",
                       "notEnoughPermissionAssignedError":  "您的權限不足，無法將此設定檔指派給選取的一或多個群組。請連絡您的系統管理員。",
@@ -958,6 +959,13 @@
                       "windowsPCCommandMenu":  "Windows 電腦",
                       "directoryServiceLabel":  "加入 Azure AD 成為"
                   },
+    "RoleAssignment":  {
+                           "RoleAssignmentAdmin":  "系統管理員群組",
+                           "RoleAssignmentAdminDesc":  "系統管理員群組使用者是指派給此角色的系統管理員",
+                           "rolesMenuTitle":  "端點管理員角色",
+                           "RoleAssignmentScopeDesc":  "此角色指派中的系統管理員可以將原則、應用程式及遠端工作設為目標",
+                           "RoleAssignmentScope":  "定義群組範圍"
+                       },
     "MinimumOperatingSystem":  {
                                    "Android":  {
                                                    "v10":  "Android 10.0",
@@ -983,6 +991,7 @@
                                                "v12":  "iOS 12.0",
                                                "v13":  "iOS 13.0",
                                                "v14":  "iOS 14.0",
+                                               "v15":  "iOS 15.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -1178,6 +1187,61 @@
                              "includeAllDevicesVirtualGroup":  "包含元件",
                              "includeAllUsersVirtualGroup":  "包含元件"
                          },
+    "CoManagementAuthority":  {
+                                  "Confirmation":  {
+                                                       "deleteMessage":  "若未指派其他共同管理授權單位頁面，會將受影響的使用者限制在所指派的第二順位共同管理授權單位頁面，或是預設的共同管理授權單位頁面。",
+                                                       "deleteTitle":  "{0} 是已設定共同管理授權單位原則的顯示名稱"
+                                                   },
+                                  "Grid":  {
+                                               "description":  "共同管理授權單位頁面會在初始裝置設定及第一位使用者登入時出現。若啟用此選項，使用者將會看到所指派之應用程式與設定檔中，適合其裝置使用之設定的進度。",
+                                               "hyperlink":  "https://go.microsoft.com/fwlink/?linkid=86016",
+                                               "label":  "共同管理授權單位"
+                                           },
+                                  "Header":  {
+                                                 "description":  "共同管理授權單位頁面會在初始裝置設定及第一位使用者登入時出現。若啟用此選項，使用者將會看到所指派之應用程式與設定檔中，適合其裝置使用之設定的進度。"
+                                             },
+                                  "Main":  {
+                                               "title":  "共同管理授權單位"
+                                           },
+                                  "MessageSaved":  {
+                                                       "body":  "已建立共同管理授權單位原則。"
+                                                   },
+                                  "Notification":  {
+                                                       "createError":  "建立共同管理授權單位原則 \"{0}\" 時發生錯誤",
+                                                       "created":  "此共同管理授權單位原則尚未指派至任何使用者。",
+                                                       "creating":  "正在建立共同管理授權單位原則",
+                                                       "creatingMessage":  "正在建立 {0} 共同管理授權單位原則",
+                                                       "deleteError":  "刪除共同管理授權單位原則時發生錯誤",
+                                                       "deleted":  "已刪除共同管理授權單位原則。",
+                                                       "deletedMessage":  "{0} 共同管理授權單位原則已刪除。",
+                                                       "deleting":  "正在刪除共同管理授權單位原則",
+                                                       "deletingMessage":  "正在刪除 {0} 共同管理授權單位原則",
+                                                       "fetchError":  "顯示共同管理授權單位原則時發生錯誤",
+                                                       "saved":  "已儲存共同管理授權單位。",
+                                                       "savedMessage":  "已成功儲存 {0} 共同管理授權單位原則。",
+                                                       "saving":  "正在儲存共同管理授權單位",
+                                                       "savingMessage":  "正在儲存 {0} 共同管理授權單位原則"
+                                                   },
+                                  "Priority":  {
+                                                   "saveError":  "儲存共同管理授權單位優先順序時發生錯誤",
+                                                   "saved":  "已成功儲存共同管理授權單位優先順序。"
+                                               },
+                                  "ReloadNotification":  {
+                                                             "description":  "請重新載入共同管理授權單位原則，然後再試一次。",
+                                                             "title":  "重新載入共同管理授權單位刀鋒視窗"
+                                                         },
+                                  "advancedProperty":  "進階",
+                                  "commandLineArgs":  "用戶端安裝命令列引數。",
+                                  "deviceGroupOnlyMessage":  "共同管理授權單位頁面設定檔只能指派給使用者群組。指派的裝置將不會顯示共同管理授權單位頁面。",
+                                  "enterArgument":  "輸入引數",
+                                  "installAgent":  "自動安裝 Configuration Manager 代理程式。",
+                                  "managedDeviceOwnership":  "覆寫共同管理原則，並將 Intune 用於所有工作負載。",
+                                  "noAssignmentMessage":  "將共同管理授權單位原則指派給至少一個群組。按一下 [屬性]。",
+                                  "pageDescription":  "共同管理授權單位設定檔",
+                                  "pageSetting":  "共同管理授權單位設定",
+                                  "pageTitle":  "共同管理授權單位",
+                                  "settingDescription":  "共同管理設定會決定工作負載的擁有者。"
+                              },
     "AppType":  {
                     "androidEnterpriseSystemApp":  "Android Enterprise 系統應用程式",
                     "androidForWorkApp":  "受控 Google Play 商店應用程式",
@@ -1356,6 +1420,14 @@
                                                    "label":  "(非使用狀態分鐘數) 之後重新檢查是否需要存取權\r\n\r\n",
                                                    "tooltip":  "若受原則管理的應用程式，未使用的時間超過指定的未使用分鐘數後，在啟動應用程式之後，該應用程式即會提示要重新檢查是否需要存取權 (例如 PIN，條件啟動設定)。"
                                                },
+                        "RequireClass3Biometrics":  {
+                                                        "label":  "Class 3 Biometrics (Android 9.0+)",
+                                                        "tooltip":  "For more information on class 3 biometrics refer to the documentation available <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">here</a>"
+                                                    },
+                        "RequirePinAfterBiometricChange":  {
+                                                               "label":  "Override Biometrics with PIN after biometric updates",
+                                                               "tooltip":  "If class 3 biometrics are supported by the device (more info <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>), when a change in biometrics is detected, a PIN prompt will override biometric prompts."
+                                                           },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "套件識別碼必須是唯一的。",
                                                   "invalidPackageError":  "套件識別碼無效",
@@ -1454,6 +1526,8 @@
                       },
     "EnrollmentStatusScreen":  {
                                    "Apps":  {
+                                                "apps":  "應用程式",
+                                                "appsListName":  "應用程式清單",
                                                 "managedApps":  "受管理的應用程式",
                                                 "noApps":  "無應用程式",
                                                 "noAppsError":  "擷取應用程式時發生錯誤",
@@ -1692,7 +1766,8 @@
                                                       "windowsDomainJoin":  "許多環境使用內部部署 Active Directory (AD)。當加入 AD 網域的裝置也加入 Azure AD 時，稱為已使用混合式 Azure AD 而聯結的裝置。使用 Windows Autopilot，您可以在 Intune 中註冊已使用混合式 Azure AD 而聯結的裝置。若要註冊，您還需要網域加入組態設定檔。網域加入組態設定檔包含內部部署 Active Directory 網域資訊。佈建裝置 (且通常為離線) 時，此設定檔會部署 AD 網域詳細資料，讓裝置知道要加入哪個內部部署網域。若不建立網域加入設定檔，這些裝置可能無法部署。",
                                                       "windowsEditionUpgrade":  "您可能希望升級行動裝置管理 (MDM) 解決方案中的 Windows 10/11 裝置。例如，將 Windows 10/11 Professional 裝置升級為 Windows 10/11 Enterprise。或將裝置退出 S 模式。Windows 10/11 的 S 模式專為安全性與效能所設計。您可以使用 Intune 退出 S 模式。退出 S 模式是一種方式。一旦退出 S 模式，就無法回到 Windows 10/11 S 模式。此功能適用於: Windows 10 及更新版本、適用於 S 模式的 Windows 10 1809 版或更新版本、Windows Holographic for Business。這些功能可在 Intune 使用，且由系統管理員設定。Intune 使用組態設定檔針對組織需求建立及自訂這些設定。在設定檔中新增這些功能之後，您就可以在組織執行 Windows 10 或更新版本的裝置中推送或部署此設定檔。部署設定檔後，Intune 會自動升級裝置或退出 S 模式。",
                                                       "windowsHealthMonitoring":  "Microsoft 可收集事件資料，並提供改進 Windows 裝置效能的建議。端點分析會分析此資料，並且建議軟體、協助改進啟動效能，以及修正一般支援問題。在 Intune 中，您可以建立 Windows 健康情況監視裝置組態設定檔以收集此資料，然後將此設定檔部署到您的裝置。使用此設定檔作為您行動裝置管理 (MDM) 解決方案的一部分，以您的 Windows 裝置最佳化。",
-                                                      "windowsIdentityProtection":  "有了 Intune，您就可以使用此裝置組態設定檔管理 Windows 裝置上的 Windows Hello 企業版設定。<br><br>您知道嗎? 您可以考慮前往<a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\">端點安全性</a>建立端點安全性設定檔或安全性基準設定檔，以設定通用的端點保護安全性功能。<br><br>端點安全性設定檔會提供一組簡明、規劃完善的安全性範本，包括防火牆、BitLocker、防毒軟體等。安全性基準設定檔則是依據安全性專家建議預先設定了設定值的範本。"
+                                                      "windowsIdentityProtection":  "有了 Intune，您就可以使用此裝置組態設定檔管理 Windows 裝置上的 Windows Hello 企業版設定。<br><br>您知道嗎? 您可以考慮前往<a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\">端點安全性</a>建立端點安全性設定檔或安全性基準設定檔，以設定通用的端點保護安全性功能。<br><br>端點安全性設定檔會提供一組簡明、規劃完善的安全性範本，包括防火牆、BitLocker、防毒軟體等。安全性基準設定檔則是依據安全性專家建議預先設定了設定值的範本。",
+                                                      "wiredNetwork":  "設定供人員存取的有線網路。"
                                                   },
                            "TrustedCert":  {
                                                "uploadControlPlaceHolderText":  "請選取有效的 .cer 檔案"
@@ -1855,7 +1930,7 @@
                            "androidZebraMxConfigurationXmlName":  ".xml 格式的 MX 設定檔",
                            "anonymousIdentityPrivacyName":  "匿名識別",
                            "any":  "任何",
-                           "anyDNSAddressesInList":  "使用下列 DNS 伺服器來解析這些網域 (選用)",
+                           "anyDNSAddressesInList":  "使用下列 DNS 伺服器來解析您輸入的網域 (選用)",
                            "anyDayOption":  "任一天",
                            "anyEthernet":  "任何乙太網路",
                            "anywhereOption":  "任何位置",
@@ -2831,10 +2906,10 @@
                            "connectAppBlockAutoLaunchDescription":  "阻止 Connect 應用程式自動啟動。如果受到阻止，使用者能夠以手動方式從中樞的設定啟動 Connect 應用程式。",
                            "connectAppBlockAutoLaunchName":  "自動啟動 Connect",
                            "connectIfNeeded":  "連線 (若需要)",
-                           "connectIfNeededDNSListDescription":  "這些 DNS 伺服器在完成設定後將用於解析清單中的網域。無法解析網域會導致建立 VPN 連線。",
-                           "connectIfNeededDomainsDescription":  "當使用者存取此清單中的網域時，裝置會嘗試使用 DNS 解析網域。無法解析網域會導致建立 VPN 連線。",
+                           "connectIfNeededDNSListDescription":  "輸入將解析清單中網域的 DNS 伺服器的 IP 位址。此設定僅適用於清單中的網域。網域和 DNS 伺服器是內部資源，無法在外部網路上存取。因此，如果網域無法解析，則會隨選建立 VPN 連線。",
+                           "connectIfNeededDomainsDescription":  "當使用者存取此清單的網域時，裝置會嘗試使用 DNS 解析網域。網域是內部資源，無法由公用 DNS 解析。因此，如果網域無法解析，表示它無法存取內部資源，則會隨選建立 VPN 連線。",
                            "connectIfNeededOption":  "連線 (若需要)",
-                           "connectOption":  "建立 VPN",
+                           "connectOption":  "連線 VPN",
                            "connectionHeading":  "連線",
                            "consumerFeaturesDescription":  "允許 IT 系統管理員開啟通常僅供消費者使用的體驗，例如開始建議、成員資格通知、OOBE 後的應用程式安裝及重新導向磚。",
                            "consumerFeaturesName":  "消費者功能",
@@ -3888,6 +3963,7 @@
                            "gatekeeperAllowedAppSourceName":  "允許從這些位置下載的應用程式",
                            "gatekeeperBlockOverrideDescription":  "防止使用者因按 Ctrl 鍵然後按一下滑鼠安裝任何應用程式，而暫時覆寫 Gatekeeper 設定。",
                            "gatekeeperBlockOverrideName":  "不允許使用者覆寫閘道管理員",
+                           "generalAvailabilityChannel":  "一般可用性通道",
                            "generalNetworkSettingsHeader":  "一般",
                            "genericLocalUsersOrGroupsName":  "一般本機使用者或群組",
                            "globalConfigurationsDescription":  "設定適用於所有網路類型的 Microsoft Defender 防火牆設定。",
@@ -3999,7 +4075,7 @@
                            "iPsecSecuredPacketExemptionName":  "隱形模式下受 IPsec 保護的封包豁免",
                            "iPv4Option":  "IPv4",
                            "iPv6Option":  "IPv6",
-                           "iWantToDescription":  "請選取符合此規則時要採取的動作。",
+                           "iWantToDescription":  "「連線 VPN」、「中斷連線 VPN」和「忽略」動作會在使用者連線到網路時套用。這些動作會在使用者連線到網路時持續套用。而「評估每個連線嘗試」動作只會在 VPN 尚未連線時，套用於您針對動作所輸入的所有網域連線。",
                            "iWantToName":  "我想要執行下列作業",
                            "iconSortOrderAlphabetic":  "字母",
                            "iconSortOrderDescription":  "",
@@ -4924,6 +5000,7 @@
                            "mustBeAValidProductKey":  "必須是有效的產品金鑰 (格式: 12345-22345-32345-42345-52345)",
                            "mustBeAValidTeamId":  "必須是有效的小組識別碼",
                            "mustBeAValidUrl":  "必須是有效的 URL",
+                           "mustBeAValidUrlNoProtocol":  "必須是沒有通訊協定的有效 URL 或 IP 位址 (沒有 HTTP 或 HTTPs)",
                            "mustBeAValidUrlOrIP":  "必須是有效的 URL 或 IP 位址",
                            "mustBeAValidUrlWithIdParameter":  "必須為具有識別碼查詢參數的有效 URI。例如: https://play.google.com/store/apps/details?id=com.microsoft.test2",
                            "mustBeAWellFormedXMLString":  "必須是格式正確的 XML 字串",
@@ -4937,11 +5014,14 @@
                            "mustBeValidBuildVersionFormat":  "必須是有效的組建版本格式。範例: 18A391、16G1114 等。",
                            "mustBeValidDNSSuffix":  "必須是有效的 DNS 尾碼。範例: itgproxy.com",
                            "mustBeValidDateFormat":  "必須是有效的日期格式 (YYYY-MM-DD)。範例: 2016-10-01、2016-10-31 等等",
+                           "mustBeValidDomain":  "必須是有效的網域。範例: contoso.com",
                            "mustBeValidEmail":  "必須為有效的電子郵件地址。例如: username@example.com 等。",
                            "mustBeValidEmailList":  "必須為有效的電子郵件清單格式: user1@gmail.com; user2@gmail.com。",
                            "mustBeValidFloatingPoint":  "必須是有效的浮點數。範例: 1.0、4.3 等等。",
                            "mustBeValidGuid":  "必須是有效的 UUID。範例: 782AFCFC-7CAA-436C-8BF0-78CD0FFBD4AF 等等",
                            "mustBeValidHost":  "必須是有效的主機。範例: www.host.com 等",
+                           "mustBeValidHttpURL":  "必須是有效的 HTTP 或 HTTPS URL。範例: https://www.contoso.com",
+                           "mustBeValidIpAddress":  "必須是有效的 IP 位址。範例: 4.3.6.0",
                            "mustBeValidKaiserWifiFormat":  "格式不正確。使用者格式範例: abcd{{WifiMacAddress}}，密碼格式範例: abcd{{WifiMacAddress}}{{PreSharedKey}}",
                            "mustBeValidMonthDayDateFormat":  "必須是有效的日期格式 (MM/DD)。範例: 01/31、02/28 等。",
                            "mustBeValidObjectIdentifierFormat":  "必須是有效的物件識別碼格式。範例: 4.3.6.0、7.01.4 等",
@@ -5107,7 +5187,7 @@
                            "omaBase64Name":  "憑證檔案",
                            "onDemandDefaultRule":  "預設規則: 不執行任何動作",
                            "onDemandRuleName":  "規則 {0}",
-                           "onDemandRulesDescription":  "每當 iOS 裝置嘗試連線網路時，系統會將某些條件與這些規則進行比對，例如 WiFi SID 或網域名稱。如果有相符項目，將會在裝置上採取適當的動作。",
+                           "onDemandRulesDescription":  "這些設定可用來建立規則。如果有符合您的規則的項目，則裝置會執行您選擇的動作，例如，建立隨選 VPN 連線。",
                            "onDemandRulesExample":  "例如中斷公司 Wi-fi 的 VPN 連線",
                            "onDemandRulesInfo":  "深入了解製作隨選規則。",
                            "onDemandRulesName":  "隨選規則",
@@ -5371,9 +5451,9 @@
                            "privateShieldedSummaryLabel":  "受防護 (私人網路)",
                            "privateStealthModeSummaryLabel":  "隱形模式 (私人網路)",
                            "privateUnicastResponsesToMulticastBroadcastsSummaryLabel":  "多點傳送廣播的單點回應 (私人網路)",
-                           "probeUrlOptionalDescription":  "這應該是 HTTP 或 HTTPS (偏好) URL。每當嘗試存取此規則的網域清單中的網域時，都會對其進行探查。如果因為無法存取 URL 或未傳回 200 HTTP 狀態碼而導致探查失敗，則會建立 VPN 連線。",
-                           "probeUrlOptionalExample":  "例如 badURL.com",
-                           "probeUrlOptionalName":  "當這個 URL 無法連線時，強制與 VPN 連線。",
+                           "probeUrlOptionalDescription":  "此 URL 是測試，並會判斷裝置是否位於外部網路。每次使用者嘗試存取網域清單中的網域時，都會探查該 URL。如果探查因為 URL 無法連線或未傳回 200 HTTP 狀態碼而失敗，則建立 VPN 連線。例如，輸入 https://corp.contoso.com/internalprobe，該網址只有在裝置加入內部網路時才能存取。",
+                           "probeUrlOptionalExample":  "例如，https://corp.contoso.com/internalprobe",
+                           "probeUrlOptionalName":  "輸入 HTTP 或 HTTPS 探查 URL",
                            "processesColumn":  "處理序",
                            "processesColumnExamples":  "範例: %ProgramFiles%\\path\\myapp.exe",
                            "processesToExcludeName":  "排除不進行掃描和即時保護的程序",
@@ -5514,6 +5594,8 @@
                            "requiredPasswordComplexityName":  "密碼複雜性",
                            "requiredPasswordTypeDescription":  "指定所需密碼的類型。",
                            "requiredPasswordTypeName":  "需要的密碼類型",
+                           "requiredPasswordUnlockDailyOption":  "於上一個 PIN 碼、密碼或模式解除鎖定後的 24 小時",
+                           "requiredPasswordUnlockName":  "所需要的解鎖頻率",
                            "requiredURLStringProbeName":  "連線前探查 URL",
                            "resetToDefaultOption":  "重設為預設值",
                            "resourcePath":  "資源路徑",
@@ -5533,7 +5615,6 @@
                            "restrictedAppsName":  "限制的應用程式",
                            "restrictedSitesSecurityLevelDescription":  "強制對受限網站執行高安全性。",
                            "restrictedSitesSecurityLevelName":  "受限網站的高安全性",
-                           "retailChannel":  "零售通道",
                            "revokeEncryptionKeysOnUnEnrollDescription":  "在取消註冊裝置時撤銷加密金鑰 (建議選擇 [是])。",
                            "revokeEncryptionKeysOnUnEnrollName":  "在取消註冊裝置時撤銷加密金鑰",
                            "roleAndRealmDescription":  "廠商所要求的角色和領域值配對。",
@@ -6974,7 +7055,7 @@
                            "wipOption":  "建立 WIP 與此連線的關聯",
                            "wirelessOption":  "無線",
                            "with":  "選擇是否要連線",
-                           "withDescription":  "這會在每次嘗試連線時發生",
+                           "withDescription":  "如果沒有現有的 VPN 連線，則要針對您輸入網域的每次連線嘗試，決定使用者是否應連線至 VPN，或永不連線至 VPN。您選取的動作會對每個連線嘗試發生。",
                            "workFoldersURLDescription":  "使用工作資料夾，讓您使用的所有裝置即使在離線時都能使用您的工作資料夾。",
                            "workFoldersURLName":  "工作資料夾 URL",
                            "workProfileAllowAppInstallsFromUnknownSourcesInWorkProfileName":  "允許在工作設定檔安裝不明來源的應用程式",
@@ -7075,6 +7156,7 @@
                            "add":  "新增",
                            "addAppConfiguration":  "新增應用程式設定",
                            "addApps":  "新增應用程式",
+                           "addCondition":  "Add condition",
                            "addConfigCommandLabel":  "新增設定",
                            "addPolicyBladeTitle":  "新增原則",
                            "addPolicyError":  "無法新增原則: {0}",
@@ -7135,6 +7217,9 @@
                            "appsCountSelectorDisplayTextPlural":  "已選取 {0} 項 app",
                            "appsCountSelectorDisplayTextSingular":  "已選取 {0} 項 app",
                            "appsInAndroidWorkProfile":  "Android 工作設定檔中的應用程式",
+                           "appsOnAndroidEnterpriseDedicatedDevicesWithAzureAdSharedMode":  "具有 Azure AD 共用模式的 Android 企業專用裝置上的應用程式​",
+                           "appsOnAndroidOpenSourceProjectUserAssociated":  "AOSP 使用者相關裝置上的應用程式",
+                           "appsOnAndroidOpenSourceProjectUserless":  "AOSP 無使用者裝置上的應用程式",
                            "appsOnIntuneManagedDevices":  "Intune 受控裝置上的應用程式",
                            "appsOnUnmanagedDevices":  "非受控裝置上的應用程式",
                            "appsSelectorLabel":  "App",
@@ -7240,6 +7325,7 @@
                            "deviceConditionsInfoParagraph2":  "可對已註冊裝置進行類似設定 (以裝置為準)。",
                            "deviceConditionsInfoParagraph2LinkText":  "深入了解如何對已註冊裝置進行裝置合規性設定。",
                            "deviceId":  "裝置識別碼",
+                           "deviceLockComplexityValidationFailureNotes":  "<p><b>注意:</b></p>\r\n<ul type=\"disc\">\r\n    <li>針對  Android 11+，裝置鎖定可要求的密碼複雜度為: 低、中或高。至於運行 Android 10 或更早版本的裝置，若將複雜度的值設為低/中/高，系統則會 依預設將裝置的預期行為設為「低複雜度」。</li>\r\n    <li>以下的密碼定義隨時會有變更。有關不同密碼複雜度的最新定義，請參閱 <a href='https://developer.android.com/reference/android/app/admin/DevicePolicyManager#getPasswordComplexity%28%29'>DevicePolicyManager|Android 開發人員</a>。</li>\r\n</ul>\r\n\r\n<p><b>低</b></p>\r\n<ul type=\"disc\">\r\n    <li>密碼可以是圖形鎖，或是重複 (4444) 或依序 (1234、4321、2468) 的 PIN。</li>\r\n</ul>\r\n\r\n<p><b>中</b></p>\r\n<ul type=\"disc\">\r\n    <li>PIN 不可重複 (4444) 或依序 (1234、4321、2468)，且長度最短須為 4 個字元</li>\r\n    <li>最小長度為至少 4 個字元的字母密碼</li>\r\n    <li>最小長度為至少 4 個字元的英數字元密碼</li>\r\n</ul>\r\n\r\n<p><b>高</b></p>\r\n<ul type=\"disc\">\r\n    <li>PIN 不可重複 (4444) 或依序 (1234、4321、2468)，且長度最短須為 8 個字元</li>\r\n    <li>最小長度為至少 6 個字元的字母密碼</li>\r\n    <li>最小長度為至少 6 個字元的英數字元密碼</li>\r\n</ul>\r\n<p></p>",
                            "deviceLockedOpenFilesOptionsText":  "當裝置鎖定時且有開啟的檔案",
                            "deviceLockedOptionText":  "當裝置鎖定時",
                            "deviceManufacturer":  "裝置製造商",
@@ -7356,6 +7442,7 @@
                            "guidedTemplate2":  "我們將會詢問您，要為使用者部署哪個保護層級。如需詳細資訊，請參閱<a href = \"https://go.microsoft.com/fwlink/?linkid=2131582 \">應用程式保護原則的資料保護架構。</a>",
                            "guidediOSLabel":  "iOS 應用程式防護",
                            "hardwareBackedKey":  "硬體備份金鑰",
+                           "healthCheck":  "Health Checks",
                            "helpAndSupport":  "說明及支援",
                            "hideOverrides":  "隱藏覆寫",
                            "highDataProtectionGuidedString":  "高資料保護 - 延伸增強型資料保護中所定義的設定，方法是再加入更複雜的存取需求設定 (例如，停用簡易 PIN)、資料保護設定 (例如，停用協力廠商鍵盤)。",
@@ -7468,6 +7555,7 @@
                            "overview":  "概觀",
                            "packageId":  "套件識別碼",
                            "pendingDeleteContentStateText":  "刪除中...",
+                           "photoLibrary":  "照片圖庫",
                            "pinCharSettingTooltip":  "數值型 PIN 碼只允許數值字元。\r\n\r\n密碼必須符合下列需求: 英數字元與允許的符號。",
                            "pinToDashboard":  "虛設字串，不翻譯",
                            "platformColumnLabel":  "平台",
@@ -7537,7 +7625,7 @@
                            "reporting":  "報告",
                            "reports":  "報表",
                            "require":  "需要",
-                           "requireDeviceLockOnApps":  "Require device lock",
+                           "requireDeviceLockComplexityOnApps":  "需要裝置鎖定",
                            "requireThreatScanOnApps":  "需要對應用程式進行威脅掃描",
                            "requiredField":  "此欄位不能是空的",
                            "requiredSafetyNetEvaluationType":  "需要的 SafetyNet 評估類型",
@@ -7702,7 +7790,7 @@
                            "wipPolicyImportApps":  "匯入應用程式",
                            "wipPolicyProtectedAppsTitle":  "受保護的應用程式",
                            "wipPotocolsWarningMessage":  "警告: 修改這些設定會變更 Intune 禁止或允許資料傳輸到其他應用程式的方式。除非您理解資料外洩的風險，否則請勿修改這些設定。若要深入了解，請瀏覽<a target=\"_blank\" href={0} aria-label=\"Learn more about exampt apps\">這裡</a>。",
-                           "wipPotocolsWarningMessageIos":  "警告: 修改這些設定會變更 Intune 禁止或允許資料傳輸至其他應用程式的方式。除非您理解資料外洩的風險，否則請勿修改這些設定。若要深入了解，請瀏覽<a target=\"_blank\" href={0}>這裡</a>。 <br /><br />對於較新的原則，電信通訊協定將不會再新增至預設豁免的應用程式清單。若應用程式要使用較新版的 Intune SDK (12.7.0 以上的版本)，請使用 [將組織資料傳送至其他應用程式]<b></b> 下的 [電信資料的傳輸目的地]<b></b> 設定來指定電信傳輸設定。若應用程式要使用舊版的 Intune SDK，請將電信通訊協定 (tel 與 telprompt) 新增至此清單。<a target=\"_blank\" href={1} aria-label=\"Learn more about app protection setting\">深入了解</a>。",
+                           "wipPotocolsWarningMessageIos":  "警告: 修改這些設定會變更 Intune 禁止或允許資料傳輸至其他應用程式的方式。除非您理解資料外洩的風險，否則請勿修改這些設定。若要深入了解，請瀏覽<a target=\"_blank\" href={0}>這裡</a>。 <br /><br />對於較新的原則，電信通訊協定將不會再新增至預設豁免的應用程式清單。若應用程式要使用較新版的 Intune SDK (12.7.0 以上的版本)，請使用 <b>[將組織資料傳送至其他應用程式]</b> 下的 <b>[電信資料的傳輸目的地]</b> 設定來指定電信傳輸設定。若應用程式要使用舊版的 Intune SDK，請將電信通訊協定 (tel 與 telprompt) 新增至此清單。<a target=\"_blank\" href={1} aria-label=\"Learn more about app protection setting\">深入了解</a>。",
                            "wipProtectedAppsInfo":  "這些應用程式必須遵守這項原則。",
                            "wipRecommendedApps":  "推薦的應用程式",
                            "wipSMBStringListAddTitle":  "新增加密的檔案副檔名",
@@ -7913,9 +8001,9 @@
                            "selectorLabel":  "偵測規則"
                        },
     "PolicyType":  {
-                       "AttackSurfaceReductionRules":  {
-                                                           "configMgr":  "縮小受攻擊面規則 (ConfigMgr)"
-                                                       },
+                       "EdgeSmartScreenSettings":  {
+                                                       "description":  "Microsoft Edge 應用程式建議的 SmartScreen 設定: 在雲端設定範本中 Windows 10。https://aka.ms/CloudConfigGuide"
+                                                   },
                        "EndpointDetectionandResponse":  {
                                                             "mDE":  "端點偵測及回應"
                                                         },
@@ -7964,13 +8052,20 @@
                        "FirewallRules":  {
                                              "mDE":  "Microsoft Defender 防火牆規則"
                                          },
+                       "OneDriveKnownFolderMove":  {
+                                                       "description":  "OneDrive 已知資料夾移動設定: Windows 10 在雲端設定範本中。https://aka.ms/CloudConfigGuide"
+                                                   },
+                       "accountProtection":  "帳戶防護",
                        "administrativeTemplates":  "系統管理範本",
                        "androidCompliancePolicy":  "Android 合規性原則",
                        "aospDeviceOwnerCompliancePolicy":  "Android (AOSP) 合規性政策",
                        "applicationControl":  "應用程式控制",
+                       "attackSurfaceReductionRules":  "攻擊表面縮減規則",
+                       "bitlocker":  "BitLocker",
                        "custom":  "自訂",
                        "deliveryOptimization":  "傳遞最佳化",
                        "derivedPersonalIdentityVerificationCredential":  "衍生認證",
+                       "deviceControl":  "裝置控制",
                        "deviceFeatures":  "裝置功能",
                        "deviceFirmwareConfigurationInterface":  "裝置韌體設定介面",
                        "deviceLock":  "裝置鎖定",
@@ -7990,6 +8085,7 @@
                        "identityProtection":  "身分識別保護",
                        "iosCompliancePolicy":  "iOS 合規性政策",
                        "kiosk":  "資訊亭",
+                       "localUsersAndGroups":  "編輯使用者群組成員資格",
                        "macCompliancePolicy":  "Mac 合規性原則",
                        "microsoftDefenderAntivirus":  "Microsoft Defender 防毒軟體",
                        "microsoftDefenderAntivirusexclusions":  "Microsoft Defender 防毒軟體排除",
@@ -8144,11 +8240,12 @@
                                                         "selected":  "包含驗證內容"
                                                     },
                                          "addNewStepUp":  "新增驗證內容",
+                                         "bannerText":  "使用 Azure AD Premium 建立您自己的驗證內容值與條件式存取原則",
                                          "checkBoxInfo":  "選取要套用此原則的驗證內容",
                                          "configure":  "設定驗證內容",
                                          "createCA":  "對驗證內容指派條件式存取原則",
                                          "dataGrid":  "驗證內容清單",
-                                         "deleteFailedByReference":  "You cannot delete this authentication context because it is being referenced by CA policies.",
+                                         "deleteFailedByReference":  "您無法刪除此驗證內容，因為 CA 原則正在參考它。",
                                          "description":  "描述",
                                          "documentation":  "文件",
                                          "getStarted":  "開始",
@@ -8166,49 +8263,34 @@
                      "AuthenticationStrength":  {
                                                     "Mode":  {
                                                                  "deviceBasedPush":  "Microsoft Authenticator (手機登入)",
-                                                                 "deviceBasedPushFido2X509Certificate":  "Microsoft Authenticator (手機登入) + Fido 2 + 憑證式驗證",
-                                                                 "deviceBasedPushX509CertificateSingleFactor":  "Microsoft Authenticator (手機登入) + Fido 2 + 憑證式驗證 (單一要素)",
                                                                  "email":  "電子郵件一次性密碼",
-                                                                 "emailOtp":  "電子郵件一次性密碼",
                                                                  "federatedMultiFactor":  "同盟多重要素",
                                                                  "federatedSingleFactor":  "同盟單一要素",
-                                                                 "federatedSingleFactorFederatedMultiFactor":  "同盟單一要素 + 同盟多重要素",
-                                                                 "fido2":  "FIDO 2 安全性金鑰",
-                                                                 "fido2X509CertificateSingleFactor":  "FIDO 2 安全性金鑰 + 憑證式驗證 (單一要素)",
+                                                                 "fido2":  "FIDO2 安全性金鑰",
                                                                  "hardwareOath":  "硬體 OATH 權杖",
-                                                                 "hardwareOathEmail":  "硬體 OATH 權杖 + 電子郵件單次密碼",
-                                                                 "hardwareOathX509CertificateSingleFactor":  "硬體 OATH 權杖 + 憑證式驗證 (單一要素)",
-                                                                 "microsoftAuthenticatorPSIX509CertificateSingleFactor":  "Microsoft Authenticator (手機登入) + 憑證式驗證 (單一要素)",
-                                                                 "microsoftAuthenticatorPsi":  "Microsoft Authenticator (手機登入)",
+                                                                 "hardwareOathEmail":  "硬體 OATH 權杖 + 電子郵件一次性密碼",
+                                                                 "hardwareOathFederatedSingleFactor":  "同盟單一要素 + 硬體 OATH 權杖",
                                                                  "microsoftAuthenticatorPush":  "Microsoft Authenticator (推播通知)",
                                                                  "microsoftAuthenticatorPushEmail":  "Microsoft Authenticator (推播通知) + 電子郵件單次密碼",
-                                                                 "microsoftAuthenticatorPushX509CertificateSingleFactor":  "Microsoft Authenticator (推播通知) + 憑證式驗證 (單一要素)",
+                                                                 "microsoftAuthenticatorPushFederatedSingleFactor":  "同盟單一要素 + Microsoft Authenticator (推播通知)",
                                                                  "none":  "無",
                                                                  "password":  "密碼",
-                                                                 "passwordDeviceBasedPush":  "密碼 + Microsoft Authenticator (手機登入)",
-                                                                 "passwordFido2":  "密碼 + FIDO 2 安全性金鑰",
                                                                  "passwordHardwareOath":  "密碼 + 硬體 OATH 權杖",
-                                                                 "passwordMicrosoftAuthenticatorPSI":  "密碼 + Microsoft Authenticator (手機登入)",
                                                                  "passwordMicrosoftAuthenticatorPush":  "密碼 + Microsoft Authenticator (推播通知)",
                                                                  "passwordSms":  "密碼 + 簡訊",
                                                                  "passwordSoftwareOath":  "密碼 + 軟體 OATH 權杖",
-                                                                 "passwordTemporaryAccessPassMultiUse":  "密碼 + 暫時存取密碼 (多次使用)",
-                                                                 "passwordTemporaryAccessPassOneTime":  "密碼 + 臨時存取密碼 (單次使用)",
                                                                  "passwordVoice":  "密碼 + 語音",
                                                                  "sms":  "簡訊",
                                                                  "smsEmail":  "SMS +以電子郵件寄送一次性密碼",
-                                                                 "smsSignIn":  "簡訊登入",
-                                                                 "smsX509CertificateSingleFactor":  "簡訊 + 憑證式驗證 (單一要素)",
+                                                                 "smsFederatedSingleFactor":  "同盟單一要素 + SMS",
                                                                  "softwareOath":  "軟體 OATH 權杖",
-                                                                 "softwareOathEmail":  "軟體 OATH 權杖 + 電子郵件單次密碼",
-                                                                 "softwareOathX509CertificateSingleFactor":  "軟體 OATH 權杖 + 憑證式驗證 (單一要素)",
+                                                                 "softwareOathEmail":  "軟體 OATH 權杖 + 電子郵件一次性密碼",
+                                                                 "softwareOathFederatedSingleFactor":  "同盟單一要素 + 軟體 OATH 權杖",
                                                                  "temporaryAccessPassMultiUse":  "臨時存取密碼 (多次使用)",
-                                                                 "temporaryAccessPassMultiUseX509CertificateSingleFactor":  "臨時存取密碼 (多次使用) + 憑證式驗證 (單一要素)",
                                                                  "temporaryAccessPassOneTime":  "臨時存取密碼 (單次使用)",
-                                                                 "temporaryAccessPassOneTimeX509CertificateSingleFactor":  "臨時存取密碼 (單次使用) + 憑證式驗證 (單一要素)",
                                                                  "voice":  "語音",
                                                                  "voiceEmail":  "語音 + 以電子郵件寄送一次性密碼",
-                                                                 "voiceX509CertificateSingleFactor":  "語音 + 憑證式驗證 (單一要素)",
+                                                                 "voiceFederatedSingleFactor":  "同盟單一要素 + 語音",
                                                                  "windowsHelloForBusiness":  "Windows Hello 企業版",
                                                                  "x509CertificateMultiFactor":  "憑證式驗證 (多重要素)",
                                                                  "x509CertificateSingleFactor":  "憑證式驗證 (單一要素)"
@@ -8240,7 +8322,8 @@
                                              "Validation":  {
                                                                 "failed":  "在 [選取的位置] 中，您必須至少選擇一個位置。",
                                                                 "selector":  "至少選擇一個位置"
-                                                            }
+                                                            },
+                                             "privateLinksInfo":  "Azure AD 的 Private Link 最適合 Azure 服務。請確認套用此原則的主體，並無須使用 M365 等任何公用服務。"
                                          },
                      "ClientApp":  {
                                        "Clients":  {
@@ -8276,6 +8359,7 @@
                                                   "infoBalloon":  "您要測試的雲端應用程式或使用者動作。例如 ' SharePoint Online'",
                                                   "learnMore":  "利用所有或特定的雲端應用程式或動作控制存取。",
                                                   "learnMoreB2C":  "控制對所有或特定雲端應用程式的存取權。",
+                                                  "learnMoreNetworkAccess":  "利用所有或特定的網路存取流量、雲端應用程式或動作控制存取。",
                                                   "title":  "雲端應用程式或動作"
                                               },
                      "CloudappsSelectionBlade":  {
@@ -8292,6 +8376,7 @@
                                                                   },
                                                      "Validation":  {
                                                                         "authContext":  "您至少須為 [驗證內容] 設定一個子項目。",
+                                                                        "networkAccess":  "使用「網路存取」時，您必須設定至少一個流量設定檔。",
                                                                         "selectApps":  "必須設定 \"{0}\"",
                                                                         "selector":  "至少選取一個應用程式。",
                                                                         "userActions":  "至少須設定一個子項目，才能使用 [使用者動作]。"
@@ -8307,12 +8392,12 @@
                                     "notFoundDetailed":  "原則 \"{0}\" 已不存在。可能已刪除。"
                                 },
                      "GuestsOrExternalUsers":  {
-                                                   "allExternalTenantsLabel":  "所有 Azure AD 組織",
+                                                   "allExternalTenantsLabel":  "全部",
                                                    "b2bCollaborationGuestLabel":  "B2B 共同作業來賓使用者",
                                                    "b2bCollaborationMemberLabel":  "B2B 共同作業成員使用者",
                                                    "b2bDirectConnectUserLabel":  "B2B 直接連線使用者",
                                                    "enumeratedExternalTenantsError":  "請至少選取一個外部租用戶",
-                                                   "enumeratedExternalTenantsLabel":  "選取 Azure AD 組織",
+                                                   "enumeratedExternalTenantsLabel":  "選取",
                                                    "externalTenantsLabel":  "指定外部 Azure AD 組織",
                                                    "externalUserDropdownLabel":  "選擇來賓或外部使用者類型",
                                                    "externalUsersError":  "選取至少一個外部來賓或使用者類型",
@@ -8432,6 +8517,22 @@
                                                        "gridAria":  "已命名位置的清單"
                                                    }
                                       },
+                     "NetworkAccess":  {
+                                           "Included":  {
+                                                            "none":  "未選取目標資源",
+                                                            "plural":  "已選取 {0} 個網路流量設定檔",
+                                                            "singular":  "已選取 １ 個網路流量設定檔"
+                                                        },
+                                           "internetOptionText":  "公用流量",
+                                           "label":  "網路存取 (預覽)",
+                                           "m365OptionText":  "M365 流量",
+                                           "privateOptionText":  "私人流量",
+                                           "selectTrafficProfilesLabel":  "選取此原則所適用的流量設定檔",
+                                           "targetResourcesBalloonContext":  "目標資源",
+                                           "targetResourcesSelectorTitle":  "目標資源",
+                                           "trafficProfilesLearnMoreTooltip":  "若要查看其他的流量設定檔，請新增更多 NaaS 授權。",
+                                           "ztnaEnableLearnMore":  "必須開啟零信任 Cloud Edge，才能使用網路存取控制。"
+                                       },
                      "Policies":  {
                                       "Grid":  {
                                                    "aria":  "條件式存取原則清單"
@@ -8449,18 +8550,33 @@
                                                                                }
                                                   }
                                 },
+                     "PolicyCondition":  {
+                                             "SignInRiskDetections":  {
+                                                                          "ApplyCondition":  {
+                                                                                                 "info":  "設定風險偵測，以將原則套用在選取的即時登入風險偵測。"
+                                                                                             },
+                                                                          "LearnMore":  {
+                                                                                            "message":  "控制使用者回應特定登入風險偵測的存取權。"
+                                                                                        },
+                                                                          "description":  "如果任何包含的風險偵測偵測到風險，就會滿足此條件。這不會影響登入風險層級計算。",
+                                                                          "header":  "即時內建風險偵測",
+                                                                          "info":  "在登入期間偵測風險的偵測。",
+                                                                          "label":  "登入風險偵測 (預覽)",
+                                                                          "title":  "登入風險偵測"
+                                                                      }
+                                         },
                      "PolicyControlAuthStrength":  {
                                                        "MultiFactorAuthentication":  {
                                                                                          "description":  "滿足增強式驗證的方法組合，例如密碼 + SMS",
-                                                                                         "displayName":  "多重要素驗證 (MFA)"
+                                                                                         "displayName":  "多重要素驗證"
                                                                                      },
                                                        "Passwordless":  {
                                                                             "description":  "滿足增強式驗證的無密碼方法，例如 Microsoft Authenticator",
-                                                                            "displayName":  "無密碼 MFA"
+                                                                            "displayName":  "無密碼多重要素驗證"
                                                                         },
                                                        "PhishingResistant":  {
                                                                                  "description":  "用於最強驗證的防網路釣魚無密碼方法，例如 FIDO2 安全性金鑰",
-                                                                                 "displayName":  "防網路釣魚 MFA"
+                                                                                 "displayName":  "防網路釣魚多重要素驗證"
                                                                              }
                                                    },
                      "PolicyControlFedAuthMethod":  {
@@ -8570,7 +8686,7 @@
                                                                 "RequireMFAForAdmins":  {
                                                                                             "description":  "需要特殊權限系統管理帳戶的多重要素驗證，以降低洩露的風險。此原則將鎖定與安全性預設相同的角色。",
                                                                                             "name":  "CA001: 管理員需要多重要素驗證",
-                                                                                            "title":  "管理員需要進行多重要素驗證"
+                                                                                            "title":  "管理員需要多重要素驗證"
                                                                                         },
                                                                 "RequireMFAForAzureManagement":  {
                                                                                                      "description":  "需要多重要素驗證，才能保護對 Azure 資源的特殊權限存取。",
@@ -8787,6 +8903,13 @@
                                                           "message":  "針對特定登入風險層級，控制使用者的存取權。"
                                                       }
                                     },
+                     "SigninRiskLevel":  {
+                                             "NoRiskSelected":  {
+                                                                    "warning":  "選取「{0}」時，將無法設定「{1}」條件。"
+                                                                },
+                                             "description":  "登入風險層級是根據所有即時風險偵測而產生。",
+                                             "header":  "選取此原則將套用的登入風險層級"
+                                         },
                      "SingleSelectorActive":  {
                                                   "failed":  "無法載入此資料。",
                                                   "reattempt":  "正在載入資料。重試 {0}/{1}。"
@@ -8853,12 +8976,14 @@
                                               "invalidDevicesCondition":  "裝置设定無效。可能是「{0}」設定無效。",
                                               "invalidGrantControlPolicy":  "授與控制項無效",
                                               "invalidLocationsCondition":  "選取的位置無效",
+                                              "invalidNetworkAccessSecurityPolicyId":  "附加到會話網路控制的原則無效。",
                                               "invalidPolicy":  "未選取指派",
                                               "invalidSessionControlPolicy":  "工作階段控制項無效",
                                               "invalidSignInRisksCondition":  "選取的登入風險無效",
                                               "invalidUserRisksCondition":  "選取的使用者風險無效",
                                               "invalidUsersCondition":  "選取的使用者無效",
                                               "mamPolicyShouldOnlyTargetAndroidOrIosPlatforms":  "MAM 原則只能套用到 Android 或 iOS 用戶端平台。",
+                                              "networkAccessControlNeedsNetworkAccessTargetedTrafficProfile":  "只有在網路存取流量設定檔成為目標時，網路存取會話原則才能正確運作。請更新您的目標資源區段。",
                                               "notSupportedCombination":  "不支援原則設定。深入了解支援的原則。",
                                               "pending":  "正在驗證原則",
                                               "requireComplianceEveryonePolicy":  "原則設定會要求所有使用者都具備裝置合規性。檢閱選取的指派。",
@@ -8871,10 +8996,12 @@
                                  },
                      "WarningsInfo":  {
                                           "Controls":  {
+                                                           "AuthStrengthXtap":  {
+                                                                                    "allUsers":  "設定跨租用戶存取設定，以接受來自 Azure AD 租使用戶的聲明，讓外部使用者使用內建驗證強度。無法為外部使用者進行自訂驗證強度。",
+                                                                                    "externalUsers":  "若要啟用所有內建驗證強度，請設定跨租用戶存取設定，以接受來自外部使用者的 Azure AD 租用戶的宣告。按一下這裡以深入了解。"
+                                                                                },
                                                            "compliantDeviceEnabled":  "請勿將自己鎖於之外而無法使用! 請確定您的裝置符合規範。",
                                                            "domainJoinedDeviceEnabled":  "請勿將自己鎖於之外而無法使用! 請確定您已使用混合式 Azure AD 而聯結的裝置。",
-                                                           "exchangeDisabled":  "Exchange ActiveSync 僅支援 [符合規範的裝置] 和 [已核准的用戶端應用程式] 控制項。按一下以深入了解。",
-                                                           "exchangeDisabled2":  "Exchange ActiveSync 僅支援「符合規範的裝置」、「已核准的用戶端應用程式」以及「符合規範的用戶端應用程」控制項。按一下可深入了解。",
                                                            "notAvailableForSP":  "由於在原則指派中選取了 ‘{0}’，因此某些控制項無法使用",
                                                            "requireAuthOrMfa":  "'{0}' 無法搭配 '{1}' 使用",
                                                            "requireMfa":  "請考慮測試新「{0}」公開預覽",
@@ -8904,7 +9031,8 @@
                                                                     "teamsBlocked":  "當 SharePoint Online 和 Exchange Online 等應用程式包含在原則中時，Microsoft Teams 也會受到影響。"
                                                                 },
                                           "Users":  {
-                                                        "blockAllUsers":  "別將自己鎖在外面! 此原則會影響您的所有使用者。建議您先對一小部分使用者套用原則，以確認其行為符合預期。"
+                                                        "blockAllUsers":  "別將自己鎖在外面! 此原則會影響您的所有使用者。建議您先對一小部分使用者套用原則，以確認其行為符合預期。",
+                                                        "xtap":  "在授權控制中「需要驗證強度」設定對外部使用者可能無效。"
                                                     }
                                       },
                      "WhatIf":  {
@@ -8981,7 +9109,7 @@
                      "chooseApplicationsTooMany":  "結果超過可顯示的數量。請使用搜尋方塊篩選。",
                      "chooseLocationCorpnetItem":  "公司網路",
                      "chooseLocationSelectedLocationsLabel":  "選取的位置",
-                     "chooseLocationTrustedIpsItem":  "MFA 信任的 IP",
+                     "chooseLocationTrustedIpsItem":  "多重要素驗證受信任的 IP",
                      "chooseLocationsBladeSubtitle":  "",
                      "chooseLocationsBladeTitle":  "選擇位置",
                      "chooseLocationsCartSubitle":  "",
@@ -9105,7 +9233,6 @@
                      "clientAppBladeTitle":  "用戶端應用程式",
                      "clientAppDescription":  "選取將套用此原則的用戶端應用程式",
                      "clientAppExchangeActiveSync":  "Exchange ActiveSync",
-                     "clientAppExchangeDisabledInfo":  "Exchange ActiveSync 可在 Exchange Online 為唯一選取的雲端應用程式時使用。按一下以深入了解",
                      "clientAppExchangeWarning":  "Exchange ActiveSync 目前不支援所有其他條件",
                      "clientAppLearnMore":  "控制使用者對未使用新式驗證之特定用戶端應用程式的存取。",
                      "clientAppLegacyHeader":  "舊版驗證用戶端",
@@ -9113,7 +9240,6 @@
                      "clientAppModernHeader":  "新式驗證用戶端",
                      "clientAppOnlySupportedPlatforms":  "僅將原則套用至支援的平台",
                      "clientAppSelectSpecificClientApps":  "選取用戶端應用程式",
-                     "clientAppV2BladeTitle":  "用戶端應用程式 (預覽)",
                      "clientAppWebBrowser":  "瀏覽器",
                      "clientAppsSelectedLabel":  "已包含 {0} 個",
                      "clientTypeBrowser":  "瀏覽器",
@@ -9224,7 +9350,7 @@
                      "helpCondition1":  "當任何使用者於公司網路外時",
                      "helpCondition2":  "當「經理」群組的使用者登入時",
                      "helpConditionsTitle":  "條件",
-                     "helpControl1":  "他們必須以多重要素驗證登入",
+                     "helpControl1":  "他們必須使用多重要素驗證登入",
                      "helpControl2":  "需要他們使用與 Intune 相容或已加入網域的裝置上",
                      "helpControlsTitle":  "控制項",
                      "helpIntroText":  "條件式存取可供您在發生特定狀況時，強制執行存取需求。讓我們看看一些範例",
@@ -9260,6 +9386,7 @@
                      "lowRisk":  "低",
                      "macOsDisplayName":  "macOS",
                      "managePoliciesLicenseText":  "若要管理條件式存取原則，您的組織需要 Azure AD Premium P1 或 P2。",
+                     "manageSecurityDefaultsAriaLabel":  "管理安全性預設值設定。",
                      "markAsTrustedCheckboxInfoBalloonContent":  "從信任位置登入可降低使用者登入風險。只有在您知道輸入的 IP 範圍已在組織中建立且可靠時，才會將此位置標示為信任。",
                      "markAsTrustedCheckboxLabel":  "標示為信任位置",
                      "mediumRisk":  "中",
@@ -9291,7 +9418,7 @@
                      "namedNetworkIpRangesDescriptionContent":  "設定您組織的 IP 範圍",
                      "namedNetworkIpRangesTab":  "IP 範圍",
                      "namedNetworkListAdd":  "新增位置",
-                     "namedNetworkListConfigureTrustedIps":  "設定 MFA 信任的 IP",
+                     "namedNetworkListConfigureTrustedIps":  "設定多重要素驗證受信任的 IP",
                      "namedNetworkNameDescription":  "例如: 'Redmond office'",
                      "namedNetworkNameInvalid":  "提供的名稱無效。",
                      "namedNetworkNameRequired":  "您必須替此位置提供名稱。",
@@ -9363,12 +9490,12 @@
                      "policyConditionDevicePlatformDescription":  "使用者的登入來源平台。例如 'iOS'",
                      "policyConditionLocation":  "位置",
                      "policyConditionLocationDescription":  "使用者的登入來源位置 (使用 IP 位址範圍判定)",
-                     "policyConditionSigninRisk":  "登入風險",
+                     "policyConditionLocationPreview":  "位置 (預覽)",
+                     "policyConditionSigninRisk":  "登入風險層級",
                      "policyConditionSigninRiskDescription":  "登入者為其他人而非使用者的可能性。風險等級可能是高、中或低。必須要有 Azure AD Premium 2 授權。",
-                     "policyConditionUserRisk":  "使用者風險",
+                     "policyConditionUserRisk":  "使用者風險層級",
                      "policyConditionUserRiskDescription":  "設定實施原則所需的使用者風險層級",
                      "policyConditioniClientApp":  "用戶端應用程式",
-                     "policyConditioniClientAppV2":  "用戶端應用程式 (預覽)",
                      "policyControlAllowAccessDisplayedName":  "授與存取權",
                      "policyControlAuthenticationStrengthDisplayedName":  "需要驗證強度 (預覽)",
                      "policyControlBladeTitle":  "授與",
@@ -9405,7 +9532,7 @@
                      "policyNameDevice":  "裝置原則",
                      "policyNameFormat":  "[{0}] {1}",
                      "policyNameMam":  "行動裝置應用程式管理原則",
-                     "policyNameMfaLocation":  "MFA 與位置原則",
+                     "policyNameMfaLocation":  "多重要素驗證和位置原則",
                      "policyNamePlaceholderText":  "範例:「裝置合規性應用程式原則」",
                      "policyNameTooLongError":  "原則名稱過長。上限為 256 個字元",
                      "policyOff":  "關閉",
@@ -9433,12 +9560,15 @@
                      "requireAllControlsText":  "需要所有選取的控制項",
                      "requireCompliantDevice":  "需要符合規範裝置",
                      "requireDomainJoined":  "需要已加入網域的裝置",
-                     "requireGrantReauth":  "選取 「所有雲端應用程式」時，「每次登入頻率」工作階段控制項需要「需要多重要素驗證」或「需要變更密碼」授予控制",
+                     "requireGrantReauth":  "選取 [所有雲端應用程式] 時，[每次登入頻率] 工作階段控制項需要 [需要多重要素驗證] 或 [需要變更密碼] 以授與控制權",
                      "requireMFA":  "需要多重要素驗證",
-                     "requireMfaReauth":  "「每次登入頻率」工作階段控制項需要「需要多重要素驗證」，以授予「登入風險」的控制權",
+                     "requireMfaReauth":  "[每次登入頻率] 工作階段控制項需要 [需要多重要素驗證]，以授與 [登入風險] 的控制權",
                      "requireOneControlText":  "需要其中一個選取的控制項",
                      "requirePasswordChangeReauth":  "「每次登入頻率」工作階段控制項需要「需要變更密碼」授權控制「使用者風險」",
                      "requireRiskReauth":  "選取 「所有雲端應用程式」時，「每次的登入頻率」工作階段控制項需要「使用者風險」或「登入風險」工作階段控制。",
+                     "requireRiskReauthRiskNotEnabled":  "選取「所有雲端應用程式」時，無法使用「每次的登入頻率」工作階段控制項。",
+                     "requireRiskReauthSignInOnly":  "選取「所有雲端應用程式」時，「每次的登入頻率」工作階段控制項需要「登入風險」工作階段控制項。",
+                     "requireRiskReauthUserOnly":  "選取「所有雲端應用程式」時，「每次的登入頻率」工作階段控制項需要「使用者風險」工作階段控制項。",
                      "resetFilters":  "重設篩選",
                      "sPRequired":  "需要服務主體",
                      "sPSelectorInfoBalloon":  "您要測試的使用者或服務主體",
@@ -9446,7 +9576,8 @@
                      "searchTextTooLongError":  "搜尋文字太長。最多 256 個字元",
                      "securityDefaultsPolicyName":  "安全性預設值",
                      "securityDefaultsTextMessage":  "必須停用安全性預設值，才可啟用條件式存取原則。",
-                     "securityDefaultsWarningMessage":  "您似乎想要管理您組織的安全性設定。真棒! 您必須先停用安全性預設值，才能啟用條件式存取原則。",
+                     "securityDefaultsUpdateInProgressText":  "正在進行安全性預設值更新，請稍候，然後再試一次。",
+                     "securityDefaultsWarningMessage":  "您似乎想要管理您組織的安全性設定。真棒! 您必須先{0}停用安全性預設值{1}，才能啟用條件式存取原則。",
                      "selectDevicePlatforms":  "選取裝置平台",
                      "selectNamedNetworksSubtitle":  "",
                      "selectNamedNetworksTitle":  "選取位置",
@@ -9460,6 +9591,7 @@
                      "servicePrincipalSelectorAria":  "所選服務主體的清單",
                      "servicePrincipalSelectorMultiple":  "已選取 {0} 個服務主體",
                      "servicePrincipalSelectorSingle":  "已選取 1 個服務主體",
+                     "servicePrincipalSpecificExc":  "已排除特定的服務主體",
                      "servicePrincipalSpecificInc":  "包含特定的服務主體",
                      "servicePrincipals":  "服務主體",
                      "sessionControlBladeTitle":  "工作階段",
@@ -9471,7 +9603,6 @@
                      "sessionControlsCasLabel":  "使用條件式存取應用程式控制",
                      "sessionControlsSecureSignInLabel":  "需要權杖繫結",
                      "sharepointAppName":  "SharePoint",
-                     "signinRiskDescription":  "選取此原則將套用的登入風險層級",
                      "signinRiskInclude":  "已包含 {0} 個",
                      "signinRiskReauth":  "選取 [需要多重要素驗證] 授與 [每次登入頻率] 工作階段控制時，必須選取 [登入風險] 條件",
                      "signinRiskTriggerDescriptionContent":  "選取登入風險等級",
@@ -9551,6 +9682,7 @@
                      "usersGroupsLabel":  "使用者和群組",
                      "viewApprovedAppsText":  "請參閱經核准的用戶端應用程式清單",
                      "viewCompliantAppsText":  "請參閱受原則保護的用戶端應用程式清單",
+                     "viewPolicyInformation":  "檢視原則資訊",
                      "vpnBladeTitle":  "VPN 連線能力",
                      "vpnCertCreateFailedMessage":  "錯誤: {0}",
                      "vpnCertCreateFailedTitle":  "無法建立 {0}",
@@ -9653,6 +9785,7 @@
                                          "builtInAndroid":  "內建 Android 應用程式",
                                          "builtInApp":  "內建應用程式",
                                          "builtInIos":  "內建 iOS 應用程式",
+                                         "iosIPadOSWebClip":  "iOS/iPadOS 網頁短片",
                                          "iosLobApp":  "iOS 企業營運應用程式",
                                          "iosStoreApp":  "iOS Store 應用程式",
                                          "iosVppApp":  "iOS 大量採購方案應用程式",
@@ -9677,6 +9810,8 @@
                                          "sharePointApp":  "SharePoint 應用程式",
                                          "teamsApp":  "Teams 應用程式",
                                          "webApp":  "網頁連結",
+                                         "winGetPublicApp":  "Windows 封裝管理員社群存放庫",
+                                         "winGetStoreApp":  "Microsoft Store 存放庫",
                                          "windowsAppXLobApp":  "Windows AppX 企業營運應用程式",
                                          "windowsClassicApp":  "Windows 應用程式 (Win32)",
                                          "windowsEdgeApp":  "Microsoft Edge (Windows 10 及更新版本)",
@@ -9687,7 +9822,8 @@
                                          "windowsPhoneXapLobApp":  "Windows Phone XAP 企業營運應用程式",
                                          "windowsStoreApp":  "Microsoft Store 應用程式",
                                          "windowsUniversalAppXLobApp":  "Windows 通用 AppX 企業營運應用程式",
-                                         "windowsUniversalLobApp":  "Windows 通用企業營運應用程式"
+                                         "windowsUniversalLobApp":  "Windows 通用企業營運應用程式",
+                                         "windowsWebApp":  "Windows 網頁連結"
                                      },
                          "AppTypePlatform":  {
                                                  "android":  "Android",
@@ -11028,6 +11164,10 @@
                                "xLanguagesSelectedLabel":  "已選取 {0} 個語言",
                                "xmlConfigurationLabel":  "XML 設定"
                            },
+    "Filters":  {
+                    "ruleSyntax":  "規則語法",
+                    "filters":  "篩選"
+                },
     "EnrollmentRestrictions":  {
                                    "DeletePayloadLink":  {
                                                              "content":  "{0} 包含在一或多個原則集中。如果刪除 {0}，您將無法再透過這些原則集加以指派。仍要刪除嗎?",
@@ -11135,9 +11275,12 @@
                                           "gettingStarted":  "開始使用",
                                           "messages":  "訊息",
                                           "onlineResources":  "線上資源",
+                                          "releaseManagement":  "Release management",
                                           "serviceRequests":  "服務要求",
                                           "settings":  "設定",
-                                          "tenantEnrollment":  "租用戶註冊"
+                                          "supportRequests":  "Support requests",
+                                          "tenantEnrollment":  "租用戶註冊",
+                                          "tenantManagement":  "TenantManagement"
                                       },
                    "actions":  "不符合規定時所採取的動作",
                    "advancedExchangeSettings":  "Exchange 線上設定",
@@ -11237,7 +11380,7 @@
                    "properties":  "屬性",
                    "reports":  "報表",
                    "retireNoncompliantDevices":  "淘汰不符合規範的裝置",
-                   "retireNoncompliantDevicesPreview":  "Retire noncompliant devices (preview)",
+                   "retireNoncompliantDevicesPreview":  "淘汰不符合規範的裝置 (預覽)",
                    "role":  "角色",
                    "scriptManagement":  "指令碼",
                    "securityBaselines":  "安全性基準",
@@ -11249,7 +11392,11 @@
                    "tenantAdministration":  "租用戶系統管理",
                    "termsAndConditions":  "條款及條件",
                    "titles":  "標題",
+                   "troubleshoot":  "疑難排解",
+                   "troubleshootDevice":  "裝置",
+                   "troubleshootGroup":  "群組",
                    "troubleshootSupport":  "疑難排解 + 支援",
+                   "troubleshootUser":  "使用者",
                    "user":  "使用者",
                    "userExecutionStatus":  "使用者狀態",
                    "warranty":  "保固廠商",

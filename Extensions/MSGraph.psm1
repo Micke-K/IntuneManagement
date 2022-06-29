@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.5.0'
+    '3.6.0'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -23,7 +23,7 @@ function Invoke-InitializeModule
 {
     $global:graphURL = "https://graph.microsoft.com/beta"
 
-    $global:LoadedDependencyObject = $null
+    $global:LoadedDependencyObjects = $null
     $global:MigrationTableCache = $null
 
     $script:lstImportTypes = @(
@@ -264,6 +264,7 @@ function Get-GraphAppInfo
 
 function Invoke-GraphAuthenticationUpdated
 {
+    Write-Log "Clear cached values"
     $global:MigrationTableCache = $null
     $global:MigrationTableCacheId = $null
     $global:LoadedDependencyObjects = $null
@@ -402,47 +403,66 @@ function Invoke-GraphRequest
     }
 
     $ret = $null
-    try
-    {
-        Write-LogDebug "Invoke graph API: $Url (Request ID: $requestId)"
-        $allValues = @()
-        do 
-        {
-            $ret = Invoke-RestMethod -Uri $Url -Method $HttpMethod @params 
-            if($? -eq $false) 
-            {
-                throw $global:error[0]
-            }
     
-            if($HttpMethod -eq "PATCH" -and [String]::IsNullOrempty($ret))
+    $retryCount = 0
+    $retryMax = 10
+    do
+    {
+        $retryRequest = $false
+        try
+        {
+            Write-LogDebug "Invoke graph API: $Url (Request ID: $requestId)"
+            $allValues = @()
+            do 
             {
-                $ret = $true;
-                break; 
-            }
-            elseif($AllPages -eq $true -and $HttpMethod -eq "GET" -and $ret.value -is [Array])
-            {
-                $allValues += $ret.value
-                if($ret.'@odata.nextLink')
+                $ret = Invoke-RestMethod -Uri $Url -Method $HttpMethod @params 
+                if($? -eq $false) 
                 {
-                    $Url = $ret.'@odata.nextLink'
+                    throw $global:error[0]
                 }
+        
+                if($HttpMethod -eq "PATCH" -and [String]::IsNullOrempty($ret))
+                {
+                    $ret = $true;
+                    break; 
+                }
+                elseif($AllPages -eq $true -and $HttpMethod -eq "GET" -and $ret.value -is [Array])
+                {
+                    $allValues += $ret.value
+                    if($ret.'@odata.nextLink')
+                    {
+                        $Url = $ret.'@odata.nextLink'
+                    }
+                }
+                else
+                {
+                    break    
+                }
+            } while($ret.'@odata.nextLink')
+            
+            if($allValues.Count -gt 0 -and $ret.value -is [Array])
+            {
+                $ret.value = $allValues
+            }
+        }
+        catch
+        {
+            $retryCount++
+            if($NoError -eq $true) { return }
+            if($_.Exception.Response.StatusCode -eq 429 -and $retryCount -le $retryMax)
+            {
+                # NOT OK - Should use the date property but could not replicate the issue
+                $retryCount++
+                $retryRequest = $true
+                Write-Log "429 - Too many requests received. Wait 5 s before retry" 2
+                Start-Sleep -Seconds 5
             }
             else
             {
-                break    
-            }
-        } while($ret.'@odata.nextLink')
-        
-        if($allValues.Count -gt 0 -and $ret.value -is [Array])
-        {
-            $ret.value = $allValues
+                Write-LogError "Failed to invoke MS Graph with URL $Url (Request ID: $requestId). Status code: $($_.Exception.Response.StatusCode)" $_.Excption
+            }            
         }
-    }
-    catch
-    {
-        if($NoError -eq $true) { return }
-        Write-LogError "Failed to invoke MS Graph with URL $Url (Request ID: $requestId). Status code: $($_.Exception.Response.StatusCode)" $_.Excption
-    }
+    } while($retryRequest -eq $true)
     
     Write-Debug "$(($ret | Select *))"
     
@@ -533,7 +553,7 @@ function Get-GraphObjects
             $url += (?: (($url.IndexOf('?')) -eq -1) "?" "&")
             $url = "$($url)`$search=`"$($filter)`""
         }
-    }    
+    }     
     
     $graphObjects = Invoke-GraphRequest -Url $url @params
     if($SinglePage -eq $true -or $AllPages -eq $true)
@@ -1085,7 +1105,7 @@ function Invoke-InitSilentBatchJob
 
     if(-not $global:AzureAppId -or (-not $global:ClientSecret -and -not $global:ClientCert))
     {
-        # Get login info for silet job from settings
+        # Get login info for silent job from settings
         $global:AzureAppId = Get-SettingValue "GraphAzureAppId" -TenantID $global:TenantId
         $global:ClientSecret = Get-SettingValue "GraphAzureAppSecret" -TenantID $global:TenantId
         $global:ClientCert = Get-SettingValue "GraphAzureAppCert" -TenantID $global:TenantId
@@ -1105,7 +1125,7 @@ function Invoke-InitSilentBatchJob
     Connect-MSALUser | Out-Null
     if(-not $global:MSALToken)
     {
-        Write-Log "Not autheticated. Batch job will be skipped" 3
+        Write-Log "Not authenticated. Batch job will be skipped" 3
     }
     else
     {        
@@ -1160,7 +1180,7 @@ function Invoke-SilentBatchJob
     if($settingsObj.BulkImport)
     {
         Start-GraphSilentBulkImport $settingsObj
-    }    
+    }
 }
 
 function Start-GraphSilentBulkExport
@@ -1255,7 +1275,8 @@ function Start-GraphSilentBulkImport
     if($importedObjects -eq 0)
     {
         Write-Log "No objects were imported. Verify import batch file settings" 2
-    }}
+    }
+}
 
 function Get-GraphBatchObjectTypes
 {
@@ -1509,7 +1530,7 @@ function Export-GraphBatchSettings
         $outputObj.$batchType += $customProps
     }
 
-    $json = $outputObj | ConvertTo-Json -Depth 20
+    $json = $outputObj | ConvertTo-Json -Depth 50
     $json | Out-File -LiteralPath $fileName -Force
 }
 
@@ -1607,6 +1628,7 @@ function Show-GraphImportForm
             $filesToImport = & $global:curObjectType.PreFilesImportCommand $global:curObjectType $filesToImport
         }
 
+        $importedObjectsCurType = 0
         $navigationPropObjects = @()
         foreach ($fileObj in $filesToImport)
         {
@@ -1623,7 +1645,14 @@ function Show-GraphImportForm
                     ImportedObject = $importedObj
                 }
             }
+            $importedObjectsCurType++
         }
+
+        if($importedObjectsCurType -gt 0 -and $global:LoadedDependencyObjects -is [HashTable] -and $global:LoadedDependencyObjects.ContainsKey($global:curObjectType.Id))
+        {
+            Write-Log "Remove $($global:curObjectType.Title) from dependency cahce"
+            $global:LoadedDependencyObjects.Remove($global:curObjectType.Id)
+        }        
 
         if($navigationPropObjects)
         {
@@ -1839,6 +1868,8 @@ function Start-GraphObjectImport
             }
             $navigationPropObjects = @()
 
+            $importedObjectsCurType = 0
+
             foreach ($fileObj in @($filesToImport))
             {
                 $objName = Get-GraphObjectName $fileObj.Object $item.ObjectType
@@ -1864,6 +1895,13 @@ function Start-GraphObjectImport
                 }
 
                 $importedObjects++
+                $importedObjectsCurType++
+            }
+
+            if($importedObjectsCurType -gt 0 -and $global:LoadedDependencyObjects -is [HashTable] -and $global:LoadedDependencyObjects.ContainsKey($item.ObjectType.Id))
+            {
+                Write-Log "Remove $($item.ObjectType.Title) from dependency cahce"
+                $global:LoadedDependencyObjects.Remove($item.ObjectType.Id)
             }
             Save-Setting "" "LastUsedFullPath" $folder
             if($navigationPropObjects)
@@ -2131,7 +2169,7 @@ function Import-GraphFile
     try 
     {
         # Clone the object to keep original values
-        $objClone = $file.Object | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+        $objClone = $file.Object | ConvertTo-Json -Depth 50 | ConvertFrom-Json
 
         if($objectType.PreFileImportCommand)
         {
@@ -2189,7 +2227,7 @@ function Reset-GraphObjet
         $objectType = $fileObj.ObjectType
 
         # Clone the object before removing properties
-        $obj = $fileObj.Object | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+        $obj = $fileObj.Object | ConvertTo-Json -Depth 50 | ConvertFrom-Json
         Start-GraphPreImport $obj $objectType
         Remove-Property $obj "Assignments"
         Remove-Property $obj "isAssigned"
@@ -2232,7 +2270,7 @@ function Reset-GraphObjet
                 }
             }
 
-            $json = ConvertTo-Json $obj -Depth 15
+            $json = ConvertTo-Json $obj -Depth 50
             if($true) #$global:MigrationTableCacheId -ne $global:Organization.Id)
             {
                 # Call Update-JsonForEnvironment before importing the object
@@ -2330,7 +2368,7 @@ function Import-GraphObjectAssignment
     if(($assignments | measure).Count -eq 0) { return }
 
     $preConfig = $null
-    $clonedAssignments = $assignments | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+    $clonedAssignments = $assignments | ConvertTo-Json -Depth 50 | ConvertFrom-Json
 
     if($objectType.PreImportAssignmentsCommand)
     {
@@ -2346,7 +2384,7 @@ function Import-GraphObjectAssignment
     $method = ?? $preConfig["Method"] "POST"
 
     $keepProperties = ?? $objectType.AssignmentProperties @("target")
-    $keepTargetProperties = ?? $objectType.AssignmentTargetProperties @("@odata.type","groupId")
+    $keepTargetProperties = ?? $objectType.AssignmentTargetProperties @("@odata.type","groupId","deviceAndAppManagementAssignmentFilterId","deviceAndAppManagementAssignmentFilterType")
     
     $ObjectAssignments = @()
     foreach($assignment in $clonedAssignments)
@@ -2378,7 +2416,7 @@ function Import-GraphObjectAssignment
     $htAssignments = @{}
     $htAssignments.Add((?? $objectType.AssignmentsType "assignments"), @($ObjectAssignments))
 
-    $json = $htAssignments | ConvertTo-Json -Depth 20
+    $json = $htAssignments | ConvertTo-Json -Depth 50
     if($CopyAssignments -ne $true)
     {
         $json = Update-JsonForEnvironment $json
@@ -2405,14 +2443,22 @@ function Set-ScopeTags
     param($obj)
     # ToDo: Get values from exported json files instead of MigrationTable?
 
-    if(-not $obj.roleScopeTagIds) { return }
+    if(($obj.PSObject.Properties | Where Name -eq "roleScopeTagIds"))
+    {
+        $scopeTagProperty = "roleScopeTagIds"
+    }
+    elseif(($obj.PSObject.Properties | Where Name -eq "roleScopeTags"))
+    {
+        $scopeTagProperty = "roleScopeTags"
+    }
+    else { return }
 
     $scopesIds = @()
     $loadedScopeTags = $global:LoadedDependencyObjects["ScopeTags"]
-    $usingDefault = (($obj.roleScopeTagIds | measure).Count -eq 1 -and $obj.roleScopeTagIds[0] -eq "0")
+    $usingDefault = (($obj."$scopeTagProperty" | measure).Count -eq 1 -and ($obj."$scopeTagProperty")[0] -eq "0")
     if($loadedScopeTags -and $global:chkImportScopes.IsChecked -eq $true -and $usingDefault -eq $false -and $global:MigrationTableCache)
     {        
-        foreach($scopeId in $obj.roleScopeTagIds)
+        foreach($scopeId in $obj."$scopeTagProperty")
         {
             if($scopeId -eq 0) { $scopesIds += "0"; continue } # Add default
 
@@ -2431,7 +2477,7 @@ function Set-ScopeTags
     {
         $scopesIds += "0" # Import with Default ScopeTag as default.
     }
-    $obj.roleScopeTagIds = $scopesIds
+    $obj."$scopeTagProperty" = $scopesIds
 }
 
 # Called during export to add group info for assignments
@@ -2551,7 +2597,7 @@ function Add-GroupMigrationObject
             $grouspPath = Join-Path $path "Groups"
             if(-not (Test-Path $grouspPath)) { mkdir -Path $grouspPath -Force -ErrorAction SilentlyContinue | Out-Null }
             $fileName = "$grouspPath\$((Remove-InvalidFileNameChars $groupObj.displayName)).json"
-            ConvertTo-Json $groupObj -Depth 10 | Out-File $fileName -Force            
+            ConvertTo-Json $groupObj -Depth 50 | Out-File $fileName -Force            
         }
     }
 }
@@ -2590,7 +2636,7 @@ function Add-GraphMigrationObject
                 $grouspPath = Join-Path $path "Groups"
                 if(-not (Test-Path $grouspPath)) { mkdir -Path $grouspPath -Force -ErrorAction SilentlyContinue | Out-Null }
                 $fileName = "$grouspPath\$((Remove-InvalidFileNameChars $graphObj.displayName)).json"
-                ConvertTo-Json $graphObj -Depth 10 | Out-File $fileName -Force
+                ConvertTo-Json $graphObj -Depth 50 | Out-File $fileName -Force
             }
         }
     }
@@ -2658,7 +2704,7 @@ function Add-GraphMigrationObjectToFile
         })    
 
     if(-not (Test-Path $path)) { mkdir -Path $path -Force -ErrorAction SilentlyContinue | Out-Null }
-    ConvertTo-Json $global:migFileObj -Depth 10 | Out-File $migFileName -Force
+    ConvertTo-Json $global:migFileObj -Depth 50 | Out-File $migFileName -Force
 
     $true # New object was added
 }
@@ -2743,7 +2789,7 @@ function Get-GraphMigrationObjectsFromFile
                             
                             Remove-Property $groupObj $prop.Name
                         }
-                        $groupJson = ConvertTo-Json $groupObj -Depth 10
+                        $groupJson = ConvertTo-Json $groupObj -Depth 50
                     }
                     else
                     {
@@ -2887,6 +2933,12 @@ function Add-GraphDependencyObjects
             if(-not $fileObj)
             {
                 Write-Log "Could not find an exported '$($depObjectType.Title)' object with name $name" 2
+                $arrDepObjects += New-Object PSObject -Property @{
+                    OriginalId = $null
+                    Name = $name
+                    Id = Get-GraphObjectId $depObject $depObjectType
+                    Type = $depObjectType.Id
+                }                
                 continue
             }
             if(($fileObj | measure).Count -gt 1)
@@ -2905,6 +2957,10 @@ function Add-GraphDependencyObjects
         if($arrDepObjects.Count -gt 0)
         {
             $global:LoadedDependencyObjects.Add($depObjectType.Id,$arrDepObjects)
+        }
+        else
+        {
+            $global:LoadedDependencyObjects.Add($depObjectType.Id,$null)
         }
     }
 }
@@ -3007,7 +3063,7 @@ function Export-GraphObject
         }
 
         $fullPath = ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$($fileName).json")))
-        $obj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath $fullPath -Force
+        $obj | ConvertTo-Json -Depth 50 | Out-File -LiteralPath $fullPath -Force
         
         if($objectType.PostExportCommand)
         {
@@ -3135,7 +3191,7 @@ function Set-GraphNavigationProperties
 
         Write-Log "Add $refObjName ($refObjId) to navigation property $($prop.Name)"
 
-        $body = $refBodyObjs | ConvertTo-Json -Depth 10
+        $body = $refBodyObjs | ConvertTo-Json -Depth 50
         Invoke-GraphRequest -URL $associationLink -HttpMethod "PUT" -Content $body | Out-Null
     }    
 }
@@ -3235,7 +3291,7 @@ function Get-GraphBatchObjects
 
             Write-Status "Get batch $curBatch $($obj.ObjectType.Title)" -Force            
             $batchTotal += $batchArr.Count            
-            $json = $batchObj | ConvertTo-Json -Depth 10
+            $json = $batchObj | ConvertTo-Json -Depth 50
             $tmpResults = Invoke-GraphRequest -Url "`$batch" -Content $json -HttpMethod "POST" -Batch #-Url $api -property $obj.ObjectType.ViewProperties -objectType $obj.ObjectType -
             $curResp = 1
             foreach($batchResult in ($tmpResults.responses | Sort -Property Id))
@@ -3306,7 +3362,7 @@ function Import-GraphObject
     Write-Log "Import $($objectType.Title) object $((Get-GraphObjectName $obj $objectType))"
     
     # Clone the object before removing properties
-    $objClone = $obj | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+    $objClone = $obj | ConvertTo-Json -Depth 50 | ConvertFrom-Json
 
     Start-GraphPreImport $obj $objectType
 
@@ -3341,7 +3397,7 @@ function Import-GraphObject
         }
     }
 
-    $json = ConvertTo-Json $obj -Depth 20
+    $json = ConvertTo-Json $obj -Depth 50
     if($fromFile)
     {
         # Call Update-JsonForEnvironment before importing the object
@@ -3513,7 +3569,7 @@ function Copy-GraphObject
         }
 
         # Convert to Json and back to clone the object
-        $obj = ConvertTo-Json $exportObj -Depth 10 | ConvertFrom-Json
+        $obj = ConvertTo-Json $exportObj -Depth 50 | ConvertFrom-Json
         if($obj)
         {
             # Import new profile
@@ -3576,7 +3632,7 @@ function Show-GraphObjectInfo
         & $global:curObjectType.DetailExtension $script:detailsForm "pnlButtons"
     }
 
-    Set-XamlProperty  $script:detailsForm "txtValue" "Text" (ConvertTo-Json $global:dgObjects.SelectedItem.Object -Depth 10)
+    Set-XamlProperty  $script:detailsForm "txtValue" "Text" (ConvertTo-Json $global:dgObjects.SelectedItem.Object -Depth 50)
     
     if($global:curObjectType.AllowFullDetails -eq $false)
     {
@@ -3593,7 +3649,7 @@ function Show-GraphObjectInfo
         $obj = Get-GraphObject $global:dgObjects.SelectedItem.Object $global:curObjectType
         if($obj.Object)
         {
-            Set-XamlProperty  $script:detailsForm "txtValue" "Text" (ConvertTo-Json $obj.Object -Depth 10)
+            Set-XamlProperty  $script:detailsForm "txtValue" "Text" (ConvertTo-Json $obj.Object -Depth 50)
             Set-XamlProperty  $script:detailsForm "btnFull" "IsEnabled" $false
         }
         Write-Status ""

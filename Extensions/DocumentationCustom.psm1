@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.2.0'
+    '1.3.0'
 }
 
 function Invoke-InitializeModule
@@ -21,10 +21,11 @@ function Invoke-InitializeModule
         InitializeDocumentation = { Initialize-CDDocumentation @args } 
         DocumentObject = { Invoke-CDDocumentObject @args }
         GetCustomProfileValue = { Add-CDDocumentCustomProfileValue @args }
-        GetCustomChildObject = { Get-CDDocumentCustomChildObjet  @args }
+        GetCustomChildObject = { Get-CDDocumentCustomChildObject  @args }
         GetCustomPropertyObject = { Get-CDDocumentCustomPropertyObject  @args }
         AddCustomProfileProperty = { Add-CDDocumentCustomProfileProperty @args }
         PostAddValue = { Invoke-CDDocumentCustomPostAdd @args }
+        ObjectDocumented = { Invoke-CDDocumentCustomObjectDocumented @args }
     })
 }
 
@@ -112,9 +113,38 @@ function Invoke-CDDocumentObject
     {
         Invoke-CDDocumentAssignmentFilter $documentationObj
         return [PSCustomObject]@{
-            Properties = @("Name","Value") 
+            Properties = @("Name","Value","Category")
         }
     }    
+    elseif($type -eq '#microsoft.graph.deviceComanagementAuthorityConfiguration')
+    {
+        Invoke-CDDocumentCoManagementSettings $documentationObj
+        return [PSCustomObject]@{
+            Properties = @("Name","Value","Category","SubCategory")
+        }
+    }
+    elseif($type -eq '#microsoft.graph.windowsKioskConfiguration')
+    {
+        Invoke-CDDocumentWindowsKioskConfiguration $documentationObj
+        return [PSCustomObject]@{
+            Properties = @("Name","Value","Category","SubCategory")
+        }
+    }    
+    elseif($type -eq '#microsoft.graph.deviceEnrollmentPlatformRestrictionConfiguration' -or
+           $type -eq '#microsoft.graph.deviceEnrollmentPlatformRestrictionsConfiguration')
+    {
+        Invoke-CDDocumentDeviceEnrollmentPlatformRestrictionConfiguration $documentationObj
+        return [PSCustomObject]@{
+            Properties = @("Name","Value","Category","SubCategory")
+        }
+    }
+    elseif($type -eq '#microsoft.graph.deviceAndAppManagementRoleDefinition')
+    {
+        Invoke-CDDocumentDeviceAndAppManagementRoleDefinition $documentationObj
+        return [PSCustomObject]@{
+            Properties = @("Name","Value","Category","SubCategory")
+        }
+    }
 }
 
 function Get-CDAllManagedApps
@@ -424,7 +454,7 @@ function Add-CDDocumentCustomProfileValue
             # Not used anymore
             return $false
         }             
-    }    
+    }
 }
 
 <#
@@ -462,6 +492,15 @@ function Get-CDDocumentCustomPropertyObject
         }        
     }
 
+    <#
+    if($obj.'@OData.Type' -like "#microsoft.graph.windowsKioskConfiguration")
+    {
+        if($prop.nameResourceKey -eq "kioskSelectionName")
+        {
+            return $obj.kioskProfiles[0].appConfiguration
+        }
+    }
+    #>
 }
 
 <#
@@ -479,7 +518,7 @@ The object to check
 Current property
 
 #>
-function Get-CDDocumentCustomChildObjet
+function Get-CDDocumentCustomChildObject
 {
     param($obj, $prop)
 
@@ -745,10 +784,23 @@ function Add-CDDocumentCustomProfileProperty
     
         $retValue = $true
     }
-    elseif($obj.'@OData.Type' -eq "#microsoft.graph.azureADWindowsAutopilotDeploymentProfile")
+    elseif($obj.'@OData.Type' -eq "#microsoft.graph.azureADWindowsAutopilotDeploymentProfile" -or
+           $obj.'@OData.Type' -eq "#microsoft.graph.activeDirectoryWindowsAutopilotDeploymentProfile")
     {
         $obj | Add-Member Noteproperty -Name "applyDeviceNameTemplate" -Value (?: ([String]::IsNullOrEmpty($obj.deviceNameTemplate)) $false  $true)
 
+        if($obj.'@OData.Type' -eq "#microsoft.graph.azureADWindowsAutopilotDeploymentProfile")
+        {
+            $joinType = "azureAD"
+        }
+        else
+        {
+            $joinType = "hybrid"
+        }
+
+        $obj.outOfBoxExperienceSettings | Add-Member Noteproperty -Name "azureADJoinType" -Value $joinType
+
+        $obj.outOfBoxExperienceSettings | Add-Member Noteproperty -Name "isLanguageSet" -Value (?: ([String]::IsNullOrEmpty($obj.language)) $false  $true)
         $retValue = $true
     }
     elseif($obj.'@OData.Type' -eq "#microsoft.graph.officeSuiteApp")
@@ -1224,6 +1276,33 @@ function Add-CDDocumentCustomProfileProperty
         $obj | Add-Member Noteproperty -Name "syntheticAzureOperationalInsightsEnabled" -Value ($obj.azureOperationalInsightsBlockTelemetry -eq $false)
         $obj | Add-Member Noteproperty -Name "syntheticMaintenanceWindowEnabled" -Value ($obj.maintenanceWindowBlocked -eq $false)
     }
+    elseif($obj.'@OData.Type' -like "#microsoft.graph.windowsKioskConfiguration")
+    {
+        if($obj.kioskProfiles[0].appConfiguration."@odata.type" -eq "#microsoft.graph.windowsKioskSingleWin32App")
+        {
+            $uwpAppType = "win32App"
+            $obj.kioskProfiles[0].appConfiguration."@odata.type" = "#microsoft.graph.windowsKioskSingleUWPApp"
+        }
+        elseif($obj.kioskProfiles[0].appConfiguration.uwpApp.appUserModelId -like "Microsoft.MicrosoftEdge*")
+        {
+            $uwpAppType = "edge"
+        }
+        elseif($obj.kioskProfiles[0].appConfiguration.uwpApp.appUserModelId -like "Microsoft.KioskBrowser*")
+        {
+            $uwpAppType = "kioskBrowser"
+        }
+        elseif($obj.kioskProfiles[0].appConfiguration.uwpApp.appUserModelId)
+        {
+            $uwpAppType = "managed"
+        }
+
+        $obj.kioskProfiles[0].appConfiguration | Add-Member Noteproperty -Name "uwpAppType" -Value $uwpAppType
+        
+        if($obj.windowsKioskForceUpdateSchedule)
+        {
+            $obj | Add-Member Noteproperty -Name "hasForceRestart" -Value $true
+        }
+    }    
 
     if(($obj.PSObject.Properties | where Name -eq "securityRequireSafetyNetAttestationBasicIntegrity") -and 
     ($obj.PSObject.Properties | where Name -eq "securityRequireSafetyNetAttestationCertifiedDevice"))
@@ -1304,6 +1383,7 @@ function Invoke-CDDocumentiosMobileAppConfiguration
     ###################################################
 
     Add-BasicDefaultValues $obj $objectType
+    Add-BasicAdditionalValues $obj $objectType
     Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "SettingDetails.appConfiguration")
     Add-BasicPropertyValue (Get-LanguageString "Inputs.enrollmentTypeLabel") (Get-LanguageString "EnrollmentType.devicesWithEnrollment")
     
@@ -1320,7 +1400,7 @@ function Invoke-CDDocumentiosMobileAppConfiguration
 
     Add-BasicPropertyValue (Get-LanguageString "SettingDetails.targetedAppLabel") ($appsList -join $objSeparator)
     
-    Add-BasicAdditionalValues  $obj $objectType
+    Add-BasicAdditionalValues $obj $objectType
     
     $category = Get-LanguageString "TableHeaders.settings"
 
@@ -1421,7 +1501,7 @@ function Invoke-CDDocumentManagedAppConfig
     Add-BasicPropertyValue (Get-LanguageString "SettingDetails.publicApps") ($publishedApps -join  $script:objectSeparator)
     Add-BasicPropertyValue (Get-LanguageString "SettingDetails.customApps") ($customApps -join  $script:objectSeparator)
 
-    Add-BasicAdditionalValues  $obj $objectType
+    Add-BasicAdditionalValues $obj $objectType
 
     $addedSettings = @()
 
@@ -1498,7 +1578,7 @@ function Invoke-CDDocumentCountryNamedLocation
 
     Add-BasicDefaultValues $obj $objectType
     Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureIAM.menuItemNamedNetworks")
-    Add-BasicAdditionalValues  $obj $objectType
+    Add-BasicAdditionalValues $obj $objectType
     
     Add-CustomSettingObject ([PSCustomObject]@{
         Name = Get-LanguageString "AzureIAM.NamedLocation.Form.CountryLookup.ariaLabel"
@@ -1541,7 +1621,7 @@ function Invoke-CDDocumentIPNamedLocation
 
     Add-BasicDefaultValues $obj $objectType
     Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureIAM.menuItemNamedNetworks")
-    Add-BasicAdditionalValues  $obj $objectType
+    Add-BasicAdditionalValues $obj $objectType
 
     Add-CustomSettingObject ([PSCustomObject]@{
         Name = Get-LanguageString "AzureIAM.NamedLocation.Form.Trusted.label"
@@ -1707,7 +1787,7 @@ function Invoke-CDDocumentConditionalAccess
 
     Add-BasicPropertyValue (Get-LanguageString "AzureIAM.policyEnforceLabel") $state
 
-    Add-BasicAdditionalValues  $obj $objectType
+    Add-BasicAdditionalValues $obj $objectType
 
     ###################################################
     # User and groups
@@ -2421,7 +2501,6 @@ function Invoke-CDDocumentPolicySet
     Add-BasicDefaultValues $obj $objectType
     Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "SettingDetails.appConfiguration")
     
-
     ###################################################
     # Settings
     ###################################################
@@ -2821,16 +2900,16 @@ function Invoke-CDDocumentAssignmentFilter
     ###################################################
 
     Add-BasicDefaultValues $obj $objectType
-    
-    # "Filters" is not in the translation file
-    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") "Filters" 
+    Add-BasicAdditionalValues $obj $objectType
+
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "Filters.filters")
     Add-BasicPropertyValue (Get-LanguageString "Inputs.platformLabel") (Get-LanguageString "Platform.$($obj.platform)")
 
     ###################################################
     # Settings
     ###################################################
 
-    $label = Get-LanguageString "ApplicabilityRules.GridLabel.rule"
+    $label = Get-LanguageString "Filters.ruleSyntax"
 
     $category = Get-LanguageString "SettingDetails.rules"
 
@@ -2841,5 +2920,857 @@ function Invoke-CDDocumentAssignmentFilter
         Category = $category
         SubCategory = $null
     })
+}
+#endregion
+
+#region Co-ManagementSettings
+function Invoke-CDDocumentCoManagementSettings
+{
+    param($documentationObj)
+
+    $obj = $documentationObj.Object
+    $objectType = $documentationObj.ObjectType
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+    
+    ###################################################
+    # Basic info
+    ###################################################
+
+    Add-BasicDefaultValues $obj $objectType
+    Add-BasicAdditionalValues $obj $objectType
+    
+    # "Filters" is not in the translation file
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") ((Get-LanguageString "WindowsEnrollment.coManagementAuthorityTitle").Trim())
+    Add-BasicPropertyValue (Get-LanguageString "Inputs.platformLabel") (Get-LanguageString "Platform.Windows10")
+
+    ###################################################
+    # Settings
+    ###################################################
+
+    $category = Get-LanguageString "TableHeaders.settings"
+    $valueYes = Get-LanguageString "BooleanActions.yes"
+    $valueNo = Get-LanguageString "SettingDetails.no"
+    
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = Get-LanguageString "CoManagementAuthority.installAgent"
+        Value = ?: ($obj.installConfigurationManagerAgent -eq $true) $valueYes $valueNo
+        EntityKey = "managedDeviceAuthority"
+        Category = $category
+        SubCategory = $null
+    })
+
+    if(($obj.installConfigurationManagerAgent -eq $true))
+    {
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "CoManagementAuthority.commandLineArgs"
+            Value = $obj.configurationManagerAgentCommandLineArgument
+            EntityKey = "managedDeviceAuthority"
+            Category = $category
+            SubCategory = $null
+        })
+    }
+
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = Get-LanguageString "CoManagementAuthority.managedDeviceOwnership"
+        Value = ?: ($obj.managedDeviceAuthority -eq 1) $valueYes $valueNo
+        EntityKey = "managedDeviceAuthority"
+        Category = $category
+        SubCategory = Get-LanguageString "CoManagementAuthority.advancedProperty"
+    })
+
+
+}
+#endregion
+
+#region Windows Kiosk
+function Invoke-CDDocumentWindowsKioskConfiguration
+{
+    param($documentationObj)
+
+    $obj = $documentationObj.Object
+    $objectType = $documentationObj.ObjectType
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+    
+    ###################################################
+    # Basic info
+    ###################################################
+
+    Add-BasicDefaultValues $obj $objectType
+    Add-BasicAdditionalValues $obj $objectType
+    # "Filters" is not in the translation file
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "Category.kioskConfigurationV2")
+    Add-BasicPropertyValue (Get-LanguageString "Inputs.platformLabel") (Get-LanguageString "Platform.$($obj.platform)")
+
+    ###################################################
+    # Settings
+    ################################################### 
+    
+    $category = Get-LanguageString "Category.kiosk"
+
+    if($obj.kioskProfiles[0].appConfiguration."@odata.type" -eq "#microsoft.graph.windowsKioskSingleWin32App" -or
+        $obj.kioskProfiles[0].appConfiguration."@odata.type" -eq "#microsoft.graph.windowsKioskSingleUWPApp")
+    {
+        $kisokModeType = "single"
+        $kioskMode = Get-LanguageString "SettingDetails.kioskSelectionSingleMode"
+    }
+    else
+    {
+        $kisokModeType = "multi"
+        $kioskMode = Get-LanguageString "SettingDetails.kioskSelectionMultiMode"
+    }
+
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = Get-LanguageString "SettingDetails.kioskSelectionName"
+        Value = $kioskMode
+        EntityKey = "kioskMode"
+        Category = $category
+        SubCategory = $null
+    })
+    
+    <#
+    if($kisokModeType -eq "multi")
+    {
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "SettingDetails.kioskTargetSModeName"
+            Value = $kioskMode
+            EntityKey = "kioskMode"
+            Category = $category
+            SubCategory = $null
+        })        
+    }
+    #>
+
+    $logonTypeLngId = switch($obj.kioskProfiles[0].userAccountsConfiguration."@odata.type")
+    {
+        "#microsoft.graph.windowsKioskAutologon" { "kioskUserLogonTypeAutologon" }
+        "#microsoft.graph.windowsKioskAzureADUser" { "kioskAADUserAndGroup" }
+        "#microsoft.graph.windowsKioskAzureADGroup" { "kioskAADUserAndGroup" }
+        "#microsoft.graph.windowsKioskLocalUser" { "kioskAppTypeStore" }
+        "#microsoft.graph.windowsKioskVisitor" { "kioskVisitor" }
+    }
+
+    if($logonTypeLngId)
+    {
+        $logonType = Get-LanguageString "SettingDetails.$($logonTypeLngId)"
+    }
+    else
+    {
+        Write-Log "Unknown kiosk user logon type. $($obj.kioskProfiles[0].userAccountsConfiguration."@odata.type")" 2
+    }
+
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = Get-LanguageString "SettingDetails.kioskSelectionUsers"
+        Value = $logonType
+        EntityKey = "userAccountsConfigurationType"
+        Category = $category
+        SubCategory = $null
+    })
+    
+    if($logonTypeLngId -eq "kioskAADUserAndGroup")
+    {
+        $users = @()
+        $obj.kioskProfiles[0].userAccountsConfiguration | ForEach-Object { 
+            if($_."@odata.type" -eq "#microsoft.graph.windowsKioskAzureADUser")
+            {
+                $users += "$($_.userPrincipalName)$($script:propertySeparator )$((Get-LanguageString "SettingDetails.kioskAADUser"))"
+            }
+            else
+            {
+                $users += "$($_.displayName)$($script:propertySeparator )$((Get-LanguageString "SettingDetails.kioskAADGroup"))"
+            }
+        }
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "SettingDetails.kioskUserAccountName"
+            Value = $users -join $script:objectSeparator
+            EntityKey = "userAccounts"
+            Category = $category
+            SubCategory = $null
+        })
+    }
+    elseif($obj.kioskProfiles[0].userAccountsConfiguration."@odata.type" -eq "#microsoft.graph.windowsKioskLocalUser")
+    {
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "SettingDetails.kioskUserAccountName"
+            Value = $obj.kioskProfiles[0].userAccountsConfiguration.userName
+            EntityKey = "userName"
+            Category = $category
+            SubCategory = $null
+        })
+    }
+
+    if($kisokModeType -eq "single")
+    {
+        if($obj.kioskProfiles[0].appConfiguration."@odata.type" -eq "#microsoft.graph.windowsKioskSingleWin32App")
+        {
+            $uwpAppType = "win32App" 
+            $appType = Get-LanguageString "SettingDetails.selectWin32AppForEdge86"
+        }
+        elseif($obj.kioskProfiles[0].appConfiguration."@odata.type" = "#microsoft.graph.windowsKioskSingleUWPApp")
+        {
+            if($obj.kioskProfiles[0].appConfiguration.uwpApp.appUserModelId -like "Microsoft.MicrosoftEdge*")
+            {
+                $uwpAppType = "edge"
+                $appType = Get-LanguageString "SettingDetails.selectMicrosoftEdgeApp"
+            }
+            elseif($obj.kioskProfiles[0].appConfiguration.uwpApp.appUserModelId -like "Microsoft.KioskBrowser*")
+            {
+                $uwpAppType = "kioskBrowser"
+                $appType = Get-LanguageString "SettingDetails.selectKioskBrowserApp"        
+            }
+            else
+            {
+                $uwpAppType = "storeApp"
+                $appType = Get-LanguageString "SettingDetails.selectStoreApp"        
+            }
+        }
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "SettingDetails.kioskApplicationType"
+            Value = $appType
+            EntityKey = "kioskApplicationType"
+            Category = $category
+            SubCategory = $null
+        })
+
+        $edgeKioskModeType = (?: ($obj.kioskProfiles[0].appConfiguration.win32App.edgeKioskType -eq "publicBrowsing") (Get-LanguageString "SettingDetails.edgeKioskModeTypePublicBrowsingInPrivate") (Get-LanguageString "SettingDetails.edgeKioskModeTypeDigitalSignage"))
+        if($uwpAppType -eq "win32App")
+        {
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.win32EdgeKioskUrl"
+                Value = $obj.kioskProfiles[0].appConfiguration.win32App.edgeKiosk
+                EntityKey = "edgeKiosk"
+                Category = $category
+                SubCategory = $null
+            }) 
+
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.edgeKioskModeType"
+                Value = $edgeKioskModeType
+                EntityKey = "edgeKioskType"
+                Category = $category
+                SubCategory = $null
+            }) 
+
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.edgeKioskResetAfterIdleTimeInMinutesName"
+                Value = $obj.kioskProfiles[0].appConfiguration.win32App.edgeKioskIdleTimeoutMinutes
+                EntityKey = "edgeKioskIdleTimeoutMinutes"
+                Category = $category
+                SubCategory = $null
+            }) 
+        }
+        elseif($uwpAppType -eq "edge")
+        {
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.edgeKioskModeType"
+                Value = $edgeKioskModeType
+                EntityKey = "edgeKioskType"
+                Category = $category
+                SubCategory = $null
+            }) 
+        }
+        elseif($uwpAppType -eq "kioskBrowser")
+        {
+            $show = Get-LanguageString "BooleanActions.show"
+            $hide = Get-LanguageString "BooleanActions.hide"
+
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.win10KioskBrowserDefaultWebsiteName"
+                Value = $obj.kioskBrowserDefaultUrl
+                EntityKey = "kioskBrowserDefaultUrl"
+                Category = $category
+                SubCategory = $null
+            })
+            
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.win10KioskBrowserHomeButtonName"
+                Value = (?: $obj.kioskBrowserEnableHomeButton $show $hide)
+                EntityKey = "kioskBrowserEnableHomeButton"
+                Category = $category
+                SubCategory = $null
+            })
+            
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.win10KioskBrowserNavigationButtonName"
+                Value = (?: $obj.kioskBrowserEnableNavigationButtons $show $hide)
+                EntityKey = "kioskBrowserEnableNavigationButtons"
+                Category = $category
+                SubCategory = $null
+            })
+
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.win10KioskBrowserEnableEndSessionButtonName"
+                Value = (?: $obj.kioskBrowserEnableEndSessionButton $show $hide)
+                EntityKey = "kioskBrowserEnableEndSessionButton"
+                Category = $category
+                SubCategory = $null
+            })
+            
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.edgeKioskResetAfterIdleTimeInMinutesName"
+                Value = $obj.kioskBrowserRestartOnIdleTimeInMinutes
+                EntityKey = "kioskBrowserRestartOnIdleTimeInMinutes"
+                Category = $category
+                SubCategory = $null
+            })
+            
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.win10AllowedWebsitesName"
+                Value = $obj.kioskBrowserBlockedURLs -join $script:objectSeparator
+                EntityKey = "kioskBrowserBlockedURLs"
+                Category = $category
+                SubCategory = $null
+            })        
+        }
+        elseif($uwpAppType -eq "storeApp")
+        {
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.kioskModeAppStoreUrlOrManagedAppIdName"
+                Value = $obj.kioskProfiles[0].appConfiguration.uwpApp.name
+                EntityKey = "edgeKioskType"
+                Category = $category
+                SubCategory = $null
+            }) 
+        }    
+    }
+    
+    if($kisokModeType -eq "multi")
+    {
+        $apps = @()
+        foreach($app in $obj.kioskProfiles[0].appConfiguration.apps)
+        {            
+            $kioskTypeLngId = switch($app.appType)
+            {
+                "aumId" { "kioskAppTypeAUMID" }
+                "desktop" { "kioskAppTypeDesktop" }
+                "store" { "kioskAppTypeStore" }
+                Default { "kioskAppTypeUnknown" }
+            }
+
+            $kioskTileLngId = switch($app.startLayoutTileSize)
+            {
+                "medium" { "kioskTileMedium" } 
+                "small" { "kioskTileSmall" } 
+                "wide" { "kioskTileWide" } 
+                "large" { "kioskTileLarge" } 
+            }            
+
+            $apps += $app.Name + $script:propertySeparator + (Get-LanguageString "SettingDetails.$($kioskTypeLngId)") +
+            $script:propertySeparator + (?: ($app.autoLaunch -eq $true) (Get-LanguageString "SettingDetails.yes") (Get-LanguageString "SettingDetails.no")) +
+            $script:propertySeparator + (Get-LanguageString "SettingDetails.$($kioskTileLngId)")
+        }
+
+        if($apps.Count -gt 0)
+        {
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.kioskAppTableName"
+                Value = ($apps -join $script:objectSeparator)
+                EntityKey = "kioskApps"
+                Category = $category
+                SubCategory = $null
+            })
+        }        
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "SettingDetails.alternativeStartLayoutName"
+            Value = (?: ($obj.kioskProfiles[0].appConfiguration.startMenuLayoutXml -ne $null) (Get-LanguageString "SettingDetails.yes") (Get-LanguageString "SettingDetails.no"))
+            EntityKey = "alternativeStartLayout"
+            Category = $category
+            SubCategory = $null
+        })
+
+        if($obj.kioskProfiles[0].appConfiguration.startMenuLayoutXml -ne $null)
+        {           
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.kioskStartMenuLayoutXmlName"
+                Value = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.kioskProfiles[0].appConfiguration.startMenuLayoutXml))
+                EntityKey = "startMenuLayoutXml"
+                Category = $category
+                SubCategory = $null
+            })
+        }          
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "SettingDetails.kioskShowTaskbarName"
+            Value = (?: ($obj.kioskProfiles[0].appConfiguration.showTaskBar) (Get-LanguageString "BooleanActions.show") (Get-LanguageString "BooleanActions.hide"))
+            EntityKey = "showTaskBar"
+            Category = $category
+            SubCategory = $null
+        })
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "SettingDetails.win10KioskAccessDownloadsFolderName"
+            Value = (?: ($obj.kioskProfiles[0].appConfiguration.allowAccessToDownloadsFolder) (Get-LanguageString "SettingDetails.yes") (Get-LanguageString "SettingDetails.no"))
+            EntityKey = "allowAccessToDownloadsFolder"
+            Category = $category
+            SubCategory = $null
+        })
+    }
+
+    if($obj.windowsKioskForceUpdateSchedule)
+    {
+        $forceUpdateSchedule = Get-LanguageString "BooleanActions.require"        
+    }
+    else
+    {
+        $forceUpdateSchedule = Get-LanguageString "BooleanActions.notConfigured"
+    }
+
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = Get-LanguageString "SettingDetails.kioskForceRestart"
+        Value = $forceUpdateSchedule
+        EntityKey = "windowsKioskForceUpdateSchedule"
+        Category = $category
+        SubCategory = $null
+    })
+
+    if($obj.windowsKioskForceUpdateSchedule)
+    {        
+        try
+        {
+            $startDateObj = Get-Date $obj.windowsKioskForceUpdateSchedule.startDateTime -ErrorAction Stop
+
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.kioskStartDateTime"
+                Value = ($startDateObj.ToShortDateString() + $script:objectSeparator + $startDateObj.ToShortTimeString())
+                EntityKey = "startDateTime"
+                Category = $category
+                SubCategory = $null
+            })
+
+            if($obj.windowsKioskForceUpdateSchedule.recurrence -eq "weekly")
+            {
+                $recurrenceType = "kioskWeekly"
+            }
+            elseif($obj.windowsKioskForceUpdateSchedule.recurrence -eq "monthly")
+            {
+                $recurrenceType = "kioskMonthly"
+            }
+            else
+            {
+                $recurrenceType = "kioskDaily"
+            }
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.kioskRecurrence"
+                Value = Get-LanguageString "SettingDetails.$($recurrenceType)"
+                EntityKey = "recurrence"
+                Category = $category
+                SubCategory = $null
+            })
+            
+            if($obj.windowsKioskForceUpdateSchedule.recurrence -eq "weekly")
+            {
+                Add-CustomSettingObject ([PSCustomObject]@{
+                    Name = Get-LanguageString "SettingDetails.dayOfWeek"
+                    Value = Get-LanguageString "SettingDetails.$($obj.windowsKioskForceUpdateSchedule.dayofWeek)"
+                    EntityKey = "dayofWeek"
+                    Category = $category
+                    SubCategory = $null
+                })
+            } 
+            
+            if($obj.windowsKioskForceUpdateSchedule.recurrence -eq "monthly")
+            {
+                Add-CustomSettingObject ([PSCustomObject]@{
+                    Name = Get-LanguageString "SettingDetails.dayOfMonth"
+                    Value = $obj.windowsKioskForceUpdateSchedule.dayofMonth
+                    EntityKey = "dayofMonth"
+                    Category = $category
+                    SubCategory = $null
+                })
+            } 
+        }
+        catch
+        {
+
+        }
+    }    
+
+  
+
+}
+#endregion
+
+#region
+function Invoke-CDDocumentDeviceEnrollmentPlatformRestrictionConfiguration
+{
+    param($documentationObj)
+
+    $obj = $documentationObj.Object
+    $objectType = $documentationObj.ObjectType
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+    
+    ###################################################
+    # Basic info
+    ###################################################
+
+    Add-BasicDefaultValues $obj $objectType
+    Add-BasicAdditionalValues $obj $objectType
+    # "Filters" is not in the translation file
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "Titles.deviceTypeEnrollmentRestrictions")
+    
+    if($obj.platformType -eq "androidForWork")
+    {
+        $lngId = "androidWorkProfile"
+    }
+    elseif($obj.platformType -eq "mac")
+    {
+        $lngId = "macOS"
+    }
+    elseif($obj.platformType -eq "ios")
+    {
+        $lngId = "iOS"
+    }
+    elseif($obj.platformType -eq "android")
+    {
+        $lngId = "android"
+    }
+    elseif($obj.platformType -eq "windows")
+    {
+        $lngId = "windows"
+    }
+    else
+    {
+        $lngId = $null
+    }
+
+    if($obj.'@OData.Type' -eq '#microsoft.graph.deviceEnrollmentPlatformRestrictionsConfiguration')
+    {
+        $platform = Get-LanguageString "AzureIAM.classicPolicyAllPlatforms"
+        $properties = @("androidForWorkRestriction","androidRestriction","iosRestriction","macRestriction","windowsRestriction")
+        $policyType = "all"
+    }
+    else
+    {
+        $platform = Get-LanguageString "Platform.$($lngId)"
+        $properties = @("platformRestriction")
+        $policyType = "platform"
+    }
+    
+    Add-BasicPropertyValue (Get-LanguageString "Inputs.platformLabel") $platForm
+
+    $allowStr = Get-LanguageString  "BooleanActions.allow"
+    $blockStr = Get-LanguageString  "BooleanActions.block" 
+    $category = Get-LanguageString  "EnrollmentRestrictions.DeviceType.platformSettings" 
+    $subCategory = $null
+    $connotRestrictStr = Get-LanguageString "EnrollmentRestrictions.DeviceType.cannotRestrict"
+    
+    foreach($prop in $properties)
+    {
+        if($prop -eq "androidForWorkRestriction")
+        {
+            $typeId = "androidWorkProfile"
+        }
+        elseif($prop -eq "macRestriction")
+        {
+            $typeId = "macOS"
+        }
+        elseif($prop -eq "iosRestriction")
+        {
+            $typeId = "iOS"
+        }
+        elseif($prop -eq "androidRestriction")
+        {
+            $typeId = "android"
+        }
+        elseif($prop -eq "windowsRestriction")
+        {
+            $typeId = "windows"
+        }
+        else
+        {
+            $typeId = $lngId
+        }
+
+        $typeStr = Get-LanguageString "Platform.$($typeId)"
+
+        if($typeId -eq "macOS")
+        {
+            $version = $connotRestrictStr
+        }
+        elseif($obj.$prop.osMinimumVersion -or $obj.$prop.osMaximumVersion)
+        {
+            $version = "{0}-{1}" -f $obj.$prop.osMinimumVersion,$obj.$prop.osMaximumVersion
+        }
+        else
+        {
+            $version = ""
+        }
+
+        #$blockedSkus = $obj.blockedSkus -join $script:propertySeparator
+
+        if($policyType -eq "all")
+        {
+            $subCategory = $typeStr
+        }
+
+        if($typeId -eq "androidWorkProfile" -or $typeId -eq "andriod")
+        {
+            $blockedManufacturers = ($obj.$prop.blockedManufacturers -join $script:propertySeparator)
+        }
+        else
+        {
+            $blockedManufacturers = $connotRestrictStr
+        }
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "EnrollmentRestrictions.DeviceType.type"
+            Value = $typeStr
+            EntityKey = "platformType"
+            Category = $category
+            SubCategory = $subCategory
+        })
+        
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "EnrollmentRestrictions.DeviceType.platform"
+            Value = (?: $obj.$prop.platformBlocked $blockStr $allowStr)
+            EntityKey = "platformBlocked"
+            Category = $category
+            SubCategory = $subCategory
+        })
+        
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "EnrollmentRestrictions.DeviceType.versions"
+            Value = $version
+            EntityKey = "versions"
+            Category = $category
+            SubCategory = $subCategory
+        })      
+        
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "EnrollmentRestrictions.DeviceType.personal"
+            Value = (?: $obj.$prop.personalDeviceEnrollmentBlocked $blockStr $allowStr)
+            EntityKey = "platformBlocked"
+            Category = $category
+            SubCategory = $subCategory
+        })        
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "EnrollmentRestrictions.DeviceType.deviceManufacturer"
+            Value = $blockedManufacturers
+            EntityKey = "platformBlocked"
+            Category = $category
+            SubCategory = $subCategory
+        })        
+    }
+
+}
+#endregion
+
+#region 
+function Invoke-CDDocumentDeviceAndAppManagementRoleDefinition
+{
+    param($documentationObj)
+
+    $obj = $documentationObj.Object
+    $objectType = $documentationObj.ObjectType
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+    
+    ###################################################
+    # Basic info
+    ###################################################
+
+    Add-BasicDefaultValues $obj $objectType
+    Add-BasicAdditionalValues $obj $objectType
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "RoleAssignment.rolesMenuTitle")
+
+    $roleResources = (Invoke-GraphRequest -Url "/deviceManagement/resourceOperations").Value
+    
+    if(-not $roleResources)
+    {
+        Write-Log "Could not get resource information for Intune roles" 3
+        return
+    }
+
+    $assignedActions = @()
+    foreach($actionId in $obj.permissions[0].actions)
+    {
+        $actionResource = $roleResources | Where Id -eq $actionId
+
+        if(-not $actionResource)
+        {
+            Write-Log "Could not find a permission resource with ID $actionId" 3
+            continue 
+        }
+        $assignedActions += $actionResource
+    }
+
+    $category = Get-LanguageString "Titles.permissions"
+    $subCategory = $null
+    foreach($resourceName in (($assignedActions | Select resourceName -Unique | sort-object -property resourceName).resourceName)) #@{e={$_.rootproperties.rootname}}
+    {
+        $resourceActions = @()
+        foreach($action in ($assignedActions | where resourceName -eq $resourceName))
+        {
+            $resourceId = $action.resource
+            $resourceActions += $action.actionName
+        }
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = $resourceName
+            Value = ($resourceActions -join $script:objectSeparator)
+            EntityKey = $resourceId
+            Category = $category
+            SubCategory = $subCategory
+        })        
+    }
+
+    $category = Get-LanguageString TableHeaders.assignments
+    foreach($roleAssignment in $obj.roleAssignments)
+    {
+        $assignmentInfo = (Invoke-GraphRequest -Url "/deviceManagement/roleAssignments('$($roleAssignment.id)')?`$expand=microsoft.graph.deviceAndAppManagementRoleAssignment/roleScopeTags" -ODataMetadata "Skip")
+        if(-not $assignmentInfo)
+        {
+            Write-Log "Failed to get assignment info"
+            continue
+        }
+        $ids = @()
+        foreach($id in @($assignmentInfo.scopeMembers,$assignmentInfo.members))
+        {
+            if($ids -notcontains $id) { $ids += $id }
+        }
+
+        $content = @{"ids"=$ids } | ConvertTo-Json
+        $idInfo = (Invoke-GraphRequest -Url "/directoryObjects/getByIds?`$select=displayName,id" -Content $content -Method POST).value
+
+        $subCategory = $assignmentInfo.displayName
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "SettingDetails.nameName"
+            Value = $assignmentInfo.displayName
+            EntityKey = "displayName"
+            Category = $category
+            SubCategory = $subCategory
+        })
+
+        if($assignmentInfo.description)
+        {
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "SettingDetails.descriptionName"
+                Value = $assignmentInfo.description
+                EntityKey = "displayName"
+                Category = $category
+                SubCategory = $subCategory
+            })
+        }
+
+        $admins = @()
+        foreach($id in $assignmentInfo.members)
+        {
+            $objInfo = $idInfo | Where Id -eq $id
+            $admins += (?: ($objInfo.displayName) ($objInfo.displayName) ($id))            
+        }
+
+        if($admins.Count -gt 0)
+        {
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "RoleAssignment.RoleAssignmentAdmin"
+                Value = ($admins -join $script:objectSeparator)
+                EntityKey = "members"
+                Category = $category
+                SubCategory = $subCategory
+            })
+        }
+
+        $scopeMembers = @()
+        foreach($id in $assignmentInfo.scopeMembers)
+        {
+            $objInfo = $idInfo | Where Id -eq $id
+            $scopeMembers += (?: ($objInfo.displayName) ($objInfo.displayName) ($id))            
+        }
+
+        if($scopeMembers.Count -gt 0)
+        {
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "RoleAssignment.RoleAssignmentScope"
+                Value = ($scopeMembers -join $script:objectSeparator)
+                EntityKey = "scopeMembers"
+                Category = $category
+                SubCategory = $subCategory
+            })
+        }
+        
+        $scopeTags = @()
+        foreach($scopeTag in $assignmentInfo.roleScopeTags)
+        {
+            $scopeTags += $scopeTag.displayName
+        }
+
+        if($scopeTags.Count -gt 0)
+        {
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "TableHeaders.scopeTags"
+                Value = ($scopeTags -join $script:objectSeparator)
+                EntityKey = "scopeTags"
+                Category = $category
+                SubCategory = $subCategory
+            })
+        }  
+    }
+}
+#endregion
+
+#region 
+function Invoke-CDDocumentCustomObjectDocumented
+{
+    param($obj, $objType, $documentationInfo)
+    
+    if($obj.'@Odata.type' -eq '#microsoft.graph.windows10EndpointProtectionConfiguration')
+    {
+        # Skip adding Xbox Services and Windows Encryption if not configured
+        # Not a very good way of doing this but they have values even if not configured 
+        # so this will remove them from the documentation
+
+        $customProperties = @()
+        $customProperties += [PSCustomObject]@{
+            CategoryLanguageID = "bitLocker"
+            SkipProperties = @("startupAuthenticationTpm*")
+        }
+
+        $customProperties += [PSCustomObject]@{
+            CategoryLanguageID = "xboxServices"
+            SkipProperties = @()
+        }
+
+        foreach($customProp in $customProperties)
+        {
+            $categoryStr = Get-LanguageString "Category.$($customProp.CategoryLanguageID)"
+            $categorySettings = $documentationInfo.Settings | Where Category -eq $categoryStr
+            $custom = $false
+            foreach($categorySetting in $categorySettings)
+            {
+                $skip = $false
+                foreach($SkipProperty in $customProp.SkipProperties)
+                {
+                    if($categorySetting.EntityKey -like $SkipProperty)
+                    {
+                        $skip = $true
+                        break
+                    }
+                }
+                if($skip) { continue }
+                if($null -ne $categorySetting.RawValue -and $categorySetting.RawValue -ne $categorySetting.DefaultValue)
+                {   
+                    $custom = $true
+                    break
+                }
+            }
+            #$categorySettings | ForEach-Object {if($_.RawValue -ne $null -and  
+            #    $_.RawValue -ne $_.DefaultValue){$custom = $true}}
+            if($custom -eq $false)
+            {
+                Write-Log "Remove category $categoryStr"
+                $documentationInfo.Settings = $documentationInfo.Settings | Where Category -ne $categoryStr
+            }
+        }        
+    }
 }
 #endregion
