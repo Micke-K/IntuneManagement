@@ -1,4 +1,54 @@
 # Release Notes
+## 3.7.0  - 2022-07-17
+
+**Breaking changes**
+  - A third header level was added when documenting to word<br />
+  This level is used during bulk documentation and a group has more than one object type<br />
+  Eg. The Conditional Access group documents Conditional Access, Named Locations and Terms of Use<br />
+  The document will now have one section for each object type as third header level<br /><br />
+  This could break documentation if a custom word template is used, and it does not have a 3 level header named 'Heading 3'<br />
+  Specify the name of the 'Header 3 style' value in the Word settings before importing<br />
+
+
+**New features**
+
+- **Support for tenant menu colors**<br />
+  - Set colors and add tenant name to the menu bar<br />
+  - Configure this in Tenant Settings and use this to distinguish lab from production environments<br />
+  Based on [Issue 63](https://github.com/Micke-K/IntuneManagement/issues/63)<br />
+
+- **Support for Compliance Scripts**<br />
+  - Added support to Export, Import and Document **Compliance Scripts** profiles<br />
+  - Compliance Script will now be included when documenting Compliance policy objects<br />
+  Based on [Issue 60](https://github.com/Micke-K/IntuneManagement/issues/60)<br />
+  
+**Setting changes**
+  - 'Allow update on import (Preview)' is removed<br />
+  The 'Import type' is now always available<br />
+  Note that Replace/Update are not fully verified yet<br />
+  Based on [Issue 68](https://github.com/Micke-K/IntuneManagement/issues/68)<br />
+
+**Fixes**
+
+- **Export\Import Fixes**<br />
+  - Target app groups was not set properly for App Protection policies during import<br />
+  Based on [Issue 67](https://github.com/Micke-K/IntuneManagement/issues/67)<br />
+  - Scope Tags were not assigned to objects during import<br />
+  This happened in environment where Scope Tags already existed before import<br />
+  Labels renamed to clarify that Scope Tags are assigned and not imported during import<br />
+  Based on [Issue 61](https://github.com/Micke-K/IntuneManagement/issues/61)<br />
+  - Default branding file had double dots in the exported file name [Issue 64](https://github.com/Micke-K/IntuneManagement/issues/64)<br />
+  - Added API throttling during batch mode<br />
+
+- **Documentation**<br />
+  - Some properties were not documented for Endpoint Security objects<br />
+  - Authentication context name added to Conditional Access
+  - Translation files re-generated. This might add support for updated settings eg DFCI objects now uses separate category files<br />
+
+<br />
+<br />
+
+# Release Notes
 ## 3.6.0  - 2022-06-29
 
 **New features**

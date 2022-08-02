@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.6.0'
+    '3.7.0'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -136,14 +136,6 @@ function Invoke-InitializeModule
         Type = "Boolean"
         DefaultValue = $true
         Description = "Default value for Import Scope (Tags) when importing objects"
-    }) "ImportExport"
-
-    Add-SettingsObject (New-Object PSObject -Property @{
-        Title = "Allow update on import (Preview)"
-        Key = "AllowUpdate"
-        Type = "Boolean"
-        DefaultValue = $false
-        Description = "This will enable the option to update/replace an existing object during import"
     }) "ImportExport"
 
     Add-SettingsObject (New-Object PSObject -Property @{
@@ -1575,11 +1567,8 @@ function Show-GraphImportForm
     Set-XamlProperty $script:importForm "cbImportType" "ItemsSource" $script:lstImportTypes
     Set-XamlProperty $script:importForm "cbImportType" "SelectedValue" (Get-SettingValue "ImportType" "alwaysImport")
     
-    if((Get-SettingValue "AllowUpdate") -eq $true)
-    {
-        Set-XamlProperty  $script:importForm "lblImportType" "Visibility" "Visible"
-        Set-XamlProperty  $script:importForm "cbImportType" "Visibility" "Visible"
-    }
+    Set-XamlProperty  $script:importForm "lblImportType" "Visibility" "Visible"
+    Set-XamlProperty  $script:importForm "cbImportType" "Visibility" "Visible"
 
     $column = Get-GridCheckboxColumn "Selected"
     $global:dgObjectsToImport.Columns.Add($column)
@@ -1620,8 +1609,8 @@ function Show-GraphImportForm
 
     Add-XamlEvent $script:importForm "btnImportSelected" "add_click" {
         Write-Status "Import objects"
-        Get-GraphDependencyDefaultObjects
-        $allowUpdate = ((Get-SettingValue "AllowUpdate") -eq $true)
+        #Get-GraphDependencyDefaultObjects
+        $allowUpdate = $true 
         $filesToImport = $global:dgObjectsToImport.ItemsSource | Where Selected -eq $true
         if($global:curObjectType.PreFilesImportCommand)
         {
@@ -1650,7 +1639,7 @@ function Show-GraphImportForm
 
         if($importedObjectsCurType -gt 0 -and $global:LoadedDependencyObjects -is [HashTable] -and $global:LoadedDependencyObjects.ContainsKey($global:curObjectType.Id))
         {
-            Write-Log "Remove $($global:curObjectType.Title) from dependency cahce"
+            Write-Log "Remove $($global:curObjectType.Title) from dependency cache"
             $global:LoadedDependencyObjects.Remove($global:curObjectType.Id)
         }        
 
@@ -1707,11 +1696,8 @@ function Show-GraphBulkImportForm
     Set-XamlProperty $script:importForm "cbImportType" "SelectedValue" (Get-SettingValue "ImportType" "alwaysImport")
     #Set-XamlProperty $script:importForm "txtImportNameFilter" "Text" (Get-Setting "" "ImportNameFilter")
     
-    if((Get-SettingValue "AllowUpdate") -eq $true)
-    {
-        Set-XamlProperty  $script:importForm "lblImportType" "Visibility" "Visible"
-        Set-XamlProperty  $script:importForm "cbImportType" "Visibility" "Visible"        
-    }
+    Set-XamlProperty  $script:importForm "lblImportType" "Visibility" "Visible"
+    Set-XamlProperty  $script:importForm "cbImportType" "Visibility" "Visible"        
 
     Add-XamlEvent $script:importForm "browseImportPath" "add_click" ({
         $folder = Get-Folder (Get-XamlProperty $script:importForm "txtImportPath" "Text") "Select root folder for import"
@@ -1828,14 +1814,13 @@ function Start-GraphObjectImport
     $tmpFolder = Expand-FileName (Get-XamlProperty $script:importForm "txtImportPath" "Text")
     Write-Log "Import root folder: $tmpFolder"
 
-    Get-GraphDependencyDefaultObjects
     $importedObjects = 0
 
     $txtNameFilter = $global:txtImportNameFilter.Text.Trim()
     Save-Setting "" "ImportNameFilter" $txtNameFilter
     if($txtNameFilter) { Write-Log "Name filter: $txtNameFilter" }
 
-    $allowUpdate = ((Get-SettingValue "AllowUpdate") -eq $true)
+    $allowUpdate = $true
     
     foreach($item in ($script:importObjects | where Selected -eq $true | sort-object -property @{e={$_.ObjectType.ImportOrder}}))
     { 
@@ -1900,7 +1885,7 @@ function Start-GraphObjectImport
 
             if($importedObjectsCurType -gt 0 -and $global:LoadedDependencyObjects -is [HashTable] -and $global:LoadedDependencyObjects.ContainsKey($item.ObjectType.Id))
             {
-                Write-Log "Remove $($item.ObjectType.Title) from dependency cahce"
+                Write-Log "Remove $($item.ObjectType.Title) from dependency cache"
                 $global:LoadedDependencyObjects.Remove($item.ObjectType.Id)
             }
             Save-Setting "" "LastUsedFullPath" $folder
@@ -2456,7 +2441,7 @@ function Set-ScopeTags
     $scopesIds = @()
     $loadedScopeTags = $global:LoadedDependencyObjects["ScopeTags"]
     $usingDefault = (($obj."$scopeTagProperty" | measure).Count -eq 1 -and ($obj."$scopeTagProperty")[0] -eq "0")
-    if($loadedScopeTags -and $global:chkImportScopes.IsChecked -eq $true -and $usingDefault -eq $false -and $global:MigrationTableCache)
+    if($loadedScopeTags -and $global:chkImportScopes.IsChecked -eq $true -and $usingDefault -eq $false -and $loadedScopeTags)
     {        
         foreach($scopeId in $obj."$scopeTagProperty")
         {
@@ -2864,6 +2849,8 @@ function Get-GraphDependencyObjects
 {
     param($objectType)
 
+    Get-GraphDependencyDefaultObjects
+
     if($global:chkReplaceDependencyIDs.IsChecked -ne $true -or -not $objectType -or -not $objectType.Dependencies -or (($objectType.Dependencies) | Measure).Count -eq 0) { return }
     
     $missingDeps = @()
@@ -2897,6 +2884,7 @@ function Add-GraphDependencyObjects
         if(-not $depObjectType)
         {
             Write-Log "No ViewItem found with Id $dep" 2
+            $global:LoadedDependencyObjects.Add($dep,$null)
             continue
         }
 
@@ -2911,6 +2899,7 @@ function Add-GraphDependencyObjects
         else
         {
             Write-Log "Export folder for dependency $dep not found" 2
+            $global:LoadedDependencyObjects.Add($depObjectType.Id,$null)
             continue    
         }
 
@@ -3056,7 +3045,7 @@ function Export-GraphObject
             Remove-Property $obj "Assignments"
         }
 
-        $fileName = Get-GraphObjectName $obj $objectType
+        $fileName = (Get-GraphObjectName $obj $objectType).Trim('.')
         if($SkipAddID -ne $true -and (Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id -and $objectType.SkipAddIDOnExport -ne $true)
         {
             $fileName = ($fileName + "_" + $obj.Id)
@@ -3258,13 +3247,13 @@ function Get-GraphBatchObjects
 {
     param($objects, $txtNameFilter)
 
-    $curBatch = 1
-    $batchArr = @()
+    $curBatch = 1    
     $batchResults = @()
+    $batchArr = @()
     $batchTotal = 0
     $objectType = $null
     foreach($obj in $objects)
-    {
+    {        
         $objectType = $obj.ObjectType
         $objName = Get-GraphObjectName $obj.Object $obj.ObjectType
 
@@ -3290,27 +3279,74 @@ function Get-GraphBatchObjects
                 }
 
             Write-Status "Get batch $curBatch $($obj.ObjectType.Title)" -Force            
-            $batchTotal += $batchArr.Count            
+            $batchTotal += $batchArr.Count
             $json = $batchObj | ConvertTo-Json -Depth 50
-            $tmpResults = Invoke-GraphRequest -Url "`$batch" -Content $json -HttpMethod "POST" -Batch #-Url $api -property $obj.ObjectType.ViewProperties -objectType $obj.ObjectType -
-            $curResp = 1
-            foreach($batchResult in ($tmpResults.responses | Sort -Property Id))
+
+            $maxRetryCount = 10
+            $curRetry = 0
+            
+            do
             {
-                if($batchResult.Status -ne "200" -or -not $batchResult.body)
+                $retry = $false
+                $retryArr = @()
+                $retryAfter = 0
+                $tmpResults = Invoke-GraphRequest -Url "`$batch" -Content $json -HttpMethod "POST" -Batch #-Url $api -property $obj.ObjectType.ViewProperties -objectType $obj.ObjectType -
+                foreach($batchResult in ($tmpResults.responses | Sort -Property Id))
                 {
-                    $reqObj = $batchObj.requests | where id -eq $batchResult.Id
-                    Write-Log "Batch result $($batchResult.Status) for URL $($reqObj.URL). Skipping..." 2
-                    continue 
+                    if($batchResult.Status -ne "200" -or -not $batchResult.body)
+                    {                         
+                        $reqObj = $batchObj.requests | where id -eq $batchResult.Id
+                        if($batchResult.Status -eq 429 -and $reqObj)
+                        {                 
+                            if($batchResult.headers.'Retry-After' -and $batchResult.headers.'Retry-After' -gt $retryAfter)
+                            {           
+                                try
+                                {
+                                    $retryAfter = [int]$batchResult.headers.'Retry-After'
+                                }
+                                catch{}
+                            }
+                            $retryArr += $reqObj
+                        }
+                        else
+                        {
+                            Write-Log "Batch result $($batchResult.Status) for URL $($reqObj.URL). Skipping..." 2
+                        }
+                        continue
+                    }
+                    $batchResults += $batchResult.body
                 }
 
-                $batchResults += $batchResult.body
-                $curResp++
-            }
-        
+                if($retryArr.Count -gt 0)
+                {
+                    $curRetry++
+                    if($curRetry -gt $maxRetryCount)
+                    {
+                        Write-Log "Max retry reached for batch process. Aborting..." 3                        
+                    }
+                    else
+                    {
+                        if($retryAfter -lt 5) { $retryAfter = 5 }
+                        Write-Log "Batch result returned 429 - 'Too many requests'. Retrying $($retryArr.Count). Wait for $($retryAfter) seconds." 2
+                        $retry = $true
+                        $tmpBatchObj = [PSCustomObject]@{
+                            requests = $retryArr
+                            }
+                        $json = $tmpBatchObj | ConvertTo-Json -Depth 50
+                        Start-Sleep -Seconds $retryAfter
+                    }
+                }
+
+            }while($retry)        
             $curBatch++
             $batchArr = @()
         }
     }
+
+    if($batchResults.Count -ne $objects.Count)
+    {
+        Write-Log "Not all batch objects returned. Expected $($objects.Count) but only got $($batchResults.Count)"
+    }    
 
     if($objectType -and $batchResults.Count -gt 0)
     {

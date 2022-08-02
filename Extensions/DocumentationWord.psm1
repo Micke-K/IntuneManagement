@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.2.0'
+    '1.3.0'
 }
 
 function Invoke-InitializeModule
@@ -28,6 +28,7 @@ function Invoke-InitializeModule
         Activate = { Invoke-WordActivate @args }
         PreProcess = { Invoke-WordPreProcessItems @args }
         NewObjectGroup = { Invoke-WordNewObjectGroup @args }
+        NewObjectType = { Invoke-WordNewObjectType @args }
         Process = { Invoke-WordProcessItem @args }
         PostProcess = { Invoke-WordPostProcessItems @args }
         ProcessAllObjects = { Invoke-WordProcessAllObjects @args }
@@ -51,7 +52,7 @@ function Add-WordOptionsControl
     $global:gdWordDocumentationLimitOptions.Visibility = (?: ($global:cbWordDocumentationLevel.SelectedValue -ne "limited") "Collapsed" "Visible")
     $global:txtWordDocumentationLimitMaxLength.Text = Get-Setting "Documentation" "WordDocumentationLimitMaxLength" ""
     $global:txtWordDocumentationLimitTruncateLength.Text = Get-Setting "Documentation" "WordDocumentationLimitTruncateLength" ""
-    $global:chkWordDocumentationLimitAttatch.IsChecked = ((Get-Setting "Documentation" "WordDocumentationLimitAttatch" "true") -ne "false")
+    $global:chkWordDocumentationLimitAttach.IsChecked = ((Get-Setting "Documentation" "WordDocumentationLimitAttatch" "true") -ne "false")
     
     $global:txtWordDocumentTemplate.Text = Get-Setting "Documentation" "WordDocumentTemplate" ""
     $global:txtWordDocumentName.Text = (Get-Setting "Documentation" "WordDocumentName" "%MyDocuments%\%Organization%-%Date%.docx")
@@ -61,6 +62,7 @@ function Add-WordOptionsControl
     
     $global:txtWordHeader1Style.Text = Get-Setting "Documentation" "WordHeader1Style" "Heading 1"
     $global:txtWordHeader2Style.Text = Get-Setting "Documentation" "WordHeader2Style" "Heading 2"
+    $global:txtWordHeader3Style.Text = Get-Setting "Documentation" "WordHeader3Style" "Heading 3" 
     $global:txtWordTableStyle.Text = Get-Setting "Documentation" "WordTableStyle" "Grid table 4 - Accent 3"
     $global:txtWordTableHeaderStyle.Text = Get-Setting "Documentation" "WordTableHeaderStyle" ""
     $global:txtWordCategoryHeaderStyle.Text = Get-Setting "Documentation" "WordCategoryHeaderStyle" ""
@@ -76,7 +78,7 @@ function Add-WordOptionsControl
     
     $global:chkWordIncludeScripts.IsChecked = ((Get-Setting "Documentation" "WordIncludeScripts" "true") -ne "false")
     $global:chkWordExcludeScriptSignature.IsChecked = ((Get-Setting "Documentation" "WordExcludeScriptSignature" "false") -ne "false")
-    $global:chkWordAttatchJsonFile.IsChecked = ((Get-Setting "Documentation" "WordAttatchJsonFile" "false") -ne "false")
+    $global:chkWordAttachJsonFile.IsChecked = ((Get-Setting "Documentation" "WordAttatchJsonFile" "false") -ne "false")
     
     $global:txtWordScriptTableStyle.Text = Get-Setting "Documentation" "WordScriptTableStyle" ""
     $global:txtWordScriptStyle.Text = Get-Setting "Documentation" "WordScriptStyle" 
@@ -120,7 +122,7 @@ function Invoke-WordPreProcessItems
     Save-Setting "Documentation" "WordDocumentationLevel" $global:cbWordDocumentationLevel.SelectedValue
     Save-Setting "Documentation" "WordDocumentationLimitMaxLength" $global:txtWordDocumentationLimitMaxLength.Text
     Save-Setting "Documentation" "WordDocumentationLimitTruncateLength" $global:txtWordDocumentationLimitTruncateLength.Text
-    Save-Setting "Documentation" "WordDocumentationLimitAttatch" $global:chkWordDocumentationLimitAttatch.IsChecked
+    Save-Setting "Documentation" "WordDocumentationLimitAttatch" $global:chkWordDocumentationLimitAttach.IsChecked
 
     Save-Setting "Documentation" "WordAddCategories" $global:chkWordAddCategories.IsChecked
     Save-Setting "Documentation" "WordAddSubCategories" $global:chkWordAddSubCategories.IsChecked
@@ -128,6 +130,7 @@ function Invoke-WordPreProcessItems
 
     Save-Setting "Documentation" "WordHeader1Style" $global:txtWordHeader1Style.Text
     Save-Setting "Documentation" "WordHeader2Style" $global:txtWordHeader2Style.Text
+    Save-Setting "Documentation" "WordHeader3Style" $global:txtWordHeader3Style.Text
     Save-Setting "Documentation" "WordTableStyle" $global:txtWordTableStyle.Text
     Save-Setting "Documentation" "WordTableHeaderStyle" $global:txtWordTableHeaderStyle.Text
     Save-Setting "Documentation" "WordCategoryHeaderStyle" $global:txtWordCategoryHeaderStyle.Text
@@ -141,7 +144,7 @@ function Invoke-WordPreProcessItems
 
     Save-Setting "Documentation" "WordIncludeScripts" $global:chkWordIncludeScripts.IsChecked
     Save-Setting "Documentation" "WordExcludeScriptSignature" $global:chkWordExcludeScriptSignature.IsChecked
-    Save-Setting "Documentation" "WordAttatchJsonFile" $global:chkWordAttatchJsonFile.IsChecked
+    Save-Setting "Documentation" "WordAttatchJsonFile" $global:chkWordAttachJsonFile.IsChecked
 
     Save-Setting "Documentation" "WordScriptTableStyle" $global:txtWordScriptTableStyle.Text
     Save-Setting "Documentation" "WordScriptStyle" $global:txtWordScriptStyle.Text
@@ -465,9 +468,42 @@ function Invoke-WordNewObjectGroup
 {
     param($obj, $documentedObj)
 
+    $script:objectHeaderLevel = 2
+
     $objectTypeString = Get-ObjectTypeString $obj.Object $obj.ObjectType
 
     Add-DocText (?? $objectTypeString $obj.ObjectType.Title) $global:txtWordHeader1Style.Text
+}
+
+function Invoke-WordNewObjectType
+{
+    param($obj, $documentedObj, [int]$groupCategoryCount = 0)
+
+    if($groupCategoryCount -le 1 -or -not $global:txtWordHeader3Style.Text) { return }
+ 
+    $script:objectHeaderLevel = 2
+
+    if($obj.ObjectType.GroupId -eq "EndpointSecurity")
+    {
+        $objectTypeString = $obj.CategoryName
+    }
+    else
+    {
+        $objectTypeString = $obj.ObjectType.Title
+    }
+
+    Add-DocText (?? $objectTypeString $obj.ObjectType.Title) (Get-ObjectLevelHeader)
+
+    $script:objectHeaderLevel = 3;
+}
+
+function local:Get-ObjectLevelHeader
+{
+    if($script:objectHeaderLevel -eq 3 -and $global:txtWordHeader3Style.Text)
+    {
+        return $global:txtWordHeader3Style.Text
+    }
+    return $global:txtWordHeader2Style.Text
 }
 
 function Invoke-WordProcessItem
@@ -478,7 +514,7 @@ function Invoke-WordProcessItem
 
     $objName = Get-GraphObjectName $obj $objectType
 
-    Add-DocText $objName $global:txtWordHeader2Style.Text
+    Add-DocText $objName (Get-ObjectLevelHeader)
     
     $script:doc.Application.Selection.TypeParagraph()
 
@@ -604,7 +640,7 @@ function Invoke-WordProcessItem
             }
         }
 
-        if($global:chkWordAttatchJsonFile.IsChecked -eq $true)
+        if($global:chkWordAttachJsonFile.IsChecked -eq $true)
         {
             $fileName = Export-GraphObject $obj $objectType ([IO.Path]::GetTempPath()) -IsFullObject -PassThru -SkipAddID
             if($fileName)
@@ -676,7 +712,7 @@ function Invoke-WordProcessAllObjects
     {
         $objTypeName = Get-LanguageString "SettingDetails.scopeTags"
 
-        Add-DocText $objTypeName $global:txtWordHeader2Style.Text
+        Add-DocText $objTypeName (Get-ObjectLevelHeader)        
 
         $script:doc.Application.Selection.TypeParagraph()  
 
@@ -784,7 +820,7 @@ function Add-DocTableItems
                         if($script:truncateValueLength -gt 0)
                         {
                             $propValue = ($propValue.Substring(0, $script:truncateValueLength) + "...")
-                            if($global:chkWordDocumentationLimitAttatch.IsChecked -eq $true)
+                            if($global:chkWordDocumentationLimitAttach.IsChecked -eq $true)
                             {
                                 $propValue = ("`r`n" + $propValue)
                             }                            
@@ -800,7 +836,7 @@ function Add-DocTableItems
                         $script:docTable.Cell($row, $i).Range.Text = $propValue
                     }
 
-                    if($propValueFull -and $global:chkWordDocumentationLimitAttatch.IsChecked -eq $true)
+                    if($propValueFull -and $global:chkWordDocumentationLimitAttach.IsChecked -eq $true)
                     {
                         if($null -ne $propValue)
                         {

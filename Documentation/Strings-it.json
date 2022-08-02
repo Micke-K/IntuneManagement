@@ -305,6 +305,7 @@
                      "airPrint":  "AirPrint",
                      "androidDefenderAtp":  "Microsoft Defender per endpoint",
                      "androidDeviceOwnerApplications":  "Applicazioni",
+                     "androidDeviceOwnerPolicyMessages":  "Informazioni sul supporto personalizzate",
                      "androidForWorkPassword":  "Password per il dispositivo",
                      "appManagement":  "Consenti o blocca le app",
                      "applicationGuard":  "Microsoft Defender Application Guard",
@@ -318,8 +319,10 @@
                      "autonomousSingleAppMode":  "Modalità applicazione singola autonoma",
                      "azureOperationalInsights":  "Azure Operational Insights",
                      "bitLocker":  "Crittografia di Windows",
+                     "bootOptions":  "Opzioni di avvio",
                      "browser":  "Browser",
                      "builtinApps":  "App predefinite",
+                     "cameras":  "Fotocamere",
                      "cellular":  "Rete cellulare",
                      "cloudAndStorage":  "Cloud e risorse di archiviazione",
                      "cloudPrint":  "Stampante cloud",
@@ -334,6 +337,7 @@
                      "customConfiguration":  "Profilo di configurazione personalizzato",
                      "customOMASettings":  "Impostazioni OMA-URI personalizzate",
                      "customPreferences":  "File delle preferenze",
+                     "dFCISecuritySettings":  "Impostazioni di sicurezza",
                      "defender":  "Microsoft Defender Antivirus",
                      "defenderAntivirus":  "Microsoft Defender Antivirus",
                      "defenderExploitGuard":  "Microsoft Defender Exploit Guard",
@@ -392,6 +396,7 @@
                      "maintenance":  "Manutenzione",
                      "malware":  "Malware",
                      "messaging":  "Messaggistica",
+                     "microphonesAndSpeakers":  "Microfoni e altoparlanti",
                      "networkBoundary":  "Limite di rete",
                      "networkProxy":  "Proxy di rete",
                      "notifications":  "Notifiche dell'app",
@@ -400,12 +405,14 @@
                      "personalProfile":  "Profilo personale",
                      "personalization":  "Personalizzazione",
                      "policyOverride":  "Esegui l'override dei criteri di gruppo",
+                     "ports":  "Porte",
                      "powerSettings":  "Impostazioni risparmio energia",
                      "printer":  "Stampante",
                      "privacy":  "Riservatezza",
                      "privacyPerApp":  "Eccezioni alla privacy per app",
                      "privacyPreferences":  "Preferenze per la privacy",
                      "projection":  "Proiezione",
+                     "radios":  "Radio",
                      "sCCMCompliance":  "Conformità di Configuration Manager",
                      "sCEP":  "Certificato SCEP",
                      "sCEPProperties":  "Certificato SCEP",
@@ -422,6 +429,7 @@
                      "systemExtensions":  "Estensioni del sistema",
                      "systemSecurity":  "Sicurezza del sistema",
                      "trustedCert":  "Certificato attendibile",
+                     "uEFIAccess":  "Accesso UEFI",
                      "updates":  "Aggiornamenti",
                      "userRights":  "Diritti utente",
                      "usersAndAccounts":  "Utenti e account",
@@ -435,6 +443,7 @@
                      "vPNProxy":  "Proxy",
                      "vPNSplitTunneling":  "Split tunneling",
                      "vPNTrustedNetwork":  "Rilevamento della rete attendibile",
+                     "wakeSettings":  "Impostazioni di riattivazione",
                      "webContentFilter":  "Filtro contenuto Web",
                      "wiFi":  "Wi-Fi",
                      "win10Wifi":  "Wi-Fi",
@@ -571,6 +580,29 @@
                                                            "tooltip":  "Specificare se l'utente è autorizzato a usare un tema visivo personalizzato."
                                                        }
                                  },
+    "CustomCompliance":  {
+                             "FilePicker":  {
+                                                "noScriptSelectedError":  "Selezionare uno script di individuazione",
+                                                "scriptFileLabel":  "Selezionare lo script di individuazione"
+                                            },
+                             "PremiumBanner":  {
+                                                   "label":  "La conformità personalizzata è attualmente disponibile in versione anteprima. Una volta entrata nella fase di disponibilità generale, sarà possibile aggiungerla con un costo aggiuntivo alle opzioni di licenza che includono Microsoft Endpoint Manager o Intune."
+                                               },
+                             "ScriptPicker":  {
+                                                  "objectName":  "Script",
+                                                  "placeholder":  "Fare clic per selezionare",
+                                                  "searchboxPlaceholder":  "Cerca per nome dello script",
+                                                  "title":  "Selezionare uno script di individuazione"
+                                              },
+                             "SummaryGrid":  {
+                                                 "ariaLabel":  "Riepilogo delle regole di conformità personalizzate"
+                                             },
+                             "UploadFile":  {
+                                                "jsonFileLabel":  "Caricare e convalidare il file JSON con le impostazioni di conformità personalizzate",
+                                                "noFileSelectedError":  "Selezionare un file JSON",
+                                                "parseFileSelectedError":  "Il file JSON non è valido"
+                                            }
+                         },
     "AssignmentFilters":  {
                               "assignmentFilterColumnHeader":  "Filtro",
                               "noFilters":  "Nessuno"
@@ -1036,11 +1068,46 @@
                                                         "v81":  "Windows Phone 8.1"
                                                     }
                                },
+    "EnrollmentStatusScreen":  {
+                                   "Apps":  {
+                                                "allowNonBlockingAppInstallation":  "Interrompi solo le app di blocco selezionate nella fase tecnico",
+                                                "apps":  "app",
+                                                "appsListName":  "Elenco applicazioni",
+                                                "blockingApps":  "Blocco delle app",
+                                                "managedApps":  "App gestite",
+                                                "noApps":  "Nessuna applicazione",
+                                                "noAppsError":  "Si è verificato un errore durante il recupero delle applicazioni",
+                                                "selectApps":  "Selezionare le app",
+                                                "selectedAppsCount":  "{0} app selezionate (al massimo 100)",
+                                                "useSelectedAppsAll":  "Tutto",
+                                                "useSelectedAppsSelected":  "Selezionato",
+                                                "useSelectedAppsToggleLabel":  "Blocca l'uso del dispositivo fino all'installazione delle app necessarie in caso di assegnazione a un utente/dispositivo"
+                                            },
+                                   "Header":  {
+                                                  "application":  "Applicazione",
+                                                  "publisher":  "Editore",
+                                                  "version":  "Versione"
+                                              },
+                                   "SearchBox":  {
+                                                     "placeHolder":  "Cerca per nome o autore"
+                                                 },
+                                   "allowToUseToggle":  "Consenti agli utenti di usare il dispositivo se si verifica un errore di installazione",
+                                   "blockToggle":  "Impedisci l'uso del dispositivo fino al completamento dell'installazione di tutte le app e di tutti i profili",
+                                   "blockToolTip":  "Se, ad esempio, si aggiunge Microsoft Word a questo elenco, utenti e dispositivi di destinazione non potranno uscire dalla pagina di stato della registrazione finché l'installazione di Word non viene completata.",
+                                   "collectLogToggle":  "Attiva la raccolta di log e la pagina di diagnostica per gli utenti finali",
+                                   "create":  "Creazione profilo",
+                                   "customMessageTextBox":  "Messaggio di errore",
+                                   "customMessageToggle":  "Mostrare un messaggio personalizzato in caso di raggiungimento del limite di tempo o se si verifica un errore",
+                                   "enableForAutopilotOnlyToggle":  "Mostra la pagina solo ai dispositivi sottoposti a provisioning dalla Configurazione guidata",
+                                   "progressToggle":  "Mostra lo stato della configurazione di app e profili",
+                                   "resetToggle":  "Consenti agli utenti di reimpostare il dispositivo se si verifica un errore di installazione",
+                                   "timeout":  "Mostra un errore se l'installazione richiede più tempo rispetto al numero di minuti specificato"
+                               },
     "TableHeaders":  {
                          "activity":  "Attività",
                          "actor":  "Azione avviata da (attore)",
                          "app":  "App",
-                         "appName":  "Nome app",
+                         "appName":  "Nome dell'app",
                          "applicationName":  "Nome dell'applicazione",
                          "approvalType":  "Metodo di approvazione",
                          "assignedGroups":  "Gruppo",
@@ -1048,7 +1115,7 @@
                          "assignmentStatus":  "Assegnato",
                          "assignments":  "Assegnazioni",
                          "attributeName":  "Nome attributo",
-                         "attributeType":  "Tipo attributo",
+                         "attributeType":  "Tipo di attributo",
                          "bundleId":  "Bundle-Id",
                          "category":  "Categoria",
                          "complianceGracePeriodExpiration":  "Scadenza del periodo di tolleranza per la conformità",
@@ -1154,7 +1221,7 @@
                          "updateScheduleType":  "Tipo di pianificazione",
                          "updateStatus":  "Stato aggiornamento",
                          "user":  "Utente",
-                         "userPrincipalName":  "Nome entità utente",
+                         "userPrincipalName":  "Nome dell'entità utente",
                          "users":  "Utenti",
                          "usersExcluded":  "Utenti esclusi",
                          "usersTargeted":  "Utenti interessati",
@@ -1251,6 +1318,7 @@
                     "builtInApp":  "App predefinita",
                     "builtInIos":  "App iOS predefinita",
                     "default":  "",
+                    "iosIPadOSWebClip":  "Clip Web iOS/iPadOS",
                     "iosLobApp":  "App line-of-business iOS",
                     "iosStoreApp":  "App Store iOS",
                     "iosVppApp":  "App Volume Purchase Program iOS",
@@ -1282,7 +1350,8 @@
                     "windowsPhoneXapLobApp":  "App line-of-business XAP per Windows Phone",
                     "windowsStoreApp":  "App di Microsoft Store",
                     "windowsUniversalAppXLobApp":  "App line-of-business AppX universale per Windows",
-                    "windowsUniversalLobApp":  "App line-of-business universale di Windows"
+                    "windowsUniversalLobApp":  "App line-of-business universale di Windows",
+                    "windowsWebApp":  "Link Web Windows"
                 },
     "TAPSettings":  {
                         "AllowedDataIngestionLocations":  {
@@ -1295,7 +1364,7 @@
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "Biometria invece del PIN per l'accesso",
-                                                               "tooltip":  "Scegliere eventuali metodi di autenticazione di Android che possono essere usati dagli utenti invece del PIN dell'app."
+                                                               "tooltip":  "Consente l'uso di metodi di autenticazione biometrica Android, se presenti, invece di un PIN dell'app."
                                                            },
                         "AndroidFingerprint":  {
                                                    "label":  "Impronta digitale invece del PIN per l'accesso (Android 6.0+)",
@@ -1421,12 +1490,12 @@
                                                    "tooltip":  "Se l'app gestita da criteri è inattiva per un periodo superiore al numero di minuti di inattività specificato, l'app richiederà una nuova verifica dei requisiti di accesso (ad esempio PIN, impostazioni di avvio condizionale) dopo l'avvio dell'app."
                                                },
                         "RequireClass3Biometrics":  {
-                                                        "label":  "Class 3 Biometrics (Android 9.0+)",
-                                                        "tooltip":  "For more information on class 3 biometrics refer to the documentation available <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">here</a>"
+                                                        "label":  "Biometria di classe 3 (Android 9.0+)",
+                                                        "tooltip":  "Per altre informazioni sulla biometria di classe 3, vedere la documentazione disponibile <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">qui</a>"
                                                     },
                         "RequirePinAfterBiometricChange":  {
-                                                               "label":  "Override Biometrics with PIN after biometric updates",
-                                                               "tooltip":  "If class 3 biometrics are supported by the device (more info <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>), when a change in biometrics is detected, a PIN prompt will override biometric prompts."
+                                                               "label":  "Eseguire l'override della biometria con il PIN dopo gli aggiornamenti biometrici",
+                                                               "tooltip":  "Se la biometria di classe 3 è supportata dal dispositivo (altre informazioni <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">qui</a>), quando viene rilevata una modifica della biometria, un prompt del PIN sostituirà le richieste biometriche."
                                                            },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "L'ID pacchetto deve essere univoco.",
@@ -1467,6 +1536,22 @@
                         "Timeout":  {
                                         "label":  "Timeout (minuti di inattività)"
                                     },
+                        "WinCutCopyPaste":  {
+                                                "label":  "Allow cut, copy, and paste for",
+                                                "tooltip":  "Select one of the following options to specify the sources and destinations org users can cut or copy or paste org data: <br/>\n\n<b>Any destination and any source</b>: Org users can paste data from and cut/copy data to any account, document, location or application.<br/>\n\n<b>No destination or source</b>: Org users cannot cut, copy or paste data to or from external accounts, documents, locations or applications from or into the org context."
+                                            },
+                        "WinPrintData":  {
+                                             "label":  "Print org data",
+                                             "tooltip":  "Select <b>Block</b> to prevent printing of org data. Select <b>Allow</b> to permit printing of org data. Personal or unmanaged data is not affected."
+                                         },
+                        "WinReceiveData":  {
+                                               "label":  "Receive data from",
+                                               "tooltip":  "Select one of the following options to specify the sources org users can receive data from: <br/>\n\n<b>No sources</b>: Org users cannot open data from external accounts, documents, locations or applications into the org context.<br/>\n\n<b>All sources</b>: Org users can open data from any account, document, location or application into the org context.\n"
+                                           },
+                        "WinSendData":  {
+                                            "label":  "Send org data to",
+                                            "tooltip":  "Select one of the following options to specify the destinations org users can send data to: <br/>\n\n<b>No destinations</b>: Org users cannot send org data to external accounts, documents, locations or applications from the org context.<br/>\n\n<b>All destinations</b>: Org users can send org data to any account, document, location or application."
+                                        },
                         "Tap":  {
                                     "numberOfDays":  "Numero di giorni",
                                     "pinResetAfterNumberOfDays":  "Numero di giorni di attesa prima della reimpostazione del PIN",
@@ -1524,38 +1609,15 @@
                           "required":  "Obbligatorio",
                           "uninstall":  "Disinstalla"
                       },
-    "EnrollmentStatusScreen":  {
-                                   "Apps":  {
-                                                "apps":  "app",
-                                                "appsListName":  "Elenco applicazioni",
-                                                "managedApps":  "App gestite",
-                                                "noApps":  "Nessuna applicazione",
-                                                "noAppsError":  "Si è verificato un errore durante il recupero delle applicazioni",
-                                                "selectApps":  "Selezionare le app",
-                                                "selectedAppsCount":  "{0} app selezionate (al massimo 100)",
-                                                "useSelectedAppsAll":  "Tutto",
-                                                "useSelectedAppsSelected":  "Selezionato",
-                                                "useSelectedAppsToggleLabel":  "Blocca l'uso del dispositivo fino all'installazione delle app necessarie in caso di assegnazione a un utente/dispositivo"
-                                            },
-                                   "Header":  {
-                                                  "application":  "Applicazione",
-                                                  "publisher":  "Editore",
-                                                  "version":  "Versione"
-                                              },
-                                   "SearchBox":  {
-                                                     "placeHolder":  "Cerca per nome o autore"
-                                                 },
-                                   "allowToUseToggle":  "Consenti agli utenti di usare il dispositivo se si verifica un errore di installazione",
-                                   "blockToggle":  "Impedisci l'uso del dispositivo fino al completamento dell'installazione di tutte le app e di tutti i profili",
-                                   "blockToolTip":  "Se, ad esempio, si aggiunge Microsoft Word a questo elenco, utenti e dispositivi di destinazione non potranno uscire dalla pagina di stato della registrazione finché l'installazione di Word non viene completata.",
-                                   "collectLogToggle":  "Attiva la raccolta di log e la pagina di diagnostica per gli utenti finali",
-                                   "create":  "Creazione profilo",
-                                   "customMessageTextBox":  "Messaggio di errore",
-                                   "customMessageToggle":  "Mostrare un messaggio personalizzato in caso di raggiungimento del limite di tempo o se si verifica un errore",
-                                   "enableForAutopilotOnlyToggle":  "Mostra la pagina solo ai dispositivi sottoposti a provisioning dalla Configurazione guidata",
-                                   "progressToggle":  "Mostra lo stato della configurazione di app e profili",
-                                   "resetToggle":  "Consenti agli utenti di reimpostare il dispositivo se si verifica un errore di installazione",
-                                   "timeout":  "Mostra un errore se l'installazione richiede più tempo rispetto al numero di minuti specificato"
+    "CustomComplianceScript":  {
+                                   "CustomScriptWizardTitle":  {
+                                                                   "create":  "Crea uno script personalizzato",
+                                                                   "edit":  "Modifica lo script personalizzato"
+                                                               },
+                                   "basicInfo":  "È possibile creare un nuovo pacchetto di script personalizzato dagli script di rilevamento e correzione scritti dall'utente.",
+                                   "customScriptCapitalized":  "Script personalizzato",
+                                   "customScriptLowercase":  "script personalizzato",
+                                   "detectionScript":  "Script di rilevamento"
                                },
     "Devices":  {
                     "General":  {
@@ -1769,6 +1831,27 @@
                                                       "windowsIdentityProtection":  "In Intune è possibile usare il profilo di configurazione del dispositivo per gestire le impostazioni di Windows Hello for Business nei dispositivi Windows. <br><br>Informazioni utili Prendere in considerazione il passaggio a <a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\">Sicurezza degli endpoint</a> per creare un profilo di sicurezza degli endpoint o un profilo della baseline di sicurezza per configurare le funzionalità comuni per la sicurezza di Endpoint Protection. <br><br>I profili di sicurezza degli endpoint offrono un set conciso e curato di modelli di sicurezza, inclusi firewall, BitLocker, antivirus e altro ancora. I profili della baseline di sicurezza sono modelli con valori preconfigurati per le impostazioni consigliati da esperti della sicurezza.",
                                                       "wiredNetwork":  "Consente di configurare una rete cablata a cui gli utenti possono accedere."
                                                   },
+                           "SupportMessagesLanguageDropdown":  {
+                                                                   "chineseSimplified":  "Cinese (semplificato)",
+                                                                   "chineseTraditional":  "Cinese (tradizionale)",
+                                                                   "czech":  "Ceco",
+                                                                   "dutch":  "Olandese",
+                                                                   "englishUS":  "Inglese (Stati Uniti)",
+                                                                   "frenchFrance":  "Francese (Francia)",
+                                                                   "german":  "Tedesco",
+                                                                   "hungarian":  "Ungherese",
+                                                                   "indonesian":  "Indonesiano",
+                                                                   "italian":  "Italiano",
+                                                                   "japanese":  "Giapponese",
+                                                                   "korean":  "Coreano",
+                                                                   "polish":  "Polacco",
+                                                                   "portugueseBrazil":  "Portoghese (Brasile)",
+                                                                   "portuguesePortugal":  "Portoghese (Portogallo)",
+                                                                   "russian":  "Russo",
+                                                                   "spanishSpain":  "Spagnolo (Spagna)",
+                                                                   "swedish":  "Svedese",
+                                                                   "turkish":  "Turco"
+                                                               },
                            "TrustedCert":  {
                                                "uploadControlPlaceHolderText":  "Selezionare un file con estensione cer valido"
                                            },
@@ -1823,6 +1906,7 @@
                            "allEnrollmentTypesHeaderName":  "Tutti i tipi di registrazione",
                            "allEnrollmentTypesHeaderNameMac":  "Tutti i tipi di registrazione",
                            "allEnrollmentTypesSecondDescription":  "Se si rende obbligatoria una password, viene imposto automaticamente un requisito per PIN a 6 cifre non semplice per tutti i dispositivi registrati dagli utenti, indipendentemente dall'opzione configurata per queste impostazioni.",
+                           "allFeaturesOption":  "Tutte le funzionalità",
                            "allManagedApps":  "Tutte le app gestite",
                            "allOtherUpdatesBehaviorName":  "Tutti gli altri aggiornamenti (sistema operativo, app predefinite)",
                            "allowActivationLockWhenSupervisedDescription":  "Il blocco attivazione rende più difficile la riattivazione di un dispositivo perso o rubato.",
@@ -1952,7 +2036,7 @@
                            "appManagementUninstallBuiltInAppsName":  "Rimuovi le app predefinite",
                            "appNameEmpty":  "Calcolatrice",
                            "appNameExample":  "Ad esempio, Calcolatrice",
-                           "appNameName":  "Nome app",
+                           "appNameName":  "Nome dell'app",
                            "appNonComplianceTypeDescription":  "È consigliabile richiedere agli utenti di accettare le Condizioni per l'utilizzo, in modo da accettare che le app nei rispettivi dispositivi, incluse le app personali, verranno valutate e che le app non conformi verranno segnalate all'amministratore IT.",
                            "appNonComplianceTypeName":  "Valuta le applicazioni specificate installate dall'utente nei dispositivi",
                            "appPackageFamilyNameDescription":  "Nome della famiglia di pacchetti di app",
@@ -2125,6 +2209,7 @@
                            "batteryLevelTurnOnEnergySaverPluggedInDescription":  "Questa impostazione dei criteri consente di specificare il livello di carica della batteria per l'attivazione del risparmio energia quando il dispositivo è alimentato da rete elettrica.<br/>Se si abilita questa impostazione dei criteri, è necessario specificare un valore in percentuale che indica il livello di carica della batteria. Il risparmio energia viene attivato automaticamente al livello di batteria specificato (e al di sotto di esso).<br/>Se si disabilita o non si configura questa impostazione dei criteri, l'impostazione verrà controllata dagli utenti.​",
                            "bing":  "Bing",
                            "biometricWeak":  "Biometria vulnerabile",
+                           "biometricsOption":  "Autenticazione biometrica",
                            "bitLockerAllowStdUsersEncryptAADJoinDescription":  "Consente agli utenti senza diritti amministrativi di abilitare la crittografia BitLocker nel computer locale. Questa impostazione è applicabile solo ai dispositivi aggiunti ad Azure Active Directory.",
                            "bitLockerAllowStdUsersEncryptAADJoinName":  "Consenti agli utenti standard di abilitare la crittografia durante un'aggiunta ad Azure AD",
                            "bitLockerBaseConfigureEncryptionMethodsDescription":  "Se si seleziona \"Abilita\", è possibile configurare i metodi di crittografia per unità del sistema operativo, unità dati fisse e unità dati removibili. Se si seleziona \"Non configurato\", BitLocker userà il metodo di crittografia predefinito per l'unità.",
@@ -2522,7 +2607,7 @@
                            "blockPasswordProximityRequestsDescription":  "Blocca le richieste di prossimità password. Disponibile in iOS 12.0 e versioni successive.",
                            "blockPasswordProximityRequestsName":  "Blocca le richieste di prossimità password",
                            "blockPasswordProximityRequestsNameMacOS":  "Blocca le richieste di prossimità password",
-                           "blockPersonalHotspotDescription":  "Blocca l'hotspot personale. Questo valore è disponibile solo con determinati gestori telefonici.",
+                           "blockPersonalHotspotDescription":  "Blocca l'hotspot personale. Questo valore è disponibile solo con determinati vettori.",
                            "blockPersonalHotspotModificationDescription":  "Per dispositivi che eseguono iOS 12.2 o versioni successive. Gli utenti non possono attivare o disattivare l'opzione Hotspot personale. Se si blocca questa impostazione e si blocca l'hotspot personale, tale opzione sarà disattivata. Disponibile con iOS 12.2 e versioni successive.",
                            "blockPersonalHotspotModificationName":  "Impedisci la modifica dell'hotspot personale",
                            "blockPersonalHotspotName":  "Blocca l'hotspot personale",
@@ -2657,10 +2742,8 @@
                            "booleanName":  "Booleano",
                            "bootFromBuiltInNetworkAdaptersName":  "Avvia dalle schede di rete",
                            "bootFromExternalMediaName":  "Avvia da supporti di memorizzazione esterni (USB, SD)",
-                           "bootOptionsName":  "Opzioni di avvio",
                            "bothOneToOneAndDeviceOption":  "Entrambi",
                            "browserDefault":  "Impostazione predefinita del browser",
-                           "builtInHardwareName":  "Hardware predefinito",
                            "builtinAppOption":  "App predefinita",
                            "bundleId":  "ID bundle",
                            "bundleIdExample":  "Ad esempio com.apple.calculator",
@@ -3210,6 +3293,7 @@
                            "devicesPageDescription":  "Blocca l'accesso a Dispositivi nell'app Impostazioni.",
                            "devicesPageName":  "Dispositivi",
                            "dfciBuiltinHeaderDescName":  "L'interfaccia di configurazione del firmware del dispositivo può gestire solo i componenti hardware incorporati nel dispositivo. Queste impostazioni non possono gestire le periferiche collegate, ad esempio webcam USB.",
+                           "dfciGranularSettingsWarningInfoBox":  "Avviso! Le opzioni seguenti sono applicabili solo a determinati tipi di dispositivi. Se indirizzati a un dispositivo non idoneo, verranno segnalate come Non è un reclamo e i dispositivi potrebbero non essere protetti. <a href=\"https://docs.microsoft.com/mem/intune/configuration/device-firmware-configuration-interface-windows-settings\" >Learn more</a> ",
                            "dfciHeaderName":  "Usare l'interfaccia di configurazione del firmware del dispositivo per gestire in modalità remota le impostazioni UEFI di un dispositivo. <a href=\"https://go.microsoft.com/fwlink/?linkid=2028892\" target=\"_blank\">Altre informazioni</a>.<br>\r\n      <br>È possibile gestire queste impostazioni solo per i dispositivi che rispettano i requisiti seguenti:\r\n      <li>Il produttore del dispositivo supporta l'interfaccia di configurazione del firmware del dispositivo.</li>\r\n      <li>Il dispositivo è stato registrato nel servizio di distribuzione di Windows Autopilot.</li>\r\n      <li>Il dispositivo è stato riavviato dopo l'ultima sincronizzazione MDM.</li>",
                            "diagnosticDataSubmissionLevelDescription":  "Selezionare il livello di invio dei dati di diagnostica. Il livello avanzato non è supportato dopo la versione di Windows 1903.",
                            "diffieHellmanGroupName":  "Gruppo Diffie-Hellman",
@@ -3778,6 +3862,7 @@
                            "f5NetworksF5AccessOption":  "F5 Access",
                            "fFiveEdgeClientOption":  "F5 Access",
                            "fFiveLegacyAccessOption":  "F5 Access legacy",
+                           "faceOption":  "Autenticazione facciale",
                            "factoryResetDisabledDescription":  "Impedisce il ripristino delle impostazioni predefinite dalle impostazioni.",
                            "factoryResetDisabledName":  "Ripristino delle impostazioni predefinite",
                            "factoryResetName":  "Ripristino delle impostazioni predefinite",
@@ -4134,6 +4219,7 @@
                            "ipAddress":  "Indirizzo IP",
                            "ipAddressDescription":  "Se si usano i nomi host per identificare le destinazioni delle stampanti, è possibile ottenere il rispettivo indirizzo IP eseguendone il ping nel terminale. Può contenere indirizzi e porte IPv4 o IPv6.",
                            "ipAutoDetectionName":  "Rilevamento automatico di altri intervalli di indirizzi IP aziendali",
+                           "irisOption":  "Autenticazione Iris",
                            "issuerHashDescription":  "Identificazione personale per il certificato Single Sign-On (SSO)",
                            "issuerHashName":  "Hash dell'emittente",
                            "keepGoing":  "Mostra il messaggio con l'opzione per l'apertura di siti in Microsoft Edge",
@@ -4308,7 +4394,7 @@
                            "kioskModeName":  "Modalità tutto schermo",
                            "kioskModeSingle":  "Singola app",
                            "kioskMonthly":  "Ogni mese",
-                           "kioskObsoleteInfoHeader":  "Le impostazioni in questo pannello sono obsolete. Per configurare le impostazioni tutto schermo per il dispositivo, tornare al pannello Crea profilo. Nell'elenco a discesa Tipo di profilo selezionare Modalità tutto schermo (anteprima).",
+                           "kioskObsoleteInfoHeader":  "Le impostazioni in questo pannello sono state rese obsolete. Per configurare le impostazioni del chiosco multimediale per il dispositivo, tornare al pannello Crea profilo. Nell'elenco a discesa Tipo di profilo selezionare Chiosco multimediale (anteprima).",
                            "kioskProfileHeader":  "Usare queste impostazioni per configurare la modalità tutto schermo. Prima di configurare queste impostazioni, assicurarsi di avere distribuito le app da eseguire in modalità tutto schermo nei dispositivi dal carico di lavoro delle app client.",
                            "kioskProfileLearnMore":  "Altre informazioni sulla modalità tutto schermo di Windows.",
                            "kioskProfileName":  "Nome della configurazione tutto schermo",
@@ -4611,6 +4697,13 @@
                            "loginWindowSleepDisabledUsersName":  "Nascondi il pulsante Sospendi",
                            "loginWindowTextDescription":  "Messaggio che viene visualizzato agli utenti nella schermata di accesso. Il messaggio può essere ad esempio un messaggio di benvenuto, un avviso o le informazioni di contatto dell'organizzazione per i dispositivi persi e ritrovati.",
                            "loginWindowTextName":  "Banner",
+                           "longSupportMessageDefault":  "L'amministratore IT dell'organizzazione può monitorare e gestire le app e i dati associati a questo dispositivo, incluse le informazioni relative a impostazioni, autorizzazioni, accessi aziendali, attività di rete e posizione del dispositivo.",
+                           "longSupportMessageDescription":  "Un messaggio di supporto lungo è un testo mostrato all'utente finale dalla piattaforma nella pagina dei criteri del dispositivo in Impostazioni > Sicurezza > App di amministrazione del dispositivo. Per la piattaforma, questo è solitamente accessibile facendo clic su \"Ulteriori informazioni\" nella finestra di dialogo di un breve messaggio di supporto. Il messaggio della lingua \"Tutto\" viene visualizzato se un messaggio personalizzato non è specifico per la lingua predefinita del dispositivo. ",
+                           "longSupportMessageGridHeader":  "Messaggio di supporto lungo localizzato",
+                           "longSupportMessageName":  "Messaggio di supporto lungo",
+                           "longSystemMessageHint":  "(massimo 4096 caratteri)",
+                           "longSystemMessageLengthValidation":  "L'input non può superare i 4096 caratteri.",
+                           "longSystemMessagesSummaryKey":  "Messaggio di supporto lungo",
                            "low":  "Bassa",
                            "lowOption":  "Basso",
                            "lowSecurityBiometricOption":  "Protezione biometrica bassa",
@@ -5341,7 +5434,6 @@
                            "policySubjectAlternativeNameHelp":  "Vedere la documentazione di SAN per informazioni sull'uso ottimale del campo SAN.",
                            "policyUniversalResourceIdentifier":  "URI",
                            "policyUserPrincipalName":  "Nome dell'entità utente (UPN)",
-                           "portName":  "Porte",
                            "portNumberDescription":  "Se il server proxy usa una porta specifica, immetterla qui.",
                            "portNumberName":  "Numero di porta",
                            "postponeRebootUntilAfterDeadlineDescription":  "Consente di specificare se il dispositivo deve essere riavviato automaticamente prima della scadenza",
@@ -5477,6 +5569,9 @@
                            "proxyAddressExampleUpper":  "Ad esempio 10.0.0.122",
                            "proxyAutoConfigGlobalProxyOption":  "Configurazione automatica del proxy",
                            "proxyDNSExample":  "Ad esempio, http://proxy.com",
+                           "proxyExclusionListDescription":  "Aggiungere nomi host per impedirne il routing tramite il proxy.",
+                           "proxyExclusionListExample":  "ad esempio test.contoso.com",
+                           "proxyExclusionListName":  "Elenco di esclusione",
                            "proxyPortExample":  "Ad esempio 8080",
                            "proxyPortExampleUpper":  "Ad esempio 9080",
                            "proxyServerAddressDescription":  "Immettere l'indirizzo IP del server proxy.",
@@ -5628,7 +5723,7 @@
                            "ruleScope":  "Ambito",
                            "ruleScopeName":  "Ambito regola",
                            "runImmediatelyIfAfterStartDateTime":  "Esegui immediatamente dopo data e ora di inizio",
-                           "sAMAccountNameOption":  "Nome account SAM",
+                           "sAMAccountNameOption":  "Nome account sAM",
                            "sCCMComplianceState":  "Richiedi la conformità del dispositivo da Configuration Manager",
                            "sCCMComplianceStateDescription":  "Richiede che tutte le valutazioni della conformità in Configuration Manager siano conformi. È applicabile solo per i dispositivi Windows 10 o versioni successive con co-gestione. Tutti i dispositivi solo di Intune restituiranno il valore N/D.",
                            "sCEPCertType":  "Certificato SCEP",
@@ -5653,7 +5748,7 @@
                            "sCEPPolicyExtendedKeyUsageName":  "Utilizzo chiavi avanzato",
                            "sCEPPolicyHashAlgorithmDescription":  "Usare un tipo di algoritmo hash con il certificato. Assicurarsi di selezionare il livello più elevato di sicurezza supportato dal dispositivo che si connette.",
                            "sCEPPolicyHashAlgorithmName":  "Algoritmo hash",
-                           "sCEPPolicyKeySizeDescription":  "Selezionare il numero di bit contenuti nella chiave.",
+                           "sCEPPolicyKeySizeDescription":  "Selezionare il numero di bit contenuti nella chiave. 2048 è la lunghezza minima consigliata per la chiave.",
                            "sCEPPolicyKeySizeName":  "Dimensione chiave (bit)",
                            "sCEPPolicyKeyStorageProviderDescription":  "Selezionare il percorso di archiviazione per la chiave del certificato.",
                            "sCEPPolicyKeyStorageProviderName":  "Provider di archiviazione chiavi",
@@ -5792,7 +5887,6 @@
                            "securityBlockAzureADJoinedDevicesAutoEncryptionName":  "Crittografia automatica durante l'aggiunta ad AAD",
                            "securityDeveloperSettingsEnabledDescription":  "Consenti l'accesso alle impostazioni per gli sviluppatori.",
                            "securityDeveloperSettingsEnabledName":  "Impostazioni modalità sviluppatore",
-                           "securityFeaturesName":  "Funzionalità di sicurezza",
                            "securityOption":  "Dati di diagnostica disattivati",
                            "securityRequireVerifyAppsDescription":  "Consente a Protezione di Google Play di analizzare le app prima e dopo l'installazione. Se viene rilevata una minaccia, è possibile che venga richiesto all'utente di rimuovere l'app dal dispositivo. Questa opzione è obbligatoria per impostazione predefinita.",
                            "securityRequireVerifyAppsName":  "Analisi delle minacce nelle app",
@@ -5892,6 +5986,13 @@
                            "sharedSecretName":  "Segreto condiviso",
                            "shieldedDescription":  "Se questa impostazione e l'impostazione relativa al firewall sono abilitate, tutto il traffico in ingresso verrà bloccato.",
                            "shieldedName":  "Schermata",
+                           "shortSupportMessageDefault":  "Non hai l'autorizzazione per questa azione. Per ulteriori informazioni, contatta il tuo amministratore IT.",
+                           "shortSupportMessageDescription":  "Un breve messaggio di supporto è un testo mostrato all'utente finale dalla piattaforma quando tenta di configurare un'impostazione gestita sul dispositivo. Il messaggio della lingua \"Tutto, tranne quando specificato\" viene visualizzato se non viene specificato un messaggio personalizzato per la lingua predefinita di un dispositivo. ",
+                           "shortSupportMessageGridHeader":  "Messaggio di supporto breve localizzato",
+                           "shortSupportMessageName":  "Messaggio di supporto breve",
+                           "shortSystemMessageHint":  "(massimo 200 caratteri)",
+                           "shortSystemMessageLengthValidation":  "L'input non può superare i 200 caratteri.",
+                           "shortSystemMessagesSummaryKey":  "Messaggio di supporto breve",
                            "show":  "Mostra",
                            "showAppsList":  "App visibili",
                            "showEverything":  "Organizzatore, ora e oggetto (l'oggetto è nascosto per le riunioni private)",
@@ -6112,11 +6213,23 @@
                            "subjectNameLocalIdentifier":  "Nome comune del soggetto",
                            "sunday":  "domenica",
                            "sundayOption":  "Domenica",
+                           "supportMessageLearnMoreLink":  "https://docs.microsoft.com/en-us/mem/intune/configuration/device-restrictions-android-for-work",
+                           "supportMessageLearnMoreText":  "Altre informazioni sui messaggi di supporto. ",
                            "syncScheduleDescription":  "Frequenza della connessione del dispositivo al server per la sincronizzazione della posta elettronica.",
                            "syncScheduleName":  "Pianificazione della sincronizzazione",
                            "synchronizeDescription":  "Consente di controllare la quantità di messaggi di posta elettronica da archiviare nel dispositivo e la frequenza della connessione al server.",
                            "systemExtensionTeamIdsMustBeUnique":  "Lo stesso ID team non può essere incluso negli identificatori del team consentiti e nelle estensioni del sistema consentite.",
                            "systemInfoOnlyStatusBarOption":  "Mostra le informazioni sul sistema nella barra di stato del dispositivo",
+                           "systemMessageInputValidation":  "L'input non può essere vuoto.",
+                           "systemMessageLocaleValidation":  "Il campo non può essere vuoto.",
+                           "systemMessages":  "Informazioni sul supporto personalizzate",
+                           "systemMessagesDefaultColumnName":  "È un messaggio predefinito",
+                           "systemMessagesDefaultLanguageValue":  "Tutto, tranne quando specificato",
+                           "systemMessagesLanguageColumnName":  "Lingua",
+                           "systemMessagesMessageColumnName":  "Messaggio",
+                           "systemMessagesMessageEmptyValueKey":  "Immetti un messaggio personalizzato.",
+                           "systemMessagesShortSupportMessageLanguageEmptyValueKey":  "Seleziona le impostazioni locali.",
+                           "systemMessagesShortSupportMessageTableName":  "Messaggio di supporto breve",
                            "systemPageDescription":  "Blocca l'accesso a Sistema nell'app Impostazioni.",
                            "systemPageName":  "Sistema",
                            "systemScanName":  "Giorno e ora per l'esecuzione di un'analisi completa o veloce",
@@ -6353,7 +6466,7 @@
                            "userNameTypeName":  "Attributo nome utente da AAD",
                            "userPauseAccessDescription":  "Opzione di Windows Update che, se abilitata, consente agli utenti del dispositivo di sospendere gli aggiornamenti per un determinato numero di giorni.",
                            "userPauseAccessName":  "Opzione per la sospensione degli aggiornamenti di Windows",
-                           "userPrincipalNameOption":  "Nome entità utente",
+                           "userPrincipalNameOption":  "Nome dell'entità utente",
                            "userRightsAccessCredentialManagerAsTrustedCallerDesc":  "Questo diritto utente viene usato da Gestione credenziali durante il backup/ripristino. Se viene assegnato ad altre entità, le credenziali salvate dagli utenti potrebbero risultare compromesse. ",
                            "userRightsAccessCredentialManagerAsTrustedCallerName":  "Accesso a Gestione credenziali come chiamante trusted",
                            "userRightsActAsPartOfTheOperatingSystemDesc":  "Questo diritto utente consente a un processo di rappresentare qualsiasi utente senza autenticazione. ",
@@ -7156,7 +7269,7 @@
                            "add":  "Aggiungi",
                            "addAppConfiguration":  "Aggiungi la configurazione dell'app",
                            "addApps":  "Aggiungi app",
-                           "addCondition":  "Add condition",
+                           "addCondition":  "Aggiungi condizione",
                            "addConfigCommandLabel":  "Aggiungi configurazione",
                            "addPolicyBladeTitle":  "Aggiungi criteri",
                            "addPolicyError":  "Non è stato possibile aggiungere il criterio: {0}",
@@ -7170,6 +7283,8 @@
                            "allAppTypes":  "Tutti i tipi di app",
                            "allAppsOptionText":  "Tutte le app",
                            "allAppsWithData":  "Tutte le app con dati dell'organizzazione in ingresso",
+                           "allDestinationsOptionText":  "All destinations",
+                           "allSourcesOptionText":  "All sources",
                            "allow":  "Consentire",
                            "allowOverrides":  "Consenti sostituzioni",
                            "allowSpecifiedBlock":  "Consenti specificati (blocca non specificati)",
@@ -7179,6 +7294,7 @@
                            "androidPlatformLabel":  "Android",
                            "androidWorkProfile":  "Dispositivi con profilo di lavoro Android",
                            "anyAppOptionText":  "Qualsiasi app",
+                           "anyDestinationAnySourceOptionText":  "Any destination and any source",
                            "anyDialerAppOptionText":  "Qualsiasi app dialer",
                            "anyPolicyManagedDialerAppOptionText":  "Qualsiasi app dialer gestita da criteri",
                            "appAdded":  "L'app è stata aggiunta",
@@ -7442,7 +7558,7 @@
                            "guidedTemplate2":  "Verrà richiesto di specificare il livello di protezione che si vuole distribuire agli utenti. Per altre informazioni, vedere <a href = \"https://go.microsoft.com/fwlink/?linkid=2131582 \">Framework di protezione dei dati con i criteri di protezione delle app. </a>",
                            "guidediOSLabel":  "Protezione delle app iOS",
                            "hardwareBackedKey":  "Chiave basata su hardware",
-                           "healthCheck":  "Health Checks",
+                           "healthCheck":  "Controlli integrità",
                            "helpAndSupport":  "Guida e supporto tecnico",
                            "hideOverrides":  "Nascondi sostituzioni",
                            "highDataProtectionGuidedString":  "Protezione dei dati elevata: consente di espandere le impostazioni definite nella protezione dei dati avanzata introducendo impostazioni più complesse per i requisiti di accesso, ad esempio la disabilitazione del PIN semplice, e impostazioni per la protezione dei dati, ad esempio disabilitazione delle tastiere di terze parti.",
@@ -7523,6 +7639,8 @@
                            "noAssignments":  "Nessuna assegnazione",
                            "noConfigSelection":  "Selezionare una piattaforma e l'app",
                            "noConfiguredUsers":  "Non sono presenti utenti configurati",
+                           "noDestinationNoSourceOptionText":  "No destination or source",
+                           "noDestinationsOptionText":  "No destinations",
                            "noEmailToDisplay":  "Non è disponibile alcun indirizzo di posta elettronica",
                            "noOptionText":  "No",
                            "noPermissionPropertyLabel":  "Si ha già una sottoscrizione?",
@@ -7531,6 +7649,7 @@
                            "noPolicy":  "Nessun criterio",
                            "noProtectedUsers":  "Nessun utente protetto",
                            "noSelection":  "Selezionare una piattaforma, l'app e lo stato di protezione",
+                           "noSourcesOptionText":  "No sources",
                            "noSubscriptionPropertyLabel":  "Potrebbe essere necessaria una sottoscrizione",
                            "noSubscriptionPropertyLinkText":  "Prova Microsoft Intune adesso",
                            "noUnprotectedUsers":  "Nessun utente non protetto",
@@ -7769,6 +7888,7 @@
                            "weMovedToANewLocation":  "È stato eseguito lo spostamento in una nuova posizione",
                            "windows10AppProtectionPolicy":  "Criteri di protezione delle app di Windows 10 e versioni successive",
                            "windows10PlatformLabel":  "Windows 10 e versioni successive",
+                           "windowsInformationProtectionPlatformLabel":  "Windows Information Protection",
                            "windowsPlatformLabel":  "Windows",
                            "windowsProtectionReport":  "Report sulla protezione Windows",
                            "wipAddAppsSubtitle":  "Aggiungere le app Microsoft consigliate o aggiungere manualmente app dello Store o desktop da consentire tramite questo criterio.",
@@ -9731,7 +9851,9 @@
                      "whatIfIpAddressInfo":  "Indirizzo IP da cui l'utente esegue l'accesso.",
                      "whatIfIpCountryInfoBoxText":  "Se si usa un indirizzo IP o un paese, entrambi i campi sono obbligatori e devono essere mappati correttamente.",
                      "whatIfPolicyAppliesTab":  "Criteri applicabili",
+                     "whatIfPolicyAppliesTabWithCount":  "Applicable policies ({0})",
                      "whatIfPolicyDoesNotApplyTab":  "Criteri non applicabili",
+                     "whatIfPolicyDoesNotApplyTabWithCount":  "Inapplicable policies ({0})",
                      "whatIfReasons":  "Motivo della non applicabilità dei criteri",
                      "whatIfSelectClientApp":  "Selezionare un'app client...",
                      "whatIfSelectCountry":  "Selezionare il paese...",
@@ -10065,6 +10187,8 @@
                    "scopeTagsRequired":  "È necessario almeno un tag di ambito",
                    "searchAppLabel":  "Selezionare l'app",
                    "searchAppLinkText":  "Cerca in App Store",
+                   "searchWinGetPublicRepositoryLinkText":  "Cerca nel repository della community Gestione pacchetti Windows",
+                   "searchWinGetStoreRepositoryLinkText":  "Cerca nel repository Microsoft Store",
                    "selectAAD":  "Selezionare un attributo di AAD",
                    "selectAppFileLabel":  "Seleziona file",
                    "selectAppFileLinkText":  "Selezionare il file del pacchetto di app",
@@ -10116,6 +10240,7 @@
                              "deviceCompliance":  "Conformità del dispositivo",
                              "diskEncryption":  "Crittografia del disco",
                              "eDR":  "Rilevamento di endpoint e risposta",
+                             "ePM":  "Gestione dei privilegi endpoint",
                              "firewall":  "Firewall",
                              "helpSupport":  "Guida e supporto tecnico",
                              "setup":  "Installazione",
@@ -10878,7 +11003,7 @@
                                                                                                "deviceName":  "Nome dispositivo",
                                                                                                "deviceUpdateStatus":  "Stato di aggiornamento del dispositivo",
                                                                                                "lastUpdated":  "Ultimo aggiornamento",
-                                                                                               "osVersion":  "Versione sistema operativo",
+                                                                                               "osVersion":  "Versione del sistema operativo",
                                                                                                "userPrincipalName":  "Nome utente"
                                                                                            },
                                                                                "maximumOSVersionFilter":  "Versione massima del sistema operativo",
@@ -10950,7 +11075,7 @@
                                                         "listLoadError":  "Non è possibile caricare i profili di aggiornamento software macOS. Riprovare più tardi",
                                                         "lowercase":  "Criteri di aggiornamento macOs",
                                                         "other":  "Altro",
-                                                        "subtitle":  "Aggiornamento software macOS",
+                                                        "subtitle":  "Aggiornamento software MacOS",
                                                         "upToDate":  "Aggiornato",
                                                         "uppercase":  "Criteri di aggiornamento macOS"
                                                     },
@@ -11275,12 +11400,12 @@
                                           "gettingStarted":  "Riquadro attività iniziale",
                                           "messages":  "Messaggi",
                                           "onlineResources":  "Risorse in linea",
-                                          "releaseManagement":  "Release management",
+                                          "releaseManagement":  "Release Management",
                                           "serviceRequests":  "Richieste del servizio",
                                           "settings":  "Impostazioni",
-                                          "supportRequests":  "Support requests",
+                                          "supportRequests":  "Richieste di supporto",
                                           "tenantEnrollment":  "Registrazione del tenant",
-                                          "tenantManagement":  "Tenant management"
+                                          "tenantManagement":  "Gestione tenant"
                                       },
                    "actions":  "Azioni per la non conformità",
                    "advancedExchangeSettings":  "Impostazioni di Exchange Online",
@@ -11337,8 +11462,8 @@
                    "enrollmentRestrictions":  "Restrizioni registrazione",
                    "exchangeActiveSync":  "Exchange ActiveSync",
                    "exchangeServiceConnectors":  "Connettori di servizi Exchange",
-                   "failuresForFeatureUpdates":  "Errori degli aggiornamenti delle funzionalità (anteprima)",
-                   "failuresForQualityUpdates":  "Errori di aggiornamenti urgenti di Windows (anteprima)",
+                   "failuresForFeatureUpdates":  "Errori di aggiornamento delle funzionalità (anteprima)",
+                   "failuresForQualityUpdates":  "Errori di aggiornamento rapido di Windows (anteprima)",
                    "featureFlighting":  "Distribuzione di versioni di anteprima delle funzionalità",
                    "featureUpdateDeployments":  "Aggiornamenti delle funzionalità per Windows 10 e versioni successive (anteprima)",
                    "flighting":  "Distribuzione di versioni di anteprima",
@@ -11405,6 +11530,7 @@
                    "windows10QualityUpdate":  "Aggiornamenti qualitativi per Windows 10 e versioni successive (anteprima)",
                    "windows10UpdateRings":  "Anelli di aggiornamento per Windows 10 e versioni successive",
                    "windows10XPolicyFailures":  "Errori dei criteri di Windows 10X",
+                   "windows365Connector":  "Connettore Windows 365 Citrix",
                    "windowsEnterpriseCertificate":  "Certificato Windows Enterprise",
                    "windowsManagement":  "Script di PowerShell",
                    "windowsSideLoadingKeys":  "Chiavi di sideload Windows",

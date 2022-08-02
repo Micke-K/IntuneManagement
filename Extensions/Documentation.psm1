@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.3.0'
+    '1.4.0'
 }
 
 function Invoke-InitializeModule
@@ -1111,7 +1111,7 @@ function Get-IntentCategory
     {
         return (Get-LanguageString "SecurityTemplate.diskEncryption")
     }
-    elseif($templateType -eq "???")
+    elseif($templateType -eq "endpointDetectionReponse")
     {
         return (Get-LanguageString "SecurityTemplate.eDR")
     }    
@@ -1122,6 +1122,10 @@ function Get-IntentCategory
     elseif($templateType -eq "attackSurfaceReduction")
     {
         return (Get-LanguageString "SecurityTemplate.aSR")
+    }
+    elseif($templateType -eq "firewall")
+    {
+        return (Get-LanguageString "SecurityTemplate.firewall")
     }
     elseif($templateType -eq "securityBaseline" -or 
         $templateType -eq "advancedThreatProtectionSecurityBaseline" -or
@@ -1367,7 +1371,7 @@ function Get-IntentSettingInfo
     elseif($valueObj.'@odata.type' -eq '#microsoft.graph.deviceManagementAbstractComplexSettingInstance' -or
         $defObj.'@odata.type' -eq '#microsoft.graph.deviceManagementAbstractComplexSettingDefinition')
     {
-        $tmpDef = $category.settingDefinitions | Where id -eq $rawValue.implementationId
+        $tmpDef = $category.settingDefinitions | Where { $_.id -eq $rawValue.implementationId -or $_.id -eq $rawValue.'$implementationId' }
         if($tmpDef)
         {
             $itemValue = $tmpDef.displayName
@@ -1634,6 +1638,16 @@ function Invoke-TranslateProfileObject
         {
             $categoryObj = (Get-Content $fi.FullName -Encoding UTF8) | ConvertFrom-Json 
             $script:CurrentSubCategory = ""
+            
+            if($docProvider.TranslateSectionFile)
+            {
+                $retObj = & $docProvider.TranslateSectionFile $obj $objectType $fi $categoryObj
+                if($retObj -is [Boolean] -and $retObj -eq $true)
+                {
+                    # Handled by custom function
+                    continue
+                }
+            }            
             Invoke-TranslateSection $obj $categoryObj."$($fi.BaseName)" $objInfo            
         }
         catch 
@@ -3813,11 +3827,6 @@ function local:Invoke-StartDocumentatiom
                 if($fromExportFolder -eq $false)
                 {
                     $graphObjects = @(Get-GraphObjects -property $objectType.ViewProperties -objectType $objectType)
-                
-                    if($objectType.PostListCommand)
-                    {
-                        $graphObjects = & $objectType.PostListCommand $graphObjects $objectType
-                    }
                 }
                 else
                 {
@@ -3844,7 +3853,7 @@ function local:Invoke-StartDocumentatiom
             }
             else
             {
-                $sortProps = @((?? $objectType.NameProperty "displayName"))
+                $sortProps = @({$_.ObjectType.Title}, (?? $objectType.NameProperty "displayName"))
             }
             $sourceList += $groupSourceList | Sort-Object -Property $sortProps
         }
@@ -3895,6 +3904,15 @@ function local:Invoke-StartDocumentatiom
     $tmpCurObjectType = $null
     $tmpCurObjectGroup = $null
     $allObjectTypeObjects = @()
+    if($objGroup.GroupId -eq "EndpointSecurity")
+    {
+        $groupCategoryCount = ($sourceList | ForEach-Object { $_.CategoryName } | Select -Unique).Count
+    }
+    else
+    {
+        $groupCategoryCount = ($sourceList | ForEach-Object { $_.ObjectType.Id } | Select -Unique).Count
+    }
+
     foreach($tmpObj in ($sourceList))
     {
         if($allObjectTypeObjects.Count -gt 0 -and $tmpCurObjectGroup -ne $tmpObj.ObjectType.GroupId -and $tmpCurObjectType -ne $tmpObj.ObjectType.Id)
@@ -3957,19 +3975,27 @@ function local:Invoke-StartDocumentatiom
                     $ret = & $global:cbDocumentationType.SelectedItem.NewObjectGroup $obj $documentedObj
                     if($ret -is [boolean] -and $ret -eq $true) { continue }
                 }
-                $tmpCurObjectGroup = $obj.ObjectType.GroupId                    
+                $tmpCurObjectGroup = $obj.ObjectType.GroupId
             }
 
-            if($tmpCurObjectType -ne $obj.ObjectType.Id)
+            if(($objGroup.GroupId -eq "EndpointSecurity" -and $tmpObj.CategoryName -ne $tmpCurObjectType) -or            
+                ($objGroup.GroupId -ne "EndpointSecurity" -and $tmpCurObjectType -ne $obj.ObjectType.Id))
             {                
                 # New object type e.g Administrative Template, VPN profile etc.
                 if($global:cbDocumentationType.SelectedItem.NewObjectType)
                 {
                     Write-Status "Run NewObjectType for $($global:cbDocumentationType.SelectedItem.Name)"
-                    $ret = & $global:cbDocumentationType.SelectedItem.NewObjectType $obj $documentedObj
+                    $ret = & $global:cbDocumentationType.SelectedItem.NewObjectType $tmpObj $documentedObj $groupCategoryCount
                     if($ret -is [boolean] -and $ret -eq $true) { continue }
                 }
-                $tmpCurObjectType = $obj.ObjectType.Id
+                if($objGroup.GroupId -eq "EndpointSecurity")
+                {
+                    $tmpCurObjectType = $tmpObj.CategoryName
+                }
+                else
+                {
+                    $tmpCurObjectType = $obj.ObjectType.Id
+                }
                 $allObjectTypeObjects = @()
             }                
 
@@ -4042,7 +4068,7 @@ function local:Invoke-StartDocumentatiom
                         if($global:chkSkipNotConfigured.IsChecked -and $item.Value -eq $notConfiguredLoc)
                         {
                             # Skip unconfigured items based on value e.g. value = Not Configured 
-                            Write-Log "Skipping property $($itenm.Name) based on '$($notConfiguredLoc)' string value" 2
+                            Write-Log "Skipping property $($item.Name) based on '$($notConfiguredLoc)' string value" 2
                             continue
                         }
 

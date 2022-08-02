@@ -305,6 +305,7 @@
                      "airPrint":  "AirPrint",
                      "androidDefenderAtp":  "Microsoft Defender dla punktu końcowego",
                      "androidDeviceOwnerApplications":  "Aplikacje",
+                     "androidDeviceOwnerPolicyMessages":  "Niestandardowe informacje o pomocy technicznej",
                      "androidForWorkPassword":  "Hasło urządzenia",
                      "appManagement":  "Zezwalaj na aplikacje lub blokuj je",
                      "applicationGuard":  "Microsoft Defender Application Guard",
@@ -318,13 +319,15 @@
                      "autonomousSingleAppMode":  "Autonomiczny tryb pojedynczej aplikacji",
                      "azureOperationalInsights":  "Azure Operational Insights",
                      "bitLocker":  "Szyfrowanie systemu Windows",
+                     "bootOptions":  "Opcje rozruchu",
                      "browser":  "Przeglądarka",
                      "builtinApps":  "Aplikacje wbudowane",
+                     "cameras":  "Kamery",
                      "cellular":  "Sieć komórkowa",
                      "cloudAndStorage":  "Chmura i magazyn",
                      "cloudPrint":  "Drukarka w chmurze",
                      "complianceEmailProfile":  "Wiadomość e-mail",
-                     "connectedDevices":  "Połączone urządzenia",
+                     "connectedDevices":  "Podłączone urządzenia",
                      "connectivity":  "Sieć komórkowa i łączność",
                      "contentCaching":  "Buforowanie zawartości",
                      "controlPanelAndSettings":  "Panel sterowania i Ustawienia",
@@ -334,6 +337,7 @@
                      "customConfiguration":  "Niestandardowy profil konfiguracji",
                      "customOMASettings":  "Niestandardowe ustawienia OMA-URI",
                      "customPreferences":  "Plik preferencji",
+                     "dFCISecuritySettings":  "Ustawienia zabezpieczeń",
                      "defender":  "Program antywirusowy Microsoft Defender",
                      "defenderAntivirus":  "Program antywirusowy Microsoft Defender",
                      "defenderExploitGuard":  "Microsoft Defender Exploit Guard",
@@ -392,6 +396,7 @@
                      "maintenance":  "Konserwacja",
                      "malware":  "Złośliwe oprogramowanie",
                      "messaging":  "Obsługa komunikatów",
+                     "microphonesAndSpeakers":  "Mikrofon i głośniki",
                      "networkBoundary":  "Granica sieci",
                      "networkProxy":  "Serwer proxy sieci",
                      "notifications":  "Powiadomienia aplikacji",
@@ -400,12 +405,14 @@
                      "personalProfile":  "Profil osobisty",
                      "personalization":  "Personalizacja",
                      "policyOverride":  "Przesłoń zasady grupy",
+                     "ports":  "Porty",
                      "powerSettings":  "Ustawienia zasilania",
                      "printer":  "Drukarka",
                      "privacy":  "Prywatność",
                      "privacyPerApp":  "Wyjątki prywatności dla aplikacji",
                      "privacyPreferences":  "Preferencje dotyczące prywatności",
                      "projection":  "Projekcja",
+                     "radios":  "Radia",
                      "sCCMCompliance":  "Zgodność z programem Configuration Manager",
                      "sCEP":  "Certyfikat SCEP",
                      "sCEPProperties":  "Certyfikat SCEP",
@@ -422,6 +429,7 @@
                      "systemExtensions":  "Rozszerzenia systemu",
                      "systemSecurity":  "Zabezpieczenia systemu",
                      "trustedCert":  "Certyfikat zaufany",
+                     "uEFIAccess":  "Dostęp do interfejsu UEFI",
                      "updates":  "Aktualizacje",
                      "userRights":  "Prawa użytkownika",
                      "usersAndAccounts":  "Użytkownicy i konta",
@@ -435,6 +443,7 @@
                      "vPNProxy":  "Serwer proxy",
                      "vPNSplitTunneling":  "Tunelowanie podzielone",
                      "vPNTrustedNetwork":  "Wykrywanie zaufanych sieci",
+                     "wakeSettings":  "Ustawienia wznawiania",
                      "webContentFilter":  "Filtr zawartości internetowej",
                      "wiFi":  "Sieć Wi-Fi",
                      "win10Wifi":  "Sieć Wi-Fi",
@@ -571,6 +580,29 @@
                                                            "tooltip":  "Określ, czy użytkownik może używać niestandardowego motywu wizualnego."
                                                        }
                                  },
+    "CustomCompliance":  {
+                             "FilePicker":  {
+                                                "noScriptSelectedError":  "Wybierz skrypt odnajdywania",
+                                                "scriptFileLabel":  "Wybierz swój skrypt odnajdywania"
+                                            },
+                             "PremiumBanner":  {
+                                                   "label":  "Zgodność niestandardowa jest obecnie oferowana w wersji zapoznawczej. Gdy stanie się ogólnie dostępna, możesz dodać ją za dodatkową opłatą do opcji licencjonowania obejmujących program Microsoft Endpoint Manager lub usługę Intune."
+                                               },
+                             "ScriptPicker":  {
+                                                  "objectName":  "Skrypt",
+                                                  "placeholder":  "Kliknij, aby wybrać",
+                                                  "searchboxPlaceholder":  "Wyszukaj według nazwy skryptu",
+                                                  "title":  "Wybierz skrypt odnajdywania"
+                                              },
+                             "SummaryGrid":  {
+                                                 "ariaLabel":  "Podsumowanie reguł zgodności niestandardowej"
+                                             },
+                             "UploadFile":  {
+                                                "jsonFileLabel":  "Przekaż i zweryfikuj plik JSON przy użyciu niestandardowych ustawień zgodności",
+                                                "noFileSelectedError":  "Wybierz plik json",
+                                                "parseFileSelectedError":  "Plik json jest nieprawidłowy"
+                                            }
+                         },
     "AssignmentFilters":  {
                               "assignmentFilterColumnHeader":  "Filtruj",
                               "noFilters":  "Brak"
@@ -1036,6 +1068,41 @@
                                                         "v81":  "Windows Phone 8.1"
                                                     }
                                },
+    "EnrollmentStatusScreen":  {
+                                   "Apps":  {
+                                                "allowNonBlockingAppInstallation":  "Tylko wybrane aplikacje blokujące zakończone niepowodzeniem w fazie techników",
+                                                "apps":  "aplikacje",
+                                                "appsListName":  "Lista aplikacji",
+                                                "blockingApps":  "Blokowanie aplikacji",
+                                                "managedApps":  "Aplikacje zarządzane",
+                                                "noApps":  "Brak aplikacji",
+                                                "noAppsError":  "Błąd podczas pobierania aplikacji",
+                                                "selectApps":  "Wybierz aplikacje",
+                                                "selectedAppsCount":  "Wybrane aplikacje: {0} (maks. 100)",
+                                                "useSelectedAppsAll":  "Wszystkie",
+                                                "useSelectedAppsSelected":  "Wybrane",
+                                                "useSelectedAppsToggleLabel":  "Blokuj użycie urządzenia, dopóki nie zostaną zainstalowane wymagane aplikacje, jeśli są przypisane do użytkownika/urządzenia"
+                                            },
+                                   "Header":  {
+                                                  "application":  "Aplikacja",
+                                                  "publisher":  "Wydawca",
+                                                  "version":  "Wersja"
+                                              },
+                                   "SearchBox":  {
+                                                     "placeHolder":  "Wyszukaj według nazwy lub wydawcy"
+                                                 },
+                                   "allowToUseToggle":  "Zezwalaj użytkownikom na używanie urządzenia, jeśli wystąpi błąd instalacji",
+                                   "blockToggle":  "Zablokuj możliwość korzystania z urządzenia, dopóki nie zostaną zainstalowane wszystkie aplikacje i profile",
+                                   "blockToolTip":  "Jeśli na przykład dodasz program Microsoft Word do tej listy, docelowi użytkownicy i urządzenia nie będą mogli opuścić strony stanu rejestracji do czasu pomyślnego zainstalowania programu Word.",
+                                   "collectLogToggle":  "Włącz zbieranie dzienników i stronę diagnostyczną dla użytkowników końcowych",
+                                   "create":  "Tworzenie profilu",
+                                   "customMessageTextBox":  "Komunikat o błędzie",
+                                   "customMessageToggle":  "Pokaż niestandardowy komunikat, gdy wystąpi limit czasu lub błąd",
+                                   "enableForAutopilotOnlyToggle":  "Pokaż stronę tylko urządzeniom aprowizowanym za pomocą środowiska out-of-box experience (OOBE)",
+                                   "progressToggle":  "Pokaż postęp konfiguracji aplikacji i profilu",
+                                   "resetToggle":  "Zezwalaj użytkownikom na resetowanie urządzenia, jeśli wystąpi błąd instalacji",
+                                   "timeout":  "Pokaż błąd, jeśli instalacja trwa dłużej niż określona liczba minut"
+                               },
     "TableHeaders":  {
                          "activity":  "Aktywność",
                          "actor":  "Zainicjowane przez (aktor)",
@@ -1154,7 +1221,7 @@
                          "updateScheduleType":  "Typ harmonogramu",
                          "updateStatus":  "Stan aktualizacji",
                          "user":  "Użytkownik",
-                         "userPrincipalName":  "Nazwa główna użytkownika",
+                         "userPrincipalName":  "Główna nazwa użytkownika",
                          "users":  "Użytkownicy",
                          "usersExcluded":  "Wykluczeni użytkownicy",
                          "usersTargeted":  "Docelowi użytkownicy",
@@ -1251,6 +1318,7 @@
                     "builtInApp":  "Aplikacja wbudowana",
                     "builtInIos":  "Wbudowana aplikacja systemu iOS",
                     "default":  "",
+                    "iosIPadOSWebClip":  "Klip internetowy systemu iOS/iPadOS",
                     "iosLobApp":  "Aplikacja biznesowa dla systemu iOS",
                     "iosStoreApp":  "Aplikacja w sklepie dla systemu iOS",
                     "iosVppApp":  "Aplikacja nabyta w programie zakupów zbiorczych dla systemu iOS",
@@ -1282,7 +1350,8 @@
                     "windowsPhoneXapLobApp":  "Aplikacja biznesowa XAP systemu Windows Phone",
                     "windowsStoreApp":  "Aplikacja ze sklepu Microsoft Store",
                     "windowsUniversalAppXLobApp":  "Uniwersalna aplikacja biznesowa AppX systemu Windows",
-                    "windowsUniversalLobApp":  "Uniwersalna aplikacja biznesowa systemu Windows"
+                    "windowsUniversalLobApp":  "Uniwersalna aplikacja biznesowa systemu Windows",
+                    "windowsWebApp":  "Link internetowy systemu Windows"
                 },
     "TAPSettings":  {
                         "AllowedDataIngestionLocations":  {
@@ -1295,7 +1364,7 @@
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "Zabezpieczenia biometryczne zamiast kodu PIN na potrzeby dostępu",
-                                                               "tooltip":  "Wybierz, których metod uwierzytelniania systemu Android (jeśli w ogóle) ludzie mogą używać w zastępstwie kodu PIN aplikacji."
+                                                               "tooltip":  "Umożliwia korzystanie z metod uwierzytelniania biometrycznego systemu Android zamiast numeru PIN aplikacji, jeśli są dostępne."
                                                            },
                         "AndroidFingerprint":  {
                                                    "label":  "Odcisk palca zamiast kodu PIN na potrzeby dostępu (Android 6.0 lub nowszy)",
@@ -1421,12 +1490,12 @@
                                                    "tooltip":  "Jeśli aplikacja zarządzana przez zasady jest nieaktywna przez czas dłuższy niż podana liczba minut nieaktywności, będzie monitować o ponowne sprawdzenie wymagań dostępu (tzn. kodu PIN, ustawień uruchamiania warunkowego) po uruchomieniu aplikacji."
                                                },
                         "RequireClass3Biometrics":  {
-                                                        "label":  "Class 3 Biometrics (Android 9.0+)",
-                                                        "tooltip":  "For more information on class 3 biometrics refer to the documentation available <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">here</a>"
+                                                        "label":  "Biometria klasy 3 (Android 9.0+)",
+                                                        "tooltip":  "Aby uzyskać więcej informacji o biometrii klasy 3, zapoznaj się z dokumentacją dostępną <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">here</a>"
                                                     },
                         "RequirePinAfterBiometricChange":  {
-                                                               "label":  "Override Biometrics with PIN after biometric updates",
-                                                               "tooltip":  "If class 3 biometrics are supported by the device (more info <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>), when a change in biometrics is detected, a PIN prompt will override biometric prompts."
+                                                               "label":  "Zastąp biometrię numerem PIN po aktualizacjach biometrycznych",
+                                                               "tooltip":  "Jeśli urządzenie obsługuje biometrię klasy 3 (więcej informacji <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">tutaj</a>), gdy zostanie wykryta zmiana biometrii, monit o podanie numeru PIN spowoduje zastąpienie monitów biometrycznych."
                                                            },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "Identyfikator pakietu musi być unikatowy.",
@@ -1467,6 +1536,22 @@
                         "Timeout":  {
                                         "label":  "Limit czasu (w minutach nieaktywności)"
                                     },
+                        "WinCutCopyPaste":  {
+                                                "label":  "Allow cut, copy, and paste for",
+                                                "tooltip":  "Select one of the following options to specify the sources and destinations org users can cut or copy or paste org data: <br/>\n\n<b>Any destination and any source</b>: Org users can paste data from and cut/copy data to any account, document, location or application.<br/>\n\n<b>No destination or source</b>: Org users cannot cut, copy or paste data to or from external accounts, documents, locations or applications from or into the org context."
+                                            },
+                        "WinPrintData":  {
+                                             "label":  "Print org data",
+                                             "tooltip":  "Select <b>Block</b> to prevent printing of org data. Select <b>Allow</b> to permit printing of org data. Personal or unmanaged data is not affected."
+                                         },
+                        "WinReceiveData":  {
+                                               "label":  "Receive data from",
+                                               "tooltip":  "Select one of the following options to specify the sources org users can receive data from: <br/>\n\n<b>No sources</b>: Org users cannot open data from external accounts, documents, locations or applications into the org context.<br/>\n\n<b>All sources</b>: Org users can open data from any account, document, location or application into the org context.\n"
+                                           },
+                        "WinSendData":  {
+                                            "label":  "Send org data to",
+                                            "tooltip":  "Select one of the following options to specify the destinations org users can send data to: <br/>\n\n<b>No destinations</b>: Org users cannot send org data to external accounts, documents, locations or applications from the org context.<br/>\n\n<b>All destinations</b>: Org users can send org data to any account, document, location or application."
+                                        },
                         "Tap":  {
                                     "numberOfDays":  "Liczba dni",
                                     "pinResetAfterNumberOfDays":  "Zresetowanie numeru PIN po upływie pewnej liczby dni",
@@ -1524,38 +1609,15 @@
                           "required":  "Wymagane",
                           "uninstall":  "Odinstaluj"
                       },
-    "EnrollmentStatusScreen":  {
-                                   "Apps":  {
-                                                "apps":  "aplikacje",
-                                                "appsListName":  "Lista aplikacji",
-                                                "managedApps":  "Aplikacje zarządzane",
-                                                "noApps":  "Brak aplikacji",
-                                                "noAppsError":  "Błąd podczas pobierania aplikacji",
-                                                "selectApps":  "Wybierz aplikacje",
-                                                "selectedAppsCount":  "Wybrane aplikacje: {0} (maks. 100)",
-                                                "useSelectedAppsAll":  "Wszystkie",
-                                                "useSelectedAppsSelected":  "Wybrane",
-                                                "useSelectedAppsToggleLabel":  "Blokuj użycie urządzenia, dopóki nie zostaną zainstalowane wymagane aplikacje, jeśli są przypisane do użytkownika/urządzenia"
-                                            },
-                                   "Header":  {
-                                                  "application":  "Aplikacja",
-                                                  "publisher":  "Wydawca",
-                                                  "version":  "Wersja"
-                                              },
-                                   "SearchBox":  {
-                                                     "placeHolder":  "Wyszukaj według nazwy lub wydawcy"
-                                                 },
-                                   "allowToUseToggle":  "Zezwalaj użytkownikom na używanie urządzenia, jeśli wystąpi błąd instalacji",
-                                   "blockToggle":  "Zablokuj możliwość korzystania z urządzenia, dopóki nie zostaną zainstalowane wszystkie aplikacje i profile",
-                                   "blockToolTip":  "Jeśli na przykład dodasz program Microsoft Word do tej listy, docelowi użytkownicy i urządzenia nie będą mogli opuścić strony stanu rejestracji do czasu pomyślnego zainstalowania programu Word.",
-                                   "collectLogToggle":  "Włącz zbieranie dzienników i stronę diagnostyczną dla użytkowników końcowych",
-                                   "create":  "Tworzenie profilu",
-                                   "customMessageTextBox":  "Komunikat o błędzie",
-                                   "customMessageToggle":  "Pokaż niestandardowy komunikat, gdy wystąpi limit czasu lub błąd",
-                                   "enableForAutopilotOnlyToggle":  "Pokaż stronę tylko urządzeniom aprowizowanym za pomocą środowiska out-of-box experience (OOBE)",
-                                   "progressToggle":  "Pokaż postęp konfiguracji aplikacji i profilu",
-                                   "resetToggle":  "Zezwalaj użytkownikom na resetowanie urządzenia, jeśli wystąpi błąd instalacji",
-                                   "timeout":  "Pokaż błąd, jeśli instalacja trwa dłużej niż określona liczba minut"
+    "CustomComplianceScript":  {
+                                   "CustomScriptWizardTitle":  {
+                                                                   "create":  "Utwórz skrypt niestandardowy",
+                                                                   "edit":  "Edytuj skrypt niestandardowy"
+                                                               },
+                                   "basicInfo":  "Utwórz nowy niestandardowy pakiet skryptu na podstawie napisanych przez siebie skryptów wykrywania i korygowania.",
+                                   "customScriptCapitalized":  "Skrypt niestandardowy",
+                                   "customScriptLowercase":  "skrypt niestandardowy",
+                                   "detectionScript":  "Skrypt wykrywania"
                                },
     "Devices":  {
                     "General":  {
@@ -1769,6 +1831,27 @@
                                                       "windowsIdentityProtection":  "Korzystając z usługi Intune, możesz używać tego profilu konfiguracji urządzeń do zarządzania ustawieniami funkcji Windows Hello dla firm na urządzeniach z systemem Windows.<br><br>Czy wiesz? Rozważ przejście do obszaru <a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\">Zabezpieczenia punktów końcowych</a>, aby utworzyć profil zabezpieczeń punktów końcowych lub profil punktu odniesienia zabezpieczeń w celu konfigurowania typowych funkcji zabezpieczeń do ochrony punktów końcowych. <br><br>Profile zabezpieczeń punktów końcowych zapewniają zwięzły, odpowiednio dobrany zestaw szablonów zabezpieczeń obejmujących zaporę, funkcję BitLocker, oprogramowanie antywirusowe i nie tylko. Profile punktów odniesienia zabezpieczeń to szablony z wstępnie skonfigurowanymi wartościami ustawień zalecanymi przez ekspertów ds. zabezpieczeń.",
                                                       "wiredNetwork":  "Skonfiguruj sieć przewodową, aby zapewnić dostęp innym osobom."
                                                   },
+                           "SupportMessagesLanguageDropdown":  {
+                                                                   "chineseSimplified":  "Chiński (uproszczony)",
+                                                                   "chineseTraditional":  "Chiński (tradycyjny)",
+                                                                   "czech":  "Czeski",
+                                                                   "dutch":  "Holenderski",
+                                                                   "englishUS":  "Angielski (Stany Zjednoczone)",
+                                                                   "frenchFrance":  "Francuski (Francja)",
+                                                                   "german":  "Niemiecki",
+                                                                   "hungarian":  "Węgierski",
+                                                                   "indonesian":  "Indonezyjski",
+                                                                   "italian":  "Włoski",
+                                                                   "japanese":  "Japoński",
+                                                                   "korean":  "Koreański",
+                                                                   "polish":  "Polski",
+                                                                   "portugueseBrazil":  "Portugalski (Brazylia)",
+                                                                   "portuguesePortugal":  "Portugalski (Portugalia)",
+                                                                   "russian":  "Rosyjski",
+                                                                   "spanishSpain":  "Hiszpański (Hiszpania)",
+                                                                   "swedish":  "szwedzki",
+                                                                   "turkish":  "Turecki"
+                                                               },
                            "TrustedCert":  {
                                                "uploadControlPlaceHolderText":  "Wybierz prawidłowy plik cer"
                                            },
@@ -1823,6 +1906,7 @@
                            "allEnrollmentTypesHeaderName":  "Wszystkie typy rejestracji",
                            "allEnrollmentTypesHeaderNameMac":  "Wszystkie typy rejestracji",
                            "allEnrollmentTypesSecondDescription":  "Żądanie hasła automatycznie wymusza wymaganie nieprostego, 6-cyfrowego numeru PIN na wszystkich urządzeniach zarejestrowanych przez użytkowników, niezależnie od tego, co skonfigurowano dla tych ustawień.",
+                           "allFeaturesOption":  "Wszystkie funkcje",
                            "allManagedApps":  "Wszystkie aplikacje zarządzane",
                            "allOtherUpdatesBehaviorName":  "Wszystkie inne aktualizacje (system operacyjny, aplikacje wbudowane)",
                            "allowActivationLockWhenSupervisedDescription":  "Blokada aktywacji utrudnia ponowne aktywowanie utraconego lub skradzionego urządzenia.",
@@ -2125,6 +2209,7 @@
                            "batteryLevelTurnOnEnergySaverPluggedInDescription":  "To ustawienie zasad umożliwia określenie poziomu naładowania baterii, przy którym ma zostać włączona funkcja oszczędzania energii, gdy urządzenie jest zasilane z sieci. <br/>Jeśli to ustawienie zasad zostanie włączone, należy podać wartość procentową oznaczającą poziom naładowania baterii. Przy tym poziomie (i niższym) naładowania baterii nastąpi automatyczne włączenie funkcji oszczędzania energii. <br/>Jeśli to ustawienie zasad zostanie wyłączone lub nie zostanie skonfigurowane, użytkownicy będą mogli kontrolować to ustawienie.​",
                            "bing":  "Bing",
                            "biometricWeak":  "Słabe zabezpieczenia biometryczne",
+                           "biometricsOption":  "Uwierzytelnianie biometryczne",
                            "bitLockerAllowStdUsersEncryptAADJoinDescription":  "Zezwalaj użytkownikom bez praw administracyjnych na włączanie szyfrowania za pomocą funkcji BitLocker na maszynie lokalnej. To ustawienie ma zastosowanie tylko do urządzeń przyłączonych do usługi Azure Active Directory.",
                            "bitLockerAllowStdUsersEncryptAADJoinName":  "Zezwalaj użytkownikom standardowym na włączanie szyfrowania podczas przyłączania do usługi Azure AD",
                            "bitLockerBaseConfigureEncryptionMethodsDescription":  "Wybranie opcji „Włącz” pozwala skonfigurować metody szyfrowania dla dysków systemu operacyjnego, stałych dysków z danymi i wymiennych dysków z danymi. W przypadku wybrania opcji „Nie skonfigurowano” funkcja BitLocker użyje domyślnej metody szyfrowania dysków.",
@@ -2657,10 +2742,8 @@
                            "booleanName":  "Wartość logiczna",
                            "bootFromBuiltInNetworkAdaptersName":  "Rozruch z kart sieciowych",
                            "bootFromExternalMediaName":  "Rozruch z nośnika zewnętrznego (USB, SD)",
-                           "bootOptionsName":  "Opcje rozruchu",
                            "bothOneToOneAndDeviceOption":  "Oba",
                            "browserDefault":  "Domyślne ustawienia przeglądarki",
-                           "builtInHardwareName":  "Wbudowany sprzęt",
                            "builtinAppOption":  "Aplikacja wbudowana",
                            "bundleId":  "Identyfikator pakietu",
                            "bundleIdExample":  "np. com.apple.calculator",
@@ -3210,6 +3293,7 @@
                            "devicesPageDescription":  "Blokuj dostęp do obszaru Urządzenia w aplikacji Ustawienia.",
                            "devicesPageName":  "Urządzenia",
                            "dfciBuiltinHeaderDescName":  "Interfejs DFCI może zarządzać tylko składnikami sprzętowymi wbudowanymi w urządzenie. Za pomocą tych ustawień nie można zarządzać dołączonymi urządzeniami peryferyjnymi (np. internetowymi kamerami USB).",
+                           "dfciGranularSettingsWarningInfoBox":  "Ostrzeżenie! Poniższe opcje dotyczą tylko niektórych typów urządzeń. W przypadku urządzenia, którego dotyczy brak uprawnień, będzie zgłoszone jako nieskarżone, a urządzenia mogą nie być chronione. <a href=\"https://docs.microsoft.com/mem/intune/configuration/device-firmware-configuration-interface-windows-settings\" > Dowiedz się więcej</a> ",
                            "dfciHeaderName":  "Zarządzaj zdalnie ustawieniami interfejsu UEFI urządzenia za pomocą interfejsu Device Firmware Configuration Interface (DFCI). <a href=\"https://go.microsoft.com/fwlink/?linkid=2028892\" target=\"_blank\">Dowiedz się więcej</a>. <br>\r\n      <br>Tymi ustawieniami możesz zarządzać tylko w przypadku urządzeń spełniających następujące wymagania:\r\n      <li>Producent urządzenia wspiera interfejs DFCI. </li>\r\n      <li>Urządzenie jest zarejestrowane w usłudze wdrażania Windows Autopilot. </li>\r\n      <li>Urządzenie zostało ponownie uruchomione od czasu ostatniej synchronizacji z usługą MDM. </li>",
                            "diagnosticDataSubmissionLevelDescription":  "Wybierz poziom przesyłania danych diagnostycznych. Rozszerzony poziom nie jest obsługiwany po zainstalowaniu systemu Windows w wersji 1903.",
                            "diffieHellmanGroupName":  "Grupa protokołu Diffiego-Hellmana",
@@ -3778,6 +3862,7 @@
                            "f5NetworksF5AccessOption":  "F5 Access",
                            "fFiveEdgeClientOption":  "F5 Access",
                            "fFiveLegacyAccessOption":  "F5 Access (starsza wersja)",
+                           "faceOption":  "Uwierzytelnianie twarzą",
                            "factoryResetDisabledDescription":  "Blokuj resetowanie do ustawień fabrycznych z poziomu ustawień.",
                            "factoryResetDisabledName":  "Resetowanie do ustawień fabrycznych",
                            "factoryResetName":  "Resetowanie do ustawień fabrycznych",
@@ -4134,6 +4219,7 @@
                            "ipAddress":  "Adres IP",
                            "ipAddressDescription":  "Jeśli używasz nazw hostów do identyfikowania miejsc docelowych drukarek, możesz uzyskać ich adresy IP poprzez wysłanie polecenia ping w terminalu. Pole może zawierać adresy i porty IPv4 lub IPv6.",
                            "ipAutoDetectionName":  "Automatyczne wykrywanie innych zakresów adresów IP przedsiębiorstwa",
+                           "irisOption":  "Uwierzytelnianie Iris",
                            "issuerHashDescription":  "Odcisk palca certyfikatu logowania jednokrotnego",
                            "issuerHashName":  "Skrót wydawcy",
                            "keepGoing":  "Pokaż komunikat z opcją otwierania witryn w przeglądarce Microsoft Edge",
@@ -4611,6 +4697,13 @@
                            "loginWindowSleepDisabledUsersName":  "Ukryj przycisk uśpienia",
                            "loginWindowTextDescription":  "Komunikat wyświetlany użytkownikom na ekranie logowania. Może to być na przykład powitanie, ostrzeżenie lub dane kontaktowe biura rzeczy znalezionych w organizacji.",
                            "loginWindowTextName":  "Baner",
+                           "longSupportMessageDefault":  "Administrator IT organizacji może monitorować aplikacje i dane skojarzone z tym urządzeniem oraz zarządzać nimi, w tym ustawieniami, uprawnieniami, dostępem firmowym, aktywnością sieciową i informacjami o lokalizacji urządzenia.",
+                           "longSupportMessageDescription":  "Długi komunikat pomocy technicznej to tekst wyświetlany użytkownikowi końcowemu przez platformę na stronie Zasady urządzenia w obszarze Ustawienia > Zabezpieczenia > Aplikacje administratora urządzeń. Na platformie jest to zwykle dostępne, klikając pozycję „ Dowiedz się więcej” w krótkim oknie dialogowym komunikatu pomocy technicznej. Komunikat językowy „Wszystkie” jest wyświetlany, jeśli wiadomość niestandardowa nie jest określona dla domyślnego języka urządzenia. ",
+                           "longSupportMessageGridHeader":  "Zlokalizowany długi komunikat pomocy technicznej",
+                           "longSupportMessageName":  "Długi komunikat pomocy technicznej",
+                           "longSystemMessageHint":  "(maksymalnie 4096 znaków)",
+                           "longSystemMessageLengthValidation":  "Długość danych wejściowych nie może przekraczać 4096 znaków.",
+                           "longSystemMessagesSummaryKey":  "Długi komunikat pomocy technicznej",
                            "low":  "Niska",
                            "lowOption":  "Niskie",
                            "lowSecurityBiometricOption":  "Zabezpieczenia biometryczne niskiego poziomu",
@@ -5341,7 +5434,6 @@
                            "policySubjectAlternativeNameHelp":  "Przejrzyj dokumentację dotyczącą nazwy SAN, aby dowiedzieć się, jak najlepiej użyć pola SAN.",
                            "policyUniversalResourceIdentifier":  "Identyfikator URI",
                            "policyUserPrincipalName":  "Nazwa główna użytkownika",
-                           "portName":  "Porty",
                            "portNumberDescription":  "Jeśli serwer proxy używa konkretnego portu, wprowadź go tutaj.",
                            "portNumberName":  "Numer portu",
                            "postponeRebootUntilAfterDeadlineDescription":  "Określa, czy urządzenie ma zostać automatycznie ponownie uruchomione przed terminem ostatecznym",
@@ -5477,6 +5569,9 @@
                            "proxyAddressExampleUpper":  "np. 10.0.0.122",
                            "proxyAutoConfigGlobalProxyOption":  "Automatyczna konfiguracja serwera proxy",
                            "proxyDNSExample":  "np. http://proxy.com",
+                           "proxyExclusionListDescription":  "Dodaj nazwy hostów, aby uniemożliwić im wyznaczanie tras przez serwer proxy.",
+                           "proxyExclusionListExample":  "np. test.contoso.com",
+                           "proxyExclusionListName":  "Lista wykluczeń",
                            "proxyPortExample":  "np. 8080",
                            "proxyPortExampleUpper":  "np. 9080",
                            "proxyServerAddressDescription":  "Wprowadź adres IP serwera proxy.",
@@ -5608,7 +5703,7 @@
                            "restrictPeerSelectionByDescription":  "Ogranicza wybór węzłów równorzędnych za pośrednictwem wybranej opcji. Ma zastosowanie do trybów pobierania w ramach translatora adresów sieciowych (1) i grupy (2).",
                            "restrictPeerSelectionByName":  "Ogranicz wybór węzłów równorzędnych",
                            "restrictedAppsAppName":  "Nazwa aplikacji",
-                           "restrictedAppsBundleId":  "Identyfikator pakietu aplikacji",
+                           "restrictedAppsBundleId":  "Identyfikator zbioru aplikacji",
                            "restrictedAppsHelpDescription":  "Dodaj identyfikatory pakietów dla aplikacji, które mają zostać ograniczone. Urządzenie, które ma zainstalowaną co najmniej jedną aplikację znajdującą się na liście ograniczonych aplikacji, zostanie oznaczone jako niezgodne.",
                            "restrictedAppsListOptionsDescription":  "Zgodność urządzenia można wyświetlić w raporcie zgodności ograniczonych aplikacji.",
                            "restrictedAppsListOptionsName":  "Typ listy aplikacji ograniczonych",
@@ -5653,7 +5748,7 @@
                            "sCEPPolicyExtendedKeyUsageName":  "Użycie kluczy rozszerzonych",
                            "sCEPPolicyHashAlgorithmDescription":  "Użyj typu algorytmu wyznaczania wartości skrótu z certyfikatem. Wybierz najwyższy poziom zabezpieczeń obsługiwany przez łączące się urządzenia.",
                            "sCEPPolicyHashAlgorithmName":  "Algorytm wyznaczania wartości skrótu ",
-                           "sCEPPolicyKeySizeDescription":  "Wybierz liczbę bitów zawartych w kluczu.",
+                           "sCEPPolicyKeySizeDescription":  "Wybierz liczbę bitów zawartych w kluczu.  Zalecana minimalna długość klucza to 2048.",
                            "sCEPPolicyKeySizeName":  "Rozmiar klucza (bity)",
                            "sCEPPolicyKeyStorageProviderDescription":  "Wybierz lokalizację, w której chcesz przechowywać klucz certyfikatu.",
                            "sCEPPolicyKeyStorageProviderName":  "Dostawca magazynu kluczy",
@@ -5792,7 +5887,6 @@
                            "securityBlockAzureADJoinedDevicesAutoEncryptionName":  "Automatyczne szyfrowanie podczas AADJ",
                            "securityDeveloperSettingsEnabledDescription":  "Zezwalaj na dostęp do ustawień dewelopera.",
                            "securityDeveloperSettingsEnabledName":  "Ustawienia dewelopera",
-                           "securityFeaturesName":  "Funkcje zabezpieczeń",
                            "securityOption":  "Dane diagnostyczne wyłączone",
                            "securityRequireVerifyAppsDescription":  "Włącz funkcję Google Play Protect, aby skanowała aplikacje przed i po ich zainstalowaniu. Jeśli ta funkcja wykryje zagrożenie, może ostrzec użytkownika, żeby usunął aplikację z urządzenia. Domyślnie wymagane.",
                            "securityRequireVerifyAppsName":  "Skanowanie aplikacji pod kątem zagrożeń",
@@ -5892,6 +5986,13 @@
                            "sharedSecretName":  "Wspólny wpis tajny",
                            "shieldedDescription":  "Jeśli to ustawienie i ustawienie zapory jest włączone, cały ruch przychodzący będzie blokowany.",
                            "shieldedName":  "Z osłoną",
+                           "shortSupportMessageDefault":  "Nie masz uprawnień do tej akcji. Aby uzyskać więcej informacji, skontaktuj się z administratorem IT.",
+                           "shortSupportMessageDescription":  "Krótki komunikat pomocy technicznej to tekst wyświetlany użytkownikowi końcowemu przez platformę podczas próby skonfigurowania ustawienia zarządzanego na urządzeniu. Komunikat językowy „Wszystkie z wyjątkiem określonych” jest wyświetlany, jeśli nie określono niestandardowego komunikatu dla domyślnego języka urządzenia. ",
+                           "shortSupportMessageGridHeader":  "Zlokalizowany krótki komunikat pomocy technicznej",
+                           "shortSupportMessageName":  "Krótki komunikat pomocy technicznej",
+                           "shortSystemMessageHint":  "(maksymalnie 200 znaków)",
+                           "shortSystemMessageLengthValidation":  "Długość danych wejściowych nie może przekraczać 200 znaków.",
+                           "shortSystemMessagesSummaryKey":  "Krótki komunikat pomocy technicznej",
                            "show":  "Pokaż",
                            "showAppsList":  "Widoczne aplikacje",
                            "showEverything":  "Organizator, czas i temat (temat jest ukryty w przypadku spotkań prywatnych)",
@@ -6107,16 +6208,28 @@
                            "stringXMLName":  "Ciąg (plik XML)",
                            "studentPfxCertHeading":  "Certyfikat PKCS#12 ucznia",
                            "studentRootCertificate":  "Certyfikat główny ucznia",
-                           "subjectAlternativeNameName":  "Alternatywna nazwa podmiotu",
+                           "subjectAlternativeNameName":  "Alternatywna nazwa obiektu",
                            "subjectCommonNameName":  "Nazwa pospolita podmiotu",
                            "subjectNameLocalIdentifier":  "Nazwa pospolita podmiotu",
                            "sunday":  "Niedziela",
                            "sundayOption":  "Niedziela",
+                           "supportMessageLearnMoreLink":  "https://docs.microsoft.com/pl-pl/mem/intune/configuration/device-restrictions-android-for-work",
+                           "supportMessageLearnMoreText":  "Dowiedz się więcej o komunikatach pomocy technicznej. ",
                            "syncScheduleDescription":  "Częstotliwość łączenia urządzenia z serwerem w celu zsynchronizowania wiadomości e-mail.",
                            "syncScheduleName":  "Harmonogram synchronizacji",
                            "synchronizeDescription":  "Kontroluje liczbę wiadomości e-mail przechowywanych na urządzeniu i częstotliwość łączenia z serwerem.",
                            "systemExtensionTeamIdsMustBeUnique":  "Ten sam identyfikator zespołu nie może być wymieniony zarówno w dozwolonych identyfikatorach zespołów, jak i dozwolonych rozszerzeniach systemu.",
                            "systemInfoOnlyStatusBarOption":  "Pokaż informacje o systemie na pasku stanu urządzenia",
+                           "systemMessageInputValidation":  "Wejście nie może być puste.",
+                           "systemMessageLocaleValidation":  "Pole nie może być puste.",
+                           "systemMessages":  "Niestandardowe informacje o pomocy technicznej",
+                           "systemMessagesDefaultColumnName":  "Jest komunikatem domyślnym",
+                           "systemMessagesDefaultLanguageValue":  "Wszystkie, z wyjątkiem sytuacji, gdy określono",
+                           "systemMessagesLanguageColumnName":  "Język",
+                           "systemMessagesMessageColumnName":  "Komunikat",
+                           "systemMessagesMessageEmptyValueKey":  "Wprowadź dostosowaną wiadomość.",
+                           "systemMessagesShortSupportMessageLanguageEmptyValueKey":  "Wybierz ustawienie regionalne.",
+                           "systemMessagesShortSupportMessageTableName":  "Krótki komunikat pomocy technicznej",
                            "systemPageDescription":  "Blokuje dostęp do obszaru System w aplikacji Ustawienia.",
                            "systemPageName":  "System",
                            "systemScanName":  "Dzień i godzina wykonania pełnego lub szybkiego skanowania",
@@ -6353,7 +6466,7 @@
                            "userNameTypeName":  "Atrybut nazwy użytkownika z AAD",
                            "userPauseAccessDescription":  "Opcja w usłudze Windows Update, która po włączeniu pozwala użytkownikom urządzeń wstrzymywać aktualizacje przez określoną liczbę dni.",
                            "userPauseAccessName":  "Opcja umożliwiająca wstrzymywanie aktualizacji dla systemu Windows",
-                           "userPrincipalNameOption":  "Nazwa główna użytkownika",
+                           "userPrincipalNameOption":  "Główna nazwa użytkownika",
                            "userRightsAccessCredentialManagerAsTrustedCallerDesc":  "To prawo użytkownika jest używane przez Menedżera poświadczeń podczas tworzenia/przywracania kopii zapasowej. Zabezpieczenia zapisanych poświadczeń użytkowników mogą zostać naruszone, jeśli zostanie ono nadane innym jednostkom.",
                            "userRightsAccessCredentialManagerAsTrustedCallerName":  "Uzyskaj dostęp do Menedżera poświadczeń jako zaufany wywołujący",
                            "userRightsActAsPartOfTheOperatingSystemDesc":  "To prawo użytkownika umożliwia procesowi personifikację dowolnego użytkownika bez uwierzytelniania. ",
@@ -7156,7 +7269,7 @@
                            "add":  "Dodaj",
                            "addAppConfiguration":  "Dodaj konfigurację aplikacji",
                            "addApps":  "Dodaj aplikacje",
-                           "addCondition":  "Add condition",
+                           "addCondition":  "Dodaj warunek",
                            "addConfigCommandLabel":  "Dodaj konfigurację",
                            "addPolicyBladeTitle":  "Dodaj zasady",
                            "addPolicyError":  "Nie można dodać zasad: {0}",
@@ -7170,6 +7283,8 @@
                            "allAppTypes":  "Wszystkie typy aplikacji",
                            "allAppsOptionText":  "Wszystkie aplikacje",
                            "allAppsWithData":  "Wszystkie aplikacje z przychodzącymi danymi organizacji",
+                           "allDestinationsOptionText":  "All destinations",
+                           "allSourcesOptionText":  "All sources",
                            "allow":  "Zezwalaj",
                            "allowOverrides":  "Zezwalaj na przesłonięcia",
                            "allowSpecifiedBlock":  "Zezwalaj na określone (blokuj nieokreślone)",
@@ -7179,6 +7294,7 @@
                            "androidPlatformLabel":  "Android",
                            "androidWorkProfile":  "Urządzenia z profilem służbowym systemu Android",
                            "anyAppOptionText":  "Dowolna aplikacja",
+                           "anyDestinationAnySourceOptionText":  "Any destination and any source",
                            "anyDialerAppOptionText":  "Dowolna aplikacja wybierania numerów",
                            "anyPolicyManagedDialerAppOptionText":  "Dowolna zarządzana przez zasady aplikacja wybierania numerów",
                            "appAdded":  "Dodano aplikację",
@@ -7442,7 +7558,7 @@
                            "guidedTemplate2":  "Zapytamy Cię, jaki poziom ochrony chcesz wdrożyć dla użytkowników. Aby uzyskać więcej informacji, zobacz <a href = \"https://go.microsoft.com/fwlink/?linkid=2131582 \">Struktura ochrony danych przy użyciu zasad ochrony aplikacji</a>.",
                            "guidediOSLabel":  "Ochrona aplikacji systemu iOS",
                            "hardwareBackedKey":  "Klucz wspierany sprzętowo",
-                           "healthCheck":  "Health Checks",
+                           "healthCheck":  "Kontrole kondycji",
                            "helpAndSupport":  "Pomoc i obsługa techniczna",
                            "hideOverrides":  "Ukryj przesłonięcia",
                            "highDataProtectionGuidedString":  "Wysoka ochrona danych — rozszerza ustawienia zdefiniowane w rozszerzonej ochronie danych, wprowadzając bardziej złożone ustawienia wymagań w zakresie dostępu (np. wyłącza prosty kod PIN) i ustawienia ochrony danych (na przykład wyłącza klawiatury innych firm).",
@@ -7523,6 +7639,8 @@
                            "noAssignments":  "Brak przypisań",
                            "noConfigSelection":  "Wybierz platformę i aplikację",
                            "noConfiguredUsers":  "Brak skonfigurowanych użytkowników",
+                           "noDestinationNoSourceOptionText":  "No destination or source",
+                           "noDestinationsOptionText":  "No destinations",
                            "noEmailToDisplay":  "Brak dostępnego adresu e-mail",
                            "noOptionText":  "Nie",
                            "noPermissionPropertyLabel":  "Masz już subskrypcję?",
@@ -7531,6 +7649,7 @@
                            "noPolicy":  "Brak zasad",
                            "noProtectedUsers":  "Brak chronionych użytkowników",
                            "noSelection":  "Wybierz platformę, aplikację i stan ochrony",
+                           "noSourcesOptionText":  "No sources",
                            "noSubscriptionPropertyLabel":  "Może być wymagana subskrypcja",
                            "noSubscriptionPropertyLinkText":  "Wypróbuj usługę Microsoft Intune już teraz",
                            "noUnprotectedUsers":  "Brak niechronionych użytkowników",
@@ -7769,6 +7888,7 @@
                            "weMovedToANewLocation":  "Przeprowadziliśmy się do nowej lokalizacji",
                            "windows10AppProtectionPolicy":  "Zasady ochrony aplikacji systemu Windows 10 lub nowszego",
                            "windows10PlatformLabel":  "Windows 10 i nowsze",
+                           "windowsInformationProtectionPlatformLabel":  "Windows Information Protection",
                            "windowsPlatformLabel":  "Windows",
                            "windowsProtectionReport":  "Raport dotyczący ochrony systemu Windows",
                            "wipAddAppsSubtitle":  "Dodaj zalecane aplikacje firmy Microsoft albo ręcznie dodaj aplikacje ze sklepu lub aplikacje klasyczne, które mają być dozwolone w ramach tych zasad.",
@@ -9731,7 +9851,9 @@
                      "whatIfIpAddressInfo":  "Adres IP, z której loguje się użytkownik.",
                      "whatIfIpCountryInfoBoxText":  "W przypadku używania adresu IP lub kraju oba pola będą wymagane i powinny być poprawnie mapowane na siebie.",
                      "whatIfPolicyAppliesTab":  "Zasady, które będą miały zastosowanie",
+                     "whatIfPolicyAppliesTabWithCount":  "Applicable policies ({0})",
                      "whatIfPolicyDoesNotApplyTab":  "Zasady, które nie będą miały zastosowania",
+                     "whatIfPolicyDoesNotApplyTabWithCount":  "Inapplicable policies ({0})",
                      "whatIfReasons":  "Przyczyny braku zastosowania tych zasad",
                      "whatIfSelectClientApp":  "Wybierz aplikację kliencką...",
                      "whatIfSelectCountry":  "Wybierz kraj...",
@@ -10065,6 +10187,8 @@
                    "scopeTagsRequired":  "Wymagany jest co najmniej jeden tag zakresu",
                    "searchAppLabel":  "Wybierz aplikację",
                    "searchAppLinkText":  "Wyszukaj w sklepie App Store",
+                   "searchWinGetPublicRepositoryLinkText":  "Przeszukaj repozytorium społeczności Menedżera pakietów systemu Windows",
+                   "searchWinGetStoreRepositoryLinkText":  "Przeszukaj repozytorium sklepu Microsoft Store",
                    "selectAAD":  "Wybierz atrybut usługi AAD",
                    "selectAppFileLabel":  "Wybierz plik",
                    "selectAppFileLinkText":  "Wybierz plik pakietu aplikacji",
@@ -10116,6 +10240,7 @@
                              "deviceCompliance":  "Zgodność urządzenia",
                              "diskEncryption":  "Szyfrowanie dysku",
                              "eDR":  "Wykrywanie i reagowanie dotyczące punktów końcowych",
+                             "ePM":  "Zarządzanie uprawnieniami punktu końcowego",
                              "firewall":  "Zapora",
                              "helpSupport":  "Pomoc i obsługa techniczna",
                              "setup":  "Instalacja",
@@ -10950,7 +11075,7 @@
                                                         "listLoadError":  "Nie można załadować profili aktualizacji oprogramowania systemu macOS; spróbuj ponownie później",
                                                         "lowercase":  "Zasady aktualizacji systemu macOS",
                                                         "other":  "Inne",
-                                                        "subtitle":  "Aktualizacja oprogramowania MacOS",
+                                                        "subtitle":  "Aktualizacja oprogramowania systemu MacOS",
                                                         "upToDate":  "Aktualne",
                                                         "uppercase":  "Zasady aktualizacji systemu macOS"
                                                     },
@@ -11275,12 +11400,12 @@
                                           "gettingStarted":  "Wprowadzenie",
                                           "messages":  "Komunikaty",
                                           "onlineResources":  "Zasoby online",
-                                          "releaseManagement":  "Release management",
+                                          "releaseManagement":  "Release Management",
                                           "serviceRequests":  "Żądania usług",
                                           "settings":  "Ustawienia",
-                                          "supportRequests":  "Support requests",
+                                          "supportRequests":  "Żądania pomocy technicznej",
                                           "tenantEnrollment":  "Rejestracja dzierżawy",
-                                          "tenantManagement":  "Tenant management"
+                                          "tenantManagement":  "Zarządzanie dzierżawą"
                                       },
                    "actions":  "Akcje w przypadku niezgodności",
                    "advancedExchangeSettings":  "Ustawienia usługi Exchange Online",
@@ -11401,10 +11526,11 @@
                    "userExecutionStatus":  "Stan użytkownika",
                    "warranty":  "Dostawcy rękojmi",
                    "wdacSupplementalPolicies":  "Uzupełniające zasady trybu S",
-                   "windows10DriverUpdate":  "Aktualizacje sterowników dla systemu Windows 10 i nowszych (wersja zapoznawcza)",
+                   "windows10DriverUpdate":  "Aktualizacje sterowników dla systemu Windows 10 i nowszych (wersja zapoznawcza)",
                    "windows10QualityUpdate":  "Aktualizacje dotyczące jakości systemu Windows 10 i nowszych (wersja zapoznawcza)",
                    "windows10UpdateRings":  "Pierścienie aktualizacji dla systemu Windows 10 i nowszego",
                    "windows10XPolicyFailures":  "Błędy zasad systemu Windows 10X",
+                   "windows365Connector":  "Łącznik systemu Windows 365 Citrix",
                    "windowsEnterpriseCertificate":  "Certyfikat przedsiębiorstwa systemu Windows",
                    "windowsManagement":  "Skrypty programu PowerShell",
                    "windowsSideLoadingKeys":  "Klucze ładowania bezpośredniego systemu Windows",

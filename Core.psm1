@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.6.0'
+    '3.7.0'
 }
 
 function Initialize-Window
@@ -895,13 +895,77 @@ function Show-AuthenticationInfo
             if($profileObj)
             {
                 $profileObj.Tag = "ProfilePicture"
-                $profileObj.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1) | Out-Null
+                $profileObj.SetValue([System.Windows.Controls.Grid]::ColumnProperty,2) | Out-Null
                 $global:grdMenu.Children.Add($profileObj) | Out-Null
             }
         }
         [System.Windows.Forms.Application]::DoEvents()
     }
 }
+
+function Set-EnvironmentInfo 
+{
+    param($environmentName)
+
+    if(-not $global:grdEnvironment)
+    {
+        return
+    }
+
+    if($global:grdEnvironment -and $environmentName)
+    {
+        $global:grdEnvironment.Visibility = "Visible"
+        if((Get-SettingValue "MenuShowOrganizationName") -eq $true)
+        {
+            $global:lblEnvironment.Content = $environmentName
+        }
+        else
+        {
+            $global:lblEnvironment.Content = ""
+        }
+        $bgColor = (Get-SettingValue "MenuBGColor")
+        $fgColor = (Get-SettingValue "MenuFGColor")
+        if(-not $script:mnuDefaultBGColor)
+        {
+            $script:mnuDefaultBGColor = $global:mnuMain.Background
+        }
+        if(-not $script:mnuDefaultFGColor)
+        {
+            $script:mnuDefaultFGColor = $global:mnuMain.Foreground
+        }        
+        
+        if(-not $bgColor)
+        {
+            $bgColor = $script:mnuDefaultBGColor
+        }
+
+        if($bgColor)
+        {
+            $global:grdMenu.Background = $bgColor
+            $global:mnuMain.Background = $bgColor
+        }
+
+        if(-not $fgColor)
+        {
+            $fgColor = $script:mnuDefaultFGColor
+        }        
+
+        if($fgColor)
+        {
+            $global:lblEnvironment.Foreground = $fgColor
+            $global:mnuMain.Foreground = $fgColor
+        }
+    }
+    else
+    {
+        $global:grdEnvironment.Visibility = "Collapsed"
+        $global:lblEnvironment.Text = ""
+        $global:mnuMain.Background = $script:mnuDefaultBGColor
+        $global:mnuMain.Foreground = $script:mnuDefaultFGColor
+        $global:lblEnvironment.Foreground = $script:mnuDefaultFGColor
+    }
+}
+
 #endregion
 
 #region Generic functions
@@ -1102,10 +1166,11 @@ function Initialize-Settings
 
     $global:Debug = Get-SettingValue "Debug"
     $global:logFile = $null
-    $global:logFileMaxSize = $null
+    $global:logFileMaxSize = $null    
     
     if($Updated -eq $true)
     {
+        Set-EnvironmentInfo $global:Organization.displayName
         Invoke-ModuleFunction "Invoke-SettingsUpdated"
     }
 }
@@ -1843,6 +1908,20 @@ function Show-SettingsForm
 function Add-DefaultSettings
 {
     $global:appSettingSections = @()
+    
+    $script:lstColors = @() 
+    $script:lstColors += [PSCustomObject]@{
+        Name = ""
+        Value = ""
+    }
+
+    foreach($color in ([System.Drawing.Color].GetProperties() | Where { $_.PropertyType -eq [System.Drawing.Color] } | Sort -Property Name | Select Name).Name)
+    {
+        $script:lstColors += [PSCustomObject]@{
+            Name = $color
+            Value = $color
+        }
+    }
 
     $global:appSettingSections += (New-Object PSObject -Property @{
             Title = "General"
@@ -1892,7 +1971,32 @@ function Add-DefaultSettings
         Type = "Boolean"
         DefaultValue = $true
         Description = "Check GitHub if there is a later version available"
-    }) "General"    
+    }) "General" 
+    
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Menu Background color"
+        Key = "MenuBGColor"
+        Type = "List" 
+        ItemsSource = $script:lstColors
+        DefaultValue = ""
+    }) "General"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Menu Foreground color"
+        Key = "MenuFGColor"
+        Type = "List" 
+        ItemsSource = $script:lstColors
+        DefaultValue = ""
+    }) "General"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Show tenant name"
+        Key = "MenuShowOrganizationName"
+        Type = "Boolean"
+        DefaultValue = $true
+        Description = "Adds the organization name next to the login info on the menu bar"
+    }) "General" 
+
 }
 
 function Add-SettingsObject

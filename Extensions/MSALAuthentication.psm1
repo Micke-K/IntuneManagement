@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.6.0'
+    '3.7.0'
 }
 
 $global:msalAuthenticator = $null
@@ -241,9 +241,11 @@ function Get-MSALUserInfo
             if($global:Organization -is [array]) { $global:Organization = $global:Organization[0]}
             Save-Setting $global:Organization.Id "_Name" $global:Organization.displayName
         }
+        Set-EnvironmentInfo $global:Organization.displayName
     }
     else 
     {
+        Set-EnvironmentInfo 
         $global:Me = $null
         $global:profilePhoto = $null
         $global:Organization = $null

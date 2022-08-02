@@ -305,6 +305,7 @@
                      "airPrint":  "AirPrint",
                      "androidDefenderAtp":  "Microsoft Defender for Endpoint",
                      "androidDeviceOwnerApplications":  "アプリケーション",
+                     "androidDeviceOwnerPolicyMessages":  "カスタムのサポート情報",
                      "androidForWorkPassword":  "デバイスのパスワード",
                      "appManagement":  "アプリを許可またはブロックします",
                      "applicationGuard":  "Microsoft Defender Application Guard",
@@ -318,13 +319,15 @@
                      "autonomousSingleAppMode":  "自律的シングル App モード",
                      "azureOperationalInsights":  "Azure Operational Insights",
                      "bitLocker":  "Windows 暗号化",
+                     "bootOptions":  "ブート オプション",
                      "browser":  "ブラウザー",
                      "builtinApps":  "組み込みアプリ",
+                     "cameras":  "カメラ",
                      "cellular":  "携帯ネットワーク",
                      "cloudAndStorage":  "クラウドとストレージ",
                      "cloudPrint":  "クラウド プリンター",
                      "complianceEmailProfile":  "電子メール",
-                     "connectedDevices":  "接続されているデバイス",
+                     "connectedDevices":  "接続デバイス",
                      "connectivity":  "携帯ネットワークと接続性",
                      "contentCaching":  "コンテンツ キャッシング",
                      "controlPanelAndSettings":  "コントロール パネルと設定",
@@ -334,6 +337,7 @@
                      "customConfiguration":  "カスタム構成プロファイル",
                      "customOMASettings":  "OMA-URI のカスタム設定",
                      "customPreferences":  "設定ファイル",
+                     "dFCISecuritySettings":  "セキュリティ設定",
                      "defender":  "Microsoft Defender ウイルス対策",
                      "defenderAntivirus":  "Microsoft Defender ウイルス対策",
                      "defenderExploitGuard":  "Microsoft Defender Exploit Guard",
@@ -392,6 +396,7 @@
                      "maintenance":  "メンテナンス",
                      "malware":  "マルウェア",
                      "messaging":  "メッセージング",
+                     "microphonesAndSpeakers":  "マイクおよびスピーカー",
                      "networkBoundary":  "ネットワーク境界",
                      "networkProxy":  "ネットワーク プロキシ",
                      "notifications":  "アプリの通知",
@@ -400,12 +405,14 @@
                      "personalProfile":  "個人プロファイル",
                      "personalization":  "個人用設定",
                      "policyOverride":  "グループ ポリシーのオーバーライド",
+                     "ports":  "ポート",
                      "powerSettings":  "電源設定",
                      "printer":  "プリンター",
                      "privacy":  "プライバシー",
                      "privacyPerApp":  "アプリごとのプライバシー例外",
                      "privacyPreferences":  "プライバシーの設定",
                      "projection":  "プロジェクション",
+                     "radios":  "無線",
                      "sCCMCompliance":  "Configuration Manager のコンプライアンス",
                      "sCEP":  "SCEP 証明書",
                      "sCEPProperties":  "SCEP 証明書",
@@ -422,6 +429,7 @@
                      "systemExtensions":  "システムの拡張機能",
                      "systemSecurity":  "システム セキュリティ",
                      "trustedCert":  "信頼済み証明書",
+                     "uEFIAccess":  "UEFI アクセス",
                      "updates":  "更新",
                      "userRights":  "ユーザー権限",
                      "usersAndAccounts":  "ユーザーとアカウント",
@@ -435,6 +443,7 @@
                      "vPNProxy":  "プロキシ",
                      "vPNSplitTunneling":  "分割トンネリング",
                      "vPNTrustedNetwork":  "信頼されたネットワーク検出",
+                     "wakeSettings":  "ウェイク設定",
                      "webContentFilter":  "Web コンテンツ フィルター",
                      "wiFi":  "Wi-Fi",
                      "win10Wifi":  "Wi-Fi",
@@ -571,6 +580,29 @@
                                                            "tooltip":  "ユーザーがカスタム ビジュアル テーマを使用できるかどうかを指定します。"
                                                        }
                                  },
+    "CustomCompliance":  {
+                             "FilePicker":  {
+                                                "noScriptSelectedError":  "検出スクリプトを選択してください",
+                                                "scriptFileLabel":  "検出スクリプトを選択する"
+                                            },
+                             "PremiumBanner":  {
+                                                   "label":  "現在、カスタム コンプライアンスはプレビューで提供されています。これが一般に提供されるようになると、Microsoft エンドポイント マネージャーまたは Intune を含むライセンス オプションに有償で追加することができます。"
+                                               },
+                             "ScriptPicker":  {
+                                                  "objectName":  "スクリプト",
+                                                  "placeholder":  "クリックして選択",
+                                                  "searchboxPlaceholder":  "スクリプト名で検索",
+                                                  "title":  "検出スクリプトの選択"
+                                              },
+                             "SummaryGrid":  {
+                                                 "ariaLabel":  "カスタム コンプライアンス規則の概要"
+                                             },
+                             "UploadFile":  {
+                                                "jsonFileLabel":  "カスタム コンプライアンス設定で JSON ファイルをアップロードし検証する",
+                                                "noFileSelectedError":  "JSON ファイルを選択してください",
+                                                "parseFileSelectedError":  "JSON ファイルが無効です"
+                                            }
+                         },
     "AssignmentFilters":  {
                               "assignmentFilterColumnHeader":  "フィルター",
                               "noFilters":  "なし"
@@ -1036,6 +1068,41 @@
                                                         "v81":  "Windows Phone 8.1"
                                                     }
                                },
+    "EnrollmentStatusScreen":  {
+                                   "Apps":  {
+                                                "allowNonBlockingAppInstallation":  "技術者フェーズで選択したブロック アプリのみを失敗にする",
+                                                "apps":  "アプリ",
+                                                "appsListName":  "アプリケーションの一覧",
+                                                "blockingApps":  "アプリをブロックしています",
+                                                "managedApps":  "マネージド アプリ",
+                                                "noApps":  "アプリケーションがありません",
+                                                "noAppsError":  "アプリケーションの取得でエラーが発生しました",
+                                                "selectApps":  "アプリを選択",
+                                                "selectedAppsCount":  "{0} 個のアプリを選択済み (最大 100 個)",
+                                                "useSelectedAppsAll":  "すべて",
+                                                "useSelectedAppsSelected":  "選択しました",
+                                                "useSelectedAppsToggleLabel":  "これらの必要なアプリがユーザーまたはデバイスに割り当てられている場合、それらがインストールされるまでデバイスの使用をブロックします"
+                                            },
+                                   "Header":  {
+                                                  "application":  "アプリケーション",
+                                                  "publisher":  "公開元",
+                                                  "version":  "バージョン"
+                                              },
+                                   "SearchBox":  {
+                                                     "placeHolder":  "名前または発行者で検索"
+                                                 },
+                                   "allowToUseToggle":  "インストール エラーが発生した場合にデバイスの使用をユーザーに許可する",
+                                   "blockToggle":  "すべてのアプリとプロファイルがインストールされるまでデバイスの使用をブロックする",
+                                   "blockToolTip":  "たとえば、Microsoft Word をこの一覧に追加すると、Word が正常にインストールされるまで、対象のユーザーとデバイスは登録状態ページから移動できなくなります。",
+                                   "collectLogToggle":  "エンド ユーザーのログ収集と診断ページを有効にする",
+                                   "create":  "プロファイルの作成",
+                                   "customMessageTextBox":  "エラー メッセージ",
+                                   "customMessageToggle":  "時間制限またはエラーの発生時にカスタム メッセージを表示する",
+                                   "enableForAutopilotOnlyToggle":  "out-of-box experience (OOBE) でプロビジョニングされたデバイスにのみページを表示する",
+                                   "progressToggle":  "アプリとプロファイルの構成の進行状況を表示します",
+                                   "resetToggle":  "インストール エラーが発生した場合にデバイスのリセットをユーザーに許可する",
+                                   "timeout":  "インストールに要する時間が指定された分数を超えたらエラーを表示します"
+                               },
     "TableHeaders":  {
                          "activity":  "アクティビティ",
                          "actor":  "開始者 (アクター)",
@@ -1251,6 +1318,7 @@
                     "builtInApp":  "組み込みアプリ",
                     "builtInIos":  "組み込みの iOS アプリ",
                     "default":  "",
+                    "iosIPadOSWebClip":  "iOS/iPadOS Web クリップ",
                     "iosLobApp":  "iOS 基幹業務アプリ",
                     "iosStoreApp":  "iOS ストア アプリ",
                     "iosVppApp":  "iOS Volume Purchase Program アプリ",
@@ -1282,7 +1350,8 @@
                     "windowsPhoneXapLobApp":  "Windows Phone XAP 基幹業務アプリ",
                     "windowsStoreApp":  "Microsoft Store アプリ",
                     "windowsUniversalAppXLobApp":  "Windows Universal AppX 基幹業務アプリ",
-                    "windowsUniversalLobApp":  "Windows Universal 基幹業務アプリ"
+                    "windowsUniversalLobApp":  "Windows Universal 基幹業務アプリ",
+                    "windowsWebApp":  "Windows Web リンク"
                 },
     "TAPSettings":  {
                         "AllowedDataIngestionLocations":  {
@@ -1295,7 +1364,7 @@
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "アクセスに PIN ではなく生体認証を使用",
-                                                               "tooltip":  "アプリの PIN の代わりにユーザーが使用できる Android 認証方法 (存在する場合) を選択します。"
+                                                               "tooltip":  "アプリの PIN の代わりに Android 生体認証方法を使用できるようにします (ある場合)。"
                                                            },
                         "AndroidFingerprint":  {
                                                    "label":  "アクセスに PIN ではなく指紋を使用 (Android 6.0 以降)",
@@ -1421,12 +1490,12 @@
                                                    "tooltip":  "ポリシーで管理されているアプリが非アクティブな状態のまま、指定された非アクティブ分数を超過すると、アプリが起動した後、再確認すべきアクセス要件 (つまり、PIN、条件付き起動設定) を入力するよう求めるプロンプトが表示されます。"
                                                },
                         "RequireClass3Biometrics":  {
-                                                        "label":  "Class 3 Biometrics (Android 9.0+)",
-                                                        "tooltip":  "For more information on class 3 biometrics refer to the documentation available <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">here</a>"
+                                                        "label":  "クラス 3 生体認証 (Android 9.0 以降)",
+                                                        "tooltip":  "クラス 3 生体認証の詳細については、<a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">こちら</a>で入手できるドキュメントを参照してください。"
                                                     },
                         "RequirePinAfterBiometricChange":  {
-                                                               "label":  "Override Biometrics with PIN after biometric updates",
-                                                               "tooltip":  "If class 3 biometrics are supported by the device (more info <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>), when a change in biometrics is detected, a PIN prompt will override biometric prompts."
+                                                               "label":  "生体認証の更新後に PIN で生体認証をオーバーライドする",
+                                                               "tooltip":  "クラス 3 生体認証がデバイスでサポートされている場合 (詳細情報は<a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">こちら</a>をご覧ください)、生体認証の変更が検出されると、PIN プロンプトによって生体認証プロンプトがオーバーライドされます。"
                                                            },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "パッケージ ID は一意である必要があります。",
@@ -1467,6 +1536,22 @@
                         "Timeout":  {
                                         "label":  "タイムアウト (非アクティブ分数)"
                                     },
+                        "WinCutCopyPaste":  {
+                                                "label":  "Allow cut, copy, and paste for",
+                                                "tooltip":  "Select one of the following options to specify the sources and destinations org users can cut or copy or paste org data: <br/>\n\n<b>Any destination and any source</b>: Org users can paste data from and cut/copy data to any account, document, location or application.<br/>\n\n<b>No destination or source</b>: Org users cannot cut, copy or paste data to or from external accounts, documents, locations or applications from or into the org context."
+                                            },
+                        "WinPrintData":  {
+                                             "label":  "Print org data",
+                                             "tooltip":  "Select <b>Block</b> to prevent printing of org data. Select <b>Allow</b> to permit printing of org data. Personal or unmanaged data is not affected."
+                                         },
+                        "WinReceiveData":  {
+                                               "label":  "Receive data from",
+                                               "tooltip":  "Select one of the following options to specify the sources org users can receive data from: <br/>\n\n<b>No sources</b>: Org users cannot open data from external accounts, documents, locations or applications into the org context.<br/>\n\n<b>All sources</b>: Org users can open data from any account, document, location or application into the org context.\n"
+                                           },
+                        "WinSendData":  {
+                                            "label":  "Send org data to",
+                                            "tooltip":  "Select one of the following options to specify the destinations org users can send data to: <br/>\n\n<b>No destinations</b>: Org users cannot send org data to external accounts, documents, locations or applications from the org context.<br/>\n\n<b>All destinations</b>: Org users can send org data to any account, document, location or application."
+                                        },
                         "Tap":  {
                                     "numberOfDays":  "日数",
                                     "pinResetAfterNumberOfDays":  "PIN をリセットするまでの日数",
@@ -1524,38 +1609,15 @@
                           "required":  "必須",
                           "uninstall":  "アンインストール"
                       },
-    "EnrollmentStatusScreen":  {
-                                   "Apps":  {
-                                                "apps":  "アプリ",
-                                                "appsListName":  "アプリケーションの一覧",
-                                                "managedApps":  "マネージド アプリ",
-                                                "noApps":  "アプリケーションがありません",
-                                                "noAppsError":  "アプリケーションの取得でエラーが発生しました",
-                                                "selectApps":  "アプリを選択",
-                                                "selectedAppsCount":  "{0} 個のアプリを選択済み (最大 100 個)",
-                                                "useSelectedAppsAll":  "すべて",
-                                                "useSelectedAppsSelected":  "選択しました",
-                                                "useSelectedAppsToggleLabel":  "これらの必要なアプリがユーザーまたはデバイスに割り当てられている場合、それらがインストールされるまでデバイスの使用をブロックします"
-                                            },
-                                   "Header":  {
-                                                  "application":  "アプリケーション",
-                                                  "publisher":  "公開元",
-                                                  "version":  "バージョン"
-                                              },
-                                   "SearchBox":  {
-                                                     "placeHolder":  "名前または発行者で検索"
-                                                 },
-                                   "allowToUseToggle":  "インストール エラーが発生した場合にデバイスの使用をユーザーに許可する",
-                                   "blockToggle":  "すべてのアプリとプロファイルがインストールされるまでデバイスの使用をブロックする",
-                                   "blockToolTip":  "たとえば、Microsoft Word をこの一覧に追加すると、Word が正常にインストールされるまで、対象のユーザーとデバイスは登録状態ページから移動できなくなります。",
-                                   "collectLogToggle":  "エンド ユーザーのログ収集と診断ページを有効にする",
-                                   "create":  "プロファイルの作成",
-                                   "customMessageTextBox":  "エラー メッセージ",
-                                   "customMessageToggle":  "時間制限またはエラーの発生時にカスタム メッセージを表示する",
-                                   "enableForAutopilotOnlyToggle":  "out-of-box experience (OOBE) でプロビジョニングされたデバイスにのみページを表示する",
-                                   "progressToggle":  "アプリとプロファイルの構成の進行状況を表示します",
-                                   "resetToggle":  "インストール エラーが発生した場合にデバイスのリセットをユーザーに許可する",
-                                   "timeout":  "インストールに要する時間が指定された分数を超えたらエラーを表示します"
+    "CustomComplianceScript":  {
+                                   "CustomScriptWizardTitle":  {
+                                                                   "create":  "カスタム スクリプトの作成",
+                                                                   "edit":  "カスタム スクリプトの編集"
+                                                               },
+                                   "basicInfo":  "作成した検出スクリプトおよび修復スクリプトから新しいカスタム スクリプト パッケージを作成します。",
+                                   "customScriptCapitalized":  "カスタム スクリプト",
+                                   "customScriptLowercase":  "カスタム スクリプト",
+                                   "detectionScript":  "検出スクリプト"
                                },
     "Devices":  {
                     "General":  {
@@ -1769,6 +1831,27 @@
                                                       "windowsIdentityProtection":  "Intune では、このデバイス構成プロファイルを使用して、Windows デバイス上の Windows Hello for Business 設定を管理できることをご存じでしたか。<br><br><a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\">エンドポイント セキュリティ</a>に移動してエンドポイント セキュリティ プロファイルまたはセキュリティ ベースライン プロファイルを作成し、一般的なエンドポイント保護のセキュリティ機能を構成することをご検討ください。<br><br>エンドポイント セキュリティ プロファイルを使用すると、ファイアウォール、BitLocker、ウイルス対策などのセキュリティ テンプレートのキュレーションされた簡潔なセットが提供されます。セキュリティ ベースライン プロファイルは、セキュリティの専門家により推奨された構成済み設定値を持つテンプレートです。",
                                                       "wiredNetwork":  "ユーザーがアクセスするための有線ネットワークを設定します。"
                                                   },
+                           "SupportMessagesLanguageDropdown":  {
+                                                                   "chineseSimplified":  "中国語 (簡体)",
+                                                                   "chineseTraditional":  "中国語 (繁体)",
+                                                                   "czech":  "チェコ語",
+                                                                   "dutch":  "オランダ語",
+                                                                   "englishUS":  "英語 (米国)",
+                                                                   "frenchFrance":  "フランス語 (フランス)",
+                                                                   "german":  "ドイツ語",
+                                                                   "hungarian":  "ハンガリー語",
+                                                                   "indonesian":  "インドネシア語",
+                                                                   "italian":  "イタリア語",
+                                                                   "japanese":  "日本語",
+                                                                   "korean":  "韓国語",
+                                                                   "polish":  "ポーランド語",
+                                                                   "portugueseBrazil":  "ポルトガル語 (ブラジル)",
+                                                                   "portuguesePortugal":  "ポルトガル語 (ポルトガル)",
+                                                                   "russian":  "ロシア語",
+                                                                   "spanishSpain":  "スペイン語 (スペイン)",
+                                                                   "swedish":  "スウェーデン語",
+                                                                   "turkish":  "トルコ語"
+                                                               },
                            "TrustedCert":  {
                                                "uploadControlPlaceHolderText":  "有効な .cer ファイルを選択"
                                            },
@@ -1823,6 +1906,7 @@
                            "allEnrollmentTypesHeaderName":  "すべての登録の種類",
                            "allEnrollmentTypesHeaderNameMac":  "すべての登録の種類",
                            "allEnrollmentTypesSecondDescription":  "パスワードを必須にすると、これらの設定に構成した内容とは関係なく、すべてのユーザー登録済みデバイスに対して、簡単でない 6 桁の PIN が自動的に必要になります。",
+                           "allFeaturesOption":  "すべての機能",
                            "allManagedApps":  "すべてのマネージド アプリ",
                            "allOtherUpdatesBehaviorName":  "その他のすべての更新 (OS、組み込みアプリ)",
                            "allowActivationLockWhenSupervisedDescription":  "アクティベーション ロックにより、紛失したり盗難にあったりしたデバイスの再アクティブ化が困難になります。",
@@ -2125,6 +2209,7 @@
                            "batteryLevelTurnOnEnergySaverPluggedInDescription":  "このポリシー設定を使用すると、デバイスが電源に接続されているときに省電力設定が有効になるバッテリ充電レベルを指定できます。<br/>このポリシー設定を有効にする場合、バッテリ充電レベルを示すパーセント値を指定する必要があります。省電力設定は指定されたバッテリ充電レベル (およびそれ未満) で自動的に有効になります。<br/>このポリシー設定を無効にするか構成しない場合、ユーザーがこの設定を管理します。",
                            "bing":  "Bing",
                            "biometricWeak":  "脆弱な生体認証",
+                           "biometricsOption":  "生体認証",
                            "bitLockerAllowStdUsersEncryptAADJoinDescription":  "ローカル コンピューター上で BitLocker 暗号化を有効にする機能を、管理者権限を持たないユーザーに許可します。この設定は、Azure Active Directory に参加済みの (AADJ) デバイスにのみ適用されます。",
                            "bitLockerAllowStdUsersEncryptAADJoinName":  "Azure AD 参加中の暗号化の有効化を標準ユーザーに許可する",
                            "bitLockerBaseConfigureEncryptionMethodsDescription":  "[有効] を選択すると、OS ドライブ、固定データドライブ、リムーバブル データドライブに関する暗号化方法を構成できます。[構成されていません] を選択すると、対象ドライブに対して BitLocker は既定の暗号化方式を使用します。",
@@ -2657,10 +2742,8 @@
                            "booleanName":  "ブール値",
                            "bootFromBuiltInNetworkAdaptersName":  "ネットワーク アダプターからのブート",
                            "bootFromExternalMediaName":  "外部メディア (USB、SD) からのブート",
-                           "bootOptionsName":  "ブート オプション",
                            "bothOneToOneAndDeviceOption":  "両方",
                            "browserDefault":  "既定のブラウザー",
-                           "builtInHardwareName":  "組み込みのハードウェア",
                            "builtinAppOption":  "組み込みアプリ",
                            "bundleId":  "バンドル ID",
                            "bundleIdExample":  "例: com.apple.calculator",
@@ -2710,7 +2793,7 @@
                            "certificateTypeName":  "証明書の種類",
                            "certificatesOption":  "証明書",
                            "changeMicrosoftTunnelSite":  "サイトの変更",
-                           "changeUefiSettingsPermissionName":  "ローカル ユーザーが UEFI 設定を変更できるようにする",
+                           "changeUefiSettingsPermissionName":  "UEFI 設定の変更をローカル ユーザーに許可する",
                            "checkForSignaturesBeforeRunningScanName":  "スキャンを実行する前に署名を確認する",
                            "checkPointCapsuleVPNOption":  "Check Point Capsule VPN",
                            "childSecurityAssociationParamName":  "子セキュリティ アソシエーション パラメーター",
@@ -3210,6 +3293,7 @@
                            "devicesPageDescription":  "[設定] アプリの [デバイス] へのアクセスをブロックします。",
                            "devicesPageName":  "デバイス",
                            "dfciBuiltinHeaderDescName":  "DFCI では、デバイスに組み込まれているハードウェア コンポーネントのみを管理できます。これらの設定では、接続されている周辺機器 (USB Web カメラなど) を管理できません。",
+                           "dfciGranularSettingsWarningInfoBox":  "警告! 次のオプションは、特定の種類のデバイスにのみ適用されます。対象外のデバイスをターゲットにすると、非準拠として報告され、デバイスが保護されなくなる可能性があります。<a href=\"https://docs.microsoft.com/mem/intune/configuration/device-firmware-configuration-interface-windows-settings\" >詳細情報</a> ",
                            "dfciHeaderName":  "デバイスの UEFI 設定をリモートで管理するには、デバイス ファームウェア構成インターフェイス (DFCI) を使用します。<a href=\"https://go.microsoft.com/fwlink/?linkid=2028892\" target=\"_blank\">詳細情報</a>。<br>\r\n      <br>これらの設定は、次の要件を満たすデバイスの場合のみ管理できます:\r\n      <li>デバイスの製造元が DFCI をサポートしている。</li>\r\n      <li>デバイスが Windows Autopilot 展開サービスに登録されている。</li>\r\n      <li>デバイスが前回の MDM 同期の後に再起動されている。</li>",
                            "diagnosticDataSubmissionLevelDescription":  "診断データ送信のレベルを選択します。Windows バージョン 1903 以降では、この拡張レベルはサポートされていません。",
                            "diffieHellmanGroupName":  "Diffie-Hellman グループ",
@@ -3778,6 +3862,7 @@
                            "f5NetworksF5AccessOption":  "F5 Access",
                            "fFiveEdgeClientOption":  "F5 Access",
                            "fFiveLegacyAccessOption":  "F5 Access Legacy",
+                           "faceOption":  "顔認証",
                            "factoryResetDisabledDescription":  "設定からの工場出荷時の設定へのリセットをブロックします。",
                            "factoryResetDisabledName":  "工場出荷時の設定へのリセット",
                            "factoryResetName":  "工場出荷時の設定へのリセット",
@@ -4134,6 +4219,7 @@
                            "ipAddress":  "IP アドレス",
                            "ipAddressDescription":  "印刷先の識別にホスト名を使用している場合は、ターミナルでそのホスト名に ping すると、それぞれの IP アドレスを取得できます。IPv4 または IPv6 のアドレスとポートを含めることができます。",
                            "ipAutoDetectionName":  "その他のエンタープライズ IP アドレス範囲の自動検出",
+                           "irisOption":  "虹彩認証",
                            "issuerHashDescription":  "シングル サインオン (SSO) 証明書の拇印",
                            "issuerHashName":  "発行元ハッシュ",
                            "keepGoing":  "メッセージを表示する際、Microsoft Edge でサイトを開くオプションを含める",
@@ -4308,7 +4394,7 @@
                            "kioskModeName":  "キオスク モード",
                            "kioskModeSingle":  "単一アプリ",
                            "kioskMonthly":  "毎月",
-                           "kioskObsoleteInfoHeader":  "このブレードの設定は古くなりました。デバイスのキオスク設定を構成するには、[プロファイルの作成] ブレードに戻ります。[プロファイルの種類] ドロップダウンで、[キオスク (プレビュー)] を選択します。",
+                           "kioskObsoleteInfoHeader":  "このブレードの設定は古くなりました。デバイス用にキオスク設定を構成するには、[プロファイルの作成] ブレードに戻ります。[プロファイルの種類] ドロップダウンで、[キオスク (プレビュー)] を選択します。",
                            "kioskProfileHeader":  "これらの設定を使用して、キオスク モードを構成します。これらの設定を構成する前に、キオスク モードで実行するアプリをクライアント アプリ ワークロードからデバイスに展開したことをご確認ください。",
                            "kioskProfileLearnMore":  "Windows キオスク モードについての詳細を表示します。",
                            "kioskProfileName":  "キオスク構成名",
@@ -4611,6 +4697,13 @@
                            "loginWindowSleepDisabledUsersName":  "スリープ ボタンを非表示にする",
                            "loginWindowTextDescription":  "ログイン画面でユーザーに表示されるメッセージです。ウェルカム メッセージ、警告メッセージ、組織の不明な連絡先情報などが含まれます。",
                            "loginWindowTextName":  "バナー",
+                           "longSupportMessageDefault":  "組織の IT 管理者は、設定、アクセス許可、企業アクセス、ネットワーク アクティビティ、デバイスの位置情報など、このデバイスに関連付けられているアプリとデータを監視および管理できます。",
+                           "longSupportMessageDescription":  "長いサポート メッセージとは、プラットフォームによって [設定]→[セキュリティ]→[デバイス管理アプリ] の [デバイス ポリシー] ページに表示されるエンド ユーザー向けのテキストです。通常、これはプラットフォームによって表示される短いサポート メッセージのダイアログにある [詳細] をクリックすることでアクセスできます。デバイスの既定の言語にカスタムのメッセージが指定されていない場合は、すべての言語のメッセージが表示されます。 ",
+                           "longSupportMessageGridHeader":  "ローカライズされた長いサポート メッセージ",
+                           "longSupportMessageName":  "長いサポート メッセージ",
+                           "longSystemMessageHint":  "(最大 4096 文字)",
+                           "longSystemMessageLengthValidation":  "4096 文字以下で入力します。",
+                           "longSystemMessagesSummaryKey":  "長いサポート メッセージ",
                            "low":  "低",
                            "lowOption":  "低",
                            "lowSecurityBiometricOption":  "セキュリティレベルの低い生体認証",
@@ -5341,7 +5434,6 @@
                            "policySubjectAlternativeNameHelp":  "SAN フィールドの最適な使用方法については、SAN のドキュメントをご確認ください。",
                            "policyUniversalResourceIdentifier":  "URI",
                            "policyUserPrincipalName":  "ユーザー プリンシパル名 (UPN)",
-                           "portName":  "ポート",
                            "portNumberDescription":  "プロキシ サーバーが特定のポートを使っている場合は、ここに入力してください。",
                            "portNumberName":  "ポート番号",
                            "postponeRebootUntilAfterDeadlineDescription":  "デバイスが期限前に自動的に再起動するかどうかを指定します",
@@ -5477,6 +5569,9 @@
                            "proxyAddressExampleUpper":  "例: 10.0.0.122",
                            "proxyAutoConfigGlobalProxyOption":  "プロキシ自動構成",
                            "proxyDNSExample":  "例: http://proxy.com",
+                           "proxyExclusionListDescription":  "ホスト名を追加して、プロキシ経由でルーティングできないようにします。",
+                           "proxyExclusionListExample":  "例: test.contoso.com",
+                           "proxyExclusionListName":  "除外リスト",
                            "proxyPortExample":  "例: 8080",
                            "proxyPortExampleUpper":  "例: 9080",
                            "proxyServerAddressDescription":  "プロキシ サーバーの IP アドレスを入力します。",
@@ -5653,7 +5748,7 @@
                            "sCEPPolicyExtendedKeyUsageName":  "拡張キー使用法",
                            "sCEPPolicyHashAlgorithmDescription":  "証明書でハッシュ アルゴリズム型を使用します。接続中のデバイスがサポートする最強レベルのセキュリティを選択してください。",
                            "sCEPPolicyHashAlgorithmName":  "ハッシュ アルゴリズム",
-                           "sCEPPolicyKeySizeDescription":  "キーに含まれるビット数を選択します。",
+                           "sCEPPolicyKeySizeDescription":  "キーに含まれるビット数を選択します。推奨される最小キー長は 2048 です。",
                            "sCEPPolicyKeySizeName":  "キー サイズ (ビット)",
                            "sCEPPolicyKeyStorageProviderDescription":  "証明書のキーを保存する場所を選択します。",
                            "sCEPPolicyKeyStorageProviderName":  "キー記憶域プロバイダー (KSP)",
@@ -5792,7 +5887,6 @@
                            "securityBlockAzureADJoinedDevicesAutoEncryptionName":  "AADJ 中の自動暗号化",
                            "securityDeveloperSettingsEnabledDescription":  "開発者向け設定へのアクセスを許可します。",
                            "securityDeveloperSettingsEnabledName":  "開発者向け設定",
-                           "securityFeaturesName":  "セキュリティ機能",
                            "securityOption":  "診断データ オフ",
                            "securityRequireVerifyAppsDescription":  "Google Play プロテクトを有効にして、アプリのインストール前後にアプリをスキャンします。脅威が検出されると、デバイスからアプリを削除するようユーザーに警告が表示される場合があります。既定で必須です。",
                            "securityRequireVerifyAppsName":  "アプリの脅威のスキャン",
@@ -5892,6 +5986,13 @@
                            "sharedSecretName":  "共有シークレット",
                            "shieldedDescription":  "この設定とファイアウォールの設定が両方とも有効な場合は、すべての受信トラフィックがブロックされます。",
                            "shieldedName":  "シールド",
+                           "shortSupportMessageDefault":  "このアクションに応じたアクセス許可がありません。詳細については、IT 管理者にお問い合わせください。",
+                           "shortSupportMessageDescription":  "短いサポート メッセージとは、エンド ユーザーがデバイスの管理対象設定を構成しようとしたときに、プラットフォームによって表示されるテキストです。デバイスの既定の言語にカスタム メッセージが指定されていない場合は、指定時を除くすべての言語のメッセージが表示されます。 ",
+                           "shortSupportMessageGridHeader":  "ローカライズされた短いサポート メッセージ",
+                           "shortSupportMessageName":  "短いサポート メッセージ",
+                           "shortSystemMessageHint":  "(最大 200 文字)",
+                           "shortSystemMessageLengthValidation":  "200 文字以下で入力します。",
+                           "shortSystemMessagesSummaryKey":  "短いサポート メッセージ",
                            "show":  "表示",
                            "showAppsList":  "表示するアプリ",
                            "showEverything":  "開催者、時間、議題 (プライベートの会議の場合、議題は非表示)",
@@ -6112,11 +6213,23 @@
                            "subjectNameLocalIdentifier":  "サブジェクトの共通名",
                            "sunday":  "日曜日",
                            "sundayOption":  "日曜日",
+                           "supportMessageLearnMoreLink":  "https://docs.microsoft.com/ja-jp/mem/intune/configuration/device-restrictions-android-for-work",
+                           "supportMessageLearnMoreText":  "サポート メッセージについて説明します。 ",
                            "syncScheduleDescription":  "デバイスがサーバーと接続して電子メールを同期する頻度です。",
                            "syncScheduleName":  "同期スケジュール",
                            "synchronizeDescription":  "デバイスに格納する電子メールの量とサーバーに接続する頻度を制御します。",
                            "systemExtensionTeamIdsMustBeUnique":  "許可するチーム ID と許可するシステム拡張機能の両方に同じチーム ID を指定することはできません。",
                            "systemInfoOnlyStatusBarOption":  "デバイスのステータス バーにシステム情報を表示します",
+                           "systemMessageInputValidation":  "入力は空白にできません。",
+                           "systemMessageLocaleValidation":  "フィールドを空にすることはできません。",
+                           "systemMessages":  "カスタムのサポート情報",
+                           "systemMessagesDefaultColumnName":  "既定のメッセージ",
+                           "systemMessagesDefaultLanguageValue":  "すべて (指定されていない場合)",
+                           "systemMessagesLanguageColumnName":  "言語",
+                           "systemMessagesMessageColumnName":  "メッセージ",
+                           "systemMessagesMessageEmptyValueKey":  "カスタマイズしてメッセージを入力します。",
+                           "systemMessagesShortSupportMessageLanguageEmptyValueKey":  "ロケールを選択します。",
+                           "systemMessagesShortSupportMessageTableName":  "短いサポート メッセージ",
                            "systemPageDescription":  "[設定] アプリの [システム] へのアクセスをブロックします。",
                            "systemPageName":  "システム",
                            "systemScanName":  "フル スキャンまたはクイック スキャンを実行する日時",
@@ -6223,7 +6336,7 @@
                            "thirtyMinutesOption":  "30 分",
                            "threeAMOption":  "午前 3:00",
                            "threeDES":  "3DES",
-                           "threeDaysOption":  "3 日間",
+                           "threeDaysOption":  "3 日",
                            "threeMinutesOption":  "3 分",
                            "threeMonthsNumberOption":  "3 か月",
                            "threeNumberOption":  "3",
@@ -7156,7 +7269,7 @@
                            "add":  "追加",
                            "addAppConfiguration":  "アプリの構成を追加する",
                            "addApps":  "アプリの追加",
-                           "addCondition":  "Add condition",
+                           "addCondition":  "条件の追加",
                            "addConfigCommandLabel":  "構成の追加",
                            "addPolicyBladeTitle":  "ポリシーの追加",
                            "addPolicyError":  "ポリシーを追加できませんでした: {0}",
@@ -7170,6 +7283,8 @@
                            "allAppTypes":  "すべてのアプリの種類",
                            "allAppsOptionText":  "すべてのアプリ",
                            "allAppsWithData":  "受信した組織データを持つすべてのアプリ",
+                           "allDestinationsOptionText":  "All destinations",
+                           "allSourcesOptionText":  "All sources",
                            "allow":  "許可",
                            "allowOverrides":  "オーバーライドの許可",
                            "allowSpecifiedBlock":  "指定されたものを許可します (未指定のものはブロック)",
@@ -7179,6 +7294,7 @@
                            "androidPlatformLabel":  "Android",
                            "androidWorkProfile":  "Android 仕事用プロファイルのデバイス",
                            "anyAppOptionText":  "任意のアプリ",
+                           "anyDestinationAnySourceOptionText":  "Any destination and any source",
                            "anyDialerAppOptionText":  "任意の電話アプリ",
                            "anyPolicyManagedDialerAppOptionText":  "ポリシーで管理されている任意の電話アプリ",
                            "appAdded":  "アプリが追加されました",
@@ -7442,7 +7558,7 @@
                            "guidedTemplate2":  "ユーザーに対してどの保護レベルをデプロイするかを指定してください。詳細については、<a href = \"https://go.microsoft.com/fwlink/?linkid=2131582 \">アプリ保護ポリシーを使用するデータ保護フレームワーク</a>を参照してください。",
                            "guidediOSLabel":  "iOS アプリの保護",
                            "hardwareBackedKey":  "ハードウェアを利用するキー",
-                           "healthCheck":  "Health Checks",
+                           "healthCheck":  "正常性チェック",
                            "helpAndSupport":  "ヘルプとサポート",
                            "hideOverrides":  "オーバーライドの非表示",
                            "highDataProtectionGuidedString":  "高データ保護 – より複雑なアクセス要件設定 (単純な PIN を無効にするなど)、データ保護設定 (サードパーティ製のキーボードを無効にするなど) を使用して、拡張データ保護に定義された設定を拡張します。",
@@ -7523,6 +7639,8 @@
                            "noAssignments":  "割り当てがありません",
                            "noConfigSelection":  "プラットフォームとアプリを選択してください",
                            "noConfiguredUsers":  "ユーザーが構成されていません",
+                           "noDestinationNoSourceOptionText":  "No destination or source",
+                           "noDestinationsOptionText":  "No destinations",
                            "noEmailToDisplay":  "利用可能なメール アドレスがありません",
                            "noOptionText":  "いいえ",
                            "noPermissionPropertyLabel":  "既にサブスクリプションをお持ちですか?",
@@ -7531,6 +7649,7 @@
                            "noPolicy":  "ポリシーなし",
                            "noProtectedUsers":  "保護されているユーザーはいません",
                            "noSelection":  "プラットフォーム、アプリ、保護状態を選択してください",
+                           "noSourcesOptionText":  "No sources",
                            "noSubscriptionPropertyLabel":  "サブスクリプションが必要な場合があります",
                            "noSubscriptionPropertyLinkText":  "今すぐ Microsoft Intune をお試しください",
                            "noUnprotectedUsers":  "保護されてないユーザーはいません",
@@ -7769,6 +7888,7 @@
                            "weMovedToANewLocation":  "新しい場所に移動しました",
                            "windows10AppProtectionPolicy":  "Windows 10 以降のアプリ保護ポリシー",
                            "windows10PlatformLabel":  "Windows 10 以降",
+                           "windowsInformationProtectionPlatformLabel":  "Windows Information Protection",
                            "windowsPlatformLabel":  "Windows",
                            "windowsProtectionReport":  "Windows 保護レポート",
                            "wipAddAppsSubtitle":  "このポリシーで許可されるアプリとして、推奨される Microsoft アプリを追加するか、ストア アプリまたはデスクトップ アプリを手動で追加します。",
@@ -9731,7 +9851,9 @@
                      "whatIfIpAddressInfo":  "ユーザーがサインインしている IP アドレス。",
                      "whatIfIpCountryInfoBoxText":  "IP アドレスまたは国を使用する場合、両方のフィールドは必要になり、共に正しくマップする必要があります。",
                      "whatIfPolicyAppliesTab":  "適用するポリシー",
+                     "whatIfPolicyAppliesTabWithCount":  "Applicable policies ({0})",
                      "whatIfPolicyDoesNotApplyTab":  "適用しないポリシー",
+                     "whatIfPolicyDoesNotApplyTabWithCount":  "Inapplicable policies ({0})",
                      "whatIfReasons":  "このポリシーを適用しない理由",
                      "whatIfSelectClientApp":  "クライアント アプリの選択...",
                      "whatIfSelectCountry":  "国の選択...",
@@ -10065,6 +10187,8 @@
                    "scopeTagsRequired":  "少なくとも 1 つのスコープ タグが必要です",
                    "searchAppLabel":  "アプリの選択",
                    "searchAppLinkText":  "アプリ ストアを検索します",
+                   "searchWinGetPublicRepositoryLinkText":  "Windows パッケージ マネージャーのコミュニティ リポジトリを検索する",
+                   "searchWinGetStoreRepositoryLinkText":  "Microsoft Store リポジトリを検索する",
                    "selectAAD":  "AAD 属性の選択",
                    "selectAppFileLabel":  "ファイルの選択",
                    "selectAppFileLinkText":  "アプリ パッケージ ファイルの選択",
@@ -10116,6 +10240,7 @@
                              "deviceCompliance":  "デバイスのポリシー準拠",
                              "diskEncryption":  "ディスクの暗号化",
                              "eDR":  "エンドポイントの検出と応答",
+                             "ePM":  "エンドポイント特権の管理",
                              "firewall":  "ファイアウォール",
                              "helpSupport":  "ヘルプとサポート",
                              "setup":  "セットアップ",
@@ -10877,8 +11002,8 @@
                                                                                "Columns":  {
                                                                                                "deviceName":  "デバイス名",
                                                                                                "deviceUpdateStatus":  "デバイスの更新状態",
-                                                                                               "lastUpdated":  "最終更新",
-                                                                                               "osVersion":  "OS バージョン",
+                                                                                               "lastUpdated":  "最終更新日時",
+                                                                                               "osVersion":  "OS のバージョン",
                                                                                                "userPrincipalName":  "ユーザー名"
                                                                                            },
                                                                                "maximumOSVersionFilter":  "最大 OS バージョン",
@@ -10950,7 +11075,7 @@
                                                         "listLoadError":  "macOS ソフトウェア更新プロファイルを読み込めません。後でもう一度お試しください",
                                                         "lowercase":  "macOS 更新ポリシー",
                                                         "other":  "その他",
-                                                        "subtitle":  "MacOS ソフトウェアの更新",
+                                                        "subtitle":  "MacOS ソフトウェア更新プログラム",
                                                         "upToDate":  "最新",
                                                         "uppercase":  "macOS 更新ポリシー"
                                                     },
@@ -11275,12 +11400,12 @@
                                           "gettingStarted":  "はじめに",
                                           "messages":  "メッセージ",
                                           "onlineResources":  "オンライン リソース",
-                                          "releaseManagement":  "Release management",
+                                          "releaseManagement":  "リリース管理",
                                           "serviceRequests":  "サービス要求",
                                           "settings":  "設定",
-                                          "supportRequests":  "Support requests",
+                                          "supportRequests":  "サポート リクエスト",
                                           "tenantEnrollment":  "テナント登録",
-                                          "tenantManagement":  "Tenant management"
+                                          "tenantManagement":  "テナント管理"
                                       },
                    "actions":  "コンプライアンス非対応に対するアクション",
                    "advancedExchangeSettings":  "Exchange Online の設定",
@@ -11337,7 +11462,7 @@
                    "enrollmentRestrictions":  "登録制限",
                    "exchangeActiveSync":  "Exchange ActiveSync",
                    "exchangeServiceConnectors":  "Exchange サービス コネクタ",
-                   "failuresForFeatureUpdates":  "機能の更新エラー (プレビュー)",
+                   "failuresForFeatureUpdates":  "機能更新プログラム エラー (プレビュー)",
                    "failuresForQualityUpdates":  "Windows の優先更新プログラムのエラー (プレビュー)",
                    "featureFlighting":  "機能フライティング",
                    "featureUpdateDeployments":  "Windows 10 以降向け機能更新プログラム (プレビュー)",
@@ -11401,10 +11526,11 @@
                    "userExecutionStatus":  "ユーザーの状態",
                    "warranty":  "保証ベンダー",
                    "wdacSupplementalPolicies":  "S モードの補足ポリシー",
-                   "windows10DriverUpdate":  "Windows 10 とそれ以降向けドライバー更新プログラム (プレビュー)",
+                   "windows10DriverUpdate":  "Windows 10 以降向けドライバー更新プログラム (プレビュー)",
                    "windows10QualityUpdate":  "Windows 10 以降向け品質更新プログラム (プレビュー)",
                    "windows10UpdateRings":  "Windows 10 以降向け更新リング",
                    "windows10XPolicyFailures":  "Windows 10X のポリシー エラー",
+                   "windows365Connector":  "Windows 365 Citrix コネクタ",
                    "windowsEnterpriseCertificate":  "Windows Enterprise 証明書",
                    "windowsManagement":  "PowerShell スクリプト",
                    "windowsSideLoadingKeys":  "Windows サイドローディング キー",

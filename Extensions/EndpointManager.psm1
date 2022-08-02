@@ -11,7 +11,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.6.0'
+    '3.7.0'
 }
 
 function Invoke-InitializeModule
@@ -180,11 +180,21 @@ function Invoke-InitializeModule
         Expand = "scheduledActionsForRule(`$expand=scheduledActionConfigurations)"
         API = "/deviceManagement/deviceCompliancePolicies"
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
-        Dependencies = @("Locations","Notifications")
+        Dependencies = @("Locations","Notifications","ComplianceScripts")
         PostExportCommand = { Start-PostExportCompliancePolicies @args }
         PreUpdateCommand = { Start-PreUpdateCompliancePolicies @args }
         GroupId = "CompliancePolicies"
     })
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Compliance Scripts"
+        Id = "ComplianceScripts"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/deviceComplianceScripts"
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        GroupId = "CompliancePolicies"
+        Icon = "Scripts"
+    })        
 
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Intune Branding"
@@ -644,6 +654,7 @@ function Invoke-InitializeModule
         AssignmentsType = "deviceHealthScriptAssignments"
         PropertiesToRemoveForUpdate = @('version','isGlobalScript','highestAvailableVersion')
     })
+
 }
 
 function Invoke-EMAuthenticateToMSAL
@@ -1655,7 +1666,13 @@ function Start-PostImportAppProtection
                 $tmp = $newObject."@odata.type".Split('.')[-1]
                 $objectClass = Get-GraphObjectClassName $tmp
 
-                Invoke-GraphRequest -Url "/deviceAppManagement/$objectClass/$($obj.Id)/targetApps" -Content "{ apps: $(ConvertTo-Json $global:ImportObjectInfo.Apps -Depth 20)}" -HttpMethod POST | Out-Null
+                $apps = [PSCustomObject]@{ 
+                    appGroupType = $obj.appGroupType
+                    apps = @($global:ImportObjectInfo.Apps)                 
+                } 
+                $json = $apps | ConvertTo-Json -Depth 20
+                
+                Invoke-GraphRequest -Url "/deviceAppManagement/$objectClass/$($obj.Id)/targetApps" -Content $json -HttpMethod POST | Out-Null
             }
             catch {}
         }
@@ -1683,7 +1700,11 @@ function Start-PreUpdateAppConfigurationApp
         {
             Write-Log "Update App Configuruation Apps"
 
-            $json = [PSCustomObject]@{ apps = @($obj.Apps) } | ConvertTo-Json -Depth 10
+            $apps = [PSCustomObject]@{ 
+                appGroupType = $obj.appGroupType
+                apps = @($obj.Apps)                 
+            } 
+            $json = $apps | ConvertTo-Json -Depth 20
             $objectClass = 'targetedManagedAppConfigurations'
 
             Invoke-GraphRequest -Url "/deviceAppManagement/$objectClass/$($curObject.Object.Id)/targetApps" -Content $json -HttpMethod POST | Out-Null
@@ -1724,8 +1745,12 @@ function Start-PreUpdateAppProtection
         try
         {
             Write-Log "Update App Protection Apps"
-
-            $json = [PSCustomObject]@{ apps = @($obj.Apps) } | ConvertTo-Json -Depth 10
+            
+            $apps = [PSCustomObject]@{ 
+                appGroupType = $obj.appGroupType
+                apps = @($obj.Apps)                 
+            } 
+            $json = $apps | ConvertTo-Json -Depth 20
 
             Invoke-GraphRequest -Url "$api/targetApps" -Content $json -HttpMethod POST | Out-Null
         }

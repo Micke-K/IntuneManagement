@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.3.0'
+    '1.4.0'
 }
 
 function Invoke-InitializeModule
@@ -26,6 +26,7 @@ function Invoke-InitializeModule
         AddCustomProfileProperty = { Add-CDDocumentCustomProfileProperty @args }
         PostAddValue = { Invoke-CDDocumentCustomPostAdd @args }
         ObjectDocumented = { Invoke-CDDocumentCustomObjectDocumented @args }
+        TranslateSectionFile = { Invoke-CDDocumentTranslateSectionFile @args }
     })
 }
 
@@ -33,6 +34,8 @@ function Initialize-CDDocumentation
 {
     $script:allTenantApps = $null
     $script:allTermsOfUse = $null 
+    $script:allAuthenticationContextClasses = $null 
+    $script:allCustomCompliancePolicies = $null 
 }
 
 function Invoke-CDDocumentObject
@@ -145,6 +148,13 @@ function Invoke-CDDocumentObject
             Properties = @("Name","Value","Category","SubCategory")
         }
     }
+    elseif($type -eq '#microsoft.graph.deviceComplianceScript')
+    {
+        Invoke-CDDocumentdeviceComplianceScript $documentationObj
+        return [PSCustomObject]@{
+            Properties = @("Name","Value","Category","SubCategory")
+        }
+    }    
 }
 
 function Get-CDAllManagedApps
@@ -2036,7 +2046,7 @@ function Invoke-CDDocumentConditionalAccess
         }
 
         Add-CustomSettingObject ([PSCustomObject]@{
-            Name = $includeLabel
+            Name = Get-LanguageString "AzureIAM.UserActions.selectionInfo"
             Value =  $value
             Category = $category
             SubCategory = $userActionsLabel
@@ -2046,19 +2056,23 @@ function Invoke-CDDocumentConditionalAccess
 
     if($obj.conditions.applications.includeAuthenticationContextClassReferences.Count -gt 0)
     {
-        # Fix better text
-        $userActionsLabel = Get-LanguageString "AzureIAM.AuthContext.label"
         $tmpObjs = @() 
+        if(-not $script:allAuthenticationContextClasses)
+        {
+            $script:allAuthenticationContextClasses = (Invoke-GraphRequest -url "/identity/conditionalAccess/authenticationContextClassReferences" -ODataMetadata "minimal").value 
+        }
+
         foreach($id in ($obj.conditions.applications.includeAuthenticationContextClassReferences))
         {
-            $tmpObjs += $id
-        }        
+            $idObj = $script:allAuthenticationContextClasses | Where Id -eq $id
+            $tmpObjs += ?? $idObj.displayName $id
+        }
 
         Add-CustomSettingObject ([PSCustomObject]@{
-            Name = $includeLabel
+            Name = Get-LanguageString "AzureIAM.AuthContext.checkBoxInfo"
             Value =  $tmpObjs -join $script:objectSeparator
             Category = $category
-            SubCategory = $userActionsLabel
+            SubCategory = Get-LanguageString "AzureIAM.AuthContext.label"
             EntityKey = "includeAuthenticationContextClassReferences"
         })           
     }
@@ -3772,5 +3786,132 @@ function Invoke-CDDocumentCustomObjectDocumented
             }
         }        
     }
+}
+#endregion
+
+#region
+function Invoke-CDDocumentTranslateSectionFile
+{
+    param($obj, $objectType, $fileInfo, $categoryObj)
+
+    if($obj.'@OData.Type' -eq "#microsoft.graph.windows10CompliancePolicy" -and $fileInfo.BaseName -eq "customcompliance_compliancewindows10")
+    {
+        $category = Get-Category $categoryObj."$($fileInfo.BaseName)".category
+               
+        if($null -eq $obj.deviceCompliancePolicyScript)
+        {
+            $propValue = Get-LanguageString "BooleanActions.notConfigured"
+        }
+        else
+        {
+            $propValue = Get-LanguageString "BooleanActions.require"
+        }        
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "SettingDetails.adminConfiguredComplianceSettingName"
+            Value = $propValue 
+            EntityKey = "deviceCompliancePolicyScript"
+            Category = $category
+            SubCategory = $null
+        })
+
+        if($obj.deviceCompliancePolicyScript)
+        {
+            if($null -eq $script:allCustomCompliancePolicies)
+            {
+                $script:allCustomCompliancePolicies = (Invoke-GraphRequest -url "/deviceManagement/deviceComplianceScripts?`$select=displayName,id" -ODataMetadata "minimal").value
+            }
+
+            $customScript = $script:allCustomCompliancePolicies | Where Id -eq $obj.deviceCompliancePolicyScript.deviceComplianceScriptId
+
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "CustomCompliance.FilePicker.scriptFileLabel"
+                Value = $customScript.displayName
+                EntityKey = "deviceComplianceScriptName"
+                Category = $category
+                SubCategory = $null
+            })
+
+            if($obj.deviceCompliancePolicyScript.rulesContent)
+            {
+                $propValue = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.deviceCompliancePolicyScript.rulesContent)) 
+                Add-CustomSettingObject ([PSCustomObject]@{
+                    Name = Get-LanguageString "CustomCompliance.UploadFile.jsonFileLabel"
+                    Value = $propValue 
+                    EntityKey = "jsonFileContent"
+                    Category = $category
+                    SubCategory = $null
+                })
+            }            
+        }
+
+        return $true
+    }
+    return $false
+}
+#endregion
+
+#region
+function Invoke-CDDocumentdeviceComplianceScript
+{
+    param($documentationObj)
+
+    $obj = $documentationObj.Object
+    $objectType = $documentationObj.ObjectType
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+    
+    ###################################################
+    # Basic info
+    ###################################################
+
+    Add-BasicDefaultValues $obj $objectType
+    if($obj.publisher)
+    {
+        Add-BasicPropertyValue (Get-LanguageString "SettingDetails.publisher") $obj.publisher
+    }    
+    Add-BasicAdditionalValues $obj $objectType
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "Titles.complianceScriptManagementPreview")
+
+    $category = Get-LanguageString "TableHeaders.settings"
+
+    $valueYes = Get-LanguageString "BooleanActions.yes"
+    $valueNo = Get-LanguageString "SettingDetails.no"
+
+    if($obj.detectionScriptContent)
+    {
+        $propValue = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.detectionScriptContent)) 
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "ProactiveRemediations.Create.Settings.DetectionScriptMultiLineTextBox.label"
+            Value = $propValue 
+            EntityKey = "detectionScriptContent"
+            Category = $category
+            SubCategory = $null
+        })
+    }
+
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = Get-LanguageString "WindowsManagement.scriptContextLabel"
+        Value = (?: ($obj.runAsAccount -eq "system")  $valueNo $valueYes)
+        EntityKey = "runAsAccount"
+        Category = $category
+        SubCategory = $null
+    })
+
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = Get-LanguageString "WindowsManagement.enforceSignatureCheckLabel"
+        Value = (?: ($obj.enforceSignatureCheck -eq $false)  $valueNo $valueYes)
+        EntityKey = "enforceSignatureCheck"
+        Category = $category
+        SubCategory = $null
+    })    
+
+    Add-CustomSettingObject ([PSCustomObject]@{
+        Name = Get-LanguageString "WindowsManagement.runAs64BitLabel"
+        Value = (?: ($obj.runAs32Bit -eq $true)  $valueNo $valueYes)
+        EntityKey = "runAs32Bit"
+        Category = $category
+        SubCategory = $null
+    }) 
 }
 #endregion

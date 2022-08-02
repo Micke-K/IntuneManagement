@@ -305,6 +305,7 @@
                      "airPrint":  "AirPrint",
                      "androidDefenderAtp":  "Microsoft Defender for Endpoint",
                      "androidDeviceOwnerApplications":  "应用程序",
+                     "androidDeviceOwnerPolicyMessages":  "自定义支持信息",
                      "androidForWorkPassword":  "设备密码",
                      "appManagement":  "允许或阻止应用",
                      "applicationGuard":  "Microsoft Defender 应用程序防护",
@@ -318,8 +319,10 @@
                      "autonomousSingleAppMode":  "自治单应用模式",
                      "azureOperationalInsights":  "Azure 运营见解",
                      "bitLocker":  "Windows 加密",
+                     "bootOptions":  "启动选项",
                      "browser":  "浏览器",
                      "builtinApps":  "内置应用",
+                     "cameras":  "摄像头",
                      "cellular":  "手机网络",
                      "cloudAndStorage":  "云和存储",
                      "cloudPrint":  "云打印机",
@@ -334,6 +337,7 @@
                      "customConfiguration":  "自定义配置文件",
                      "customOMASettings":  "自定义 OMA-URI 设置",
                      "customPreferences":  "首选项文件",
+                     "dFCISecuritySettings":  "安全设置",
                      "defender":  "Microsoft Defender 防病毒",
                      "defenderAntivirus":  "Microsoft Defender 防病毒",
                      "defenderExploitGuard":  "Microsoft Defender 攻击防护",
@@ -392,6 +396,7 @@
                      "maintenance":  "维护",
                      "malware":  "恶意软件",
                      "messaging":  "消息传递",
+                     "microphonesAndSpeakers":  "麦克风和扬声器",
                      "networkBoundary":  "网络边界",
                      "networkProxy":  "网络代理",
                      "notifications":  "应用通知",
@@ -400,12 +405,14 @@
                      "personalProfile":  "个人配置文件",
                      "personalization":  "个性化",
                      "policyOverride":  "覆盖组策略",
+                     "ports":  "端口",
                      "powerSettings":  "电源设置",
                      "printer":  "打印机",
                      "privacy":  "隐私",
                      "privacyPerApp":  "每个应用的隐私例外情况",
                      "privacyPreferences":  "隐私首选项",
                      "projection":  "投影",
+                     "radios":  "无线电收发器",
                      "sCCMCompliance":  "Configuration Manager 符合性",
                      "sCEP":  "SCEP 证书",
                      "sCEPProperties":  "SCEP 证书",
@@ -422,6 +429,7 @@
                      "systemExtensions":  "系统扩展",
                      "systemSecurity":  "系统安全",
                      "trustedCert":  "受信任的证书",
+                     "uEFIAccess":  "UEFI 访问",
                      "updates":  "更新",
                      "userRights":  "用户权限",
                      "usersAndAccounts":  "用户和帐户",
@@ -435,6 +443,7 @@
                      "vPNProxy":  "代理",
                      "vPNSplitTunneling":  "拆分隧道",
                      "vPNTrustedNetwork":  "受信任的网络检测",
+                     "wakeSettings":  "唤醒设置",
                      "webContentFilter":  "Web 内容筛选",
                      "wiFi":  "Wi-Fi",
                      "win10Wifi":  "Wi-Fi",
@@ -571,6 +580,29 @@
                                                            "tooltip":  "指定是否允许用户使用自定义视觉主题。"
                                                        }
                                  },
+    "CustomCompliance":  {
+                             "FilePicker":  {
+                                                "noScriptSelectedError":  "请选择发现脚本",
+                                                "scriptFileLabel":  "选择发现脚本"
+                                            },
+                             "PremiumBanner":  {
+                                                   "label":  "自定义合规性目前以预览版提供。在正式发布后，可以支付额外费用，以将其添加到包含 Microsoft Endpoint Manager 或 Intune 的许可选项中。"
+                                               },
+                             "ScriptPicker":  {
+                                                  "objectName":  "脚本",
+                                                  "placeholder":  "单击此处选择",
+                                                  "searchboxPlaceholder":  "按脚本名称搜索",
+                                                  "title":  "选择发现脚本"
+                                              },
+                             "SummaryGrid":  {
+                                                 "ariaLabel":  "自定义合规性规则摘要"
+                                             },
+                             "UploadFile":  {
+                                                "jsonFileLabel":  "使用你的自定义合规性设置上传和验证 JSON 文件",
+                                                "noFileSelectedError":  "请选择 json 文件",
+                                                "parseFileSelectedError":  "json 文件无效"
+                                            }
+                         },
     "AssignmentFilters":  {
                               "assignmentFilterColumnHeader":  "筛选器",
                               "noFilters":  "无"
@@ -1036,6 +1068,41 @@
                                                         "v81":  "Windows Phone 8.1"
                                                     }
                                },
+    "EnrollmentStatusScreen":  {
+                                   "Apps":  {
+                                                "allowNonBlockingAppInstallation":  "仅在技术人员阶段中失败的所选阻止应用",
+                                                "apps":  "应用",
+                                                "appsListName":  "应用程序列表",
+                                                "blockingApps":  "正在阻止应用",
+                                                "managedApps":  "托管应用",
+                                                "noApps":  "无应用程序",
+                                                "noAppsError":  "检索应用程序时出错",
+                                                "selectApps":  "选择应用",
+                                                "selectedAppsCount":  "已选择 {0} 个应用(最多 100 个)",
+                                                "useSelectedAppsAll":  "全部",
+                                                "useSelectedAppsSelected":  "已选定",
+                                                "useSelectedAppsToggleLabel":  "如果已将所需应用分配给用户/设备，请在这些应用安装完毕前阻止设备使用"
+                                            },
+                                   "Header":  {
+                                                  "application":  "应用程序",
+                                                  "publisher":  "发布者",
+                                                  "version":  "版本"
+                                              },
+                                   "SearchBox":  {
+                                                     "placeHolder":  "按名称或发布者搜索"
+                                                 },
+                                   "allowToUseToggle":  "如果发生安装错误，允许用户使用设备",
+                                   "blockToggle":  "在安装完所有应用和配置文件之前，应避免使用设备",
+                                   "blockToolTip":  "例如，如果向此列表中添加 Microsoft Word，则在成功安装 Word 之前，目标用户和设备将无法离开注册状态页。",
+                                   "collectLogToggle":  "为最终用户打开日志收集和诊断页面",
+                                   "create":  "创建配置文件",
+                                   "customMessageTextBox":  "错误消息",
+                                   "customMessageToggle":  "发生时间限制或出错时显示自定义消息",
+                                   "enableForAutopilotOnlyToggle":  "仅向通过全新安装体验(OOBE)预配的设备显示页面",
+                                   "progressToggle":  "显示应用和配置文件安装进度",
+                                   "resetToggle":  "如果发生安装错误，允许用户重置设备",
+                                   "timeout":  "在安装时间超过指定的分钟数时显示错误信息"
+                               },
     "TableHeaders":  {
                          "activity":  "活动",
                          "actor":  "发起人(参与者)",
@@ -1047,7 +1114,7 @@
                          "assignment":  "分配",
                          "assignmentStatus":  "已分配",
                          "assignments":  "分配",
-                         "attributeName":  "属性名称",
+                         "attributeName":  "属性名",
                          "attributeType":  "属性类型",
                          "bundleId":  "Bundle-Id",
                          "category":  "类别",
@@ -1251,6 +1318,7 @@
                     "builtInApp":  "内置的应用",
                     "builtInIos":  "内置的 iOS 应用",
                     "default":  "",
+                    "iosIPadOSWebClip":  "iOS/iPadOS Web 剪辑",
                     "iosLobApp":  "iOS 业务线应用",
                     "iosStoreApp":  "iOS 应用商店应用",
                     "iosVppApp":  "iOS Volume Purchase Program 应用",
@@ -1282,7 +1350,8 @@
                     "windowsPhoneXapLobApp":  "Windows Phone XAP 业务线应用",
                     "windowsStoreApp":  "Microsoft Store 应用",
                     "windowsUniversalAppXLobApp":  "Windows Universal AppX 业务线应用",
-                    "windowsUniversalLobApp":  "Windows 通用业务线应用"
+                    "windowsUniversalLobApp":  "Windows 通用业务线应用",
+                    "windowsWebApp":  "Windows Web 链接"
                 },
     "TAPSettings":  {
                         "AllowedDataIngestionLocations":  {
@@ -1295,7 +1364,7 @@
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "访问时使用生物特征而非 PIN",
-                                                               "tooltip":  "选择用户可以使用哪些 Android 身份验证方法(如果有)来代替应用 PIN。"
+                                                               "tooltip":  "允许使用 Android 生物识别身份验证方法(如果有)代替应用 PIN。"
                                                            },
                         "AndroidFingerprint":  {
                                                    "label":  "访问时使用指纹而非 PIN (Android 6.0+)",
@@ -1421,12 +1490,12 @@
                                                    "tooltip":  "如果策略托管应用处于非活动状态的时间超过指定的非活动状态分钟数，应用将提示在启动应用后重新检查访问要求(也即 PIN、条件启动设置)。"
                                                },
                         "RequireClass3Biometrics":  {
-                                                        "label":  "Class 3 Biometrics (Android 9.0+)",
-                                                        "tooltip":  "For more information on class 3 biometrics refer to the documentation available <a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">here</a>"
+                                                        "label":  "类 3 生物识别(Android 9.0+)",
+                                                        "tooltip":  "有关类 3 生物识别的详细信息，请参阅<a href=\"https://source.android.com/compatibility/12/android-12-cdd#7_3_10_biometric_sensors\">此处</a>提供的文档"
                                                     },
                         "RequirePinAfterBiometricChange":  {
-                                                               "label":  "Override Biometrics with PIN after biometric updates",
-                                                               "tooltip":  "If class 3 biometrics are supported by the device (more info <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>), when a change in biometrics is detected, a PIN prompt will override biometric prompts."
+                                                               "label":  "生物识别更新后使用 PIN 替代生物识别",
+                                                               "tooltip":  "如果设备支持类 3 生物识别(详细信息请参见<a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>)，当检测到生物识别更改时，PIN 提示将替代生物识别提示。"
                                                            },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "包 ID 必须是唯一的。",
@@ -1467,6 +1536,22 @@
                         "Timeout":  {
                                         "label":  "超时(非活动状态分钟数)"
                                     },
+                        "WinCutCopyPaste":  {
+                                                "label":  "Allow cut, copy, and paste for",
+                                                "tooltip":  "Select one of the following options to specify the sources and destinations org users can cut or copy or paste org data: <br/>\n\n<b>Any destination and any source</b>: Org users can paste data from and cut/copy data to any account, document, location or application.<br/>\n\n<b>No destination or source</b>: Org users cannot cut, copy or paste data to or from external accounts, documents, locations or applications from or into the org context."
+                                            },
+                        "WinPrintData":  {
+                                             "label":  "Print org data",
+                                             "tooltip":  "Select <b>Block</b> to prevent printing of org data. Select <b>Allow</b> to permit printing of org data. Personal or unmanaged data is not affected."
+                                         },
+                        "WinReceiveData":  {
+                                               "label":  "Receive data from",
+                                               "tooltip":  "Select one of the following options to specify the sources org users can receive data from: <br/>\n\n<b>No sources</b>: Org users cannot open data from external accounts, documents, locations or applications into the org context.<br/>\n\n<b>All sources</b>: Org users can open data from any account, document, location or application into the org context.\n"
+                                           },
+                        "WinSendData":  {
+                                            "label":  "Send org data to",
+                                            "tooltip":  "Select one of the following options to specify the destinations org users can send data to: <br/>\n\n<b>No destinations</b>: Org users cannot send org data to external accounts, documents, locations or applications from the org context.<br/>\n\n<b>All destinations</b>: Org users can send org data to any account, document, location or application."
+                                        },
                         "Tap":  {
                                     "numberOfDays":  "天数",
                                     "pinResetAfterNumberOfDays":  "PIN 重置前的天数",
@@ -1524,38 +1609,15 @@
                           "required":  "必需",
                           "uninstall":  "卸载"
                       },
-    "EnrollmentStatusScreen":  {
-                                   "Apps":  {
-                                                "apps":  "应用",
-                                                "appsListName":  "应用程序列表",
-                                                "managedApps":  "托管应用",
-                                                "noApps":  "无应用程序",
-                                                "noAppsError":  "检索应用程序时出错",
-                                                "selectApps":  "选择应用",
-                                                "selectedAppsCount":  "已选择 {0} 个应用(最多 100 个)",
-                                                "useSelectedAppsAll":  "全部",
-                                                "useSelectedAppsSelected":  "已选定",
-                                                "useSelectedAppsToggleLabel":  "如果已将所需应用分配给用户/设备，请在这些应用安装完毕前阻止设备使用"
-                                            },
-                                   "Header":  {
-                                                  "application":  "应用程序",
-                                                  "publisher":  "发布者",
-                                                  "version":  "版本"
-                                              },
-                                   "SearchBox":  {
-                                                     "placeHolder":  "按名称或发布者搜索"
-                                                 },
-                                   "allowToUseToggle":  "如果发生安装错误，允许用户使用设备",
-                                   "blockToggle":  "在安装完所有应用和配置文件之前，应避免使用设备",
-                                   "blockToolTip":  "例如，如果向此列表中添加 Microsoft Word，则在成功安装 Word 之前，目标用户和设备将无法离开注册状态页。",
-                                   "collectLogToggle":  "为最终用户打开日志收集和诊断页面",
-                                   "create":  "创建配置文件",
-                                   "customMessageTextBox":  "错误消息",
-                                   "customMessageToggle":  "发生时间限制或出错时显示自定义消息",
-                                   "enableForAutopilotOnlyToggle":  "仅向通过全新安装体验(OOBE)预配的设备显示页面",
-                                   "progressToggle":  "显示应用和配置文件安装进度",
-                                   "resetToggle":  "如果发生安装错误，允许用户重置设备",
-                                   "timeout":  "在安装时间超过指定的分钟数时显示错误信息"
+    "CustomComplianceScript":  {
+                                   "CustomScriptWizardTitle":  {
+                                                                   "create":  "创建自定义脚本",
+                                                                   "edit":  "编辑自定义脚本"
+                                                               },
+                                   "basicInfo":  "基于所编写的检测和修正脚本创建新的自定义脚本包。",
+                                   "customScriptCapitalized":  "自定义脚本",
+                                   "customScriptLowercase":  "自定义脚本",
+                                   "detectionScript":  "检测脚本"
                                },
     "Devices":  {
                     "General":  {
@@ -1769,6 +1831,27 @@
                                                       "windowsIdentityProtection":  "通过使用 Intune，可以在 Windows 设备上使用此设备配置文件管理 Windows Hello for Business 设置。<br><br>你知道吗? 可以考虑转到<a href=\"#blade/Microsoft_Intune_Workflows/SecurityManagementMenu\" target=\"_blank\"> 终结点安全</a>，创建终结点安全配置文件或安全基线配置文件来配置你的常用终结点保护安全功能。<br><br>终结点安全配置文件提供一系列简洁高效的安全模板，包括防火墙、BitLocker、防病毒等。安全基准配置文件是采用安全专家建议的预配置的设置值的模板。",
                                                       "wiredNetwork":  "设置有线网络供用户访问。"
                                                   },
+                           "SupportMessagesLanguageDropdown":  {
+                                                                   "chineseSimplified":  "中文(简体)",
+                                                                   "chineseTraditional":  "中文(繁体)",
+                                                                   "czech":  "捷克语",
+                                                                   "dutch":  "荷兰语",
+                                                                   "englishUS":  "英语(美国)",
+                                                                   "frenchFrance":  "法语(法国)",
+                                                                   "german":  "德语",
+                                                                   "hungarian":  "匈牙利语",
+                                                                   "indonesian":  "印度尼西亚语",
+                                                                   "italian":  "意大利语",
+                                                                   "japanese":  "日语",
+                                                                   "korean":  "韩语",
+                                                                   "polish":  "波兰语",
+                                                                   "portugueseBrazil":  "葡萄牙语(巴西)",
+                                                                   "portuguesePortugal":  "葡萄牙语(葡萄牙)",
+                                                                   "russian":  "俄语",
+                                                                   "spanishSpain":  "西班牙语(西班牙)",
+                                                                   "swedish":  "瑞典语",
+                                                                   "turkish":  "土耳其语"
+                                                               },
                            "TrustedCert":  {
                                                "uploadControlPlaceHolderText":  "选择有效的 .cer 文件"
                                            },
@@ -1823,6 +1906,7 @@
                            "allEnrollmentTypesHeaderName":  "所有注册类型",
                            "allEnrollmentTypesHeaderNameMac":  "所有注册类型",
                            "allEnrollmentTypesSecondDescription":  "如果需要密码，则无论这些设置的具体配置如何，都将在用户注册的所有设备上自动强制实施非简单的 6 位数 PIN 要求。",
+                           "allFeaturesOption":  "所有功能",
                            "allManagedApps":  "所有托管应用",
                            "allOtherUpdatesBehaviorName":  "所有其他更新(OS、内置应用)",
                            "allowActivationLockWhenSupervisedDescription":  "激活锁定可使丢失或被盗设备更难重新激活。",
@@ -2001,7 +2085,7 @@
                            "applicationGuardPrintToNetworkPrintersName":  "网络打印机",
                            "applicationGuardPrintToPDFName":  "PDF",
                            "applicationGuardPrintToXPSName":  "XPS",
-                           "applicationNameName":  "应用程序名",
+                           "applicationNameName":  "应用程序名称",
                            "apps":  "应用",
                            "appsActivateAboveLockScreenDescription":  "此策略设置指定是否可以在锁定屏幕时通过语音激活 Windows 应用。\r\n    <br/><br/>如果允许，则可以通过语音从锁定屏幕激活应用，并且组织中的用户无法进行更改。\r\n    <br/><br/>如果阻止，则不允许通过语音从锁定屏幕激活 Windows 应用，并且组织中的用户无法进行更改。\r\n    <br/><br/>如果未配置，组织中的用户可以在设备上使用“设置”>“隐私”决定是否可以通过语音从锁定屏幕激活 Windows 应用。\r\n    <br/><br/>\r\n    ",
                            "appsActivateAboveLockScreenName":  "通过语音从锁定屏幕中激活应用",
@@ -2125,6 +2209,7 @@
                            "batteryLevelTurnOnEnergySaverPluggedInDescription":  "通过此策略设置，可指定在插上设备插头通电时启动节能模式所依据的电池电量水平。<br/>如果启用此策略设置，必须指定一个指示电池电量水平的百分比值。当电池电量水平降到指定值及该值之下时，自动启用节能模式。<br/>如果禁用或不配置此策略设置，则由用户控制此设置。",
                            "bing":  "必应",
                            "biometricWeak":  "生物特征弱",
+                           "biometricsOption":  "生物特征身份验证",
                            "bitLockerAllowStdUsersEncryptAADJoinDescription":  "允许没有管理权限的用户在本地计算机上启用 BitLocker 加密。此设置仅适用于已加入 Azure Active Directory (AADJ)的设备。",
                            "bitLockerAllowStdUsersEncryptAADJoinName":  "允许标准用户在 Azure AD 加入期间启用加密",
                            "bitLockerBaseConfigureEncryptionMethodsDescription":  "通过选择“启用”，可为 OS 驱动器、固定数据驱动器和可移动数据驱动器配置加密方法。通过选择“未配置”，BitLocker 将为驱动器使用默认加密方法。",
@@ -2522,7 +2607,7 @@
                            "blockPasswordProximityRequestsDescription":  "阻止密码邻近请求。在 iOS 12.0 和更高版本中可用。",
                            "blockPasswordProximityRequestsName":  "阻止密码接近度请求",
                            "blockPasswordProximityRequestsNameMacOS":  "阻止密码接近度请求",
-                           "blockPersonalHotspotDescription":  "阻止个人热点。此值只为某些运营商提供。",
+                           "blockPersonalHotspotDescription":  "阻止个人热点。此值仅适用于某些运营商。",
                            "blockPersonalHotspotModificationDescription":  "适用于运行 iOS 12.2 或更高版本的设备。用户无法启用或关闭个人热点。如果同时阻止此设置和个人热点，则将关闭个人热点。在 iOS 12.2 和更高版本中可用。",
                            "blockPersonalHotspotModificationName":  "阻止修改个人热点",
                            "blockPersonalHotspotName":  "阻止个人热点",
@@ -2657,10 +2742,8 @@
                            "booleanName":  "布尔型",
                            "bootFromBuiltInNetworkAdaptersName":  "通过网络适配器启动",
                            "bootFromExternalMediaName":  "通过外部媒体(USB 和 SD)启动",
-                           "bootOptionsName":  "启动选项",
                            "bothOneToOneAndDeviceOption":  "两者",
                            "browserDefault":  "浏览器默认值",
-                           "builtInHardwareName":  "内置的硬件",
                            "builtinAppOption":  "内置应用",
                            "bundleId":  "捆绑 ID",
                            "bundleIdExample":  "例如 com.apple.calculator",
@@ -3210,6 +3293,7 @@
                            "devicesPageDescription":  "阻止访问“设置”应用中的“设备”。",
                            "devicesPageName":  "设备",
                            "dfciBuiltinHeaderDescName":  "DFCI 只能管理设备中内置的硬件组件。这些设置不可管理 USB 网络摄像头等连接的外围设备。",
+                           "dfciGranularSettingsWarningInfoBox":  "警告! 以下选项仅适用于某些类型的设备。如果用它针对不符合条件的设备，它们将报告为不合规，并且设备可能不受保护。<a href=\"https://docs.microsoft.com/mem/intune/configuration/device-firmware-configuration-interface-windows-settings\" >了解详细信息</a> ",
                            "dfciHeaderName":  "使用设备固件配置接口(DFCI)远程管理设备的 UEFI 设置。<a href=\"https://go.microsoft.com/fwlink/?linkid=2028892\" target=\"_blank\">了解更多</a>。<br>\r\n      <br>只能管理满足以下要求的设备的上述设置:\r\n      <li>设备制造商支持 DFCI。</li>\r\n      <li>将设备注册到 Windows Autopilot 部署服务。</li>\r\n      <li>自上次 MDM 同步后设备已重新启动。</li>",
                            "diagnosticDataSubmissionLevelDescription":  "选择诊断数据提交的级别。Windows 版本 1903 之后不支持增强级别。",
                            "diffieHellmanGroupName":  "Diffie-Hellman 组",
@@ -3778,6 +3862,7 @@
                            "f5NetworksF5AccessOption":  "F5 Access",
                            "fFiveEdgeClientOption":  "F5 Access",
                            "fFiveLegacyAccessOption":  "F5 Access 旧版",
+                           "faceOption":  "人脸身份验证",
                            "factoryResetDisabledDescription":  "阻止恢复出厂设置。",
                            "factoryResetDisabledName":  "恢复出厂设置",
                            "factoryResetName":  "恢复出厂设置",
@@ -4134,6 +4219,7 @@
                            "ipAddress":  "IP 地址",
                            "ipAddressDescription":  "如果使用主机名来标识打印机目标，则可通过在终端中对其进行 ping 操作来获取各自的 IP 地址。可包含 IPv4 或 IPv6 地址和端口。",
                            "ipAutoDetectionName":  "自动检测其他企业 IP 范围",
+                           "irisOption":  "虹膜身份验证",
                            "issuerHashDescription":  "单一登录(SSO)证书指纹",
                            "issuerHashName":  "颁发者希",
                            "keepGoing":  "显示消息，且选择在 Microsoft Edge 中打开站点",
@@ -4308,7 +4394,7 @@
                            "kioskModeName":  "展台模式",
                            "kioskModeSingle":  "单应用",
                            "kioskMonthly":  "月度",
-                           "kioskObsoleteInfoHeader":  "此边栏标签页上的设置已弃用。要为设备配置展台设置，请返回“创建配置文件”边栏标签页。在“配置文件类型”下拉列表中，选择展台(预览)。",
+                           "kioskObsoleteInfoHeader":  "此边栏选项卡上的设置已过时。要为设备配置展台设置，请返回“创建配置文件”边栏选项卡。在“配置文件类型”下拉列表中，选择“展台”(预览)。",
                            "kioskProfileHeader":  "使用这些设置来配置展台模式。配置这些设置之前，请确保已将要在展台模式下运行的应用从客户端应用工作负载部署到设备。",
                            "kioskProfileLearnMore":  "了解有关 Windows 展台模式的信息。",
                            "kioskProfileName":  "展台配置名称",
@@ -4611,6 +4697,13 @@
                            "loginWindowSleepDisabledUsersName":  "隐藏休眠按钮",
                            "loginWindowTextDescription":  "在登录屏幕上显示给用户的消息。例如，该消息可以是欢迎消息或警告，也可以是你的组织丢失和找到的联系人信息。",
                            "loginWindowTextName":  "横幅",
+                           "longSupportMessageDefault":  "组织的 IT 管理员可以监视和管理与此设备关联的应用和数据，包括设置、权限、公司访问、网络活动和设备的位置信息。",
+                           "longSupportMessageDescription":  "长支持消息是平台在“设置”>“安全性”>“设备管理应用”中的设备策略页内向最终用户显示的文本。具体取决于平台，通常可通过单击简短的支持消息的对话框中的“了解详细信息”访问此功能。如果未为设备的默认语言指定自定义消息，则会显示语言消息“全部”。 ",
+                           "longSupportMessageGridHeader":  "本地化的长支持消息",
+                           "longSupportMessageName":  "长支持消息",
+                           "longSystemMessageHint":  "(最多 4096 个字符)",
+                           "longSystemMessageLengthValidation":  "输入不能超过 4096 个字符。",
+                           "longSystemMessagesSummaryKey":  "长支持消息",
                            "low":  "低",
                            "lowOption":  "低",
                            "lowSecurityBiometricOption":  "低安全性生物识别",
@@ -5341,7 +5434,6 @@
                            "policySubjectAlternativeNameHelp":  "请查看 SAN 文档，了解如何以最佳方式使用 SAN 字段。",
                            "policyUniversalResourceIdentifier":  "URI",
                            "policyUserPrincipalName":  "用户主体名称(UPN)",
-                           "portName":  "端口",
                            "portNumberDescription":  "如果你的代理服务器使用特定端口，请在此处输入。",
                            "portNumberName":  "端口号",
                            "postponeRebootUntilAfterDeadlineDescription":  "指定设备是否应在截止日期前自动重启",
@@ -5477,6 +5569,9 @@
                            "proxyAddressExampleUpper":  "例如 10.0.0.122",
                            "proxyAutoConfigGlobalProxyOption":  "代理自动配置",
                            "proxyDNSExample":  "例如 http://proxy.com",
+                           "proxyExclusionListDescription":  "添加主机名以防止它们通过代理路由。",
+                           "proxyExclusionListExample":  "例如 test.contoso.com",
+                           "proxyExclusionListName":  "排除列表",
                            "proxyPortExample":  "例如 8080",
                            "proxyPortExampleUpper":  "例如 9080",
                            "proxyServerAddressDescription":  "输入代理服务器的 IP 地址。",
@@ -5653,7 +5748,7 @@
                            "sCEPPolicyExtendedKeyUsageName":  "扩展密钥用法",
                            "sCEPPolicyHashAlgorithmDescription":  "将哈希算法类型与证书一起使用。确保选择连接设备支持的最强安全级别。",
                            "sCEPPolicyHashAlgorithmName":  "哈希算法",
-                           "sCEPPolicyKeySizeDescription":  "选择密钥中包含的位数。",
+                           "sCEPPolicyKeySizeDescription":  "选择密钥中包含的位数。建议最小秘钥长度为 2048。",
                            "sCEPPolicyKeySizeName":  "密钥大小(位)",
                            "sCEPPolicyKeyStorageProviderDescription":  "选择要存储证书密钥的位置。",
                            "sCEPPolicyKeyStorageProviderName":  "密钥存储提供者(KSP)",
@@ -5792,7 +5887,6 @@
                            "securityBlockAzureADJoinedDevicesAutoEncryptionName":  "在 AADJ 期间自动加密",
                            "securityDeveloperSettingsEnabledDescription":  "允许访问开发人员设置。",
                            "securityDeveloperSettingsEnabledName":  "开发人员设置",
-                           "securityFeaturesName":  "安全功能",
                            "securityOption":  "诊断数据关闭",
                            "securityRequireVerifyAppsDescription":  "在安装应用前后启用 Google Play Protect 扫描应用。如果检测到威胁，可能警告用户从设备中删除该应用。默认设置为必需。",
                            "securityRequireVerifyAppsName":  "扫描应用上的威胁",
@@ -5892,6 +5986,13 @@
                            "sharedSecretName":  "共享密钥",
                            "shieldedDescription":  "如果同时启用此设置和防火墙设置，所有传入的流量将受到阻止。",
                            "shieldedName":  "受防护",
+                           "shortSupportMessageDefault":  "你没有此操作的权限。有关详细信息，请与 IT 管理员联系。",
+                           "shortSupportMessageDescription":  "当平台尝试在设备上配置托管设置时，平台会向最终用户显示简短的支持消息。如果未为设备的默认语言指定自定义消息，则会显示语言消息“全部(指定时除外)”。 ",
+                           "shortSupportMessageGridHeader":  "本地化的简短支持消息",
+                           "shortSupportMessageName":  "简短支持消息",
+                           "shortSystemMessageHint":  "(最多 200 个字符)",
+                           "shortSystemMessageLengthValidation":  "输入不能超过 200 个字符。",
+                           "shortSystemMessagesSummaryKey":  "简短支持消息",
                            "show":  "显示",
                            "showAppsList":  "可见应用",
                            "showEverything":  "组织者、时间和主题(私人会议隐藏主题)",
@@ -6112,11 +6213,23 @@
                            "subjectNameLocalIdentifier":  "使用者公用名",
                            "sunday":  "星期天",
                            "sundayOption":  "星期日",
+                           "supportMessageLearnMoreLink":  "https://docs.microsoft.com/en-us/mem/intune/configuration/device-restrictions-android-for-work",
+                           "supportMessageLearnMoreText":  "详细了解支持消息。 ",
                            "syncScheduleDescription":  "设备连接到服务器以同步电子邮件的频率。",
                            "syncScheduleName":  "同步计划",
                            "synchronizeDescription":  "控制设备上电子邮件的存储数量和连接到服务器的频率。",
                            "systemExtensionTeamIdsMustBeUnique":  "允许的团队标识符和允许的系统扩展中不能同时列出相同的团队 ID。",
                            "systemInfoOnlyStatusBarOption":  "在设备状态栏中显示系统信息",
+                           "systemMessageInputValidation":  "输入不能为空。",
+                           "systemMessageLocaleValidation":  "字段不能为空。",
+                           "systemMessages":  "自定义支持信息",
+                           "systemMessagesDefaultColumnName":  "是默认消息",
+                           "systemMessagesDefaultLanguageValue":  "全部(指定时除外)",
+                           "systemMessagesLanguageColumnName":  "语言",
+                           "systemMessagesMessageColumnName":  "消息",
+                           "systemMessagesMessageEmptyValueKey":  "输入自定义消息。",
+                           "systemMessagesShortSupportMessageLanguageEmptyValueKey":  "选择一个区域设置。",
+                           "systemMessagesShortSupportMessageTableName":  "简短支持消息",
                            "systemPageDescription":  "阻止访问“设置”应用中的“系统”。",
                            "systemPageName":  "系统",
                            "systemScanName":  "要执行完整或快速扫描的日期和时间",
@@ -6927,7 +7040,7 @@
                            "win10WifiMaximumTimeToAuthenticateExample":  "秒数(1-120)",
                            "win10WifiMeteredConnectionLimitDescription":  "“无限制测量”允许应用或服务使用你的 Wi-Fi 上的所有数据，“固定”允许使用部分数据，“可变”仅允许在紧急情况下使用。",
                            "win10WifiMeteredConnectionLimitName":  "按流量计费的连接限制",
-                           "win10WifiNetworkName":  "连接名称",
+                           "win10WifiNetworkName":  "连接名",
                            "win10WifiNotConfigured":  "未配置",
                            "win10WifiPeapName":  "受保护的 EAP (PEAP)",
                            "win10WifiPreSharedKey":  "预共享密钥",
@@ -7156,7 +7269,7 @@
                            "add":  "添加",
                            "addAppConfiguration":  "添加应用配置",
                            "addApps":  "添加应用",
-                           "addCondition":  "Add condition",
+                           "addCondition":  "添加条件",
                            "addConfigCommandLabel":  "添加配置",
                            "addPolicyBladeTitle":  "添加一个策略",
                            "addPolicyError":  "未能添加策略: {0}",
@@ -7170,6 +7283,8 @@
                            "allAppTypes":  "所有的应用类型",
                            "allAppsOptionText":  "所有应用",
                            "allAppsWithData":  "具有传入组织数据的所有应用",
+                           "allDestinationsOptionText":  "All destinations",
+                           "allSourcesOptionText":  "All sources",
                            "allow":  "允许",
                            "allowOverrides":  "允许覆盖",
                            "allowSpecifiedBlock":  "允许指定项(阻止非指定项)",
@@ -7179,6 +7294,7 @@
                            "androidPlatformLabel":  "Android",
                            "androidWorkProfile":  "Android 工作配置文件设备",
                            "anyAppOptionText":  "任何应用",
+                           "anyDestinationAnySourceOptionText":  "Any destination and any source",
                            "anyDialerAppOptionText":  "任何拨号应用",
                            "anyPolicyManagedDialerAppOptionText":  "任何由策略管理的拨号应用",
                            "appAdded":  "已添加应用",
@@ -7442,7 +7558,7 @@
                            "guidedTemplate2":  "我们将询问你要向用户部署的保护级别。有关详细信息，请参阅<a href = \"https://go.microsoft.com/fwlink/?linkid=2131582 \">包含应用保护策略的数据保护框架。</a>",
                            "guidediOSLabel":  "iOS 应用保护",
                            "hardwareBackedKey":  "硬件支持的密钥",
-                           "healthCheck":  "Health Checks",
+                           "healthCheck":  "运行状况检查",
                            "helpAndSupport":  "帮助和支持",
                            "hideOverrides":  "隐藏覆盖",
                            "highDataProtectionGuidedString":  "高级数据保护 - 引入更复杂的访问要求设置(例如，禁用简单 PIN)和数据保护设置(例如，禁用第三方键盘)，以扩展增强型数据保护中定义的设置。",
@@ -7523,6 +7639,8 @@
                            "noAssignments":  "无分配",
                            "noConfigSelection":  "选择一个平台和应用",
                            "noConfiguredUsers":  "没有已配置的用户",
+                           "noDestinationNoSourceOptionText":  "No destination or source",
+                           "noDestinationsOptionText":  "No destinations",
                            "noEmailToDisplay":  "无可用的电子邮件地址",
                            "noOptionText":  "否",
                            "noPermissionPropertyLabel":  "是否已有订阅?",
@@ -7531,6 +7649,7 @@
                            "noPolicy":  "无策略",
                            "noProtectedUsers":  "用户均未受保护",
                            "noSelection":  "选择一个平台、应用和保护状态",
+                           "noSourcesOptionText":  "No sources",
                            "noSubscriptionPropertyLabel":  "你可能需要订阅",
                            "noSubscriptionPropertyLinkText":  "立即试用 Microsoft Intune",
                            "noUnprotectedUsers":  "用户均未受保护",
@@ -7769,6 +7888,7 @@
                            "weMovedToANewLocation":  "我们已移动到新位置",
                            "windows10AppProtectionPolicy":  "Windows 10 及更高版本的应用保护策略",
                            "windows10PlatformLabel":  "Windows 10 和更高版本",
+                           "windowsInformationProtectionPlatformLabel":  "Windows Information Protection",
                            "windowsPlatformLabel":  "Windows",
                            "windowsProtectionReport":  "Windows 保护报表",
                            "wipAddAppsSubtitle":  "添加推荐的 Microsoft 应用，或者手动添加此策略中允许的应用商店应用或桌面应用。",
@@ -9731,7 +9851,9 @@
                      "whatIfIpAddressInfo":  "用户正在从其登录的 IP 地址。",
                      "whatIfIpCountryInfoBoxText":  "如果使用 IP 地址或国家/地区，则这两个字段将是必需字段，且应正确映射在一起。",
                      "whatIfPolicyAppliesTab":  "将应用的策略",
+                     "whatIfPolicyAppliesTabWithCount":  "Applicable policies ({0})",
                      "whatIfPolicyDoesNotApplyTab":  "不应用的策略",
+                     "whatIfPolicyDoesNotApplyTabWithCount":  "Inapplicable policies ({0})",
                      "whatIfReasons":  "不应用此策略的原因",
                      "whatIfSelectClientApp":  "选择客户端应用...",
                      "whatIfSelectCountry":  "选择国家/地区...",
@@ -10065,6 +10187,8 @@
                    "scopeTagsRequired":  "至少需要一个范围标记",
                    "searchAppLabel":  "选择应用",
                    "searchAppLinkText":  "搜索 App Store",
+                   "searchWinGetPublicRepositoryLinkText":  "搜索 Windows 程序包管理器社区存储库",
+                   "searchWinGetStoreRepositoryLinkText":  "搜索 Microsoft Store 存储库",
                    "selectAAD":  "选择 AAD 属性",
                    "selectAppFileLabel":  "选择文件",
                    "selectAppFileLinkText":  "选择应用包文件",
@@ -10116,6 +10240,7 @@
                              "deviceCompliance":  "设备合规性",
                              "diskEncryption":  "磁盘加密",
                              "eDR":  "终结点检测和响应",
+                             "ePM":  "终结点特权管理",
                              "firewall":  "防火墙",
                              "helpSupport":  "帮助和支持",
                              "setup":  "安装",
@@ -10875,10 +11000,10 @@
                             "MacOSSoftwareUpdate":  {
                                                         "AccountSummary":  {
                                                                                "Columns":  {
-                                                                                               "deviceName":  "设备名称",
+                                                                                               "deviceName":  "设备名",
                                                                                                "deviceUpdateStatus":  "设备更新状态",
                                                                                                "lastUpdated":  "上次更新时间",
-                                                                                               "osVersion":  "操作系统版本",
+                                                                                               "osVersion":  "OS 版本",
                                                                                                "userPrincipalName":  "用户名"
                                                                                            },
                                                                                "maximumOSVersionFilter":  "最高 OS 版本",
@@ -11275,12 +11400,12 @@
                                           "gettingStarted":  "入门",
                                           "messages":  "消息",
                                           "onlineResources":  "联机资源",
-                                          "releaseManagement":  "Release management",
+                                          "releaseManagement":  "Release Management",
                                           "serviceRequests":  "服务请求",
                                           "settings":  "设置",
-                                          "supportRequests":  "Support requests",
+                                          "supportRequests":  "支持请求",
                                           "tenantEnrollment":  "租户注册",
-                                          "tenantManagement":  "Tenant management"
+                                          "tenantManagement":  "租户管理"
                                       },
                    "actions":  "对不合规项的操作",
                    "advancedExchangeSettings":  "Exchange Online 设置",
@@ -11401,10 +11526,11 @@
                    "userExecutionStatus":  "用户状态",
                    "warranty":  "保修供应商",
                    "wdacSupplementalPolicies":  "S 模式补充策略",
-                   "windows10DriverUpdate":  "Windows 10 及更高版本的功能更新(预览)",
+                   "windows10DriverUpdate":  "Windows 10 及更高版本的驱动程序更新(预览)",
                    "windows10QualityUpdate":  "Windows 10 及更高版本的质量更新(预览版)",
                    "windows10UpdateRings":  "Windows 10 及更高版本的更新通道",
                    "windows10XPolicyFailures":  "Windows 10X 策略失败",
+                   "windows365Connector":  "Windows 365 Citrix 连接器",
                    "windowsEnterpriseCertificate":  "Windows Enterprise 证书",
                    "windowsManagement":  "PowerShell 脚本",
                    "windowsSideLoadingKeys":  "Windows 边载密钥",

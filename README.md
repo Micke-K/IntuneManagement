@@ -249,6 +249,7 @@ Start-WithJson.cmd is included as an example on how to start the script with jso
 * Autopilot profiles
 * Baseline Security profiles
 * Compliance policies
+* Compliance scripts
 * Conditional Access
 * Custom Attributes
 * Device Configuration (Administrative Templates, Configuration Policies, Android OEM Config, Settings Catalog)
