@@ -1,5 +1,12 @@
 # Release Notes
-## 3.7.0  - 2022-07-17
+## 3.7.1  - 2022-08-08
+
+**Fixes**
+
+- **UI**<br />
+  - Fixed a bug where the menu bar was empty if not logged in<br />
+
+## 3.7.0  - 2022-08-02
 
 **Breaking changes**
   - A third header level was added when documenting to word<br />

@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.7.0'
+    '3.7.1'
 }
 
 function Initialize-Window
@@ -912,6 +912,15 @@ function Set-EnvironmentInfo
         return
     }
 
+    if(-not $script:mnuDefaultBGColor)
+    {
+        $script:mnuDefaultBGColor = $global:mnuMain.Background
+    }
+    if(-not $script:mnuDefaultFGColor)
+    {
+        $script:mnuDefaultFGColor = $global:mnuMain.Foreground
+    }    
+
     if($global:grdEnvironment -and $environmentName)
     {
         $global:grdEnvironment.Visibility = "Visible"
@@ -924,15 +933,7 @@ function Set-EnvironmentInfo
             $global:lblEnvironment.Content = ""
         }
         $bgColor = (Get-SettingValue "MenuBGColor")
-        $fgColor = (Get-SettingValue "MenuFGColor")
-        if(-not $script:mnuDefaultBGColor)
-        {
-            $script:mnuDefaultBGColor = $global:mnuMain.Background
-        }
-        if(-not $script:mnuDefaultFGColor)
-        {
-            $script:mnuDefaultFGColor = $global:mnuMain.Foreground
-        }        
+        $fgColor = (Get-SettingValue "MenuFGColor")        
         
         if(-not $bgColor)
         {
@@ -959,7 +960,7 @@ function Set-EnvironmentInfo
     else
     {
         $global:grdEnvironment.Visibility = "Collapsed"
-        $global:lblEnvironment.Text = ""
+        $global:lblEnvironment.Content = ""
         $global:mnuMain.Background = $script:mnuDefaultBGColor
         $global:mnuMain.Foreground = $script:mnuDefaultFGColor
         $global:lblEnvironment.Foreground = $script:mnuDefaultFGColor
