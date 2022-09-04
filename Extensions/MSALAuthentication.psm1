@@ -573,7 +573,26 @@ function Connect-MSALClientApp
         }
         elseif($Certificate)
         {
-            $ClientApplicationBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::Create($clientId).WithCertificate($Certificate).WithAuthority([URI]::new($authority)) #.WithRedirectUri($redirectUri)
+            $f = [System.Security.Cryptography.X509Certificates.OpenFlags]::ReadOnly
+            $cert = $null
+            # Try LocalMachine store first, if not found try also CurrentUser store
+            $store = New-Object System.Security.Cryptography.X509Certificates.X509Store("My", "LocalMachine")
+            $null = $store.Open($f)
+            $cert = $store.Certificates | Where-Object {$_.Thumbprint -eq $Certificate}
+            $null = $store.Close()
+            if($null -eq $cert)
+            {
+                $store = New-Object System.Security.Cryptography.X509Certificates.X509Store("My", "CurrentUser")
+                $null = $store.Open($f)
+                $cert = $store.Certificates | Where-Object {$_.Thumbprint -eq $Certificate}
+                $null = $store.Close()
+            }
+
+            if($null -eq $cert)
+            {
+                Write-LogError "Could not find a certificate with thumbprint '$($Certificate)' in LocalMachine or CurrentUser store"
+            }  
+            $ClientApplicationBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::Create($clientId).WithCertificate($cert).WithAuthority([URI]::new($authority)) #.WithRedirectUri($redirectUri)
         }
         else 
         {
