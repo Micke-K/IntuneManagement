@@ -103,13 +103,11 @@ The script can import the exported json files in multiple ways.
   
   Each application type works differently. Update functionality has been tested on Win32, Windows MSI LoB, iOS Store, Microsoft Store and Microsoft 365 (Windows and MacOS).
 
-**WARNING:** Use Replace with caution!  Replace will delete the existing object after a new object is imported and the assignments are copied, but it could cause issues in the environment if something in the process goes wrong. Replacing single objects can break references e.g. replacing an Application can break AutoPilot profiles, App Protection and App Configuration policies. Verify the process in a test environment before using this!  
+**WARNING:** Use Replace with caution! Replace will delete the existing object after a new object is imported and the assignments are copied, but it could cause issues in the environment if something in the process goes wrong. Replacing single objects can break references e.g. replacing an Application can break AutoPilot profiles, App Protection and App Configuration policies. Verify the process in a test environment before using this!  
 
 **Recommendation:** Backup all policies before running Replace/Update.
 
-The Replace/Update feature can be used in a scenario where all profiles/policies are managed in a separate reference (Dev/Test) and then implemented in one or more destination environment. The existing objects will then be reset to have the same settings as the reference environment
-
-**Note:** This must be turned on in Settings by enabling the **Allow update on import (Preview)** setting.
+The Replace/Update feature can be used in a scenario where all profiles/policies are managed in a separate reference (Dev/Test) and then implemented in one or more destination environments. The existing objects will then be reset to have the same settings as the reference environment
 
 ## Comparison
 
@@ -174,9 +172,11 @@ See [ADMX Import](ADMXImport.md) for more information about the ADMX tools
 
 Custom columns is supported. The script will by default add id, displayName and description with exception for some object types. These are configured in the EndpointManager.ps1 and  EndpointManagerInfo.psm1 files.
 
-Custom columns can be added for each Object  Type. This must be added manually into the registry, in HKCU\SOFTWARE\CloudAPIPowerShellManagement\EndpointManager\ObjectColumns\\*ObjectType*.
+Custom columns can be added for each Object Type in the detealed view of an Object. 
 
-The *ObjectType* value represents the ViewItem ID specified in the EndpointManager.ps1 and  EndpointManagerInfo.psm1 files. This is also the same as the parent folder when items are exported.
+Custom Columuns settings are stored in the regitry, in HKCU\SOFTWARE\CloudAPIPowerShellManagement\EndpointManager\ObjectColumns\\*ObjectType*.
+
+The *ObjectType* value represents the ViewItem ID specified in the EndpointManager.ps1 and EndpointManagerInfo.psm1 files. This is also the same as the parent folder when items are exported.
 
 The REG_SZ value has the following syntax:
 
@@ -191,9 +191,7 @@ PropertyX - Property to display. View an object to see available properties
 
 HeaderX - Optional value for the column header. Property name will be used if this is not specified.
 
-**Note:** Some object types returns multiple object types, @OData.Type. If a custom column is added but the property does not exist on all the object types that were returned, the columns will be empty. The code will **not** break if the property is missing on one or more returned objects. 
-
-The script does not require a restart. Columns are generated when the object type is selected in the menu. 
+**Note:** Some object types returns multiple object types, @OData.Type. If a custom column is added but the property does not exist on all the object types that were returned, the column value will be empty. The code will **not** break if the property is missing on one or more returned objects. 
 
 **Example 1:** 
 Reg key: HKCU\SOFTWARE\CloudAPIPowerShellManagement\EndpointManager\ObjectColumns\DeviceConfiguration
@@ -242,6 +240,7 @@ Start-WithJson.cmd is included as an example on how to start the script with jso
 **Note:** If the file can't be created, the script will revert back registry. Make sure that the script can write to the file. It is not recommended to store the file in a folder that requires UAC to get write permissions.  
 
 ## Supported Intune objects
+* ADMX Files
 * App Configurations (App and Device)
 * App Protection
 * Applications
@@ -296,7 +295,7 @@ Start-WithJson.cmd is included as an example on how to start the script with jso
 * [Microsoft.WindowsAPICodePack](https://www.nuget.org/packages/Microsoft-WindowsAPICodePack-Core) and [Microsoft.WindowsAPICodePack.Shell](https://www.nuget.org/packages/Microsoft-WindowsAPICodePack-Shell) for Browse Folder dialogs
 
 ## Acknowledgments
-The app encryption and upload is based on [Graph PowerShell Intune Examples](https://github.com/microsoftgraph/powershell-intune-samples)
+The app encryption and upload is based on [Graph PowerShell Intune Examples](https://github.com/microsoftgraph/powershell-intune-samples)<br />
 Some MSAL functionalities are based on [MSAL.PS Module](https://github.com/AzureAD/MSAL.PS)
 
 ## Known Issues
@@ -318,9 +317,12 @@ Issue fixed in 3.3.2
 
 Logout will only clear the token from cache and not from the browser e.g. if login is triggered after a logout, the user will still be listed in the 'Select user' dialog.
 
-Referenced settings will NOT be imported/copied. There is no value stored in a property on the object for these settings. Example: A VPN profile has certificates as referenced properties. The certificates must be added manually after import/copy.
+~~Referenced settings will NOT be imported/copied. There is no value stored in a property on the object for these settings. Example: A VPN profile has certificates as referenced properties. The certificates must be added manually after import/copy.~~
+Issue fixed in 3.5.0 
 
 Terms of Use requires that the pdf file is available. This must be manually coped to either the Export folder for Terms of Use or to the Intune Application folder specified in Settings. It is currently not possible to export the pdf file with Graph API. 
+
+The ADMX/ADML files must be manually copied to either the Export folder for Administrative Templates or to the Intune Application folder specified in Settings. It is currently not possible to export the pdf file with Graph API.
 
 See [Documentation](Documentation.md) for issues regarding the documentation process.
 

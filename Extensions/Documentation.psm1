@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.4.0'
+    '1.5.0'
 }
 
 function Invoke-InitializeModule
@@ -293,7 +293,7 @@ function Get-ObjectDocumentation
     {
         Invoke-TranslateADMXObject $obj $objectType | Out-Null
         $properties = @("Name","Status","Value","Category","CategoryPath","RawValue","ValueWithLabel","Created","Modified", "Class", "DefinitionId")
-        $defaultDocumentationProperties =  @("Name","Status","Value")
+        $defaultDocumentationProperties =  @("Name","Status",(?? $script:ValueOutputProperty "Value"))
         $updateFilteredObject = $false
         $inputType = "Property"
     }
@@ -811,12 +811,37 @@ function Invoke-TranslateADMXObject
 
         $categoryObj = $script:admxCategories | Where { $definitionValue.definition.id -in ($_.definitions.id) }
         $category = $script:admxCategories.definitions | Where { $definitionValue.definition.id -in ($_.id) }
+        $settingPresentationValues = $null
+
         # Get presentation values for the current settings (with presentation object included)
         if($definitionValue.presentationValues -or $obj.'@ObjectFromFile' -eq $true) #$definitionValue.'definition@odata.bind')
         {
-            # Documenting exported json
-            #$presentationValues = (Invoke-GraphRequest -Url "$($definitionValue.'definition@odata.bind')/presentations?`$expand=presentation"  -ODataMetadata "minimal").value
-            $presentationValues = $definitionValue.presentationValues
+            $settingPresentationValues = (Invoke-GraphRequest -Url "$($definitionValue.'definition@odata.bind')/presentations"  -ODataMetadata "minimal").value
+            
+            $presentationValues = @()
+            if($settingPresentationValues)
+            {
+                # Do this to make sure they are documented in the correct order
+                foreach($settingPresentationValue in $settingPresentationValues)
+                {
+                    $tmpPresentationVal = $definitionValue.presentationValues | Where 'presentation@odata.bind' -Like "*$($settingPresentationValue.Id)*"
+                    if($tmpPresentationVal)
+                    {
+                        $presentationValues += $tmpPresentationVal
+                    }
+                    else 
+                    {
+                        $presentationValues = @()
+                        break
+                    }
+                }
+            }
+
+            if($presentationValues.Count -eq 0)
+            {
+                Write-Log "Could not find definition for defenition '$($definitionValue.id)'. Values might be documented in the wrong order!" 2
+                $presentationValues = $definitionValue.presentationValues
+            }
         }
         elseif($definitionValue.id)
         {
@@ -1996,13 +2021,43 @@ function Invoke-TranslateSection
                 }
                 elseif($prop.dataType -eq 1) # Base64 e.g. certificate data
                 {                    
-                    $value = $obj."$((?? $prop.filenameEntityKey $prop.EntityKey))"
-                    $valueData = $obj."$((?? $prop.dataEntityKey $prop.EntityKey))"
+                    if($prop.filenameEntityKey -and $obj."$($prop.filenameEntityKey)")
+                    {
+                        $value = $obj."$($prop.filenameEntityKey)"
+                    }
+                    else
+                    {
+                        $value = $obj."$($prop.EntityKey)"
+                        if($value)
+                        {
+                            try
+                            {
+                                # Is this always Base64 string?
+                                $value = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($value))
+                            }
+                            catch { }
+                        }                        
+                    }                    
                 }
                 elseif($prop.dataType -eq 2) # Multiline string e.g. XML file 
                 {
-                    $value = $obj."$((?? $prop.filenameEntityKey $prop.EntityKey))"
-                    $valueData = $obj."$((?? $prop.dataEntityKey $prop.EntityKey))"
+                    if($prop.filenameEntityKey -and $obj."$($prop.filenameEntityKey)")
+                    {
+                        $value = $obj."$($prop.filenameEntityKey)"
+                    }
+                    else
+                    {
+                        $value = $obj."$($prop.EntityKey)"
+                        if($value)
+                        {
+                            try
+                            {
+                                # Is this always Base64 string?
+                                $value = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($value))
+                            }
+                            catch { }
+                        }   
+                    }
                 }
                 elseif($prop.dataType -eq 3) # Image
                 {
@@ -3720,6 +3775,10 @@ function local:Set-FromValues
     $global:cbDocumentationObjectSeparator.ItemsSource = $objectSeparator
     $global:cbDocumentationObjectSeparator.SelectedValue = (Get-Setting "Documentation" "ObjectSeparator" ([System.Environment]::NewLine)) #"$([System.Environment]::NewLine)")
 
+    $valueOutputPropertiyTypes = "[ { Name: `"Value`",Value: `"value`" }, {Name: `"Value with label`", Value: `"valueWithLabel`" }]" | ConvertFrom-Json
+    $global:cbDocumentationValueOutputProperty.ItemsSource = $valueOutputPropertiyTypes
+    $global:cbDocumentationValueOutputProperty.SelectedValue = (Get-Setting "Documentation" "ValueOutputProperty" "value")
+
     $global:chkSetUnconfiguredValue.IsChecked = ((Get-Setting "Documentation" "SetUnconfiguredValue" "true") -ne "false")
     $global:chkSetDefaultValue.IsChecked = ((Get-Setting "Documentation" "SetDefaultValue" "false") -ne "false")
 
@@ -3752,11 +3811,15 @@ function local:Invoke-StartDocumentatiom
     $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
     $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
 
+    $script:ValueOutputProperty = ?? $global:cbDocumentationValueOutputProperty.SelectedValue "value"  
+
     Save-Setting "Documentation" "OutputType" $global:cbDocumentationType.SelectedValue        
 
     Save-Setting "Documentation" "Language" $script:DocumentationLanguage
     Save-Setting "Documentation" "ObjectSeparator" $script:objectSeparator
     Save-Setting "Documentation" "PropertySeparator" $script:propertySeparator
+
+    Save-Setting "Documentation" "ValueOutputProperty" $script:ValueOutputProperty
 
     Save-Setting "Documentation" "SetUnconfiguredValue" $global:chkSetUnconfiguredValue.IsChecked
     Save-Setting "Documentation" "SetDefaultValue" $global:chkSetDefaultValue.IsChecked

@@ -11,7 +11,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.7.0'
+    '3.7.2'
 }
 
 function Invoke-InitializeModule
@@ -310,12 +310,14 @@ function Invoke-InitializeModule
         PostExportCommand = { Start-PostExportAdministrativeTemplate @args }
         PostCopyCommand = { Start-PostCopyAdministrativeTemplate @args }
         PostFileImportCommand = { Start-PostFileImportAdministrativeTemplate @args }
+        PreImportCommand = { Start-PreImportAdministrativeTemplate @args }
         LoadObject = { Start-LoadAdministrativeTemplate @args }
         PropertiesToRemove = @("definitionValues")
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon="DeviceConfiguration"
         GroupId = "DeviceConfiguration"
         CompareValue = "CombinedValueWithLabel"
+        Dependencies = @("ADMXFiles")
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -431,7 +433,7 @@ function Invoke-InitializeModule
         Id = "Applications"
         API = "/deviceAppManagement/mobileApps"
         ViewID = "IntuneGraphAPI"
-        PropertiesToRemove = @('uploadState','publishingState','isAssigned','dependentAppCount','supersedingAppCount','supersededAppCount','committedContentVersion','isFeatured','size','categories')
+        PropertiesToRemove = @('uploadState','publishingState','isAssigned','dependentAppCount','supersedingAppCount','supersededAppCount','committedContentVersion','isFeatured','size','categories') #,'minimumSupportedWindowsRelease'
         QUERYLIST = "`$filter=(microsoft.graph.managedApp/appAvailability%20eq%20null%20or%20microsoft.graph.managedApp/appAvailability%20eq%20%27lineOfBusiness%27%20or%20isAssigned%20eq%20true)&`$orderby=displayName"
         QuerySearch=$true
         Permissons=@("DeviceManagementApps.ReadWrite.All")
@@ -548,7 +550,7 @@ function Invoke-InitializeModule
         Icon="DeviceConfiguration"
         PostExportCommand = { Start-PostExportSettingsCatalog  @args }
         PreUpdateCommand = { Start-PreUpdateSettingsCatalog  @args }
-        GroupId = "DeviceConfiguration"
+        GroupId = "DeviceConfiguration"        
     })   
     
     Add-ViewItem (New-Object PSObject -Property @{
@@ -655,6 +657,37 @@ function Invoke-InitializeModule
         PropertiesToRemoveForUpdate = @('version','isGlobalScript','highestAvailableVersion')
     })
 
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "ADMX Files"
+        Id = "ADMXFiles"
+        ViewID = "IntuneGraphAPI"
+        NameProperty = "fileName"
+        API = "/deviceManagement/groupPolicyUploadedDefinitionFiles"
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        ImportOrder = 45
+        GroupId = "DeviceConfiguration"
+        Icon = "DeviceConfiguration"
+        ExpandAssignmentsList = $false
+        PreFilesImportCommand = { Start-PreFilesImportADMXFiles @args }
+        PreImportCommand = { Start-PreImportADMXFiles @args }
+        PreDeleteCommand = { Start-PreDeleteADMXFiles @args }
+        ViewProperties = @("fileName","status","Id")
+        PropertiesToRemove = @("languageCodes","targetPrefix","targetNamespace","policyType","revision","status","uploadDateTime")
+    })
+
+    <#
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "iOS Enrollment Profile"
+        Id = "iOSDepProfile"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/depIOSEnrollmentProfile"
+        Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
+        GroupId = "DeviceConfiguration"
+        Icon = "DeviceConfiguration"
+        ExpandAssignmentsList = $false
+        ViewProperties = @("fileName","status","Id")
+    })
+    #>
 }
 
 function Invoke-EMAuthenticateToMSAL
@@ -1887,7 +1920,16 @@ function Start-PreImportCommandApplication
         Write-Log "App type '$($obj.'@OData.Type')' not supported for import" 2
         @{ "Import" = $false }
     }
-}
+
+    Write-Log "### TEST ### OData.Type: $($obj.'@OData.Type')"
+    if($obj.'@OData.Type' -eq '#microsoft.graph.officeSuiteApp')
+    {
+        if($obj.officeSuiteAppDefaultFileFormat -eq "notConfigured")
+        {
+            $obj.officeSuiteAppDefaultFileFormat = "officeOpenXMLFormat"
+        }
+    }
+} 
 
 function Add-DetailExtensionApplications
 {
@@ -1960,6 +2002,14 @@ function Get-GPOObjectSettings
                 "definition@odata.bind" = "$($global:graphURL)/deviceManagement/groupPolicyDefinitions('$($definitionValue.definition.id)')"
                 }
 
+        if($GPOObj.policyConfigurationIngestionType -eq "Custom")
+        {
+            $obj.Add("#Definition_Id", $definitionValue.definition.id)
+            $obj.Add("#Definition_displayName", $definitionValue.definition.displayName)
+            $obj.Add("#Definition_classType", $definitionValue.definition.classType)
+            $obj.Add("#Definition_categoryPath", $definitionValue.definition.categoryPath)            
+        }                
+
         if($presentationValues.value)
         {
             # Policy presentation values set e.g. a drop down list, check box, text box etc.
@@ -1970,6 +2020,11 @@ function Get-GPOObjectSettings
                 # Add presentation@odata.bind property that links the value to the presentation object
                 $presentationValue | Add-Member -MemberType NoteProperty -Name "presentation@odata.bind" -Value "$($global:graphURL)/deviceManagement/groupPolicyDefinitions('$($definitionValue.definition.id)')/presentations('$($presentationValue.presentation.id)')"
 
+                if($GPOObj.policyConfigurationIngestionType -eq "Custom")
+                {
+                    $presentationValue | Add-Member -MemberType NoteProperty -Name "#Presentation_Id" -Value $presentationValue.presentation.id
+                    $presentationValue | Add-Member -MemberType NoteProperty -Name "#Presentation_Label" -Value $presentationValue.presentation.label
+                }
                 #Remove presentation object so it is not included in the export
                 Remove-ObjectProperty $presentationValue "presentation"
                 
@@ -1989,15 +2044,120 @@ function Get-GPOObjectSettings
 
 function Import-GPOSetting
 {
-    param($obj, $settings)
+    param($obj, $settings, [switch]$CustomADMX)
     
     if($obj)
     {
         Write-Status "Import settings for $($obj.displayName)"
+
+        $isCustomADMX = $CustomADMX -eq $true
+
+        if($isCustomADMX)
+        {
+            Write-Status "Import custom ADMX settings"
+            if(-not $script:CustomADMXDefinitions)
+            {
+                $tmpCustomCategories = Invoke-GraphRequest -Url "deviceManagement/groupPolicyCategories?`$expand=definitions(`$select=id, displayName, categoryPath, classType)&`$select=id, displayName&`$filter=ingestionSource eq 'custom'" -ODataMetadata "Minimal"
+                if($tmpCustomCategories.Value)
+                {
+                    $script:CustomADMXDefinitions = @{}
+                    foreach($tmpCat in $tmpCustomCategories.Value)
+                    {
+                        foreach($tmpDef in $tmpCat.definitions)
+                        {
+                            $key = ($tmpDef.displayName + $tmpDef.categoryPath + $tmpDef.classType).ToLower()
+                            $val = [PSCustomObject]@{
+                                Definition = $tmpDef
+                                Category = $tmpCat
+                                Presentations = $null
+                            }
+                            $script:CustomADMXDefinitions.Add($key, $val)
+                        }
+                    }
+                }
+            }
+        }        
         
         foreach($setting in $settings)
         {
+            if($isCustomADMX -and $script:CustomADMXDefinitions -is [HashTable] -and $script:CustomADMXDefinitions.Count -gt 0)
+            {
+                $defVal = $null
+                $key = ($setting.'#Definition_displayName' + $setting.'#Definition_categoryPath' + $setting.'#Definition_classType').ToLower()
+                if($key -and $script:CustomADMXDefinitions.ContainsKey($key))
+                {
+                    $defVal = $script:CustomADMXDefinitions[$key]
+                }
+                elseif($key)
+                {
+                    Write-Log "No custom ADMX definitiona found for setting $($setting.'#Definition_displayName')" 2                    
+                }
+                else
+                {
+                    Write-Log "Setting $($setting.'#Definition_displayName') does not have information to be imported in the environment"
+                }
+
+                if($defVal)
+                {
+                    $setting.'definition@odata.bind' = $setting.'definition@odata.bind' -replace $setting.'#Definition_Id', $defVal.Definition.Id
+                    if(($setting.presentationValues | measure).Count -gt 0)
+                    {
+                        if(-not $defVal.Presentations)
+                        {
+                            $tmpPresentation = Invoke-GraphRequest -Url "deviceManagement/groupPolicyDefinitions/$($defVal.Definition.Id)/presentations" -ODataMetadata "Minimal"
+                            if($tmpPresentation.value)
+                            {
+                                foreach($settingPresentation in $setting.presentationValues)
+                                {
+                                    $tmpPresentationVal = $tmpPresentation.value | Where label -eq $settingPresentation.'#Presentation_Label'
+                                    if($tmpPresentationVal)
+                                    {
+                                        $settingPresentation.'presentation@odata.bind' = $settingPresentation.'presentation@odata.bind' -replace $setting.'#Definition_Id', $defVal.Definition.Id
+                                        $settingPresentation.'presentation@odata.bind' = $settingPresentation.'presentation@odata.bind' -replace $settingPresentation.'#Presentation_Id', $tmpPresentationVal.Id
+                                    }
+                                    else
+                                    {
+                                        Write-Log "Could not find a presentation value with label $($settingPresentation.'#Presentation_Label'). Setting will not be configured" 2
+                                        continue
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Write-Log "Could not find presentation for setting $($settingPresentation.'#Presentation_Label'). Setting will not be configured." 2
+                                continue
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Write-Log "Settings might not be available if imported in another environment" 3
+                }
+            }
+            elseif($isCustomADMX)
+            {
+                Write-Log "Custom AMDX settings cannot be imported without ADMX file imported. Definitions not found" 2
+                continue
+            }
+
             Start-GraphPreImport $setting
+
+            if($true) #$isCustomADMX)
+            {
+                foreach($tmpProp in (($setting.PSObject.Properties | Where Name -like "#*").Name))
+                {
+                    Remove-Property $setting $tmpProp
+                }
+                
+                foreach($settingPresentation in $setting.presentationValues)
+                {
+                    foreach($tmpProp in (($settingPresentation.PSObject.Properties | Where Name -like "#*").Name))
+                    {
+                        Remove-Property $settingPresentation $tmpProp
+                    }
+                }
+            }
 
             # Import each setting for the Administrative Template profile
             Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations/$($obj.id)/definitionValues" -Content (ConvertTo-Json $setting -Depth 20) -HttpMethod POST | Out-Null
@@ -2015,7 +2175,6 @@ function Start-PostExportAdministrativeTemplate
         $fileName = ($fileName + "_" + $obj.Id)
     }
     
-    # Collect and save all the settings of the Administrative Templates profile
     if($obj.definitionValues)
     {
         $settings =  $obj.definitionValues
@@ -2044,10 +2203,12 @@ function Start-PostFileImportAdministrativeTemplate
 {
     param($obj, $objectType, $file)
 
-    $settings = Get-EMSettingsObject $obj $objectType $file
+    $settings = Get-EMSettingsObject $obj $objectType $file -settingsProperty "definitionValues"
     if($settings)
-    {        
-        Import-GPOSetting $obj $settings
+    {
+        $tmpObj = (Get-Content -LiteralPath $file) | ConvertFrom-Json
+
+        Import-GPOSetting $obj $settings -CustomADMX:($tmpObj.policyConfigurationIngestionType -eq "Custom")
     }    
 }
 
@@ -2097,6 +2258,13 @@ function Start-PostGetAdministrativeTemplate
         $obj.Object | Add-Member Noteproperty -Name "definitionValues" -Value $definitionValues -Force 
     }
     #>
+}
+
+function Start-PreImportAdministrativeTemplate
+{
+    param($obj, $objectType, $file, $assignments)
+
+    
 }
 
 #endregion
@@ -2653,13 +2821,17 @@ function Save-EMDefaultPolicy
 }
 function Get-EMSettingsObject
 {
-    param($obj, $objectType, $file)
+    param($obj, $objectType, $file, $settingsProperty = "settings")
 
-    if($obj.Settings) { $obj.Settings }
+    if($obj.$settingsProperty) { return $obj.$settingsProperty }
 
     $fi = [IO.FileInfo]$file
     if($fi.Exists)
     {
+        # Settings property removed during import so lets try exported file first
+        $tmpObj = (Get-Content -LiteralPath $fi.FullName) | ConvertFrom-Json
+        if($tmpObj.$settingsProperty) { return $tmpObj.$settingsProperty }
+
         Write-Log "Settings not included in export file. Try import from _Settings.json file" 2
         $settingsFile = $fi.DirectoryName + "\" + $fi.BaseName + "_Settings.json"
         $fiSettings = [IO.FileInfo]$settingsFile
@@ -2913,5 +3085,80 @@ function Start-PreImportTermsOfUse
     }
 }
 #endregion
+
+#region ADMXFiles
+
+function Start-PreFilesImportADMXFiles
+{
+    param($objectType, $filesToImport)
+
+    $filesToImport | sort-object -property @{e={$_.Object.lastModifiedDateTime}} 
+}
+
+function Start-PreImportADMXFiles
+{
+    param($obj, $objectType, $file, $assignments)
+
+    $pkgPath = Get-SettingValue "EMIntuneAppPackages"
+
+    if(-not $pkgPath -or [IO.Directory]::Exists($pkgPath) -eq $false) 
+    {
+        Write-Log "Intune app directory is either missing or does not exist" 2
+        $pkgPath = $null
+    }
+
+    try
+    {
+        $fi = [IO.FileInfo]$file
+    } catch {}
+
+    $admxFile = $null
+
+    if($fi.Directory.FullName)
+    {
+        $admxFile = "$($fi.Directory.FullName)\$($obj.fileName)"
+        $admlFile = "$($fi.Directory.FullName)\$([io.path]::GetFileNameWithoutExtension($obj.fileName)).adml"
+    }
+    
+    if($null -ne $pkgPath -and ($null -eq $admxFile -or [IO.File]::Exists($admxFile) -eq $false -or [IO.File]::Exists($admxFile) -eq $false))
+    {
+        Write-Log "$($obj.fileName) not foud in Export folder. Look in package path: $pkgPath"
+        $admxFile = "$($pkgPath)\$($obj.fileName)"
+        $admlFile = "$($pkgPath)\$([io.path]::GetFileNameWithoutExtension($obj.fileName)).adml"
+    }        
+
+    if([IO.File]::Exists($admxFile) -eq $false) 
+    {
+        Write-Log "ADMX (or ADML) file $($obj.fileName) not found. The ADMXFile object will not be imported." 2
+        @{"Import" = $false}
+        return 
+    }
+
+    $bytes = [IO.File]::ReadAllBytes($admxFile)
+    $obj.content = [Convert]::ToBase64String($bytes)
+
+    $bytes = [IO.File]::ReadAllBytes($admlFile)
+    $obj.groupPolicyUploadedLanguageFiles += [PSCustomObject]@{
+        fileName = [io.path]::GetFileName($admlFile)
+        content = [Convert]::ToBase64String($bytes)
+        languageCode = (?? $obj.defaultLanguageCode "en-US")
+    }
+    $obj.defaultLanguageCode = ""
+}
+
+function Start-PreDeleteADMXFiles
+{
+    param($obj, $objectType)
+
+    Write-Status "Delete $($obj.fileName)"
+    $strAPI = ($objectType.API + "/$($obj.Id)/remove")
+    Write-Log "Delete $($objectType.Title) object $($obj.fileName)"
+    Invoke-GraphRequest -Url $strAPI -HttpMethod "POST" -ODataMetadata "none" | Out-Null
+    
+    @{ "Delete" = $false }
+}
+
+
+#nedregion
 
 Export-ModuleMember -alias * -function *

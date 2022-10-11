@@ -1,4 +1,40 @@
 # Release Notes
+## 3.7.2  - 2022-10-08
+
+**New features**
+
+- **Added support for ADMX Files (Preview)**<br />
+  - First version of supporting the ADMX file import<br />
+  - Support for export/import policies based on ADMX files<br />
+  The import/export between environments is very tricky so please report any issues<br />
+  **Note**: The ADMX/ADML files must be copied to the app package folder or the policy exported folder<br />
+  The ADMX files imported is based on last modify date. This will make sure files are imported in the correct order eg Mozilla and Firefox ADMX files<br />
+  Based on [Issue 84](https://github.com/Micke-K/IntuneManagement/issues/84)<br />
+- **Added support for value output type when documenting Administrative Templates**<br />
+  - Select Output value in the Documentation form. _Value with label_ will add the label when documenting sub-properties<br />
+- **Translate TenantID when migrating policies between environment**<br />
+  - Any policy with a Tenant ID value will be translated when importing to a new environment<br />
+  Based on [Discussion 83](https://github.com/Micke-K/IntuneManagement/discussions/83)<br />
+
+**Fixes**
+
+- **Authentication**<br />
+  - Fixed an issue when auhencating with certificates during batch jobs<br />
+  Fixed by @cstaubli. Thank you!<br />
+  Based on [Issue 85](https://github.com/Micke-K/IntuneManagement/issues/85)<br />
+
+- **Export\Import Fixes**<br />
+  - Fixed an issue when importing Microsoft Apps files and the default document format was not set<br />
+  Based on [Issue 92](https://github.com/Micke-K/IntuneManagement/issues/92)<br />
+
+- **Documentation**<br />
+  - Fixed the order of sub-properties when documenting Administrative Templates<br />
+  - Fixed an issue where some xml values were not documented eg taskbar xml
+  - Translation files re-generated<br />
+
+<br />
+<br />
+
 ## 3.7.1  - 2022-08-08
 
 **Fixes**
@@ -13,8 +49,8 @@
   This level is used during bulk documentation and a group has more than one object type<br />
   Eg. The Conditional Access group documents Conditional Access, Named Locations and Terms of Use<br />
   The document will now have one section for each object type as third header level<br /><br />
-  This could break documentation if a custom word template is used, and it does not have a 3 level header named 'Heading 3'<br />
-  Specify the name of the 'Header 3 style' value in the Word settings before importing<br />
+  This could break documentation if a custom word template is used, and it does not have a third level header named 'Heading 3'<br />
+  Specify the name of the 'Header 3 style' value in the Word settings before documenting<br />
 
 
 **New features**
@@ -55,7 +91,6 @@
 <br />
 <br />
 
-# Release Notes
 ## 3.6.0  - 2022-06-29
 
 **New features**
@@ -99,7 +134,6 @@
 
 <br />
 
-# Release Notes
 ## 3.5.0  - 2022-04-26
 
 **New features**

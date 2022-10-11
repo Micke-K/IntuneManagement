@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.7.0'
+    '3.7.2'
 }
 
 $global:msalAuthenticator = $null
@@ -591,6 +591,7 @@ function Connect-MSALClientApp
             if($null -eq $cert)
             {
                 Write-LogError "Could not find a certificate with thumbprint '$($Certificate)' in LocalMachine or CurrentUser store"
+                return
             }  
             $ClientApplicationBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::Create($clientId).WithCertificate($cert).WithAuthority([URI]::new($authority)) #.WithRedirectUri($redirectUri)
         }

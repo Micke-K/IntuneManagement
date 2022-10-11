@@ -56,23 +56,38 @@
                         DisplayMemberPath="Name" SelectedValuePath="Value" />
 
                     <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="4">
+                        <Label Content="Output value" />
+                        <Rectangle Style="{DynamicResource InfoIcon}">
+                            <Rectangle.ToolTip>
+                                <TextBlock>
+                                    Specifys the output value for subproperties in Administrative Template policies<LineBreak />
+                                    <Bold>Value</Bold>: Documents only the value<LineBreak />
+                                    <Bold>Value with label</Bold>: Documents the sub-property value with the label of the property<LineBreak />
+                                    <Bold>Note</Bold>: This is only supported on Administrative Templates for the moment<LineBreak />
+                                </TextBlock>
+                            </Rectangle.ToolTip>
+                        </Rectangle>
+                    </StackPanel>
+                    <ComboBox Name="cbDocumentationValueOutputProperty" Margin="0,5,0,0" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" DisplayMemberPath="Name" SelectedValuePath="Value" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="5">
                         <Label Content="Set unconfigured value" />
                         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Set the unconfigured value if the propery is not configured and the property definition has an unconfigured value set" />
                     </StackPanel>
-                    <CheckBox Grid.Column='1' Grid.Row='4' Name='chkSetUnconfiguredValue' VerticalAlignment="Center" IsChecked="true" />            
+                    <CheckBox Grid.Column='1' Grid.Row='5' Name='chkSetUnconfiguredValue' VerticalAlignment="Center" IsChecked="true" />            
 
-                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="5">
+                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="6">
                         <Label Content="Set default value" />
                         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Set the default value if the propery is not configured and the property definition has a default value configured" />
                     </StackPanel>
-                    <CheckBox Grid.Column='1' Grid.Row='5' Name='chkSetDefaultValue' VerticalAlignment="Center" IsChecked="true" />            
+                    <CheckBox Grid.Column='1' Grid.Row='6' Name='chkSetDefaultValue' VerticalAlignment="Center" IsChecked="true" />            
 
-                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="6" Grid.ColumnSpan="2" Name="spDocumentFromFolder">
+                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="7" Grid.ColumnSpan="2" Name="spDocumentFromFolder">
                         <Label Content="Source files" />
                         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Create documentation from exported files" />
                     </StackPanel>
 
-                    <Grid Grid.Row='7' Margin="5,0,0,0" Grid.ColumnSpan="2" Name="grdDocumentFromFolder">
+                    <Grid Grid.Row='8' Margin="5,0,0,0" Grid.ColumnSpan="2" Name="grdDocumentFromFolder">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />  
                             <ColumnDefinition Width="5" />                              
@@ -81,7 +96,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>                
                         </Grid.RowDefinitions>
-                        <TextBox Text="" Name="txtDocumentFromFolder" />
+                        <TextBox Text="" Name="txtDocumentFromFolder" Padding="0,2,0,2" />
                         <Button Grid.Column="2" Name="browseDocumentFromFolder" Padding="5,0,5,0" Width="50" ToolTip="Browse for export folder">...</Button>
                     </Grid>
 

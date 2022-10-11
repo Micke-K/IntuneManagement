@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.7.0'
+    '3.7.2'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -2113,7 +2113,12 @@ function Get-GraphFileObjects
         }
         else
         {
-            $graphObj = (ConvertFrom-Json (Get-Content -LiteralPath $file.FullName -Raw))
+            $json = Get-Content -LiteralPath $file.FullName -Raw
+            if($global:Organization.Id)
+            {
+                $json = $json -replace "%OrganizationId%",$global:Organization.Id
+            }
+            $graphObj = (ConvertFrom-Json $json)
         }
 
         $obj = New-Object PSObject -Property @{
@@ -3052,7 +3057,14 @@ function Export-GraphObject
         }
 
         $fullPath = ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$($fileName).json")))
-        $obj | ConvertTo-Json -Depth 50 | Out-File -LiteralPath $fullPath -Force
+        $json = $obj | ConvertTo-Json -Depth 50
+
+        if($global:Organization.Id)
+        {
+            $json = $json -replace $global:Organization.Id, "%OrganizationId%"
+        }
+        
+        $json | Out-File -LiteralPath $fullPath -Force
         
         if($objectType.PostExportCommand)
         {
@@ -3440,6 +3452,11 @@ function Import-GraphObject
         # E.g. PolicySets contains references, AppConfiguration policies reference apps etc.
         $json = Update-JsonForEnvironment $json
     }
+
+    if($global:Organization.Id)
+    {
+        $json = $json -replace "%OrganizationId%",$global:Organization.Id
+    }    
 
     $newObj = (Invoke-GraphRequest -Url $strAPI -Content $json -HttpMethod $method @params)
 
