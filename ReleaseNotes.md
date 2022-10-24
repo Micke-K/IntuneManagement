@@ -1,4 +1,15 @@
 # Release Notes
+## 3.7.3  - 2022-10-24
+
+**Fixes**
+
+- **Import**<br />
+  - Fixed a bug where it failed to import Endpoint Security policies<br />
+  - Fixed an where it failed to import Assignment Filters. A new property was addded that was not supported during the import<br />
+
+<br />
+<br />
+
 ## 3.7.2  - 2022-10-08
 
 **New features**

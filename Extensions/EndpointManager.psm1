@@ -11,7 +11,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.7.2'
+    '3.7.3'
 }
 
 function Invoke-InitializeModule
@@ -449,10 +449,11 @@ function Invoke-InitializeModule
         PreImportCommand = { Start-PreImportCommandApplication  @args }
         DetailExtension = { Add-DetailExtensionApplications @args }
         GroupId = "Apps"
+        ScopeTagsReturnedInList = $false
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
-        Title = "AutoPilot"
+        Title = "Autopilot"
         Id = "AutoPilot"
         API = "/deviceManagement/windowsAutopilotDeploymentProfiles"
         ViewID = "IntuneGraphAPI"
@@ -639,6 +640,7 @@ function Invoke-InitializeModule
         GroupId = "TenantAdmin"
         PropertiesToRemoveForUpdate = @('platform')
         ExpandAssignmentsList = $false
+        PropertiesToRemove = @("payloads")
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -2203,7 +2205,7 @@ function Start-PostFileImportAdministrativeTemplate
 {
     param($obj, $objectType, $file)
 
-    $settings = Get-EMSettingsObject $obj $objectType $file -settingsProperty "definitionValues"
+    $settings = Get-EMSettingsObject $obj $objectType $file -settingsProperty "definitionValues" -SettingsArray
     if($settings)
     {
         $tmpObj = (Get-Content -LiteralPath $file) | ConvertFrom-Json
@@ -2821,7 +2823,7 @@ function Save-EMDefaultPolicy
 }
 function Get-EMSettingsObject
 {
-    param($obj, $objectType, $file, $settingsProperty = "settings")
+    param($obj, $objectType, $file, $settingsProperty = "settings", [switch]$SettingsArray)
 
     if($obj.$settingsProperty) { return $obj.$settingsProperty }
 
@@ -2830,7 +2832,21 @@ function Get-EMSettingsObject
     {
         # Settings property removed during import so lets try exported file first
         $tmpObj = (Get-Content -LiteralPath $fi.FullName) | ConvertFrom-Json
-        if($tmpObj.$settingsProperty) { return $tmpObj.$settingsProperty }
+        if($SettingsArray -eq $true)
+        {
+            # Only the an array of settings is expected
+            return $tmpObj.$settingsProperty
+        }
+        else
+        {
+            if($tmpObj.$settingsProperty) 
+            {
+                # A property with the an array of settings is expected
+                return ([PSCustomObject]@{
+                    $settingsProperty = $tmpObj.$settingsProperty
+                })
+            } 
+        }
 
         Write-Log "Settings not included in export file. Try import from _Settings.json file" 2
         $settingsFile = $fi.DirectoryName + "\" + $fi.BaseName + "_Settings.json"
