@@ -5,7 +5,7 @@
 
 - **Import**<br />
   - Fixed a bug where it failed to import Endpoint Security policies<br />
-  - Fixed an where it failed to import Assignment Filters. A new property was addded that was not supported during the import<br />
+  - Fixed an issue where it failed to import Assignment Filters. A new property was added that is not supported during the import<br />
 
 <br />
 <br />
