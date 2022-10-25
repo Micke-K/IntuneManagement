@@ -12,7 +12,7 @@
 RootModule = 'CloudAPIPowerShellManagement.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.7.2'
+ModuleVersion = '3.7.3'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
