@@ -1,6 +1,6 @@
 function Get-ModuleVersion
 {
-    '1.0.1'
+    '1.0.2'
 }
 
 function Invoke-InitializeModule
@@ -106,7 +106,7 @@ function Start-BulkCopyObjects
         Write-Log "Copy $($item.ObjectType.Title) objects"
         Write-Log "----------------------------------------------------------------"
     
-        $graphObjects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
+        [array]$graphObjects = Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType
         
         $nameProp = ?? $item.ObjectType.NameProperty "displayName"
 

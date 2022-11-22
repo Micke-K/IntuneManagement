@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.7.2'
+    '3.7.4'
 }
 
 $global:msalAuthenticator = $null
@@ -231,7 +231,7 @@ function Get-MSALUserInfo
             $global:Me = $tmpMe
             Write-Log "Get profile picture"
             $global:profilePhoto = "$($env:LOCALAPPDATA)\CloudAPIPowerShellManagement\$($global:Me.Id).jpeg"
-            MSGraph\Invoke-GraphRequest "me/photos/48x48/`$value" -OutFile $global:profilePhoto -SkipAuthentication | Out-Null
+            MSGraph\Invoke-GraphRequest "me/photos/48x48/`$value" -OutFile $global:profilePhoto -SkipAuthentication -NoError | Out-Null
         }
 
         Write-Log "Get organization info"

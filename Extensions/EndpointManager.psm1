@@ -11,7 +11,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.7.3'
+    '3.7.4'
 }
 
 function Invoke-InitializeModule
@@ -141,6 +141,7 @@ function Invoke-InitializeModule
             API = "/identityGovernance/termsOfUse/agreements"
             Permissons=@("Agreement.ReadWrite.All")
             PreImportCommand = { Start-PreImportTermsOfUse @args }
+            PostExportCommand = { Start-PostExportTermsOfUse  @args }
             GroupId = "ConditionalAccess"        
         })
     }
@@ -166,6 +167,7 @@ function Invoke-InitializeModule
         PostListCommand = { Start-PostListEndpointSecurity @args }
         PostExportCommand = { Start-PostExportEndpointSecurity @args }
         PostFileImportCommand = { Start-PostFileImportEndpointSecurity @args }
+        PostGetCommand = { Start-PostGetEndpointSecurity @args }
         #PreCopyCommand = { Start-PreCopyEndpointSecurity @args }
         PostCopyCommand = { Start-PostCopyEndpointSecurity @args }
         PreUpdateCommand = { Start-PreUpdateEndpointSecurity @args }
@@ -254,6 +256,7 @@ function Invoke-InitializeModule
         PreReplaceCommand = { Start-PreReplaceEnrollmentRestrictions @args } # Note: Uses same PreReplaceCommand as restrictions
         PostReplaceCommand = { Start-PostReplaceEnrollmentRestrictions @args } # Note: Uses same PostReplaceCommand as restrictions
         PreFilesImportCommand = { Start-PreFilesImportEnrollmentRestrictions @args } # Note: Uses same PreFilesImportCommand as restrictions
+        PreImportAssignmentsCommand = { Start-PreImportAssignmentsEnrollmentRestrictions @args } # Note: Uses same PreFilesImportCommand as restrictions
         PostListCommand = { Start-PostListESP @args }
         #PreUpdateCommand = { Start-PreUpdateEnrollmentRestrictions @args } # Note: Uses same PreUpdateCommand as restrictions
         #QUERYLIST = "`$filter=endsWith(id,'Windows10EnrollmentCompletionPageConfiguration')"
@@ -277,6 +280,7 @@ function Invoke-InitializeModule
         PostReplaceCommand = { Start-PostReplaceEnrollmentRestrictions @args }
         PreFilesImportCommand = { Start-PreFilesImportEnrollmentRestrictions @args }
         PostListCommand = { Start-PostListEnrollmentRestrictions @args }
+        PreImportAssignmentsCommand = { Start-PreImportAssignmentsEnrollmentRestrictions @args }
         #PreUpdateCommand = { Start-PreUpdateEnrollmentRestrictions @args }
         PropertiesToRemoveForUpdate = @('priority')
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
@@ -448,6 +452,8 @@ function Invoke-InitializeModule
         PreUpdateCommand = { Start-PreUpdateApplication  @args }
         PreImportCommand = { Start-PreImportCommandApplication  @args }
         DetailExtension = { Add-DetailExtensionApplications @args }
+        PreImportAssignmentsCommand = { Start-PreImportAssignmentsApplications @args }
+        PreDeleteCommand = { Start-PreDeleteApplications @args }
         GroupId = "Apps"
         ScopeTagsReturnedInList = $false
     })
@@ -863,7 +869,7 @@ function Set-EMViewPanel
 
     $global:btnLoadAllPages.add_click({
         Write-Status "Loading $($global:curObjectType.Title) objects"
-        $graphObjects = @(Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -AllPages)
+        [array]$graphObjects = Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -AllPages
         $graphObjects | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null }
         $global:dgObjects.ItemsSource.CommitNew()
         Set-GraphPagesButtonStatus
@@ -873,7 +879,7 @@ function Set-EMViewPanel
 
     $global:btnLoadNextPage.add_click({
         Write-Status "Loading $($global:curObjectType.Title) objects"
-        $graphObjects = @(Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage)
+        [array]$graphObjects = Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage
         $graphObjects | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null }
         $global:dgObjects.ItemsSource.CommitNew()
         Set-GraphPagesButtonStatus
@@ -1000,17 +1006,19 @@ function Start-PostListEndpointSecurity
     if(-not $script:baseLineTemplates) { return }
 
     foreach($obj in $objList)
-    {
+    {        
         if(-not $obj.Object.templateId) { continue }
         if($obj.Object.templateId -ne $baseLineTemplate.Id)
         {
             $baseLineTemplate = $script:baseLineTemplates | Where Id -eq $obj.Object.templateId
         }
+        
         if($baseLineTemplate)
         {
             $obj | Add-Member -MemberType NoteProperty -Name "Type" -Value $baseLineTemplate.displayName
             $obj | Add-Member -MemberType NoteProperty -Name "Category" -Value (?: ($baseLineTemplate.templateSubtype -eq "none") $baseLineTemplate.templateType $baseLineTemplate.templateSubtype)
         }
+        
     }
     $objList
 }
@@ -1028,7 +1036,7 @@ function Start-PostExportEndpointSecurity
     $settings = Invoke-GraphRequest -Url "$($objectType.API)/$($obj.id)/settings"
     $settingsJson = "{ `"settings`": $((ConvertTo-Json  $settings.value -Depth 20 ))`n}"
     $fileName = "$path\$((Remove-InvalidFileNameChars $fileName))_Settings.json"
-    $settingsJson | Out-File -LiteralPath $fileName -Force
+    Save-GraphObjectToFile $settingsJson $fileName
 }
 
 function Start-PostFileImportEndpointSecurity
@@ -1039,7 +1047,7 @@ function Start-PostFileImportEndpointSecurity
     if($settings)
     {
         Start-GraphPreImport $settings
-        Invoke-GraphRequest -Url "$($objectType.API)/$($obj.id)/updateSettings" -Body ($settings | ConvertTo-Json -Depth 20) -Method "POST"
+        Invoke-GraphRequest -Url "$($objectType.API)/$($obj.id)/updateSettings" -Body ($settings | ConvertTo-Json -Depth 50) -Method "POST"
     }    
 }
 
@@ -1123,6 +1131,18 @@ function Start-PreUpdateEndpointSecurity
     Remove-Property $obj "templateId"
 }
 
+function Start-PostGetEndpointSecurity
+{
+    param($obj, $objectType)
+    
+    Add-EndpointSecurityInfo $obj
+}
+
+function local:Add-EndpointSecurityInfo
+{
+    param($obj, $baseLineTemplate = $null)
+    
+}
 #endregion
 
 #region 
@@ -1133,7 +1153,7 @@ function Start-PostFileImportDeviceConfiguration
 
     if($obj.'@OData.Type' -like "#microsoft.graph.windows10GeneralConfiguration")
     {
-        $tmpObj = Get-Content -LiteralPath $importFile | ConvertFrom-Json
+        $tmpObj = Get-GraphObjectFromFile $importFile
 
         if(($tmpObj.privacyAccessControls | measure).Count -gt 0)
         {
@@ -1829,15 +1849,23 @@ function Start-PostFileImportApplications
 {
     param($obj, $objectType, $file)
     
-    $tmpObj = Get-Content -LiteralPath $file | ConvertFrom-Json
+    $tmpObj = Get-GraphObjectFromFile $file
 
     if(-not ($obj.PSObject.Properties | Where Name -eq '@odata.type'))
     {
         # Add @odata.type property if it is missing. Required by app package import
         $obj | Add-Member -MemberType NoteProperty -Name '@odata.type' -Value $objectType.'@odata.type'
     }
+
+    $fi = [IO.FileInfo]$file
+    $tmpFilName = $fi.DirectoryName + "\" + $obj.FileName
+
+    if([IO.File]::Exists($tmpFilName) -eq $false)
+    {
+        $tmpFilName = $null
+    }
     
-    Start-ImportApp $obj
+    Start-ImportApp $obj $tmpFilName
 }
 
 function local:Start-ImportApp
@@ -1981,6 +2009,30 @@ function Add-DetailExtensionApplications
         $tmp.Children.Insert($index, $btnUpload)
     }
 
+}
+
+function Start-PreImportAssignmentsApplications
+{
+    param($obj, $objectType, $file, $assignments)
+
+    if($obj.'@odata.type' -eq "#microsoft.graph.windowsMicrosoftEdgeApp")
+    {
+        foreach($assignment in $assignments)
+        {
+            Remove-Property $assignment.target "deviceAndAppManagementAssignmentFilterId"
+            Remove-Property $assignment.target "deviceAndAppManagementAssignmentFilterType"
+        }
+        @{"Assignments"=$assignments}
+    }
+}
+
+function Start-PreDeleteApplications
+{
+    if($obj.'@odata.type' -eq "#microsoft.graph.microsoftStoreForBusinessApp")
+    {
+        # Don't delete Microsoft Store for Business Apps
+        @{ "Delete" = $false }
+    }
 }
 #endregion
 
@@ -2187,7 +2239,7 @@ function Start-PostExportAdministrativeTemplate
     }
 
     $fileName = "$path\$((Remove-InvalidFileNameChars $fileName))_Settings.json"
-    ConvertTo-Json $settings -Depth 20 | Out-File -LiteralPath $fileName -Force
+    Save-GraphObjectToFile $settings $fileName
 }
 
 function Start-PostCopyAdministrativeTemplate
@@ -2208,7 +2260,7 @@ function Start-PostFileImportAdministrativeTemplate
     $settings = Get-EMSettingsObject $obj $objectType $file -settingsProperty "definitionValues" -SettingsArray
     if($settings)
     {
-        $tmpObj = (Get-Content -LiteralPath $file) | ConvertFrom-Json
+        $tmpObj = Get-GraphObjectFromFile $file
 
         Import-GPOSetting $obj $settings -CustomADMX:($tmpObj.policyConfigurationIngestionType -eq "Custom")
     }    
@@ -2222,8 +2274,8 @@ function Start-LoadAdministrativeTemplate
 
     $fi = [IO.FileInfo]$fileName
     if($fi.Exists -eq $false) { return }
-
-    $obj = Get-Content -LiteralPath $fi.FullName | ConvertFrom-Json 
+ 
+    $obj = Get-GraphObjectFromFile $fi.FullName
 
     if($obj.definitionValues)
     {
@@ -2234,7 +2286,7 @@ function Start-LoadAdministrativeTemplate
 
     if([IO.File]::Exists($settingsFile))
     {
-        $definitionValues = Get-Content -LiteralPath $settingsFile | ConvertFrom-Json
+        $definitionValues = Get-GraphObjectFromFile $settingsFile
 
         $obj | Add-Member Noteproperty -Name "definitionValues" -Value $definitionValues -Force  
     }
@@ -2444,7 +2496,7 @@ function Start-PostExportRoleDefinitions
     $fileName = "$path\$((Remove-InvalidFileNameChars $fileName)).json"
     if([IO.File]::Exists($fileName))
     {
-        $tmpObj = Get-Content -LiteralPath $fileName | ConvertFrom-Json
+        $tmpObj = Get-GraphObjectFromFile $fileName
     }
     else
     {
@@ -2468,7 +2520,7 @@ function Start-PostExportRoleDefinitions
         if($roleAssignmentsArr.Count -gt 0)
         {
             $tmpObj.RoleAssignments = $roleAssignmentsArr
-            $tmpObj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath $fileName
+            Save-GraphObjectToFile $tmpObj $fileName
         }
     }
 }
@@ -2485,7 +2537,7 @@ function Start-PostFileImportRoleDefinitions
 {
     param($obj, $objectType, $file)
 
-    $tmpObj = Get-Content -LiteralPath $file | ConvertFrom-Json
+    $tmpObj = Get-GraphObjectFromFile $file
 
     $loadedScopeTags = $global:LoadedDependencyObjects["ScopeTags"]
     if(($tmpObj.RoleAssignments | measure).Count -gt 0 -and ($loadedScopeTags | measure).Count -gt 0)
@@ -2551,7 +2603,7 @@ function Start-PostFileImportNotifications
 {
     param($obj, $objectType, $file)
 
-    $tmpObj = Get-Content -LiteralPath $file | ConvertFrom-Json
+    $tmpObj = Get-GraphObjectFromFile $file
 
     foreach($localizedNotificationMessage in $tmpObj.localizedNotificationMessages)
     {
@@ -2705,6 +2757,17 @@ function Start-PostListEnrollmentRestrictions
     }
 }
 
+function Start-PreImportAssignmentsEnrollmentRestrictions
+{
+    param($obj, $objectType, $file, $assignments)
+
+    if($obj.Priority -eq 0)
+    {
+        # Skip Assignment for Default Policy
+        @{ "Import" = $false }
+    }
+}
+
 #endregion
 
 #region 
@@ -2815,7 +2878,7 @@ function Save-EMDefaultPolicy
                     # Clean up from old version of the script that used the wrong name for Default policies
                     try { [IO.File]::Delete($oldFile) | Out-Null } Catch {}
                 }
-                $obj | ConvertTo-Json -Depth 20 | Out-File -LiteralPath "$path\$((Remove-InvalidFileNameChars $fileName)).json"
+                Save-GraphObjectToFile $obj "$path\$((Remove-InvalidFileNameChars $fileName)).json"
             }
         }
         catch {}
@@ -2831,7 +2894,7 @@ function Get-EMSettingsObject
     if($fi.Exists)
     {
         # Settings property removed during import so lets try exported file first
-        $tmpObj = (Get-Content -LiteralPath $fi.FullName) | ConvertFrom-Json
+        $tmpObj = Get-GraphObjectFromFile $fi.FullName
         if($SettingsArray -eq $true)
         {
             # Only the an array of settings is expected
@@ -2855,9 +2918,8 @@ function Get-EMSettingsObject
         {
             Write-Log "Settings file '$($fiSettings.FullName)' was not found" 2
             return
-        }
-
-        (Get-Content -LiteralPath $fiSettings.FullName) | ConvertFrom-Json
+        }        
+        Get-GraphObjectFromFile $fiSettings.FullName
     }
     else
     {
@@ -2880,7 +2942,7 @@ function Add-EMAssignmentsToExportFile
         Write-Log "File not found: $fileName. Could not add assignments to file" 3
         return
     }
-    $tmpObj = Get-Content -LiteralPath $fileName | ConvertFrom-Json
+    $tmpObj = Get-GraphObjectFromFile $fileName
 
     if(-not $url)
     {
@@ -2897,7 +2959,7 @@ function Add-EMAssignmentsToExportFile
         {
             $tmpObj.Assignments = $assignments
         }
-        ConvertTo-Json $tmpObj -Depth 20 | Out-File -LiteralPath $fileName -Force
+        Save-GraphObjectToFile $tmpObj $fileName
     }
 }
 
@@ -3094,12 +3156,32 @@ function Start-PreImportTermsOfUse
             return 
         }
 
+        Write-Log "Add file data: $pdfFile"
+
         $bytes = [IO.File]::ReadAllBytes($pdfFile)        
         $file.fileData = [PSCustomObject]@{
             data = [Convert]::ToBase64String($bytes)
         }
     }
 }
+
+function Start-PostExportTermsOfUse
+{
+    param($obj, $objectType, $path)
+
+    foreach($file in $obj.Files)
+    {
+        $url = "agreements/$($obj.id)/file/localizations('$($file.id)')/fileData/data"
+        $data = (Invoke-GraphRequest -Url $url -ODataMetadata "Minimal").Value
+        if($data)
+        {
+            Write-Log "Save file $($file.FileName)"
+            $fileName = "$path\$($file.FileName)" 
+            [IO.File]::WriteAllBytes($fileName, [System.Convert]::FromBase64String($data))
+        } 
+    }
+}
+
 #endregion
 
 #region ADMXFiles
@@ -3174,7 +3256,6 @@ function Start-PreDeleteADMXFiles
     @{ "Delete" = $false }
 }
 
-
-#nedregion
+#endregion
 
 Export-ModuleMember -alias * -function *

@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.3.0'
+    '1.4.0'
 }
 
 function Invoke-InitializeModule
@@ -610,6 +610,7 @@ function Invoke-WordProcessItem
                         $settingProps += ("Settings." + $objProp)
                     }
                 }
+                $params.Add("AddCategories", $true)
             }
             else
             {
@@ -649,6 +650,7 @@ function Invoke-WordProcessItem
                 if($fi.Exists)
                 {
                     $script:doc.Application.Selection.InlineShapes.AddOLEObject("",$fi.FullName,$false,$true,"$($env:WinDir)\System32\Notepad.exe",0,$fi.Name)
+                    $script:doc.Application.Selection.TypeParagraph()
                     try { $fi.Delete() } catch {} # Cleanup
                 }
             }
@@ -666,12 +668,18 @@ function Set-DocTableSettingsItems
 
     $secondColumn = $firstColumn + 1
 
-    $script:docTable.Cell(1, $firstColumn).Range.Text = (Invoke-WordTranslateColumnHeader "Settings")
+    $script:docTable.Cell(1, $firstColumn).Range.Text = (Invoke-DocTranslateColumnHeader "Settings")
     $script:docTable.Cell(1, $secondColumn).Range.Text = ""
 
     $row = 2
     foreach($itemObj in $items)
     {
+        #if($script:docTable.Rows($row).Cells.Count -eq 1) { $row++;continue } # Category / Sub-category
+        while($script:docTable.Cell($row,1).Next.RowIndex -gt $row) 
+        { 
+            # Category / Sub-category
+            $row++;
+        } 
         $script:docTable.Cell($row, $firstColumn).Range.Text = ""
         $script:docTable.Cell($row, $secondColumn).Range.Text = ""
         $script:docTable.Cell($row, $firstColumn).Split($properties.Count,1)
@@ -680,7 +688,7 @@ function Set-DocTableSettingsItems
         $cellRow = $row
         foreach($settingProp in $properties)
         {
-            $script:docTable.Cell($cellRow, $firstColumn).Range.Text =  (Invoke-WordTranslateColumnHeader ($settingProp.Split('.')[-1]))
+            $script:docTable.Cell($cellRow, $firstColumn).Range.Text = (Invoke-DocTranslateColumnHeader ($settingProp.Split('.')[-1]))
             
             $propArr = $settingProp.Split('.')
             $tmpObj = $itemObj
@@ -690,7 +698,8 @@ function Set-DocTableSettingsItems
                 $tmpObj = $tmpObj."$($propArr[$x])"
             }
 
-            $script:docTable.Cell($cellRow, $secondColumn).Column.Cells($cellRow).Range.Text = "$($tmpObj.$propName)"
+            #$script:docTable.Cell($cellRow, $secondColumn).Column.Cells($cellRow).Range.Text = "$($tmpObj.$propName)"
+            $script:docTable.Cell($cellRow, $secondColumn).Range.Text = "$($tmpObj.$propName)"
 
             $cellRow++
         }

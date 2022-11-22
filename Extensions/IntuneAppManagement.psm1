@@ -10,7 +10,7 @@ This module manages Application objects in Intune e.g. uploading application fil
 #>
 function Get-ModuleVersion
 {
-    '3.4.0'
+    '3.7.4'
 }
 
 #########################################################################################
@@ -362,21 +362,32 @@ function Send-IntuneFileToAzureStorage
 			
 			$currentChunk = $chunk + 1			
 
-            Write-Status "Uploading file to Azure Storage`n`nUploading chunk $currentChunk of $chunks ($(($currentChunk / $chunks*100))%)"
+            Write-Status "Uploading file to Azure Storage`n`nUploading chunk $currentChunk of $chunks ($(("{0:N2}" -f ($currentChunk / $chunks*100)))%)"
 
-            Write-AzureStorageChunk $sasUri $id $bytes
+            if((Write-AzureStorageChunk $sasUri $id $bytes) -eq $false)
+            {
+                Write-Log "Upload failed. Abourting..." 3
+                break
+            }
 						
 			if ($currentChunk -lt $chunks -and $sasRenewalTimer.ElapsedMilliseconds -ge 450000)
             {
 				Request-RenewAzureStorageUpload $fileUri
 				$sasRenewalTimer.Restart()
             }
-		}
-		$reader.Close()
+		}		
 	}
+    catch
+    {
+        Write-Log "Failed to send file to Intune. $($_.Exception.Message)" 3
+    }
 	finally 
     {
-		if ($reader -ne $null) { $reader.Dispose() }	
+		if ($reader -ne $null) 
+        {
+            $reader.Close()
+            $reader.Dispose()
+        }	
     }
 	
 	# Finalize the upload.
@@ -443,15 +454,39 @@ function Write-AzureStorageChunk
 
     $curProgressPreference = $ProgressPreference
     $ProgressPreference = 'SilentlyContinue'
-	try
-	{
-		$response = Invoke-WebRequest $uri -Method Put -Headers $headers -Body $encodedBody
-	}
-	catch
-	{
-        Write-Log "Failed to upload file chunk. $($_.Exception.Message)" 3
-	}
+    
+    $success = $false
+    $retryCount = 0
+    while($true)
+    {
+        
+        try
+        {
+            $response = Invoke-WebRequest $uri -Method Put -Headers $headers -Body $encodedBody
+            if($retryCount -gt 0)
+            {
+                Write-Log "Chunk uploaded successfully"
+            }
+            $success = $true
+            break
+        }
+        catch
+        {
+            if($_.Exception.HResult -eq -2146233079 -and $retryCount -lt 6)
+            {   
+                Write-Log "Failed to upload file chunk. Retry in 10 s" 2             
+                $retryCount++                
+                Start-Sleep -Seconds 10
+            }
+            else
+            {
+                Write-Log "Failed to upload file chunk. $($_.Exception.Message)" 3
+                break
+            }
+        }
+    }
     $ProgressPreference = $curProgressPreference
+    $success
 }
 
 function Get-IntuneKey

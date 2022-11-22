@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.7.2'
+    '3.7.4'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -451,7 +451,25 @@ function Invoke-GraphRequest
             }
             else
             {
-                Write-LogError "Failed to invoke MS Graph with URL $Url (Request ID: $requestId). Status code: $($_.Exception.Response.StatusCode)" $_.Excption
+                $extMessage = $null
+                try
+                {
+                    $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
+                    $reader.BaseStream.Position = 0
+                    $reader.DiscardBufferedData()
+                    $response = $reader.ReadToEnd() | ConvertFrom-Json
+                    if($response.Error.Message)
+                    {
+                        $message = $response.Error.Message | ConvertFrom-Json
+                        if($message.Message)
+                        {
+                            $extMessage = ". Response message: $($message.Message)"
+                        }
+                    }
+                }
+                catch{}
+
+                Write-LogError "Failed to invoke MS Graph with URL $Url (Request ID: $requestId). Status code: $($_.Exception.Response.StatusCode)$extMessage" $_.Excption
             }            
         }
     } while($retryRequest -eq $true)
@@ -559,21 +577,31 @@ function Get-GraphObjects
 
     if($graphObjects -and ($graphObjects | GM -Name Value -MemberType NoteProperty))
     {
-        $retObjects = $graphObjects.Value            
+        $retObjects = $graphObjects.Value
     }
     else
     {
         $retObjects = $graphObjects
     }
 
-    $graphObjects = Add-GraphObjectProperties $retObjects $objectType $property $exclude $SortProperty
-
-    if($SingleObject -ne $true -and $objectType.PostListCommand)
+    if($retObjects)
     {
-        $graphObjects = & $objectType.PostListCommand $graphObjects $objectType
+        $graphObjects = Add-GraphObjectProperties $retObjects $objectType $property $exclude $SortProperty
+
+        if($SingleObject -ne $true -and $objectType.PostListCommand)
+        {
+            $graphObjects = & $objectType.PostListCommand $graphObjects $objectType
+        }
+    }
+    else
+    {
+        $graphObjects = $null    
     }
     
-    $graphObjects
+    if(($graphObjects | measure).Count -gt 0)
+    {
+        $graphObjects
+    }
 }
 
 function Add-GraphObjectProperties
@@ -693,12 +721,12 @@ function Show-GraphObjects
 
     $script:nextGraphPage = $null    
 
-    $graphObjects = @(Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage -Filter $filter)
+    [array]$graphObjects = Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage -Filter $filter
 
     $dgObjects.AutoGenerateColumns = $false
     $dgObjects.Columns.Clear()
 
-    if(($graphObjects | measure).Count -gt 0)
+    if($graphObjects)
     {
         $tmpObj = $graphObjects | Select -First 1
 
@@ -1335,7 +1363,7 @@ function Start-GraphObjectExport
             $folder = Expand-FileName $folder
 
             Write-Status "Get a list of all $($item.ObjectType.Title) objects" -SkipLog -Force
-            $objects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType) 
+            [array]$objects = Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType
 
             if((Get-SettingValue "UseBatchAPI") -eq $true)
             {
@@ -1345,6 +1373,7 @@ function Start-GraphObjectExport
                 $total = ($batchObjects | measure).Count
                 foreach($batchResult in $batchObjects)
                 {
+                    if(-not $batchResult.Object) { continue }
                     $objName = Get-GraphObjectName $batchResult.Object $batchResult.ObjectType
                     Write-Status "Export $($item.Title): $objName ($($i)/$($total))" -Force
                     Export-GraphObject $batchResult.Object $batchResult.ObjectType $folder -IsFullObject
@@ -1621,7 +1650,7 @@ function Show-GraphImportForm
         $navigationPropObjects = @()
         foreach ($fileObj in $filesToImport)
         {
-            if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport" -and (Reset-GraphObjet $fileObj $global:dgObjects.ItemsSource))
+            if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport" -and (Reset-GraphObject $fileObj $global:dgObjects.ItemsSource))
             {
                 continue
             }
@@ -1839,7 +1868,7 @@ function Start-GraphObjectImport
             try 
             {
                 Write-Status "Get $($item.Title) objects" -Force
-                $graphObjects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
+                [array]$graphObjects = Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType
             }
             catch {}
         }
@@ -1864,7 +1893,7 @@ function Start-GraphObjectImport
                     continue
                 }
 
-                if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport" -and $graphObjects -and (Reset-GraphObjet $fileObj $graphObjects))
+                if($allowUpdate -and $global:cbImportType.SelectedValue -ne "alwaysImport" -and $graphObjects -and (Reset-GraphObject $fileObj $graphObjects))
                 {
                     $importedObjects++ 
                     continue
@@ -2048,7 +2077,7 @@ function Show-GraphBulkDeleteForm
         Write-Log "Start bulk delete"
         Write-Log "****************************************************************"
 
-        foreach($item in ($global:dgBulkDeleteObjects.ItemsSource | Where Selected -eq $true))
+        foreach($item in ($global:dgBulkDeleteObjects.ItemsSource | Where Selected -eq $true | sort-object -property @{e={$_.ObjectType.ImportOrder}} -Descending))
         {
             Write-Log "----------------------------------------------------------------"
             Write-Log "Delete $($item.ObjectType.Title) objects"
@@ -2060,8 +2089,8 @@ function Show-GraphBulkDeleteForm
             
             try 
             {
-                Write-Status "Get $($item.Title) objects" -Force
-                $objects = @(Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType)
+                Write-Status "Get $($item.ObjectType.Title) objects" -Force
+                [array]$objects = Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType
                 foreach($obj in $objects)
                 {                    
                     $objName = Get-GraphObjectName $obj.Object $obj.ObjectType
@@ -2071,7 +2100,7 @@ function Show-GraphBulkDeleteForm
                         continue
                     }
 
-                    Write-Status "Delete $($item.Title): $objName" -Force -SkipLog
+                    Write-Status "Delete $($item.ObjectType.Title): $objName" -Force -SkipLog
                     Remove-GraphObject $obj.Object $obj.ObjectType $folder 
                 }
             }
@@ -2113,12 +2142,7 @@ function Get-GraphFileObjects
         }
         else
         {
-            $json = Get-Content -LiteralPath $file.FullName -Raw
-            if($global:Organization.Id)
-            {
-                $json = $json -replace "%OrganizationId%",$global:Organization.Id
-            }
-            $graphObj = (ConvertFrom-Json $json)
+            $graphObj = Get-GraphObjectFromFile $file.FullName
         }
 
         $obj = New-Object PSObject -Property @{
@@ -2194,7 +2218,7 @@ function Import-GraphFile
     }
 }
 
-function Reset-GraphObjet
+function Reset-GraphObject
 { 
     param($fileObj, $objectList)
 
@@ -2369,9 +2393,11 @@ function Import-GraphObjectAssignment
 
     if($preConfig["Import"] -eq $false) { return } # Assignment managed manually so skip further processing
 
-    $api = ?? $preConfig["API"] "$($objectType.API)/$($newObj.Id)/assign"
+    $api = ?? $preConfig["API"] "$($objectType.API)/$($obj.Id)/assign"
 
     $method = ?? $preConfig["Method"] "POST"
+
+    $clonedAssignments = ?? $preConfig["Assignments"] $clonedAssignments
 
     $keepProperties = ?? $objectType.AssignmentProperties @("target")
     $keepTargetProperties = ?? $objectType.AssignmentTargetProperties @("@odata.type","groupId","deviceAndAppManagementAssignmentFilterId","deviceAndAppManagementAssignmentFilterType")
@@ -2417,8 +2443,7 @@ function Import-GraphObjectAssignment
     if($objectType.PostImportAssignmentsCommand)
     {
         & $objectType.PostImportAssignmentsCommand $obj $objectType $fromFile $objAssign
-    }
-    
+    }   
 }
 #endregion
 
@@ -2572,7 +2597,7 @@ function Add-GroupMigrationObject
     if(-not $groupObj)
     {
         # Get group info
-        $groupObj = Invoke-GraphRequest "/groups/$groupId" -ODataMetadata "none"
+        $groupObj = Invoke-GraphRequest "/groups/$groupId" -ODataMetadata "none" -NoError
     }
 
     if($groupObj)
@@ -2587,8 +2612,12 @@ function Add-GroupMigrationObject
             $grouspPath = Join-Path $path "Groups"
             if(-not (Test-Path $grouspPath)) { mkdir -Path $grouspPath -Force -ErrorAction SilentlyContinue | Out-Null }
             $fileName = "$grouspPath\$((Remove-InvalidFileNameChars $groupObj.displayName)).json"
-            ConvertTo-Json $groupObj -Depth 50 | Out-File $fileName -Force            
+            Save-GraphObjectToFile $groupObj $fileName
         }
+    }
+    else 
+    {
+        Write-Log "No group found with ID $($groupId). It might be deleted." 2
     }
 }
 
@@ -2626,7 +2655,7 @@ function Add-GraphMigrationObject
                 $grouspPath = Join-Path $path "Groups"
                 if(-not (Test-Path $grouspPath)) { mkdir -Path $grouspPath -Force -ErrorAction SilentlyContinue | Out-Null }
                 $fileName = "$grouspPath\$((Remove-InvalidFileNameChars $graphObj.displayName)).json"
-                ConvertTo-Json $graphObj -Depth 50 | Out-File $fileName -Force
+                Save-GraphObjectToFile $graphObj $fileName
             }
         }
     }
@@ -2769,7 +2798,7 @@ function Get-GraphMigrationObjectsFromFile
                     {
                         # ToDo: Create group from Json (could be a dynamic group)
                         # Warn if synched group
-                        $groupObj = (Get-Content -LiteralPath $groupFi.FullName) | ConvertFrom-Json 
+                        $groupObj = Get-GraphObjectFromFile $groupFi.FullName
 
                         #isAssignableToRole - For Role assignment groupd.
                         $keepProps = @("displayName","description","mailEnabled","mailNickname","securityEnabled","membershipRule","groupTypes", "membershipRuleProcessingState")
@@ -3017,7 +3046,7 @@ function Export-GraphObject
             [switch]$SkipAddID,
             [switch]$PassThru)
 
-    if(-not $exportFolder) { return }
+    if(-not $exportFolder -or -not $objToExport -or -not $objectType) { return }
 
     Write-Status "Export $((Get-GraphObjectName $objToExport $objectType))"
 
@@ -3057,14 +3086,7 @@ function Export-GraphObject
         }
 
         $fullPath = ([IO.Path]::Combine($exportFolder, (Remove-InvalidFileNameChars "$($fileName).json")))
-        $json = $obj | ConvertTo-Json -Depth 50
-
-        if($global:Organization.Id)
-        {
-            $json = $json -replace $global:Organization.Id, "%OrganizationId%"
-        }
-        
-        $json | Out-File -LiteralPath $fullPath -Force
+        Save-GraphObjectToFile $obj $fullPath
         
         if($objectType.PostExportCommand)
         {
@@ -3097,12 +3119,11 @@ function Set-GraphNavigationPropertiesFromFile
     }
 
     # Reload data from file. Some object properties was removed before import...
-    $objFileInfo = (ConvertFrom-Json (Get-Content -LiteralPath $navPropObject.File.FileInfo.FullName -Raw))
+    $objFileInfo = Get-GraphObjectFromFile $navPropObject.File.FileInfo.FullName
 
     if(-not ($objFileInfo.PSObject.Properties | Where { $_.Name -like "#CustomRef_*" })) { return }
 
     Set-GraphNavigationProperties $navPropObject.ImportedObject $objFileInfo $navPropObject.File.ObjectType
-    
 }
 
 function Set-GraphNavigationProperties
@@ -3264,6 +3285,7 @@ function Get-GraphBatchObjects
     $batchArr = @()
     $batchTotal = 0
     $objectType = $null
+
     foreach($obj in $objects)
     {        
         $objectType = $obj.ObjectType
@@ -3460,7 +3482,11 @@ function Import-GraphObject
 
     $newObj = (Invoke-GraphRequest -Url $strAPI -Content $json -HttpMethod $method @params)
 
-    if($newObj -and $method -eq "POST")
+    if($newObj -is [Boolean] -and $newObj -and $method -eq "PATCH")
+    {
+        $newObj = (Get-GraphObject -obj $obj -objectType $objectType -SkipAssignments).Object
+    }
+    elseif($newObj -and $method -eq "POST")
     {
         Write-Log "$($objectType.Title) object imported successfully with id: $($newObj.Id)"
     }
@@ -4119,4 +4145,46 @@ function Get-GraphEntityTypeProperties
     }
     
     $properties 
+}
+
+function Get-GraphObjectFromFile
+{
+    param($fileName)
+
+    if(-not $fileName) { return } 
+
+    if([System.IO.File]::Exists($fileName) -eq $false)
+    {
+        Write-LogDebug "File $fileName not found" 2
+        return
+    }
+
+    $json = Get-Content -LiteralPath $fileName -Raw
+    if($global:Organization.Id)
+    {
+        $json = $json -replace "%OrganizationId%",$global:Organization.Id
+    }        
+
+    $json | ConvertFrom-Json
+}
+
+function Save-GraphObjectToFile
+{
+    param($obj, $fileName)
+
+    $json = $obj | ConvertTo-Json -Depth 50
+
+    if($global:Organization.Id)
+    {
+        $json = $json -replace $global:Organization.Id, "%OrganizationId%"
+    }
+    
+    try
+    {
+        $json | Out-File -LiteralPath $fileName -Force -ErrorAction Stop
+    }
+    catch 
+    {
+        Write-LogError "Failed to save file $fileName" $_.Exception
+    }
 }

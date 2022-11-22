@@ -1,4 +1,38 @@
 # Release Notes
+## 3.7.4  - 2022-11-17
+
+**Fixes**
+
+Lots of these issues are based on [Issue 94](https://github.com/Micke-K/IntuneManagement/issues/94)<br />
+Thank you **Dominique** for all the amazing help with testing!<br />
+
+
+- **Import/Export**<br />
+  - Added support for Export of TermsOfUse PDF files<br />
+  Based on [Issue 27](https://github.com/Micke-K/IntuneManagement/issues/27)<br />
+  - Fixed an issue where it failed to import .intunewin files during bulk import<br />
+  - Fixed issue with importing Edge app assignments<br />
+  - Changed the order for Bulk delete to make sure policies are deleted in the correct order<br />
+  - Lots of logging fixes for Bulk Export - Logged error when exporting object types not used<br />
+  - Business Store Apps will not be delete - Not supported<br />
+  - No import of assignments for default policies (Enrollment Status Page and Enrolment Restrictions)<br />
+  - Lots of logging fixes for Bulk Delete - Errors if deleting default policies, trying to delete object types that were not used etc.<br />
+
+- **Documentation**<br />
+  - Added intent for Win32 Assignments<br />
+  Based on [Issue 98](https://github.com/Micke-K/IntuneManagement/issues/98)<br />
+  - Fixed an error when documenting Assignments for Win32 apps - Invoke-WordTranslateColumnHeader was missing/removed<br />
+  Based on [Issue 99](https://github.com/Micke-K/IntuneManagement/issues/99)<br />
+<br />
+
+
+- **Logging**<br />
+  - Added additional response error information if it failed to call a Graph API<br />
+  - Missing groups will now only generate a warning instead of Graph API error<br />
+  - No error for users without a profile photo<br />
+
+<br />
+<br />
 ## 3.7.3  - 2022-10-24
 
 **Fixes**
