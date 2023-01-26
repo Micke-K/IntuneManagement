@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '1.5.0'
+    '2.0.0'
 }
 
 function Invoke-InitializeModule
@@ -59,6 +59,8 @@ function Invoke-InitializeModule
         restartSettings="AppResources.AppSettingsUx.restartGracePeriodHeader"
         notifications="AppResources.AppSettingsUx.assignmentToast"
         Settings="TableHeaders.settings"
+        returnCode='Win32ReturnCodes.Columns.returnCode'
+        type='Win32ReturnCodes.Columns.codeType'
     }    
 }
 
@@ -224,6 +226,9 @@ function Get-ObjectDocumentation
     $script:objectComplianceActionData = @()
     $script:applicabilityRules = @()
     $script:objectAssignments = @()
+    $script:objectScripts = @()
+
+    $script:ObjectTypeFullTable = @{} # Hash table with objects that should be documented in a single table eg ScopeTags
 
     $updateFilteredObject = $true
 
@@ -285,7 +290,7 @@ function Get-ObjectDocumentation
     elseif($type -eq "#microsoft.graph.deviceManagementIntent")
     {
         Invoke-TranslateIntentObject $obj $objectType | Out-Null
-        $properties = @("Name","Value","Category","RawValue","SettingId","Description")
+        $properties = @("Name","Value","Category","FullValueTable","RawValue","SettingId","Description")
     }
     #endregion
     #region Administrative Templates
@@ -318,6 +323,9 @@ function Get-ObjectDocumentation
     }
     #endregion
 
+
+    if($objectType.DocumentAll -eq $true) { return }
+
     if($script:objectBasicInfo.Count -gt 0)
     {
         Add-ScopeTagStrings $obj
@@ -341,6 +349,7 @@ function Get-ObjectDocumentation
         ComplianceActions = $script:objectComplianceActionData
         ApplicabilityRules = $script:applicabilityRules
         Assignments = $script:objectAssignments
+        Scripts = $script:objectScripts
         DisplayProperties = $properties
         DefaultDocumentationProperties = $defaultDocumentationProperties
         ErrorText = $status
@@ -364,7 +373,6 @@ function Get-DocumentedSettings
 {
     $script:objectSettingsData
 }
-
 
 function Invoke-ObjectDocumentation
 {
@@ -438,6 +446,25 @@ function Add-RawDataInfo
     }
 }
 
+function Get-ObjectTypeGroupName
+{
+    param($objectType)
+
+    if($objectType.Id -eq "DeviceConfiguration")
+    {
+        return (Get-LanguageString "PolicySelection.Templates.title")
+    }
+    elseif($objectType.Id -eq "ConditionalAccess")
+    {
+        return (Get-LanguageString "TermsOfUse.Details.Tab.cAPolicies")
+    }
+    else
+    {
+        return $ObjectType.Title
+    }
+
+}
+
 function Get-ObjectTypeString
 {
     param($obj, $objectType)
@@ -447,6 +474,8 @@ function Get-ObjectTypeString
     if($objTypeId -eq "DeviceConfiguration")
     {
         return (Get-LanguageString "SettingDetails.deviceConfigurationTitle")
+        #!!!return (Get-LanguageString "PolicySelection.Templates.title")
+        
     }
     elseif($objTypeId -eq "CompliancePolicies")
     {
@@ -731,6 +760,44 @@ function Add-ScopeTagStrings
     }
 }
 
+function Add-ObjectScript
+{
+    param($Header, 
+            $Caption, 
+            $Script,
+            [ValidateSet("Base64", "String")]
+            [string]
+            $ScriptType = "Base64")
+
+    if($global:chkIncludeScripts.IsChecked -ne $true) { return }
+
+    if($ScriptType -eq "Base64")
+    {
+        $scriptContent = Get-Base64ScriptContent $Script -RemoveSignature:$false
+    }
+    else
+    {
+        $scriptContent = $script
+    }
+
+    $RemoveSignature = $global:chkExcludeScriptSignature.IsChecked -eq $true
+    if($RemoveSignature -eq $true)
+    {
+        $x = $scriptContent.IndexOf("# SIG # Begin signature block")
+        if($x -gt 0)
+        {
+            $scriptContent = $scriptContent.SubString(0,$x)
+            $scriptContent = $scriptContent + "# SIG # Begin signature block`nSignature data excluded..."
+        }
+    }    
+
+    $script:objectScripts += [PSCustomObject]@{
+        Header = $Header
+        Caption = $Caption
+        ScriptContent = $scriptContent
+    }
+}
+
 function Get-ObjectPlatformFromType
 {
     param($obj)
@@ -798,6 +865,10 @@ function Invoke-TranslateADMXObject
     $enabledStr = Get-LanguageString "Inputs.enabled"
     $disabledStr = Get-LanguageString "Inputs.disabled"
 
+    $propertyStr = Get-LanguageString "ApplicabilityRules.GridLabel.property"
+    $valueStr = Get-LanguageString "ApplicabilityRules.GridLabel.value"
+
+
     foreach($definitionValue in $definitionValues)
     {
         if(-not $definitionValue.definition -and $definitionValues.'definition@odata.bind')
@@ -839,7 +910,7 @@ function Invoke-TranslateADMXObject
 
             if($presentationValues.Count -eq 0)
             {
-                Write-Log "Could not find definition for defenition '$($definitionValue.id)'. Values might be documented in the wrong order!" 2
+                Write-Log "Could not find definition for definition id '$($definitionValue.id)'. Values might be documented in the wrong order!" 2
                 $presentationValues = $definitionValue.presentationValues
             }
         }
@@ -856,6 +927,7 @@ function Invoke-TranslateADMXObject
         $rawValues = @()
         $values = @()
         $valuesWithLabel = @()
+        $tableValue = @()
 
         foreach($presentationValue in $presentationValues)
         {
@@ -897,6 +969,11 @@ function Invoke-TranslateADMXObject
 
                 $value = $rawValue
             }
+            $htFullValue = [ordered]@{}
+            $htFullValue.Add($propertyStr,$label)
+            $htFullValue.Add($valueStr,$value)
+
+            $tableValue += [PSCustomObject]$htFullValue 
 
             $valuesWithLabel += "$label $value"
             $values += $value
@@ -910,6 +987,7 @@ function Invoke-TranslateADMXObject
             Value = $values -join $script:objectSeparator
             CombinedValue = ($status + $script:objectSeparator + ($values -join $script:objectSeparator))
             ValueWithLabel = $valuesWithLabel -join $script:objectSeparator
+            FullValueTable = $tableValue
             CombinedValueWithLabel = ($status + $script:objectSeparator + ($valuesWithLabel -join $script:objectSeparator))
             RawValue = $rawValues -join $script:propertySeparator
             Class = $definitionValue.definition.classType
@@ -940,6 +1018,13 @@ function Invoke-TranslateSettingsObject
 
     Add-BasicDefaultValues $obj $objectType
     Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "ConfigurationTypes.settingsCatalog")
+    if($obj.templateReference.templateId)
+    {
+        Add-BasicPropertyValue (Get-LanguageString "TableHeaders.Category") (Get-IntentCategory $obj.templateReference.templateFamily)
+        Add-BasicPropertyValue (Get-LanguageString "TableHeaders.policyType") $obj.templateReference.templateDisplayName
+
+        #Add-BasicPropertyValue (Get-LanguageString "PolicyType.EndpointSecurityTemplate.default") $obj.templateReference.templateDisplayName
+    }
     Add-BasicPropertyValue (Get-LanguageString "SettingDetails.platformSupported") $platformType
     Add-BasicAdditionalValues $obj $objectType
     
@@ -950,170 +1035,261 @@ function Invoke-TranslateSettingsObject
         $params.Add("AdditionalHeaders", @{"Accept-Language"=$script:DocumentationLanguage})
     }
 
-    $cfgSettings = (Invoke-GraphRequest "/deviceManagement/configurationPolicies('$($obj.Id)')/settings?`$expand=settingDefinitions&top=1000" -ODataMetadata "minimal" @params).Value   
+    <#
+    if($obj.templateReference.templateId)
+    {
+        $cfgSettings = (Invoke-GraphRequest "/deviceManagement/configurationPolicyTemplates('$($obj.templateReference.templateId)')/settingTemplates?`$expand=settingDefinitions&top=1000" -ODataMetadata "minimal" @params).Value
+    }
+    else
+    {
+        $cfgSettings = (Invoke-GraphRequest "/deviceManagement/configurationPolicies('$($obj.Id)')/settings?`$expand=settingDefinitions&top=1000" -ODataMetadata "minimal" @params).Value
+    }
+    #>
+    $cfgSettings = (Invoke-GraphRequest "/deviceManagement/configurationPolicies('$($obj.Id)')/settings?`$expand=settingDefinitions&top=1000" -ODataMetadata "minimal" @params).Value
 
     if(-not $global:cfgCategories)
     {
         $global:cfgCategories = (Invoke-GraphRequest "/deviceManagement/configurationCategories?`$filter=platforms has 'windows10' and technologies has 'mdm'" -ODataMetadata "minimal" @params).Value
     }
 
-    $categories = @{}
+    $script:settingCatalogasCategories = @{}
     foreach($cfgSetting in $cfgSettings)
     {
         $defObj = $cfgSetting.settingDefinitions | Where id -eq $cfgSetting.settingInstance.settingDefinitionId
-        if(-not $defObj -or $categories.ContainsKey($defObj.categoryId)) { continue }
+        #$defObj = $cfgSetting.settingDefinitions | Where { $_.id -eq $cfgSetting.settingInstance.settingDefinitionId -or $_.id -eq $cfgSettings.settingInstanceTemplate.settingDefinitionId }
+        if(-not $defObj -or $script:settingCatalogasCategories.ContainsKey($defObj.categoryId)) { continue }
 
         $catObj = $global:cfgCategories | Where Id -eq $defObj.categoryId 
         $rootCatObj = $global:cfgCategories | Where Id -eq $catObj.rootCategoryId
 
-        $catSettings = Invoke-GraphRequest "/deviceManagement/configurationSettings?`$filter=categoryId eq '$($defObj.categoryId)' and applicability/platform has 'windows10' and applicability/technologies has 'mdm'" -ODataMetadata "minimal" @params
+        #$catSettings = Invoke-GraphRequest "/deviceManagement/configurationSettings?`$filter=categoryId eq '$($defObj.categoryId)' and applicability/platform has 'windows10' and applicability/technologies has 'mdm'" -ODataMetadata "minimal" @params
 
-        $categories.Add($defObj.categoryId, (New-Object PSObject -Property @{ 
+        $script:settingCatalogasCategories.Add($defObj.categoryId, (New-Object PSObject -Property @{ 
             Category=$catObj
-            Settings=$catSettings
+            #Settings=$catSettings
             RootCategory=$rootCatObj
          }))
     }
 
-    Add-SettingsSetting $obj $objectType $categories $cfgSettings
+    $script:curSettingsCatologPolicy = @()
+
+    $cfgSettings | % { Add-SettingsSetting $_.settingInstance $_.settingDefinitions } | Out-Null
+ 
+    #$script:objectSettingsData = $script:curSettingsCatologPolicy
+    
+    foreach($item in ($script:curSettingsCatologPolicy | Select @{l="CategoryID";e={$_.CategoryDefinition.Id}}, @{l="SubCategoryID";e={$_.SubCategoryDefinition.Id}} -Unique))
+    {
+        $script:objectSettingsData += ($script:curSettingsCatologPolicy | Where { $_.CategoryDefinition.Id -eq $item.CategoryID -and $_.SubCategoryDefinition.Id -eq $item.SubCategoryID })   
+    }
+    
+    if($docProvider.PostSettingsCatalog)
+    {
+        & $docProvider.PostSettingsCatalog $obj $objectType $script:objectSettingsData
+    }
 }
 
 function Add-SettingsSetting
 {
-    param($obj, $objectType, $categories, $cfgSettings, $settigsDefs = $null)
+    param($settingInstance, $settingsDefs, $ItemLevel, [switch]$SkippAdd)
 
-    foreach($cfgSetting in $cfgSettings)
+    $defaultValue = $null
+    $tableValue = $null
+    $value = $null
+    $rawValue = $null
+    $rawJsonValue = $null
+    $show = $true
+    $children = @()
+    $childSettings = @()
+
+    $settingsDef = $settingsDefs | Where id -eq $settingInstance.settingDefinitionId
+    $categoryDef = $global:cfgCategories | Where Id -eq $settingsDef.categoryId #$script:settingCatalogasCategories[$settingsDef.categoryId]
+
+    if($settingsDef.categoryId -ne $categoryDef.rootCategoryId)
     {
-        $children = $null
-        $skipAdd = $false
+        $objCategory = $global:cfgCategories | Where Id -eq $categoryDef.rootCategoryId
+        #$objCategory = $script:settingCatalogasCategories[$categoryDef.RootCategory.Id]
+        $subCategory = $categoryDef
+    }
+    else
+    {
+        $subCategory = $null
+        $objCategory = $categoryDef
+    }    
 
-        $cfgInstance =  ?? $cfgSetting.settingInstance $cfgSetting
-        if($cfgSetting.settingDefinitions)
+    $settingInfo = [PSCustomObject]@{
+        SettingId = $settingsDef.Id
+        SettingName = $settingsDef.Name
+        Name = $settingsDef.displayName
+        Description=$settingsDef.description
+        CategortyId = $objCategory.id
+        Category=$objCategory.displayName
+        CategoryDefinition=$objCategory
+        SubCategory=$subCategory.displayName
+        SubCategoryDefinition=$subCategory       
+        Value = $null
+        RawValue = $null
+        RawJsonValue=$null
+        TableValue = $null
+        DefaultValue = $null
+        Level = $ItemLevel
+        Parent = $null
+        Show = $show
+        Type = $settingInstance.'@odata.type'
+        PropertyIndex = 0
+        ChildSettings = @() #($childSettings | Sort DisplayName)
+    }
+
+    $script:curSettingsCatologPolicy += $settingInfo
+
+    if($settingInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance')
+    { # Drop down and select one value
+            
+        $rawValue = $settingInstance.choiceSettingValue.value
+        $value = ($settingsDef.Options | Where itemId -eq $rawValue).displayName
+
+        if($settingsDef.defaultOptionId)
         {
-            $settigsDefs = $cfgSetting.settingDefinitions
+            $defaultValue = ($settingsDef.Options | Where itemId -eq $settingsDef.defaultOptionId).displayName
         }
-        $defaultValue = $null
-        $rawValue=$null
-        $rawJsonValue = $null
-        $defObj = $settigsDefs | Where id -eq $cfgInstance.settingDefinitionId
-        $catObj = $categories[$defObj.categoryId]
 
-        if($cfgInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance')
+        foreach($childSetting in $settingInstance.choiceSettingValue.children)
         {
-            $rawValue = $cfgInstance.choiceSettingValue.value            
-            $itemValue = ($defObj.Options | Where itemId -eq $rawValue).displayName
-            if($defObj.defaultOptionId)
+            $tmpSetting = Add-SettingsSetting $childSetting $settingsDefs ($ItemLevel + 1) -SkippAdd #-SkippAdd:$SkippAdd
+            if($tmpSetting)
             {
-                $defaultValue = ($defObj.Options | Where itemId -eq $defObj.defaultOptionId).displayName
+                $tmpSetting.Parent = $settingInfo
+                $settingInfo.ChildSettings += $tmpSetting
             }
-            $children = $cfgInstance.choiceSettingValue.children
-        }        
-        elseif($cfgInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationChoiceSettingCollectionInstance')
-        {
-            $itemValues = @()
-            $itemRawValues = @()
-            foreach($colObj in $cfgInstance.simpleSettingCollectionValue)
-            {
-                $tmpValue = $colObj.value            
-                $itemValues += ($defObj.Options | Where itemId -eq $tmpValue).displayName
-                $itemRawValues += $tmpValue
-            }
-
-            $rawValue = $itemValues -join $script:propertySeparator
-            $itemValue = $itemRawValues -join $script:propertySeparator
-
-            if($defObj.defaultOptionId)
-            {
-                $defaultValue = ($defObj.Options | Where itemId -eq $defObj.defaultOptionId).displayName
-            }                
-        }
-        elseif($cfgInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance')
-        {
-            $itemValue = $cfgInstance.simpleSettingValue.value 
-            $rawValue = $itemValue
-            if($defObj.defaultValue.value)
-            {
-                $defaultValue = $defObj.defaultValue.value
-            }
-        }
-        elseif($cfgInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationSimpleSettingCollectionInstance')
-        {
-            $itemValues = @()
-            $rawValue = $cfgInstance.simpleSettingCollectionValue
-            foreach($colObj in $cfgInstance.simpleSettingCollectionValue)
-            {
-                $itemValues += $colObj.value            
-            }
-
-            if($defObj.defaultValue.value)
-            {
-                $defaultValue = $defObj.defaultValue.value
-            }
-            $itemValue = $itemValues -join $script:propertySeparator
-        }
-        elseif($cfgInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationGroupSettingInstance')
-        {
-            # This will skip adding the group itself as enabled...
-            # It will only add information about the children
-            Add-SettingsSetting $obj $objectType $categories $cfgInstance.groupSettingValue.children $settigsDefs
-            continue
-        }
-        elseif($cfgInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationGroupSettingCollectionInstance')
-        {
-            # ToDo: Fix support for other child types
-            # This assumes that all children are deviceManagementConfigurationSimpleSettingInstance            
-
-            $objItems = @()
-            foreach($childObj in $cfgInstance.groupSettingCollectionValue)
-            {
-                $objProps = @()
-                foreach($childId in $defObj.childIds)
-                {
-                    $childSetting = $childObj.children | Where settingDefinitionId -eq $childId
-                    if($childSetting."@odata.type" -eq "#microsoft.graph.deviceManagementConfigurationGroupSettingCollectionInstance")
-                    {
-                        Add-SettingsSetting $obj $objectType $categories $childSetting.groupSettingCollectionValue.children $settigsDefs
-                    }
-                    elseif($childSetting)
-                    {
-                        $objProps += $childSetting.simpleSettingValue.value 
-                    }
-                }
-                $objItems += $objProps -join $script:propertySeparator
-            }
-            $itemValue = $objItems -join $script:objectSeparator
-            $rawValue = $itemValue
-            $rawJsonValue = $cfgInstance.groupSettingCollectionValue | ConvertTo-Json -Depth 50 -Compress
-        }
-        else
-        {
-            Write-Log "Unsupported setting type: $($cfgInstance.'@odata.type')"    
-        }
-
-        if(!$rawJsonValue -and $rawValue)
-        {
-            $rawJsonValue = $rawValue | ConvertTo-Json -Depth 50 -Compress
-        }
-
-        $script:objectSettingsData += New-Object PSObject -Property @{ 
-            Name=$defObj.displayName
-            Description=$defObj.description
-            Category=$catObj.Category.displayName
-            CategoryDescription=$catObj.Category.description
-            Value=$itemValue
-            RawValue=$rawValue
-            RawJsonValue=$rawJsonValue
-            DefaultValue=$defaultValue
-            RootCategory=$catObj.RootCategory.displayName
-            CategoryObject=$catObj
-            SettingId=$cfgInstance.settingDefinitionId
-        }
-
-        if($children)
-        {
-            Add-SettingsSetting $obj $objectType $categories $children $settigsDefs
         }
     }
+    elseif($settingInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance')
+    { # Simple value eg a string
+        $value = $settingInstance.simpleSettingValue.value 
+        $rawValue = $value
+        if($settingsDef.defaultValue.value)
+        {
+            $defaultValue = $settingsDef.defaultValue.value
+        }
+    }
+    elseif($settingInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationChoiceSettingCollectionInstance')
+    { # Drop down and select one or more values
+        $itemValues = @()
+        $itemRawValues = @()
+        $tableValue = [ordered]@{}
+
+        foreach($colObj in $settingInstance.choiceSettingCollectionValue)
+        {
+            $itemRawValues += $colObj.value
+            $itemValues += ($settingsDef.Options | Where itemId -eq $colObj.Value).displayName
+        }
+
+        $value = $itemValues -join $script:propertySeparator
+        $rawValue = $itemRawValues -join $script:propertySeparator
+        $rawJsonValue = $settingInstance.choiceSettingCollectionValue | ConvertTo-Json -Depth 50 -Compress
+
+        if($settingsDef.defaultOptionId)
+        {
+            $defaultValue = ($settingsDef.Options | Where itemId -eq $settingsDef.defaultOptionId).displayName
+        }                
+    }
+    elseif($settingInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationGroupSettingCollectionInstance')
+    { # Multiple settings under one group. Group will not be displayed
+
+        $settingInfo.Show = $false
+        $index=1
+        foreach($groupSettingCollection in $settingInstance.groupSettingCollectionValue)
+        {
+            $childSettingsArr = @()
+            # Not sure if this is the best way but it looks better for tested policies
+            if($script:currentObject.templateReference.templateId)
+            {
+                $childIDs = $settingsDefs.id # Endpoint Security objects
+            }
+            else
+            {
+                $childIDs = $settingsDef.childIds # Setings Catalog
+            }
+            #foreach($childId in $settingsDefs.id) #$settingsDef.childIds)
+            foreach($childId in $childIDs)            
+            {            
+                $childSetting = ($groupSettingCollection.children | Where settingDefinitionId -eq $childId)
+                if(-not $childSetting) { continue } #Not configured
+                $tmpSetting = Add-SettingsSetting $childSetting $settingsDefs ($ItemLevel + 1) -SkippAdd #-SkippAdd:$SkippAdd
+                if($tmpSetting)
+                {
+                    $tmpSetting.Parent = $childSettings
+                    $childSettings += $tmpSetting
+                    $childSettingsArr += $tmpSetting
+                    if($settingsDef.childIds.Count -gt 1)
+                    {
+                        $tmpSetting.PropertyIndex = $childSettingsArr.Count
+                    }
+                }
+            }
+
+            $settingInfo.ChildSettings += [PSCustomObject]@{
+                Id=$index++
+                Type=$groupSettingCollection.'@odata.type'
+                Settings=$childSettingsArr
+            }
+        }
+
+        $rawJsonValue = $settingInstance.groupSettingCollectionValue | ConvertTo-Json -Depth 50 -Compress
+    }
+    elseif($settingInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationSimpleSettingCollectionInstance')
+    { # Group of simple values
+        $itemValues = @()
+        foreach($colObj in $settingInstance.simpleSettingCollectionValue)
+        {
+            $itemValues += $colObj.value            
+        }
+
+        if($settingsDef.defaultValue.value)
+        {
+            $defaultValue = $settingsDef.defaultValue.value
+        }
+
+        $value = $itemValues -join $script:propertySeparator
+        $rawValue = $itemValues -join $script:propertySeparator
+        $rawJsonValue = $settingInstance.simpleSettingCollectionValue | ConvertTo-Json -Depth 50 -Compress
+    }
+    elseif($settingInstance.'@odata.type' -eq '#microsoft.graph.deviceManagementConfigurationGroupSettingInstance')
+    {  # This will skip adding the group itself as enabled...
+       # It will only add information about the children
+
+        $show = $false
+        foreach($groupSettingValue in $settingInstance.groupSettingValue)
+        {
+            #$children += $groupSettingValue #.children
+            foreach($childSetting in $groupSettingValue.children)
+            {
+                $tmpSetting = Add-SettingsSetting $childSetting $settingsDefs ($ItemLevel + 1) -SkippAdd #-SkippAdd:$SkippAdd
+                if($tmpSetting)
+                {
+                    $tmpSetting.Parent = $settingInfo
+                    $settingInfo.ChildSettings += $tmpSetting
+                }
+            }            
+        }
+        $rawJsonValue = $settingInstance.groupSettingValue | ConvertTo-Json -Depth 50 -Compress
+    }
+    else
+    {
+        Write-Log "Unhandled object type: $($settingInstance.'@odata.type')" 2
+        return
+    }
+
+    if(!$rawJsonValue -and $rawValue)
+    {
+        $rawJsonValue = $rawValue | ConvertTo-Json -Depth 50 -Compress
+    }
+
+    $settingInfo.Value = $value
+    $settingInfo.RawValue = $rawValue
+    $settingInfo.RawJsonValue=$rawJsonValue
+    $settingInfo.DefaultValue = $defaultValue
+
+    $settingInfo
 }
 
 #endregion
@@ -1123,6 +1299,11 @@ function Add-SettingsSetting
 function Get-IntentCategory
 {
     param($templateType)
+
+    if($templateType.StartsWith("endpointSecurity"))
+    {
+        $templateType = $templateType.Substring(16)
+    }
 
     if($templateType -eq "accountProtection")
     {
@@ -1237,9 +1418,8 @@ function Invoke-TranslateIntentObject
     
     foreach($objSetting in ($script:objectSettings | Where { $_.ParentId -eq $null -and ($_.Dependencies | measure).Count -eq 0 }))
     {
-        #if($objSetting.Dependencies) { continue }
         Add-IntentSettingObjectToList $objSetting
-    }    
+    }
 }
 
 function Add-IntentSettingObjectToList
@@ -1249,11 +1429,13 @@ function Add-IntentSettingObjectToList
     if(($script:objectSettingsData | Where Id -eq $objSetting.Id)) { return }
 
     $passConstraint = $true
+    $hasConstraint = $false
     foreach($dependencyObj in $objSetting.SettingDefinition.dependencies)
     {
         $dependencyItemObj = ($script:objectSettings | Where { $_.SettingDefinition.Id -eq $dependencyObj.definitionId })
         if($dependencyObj.constraints.Count -gt 0)
         {                    
+            $hasConstraint = $true
             foreach($constraint in $dependencyObj.constraints)
             {
                 if($constraint.'@odata.type' -eq "#microsoft.graph.deviceManagementSettingBooleanConstraint")
@@ -1293,7 +1475,12 @@ function Add-IntentSettingObjectToList
     if(-not $passConstraint)
     {
         return
-    }    
+    }
+    
+    if($hasConstraint)
+    {
+        $objSetting.Level = $objSetting.Level + 1
+    }
 
     $script:objectSettingsData += $objSetting
 
@@ -1319,6 +1506,7 @@ function Get-IntentSettingInfo
     if(-not $defObj) { return } # Should never happen!
 
     $itemValue = $null
+    $itemFullValue = $null
 
     if($SkipConvertValue -ne $true)
     {
@@ -1354,9 +1542,17 @@ function Get-IntentSettingInfo
         if($elementDefObj.propertyDefinitionIds)
         {
             # Elements are Complex and based of one or more definitions
-
+            $itemFullValue = @()
             foreach($tmpValue in $rawValue)
             {
+                $htFullPropInfo = [ordered]@{}
+                foreach($tmpPropDefId in $propDefObj.propertyDefinitionIds)
+                {
+                    $tmpDef = $category.settingDefinitions | Where id -eq $tmpPropDefId
+                    $tmpProp = $tmpPropDefId.Split('_')[-1]
+                    $htFullPropInfo.Add((?? $tmpDef.displayName $tmpProp), $tmpPropValue.$tmpProp)
+                }                
+
                 $arrValue = ""
                 foreach($propertyDefinitionId in $elementDefObj.propertyDefinitionIds)
                 {
@@ -1373,8 +1569,25 @@ function Get-IntentSettingInfo
                     {
                         $propValue += Get-IntentObjectValue $propDefObj $childTmpVales
                     }
+
+                    $htFullPropInfo.Add((?? $propDefObj.displayName $propName), $tmpValue.$propName)                    
+<#
+                    $propFullValue = @()
+                    foreach($tmpPropValue in $propValue)
+                    {
+                        $htFullPropInfo = [ordered]@{}
+                        foreach($tmpPropDefId in $propDefObj.propertyDefinitionIds)
+                        {
+                            $tmpDef = $category.settingDefinitions | Where id -eq $tmpPropDefId
+                            $tmpProp = $tmpPropDefId.Split('_')[-1]
+                            $htFullPropInfo.Add((?? $tmpDef.displayName $tmpProp), $tmpPropValue.$tmpProp)
+                        }
+                        $propFullValue += [PSCustomObject]$htFullPropInfo
+                    }
+#>
                     $arrValue = ($arrValue + ($propValue -join $script:propertySeparator))
                 }
+                $itemFullValue += [PSCustomObject]$htFullPropInfo
                 $valueArr += $arrValue
             }                        
         }
@@ -1429,9 +1642,10 @@ function Get-IntentSettingInfo
         Description=$defObj.description
         Category=$category.displayName
         CategoryDescription=$category.description # Will not have a description
-        Value=$itemValue
-        RawValue=$rawValue
         CategoryObject=$category
+        Value=$itemValue
+        FullValueTable=$itemFullValue
+        RawValue=$rawValue
         SettingDefinition = $defObj
         Dependencies = $defObj.dependencies
         ValueSet = $valueSet
@@ -1439,6 +1653,7 @@ function Get-IntentSettingInfo
         ParentId = $null
         SettingId = $defObj.Id # ToDo: Must have parent Id as well e.g. Firewall settings in Win10 baseline
         ParentSettingId = $parentDef.Id
+        Level = 0
     }
 
     $script:objectSettings += $curObjectInfo    
@@ -1535,7 +1750,8 @@ function Get-IntentSettingInfo
         }
 
         $curObjectInfo.Value = ?: $isValueSet "Configure" (Get-LanguageString "SettingDetails.notConfigured")
-        $curObjectInfo.ValueSet = $isValueSet        
+        $curObjectInfo.ValueSet = $isValueSet
+        $curObjectInfo.FullValueTable = $null
     }
     elseif(($valueObj.'@odata.type' -eq '#microsoft.graph.deviceManagementAbstractComplexSettingInstance' -or 
             $defObj.'@odata.type' -eq '#microsoft.graph.deviceManagementAbstractComplexSettingDefinition') -and
@@ -1823,6 +2039,15 @@ function Invoke-TranslateSection
 {
     param($obj, $sectionObject, $objInfo, $parent = $null)
 
+    if($null -eq $parent -or $script:propLevel -lt 0)
+    {
+        $script:propLevel = 0
+    }
+    elseif($parent -ne $script:currentParent)# -and $parent.skipAddLevel -ne $true)
+    {
+        $script:propLevel++
+    }
+
     foreach($prop in $sectionObject)
     {
         $valueData = $null
@@ -1858,6 +2083,7 @@ function Invoke-TranslateSection
                     Write-LogDebug "SubCategpry ignored based on length: $tmpStr" 2
                 }
             }
+            $script:propLevel = -1
             Invoke-ChildSections $obj $prop
             continue 
         }
@@ -1869,7 +2095,12 @@ function Invoke-TranslateSection
             # Set sub-category to nameResourceKey value if EntityKey is empty?
             if(-not $prop.EntityKey -and $prop.nameResourceKey)
             {
+                $script:propLevel = -1
                 $script:CurrentSubCategory = (Get-LanguageString (?: $prop.nameResourceKey.Contains(".") $prop.nameResourceKey "SettingDetails.$($prop.nameResourceKey)"))
+            }
+            else
+            {
+                $script:propLevel--
             }
 
             foreach($tmpObj in $obj)
@@ -1884,9 +2115,10 @@ function Invoke-TranslateSection
             if($prop.enabled -eq $false -and $objInfo.ShowDisabled -ne $true) { continue }
 
             # Use sub property if EntityKey is specified
+            $script:propLevel--
             $propObj = $null
             if($prop.entityKey)
-            {
+            {                
                 $propObj = $obj.PSObject.Properties | Where Name -eq $prop.entityKey
             }
 
@@ -1898,6 +2130,7 @@ function Invoke-TranslateSection
         }
         elseif($prop.dataType -eq 9) # Label. Skip the label but add children
         {
+            $script:propLevel--
             Invoke-ChildSections $obj $prop
             continue
         }
@@ -1912,6 +2145,13 @@ function Invoke-TranslateSection
                 $value = Get-LanguageString $prop.value
 
                 Add-PropertyInfo $prop $value $rawValue $rawValue
+            }
+        }
+        elseif($prop.dataType -eq 107) # Static value. String in value property
+        {
+            if($prop.value)
+            {
+                Add-PropertyInfo $prop $prop.value $prop.value $prop.value
             }
         }
         elseif([String]::IsNullOrEmpty($prop.entityKey) -eq $false)
@@ -2198,6 +2438,11 @@ function Invoke-TranslateSection
             Invoke-ChildSections $obj $prop
         }
     }
+
+    if($null -ne $parent -and $parent -ne $script:currentParent -and $script:propLevel -gt 0)
+    {
+        $script:propLevel--
+    }
 }
 
 function Get-CutureLanguageString
@@ -2214,6 +2459,10 @@ function Get-CutureLanguageString
         if($culture -eq "os-default")
         {
             return Get-LanguageString "Autopilot.OOBE.useOSDefaultLanguage"
+        }
+        elseif($culture -eq "user-select")
+        {
+            return Get-LanguageString "Autopilot.OOBE.userSelect"
         }
         else
         {
@@ -2246,7 +2495,7 @@ function Get-CutureLanguageString
 
 function Add-PropertyInfo
 {
-    param($prop, $value, $originalValue, $jsonValue)
+    param($prop, $value, $originalValue, $jsonValue, $tableValue)
 
     if($prop.Category -eq "1000")
     {
@@ -2254,7 +2503,7 @@ function Add-PropertyInfo
         return
     }
 
-    $script:objectSettingsData += Get-PropertyInfo $prop $value $originalValue $jsonValue
+    $script:objectSettingsData += Get-PropertyInfo $prop $value $originalValue $jsonValue $tableValue
 
     Invoke-CustomPostAddValue $prop
 }
@@ -2265,12 +2514,17 @@ function Add-PropertyInfoObject
 
     if($propInfo -eq $null) { return }
 
+    if($prop.dataType -eq 99)
+    {
+
+    }
+
     $script:objectSettingsData += $propInfo
 }
 
 function Get-PropertyInfo
 {
-    param($prop,$value,$originalValue, $jsonValue)
+    param($prop,$value,$originalValue, $jsonValue, $tableValue)
 
     if($prop.nameResource)
     {
@@ -2324,21 +2578,25 @@ function Get-PropertyInfo
         RawValue=$originalValue
         RawJsonValue=$jsonValue
         DefaultValue=$defValue
+        FullValueTable = $tableValue 
         UnconfiguredValue=$prop.unconfiguredValue
         Enabled=$prop.Enabled 
         EntityKey=$prop.EntityKey
+        Level=$script:propLevel
     }
 }
 
 function Invoke-ChildSections
 {
     param($obj, $sectionObject)
-    
+
     $objTmp = Get-CustomChildObject $obj $sectionObject
 
+    $tmpLevel = $script:propLevel
     Invoke-TranslateSection $objTmp $sectionObject.Children $objInfo -Parent $sectionObject
     
-    Invoke-TranslateSection $objTmp $sectionObject.ChildSettings $objInfo -Parent $sectionObject
+    $script:propLevel = $tmpLevel
+    Invoke-TranslateSection $objTmp $sectionObject.ChildSettings $objInfo -Parent $sectionObject    
 }
 
 function Get-CustomProfileValue
@@ -2514,7 +2772,7 @@ function Get-ConditionalLaunchSetting
 {
     param($obj, $lngId, $prop, $actionLngId, [switch]$SkipValue)
 
-    if($obj."$($prop)" -eq $null -or ($obj."$($prop)" -is [String] -and $obj."$($prop)" -eq "notConfigured")) { return }
+    if($null -eq $obj."$($prop)" -or ($obj."$($prop)" -is [String] -and $obj."$($prop)" -eq "notConfigured")) { return }
     elseif($obj."$($prop)" -is [String] -and $obj."$($prop)".StartsWith("P"))
     {
         $ts = Get-DurationValue $obj."$($prop)" -ReturnTimeSpan
@@ -2830,9 +3088,12 @@ function Invoke-TranslateTable
     }
 
     $items = @()
+    
+    $itemFullValue = @()
     foreach($item in $propValue)
     {
         $itemValues = @()
+        $htFullPropInfo = [ordered]@{}
         foreach($column in $prop.Columns)
         {
             if($column.metadata.entityKey -eq "unusedForSingleItems")
@@ -2841,7 +3102,7 @@ function Invoke-TranslateTable
             }
             elseif($column.metadata.entityKey -eq $prop.entityKey -and ($prop.Columns | measure).Count -eq 1)
             {
-                # Some tables has the same EntityKey for the table and the columen. That will generate the wrong value
+                # Some tables has the same EntityKey for the table and the column. That will generate the wrong value
                 $itemValues += $item 
             }
             elseif(($prop.Columns | measure).Count -eq 1 -and $item."$($column.metadata.entityKey)" -eq $null -and $obj."$($column.metadata.entityKey)" -eq $null -and $item -is [String])
@@ -2851,9 +3112,33 @@ function Invoke-TranslateTable
             }
             else
             {
-                $itemValues += (?? $item."$($column.metadata.entityKey)" $obj."$($column.metadata.entityKey)")
+                if(($item.PSObject.Properties | Where Name -like $column.metadata.entityKey))
+                {
+                    $itemTmpVal = $item."$($column.metadata.entityKey)"
+                }
+                else
+                {
+                    $itemTmpVal = $obj."$($column.metadata.entityKey)"
+                }
+                $itemValues += $itemTmpVal
+                if($prop.Columns.Count -gt 1)
+                {
+                    if($column.metadata.nameResourceKey)
+                    {
+                        $htFullPropInfo.Add((?? (Get-LanguageString (?: $column.metadata.nameResourceKey.Contains(".") $column.metadata.nameResourceKey "SettingDetails.$($column.metadata.nameResourceKey)")) $column.metadata.entityKey), ($itemTmpVal -join $script:propertySeparator))
+                    }
+                    else
+                    {
+                        Write-Log "Property $(?? $prop.nameResourceKey $prop.entityKey) does not have nameResourceKey on one of the columns" 2
+                    }
+                }
             }
         }
+        if($htFullPropInfo.Count -gt 0)
+        {
+            $itemFullValue += [PSCustomObject]$htFullPropInfo
+        }
+
         if($prop.separator)
         {
             $items += $itemValues -join $prop.separator
@@ -2866,13 +3151,19 @@ function Invoke-TranslateTable
 
     if($items.Count -gt 0)
     {
+        $params = @{}
+        if($itemFullValue.Count -gt 0)
+        {
+            $params.Add("tableValue", $itemFullValue)
+        }
+        
         if((-not $prop.nameResourceKey -or $prop.nameResourceKey -eq "Empty") -and $prop.columns[0].metadata.nameResourceKey)
         {
-            Add-PropertyInfo $prop.columns[0].metadata ($items -join $script:objectSeparator) $propValue
+            Add-PropertyInfo $prop.columns[0].metadata ($items -join $script:objectSeparator) $propValue @params
         }
         else
         {
-            Add-PropertyInfo $prop ($items -join $script:objectSeparator) $propValue
+            Add-PropertyInfo $prop ($items -join $script:objectSeparator) $propValue @params
         }        
     }
     else
@@ -3050,6 +3341,8 @@ function Invoke-TranslateAssignments
 {
     param($obj)
 
+    if($global:chkExcludeAssignments.IsChecked -eq $true) { return }
+
     $filtersInfo = $null
 
     $included = @()
@@ -3139,6 +3432,7 @@ function Invoke-TranslateAssignments
 
         $filterName = $null
         $filterMode = $null
+        $fullValueTable = $null
 
         # ToDo: Not an OK way of specifying this!
         if(($assignment.PSObject.Properties | Where Name -eq "intent") -and
@@ -3236,16 +3530,37 @@ function Invoke-TranslateAssignments
                             $value = Get-LanguageString "SettingDetails.licenseTypeUser"
                         }
                     }
-                    elseif($settingProp -eq "restartSettings" -and $null -eq $assignment.settings.$settingProp)
+                    elseif($settingProp -eq "restartSettings")
                     {
-                        $value = Get-LanguageString "SettingDetails.disabledOption"
+                        if($null -eq $assignment.settings.$settingProp)
+                        {
+                            $value = Get-LanguageString "SettingDetails.disabledOption"
+                        }
+                        else
+                        { 
+                            $valueArr = @()    
+                            #$valueArr += Get-LanguageString "SettingDetails.enabledOption"
+                            $valueArr += "$((Get-LanguageString "Assignment.RestartGracePeriod.durationInMinutes"))=$($assignment.settings.restartSettings.gracePeriodInMinutes)"
+                            $valueArr += "$((Get-LanguageString "Assignment.RestartGracePeriod.countdownDialog"))=$($assignment.settings.restartSettings.countdownDisplayBeforeRestartInMinutes)"
+                            
+                            if($null -eq $assignment.settings.restartSettings.restartNotificationSnoozeDurationInMinutes)
+                            {
+                                $valueArr += "$((Get-LanguageString "Assignment.RestartGracePeriod.allowSnooze"))=$((Get-LanguageString "SettingDetails.no"))"
+                            }
+                            else
+                            {
+                                $valueArr += "$((Get-LanguageString "Assignment.RestartGracePeriod.allowSnooze"))=$((Get-LanguageString "SettingDetails.yes"))"
+                                $valueArr += "$((Get-LanguageString "Assignment.RestartGracePeriod.snoozeDurationInMinutes"))=$($assignment.settings.restartSettings.restartNotificationSnoozeDurationInMinutes)"
+                            }
+                            $value = $valueArr -join $script:objectSeparator
+                        }
                     }
                     elseif($settingProp -eq "notifications")
                     {
                         $value = ?? (Get-LanguageString "AppResources.AssignmentToast.$($assignment.settings.$settingProp)") $assignment.settings.$settingProp
                     }
                     elseif($settingProp -eq "installTimeSettings")
-                    {
+                    {                        
                         $asap = Get-LanguageString "Assignment.SoftwareInstallationTime.defaultTime"
                         $startValue = $asap
                         $value = $asap
@@ -3278,6 +3593,10 @@ function Invoke-TranslateAssignments
                         }
 
                         $assignmentSettingProps.Add("startTimeColumnLabel", $startValue)
+                        if($assignment.Intent -eq "available")
+                        {
+                            continue # No install deadline on available assignments
+                        }
                     }                    
                     elseif($settingProp -eq "deliveryOptimizationPriority")
                     {
@@ -3455,6 +3774,25 @@ function Add-CustomSettingObject
     $script:objectSettingsData += $settingsObj
 }
 
+function Save-DocumentationFile
+{
+    param($content, $fileName, [switch]$OpenFile)
+
+    try
+    {
+        $content | Out-File -LiteralPath $fileName -Force -Encoding utf8 -ErrorAction Stop
+        Write-Log "$fileName saved successfully"
+        if($OpenFile -eq $true)
+        {
+            Invoke-Item $fileName
+        }        
+    }
+    catch
+    {
+        Write-LogError "Failed to save file $fileName." $_.Exception
+    }
+}
+
 #region Initiate documentation
 function Show-DocumentationForm
 {
@@ -3477,17 +3815,24 @@ function Show-DocumentationForm
         if($SelectedDocuments -eq $true)
         {
             $objectList += $objects
+            $objects | ForEach-Object { $_.IsSelected = $true }
         }
         else
         {
-            $objects | ForEach-Object {
+            $objects | ForEach-Object {                
+                # This will create a new "root" object so it doesn't update properties like IsSelected ect on the original object
                 $item = [PSCustomObject]@{
-                    IsSelected = $true
-                    Title =  (Get-GraphObjectName $_.Object $_.ObjectType) 
-                    Object = $_.Object
-                    ObjectType = $_.ObjectType
+                    Title =  $null
                 }
-                $objectList += $item
+
+                foreach($prop in $_.PSObject.Properties)
+                {
+                    $item | Add-Member Noteproperty -Name $prop.Name -Value $_."$($prop.Name)" -Force
+                }
+
+                $item.Title = (Get-GraphObjectName $_.Object $_.ObjectType) 
+                $item.IsSelected = $true 
+                $objectList += $item                
             }
         }
         $sourceType = "Objects"
@@ -3545,7 +3890,10 @@ function Show-DocumentationForm
     if($ShowFolderSource -ne $true)
     {
         $global:grdDocumentFromFolder.Visibility = "Collapsed"
-        $global:spDocumentFromFolder.Visibility = "Collapsed"       
+        $global:spDocumentFromFolder.Visibility = "Collapsed"
+
+        $global:txtDocumentFilter.Visibility = "Collapsed"
+        $global:spDocumentFilter.Visibility = "Collapsed"
     }
     else
     {
@@ -3782,6 +4130,10 @@ function local:Set-FromValues
     $global:chkSetUnconfiguredValue.IsChecked = ((Get-Setting "Documentation" "SetUnconfiguredValue" "true") -ne "false")
     $global:chkSetDefaultValue.IsChecked = ((Get-Setting "Documentation" "SetDefaultValue" "false") -ne "false")
 
+    $global:chkIncludeScripts.IsChecked = ((Get-Setting "Documentation" "IncludeScripts" "true") -ne "false")
+    $global:chkExcludeScriptSignature.IsChecked = ((Get-Setting "Documentation" "ExcludeScriptSignature" "false") -ne "false")
+    $global:chkExcludeAssignments.IsChecked = ((Get-Setting "Documentation" "ExcludeAssignments" "false") -eq "true")
+    
     $notConfiguredItems = "[ { Name: `"Not configured (Localized)`",Value: `"notConfigured`" }, { Name: `"Empty`",Value: `"empty`" }, { Name: `"Don't change`",Value: `"asis`" }]" | ConvertFrom-Json
     $global:cbNotConifugredText.ItemsSource = $notConfiguredItems
     $global:cbNotConifugredText.SelectedValue = (Get-Setting "Documentation" "NotConfiguredText" "")
@@ -3824,6 +4176,9 @@ function local:Invoke-StartDocumentatiom
     Save-Setting "Documentation" "SetUnconfiguredValue" $global:chkSetUnconfiguredValue.IsChecked
     Save-Setting "Documentation" "SetDefaultValue" $global:chkSetDefaultValue.IsChecked
 
+    Save-Setting "Documentation" "IncludeScripts" $global:chkIncludeScripts.IsChecked
+    Save-Setting "Documentation" "ExcludeScriptSignature" $global:chkExcludeScriptSignature.IsChecked
+    Save-Setting "Documentation" "ExcludeAssignments" $global:chkExcludeAssignments.IsChecked    
 
     Save-Setting "Documentation" "SkipNotConfigured" $global:chkSkipNotConfigured.IsChecked
     Save-Setting "Documentation" "SkipDefaultValues" $global:chkSkipDefaultValues.IsChecked
@@ -3847,21 +4202,31 @@ function local:Invoke-StartDocumentatiom
             {
                 $groupSourceList += $tmpObj
                 $curObjectType = $tmpObj.ObjectType
+                if($curObjectType.GroupId -eq "EndpointSecurity")
+                {
+                    $catName = Get-IntentCategory $tmpObj.Category
+                    $tmpObj | Add-Member Noteproperty -Name "CategoryName" -Value $catName -Force
+                }
+                else
+                {
+                    $tmpObj | Add-Member Noteproperty -Name "Category" -Value $tmpObj.ObjectType.Id -Force
+                }
+
+                $tmpObj | Add-Member Noteproperty -Name "GroupName" -Value (Get-ObjectTypeGroupName $tmpObj.ObjectType) -Force
             }
 
             if($groupSourceList.Count -eq 0) { contnue }
 
-            if($curObjectType -eq "EndpointSecurity")
+            if($curObjectType.GroupId -eq "EndpointSecurity")
             {
-                $catName = Get-IntentCategory $tmpObj.Category
-                $tmpObj | Add-Member Noteproperty -Name "CategoryName" -Value $catName -Force
-                $sortProps = @("CategoryName","displayName")
+                $sortProps = @("CategoryName","Title") # "displayName")
             }
             else
             {
-                $sortProps = @((?? $objectType.NameProperty "displayName"))
+                #!!!###$sortProps =  @({$_.ObjectType.Title},{(Get-GraphObjectName $_.Object $_.ObjectType)}) #@("Title") #@((?? $objectType.NameProperty "displayName"))
+                $sortProps = @({$_.GroupName},{(Get-GraphObjectName $_.Object $_.ObjectType)}) 
             }
-            $sourceList += $groupSourceList | Sort-Object -Property $sortProps
+            $sourceList += ($groupSourceList | Sort-Object -Property $sortProps)
         }
     }
     elseif($global:grdDocumentObjects.Tag -eq "ObjectTypes")
@@ -3889,7 +4254,7 @@ function local:Invoke-StartDocumentatiom
             
                 if($fromExportFolder -eq $false)
                 {
-                    $graphObjects = @(Get-GraphObjects -property $objectType.ViewProperties -objectType $objectType)
+                    [array]$graphObjects = Get-GraphObjects -property $objectType.ViewProperties -objectType $objectType
                 }
                 else
                 {
@@ -3916,9 +4281,15 @@ function local:Invoke-StartDocumentatiom
             }
             else
             {
-                $sortProps = @({$_.ObjectType.Title}, (?? $objectType.NameProperty "displayName"))
+                foreach($tmpObj in $groupSourceList)
+                {
+                    $tmpObj | Add-Member Noteproperty -Name "Category" -Value $tmpObj.ObjectType.Id -Force
+                    $tmpObj | Add-Member Noteproperty -Name "GroupName" -Value (Get-ObjectTypeGroupName $tmpObj.ObjectType) -Force
+                }                
+                #!!!###$sortProps = @({$_.ObjectType.Title},{(Get-GraphObjectName $_.Object $_.ObjectType)}) 
+                $sortProps = @({$_.GroupName},{(Get-GraphObjectName $_.Object $_.ObjectType)}) 
             }
-            $sourceList += $groupSourceList | Sort-Object -Property $sortProps
+            $sourceList += ($groupSourceList | Sort-Object -Property $sortProps)
         }
     }
     else
@@ -3967,209 +4338,202 @@ function local:Invoke-StartDocumentatiom
     $tmpCurObjectType = $null
     $tmpCurObjectGroup = $null
     $allObjectTypeObjects = @()
-    if($objGroup.GroupId -eq "EndpointSecurity")
-    {
-        $groupCategoryCount = ($sourceList | ForEach-Object { $_.CategoryName } | Select -Unique).Count
-    }
-    else
-    {
-        $groupCategoryCount = ($sourceList | ForEach-Object { $_.ObjectType.Id } | Select -Unique).Count
-    }
 
-    foreach($tmpObj in ($sourceList))
+    $groupCategoryCount = 2 # Force group header. The above code is not working since it should be inside the actual group
+
+    $filter = $global:txtDocumentFilter.Text.Trim()
+    
+    Write-Log "Filter: $filter" 
+
+    $tmpList = @()
+    
+    # Remove objects that should be excluded based on filter
+    # Get documentation data and remove objects not supporting documentation
+    foreach($curObj in $sourceList)
     {
-        if($allObjectTypeObjects.Count -gt 0 -and $tmpCurObjectGroup -ne $tmpObj.ObjectType.GroupId -and $tmpCurObjectType -ne $tmpObj.ObjectType.Id)
+        # Filter out objects if they return scopeTags in a list
+        if($curObj.ObjectType.ScopeTagsReturnedInList -ne $false -and (Confirm-GraphMatchFilter $curObj $filter) -eq $false)
         {
-            if($global:cbDocumentationType.SelectedItem.ProcessAllObjects)
-            {
-                & $global:cbDocumentationType.SelectedItem.ProcessAllObjects $allObjectTypeObjects
-                $allObjectTypeObjects = @()
-            }
-            else
-            {
-                Write-Log "ProcessAllObjects not defined. $tmpCurObjectType will not be documented" 3
-            }
+            continue
         }
-
-        if($tmpObj.Object."@ObjectFromFile" -eq $true)
+        
+        if($curObj.Object."@ObjectFromFile" -eq $true)
         {
-            $obj = $tmpObj
+            $obj = $curObj
         }
         else
         {
-            $obj = Get-GraphObject $tmpObj.Object $tmpObj.ObjectType            
+            $obj = Get-GraphObject $curObj.Object $curObj.ObjectType
+            $curObj.Object = $obj.Object 
         }
 
-        if($obj)
+        # Second check for object types that don't return scopeTag in list
+        if($curObj.ObjectType.ScopeTagsReturnedInList -eq $false -and (Confirm-GraphMatchFilter $obj $filter) -eq $false)
+        {        
+            continue
+        }
+
+        $documentedObj = Get-ObjectDocumentation $curObj
+        if($documentedObj.ErrorText)
         {
-            $documentedObj = Get-ObjectDocumentation $obj
-
-            if($documentedObj.ErrorText)
+            if($txtDocumentationRawData.Text)
             {
-                if($txtDocumentationRawData.Text)
-                {
-                    $txtDocumentationRawData.Text += "`n`n"    
-                }
-
-                $txtDocumentationRawData.Text += "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" 
-                $txtDocumentationRawData.Text += "`n#`n# Object: $((Get-GraphObjectName $obj.Object $obj.ObjectType))" 
-                $txtDocumentationRawData.Text += "`n# Type: $($obj.Object.'@OData.Type')" 
-                $txtDocumentationRawData.Text += "`n#`n# Object not documented. Error:"
-                $txtDocumentationRawData.Text += "`n# $(($documentedObj.ErrorText -replace "`n","`n# "))"
-                $txtDocumentationRawData.Text += "`n#`n#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" 
-                continue
+                $txtDocumentationRawData.Text += "`n`n"    
             }
 
-            if($global:cbDocumentationType.SelectedItem.CustomProcess)
-            {
-                # The provider takes care of all the processing
-                Write-Status "Run CustomProcess for $($global:cbDocumentationType.SelectedItem.Name)"
-                $ret = & $global:cbDocumentationType.SelectedItem.CustomProcess $obj $documentedObj
-                if($ret -is [boolean] -and $ret -eq $true) { continue }
-            }
+            $txtDocumentationRawData.Text += "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" 
+            $txtDocumentationRawData.Text += "`n#`n# Object: $((Get-GraphObjectName $curObj.Object $curObj.ObjectType))" 
+            $txtDocumentationRawData.Text += "`n# Type: $($curObj.Object.'@OData.Type')" 
+            $txtDocumentationRawData.Text += "`n#`n# Object not documented. Error:"
+            $txtDocumentationRawData.Text += "`n# $(($documentedObj.ErrorText -replace "`n","`n# "))"
+            $txtDocumentationRawData.Text += "`n#`n#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" 
+            continue
+        }
+        elseif(-not $documentedObj)
+        {
+            continue
+        }
 
-            if($tmpCurObjectGroup -ne $obj.ObjectType.GroupId)
-            {
-                # A group matches a menu item in the protal but can contain multiple object types
-                # New object group e.g. Script, Tennant, Device Configuration
-                if($global:cbDocumentationType.SelectedItem.NewObjectGroup)
-                {
-                    Write-Status "Run NewObjectGroup for $($global:cbDocumentationType.SelectedItem.Name)"
-                    $ret = & $global:cbDocumentationType.SelectedItem.NewObjectGroup $obj $documentedObj
-                    if($ret -is [boolean] -and $ret -eq $true) { continue }
-                }
-                $tmpCurObjectGroup = $obj.ObjectType.GroupId
-            }
+        $curObj | Add-Member Noteproperty -Name "Documentation" -Value $documentedObj -Force 
 
-            if(($objGroup.GroupId -eq "EndpointSecurity" -and $tmpObj.CategoryName -ne $tmpCurObjectType) -or            
-                ($objGroup.GroupId -ne "EndpointSecurity" -and $tmpCurObjectType -ne $obj.ObjectType.Id))
-            {                
-                # New object type e.g Administrative Template, VPN profile etc.
-                if($global:cbDocumentationType.SelectedItem.NewObjectType)
+        $tmpList += $curObj
+    }
+    $sourceList = $tmpList
+    
+    # Add each object to the documentation
+    foreach($curGroupId in ($sourceList.ObjectType | Select GroupID -Unique).GroupID)
+    {
+        # New object group e.g. Script, Tennant, Device Configuration
+        # A group matches a menu item in the protal but can contain multiple object types
+        if($global:cbDocumentationType.SelectedItem.NewObjectGroup)
+        {
+            Write-Status "Run NewObjectGroup for $($global:cbDocumentationType.SelectedItem.Name)"
+            $ret = & $global:cbDocumentationType.SelectedItem.NewObjectGroup $curGroupId
+            if($ret -is [boolean] -and $ret -eq $true) { continue }
+        }
+
+        foreach($curCategory in ($sourceList | Where { $_.ObjectType.GroupID -eq $curGroupId } | Select Category -Unique).Category)
+        {
+            $obj = $sourceList | Where { $_.Category -eq $curCategory } | Select -First 1
+            if(-not $obj) { continue }
+
+            # New object type e.g Administrative Template, VPN profile etc.
+            if($global:cbDocumentationType.SelectedItem.NewObjectType)
+            {
+                if($obj.ObjectType.GroupId -eq "EndpointSecurity")
                 {
-                    Write-Status "Run NewObjectType for $($global:cbDocumentationType.SelectedItem.Name)"
-                    $ret = & $global:cbDocumentationType.SelectedItem.NewObjectType $tmpObj $documentedObj $groupCategoryCount
-                    if($ret -is [boolean] -and $ret -eq $true) { continue }
-                }
-                if($objGroup.GroupId -eq "EndpointSecurity")
-                {
-                    $tmpCurObjectType = $tmpObj.CategoryName
+                    $objectTypeString = $obj.CategoryName
                 }
                 else
                 {
-                    $tmpCurObjectType = $obj.ObjectType.Id
+                    $objectTypeString = $obj.GroupName #!!!###$obj.ObjectType.Title
                 }
-                $allObjectTypeObjects = @()
-            }                
+                $objectTypeString = (?? $objectTypeString $obj.ObjectType.Title)
 
-            if($documentedObj) 
-            {
-                Add-RawDataInfo $obj.Object $obj.ObjectType
+                Write-Status "Run NewObjectType for $($global:cbDocumentationType.SelectedItem.Name)"
+                $ret = & $global:cbDocumentationType.SelectedItem.NewObjectType $objectTypeString
+                if($ret -is [boolean] -and $ret -eq $true) { continue }
+            }
 
-                $updateNotConfigured = $true
-                $notConfiguredLoc = Get-LanguageString "BooleanActions.notConfigured"
-                $notConfiguredText = ""
-                if($global:cbNotConifugredText.SelectedValue -eq "notConfigured")
-                {
-                    $notConfiguredText = $notConfiguredLoc
-                }
-                elseif($global:cbNotConifugredText.SelectedValue -eq "asis")
-                {
-                    $updateNotConfigured = $false 
-                }
+            #ObjectType
+            foreach($tmpObj in ($sourceList | Where { $_.ObjectType.GroupID -eq $curGroupId -and $_.Category -eq $curCategory}))
+            {                
+                $obj = $tmpObj
+                $documentedObj = $obj.Documentation
                 
-                if($global:cbDocumentationType.SelectedItem.Process)
+                if($global:cbDocumentationType.SelectedItem.CustomProcess)
                 {
-                    Write-Status "Process $((Get-GraphObjectName $tmpObj.Object $tmpObj.ObjectType)) ($($obj.ObjectType.Title)) - $($global:cbDocumentationType.SelectedItem.Name)"
+                    # The provider takes care of all the processing
+                    Write-Status "Run CustomProcess for $($global:cbDocumentationType.SelectedItem.Name)"
+                    $ret = & $global:cbDocumentationType.SelectedItem.CustomProcess $obj $documentedObj
+                    if($ret -is [boolean] -and $ret -eq $true) { continue }
+                }
 
-                    $filteredSettings = @()
-                    foreach($item in $documentedObj.Settings)
+                if($documentedObj) 
+                {
+                    Add-RawDataInfo $obj.Object $obj.ObjectType
+    
+                    $updateNotConfigured = $true
+                    $notConfiguredLoc = Get-LanguageString "BooleanActions.notConfigured"
+                    $notConfiguredText = ""
+                    if($global:cbNotConifugredText.SelectedValue -eq "notConfigured")
                     {
-                        if(-not ($item.PSObject.Properties | Where Name -eq "RawValue") -or $documentedObj.UpdateFilteredObject -eq $false)
+                        $notConfiguredText = $notConfiguredLoc
+                    }
+                    elseif($global:cbNotConifugredText.SelectedValue -eq "asis")
+                    {
+                        $updateNotConfigured = $false 
+                    }
+                    
+                    if($global:cbDocumentationType.SelectedItem.Process)
+                    {
+                        Write-Status "Process $((Get-GraphObjectName $tmpObj.Object $tmpObj.ObjectType)) ($($obj.ObjectType.Title)) - $($global:cbDocumentationType.SelectedItem.Name)"
+    
+                        $filteredSettings = @()
+                        foreach($item in $documentedObj.Settings)
                         {
-                            $filteredSettings = $documentedObj.Settings
-                            break
-                        }
-                        
-                        if($global:chkSkipNotConfigured.IsChecked -and (($item.RawValue -isnot [array] -and ([String]::IsNullOrEmpty($item.RawValue) -or ("$($item.RawValue)" -eq "notConfigured"))) -or ($item.RawValue -is [array] -and ($item.RawValue | measure).Count -eq 0)))
-                        {
-                            # Skip unconfigured items e.g. properties with null values
-                            # Note: This could removed configured properties if RawValue is not specified
-                            continue                
-                        }
-                        elseif($global:chkSkipNotConfigured.IsChecked -and $documentedObj.UnconfiguredProperties -and ($documentedObj.UnconfiguredProperties | Where EntityKey -eq $item.EntityKey))
-                        {
-                            # Skip unconfigured items e.g. boolean with a value but Not Configured
-                            continue                
-                        }
-
-                        if($global:chkSkipDefaultValues.IsChecked -and (($item.DefaultValue -and $item.RawValue -eq $item.DefaultValue) -or ($item.UnconfiguredValue -and $item.RawValue -eq $item.UnconfiguredValue)))
-                        {
-                            # Skip items that is using default or unconfiguered values                                                               
-                            continue                
-                        }                            
-
-                        if($global:chkSkipDisabled.IsChecked -and ($item.Enabled -is [Boolean] -and ($item.Enabled -eq $false)))
-                        {
-                            # Skip Disabled items
-                            continue
-                        }
-                        elseif($item.EntityKey -and ($item.Enabled -is [Boolean] -and ($item.Enabled -eq $false)))
-                        {
-                            if(($documentedObj.Settings | Where { $_.EntityKey -eq $item.EntityKey -and $_.Enabled -eq $true }))
+                            if(-not ($item.PSObject.Properties | Where Name -eq "RawValue") -or $documentedObj.UpdateFilteredObject -eq $false)
                             {
-                                # Skip a disabled item if there is another item with the same property that is enabled
+                                $filteredSettings = $documentedObj.Settings
+                                break
+                            }
+                            
+                            if($global:chkSkipNotConfigured.IsChecked -and (($item.RawValue -isnot [array] -and ([String]::IsNullOrEmpty($item.RawValue) -or ("$($item.RawValue)" -eq "notConfigured"))) -or ($item.RawValue -is [array] -and ($item.RawValue | measure).Count -eq 0)))
+                            {
+                                # Skip unconfigured items e.g. properties with null values
+                                # Note: This could removed configured properties if RawValue is not specified
+                                continue                
+                            }
+                            elseif($global:chkSkipNotConfigured.IsChecked -and $documentedObj.UnconfiguredProperties -and ($documentedObj.UnconfiguredProperties | Where EntityKey -eq $item.EntityKey))
+                            {
+                                # Skip unconfigured items e.g. boolean with a value but Not Configured
+                                continue                
+                            }
+    
+                            if($global:chkSkipDefaultValues.IsChecked -and (($item.DefaultValue -and $item.RawValue -eq $item.DefaultValue) -or ($item.UnconfiguredValue -and $item.RawValue -eq $item.UnconfiguredValue)))
+                            {
+                                # Skip items that is using default or unconfiguered values                                                               
+                                continue                
+                            }                            
+    
+                            if($global:chkSkipDisabled.IsChecked -and ($item.Enabled -is [Boolean] -and ($item.Enabled -eq $false)))
+                            {
+                                # Skip Disabled items
                                 continue
                             }
+                            elseif($item.EntityKey -and ($item.Enabled -is [Boolean] -and ($item.Enabled -eq $false)))
+                            {
+                                if(($documentedObj.Settings | Where { $_.EntityKey -eq $item.EntityKey -and $_.Enabled -eq $true }))
+                                {
+                                    # Skip a disabled item if there is another item with the same property that is enabled
+                                    continue
+                                }
+                            }
+    
+                            if($updateNotConfigured -and (($item.RawValue -isnot [array] -and ($null -eq $item.RawValue -or "$($item.RawValue)" -eq "" -or "$($item.RawValue)" -eq "notConfigured") -and [String]::IsNullOrEmpty($item.Value)) -or ($item.RawValue -is [array] -and ($item.RawValue | measure).Count -eq 0)))
+                            {
+                                $item.Value = $notConfiguredText
+                            }
+                            
+                            if($global:chkSkipNotConfigured.IsChecked -and $item.Value -eq $notConfiguredLoc)
+                            {
+                                # Skip unconfigured items based on value e.g. value = Not Configured 
+                                Write-Log "Skipping property $($item.Name) based on '$($notConfiguredLoc)' string value" 2
+                                continue
+                            }
+    
+                            $filteredSettings += $item
                         }
-
-                        if($updateNotConfigured -and (($item.RawValue -isnot [array] -and ($null -eq $item.RawValue -or "$($item.RawValue)" -eq "" -or "$($item.RawValue)" -eq "notConfigured") -and [String]::IsNullOrEmpty($item.Value)) -or ($item.RawValue -is [array] -and ($item.RawValue | measure).Count -eq 0)))
-                        {
-                            $item.Value = $notConfiguredText
-                        }
-                        
-                        if($global:chkSkipNotConfigured.IsChecked -and $item.Value -eq $notConfiguredLoc)
-                        {
-                            # Skip unconfigured items based on value e.g. value = Not Configured 
-                            Write-Log "Skipping property $($item.Name) based on '$($notConfiguredLoc)' string value" 2
-                            continue
-                        }
-
-                        $filteredSettings += $item
-                    }
-
-                    $documentedObj | Add-Member Noteproperty -Name "FilteredSettings" -Value $filteredSettings -Force 
-
-                    if($obj.ObjectType.DocumentAll -eq $true)
-                    {
-                        $allObjectTypeObjects += [PSCustomObject]@{
-                            Object = $obj
-                            DocumentationObject = $documentedObj
-                        }
-                    }
-                    else
-                    {                        
+    
+                        $documentedObj | Add-Member Noteproperty -Name "FilteredSettings" -Value $filteredSettings -Force 
+                                              
                         & $global:cbDocumentationType.SelectedItem.Process $obj.Object $obj.ObjectType $documentedObj
                     }
                 }
             }
         }
     }
-
-    if($allObjectTypeObjects.Count -gt 0)
-    {
-        if($global:cbDocumentationType.SelectedItem.ProcessAllObjects)
-        {
-            & $global:cbDocumentationType.SelectedItem.ProcessAllObjects $allObjectTypeObjects
-            $allObjectTypeObjects = @()
-        }
-        else
-        {
-            Write-Log "ProcessAllObjects not defined. $tmpCurObjectType will not be documented" 3
-        }
-    }
-
-
+    
     if($global:cbDocumentationType.SelectedItem.PostProcess)
     {
         Write-Status "Run PostProcess for $($global:cbDocumentationType.SelectedItem.Name)"
@@ -4185,6 +4549,68 @@ function local:Invoke-StartDocumentatiom
     Write-Status ""         
 }
 
+function Confirm-MatchFilter
+{
+    param($graphObj, [string]$filter)
+
+    if(-not $filter.Trim()) { return $true }
+
+    $filterScope = ""
+
+    if($filter -like "scope:*" -or $filter -like "tag:*")
+    {
+        $filterScope = $filter.Split(':')[1]
+    }
+
+    $objName = Get-GraphObjectName $graphObj.Object $graphObj.ObjectType
+    if($filterScope)
+    {
+        if(($graphObj.Object.PSObject.Properties | Where Name -eq "roleScopeTagIds"))
+        {
+            $scopeTagProperty = "roleScopeTagIds"
+        }
+        elseif(($graphObj.Object.PSObject.Properties | Where Name -eq "roleScopeTags"))
+        {
+            $scopeTagProperty = "roleScopeTags"
+        }
+        else
+        {
+            Write-Log "$objName excluded based on Scope(Tags) not supported on $($graphObj.ObjectType.GroupId) objects"
+            continue
+        }
+
+        if(-not $script:scopeTags -and $script:offlineDocumentation -ne $true)
+        {
+            $script:scopeTags = (Invoke-GraphRequest -Url "/deviceManagement/roleScopeTags").Value
+        }
+        
+        $found = $false
+        foreach($scopeTagId in $graphObj.Object."$scopeTagProperty")
+        {                    
+            $scopeTagObj = $script:scopeTags | Where Id -eq $scopeTagId
+            if($scopeTagObj -and $filterScope -and $scopeTagObj.displayName -match [RegEx]::Escape($filterScope))
+            {
+                return $true               
+            }
+        }
+
+        if($found -eq $false)
+        {
+            Write-Log "$objName excluded based on no Scope(Tags) found that matches the filter"
+            return $false
+        }
+    }
+    else
+    {                
+        if($objName -and $filter -and $objName -notmatch [RegEx]::Escape($filter))
+        {
+            Write-Log "$objName excluded based on the name does not match the filter"
+            return $false
+        }
+    }
+    return $true
+}
+    
 function Get-DocOfflineObjects
 {
     param($objectName)
@@ -4446,3 +4872,143 @@ function Invoke-CSVProcessItem
     }
 }
 #endregion
+
+#region Invoke-ScopeTags
+function Get-ScopeTagsItems
+{
+    param($documentationObjects, $objectType)
+
+    if((($documentationObjects | Where { $_.Object.ObjectType.Id -eq "ScopeTags" }) | measure).Count -gt 0)
+    {
+        $items = @()
+
+        $nameLabel = Get-LanguageString "Inputs.displayNameLabel"
+        $descriptionLabel = Get-LanguageString "TableHeaders.description" 
+        $assignmentsLabel = Get-LanguageString "TableHeaders.assignments"
+        
+        foreach($fullObj in ($documentationObjects | Where { $_.Object.ObjectType.Id -eq "ScopeTags" }))
+        {
+            $obj = $fullObj.Object
+
+            $groupIDs, $groupInfo, $filterIds,$filtersInfo = Get-ObjectAssignments $obj
+
+            $items += [PSCustomObject]@{
+                $nameLabel = $obj.displayName
+                ID = $obj.Id
+                $descriptionLabel = $obj.Description
+                $assignmentsLabel = ($groupInfo.displayName -join $script:objectSeparator)
+            }
+        }
+
+        $items = $items | Sort -Property $nameLabel
+
+        $documentationInfo = [PSCustomObject]@{
+            TypeName = (Get-LanguageString "SettingDetails.scopeTags")
+            ObjectType = $objectType
+            Properties = @($nameLabel,"id", $descriptionLable, $assignmentsLabel)
+            Items = $items
+        }
+
+        return $documentationInfo
+    }
+}
+#endregion
+
+function Get-ObjectAssignments
+{
+    param($obj)
+
+    $groupIds = @()
+    $groupInfo = @()
+    $filterIds = @()
+
+    foreach($assignment in $obj.assignments)
+    {
+        if($assignment.target.groupId -and $assignment.target.groupId -notin $groupIds)
+        {
+            $groupIds += $assignment.target.groupId
+        }
+
+        if($assignment.target.deviceAndAppManagementAssignmentFilterId -and ($assignment.target.deviceAndAppManagementAssignmentFilterId -notin $filterIds))
+        {
+            $filterIds += $assignment.target.deviceAndAppManagementAssignmentFilterId
+        }
+    }
+
+    $groupInfo = $null
+
+    if($groupIds.Count -gt 0 -and $script:offlineDocumentation -ne $true)
+    {
+        $ht = @{}
+        $ht.Add("ids", @($groupIds | Unique))
+
+        $body = $ht | ConvertTo-Json
+
+        $groupInfo = (Invoke-GraphRequest -Url "/directoryObjects/getByIds?`$select=displayName,id" -Content $body -Method "Post").Value
+    }
+    
+    if(($null -eq $groupInfo -or ($groupInfo | measure).Count -eq 0) -and $obj."@ObjectFromFile" -eq $true -and $script:migTable)
+    {
+        ### Get group info from mig table when documenting from file if there's no access to the environment
+        $groupInfo = $script:migTable.Objects | Where Type -eq "Group" 
+    }
+
+    if($filterIds.Count -gt 0)
+    {        
+        if($script:offlineDocumentation -eq $true)
+        {
+            if($script:offlineObjects["AssignmentFilters"])
+            {
+                $filtersInfo = $script:offlineObjects["AssignmentFilters"] | Where { $_.Id -in $filterIds }
+            }
+            else
+            {
+                Write-Log "No assignment filters loaded for Offline documentation. Check export folder" 2
+            }
+        }
+        else
+        {
+            $batchInfo = @{}
+            $requests = @()
+            #{"requests":[{"id":"<FilterID>","method":"GET","url":"deviceManagement/assignmentFilters/<FilterID>?$select=displayName"}]}
+            foreach($filterId in $filterIds)
+            {
+                $requests += [PSCustomObject]@{
+                    id = $filterId
+                    method = "GET"
+                    "url" = "deviceManagement/assignmentFilters/$($filterId)?`$select=displayName"
+                }
+            }
+            $batchInfo = @{"requests"=$requests}
+            $jsonBody = $batchInfo | ConvertTo-Json
+
+            $filtersInfo = (Invoke-GraphRequest -Url "/`$batch" -Content $jsonBody -Method "Post").responses.body
+        }
+    }    
+    
+    @($groupIds, $groupInfo, $filterIds, $filtersInfo)
+}
+
+function Get-TableObjects
+{
+    param($objectTypeId)
+
+    if(-not $objectTypeId -or $script:ObjectTypeFullTable -isnot [HashTable]) { return }
+
+    if($script:ObjectTypeFullTable.ContainsKey($objectTypeId))
+    {
+        return $script:ObjectTypeFullTable[$objectTypeId]
+    }
+}
+
+function Set-TableObjects
+{
+    param($objectInfo)
+
+    if(-not $objectInfo.ObjectType -or $script:ObjectTypeFullTable -isnot [HashTable]) { return }
+
+    if($script:ObjectTypeFullTable.ContainsKey($objectInfo.ObjectType.Id) -eq $false)
+    {
+        $script:ObjectTypeFullTable.Add($objectInfo.ObjectType.Id, $objectInfo)
+    }
+}

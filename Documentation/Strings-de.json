@@ -367,7 +367,6 @@
                      "educationTeacherCerts":  "Lehrerzertifikate",
                      "emailProfile":  "E-Mail",
                      "enterpriseDataProtection":  "Windows Information Protection",
-                     "expeditedCheckin":  "Konfiguration der Verwaltung mobiler Geräte",
                      "extensibleSingleSignOn":  "App-Erweiterung für einmaliges Anmelden",
                      "filevault":  "FileVault",
                      "firewall":  "Firewall",
@@ -508,7 +507,10 @@
                                                         "deploymentSettings":  "Bereitstellungseinstellungen",
                                                         "groupAssignmentSettings":  "Zuweisungen",
                                                         "scopeSettings":  "Bereichstags"
-                                                    }
+                                                    },
+                                        "gradualRolloutLicenseWarning":  "Für diese Funktionalität ist eine bestimmte Lizenzierung erforderlich.",
+                                        "gradualRolloutLicenseWarningEdit":  "Diese Funktionalität kann weiterhin verwendet und konfiguriert werden, bis die Richtlinie gespeichert wird, ohne dass diese Funktionalität ausgewählt ist.",
+                                        "licenseLearnMoreText":  "Erfahren Sie mehr über Voraussetzungen und Richtlinien für Featureupdates."
                                     },
     "WIPPinRequirements":  {
                                "WipLowercaseCharacterPinRequirements":  {
@@ -676,7 +678,8 @@
                                            "selectApp":  "Suchen Sie im App Store nach iOS Store-Apps, die Sie mit Intune bereitstellen möchten.",
                                            "useManagedBrowser":  "Wenn ein Benutzer die Web-App öffnet, wird diese bei Bedarf in einem von Intune geschützten Browser wie Microsoft Edge oder Intune Managed Browser geöffnet. Diese Einstellung gilt sowohl für iOS- als auch für Android-Geräte.",
                                            "useManagedBrowserLink":  "https://docs.microsoft.com/en-us/intune/apps/app-configuration-managed-browser",
-                                           "win32AppPackageFile":  "Dies ist eine Datei, die Ihre App in einem Format enthält, das auf einem Gerät quergeladen werden kann. Gültige Pakettypen: INTUNEWIN."
+                                           "win32AppPackageFile":  "Dies ist eine Datei, die Ihre App in einem Format enthält, das auf einem Gerät quergeladen werden kann. Gültige Pakettypen: INTUNEWIN.",
+                                           "winGetStoreSelectApp":  "Suchen Sie im Microsoft Store Repository nach Store-Apps, die Sie mit Intune bereitstellen möchten."
                                        },
                               "descriptionPreview":  "Vorschau",
                               "descriptionRequired":  "Die Beschreibung ist erforderlich.",
@@ -800,10 +803,10 @@
                                                     "azureADDevice":  "Zugeordnetes Azure AD-Gerät",
                                                     "batch":  "Gruppentag",
                                                     "dateAssigned":  "Zuweisungsdatum",
-                                                    "deviceAccountFriendlyName":  "Anzeigename des Gerätekontos",
                                                     "deviceAccountPwd":  "Gerätekontokennwort",
                                                     "deviceAccountUpn":  "Gerätekonto",
                                                     "deviceDisplayName":  "Gerätename",
+                                                    "deviceFriendlyName":  "Anzeigename des Geräts",
                                                     "deviceName":  "Gerätename",
                                                     "deviceUseType":  "Art der Gerätenutzung",
                                                     "enrollmentState":  "Registrierungsstatus",
@@ -924,10 +927,10 @@
                                        "azureADDevice":  "Wechseln Sie zu den Gerätedetails für das zugeordnete Gerät. N/V bedeutet, dass kein Gerät zugeordnet ist.",
                                        "batch":  "Ein Zeichenfolgenattribut, das zum Identifizieren einer Gruppe von Geräten verwendet werden kann. Das Intune-Feld für das Gruppentag wird dem OrderID-Attribut für Azure AD-Geräte zugeordnet.",
                                        "dateAssigned":  "Zeitstempel, der angibt, wann das Profil dem Gerät zugewiesen wurde.",
-                                       "deviceAccountFriendlyName":  "Anzeigename des Gerätekontos für Surface Hub-Geräte",
-                                       "deviceAccountPwd":  "Gerätekontokennwort für Surface Hub-Geräte",
-                                       "deviceAccountUpn":  "E-Mail-Adresse des Gerätekontos für Surface Hub-Geräte",
+                                       "deviceAccountPwd":  "Kennwort des Gerätekontos für Surface Hub Geräte. Geben Sie bei Eingabe auch das Gerätekonto und den Anzeigenamen ein.",
+                                       "deviceAccountUpn":  "E-Mail-Adresse des Gerätekontos für Surface Hub-Geräte. Geben Sie bei Eingabe auch das Kennwort und den Anzeigenamen des Gerätekontos ein.",
                                        "deviceDisplayName":  "Konfigurieren Sie einen eindeutigen Namen für ein Gerät. Dieser Name wird für in Azure AD Hybrid eingebundene Bereitstellungen ignoriert. Der Gerätename stammt weiterhin aus dem Domänenbeitrittsprofil für in Azure AD eingebundene Hybridgeräte.",
+                                       "deviceFriendlyName":  "Anzeigename des Geräts für Surface Hub Geräte. Geben Sie bei Eingabe auch das Gerätekonto und das Kennwort für das Gerätekonto ein.",
                                        "deviceName":  "Der angezeigte Name, wenn jemand versucht hat, das Gerät zu ermitteln und eine Verbindung herzustellen.",
                                        "deviceUseType":  "      Das Gerät wird basierend auf Ihrer Auswahl eingerichtet. Sie können die Einstellungen später jederzeit ändern.​\r\n      <ul>\r\n      <li> Für Besprechungen und Präsentationen ist Windows Hello nicht aktiviert, und die Daten werden nach jeder Sitzung entfernt.\r\n      </li>\r\n      <li> Für die Teamzusammenarbeit ist Windows Hello aktiviert, und Profile werden für die schnelle Anmeldung gespeichert.</li>\r\n      </ul>",
                                        "enrollmentState":  "Gibt an, ob das Gerät registriert wurde.",
@@ -1047,6 +1050,9 @@
                                                          },
                                                  "V12":  {
                                                              "0":  "macOS Monterey 12.0"
+                                                         },
+                                                 "V13":  {
+                                                             "0":  "macOS Ventura 13.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -1102,6 +1108,7 @@
                                    "customMessageTextBox":  "Fehlermeldung",
                                    "customMessageToggle":  "Bei einem Zeitlimit oder Fehler benutzerdefinierte Meldung anzeigen",
                                    "enableForAutopilotOnlyToggle":  "Seite nur für Geräte anzeigen, die über die Willkommensseite bereitgestellt wurden",
+                                   "installQualityUpdatesToggle":  "Installieren von Windows-Qualitätsupdates (kann das Gerät neu starten)",
                                    "progressToggle":  "Konfigurationsfortschritt für Apps und Profile anzeigen",
                                    "resetToggle":  "Benutzern bei Installationsfehlern das Zurücksetzen des Geräts erlauben",
                                    "timeout":  "Fehler anzeigen, wenn die Installation länger als die angegebene Anzahl von Minuten dauert"
@@ -1367,7 +1374,7 @@
                                                           },
                         "AndroidBackup":  {
                                               "label":  "Organisationsdaten in Android-Sicherungsdiensten sichern",
-                                              "tooltip":  "Wählen Sie „{0}“ aus, um die Sicherung von Organisationsdaten in Android-Sicherungsdiensten zu verhindern.  \r\nWählen Sie „{1}“ aus, um die Sicherung von Organisationsdaten in Android-Sicherungsdiensten zu ermöglichen.  \r\nPersonenbezogene oder nicht verwaltete Daten sind hiervon nicht betroffen."
+                                              "tooltip":  "Wählen Sie \"{0}\" aus, um die Sicherung von Organisationsdaten in Android-Sicherungsdiensten zu verhindern.\r\nWählen Sie \"{1}\" aus, um die Sicherung von Organisationsdaten in Android-Sicherungsdiensten zu ermöglichen.\r\nPersonenbezogene oder nicht verwaltete Daten sind hiervon nicht betroffen."
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "Biometrie anstelle von PIN für Zugriff",
@@ -1378,7 +1385,7 @@
                                                    "tooltip":  "Das Android-Betriebssystem verwendet Fingerabdruckscans, um Benutzer von Android-Geräten zu authentifizieren. Dieses Feature unterstützt die nativen biometrischen Kontrollen auf Android-Geräten. OEM-spezifische biometrische Einstellungen, wie z. B. Samsung Pass, werden nicht unterstützt. Sofern zugelassen, müssen native biometrische Kontrollen verwendet werden, um auf Geräten mit Unterstützung dieses Features auf die App zuzugreifen."
                                                },
                         "AndroidOverrideFingerprint":  {
-                                                           "label":  "PIN setzt Fingerabdruck nach Timeout außer Kraft"
+                                                           "label":  "Überschreiben von Biometrie mit PIN nach Timeout"
                                                        },
                         "AppPIN":  {
                                        "label":  "App-PIN, wenn Geräte-PIN festgelegt ist",
@@ -1409,7 +1416,7 @@
                                                    },
                         "CustomBrowserProtocol":  {
                                                       "label":  "Protokoll von nicht verwaltetem Browser",
-                                                      "tooltip":  "<p>Geben Sie das Protokoll für einen einzelnen nicht verwalteten Browser ein. Webinhalte (HTTP/S) aus mit Richtlinien verwalteten Anwendungen werden in jeder beliebigen App geöffnet, die dieses Protokoll unterstützt. </p>\r\n \r\n<p><b>Hinweis: </b>Geben Sie nur das Protokollpräfix an. Wenn Ihr Browser Links im Format \"mybrowser://www.microsoft.com\" verlangt, geben Sie \"mybrowser\" ein.</p>"
+                                                      "tooltip":  "<p>Geben Sie das Protokoll für einen einzelnen nicht verwalteten Browser ein. Webinhalte (HTTP/S) aus mit Richtlinien verwalteten Anwendungen werden in jeder beliebigen App geöffnet, die dieses Protokoll unterstützt. </p>\r\n\r\n<p><b>Hinweis: </b>Geben Sie nur das Protokollpräfix an. Wenn Ihr Browser Links im Format „mybrowser://www.microsoft.com“ verlangt, geben Sie „mybrowser“ ein.</p>"
                                                   },
                         "CustomDialerAppDisplayName":  {
                                                            "label":  "Name der Telefon-App"
@@ -1435,7 +1442,7 @@
                                             "tooltip":  "Wählen Sie „{0}“ aus, um die Verschlüsselung von Organisationsdaten mit der Intune-Verschlüsselung auf App-Ebene zu erzwingen. \r\n <br/>\r\nWählen Sie „{1}“ aus, um die Verschlüsselung von Organisationsdaten mit der Intune-Verschlüsselung auf App-Ebene nicht zu erzwingen.\r\n\r\n<br/>\r\nHinweis: Weitere Informationen zur Intune-Verschlüsselung auf App-Ebene finden Sie unter „{2}“."
                                         },
                         "EncryptDataAndroid":  {
-                                                   "tooltip":  "<p>Wählen Sie <b>Erforderlich</b> aus, um für Geschäfts-, Schul- oder Unidaten in dieser App die Verschlüsselung zu aktivieren. Intune verwendet ein OpenSSL-AES-Verschlüsselungsschema mit 256 Bit in Kombination mit dem Android-Keystore-System, um App-Daten sicher zu verschlüsseln. Die Daten werden bei Datei-E/A-Aufgaben synchron verschlüsselt. Der Inhalt im Gerätespeicher wird immer verschlüsselt. Das SDK bietet weiterhin Unterstützung für 128-Bit-Schlüssel, um Kompatibilität mit Inhalten und Apps zu gewährleisten, die ältere SDK-Versionen verwenden. </p>\r\n\r\n<p>Die Verschlüsselungsmethode ist mit FIPS 140-2 konform.</p>"
+                                                   "tooltip":  "<p>Wählen Sie <b>Erforderlich</b> aus, um die Verschlüsselung von Geschäfts-, Schul- oder Unidaten in dieser App zu aktivieren. Intune verwendet ein 256-Bit-AES-Verschlüsselungsschema zusammen mit dem Android Keystore-System, um App-Daten sicher zu verschlüsseln. Daten werden während Datei-E/A-Aufgaben synchron verschlüsselt. Inhalte im Gerätespeicher werden immer verschlüsselt. Neue Dateien werden mit 256-Bit-Schlüsseln verschlüsselt. Vorhandene 128-Bit-verschlüsselte Dateien werden einem Migrationsversuch zu 256-Bit-Schlüsseln unterzogen, aber der Prozess ist nicht garantiert. Dateien, die mit 128-Bit-Schlüsseln verschlüsselt sind, bleiben lesbar. </p>\r\n\r\n<p>Die Verschlüsselungsmethode ist FIPS 140-2-kompatibel.</p>"
                                                },
                         "EncryptDataIos":  {
                                                "tooltip1":  "Wählen Sie <b>Erforderlich</b> aus, um für Geschäfts, Schul- oder Unidaten in dieser App die Verschlüsselung zu aktivieren. Intune erzwingt eine iOS-/iPadOS-Geräteverschlüsselung, um App-Daten zu schützen, während das Gerät gesperrt ist. Anwendungen können optional App-Daten mithilfe der Intune APP SDK-Verschlüsselung verschlüsseln. Das Intune APP SDK nutzt iOS-/iPadOS-Kryptografiemethoden, um eine 128-Bit-AES-Verschlüsselung auf App-Daten anzuwenden.",
@@ -1463,11 +1470,11 @@
                                        },
                         "NotificationRestriction":  {
                                                         "label":  "Benachrichtigungen zu Organisationsdaten",
-                                                        "tooltip":  "<p>Wählen Sie eine der folgenden Optionen aus, um anzugeben, wie Benachrichtigungen für Organisationskonten für diese Apps und alle verbundenen Geräte (z. B. Wearables) angezeigt werden:</p> \r\n<p>{0}: Benachrichtigungen nicht freigeben.</p> \r\n<p>{1}: Organisationsdaten nicht in Benachrichtigungen freigeben. Sofern nicht durch die Anwendung unterstützt, werden Benachrichtigungen blockiert. </p>\r\n<p>{2}:  Alle Benachrichtigungen freigeben. </p>\r\n <p>Nur Android:\r\n Hinweis: Diese Einstellung gilt nicht für alle Anwendungen. Weitere Informationen finden Sie unter {3} </p>\r\n \r\n <p>Nur iOS:\r\nHinweis: Diese Einstellung gilt nicht für alle Anwendungen. Weitere Informationen finden Sie unter {4}.</p>"
+                                                        "tooltip":  "<p>Wählen Sie eine der folgenden Optionen aus, um anzugeben, wie Benachrichtigungen für Organisationskonten für diese Apps und alle verbundenen Geräte (z. B. Wearables) angezeigt werden:</p> \r\n<p>{0}: Benachrichtigungen nicht freigeben.</p> \r\n<p>{1}: Organisationsdaten nicht in Benachrichtigungen freigeben. Sofern nicht durch die Anwendung unterstützt, werden Benachrichtigungen blockiert. </p>\r\n<p>{2}:  Alle Benachrichtigungen freigeben. </p>\r\n <p>Nur Android:\r\n Hinweis: Diese Einstellung gilt nicht für alle Anwendungen. Weitere Informationen finden Sie unter {3} </p>\r \n\r\n <p>Nur iOS:\r\nHinweis: Diese Einstellung gilt nicht für alle Anwendungen. Weitere Informationen finden Sie unter {4}.</p>"
                                                     },
                         "OpenLinksManagedBrowser":  {
                                                         "label":  "Übertragung von Webinhalt in andere Apps einschränken",
-                                                        "tooltip":  "<p>Wählen Sie eine der folgenden Optionen aus, um die Apps anzugeben, in denen diese App Webinhalte öffnen kann: </p>\r\n<p><b>Edge:</b> Hiermit können Webinhalte nur in Edge geöffnet werden </p>\r\n<p><b>Nicht verwalteter Browser:</b>  Hiermit können Webinhalte nur in dem nicht verwalteten Browser geöffnet werden, der über die Einstellung „Protokoll von nicht verwaltetem Browser“ definiert wurde </p> \r\n<p><b>Beliebige App:</b> Weblinks werden in beliebigen Apps zugelassen</p>"
+                                                        "tooltip":  "<p>Wählen Sie eine der folgenden Optionen aus, um die Apps anzugeben, in denen diese App Webinhalte öffnen kann: </p>\r\n<p><b> Microsoft Edge:</b> Hiermit können Webinhalte nur in Microsoft Edge geöffnet werden.<a href=\"{0}\" target=\"_blank\"> Erfahren Sie, wie Microsoft Edge Ihre Daten schützt. </a></p>\r\n<p><b> Nicht verwalteter Browser:</b>  Hiermit können Webinhalte nur in dem nicht verwalteten Browser geöffnet werden, der über die Einstellung „Protokoll von nicht verwaltetem Browser“ definiert wurde </p>\r\n<p><b>Beliebige App:</b> Weblinks werden in beliebigen Apps zugelassen</p>"
                                                     },
                         "OverrideBiometric":  {
                                                   "tooltip":  "Sofern als erforderlich festgelegt, setzt eine PIN-Aufforderung abhängig vom Timeout (Minuten der Inaktivität) Biometrieaufforderungen außer Kraft. Solange der Timeoutwert nicht erreicht wurde, wird weiterhin die Biometrieaufforderung angezeigt. Dieser Timeoutwert sollte größer sein als der unter „Zugriffsanforderungen nach (Minuten der Inaktivität) erneut überprüfen“ angegebene Wert. "
@@ -1502,7 +1509,7 @@
                                                     },
                         "RequirePinAfterBiometricChange":  {
                                                                "label":  "Überschreiben von Biometrie mit PIN nach biometrischen Updates",
-                                                               "tooltip":  "Wenn die Biometrie der Klasse 3 vom Gerät unterstützt wird (weitere Informationen finden Sie <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">hier</a>), wenn eine Änderung der Biometrie erkannt wird, überschreibt eine PIN-Eingabeaufforderung biometrische Eingabeaufforderungen."
+                                                               "tooltip":  "Wenn Biometrie der Klasse 3 vom Gerät unterstützt wird (weitere Informationen <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">hier</a>), wenn eine Änderung der Biometrie erkannt wird, überschreibt eine PIN-Eingabeaufforderung biometrische Eingabeaufforderungen. Diese Einstellung wird erst wirksam, wenn ein biometrisches Element für den Zugriff auf die App verwendet wurde."
                                                            },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "Die Paket-ID muss eindeutig sein.",
@@ -1515,7 +1522,7 @@
                                               },
                         "SaveData":  {
                                          "label":  "Kopien von Organisationsdaten speichern",
-                                         "tooltip":  "Wählen Sie „{0}“ aus, um das Speichern einer Kopie von Organisationsdaten an einem anderen Ort als dem ausgewählten Speicherdienst über „Speichern unter“ zu verhindern.\r\n Wählen Sie „{1}“ aus, um das Speichern einer Kopie von Organisationsdaten an einem anderen Ort als dem ausgewählten Speicherdienst über „Speichern unter“ zuzulassen. <br/> \r\n\r\n\r\nHinweis: Diese Einstellung gilt nicht für alle Anwendungen. Weitere Informationen finden Sie unter {2}.\r\n"
+                                         "tooltip":  "Wählen Sie „{0}“ aus, um das Speichern einer Kopie von Organisationsdaten an einem anderen Ort als dem ausgewählten Speicherdienst über „Speichern unter“ zu verhindern.\r\n Wählen Sie „{1}“ aus, um das Speichern einer Kopie von Organisationsdaten an einem anderen Ort als dem ausgewählten Speicherdienst über „Speichern unter“ zuzulassen. <br/>\r\n\r\n\r\nHinweis: Diese Einstellung gilt nicht für alle Anwendungen. Weitere Informationen finden Sie unter {2}.\r\n"
                                      },
                         "SaveDataToSelected":  {
                                                    "label":  "Benutzer das Speichern von Kopien in den ausgewählten Diensten ermöglichen",
@@ -1606,7 +1613,7 @@
                             "pushNotification":  "Pushbenachrichtigung an Endbenutzer senden",
                             "remoteLock":  "Nicht konformes Gerät remote sperren",
                             "removeSourceAccessProfile":  "Quellzugriffsprofil entfernen",
-                            "retire":  "Nicht konformes Gerät zurückziehen",
+                            "retire":  "Gerät zur Abkoppelungsliste hinzufügen",
                             "wipe":  "Zurücksetzen",
                             "emailNotification":  "E-Mail an Endbenutzer senden"
                         },
@@ -1746,6 +1753,7 @@
                                                       "weeks1":  "Jede Woche"
                                                   },
                               "PolicyListToolBarOption":  {
+                                                              "linux":  "Linux",
                                                               "macOs":  "macOS",
                                                               "windows":  "Windows 10 und höher"
                                                           },
@@ -1765,6 +1773,7 @@
                                                  "uploadInfoBalloonContent":  "Geben Sie die PowerShell-Skriptdatei an. Die Dateigröße muss unter 200 KB liegen.",
                                                  "uploadLabel":  "Skriptspeicherort"
                                              },
+                              "bashScriptObjectName":  "Bash-Skript",
                               "createButtonText":  "Hinzufügen",
                               "createPowershellScriptFlowSectionName":  "PowerShell-Skript hinzufügen",
                               "customAttributeObjectName":  "Benutzerdefiniertes Attribut",
@@ -1969,6 +1978,8 @@
                            "androidDeviceOwnerAlwaysOnVpnClientDescription":  "Der angegebene VPN-Client muss auf dem Gerät installiert sein und Pro-App-VPN unterstützen; andernfalls tritt ein Fehler auf. Beachten Sie, dass Sie die App im verwalteten Google Play Store genehmigen, mit Intune synchronisieren und bereitstellen müssen, damit sie installiert werden kann.",
                            "androidDeviceOwnerCustomPasswordDescription":  "Hiermit wird nur für dedizierte Geräte ein Gerätepasscode erstellt. Dieser kann 4–16 Zeichen umfassen und Ziffern, Buchstaben und Sonderzeichen enthalten.",
                            "androidDeviceOwnerCustomPasswordName":  "Benutzerdefinierter Passcode",
+                           "androidElevenAndBelowPasswordHeader":  "Android 11 und früher",
+                           "androidElevenAndBelowPasswordHeaderDescription":  "Diese Einstellungen funktionieren für Geräte mit Android 11 oder früher.",
                            "androidEnterpriseAlwaysOnVpnClientName":  "VPN-Client",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierDescription":  "Geben Sie die Paket-ID der App im Google Play Store ein. Wenn die URL für die App im Play Store beispielsweise \"https://play.google.com/store/details?id=com.contosovpn.android.prod\" lautet, dann lautet die Paket-ID \"com.contosovpn.android.prod\".",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierName":  "Paket-ID",
@@ -2016,6 +2027,9 @@
                            "androidTenDeprecationInfoBox":  "Ab Oktober 2020 werden einige Einstellungen auf Android-Geräten unter Android 10 und höher (mit Ausnahme von Samsung KNOX) nicht mehr unterstützt. Diese Einstellungen sind mit \"Android 9 und früher\" oder \"Samsung KNOX\" gekennzeichnet. Klicken Sie, um weitere Informationen zu erhalten.",
                            "androidTrustedServerCertificateNamesDescription":  "Dies ist der DNS-Name, der im Zertifikat verwendet wird, das vom Radius-Server während der Clientauthentifizierung beim WLAN-Zugriffspunkt verwendet wird. Wenn der vollqualifizierte Domänenname mehrere Radiusserver mit demselben DNS-Suffix aufweist, kann auch das Suffix allein verwendet werden. Hiermit können Geräte dem Serverzertifikat vertrauen, das ihnen übergeben wird. <a href=\"https://go.microsoft.com/fwlink/?linkid=2181354\" target=\"_blank\">Weitere Informationen</a>.<br>",
                            "androidTrustedServerCertificateNamesName":  "Radius-Servername",
+                           "androidTwelveAndAbovePasswordHeader":  "Android 12 und höher",
+                           "androidTwelveAndAbovePasswordHeaderDescription":  "Diese Einstellungen funktionieren für Geräte mit Android 12 oder höher.",
+                           "androidTwelveDeprecationInfoBox":  "Ab November 2022 werden einige Einstellungen auf Android-Geräten mit Android 12 und höher nicht mehr unterstützt. Diese Einstellungen werden mit Android 11 und früheren Versionen bezeichnet. Klicken Sie hier, um weitere Informationen zu erhalten.",
                            "androidZebraMxConfigurationFileXmlName":  "Wählen Sie eine gültige Zebra MX-XML-Datei aus.",
                            "androidZebraMxConfigurationLearnMore":  "Weitere Informationen zum Verwalten von Zebra-Geräten",
                            "androidZebraMxConfigurationXmlName":  "MX-Profil im XML-Format",
@@ -3792,8 +3806,6 @@
                            "exchangeActiveSyncHostExample":  "z. B. outlook.office365.com",
                            "exchangeActiveSyncHostName":  "E-Mail-Server",
                            "exclusionAppListColumn":  "Auszuschließende App",
-                           "expeditedCheckinEnableDescription":  "Stündlichen Check-In für Geräte veranlassen",
-                           "expeditedCheckinEnableName":  "Stündlichen Check-In für Geräte veranlassen",
                            "experienceAllowBrowserSyncSettingsDescription":  "Gibt an, ob der Benutzer die Browsereinstellung zur Synchronisierung von Informationen wie z. B. Verlauf und Favoriten zwischen den Benutzergeräten aktivieren kann. Um diese Einstellung zu konfigurieren, müssen Sie die Einstellung \"Browsereinstellungen zwischen Benutzergeräten synchronisieren\" aktivieren.",
                            "experienceAllowBrowserSyncSettingsName":  "Benutzer kann Einstellungen für Browsersynchronisierung aktivieren",
                            "experienceDoNotSyncBrowserSettingsDescription":  "Wenn die Einstellung blockiert wird, ist die Standardkonfiguration (Synchronisierung von Browsereinstellungen zwischen Geräten zulassen) deaktiviert, sodass Benutzer keine Synchronisierung zwischen Geräten durchführen können. Wenn die Option \"Außerkraftsetzung durch Benutzer blockieren und aktivieren\" ausgewählt ist, können Benutzer die Administratorfestlegung außer Kraft setzen.",
@@ -4866,9 +4878,9 @@
                            "macOSSoftwareUpdatePolicySectionDescription":  "Erstellen Sie ein Profil, um für die zugewiesenen Geräten eine automatische Installation der neuesten macOS-Updates zu erzwingen. Diese Einstellungen legen fest, wie und wann Softwareupdates bereitgestellt werden. Dieses Profil verhindert nicht, dass Benutzer das Betriebssystem manuell aktualisieren. Updates gelten nur für Geräte, die über die automatische Geräteregistrierung von Apple (ABM oder ASM) registriert wurden.",
                            "macOSSoftwareUpdatePolicySectionDescriptionLearnMoreText":  "Weitere Informationen",
                            "macOSSoftwareUpdatePolicySupervisedLearnMoreText":  "Weitere Informationen",
-                           "macOSSoftwareUpdatePolicySupervisedName":  "Erstellen Sie ein Profil, um für die zugewiesenen Geräten eine automatische Installation der neuesten macOS-Updates zu erzwingen. Diese Einstellungen legen fest, wie und wann Softwareupdates bereitgestellt werden. Dieses Profil verhindert nicht, dass Benutzer das Betriebssystem manuell aktualisieren. Updates gelten nur für Geräte, die über die automatische Geräteregistrierung von Apple (ABM oder ASM) registriert wurden.",
+                           "macOSSoftwareUpdatePolicySupervisedName":  "Erstellen Sie ein Profil, um für die zugewiesenen Geräten eine automatische Installation der neuesten macOS-Updates zu erzwingen. Diese Einstellungen bestimmen, wie und wann Softwareupdates bereitgestellt werden. Dieses Profil verhindert nicht, dass Benutzer das Betriebssystem manuell aktualisieren. Updates gelten nur für überwachte Geräte.",
                            "macOSSoftwareUpdatePolicyWeeklyScheduleName":  "Wöchentlicher Zeitplan",
-                           "macOSSoftwareUpdateSelectScheduleTypeName":  "Wenn einem Gerät eine macOS-Softwareupdaterichtlinie zugewiesen wird, werden beim Einchecken standardmäßig die neuesten Updates von Intune bereitgestellt. Sie können auch einen wöchentlichen Zeitplan erstellen und einen Zeitraum angeben, in dem Geräte beim Einchecken Updates empfangen können. Wenn Sie eine Aktualisierung außerhalb des geplanten Zeitraums durchführen möchten, stellt Intune bis zum Ende des geplanten Zeitraums keine Updates bereit.",
+                           "macOSSoftwareUpdateSelectScheduleTypeName":  "Wenn einem Gerät eine Updaterichtlinie zugewiesen wird, werden die neuesten Updates von Intune standardmäßig beim Einchecken des Geräts bereitgestellt. Sie können stattdessen auch einen wöchentlichen Zeitplan mit benutzerdefinierten Start- und Endzeiten erstellen. Wenn Sie eine Aktualisierung außerhalb des geplanten Zeitraums durchführen möchten, stellt Intune bis zum Ende des geplanten Zeitraums keine Updates bereit.",
                            "macOSSoftwareUpdateSelectUpdateBehaviorName":  "Wählen Sie das Verhalten für Downloads, Installationen und/oder Benachrichtigungen für jeden Updatetyp aus.",
                            "macOSSystemExtensionsExtensionTypeName":  "Zulässige Systemerweiterungstypen",
                            "macRequireClassroomRequestPermissionToLeaveClassesDescription":  "In einem nicht verwalteten Classroom-Kurs registrierte Schüler benötigen die Einwilligung der Lehrkraft, um den Kurs zu verlassen.",
@@ -5143,9 +5155,9 @@
                            "nATKeepAliveOffloadEnableName":  "NAT-Keep-Alive auf Hardware auslagern, wenn sich das Gerät im Standbymodus befindet",
                            "nATKeepAliveOffloadEnableToolTip":  "Wenn sich ein Gerät im Standbymodus befindet, überprüft das NAT-System regelmäßig, ob es noch mit dem VPN verbunden ist. Mit dieser Einstellung können Sie dieses Verhalten deaktivieren.",
                            "nacIdCheckBoxLabel":  "Ich stimme zu.",
-                           "nacIdDescCisco":  "Für Cisco AnyConnect muss die Intune-Geräte-ID in das VPN-Profil eingeschlossen werden, damit die Netzwerkzugriffssteuerung (NAC) aktiviert werden kann.<br><br>Ich erteile Microsoft die Erlaubnis, Geräteinformationen in das VPN-Profil einzuschließen, das von Cisco und seinen Partnern verwendet werden kann.",
-                           "nacIdDescCitrix":  "Für Citrix SSO muss die Intune-Geräte-ID in das VPN-Profil eingeschlossen werden, damit die Netzwerkzugriffssteuerung (NAC) aktiviert werden kann.<br><br>Ich erteile Microsoft die Erlaubnis, Geräteinformationen in das VPN-Profil einzuschließen, das von Citrix und seinen Partnern verwendet werden kann.",
-                           "nacIdDescF5":  "Für F5 Access muss die Intune-Geräte-ID in das VPN-Profil eingeschlossen werden, damit die Netzwerkzugriffssteuerung (NAC) aktiviert werden kann.<br><br>Ich erteile Microsoft die Erlaubnis, Geräteinformationen in das VPN-Profil einzuschließen, das von F5 Access und seinen Partnern verwendet werden kann.",
+                           "nacIdDescCisco":  "Cisco AnyConnect erfordert, dass die Intune-Geräte-ID im VPN-Profil enthalten ist, damit NAC aktiviert werden kann.<br><br>Ich gebe Microsoft die Einwilligung, Geräteinformationen in das VPN-Profil einzuschließen, die von Cisco und ihren Partnern verwendet werden können. Klicken Sie hier, um weitere Informationen zu erhalten, einschließlich welche Daten für den Dienstanbieter freigegeben werden.",
+                           "nacIdDescCitrix":  "Cisco SSO erfordert, dass die Intune-Geräte-ID im VPN-Profil enthalten ist, damit NAC aktiviert werden kann.<br><br>Ich gebe Microsoft die Einwilligung, Geräteinformationen in das VPN-Profil einzuschließen, die von Citrix und ihren Partnern verwendet werden können. Klicken Sie hier, um weitere Informationen zu erhalten, einschließlich welche Daten für den Dienstanbieter freigegeben werden.",
+                           "nacIdDescF5":  "F5 Access erfordert, dass die Intune-Geräte-ID im VPN-Profil enthalten ist, damit NAC aktiviert werden kann.<br><br>Ich gebe Microsoft die Einwilligung, Geräteinformationen in das VPN-Profil einzuschließen, die von F5 Access und ihren Partnern verwendet werden können. Klicken Sie hier, um weitere Informationen zu erhalten, einschließlich welche Daten für den Dienstanbieter freigegeben werden.",
                            "nacIdHeader":  "Netzwerkzugriffssteuerung (NAC) aktivieren",
                            "nacIdHeaderCiscoToolTip":  "Die Geräte-ID wird verschlüsselt und in das VPN-Profil eingeschlossen. Wenn der Benutzer versucht, eine Verbindung mit dem VPN herzustellen, übergibt Cisco AnyConnect diesen Wert an Ihre NAC-Infrastruktur, die mit diesem Wert eine Abfrage in Intune durchführt, um festzustellen, ob das Gerät registriert und konform ist.<br><br>Cisco AnyConnect kann nicht direkt auf die Geräte-ID zugreifen, deshalb muss dieser Wert zur Aktivierung der Netzwerkzugriffssteuerung in das VPN-Profil eingeschlossen werden.",
                            "nacIdHeaderCitrixToolTip":  "Die Geräte-ID wird verschlüsselt und in das VPN-Profil eingeschlossen. Wenn der Benutzer versucht, eine Verbindung mit dem VPN herzustellen, übergibt Citrix SSO diesen Wert an Ihre NAC-Infrastruktur. Diese führt mit diesem Wert eine Abfrage in Intune durch, um festzustellen, ob das Gerät registriert und konform ist.<br><br>Citrix SSO kann nicht direkt auf die Geräte-ID zugreifen, deshalb muss dieser Wert zur Aktivierung der Netzwerkzugriffssteuerung in das VPN-Profil eingeschlossen werden.",
@@ -6016,6 +6028,15 @@
                            "shutdown":  "Herunterfahren",
                            "signatureUpdateIntervalInHoursName":  "Intervall für Security Intelligence-Aktualisierung (in Stunden)",
                            "signingCertificateType":  "Signaturzertifikattyp",
+                           "silentCertAccessAddApps":  "Apps hinzufügen",
+                           "silentCertAccessApplicationsName":  "Anwendungen",
+                           "silentCertAccessMaxAppsWarn":  "Wählen Sie maximal 50 Apps aus, denen der automatische Zugriff auf Zertifikate gewährt werden soll.",
+                           "silentCertAccessMinAppsWarn":  "Wählen Sie mindestens eine App aus, der automatischen Zugriff auf Zertifikate gewährt werden soll.",
+                           "silentCertAccessSpecificApps":  "Für bestimmte Apps automatisch gewähren (Genehmigung durch Benutzer für andere Apps erforderlich)",
+                           "silentCertAccessTabName":  "Apps",
+                           "silentCertAccessTypeDescription":  "Wählen Sie aus, wie der Zugriff auf Zertifikate für Anwendungen gewährt wird.",
+                           "silentCertAccessTypeName":  "Zugriff auf Zertifikate",
+                           "silentCertAccessUserApproval":  "Benutzergenehmigung für alle Apps erforderlich",
                            "simpleDownloadOption":  "Einfacher Downloadmodus ohne Peering (99)",
                            "simultaneousMultiThreadingName":  "Simultanes Multithreading",
                            "singleAppModeAppNameDescription":  "Der Name der App.",
@@ -7151,6 +7172,8 @@
                            "windows10ProfessionalOption":  "Windows 10/11 Pro",
                            "windows10ProfessionalWorkstationNOption":  "Windows 10/11 Pro for Workstations, N-Edition",
                            "windows10ProfessionalWorkstationOption":  "Windows 10/11 Pro for Workstations",
+                           "windows11CloudEditionNOption":  "Windows 11 SE N",
+                           "windows11CloudEditionOption":  "Windows 11 SE",
                            "windows11EULA":  "Durch Auswahl dieser Option stimmen Sie zu, dass Sie bei Anwendung dieses Betriebssystems auf ein Gerät entweder (1) die entsprechende Windows-Lizenz durch Volumenlizenzierung erworben haben oder (2) dazu autorisiert sind, Ihre Organisation vertraglich zu binden, und in ihrem Namen die hier aufgeführten Microsoft-Software-Lizenzbedingungen akzeptieren: <a>{0}</a>.",
                            "windowsAppNonComplianceTypeDescription":  "Es wird empfohlen, die Benutzer zur Annahme von Nutzungsbedingungen aufzufordern, damit diese bestätigen, dass die Installation bestimmter Apps blockiert wird. Verwenden Sie die Liste blockierter Apps, um die nicht von Intune verwalteten Windows Phone-Apps anzugeben, die von Benutzern nicht installiert werden können. Der Liste zulässiger Apps müssen alle Apps, einschließlich des Unternehmensportals und aller bereitgestellten Apps, unter Verwendung des App Store-URL-Formats hinzugefügt werden.",
                            "windowsAppUrlExample":  "Beispiel: https://www.microsoft.com/en-us/store/apps/remote-desktop/9wzdncrfj3ps",
@@ -7239,6 +7262,8 @@
                            "workProfilePersonalUsagAndroidEnrollmentTypesHeaderDescription":  "Diese Einstellungen funktionieren für unternehmenseigene Arbeitsprofilgeräte und gelten nur während der persönlichen Nutzung.",
                            "workProfileRequirePasswordDescription":  "Erfordert ein Kennwort zum Verwenden von Arbeits-Apps. Dieses kann sich vom Gerätekennwort unterscheiden. (Android 7.0 und höher) ",
                            "workProfileRequirePasswordName":  "Arbeitsprofilkennwort erforderlich",
+                           "workProfileRequiredPasswordComplexityDescription":  "Hiermit wird die erforderliche Kennwortkomplexität angegeben.",
+                           "workProfileRequiredPasswordComplexityName":  "Komplexität des Arbeitsprofilkennworts",
                            "workProfileRequiredPasswordTypeDescription":  "Geben Sie den erforderlichen Kennworttyp an.",
                            "workProfileRequiredPasswordTypeName":  "Erforderlicher Kennworttyp",
                            "workspaceIDName":  "Arbeitsbereichs-ID",
@@ -7601,7 +7626,7 @@
                            "isMamEnabled":  "Ist MAM aktiviert?",
                            "itemsCount":  "{0} Elemente",
                            "jailbrokenRootedDevices":  "Geräte mit Jailbreak/entfernten Nutzungsbeschränkungen",
-                           "lastModifiedDate":  "Last Modified Date",
+                           "lastModifiedDate":  "Datum der letzten Änderung",
                            "lastReportedDate":  "Datum des letzten Berichts",
                            "lastSync":  "Letzte Synchronisierung",
                            "lastSyncGmt":  "Letzte Synchronisierung (GMT)",
@@ -7633,6 +7658,7 @@
                            "mdmDeviceId":  "MDM-Geräte-ID",
                            "mdmWipInvalidVersionSettings":  "Mindestens eine App weist ungültige Definitionen für die Mindest-/Höchstversion auf.<br /> <br />Windows Information Protection mit Registrierungsrichtlinien unterstützt nur die Festlegung einer einzigen Mindest- oder Höchstversion, sofern nicht beide Versionen als äquivalent angegeben werden. Wenn nur die Mindestversion angegeben wird, wird die Regel als größer oder gleich der Mindestversion festgelegt. Ebenso wird die Regel als kleiner oder gleich der Höchstversion festgelegt, wenn nur die Höchstversion angegeben wird.",
                            "mdmWipReport":  "Windows Information Protection-MDM-Bericht",
+                           "microsoftDefenderForEndpoint":  "Microsoft Defender für Endpunkt",
                            "microsoftEdgeOptionText":  "Microsoft Edge",
                            "minAppVersion":  "Mindestversion für App",
                            "minMaxValidation":  "Die mindestens erforderliche Betriebssystemversion muss niedriger sein als die maximal zulässige Betriebssystemversion, wenn die Aktion identisch ist.",
@@ -7642,11 +7668,13 @@
                            "minimumCompanyPortalVersion":  "Mindestversion für Unternehmensportal",
                            "minimumDeviceSelection":  "Es muss mindestens 1 Gerät ausgewählt werden.",
                            "mobileAppCRUDpermission":  "Berechtigungen für mobile Apps: Erstellen, Lesen, Zuweisen",
+                           "mobileThreatDefenseNonMicrosoft":  "Mobile Threat Defense (Nicht-Microsoft)",
                            "monitor":  "Monitor",
                            "moreApps":  "Weitere Apps",
                            "moreAppsTextBoxTooltip":  "Fügen Sie hier Branchen-Apps hinzu, wenn Sie nicht auf das vollständige Intune-Portal zugreifen können.",
-                           "mtdConnectorInfoBox1":  "<b>Wichtig!</b> Stellen Sie sicher, dass Ihr Mobile Threat Defense-Connector eingerichtet wurde, um die Daten Ihrer Organisation basierend auf Bedrohungsbewertungen der verbundenen Mobile Threat Defense-Dienste ordnungsgemäß zu schützen.",
+                           "mtdConnectorInfoBox1":  "<b>Wichtig!</b> Stellen Sie sicher, dass Ihr Mobile Threat Defense (MTD)-Connector eingerichtet wurde, um die Daten Ihrer Organisation basierend auf Bedrohungsbewertungen der verbundenen Mobile Threat Defense-Dienste ordnungsgemäß zu schützen.",
                            "mtdConnectorInfoBox2":  "Erfahren Sie mehr über Mobile Threat Defense für nicht registrierte Geräte.",
+                           "mtdConnectorInfoBox3":  "Wenn Ihr Mandant eine Verbindung sowohl mit Microsoft Defender für Endpunkt als auch mit einem MTD-Dienst (nicht von Microsoft) eingerichtet hat und keinen primären MTD-Dienst konfiguriert, oder wenn ein Konflikt bei der Ausrichtung auf einen Benutzer vorliegt, ist Microsoft Defender für Endpunkt der Standard.",
                            "name":  "Name",
                            "networkBoundariesInfoBoxText":  "Fügen Sie Ihrer Liste der Cloudressourcen /*AppCompat*/ hinzu, um TLS-Verbindungen durch persönliche Apps zu ermöglichen, die über eine IP-Adresse eine direkte Verbindung mit einer Cloudressource herstellen.",
                            "networkBoundariesInfoParagraph1":  "Wählen Sie die Stellen aus, an denen geschützte Apps auf Unternehmensdaten in Ihrem Netzwerk zugreifen können.",
@@ -7735,6 +7763,7 @@
                            "portNumber":  "Portnummer",
                            "portNumberDesc":  "Port für den in der Proxyadresse angegebenen Proxy",
                            "prefix":  "Präfix",
+                           "primaryMtdService":  "Primärer MTD-Dienst",
                            "productName":  "Produktname",
                            "properties":  "Eigenschaften",
                            "protected":  "Geschützt",
@@ -7777,7 +7806,7 @@
                            "resourcesToBeCreated":  "Zu erstellende Ressourcen",
                            "restrictWebContentNo":  "Alle Apps",
                            "restrictWebContentOption2":  "{0}: Weblinks in allen Apps zulassen",
-                           "rootCertificate":  "Root Certificate",
+                           "rootCertificate":  "Stammzertifikat",
                            "safetyNetDeviceAttestation":  "SafetyNet-Gerätenachweis",
                            "saveAppsNotificationText":  "Die ausgewählten Apps werden gespeichert.",
                            "saveChangesCommandText":  "Speichern",
@@ -7813,6 +7842,7 @@
                            "setting":  "Einstellung",
                            "settingName":  "Einstellungsname",
                            "settings":  "Einstellungen",
+                           "settingsCatalog":  "Einstellungskatalog",
                            "settingsSelectorLabel":  "Einstellungen",
                            "silent":  "Lautlos",
                            "specificUserIsLicensedIntune":  "{0} ist für Microsoft Intune lizenziert.",
@@ -7840,6 +7870,7 @@
                            "targetedUserPartWithPolicy":  "Verwaltet durch Richtlinie",
                            "targetediOSUserPartTitle":  "Benutzerstatus für iOS",
                            "threatCategory":  "Bedrohungskategorie",
+                           "tileDeprecated":  "Diese Kachel ist veraltet. Entfernen Sie diese Kachel aus Ihrem Dashboard.",
                            "timeColumnLabel":  "Uhrzeit",
                            "timebombLabel":  "Offline-Intervall, bevor App-Daten zurückgesetzt werden (in Tagen)",
                            "timebombToolTip":  "Nach der angegebenen Anzahl von Tagen ohne Synchronisierung des Geräts mit Intune führt Windows eine selektive Zurücksetzung auf dem Gerät durch. Dadurch wird die Registrierung der Apps für die MAM-Registrierung aufgehoben, und verschlüsselte und geschützte Unternehmensdaten werden entfernt. Die Standardeinstellung ist 90 Tage. Durch Festlegen dieses Werts auf 0 wird die Einstellung deaktiviert.",
@@ -7912,7 +7943,7 @@
                            "windows10AppProtectionPolicy":  "App-Schutzrichtlinie für Windows 10 oder höher",
                            "windows10PlatformLabel":  "Windows 10 und höher",
                            "windows10x":  "Windows 10X",
-                           "windows8":  "Windows 8.1 and later",
+                           "windows8":  "Windows 8.1 und höher",
                            "windowsInformationProtectionPlatformLabel":  "Windows Information Protection",
                            "windowsPhone":  "Windows Phone 8.1",
                            "windowsPlatformLabel":  "Windows",
@@ -7944,6 +7975,7 @@
                            "wipSMBStringTooltip":  "Gibt eine Liste von Dateierweiterungen an, sodass Dateien mit diesen Erweiterungen beim Kopieren aus einer SMB-Freigabe innerhalb der Unternehmensgrenzen (gemäß Definition in der Liste mit Netzwerkstandorten) verschlüsselt werden. Wenn diese Richtlinie nicht festgelegt ist, wird das vorhandene Verhalten zur automatischen Verschlüsselung angewendet. Wenn diese Richtlinie konfiguriert ist, werden nur Dateien mit den in der Liste enthaltenen Erweiterungen verschlüsselt.",
                            "wipStoreApps":  "Store-Apps",
                            "wipWeAppsListInfo":  "Diese Apps dürfen auf Ihre Unternehmensdaten zugreifen und interagieren anders, wenn sie mit unzulässigen, nicht unternehmensfähigen oder rein persönlichen Apps verwendet werden. Nur unterstützte Apps sind auf Geräten ohne MDM zulässig.",
+                           "wipWeDeprecationWarning":  "Creating new WIP without enrollment policies (WIP-WE) is no longer supported. For more information, see <a target=\"_blank\" href={0}>Windows Information Protection</a> ",
                            "wipWeWarning":  "Damit Richtlinien für Windows 10 oder höher in Kraft treten können, müssen Sie die <a target=\"_blank\" href={0}>MAM-URLs in AAD auf Microsoft Intune festlegen</a>, indem Sie Standard-URLs wiederherstellen“ auswählen und den Benutzerbereich definieren.",
                            "wipWebsiteLearningTitle":  "Website-Learning für Windows Information Protection",
                            "wipeData":  "Daten löschen",
@@ -8042,7 +8074,9 @@
                                "windows10ProfessionalEducationN":  "Windows 10/11 Professional Education N",
                                "windows10ProfessionalN":  "Windows 10 Professional N",
                                "windows10ProfessionalWorkstation":  "Windows 10/11 Professional Workstation",
-                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professional Workstation N"
+                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professional Workstation N",
+                               "windows11CloudEdition":  "Windows 11 SE",
+                               "windows11CloudEditionN":  "Windows 11 SE N"
                            },
     "DetectionRules":  {
                            "ComparisonOperators":  {
@@ -8059,6 +8093,7 @@
                                                 "header":  "Benutzerdefiniertes Skript für die Erkennung verwenden",
                                                 "runAs32Bit":  "Skript auf 64-Bit-Clients als 32-Bit-Prozess ausführen",
                                                 "runAs32BitTooltip":  "Wählen Sie \"Ja\", um das Skript auf 64-Bit-Clients in einem 32-Bit-Prozess auszuführen. Wählen Sie \"Nein\" (Standardeinstellung) aus, um das Skript auf 64-Bit-Clients in einem 64-Bit-Prozess auszuführen. 32-Bit-Clients führen das Skript in einem 32-Bit-Prozess aus.",
+                                                "scriptContent":  "Script content",
                                                 "scriptFile":  "Skriptdatei",
                                                 "scriptFileNotSelectedValidation":  "Keine Skriptdatei ausgewählt.",
                                                 "scriptFileTooltip":  "Wählen Sie ein PowerShell-Skript aus, mit dem das Vorhandensein der App auf dem Client erkannt wird. Die App wird erkannt, wenn das Skript den Wert 0 als Exitcode zurückgibt und einen Zeichenfolgenwert in STDOUT schreibt.",
@@ -8307,9 +8342,6 @@
                                                                                                              "string":  "Zeichenfolge",
                                                                                                              "version":  "Version"
                                                                                                          },
-                                                                            "ScriptContent":  {
-                                                                                                  "emptyMessage":  "Der Skriptinhalt darf nicht leer sein."
-                                                                                              },
                                                                             "duplicateName":  "Der Skriptname \"{0}\" wird bereits verwendet. Geben Sie einen anderen Namen ein.",
                                                                             "enforceSignatureCheck":  "Skriptsignaturprüfung erzwingen",
                                                                             "enforceSignatureCheckTooltip":  "Wählen Sie \"Ja\" aus, um sicherzustellen, dass das Skript von einem vertrauenswürdigen Herausgeber signiert ist, damit das Skript ohne Warnungen oder Eingabeaufforderungen ausgeführt werden kann. Das Skript wird ohne Blockierung ausgeführt. Wählen Sie \"Nein\" (Standardeinstellung) aus, um das Skript mit Benutzerbestätigung, aber ohne Signaturüberprüfung auszuführen.",
@@ -8318,6 +8350,7 @@
                                                                             "operatorTooltip":  "Wählen Sie den Operator für den Anforderungsvergleich aus.",
                                                                             "requirementMethod":  "Ausgabedatentyp auswählen",
                                                                             "requirementMethodTooltip":  "Wählen Sie den Datentyp aus, der beim Ermitteln einer Anforderung zur Erkennungsübereinstimmung verwendet wird.",
+                                                                            "scriptContent":  "Script content",
                                                                             "scriptFile":  "Skriptdatei",
                                                                             "scriptFileTooltip":  "Wählen Sie ein PowerShell-Skript aus, mit dem das Vorhandensein der App auf dem Client erkannt wird. Wenn die App erkannt wird, stellt der Anforderungsprozess einen Exitcode mit dem Wert 0 bereit und schreibt einen Zeichenfolgenwert in STDOUT.",
                                                                             "scriptName":  "Skriptname",
@@ -8370,6 +8403,7 @@
                                                       },
                                          "InfoBlade":  {
                                                            "createTitle":  "Authentifizierungskontext hinzufügen",
+                                                           "deleteDisallowed":  "Sie können diesen Authentifizierungskontext nicht löschen, während ihre Richtlinien für bedingten Zugriff darauf verweisen.",
                                                            "descPlaceholder":  "Fügen Sie eine Beschreibung für den Authentifizierungskontext hinzu.",
                                                            "modifyTitle":  "Authentifizierungskontext ändern",
                                                            "namePlaceholder":  "Beispiele: vertrauenswürdiger Speicherort, vertrauenswürdiges Gerät, starke Autorisierung",
@@ -8396,15 +8430,15 @@
                                          "description":  "Beschreibung",
                                          "documentation":  "Dokumentation",
                                          "getStarted":  "Erste Schritte",
-                                         "label":  "Authentifizierungskontext (Vorschau)",
-                                         "menuLabel":  "Authentifizierungskontext (Vorschau)",
+                                         "label":  "Authentifizierungskontext",
+                                         "menuLabel":  "Authentifizierungskontext",
                                          "name":  "Name",
                                          "noAuthContextConfigured":  "Es wurden keine Authentifizierungskontexte konfiguriert.",
                                          "noAuthContextSet":  "Es sind keine Authentifizierungskontexte vorhanden",
                                          "noData":  "Keine Authentifizierungskontexte zur Anzeige vorhanden.",
                                          "selectionInfo":  "Ein Authentifizierungskontext wird verwendet, um Anwendungsdaten und Aktionen in Apps wie SharePoint und Microsoft Cloud App Security zu schützen.",
                                          "step":  "Schritt",
-                                         "tabDescription":  "Verwalten Sie den Authentifizierungskontext, um Daten und Aktionen in Ihren Apps zu schützen. [Weitere Informationen][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
+                                         "tabDescription":  "Verwalten Sie den Authentifizierungskontext, um Daten und Aktionen in Ihren Apps zu schützen. Authentifizierungskontexte können nicht gelöscht werden, wenn von Richtlinien für bedingten Zugriff auf sie verwiesen wird. [Weitere Informationen][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
                                          "tagResources":  "Ressourcen mit einem Authentifizierungskontext markieren"
                                      },
                      "AuthenticationStrength":  {
@@ -8554,12 +8588,13 @@
                                                    "guestOrExternalUsersLabel":  "Gastbenutzer oder externe Benutzer",
                                                    "internalGuestLabel":  "Lokale Gastbenutzer",
                                                    "otherExternalUserLabel":  "Andere externe Benutzer",
-                                                   "serviceProviderUsersLabel":  "Service provider users"
+                                                   "previewTag":  "{0} (Vorschau)",
+                                                   "serviceProviderUsersLabel":  "Dienstanbieterbenutzer"
                                                },
                      "NamedLocation":  {
                                            "Form":  {
                                                         "CountryLookup":  {
-                                                                              "ariaLabel":  "Methode für Länder-/Regionssuche",
+                                                                              "ariaLabel":  "Lookup-Methode für Land/Region",
                                                                               "gps":  "Standort anhand von GPS-Koordinaten bestimmen",
                                                                               "info":  "Wenn die Standortbedingung einer Richtlinie für bedingten Zugriff konfiguriert ist, werden Benutzer von der Authenticator-App aufgefordert, ihren GPS-Standort freizugeben. ",
                                                                               "ip":  "Standort anhand der IP-Adresse bestimmen (nur IPv4)"
@@ -8696,7 +8731,7 @@
                                                       "ServicePrincipalRisk":  {
                                                                                    "description":  "Konfigurieren der für die Erzwingung der Richtlinie erforderlichen Risikostufen des Dienstprinzipals​",
                                                                                    "infoBalloonContent":  "Konfigurieren des Dienstprinzipalrisikos zum Anwenden der Richtlinie auf die ausgewählte(n) Risikostufe(n)",
-                                                                                   "title":  "Dienstprinzipalrisiko (Vorschau)"
+                                                                                   "title":  "Dienstprinzipalrisiko"
                                                                                }
                                                   }
                                 },
@@ -8985,6 +9020,11 @@
                                  "optionsPickerTitle":  "Fortlaufende Zugriffsevaluierung aktivieren/deaktivieren",
                                  "upsellInfo":  "Sie können Ihre Einstellungen auf der Seite nicht mehr ändern, und alle Einstellungen hier sollten ignoriert werden. Ihre bisherige Einstellung wird beibehalten. Sie können Ihre CAE-Einstellungen in Zukunft unter „Bedingter Zugriff“ konfigurieren. Klicken Sie hier, um weitere Informationen zu erhalten."
                              },
+                     "SamlReauth":  {
+                                        "Filter":  {
+                                                       "warning":  "Sie verwenden eine dynamische Abfrage, um Anwendungen als Ziel zu verwenden. Einige Anwendungen werden möglicherweise nicht für die Verwendung mit dem Sitzungssteuerelement „Anmeldehäufigkeit jedes Mal“ unterstützt. {0}Weitere Informationen zu den empfohlenen Szenarien.{1}"
+                                                   }
+                                    },
                      "SelectOrganizations":  {
                                                  "Blade":  {
                                                                "Lower":  {
@@ -9198,9 +9238,10 @@
                                                                           "infoBalloon":  "Liste der Attribute auf dem Gerät, die bei der Anmeldung verwendet werden."
                                                                       }
                                                },
-                                    "noTenantSelected":  "No tenant selected",
-                                    "tenantIdWithPlaceholder":  "Tenant ID: {0}",
-                                    "tenantSelectionRequired":  "Tenant required"
+                                    "noTenantSelected":  "Kein Mandant ausgewählt",
+                                    "selectOrganization":  "Organisation auswählen",
+                                    "tenantIdWithPlaceholder":  "Mandanten-ID: {0}",
+                                    "tenantSelectionRequired":  "Mandant erforderlich"
                                 },
                      "advancedTabText":  "Erweitert",
                      "allCloudAppsErrorBox":  "\"Alle Cloud-Apps\" muss ausgewählt werden, wenn die Zuweisung \"Kennwortänderung anfordern\" ausgewählt ist.",
@@ -9224,7 +9265,7 @@
                      "appContextUriPlaceholder":  "Beispiel: uri:contoso.com:level3",
                      "appEnforceInfoBubble":  "Für von der App erzwungene Einschränkungen sind möglicherweise zusätzliche Administratorkonfigurationen innerhalb der Cloud-Apps erforderlich. Die Einschränkungen treten nur für neue Sitzungen in Kraft.",
                      "appNotSetSeletorLabel":  "0 Cloud-Apps ausgewählt",
-                     "appReauthNotSupported":  "This app does not support the \"sign-in frequency every time\" session control.",
+                     "appReauthNotSupported":  "Diese App unterstützt die Sitzungssteuerung „Anmeldehäufigkeit jedes Mal“ nicht.",
                      "applyConditionClientAppInfoBalloonContent":  "Konfigurieren Sie Client-Apps, um die Richtlinie auf bestimmte Client-Apps anzuwenden.",
                      "applyConditionDevicePlatformInfoBalloonContent":  "Konfigurieren Sie Geräteplattformen, um die Richtlinie auf bestimmte Plattformen anzuwenden.",
                      "applyConditionDeviceStateInfoBalloonContent":  "Konfigurieren Sie den Gerätezustand, um die Richtlinie auf bestimmte Gerätezustände anzuwenden.",
@@ -9483,10 +9524,12 @@
                      "downloadDefaultFileName":  "IP-Bereiche",
                      "downloadExampleFileName":  "Beispiel",
                      "downloadExampleHeader":  "Dies ist eine Beispieldatei zu den akzeptierten Datentypen. Zeilen, die mit # beginnen, werden ignoriert.",
+                     "duplicate":  "Duplizieren",
+                     "duplicatePolicyName":  "{0} KOPIEREN",
                      "endDatePickerLabel":  "Endet",
                      "endTimePickerLabel":  "Endzeit",
-                     "enterCountryText":  "Die IP-Adresse und das Land/die Region werden zusammen ausgewertet. Wählen Sie das Land/die Region aus.",
-                     "enterIpText":  "Die IP-Adresse und das Land/die Region werden zusammen ausgewertet. Geben Sie die IP-Adresse ein.",
+                     "enterCountryText":  "IP-Adresse und Land/Region werden als Paar ausgewertet. Wählen Sie das Land aus.",
+                     "enterIpText":  "IP-Adresse und Land/Region werden zusammen ausgewertet. Geben Sie die IP-Adresse ein.",
                      "enterUserText":  "Kein Benutzer ausgewählt. Wählen Sie einen Benutzer aus.",
                      "evaluationResult":  "Auswertungsergebnis",
                      "exchangeActiveSyncSelectedLabel":  "Exchange ActiveSync",
@@ -9528,7 +9571,7 @@
                      "infoCommandLabel":  "Info",
                      "invalidCertDuration":  "Ungültige Zertifikatdauer.",
                      "invalidIpAddress":  "Der Wert muss eine gültige IP-Adresse sein.",
-                     "invalidReAuthSignInRiskOptionSelected":  "Die Sitzungssteuerung „Anmeldehäufigkeit jedes Mal“ lässt die Auswahl „Kein Risiko“ im Bedingungssteuerelement „Risikostufe für Anmeldung“ nicht zu.",
+                     "invalidReAuthSignInRiskOptionSelected":  "Die Sitzungssteuerung „Anmeldehäufigkeit jedes Mal“ lässt die Auswahl „Kein Risiko“ im Bedingungssteuerelement „Anmelderisiko“ nicht zu.",
                      "invalidUriErrorMsg":  "Geben Sie einen gültigen URI an. Beispiel: uri:contoso.com:acr ",
                      "iosDisplayName":  "iOS",
                      "linuxDisplayName":  "Linux",
@@ -9653,9 +9696,9 @@
                      "policyConditionLocation":  "Standorte",
                      "policyConditionLocationDescription":  "Der Standort (ermittelt über den IP-Adressbereich), von dem aus sich der Benutzer anmeldet",
                      "policyConditionLocationPreview":  "Standorte (Vorschau)",
-                     "policyConditionSigninRisk":  "Risikostufe der Anmeldung",
+                     "policyConditionSigninRisk":  "Anmelderisiko",
                      "policyConditionSigninRiskDescription":  "Die Wahrscheinlichkeit, dass die Anmeldung von einer anderen Person als dem Benutzer stammt. Die Risikostufe kann \"Hoch\", \"Mittel\" oder \"Niedrig\" lauten. Erfordert eine Azure AD Premium 2-Lizenz.",
-                     "policyConditionUserRisk":  "Benutzerrisikostufe",
+                     "policyConditionUserRisk":  "Benutzerrisiko",
                      "policyConditionUserRiskDescription":  "Hiermit konfigurieren Sie die Benutzerrisikostufen, die für die Erzwingung der Richtlinie erforderlich sind.",
                      "policyConditioniClientApp":  "Client-Apps",
                      "policyControlAllowAccessDisplayedName":  "Zugriff gewähren",
@@ -9874,8 +9917,8 @@
                      "whatIfBladeTitle":  "What If",
                      "whatIfClassicPoliciesWarning":  "Klassische Richtlinien werden von diesem Tool nicht ausgewertet.",
                      "whatIfClientAppInfo":  "Die Client-App, über die sich der Benutzer anmeldet. Beispiel: \"Browser\".",
-                     "whatIfCountry":  "Land",
-                     "whatIfCountryInfo":  "Das Land, von dem aus der Benutzer sich anmeldet.",
+                     "whatIfCountry":  "Land/Region",
+                     "whatIfCountryInfo":  "Das Land/die Region, von dem/der aus der Benutzer sich anmeldet.",
                      "whatIfDevicePlatformInfo":  "Die Geräteplattform, von der aus der Benutzer sich anmeldet.",
                      "whatIfDeviceStateInfo":  "Der Status des Geräts, von dem aus der Benutzer sich anmeldet.",
                      "whatIfEnterIpAddress":  "IP-Adresse eingeben (Beispiel: 40.77.182.32)",
@@ -9900,7 +9943,7 @@
                      "whatIfPolicyDoesNotApplyTabWithCount":  "Nicht anwendbare Richtlinien ({0})",
                      "whatIfReasons":  "Gründe für Nichtanwendung dieser Richtlinie",
                      "whatIfSelectClientApp":  "Client-App auswählen...",
-                     "whatIfSelectCountry":  "Land auswählen...",
+                     "whatIfSelectCountry":  "Land/Region auswählen...",
                      "whatIfSelectDevicePlatform":  "Geräteplattform auswählen...",
                      "whatIfSelectPrivateLink":  "Private Link auswählen...",
                      "whatIfSelectServicePrincipalRisk":  "Dienstprinzipalrisiko auswählen",
@@ -9919,6 +9962,7 @@
                      "windowsDisplayName":  "Windows",
                      "windowsPhoneDisplayName":  "Windows Phone",
                      "workloadIdentities":  "Workloadidentitäten (Vorschau)",
+                     "workloadIdentitiesLicenseText":  "Wenn Sie diese Richtlinie bearbeiten möchten, benötigen Sie eine Premium-P1- oder P2-Lizenz für Workloadidentitäten.",
                      "workloadIdentity":  "Workload-Identität"
                  },
     "AppResources":  {
@@ -10047,6 +10091,14 @@
                                         }
                      },
     "WindowsEnrollment":  {
+                              "DevicePreparation":  {
+                                                        "description":  "Konfigurieren Sie Geräte für die anfängliche Bereitstellung, und weisen Sie sie Benutzern zu.",
+                                                        "title":  "Gerätevorbereitung"
+                                                    },
+                              "EnrollmentSettings":  {
+                                                         "description":  "Konfigurieren Sie Registrierungseinstellungen wie das Blockieren der Registrierung und das Zuweisen zu Benutzern.",
+                                                         "title":  "Registrierungseinstellungen"
+                                                     },
                               "coManagementAuthorityDesc":  "Hiermit werden Co-Verwaltungseinstellungen für die Configuration Manager-Integration konfiguriert.",
                               "coManagementAuthorityTitle":  "Einstellungen für die Co-Verwaltung",
                               "deploymentProfiles":  "Windows AutoPilot Deployment-Profile",
@@ -10196,6 +10248,8 @@
                    "informationUrlSizeHint":  "Die maximale Länge der Informations-URL beträgt 1024 Zeichen.",
                    "installAsManaged":  "Als verwaltet installieren",
                    "installationSourceLabel":  "App-Typ",
+                   "installerTypeInfoBalloon":  "The installer type of the application package.",
+                   "installerTypeLabel":  "Installer Type",
                    "isFeatured":  "Diese App als ausgewählte App im Unternehmensportal anzeigen",
                    "isMAMEnabledToggleLabel":  "Ja",
                    "lastModifiedDateTime":  "Uhrzeit der letzten Aktualisierung",
@@ -10408,6 +10462,8 @@
                                                         "qualityUpdateSettings":  "Einstellungen"
                                                     },
                                         "infoBoxText":  "Die einzige dedizierte Qualitätsupdatesteuerung, die derzeit außer der vorhandenen Updateringrichtlinie für Windows 10 und höher verfügbar ist, ist die Möglichkeit, Qualitätsupdates für Geräte zu beschleunigen, die hinter eine bestimmte Patchebene fallen. Weitere Steuerelemente werden in Zukunft verfügbar sein.",
+                                        "licenseLearnMoreText":  "Erfahren Sie mehr über Voraussetzungen und Richtlinien für Qualitätsupdates.",
+                                        "licenseWarningBoxText":  "Zum Erstellen von Richtlinien für Qualitätsupdates ist eine bestimmte Lizenzierung erforderlich.",
                                         "warningBoxText":  "Die Beschleunigung von Softwareupdates kann zwar dazu beitragen, bei Bedarf eine schnellere Konformität zu erzielen, sie hat aber einen größeren Einfluss auf die Produktivität der Endbenutzer. Die Wahrscheinlichkeit, dass ein Neustart während der Geschäftszeiten erfolgt, ist deutlich erhöht."
                                     },
     "TermsOfUse":  {
@@ -10492,6 +10548,7 @@
                                          "ptBR":  "Portuguese (Brazil)",
                                          "ptPT":  "Portuguese (Portugal)",
                                          "quz":  "Quechua",
+                                         "removeLanguage":  "Remove language",
                                          "ro":  "Romanian",
                                          "ru":  "Russian",
                                          "rw":  "Kinyarwanda",
@@ -10542,10 +10599,7 @@
                                                                      },
                                       "PolicyFile":  {
                                                          "Languages":  {
-                                                                           "Empty":  {
-                                                                                         "default":  "Select default language",
-                                                                                         "nonDefault":  "Select a language"
-                                                                                     }
+
                                                                        },
                                                          "Validations":  {
                                                                              "duplicateLanguage":  "Oops, {0} appears to be selected multiple times. Language selection must be unique."
@@ -10581,6 +10635,7 @@
                                       "agreementNamePlaceholderText":  "Example: 'All users terms of use'",
                                       "agreementRequirmentLabel":  "Required Upon",
                                       "agreementTargetEntityLabel":  "Users targeted",
+                                      "agreementUploadPolicyAriaLabelText":  "Upload required PDF {0}",
                                       "agreementUploadPolicyLabel":  "Terms of use",
                                       "agreementUploadPolicyPlaceholderText":  "Upload required PDF",
                                       "createButtonLabel":  "Create",
@@ -10594,7 +10649,32 @@
                                       "policyTemplateInfo":  "These templates are pre configured conditional access policies that are targeted to specific users and applications.",
                                       "policyTemplateLabel":  "Policy templates",
                                       "title":  "New terms of use"
-                                  }
+                                  },
+                       "Details":  {
+                                       "Link":  {
+                                                    "auditEvent":  "View audit logs",
+                                                    "delete":  "Delete",
+                                                    "download":  "Preview PDF",
+                                                    "edit":  "Edit"
+                                                },
+                                       "Property":  {
+                                                        "acceptanceDuration":  "Duration before re-acceptance required (days)",
+                                                        "acceptanceExpirationFrequency":  "Frequency",
+                                                        "acceptanceExpirationStartDateTime":  "Expire starting on",
+                                                        "accepted":  "Users accepted",
+                                                        "declined":  "Users declined",
+                                                        "displayname":  "Display name",
+                                                        "isAcceptanceExpirationEnable":  "Expire consents",
+                                                        "isPerDeviceAcceptanceRequired":  "Require users to consent on every device",
+                                                        "isViewingBeforeAcceptanceRequired":  "Require users to expand the terms of use",
+                                                        "name":  "Name"
+                                                    },
+                                       "Tab":  {
+                                                   "cAPolicies":  "Conditional access policies",
+                                                   "details":  "Details",
+                                                   "languages":  "Languages"
+                                               }
+                                   }
                    },
     "TACSettings":  {
                         "edgeSettings":  "Edge-Konfigurationseinstellungen",
@@ -10660,6 +10740,23 @@
                               "withEnrollment":  "Mit Registrierung",
                               "withoutEnrollment":  "Ohne Registrierung"
                           },
+    "PolicySelection":  {
+                            "Grid":  {
+                                         "Column":  {
+                                                        "author":  "Autor",
+                                                        "template":  "Name der Vorlage"
+                                                    }
+                                     },
+                            "SettingsCatalog":  {
+                                                    "subtitle":  "Starten Sie ganz neu, und wählen Sie die gewünschten Einstellungen aus der Bibliothek der verfügbaren Einstellungen aus.",
+                                                    "title":  "Einstellungskatalog"
+                                                },
+                            "Templates":  {
+                                              "subtitle":  "Vorlagen enthalten Gruppen von Einstellungen, die nach Funktionalität angeordnet sind. Verwenden Sie eine Vorlage, wenn Sie Richtlinien nicht manuell erstellen oder Geräte für den Zugriff auf Unternehmensnetzwerke konfigurieren möchten, z. B. durch das Konfigurieren von WLAN oder VPN.",
+                                              "title":  "Vorlagen"
+                                          },
+                            "noData":  "Keine Richtlinienvorlagen gefunden."
+                        },
     "OfficeApplicationAdditionalType":  {
                                             "projectProRetail":  "Projekt Online-Desktopclient",
                                             "visioProRetail":  "Visio Online-Plan 2"
@@ -10844,6 +10941,12 @@
                           "withEnrollment":  "Mit Registrierung",
                           "withoutEnrollment":  "Ohne Registrierung"
                       },
+    "DisplayRoleTypes":  {
+                             "builtInRole":  "Integrierte Rolle",
+                             "customCloudPCRole":  "Benutzerdefinierte Windows 365-Rolle",
+                             "customIntuneRole":  "Benutzerdefinierte Intune-Rolle",
+                             "customRole":  "Benutzerdefinierte Rolle"
+                         },
     "InstallContextType":  {
                                "device":  "Gerät",
                                "deviceContext":  "Gerätekontext",
@@ -11019,7 +11122,7 @@
                                                                      "Schedule":  {
                                                                                       "always":  "Beim nächsten Einchecken aktualisieren",
                                                                                       "duringTimeWindows":  "Update innerhalb des geplanten Zeitraums",
-                                                                                      "header":  "Wenn einem Gerät eine iOS-/iPadOS-Softwareupdaterichtlinie zugewiesen wird, werden die neuesten Updates von Intune standardmäßig beim Einchecken des Geräts bereitgestellt (etwa alle 8 Stunden). Sie können stattdessen auch einen wöchentlichen Zeitplan mit benutzerdefinierten Start- und Endzeiten erstellen. Wenn Sie eine Aktualisierung außerhalb des geplanten Zeitraums durchführen möchten, stellt Intune bis zum Ende des geplanten Zeitraums keine Updates bereit.",
+                                                                                      "header":  "Wenn einem Gerät eine Updaterichtlinie zugewiesen wird, werden die neuesten Updates von Intune standardmäßig beim Einchecken des Geräts bereitgestellt. Sie können stattdessen auch einen wöchentlichen Zeitplan mit benutzerdefinierten Start- und Endzeiten erstellen. Wenn Sie eine Aktualisierung außerhalb des geplanten Zeitraums durchführen möchten, stellt Intune bis zum Ende des geplanten Zeitraums keine Updates bereit.",
                                                                                       "infoBalloon":  "Zeitpunkt der Durchführung von Updates. Zum Planen von Updates während oder außerhalb der geplanten Zeiten ist eine zusätzliche Eingabe erforderlich.",
                                                                                       "label":  "Zeitplantyp",
                                                                                       "outsideActiveHours":  "Außerhalb der aktiven Stunden aktualisieren (Legacy)",
@@ -11443,6 +11546,7 @@
                    "ManagedDesktop":  {
                                           "adminContacts":  "Administratorkontakte",
                                           "appPackaging":  "App-Paketierung",
+                                          "businessGroups":  "Geschäftsgruppen",
                                           "devices":  "Geräte",
                                           "feedback":  "Feedback",
                                           "gettingStarted":  "Erste Schritte",
@@ -11479,6 +11583,7 @@
                    "cartProfiles":  "Warenkorbprofile",
                    "certificateConnectors":  "Zertifikatconnectors",
                    "chromeEnterprise":  "Chrome Enterprise (Vorschau)",
+                   "cloudAttachedDevices":  "Geräte mit Cloudanbindung (Vorschau)",
                    "compliancePolicies":  "Konformitätsrichtlinien",
                    "complianceScriptManagement":  "Skripts",
                    "complianceScriptManagementPreview":  "Skripts (Vorschau)",
@@ -11512,7 +11617,7 @@
                    "failuresForFeatureUpdates":  "Fehler bei Featureupdate (Vorschau)",
                    "failuresForQualityUpdates":  "Fehler bei beschleunigten Windows-Updates (Vorschau)",
                    "featureFlighting":  "Feature-Flighting",
-                   "featureUpdateDeployments":  "Featureupdates für Windows 10 und höher (Vorschau)",
+                   "featureUpdateDeployments":  "Featureupdates für Windows 10 und höher",
                    "flighting":  "Test-Flighting",
                    "fotaUpdate":  "Firmware-Over-the-Air-Update",
                    "groupPolicy":  "Administrative Vorlagen",
@@ -11523,8 +11628,8 @@
                    "incompleteUserEnrollments":  "Unvollständige Benutzerregistrierungen",
                    "iosUpdates":  "Richtlinien für iOS/iPadOS aktualisieren",
                    "legacyPcManagement":  "Legacy-PC-Verwaltung",
-                   "macOSSoftwareUpdate":  "Updaterichtlinien für macOS",
-                   "macOSSoftwareUpdateAccountSummaries":  "Installationsstatus für macOS-Geräte",
+                   "macOSSoftwareUpdate":  "Aktualisieren von Richtlinien für macOS (Vorschau)",
+                   "macOSSoftwareUpdateAccountSummaries":  "Installationsstatus für macOS-Geräte (Vorschau)",
                    "macOSSoftwareUpdateCategorySummaries":  "Zusammenfassung der Softwareupdates",
                    "macOSSoftwareUpdateStateSummaries":  "Updates",
                    "managedGooglePlay":  "Verwaltetes Google Play",
@@ -11570,11 +11675,12 @@
                    "warranty":  "Garantieanbieter",
                    "wdacSupplementalPolicies":  "Zusätzliche S Modus-Richtlinien",
                    "windows10DriverUpdate":  "Treiberupdates für Windows 10 und höher (Vorschau)",
-                   "windows10QualityUpdate":  "Qualitätsupdates für Windows 10 und höher (Vorschau)",
+                   "windows10QualityUpdate":  "Qualitätsupdates für Windows 10 und höher",
                    "windows10UpdateRings":  "Updateringe für Windows 10 und höher",
                    "windows10XPolicyFailures":  "Windows 10X-Richtlinienfehler",
                    "windows365Connector":  "Windows 365 Citrix-Connector",
-                   "windows365ConnectorPublicPreview":  "Windows 365 Citrix connector (preview)",
+                   "windows365ConnectorPublicPreview":  "Windows 365 Citrix-Connector (Vorschau)",
+                   "windowsDiagnosticData":  "Windows-Daten",
                    "windowsEnterpriseCertificate":  "Windows Enterprise-Zertifikat",
                    "windowsManagement":  "PowerShell-Skripts",
                    "windowsSideLoadingKeys":  "Windows-Schlüssel zum Querladen",

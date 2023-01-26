@@ -367,7 +367,6 @@
                      "educationTeacherCerts":  "Lärarcertifikat",
                      "emailProfile":  "E-post",
                      "enterpriseDataProtection":  "Windows Information Protection",
-                     "expeditedCheckin":  "Konfiguration för hantering av mobil enhet",
                      "extensibleSingleSignOn":  "Tillägg för enkel inloggning",
                      "filevault":  "FileVault",
                      "firewall":  "Brandvägg",
@@ -508,7 +507,10 @@
                                                         "deploymentSettings":  "Distributionsinställningar",
                                                         "groupAssignmentSettings":  "Tilldelningar",
                                                         "scopeSettings":  "Omfångstaggar"
-                                                    }
+                                                    },
+                                        "gradualRolloutLicenseWarning":  "Den här funktionen kräver specifik licensiering.",
+                                        "gradualRolloutLicenseWarningEdit":  "Den här funktionen kan fortsätta att användas och konfigureras tills principen sparas utan att den här funktionen har valts.",
+                                        "licenseLearnMoreText":  "Läs mer om krav och principer för funktionsuppdatering."
                                     },
     "WIPPinRequirements":  {
                                "WipLowercaseCharacterPinRequirements":  {
@@ -676,7 +678,8 @@
                                            "selectApp":  "Sök i App Store efter iOS-appar som du vill distribuera med Intune.",
                                            "useManagedBrowser":  "När en användare öppnar webbappen öppnas den i en Intune-skyddad webbläsare, till exempel Microsoft Edge eller Intune Managed Browser. Den här inställningen gäller både iOS- och Android-enheter.",
                                            "useManagedBrowserLink":  "https://docs.microsoft.com/en-us/intune/apps/app-configuration-managed-browser",
-                                           "win32AppPackageFile":  "En fil som innehåller din app i ett format som kan läsas in separat på en enhet. Giltig pakettyp: .intunewin."
+                                           "win32AppPackageFile":  "En fil som innehåller din app i ett format som kan läsas in separat på en enhet. Giltig pakettyp: .intunewin.",
+                                           "winGetStoreSelectApp":  "Sök i Microsoft Store-lagringsplatsen efter store-appar som du vill distribuera med Intune."
                                        },
                               "descriptionPreview":  "Förhandsversion",
                               "descriptionRequired":  "Beskrivning måste anges.",
@@ -800,10 +803,10 @@
                                                     "azureADDevice":  "Tillhörande Azure AD-enhet",
                                                     "batch":  "Grupptagg",
                                                     "dateAssigned":  "Tilldelat datum",
-                                                    "deviceAccountFriendlyName":  "Eget namn för enhetskonto",
                                                     "deviceAccountPwd":  "Tjänstkontolösenord",
                                                     "deviceAccountUpn":  "Device account",
                                                     "deviceDisplayName":  "Enhetsnamn",
+                                                    "deviceFriendlyName":  "Eget namn på enhet",
                                                     "deviceName":  "Enhetsnamn",
                                                     "deviceUseType":  "Typ av enhetsanvändning",
                                                     "enrollmentState":  "Registreringsstatus",
@@ -924,10 +927,10 @@
                                        "azureADDevice":  "Gå till enhetsinformationen för tillhörande enhet. Saknas betyder att det inte finns någon tillhörande enhet.",
                                        "batch":  "Ett strängattribut som kan användas för att identifiera en grupp enheter. Fältet Grupptagg i Intune mappar till OrderID-attributet på Azure AD-enheter.",
                                        "dateAssigned":  "Tidsstämpel för när profilen tilldelades enheten.",
-                                       "deviceAccountFriendlyName":  "Eget namn på enhetskonto för Surface Hub-enheter",
-                                       "deviceAccountPwd":  "Lösenord för enhetskonto för Surface Hub-enheter",
-                                       "deviceAccountUpn":  "E-postadress för enhetskonto för Surface Hub-enheter",
+                                       "deviceAccountPwd":  "Lösenord för enhetskonto för Surface Hub enheter. Om du anger det fyller du även i enhetskontot och det egna namnet.",
+                                       "deviceAccountUpn":  "E-post för enhetskonto för Surface Hub enheter. Om du anger det fyller du även i lösenordet för enhetskontot och det egna namnet.",
                                        "deviceDisplayName":  "Ange ett unikt namn för en enhet. Det här namnet ignoreras i Hybrid Azure AD-anslutna distributioner. Enhetsnamnet kommer fortfarande från domänanslutningsprofilen för Hybrid Azure AD-enheter.",
+                                       "deviceFriendlyName":  "Eget namn på enheten för Surface Hub enheter. Om du anger det fyller du även i lösenordet för enhetskontot och enhetskontot.",
                                        "deviceName":  "Namnet som visas när någon försöker identifiera och ansluta till enheten.",
                                        "deviceUseType":  "      Enheten installeras baserat på ditt val. Du kan alltid ändra det här senare i inställningarna.\r\n      <ul>\r\n      <li> För möten och presentationer aktiveras inte Windows Hello och data tas bort efter varje session.\r\n      </li>\r\n      <li> För gruppsamarbete aktiveras Windows Hello och profiler sparas för snabb inloggning</li>\r\n      </ul>",
                                        "enrollmentState":  "Anger om enheten är registrerad.",
@@ -1047,6 +1050,9 @@
                                                          },
                                                  "V12":  {
                                                              "0":  "macOS Monterey 12.0"
+                                                         },
+                                                 "V13":  {
+                                                             "0":  "macOS Ventura 13.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -1102,6 +1108,7 @@
                                    "customMessageTextBox":  "Felmeddelande",
                                    "customMessageToggle":  "Visa anpassat meddelande vid tidsgräns eller fel",
                                    "enableForAutopilotOnlyToggle":  "Visa bara sidan för enheter som har etablerats via välkomstprogrammet",
+                                   "installQualityUpdatesToggle":  "Installera Windows-kvalitetsuppdateringar (kan starta om enheten)",
                                    "progressToggle":  "Visa inställningsförlopp för appar och profiler",
                                    "resetToggle":  "Tillåt användare att återställa enheten om det uppstår fel vid installationen",
                                    "timeout":  "Visa ett fel när installationen tar länge tid än angivet antal minuter"
@@ -1367,7 +1374,7 @@
                                                           },
                         "AndroidBackup":  {
                                               "label":  "Säkerhetskopiera organisationsdata till Android-säkerhetskopieringstjänster",
-                                              "tooltip":  "Välj {0} om du vill förhindra säkerhetskopiering av organisationsdata till Android-säkerhetskopieringstjänster.  \r\nVälj {1} om du vill tillåta säkerhetskopiering av organisationsdata till Android-säkerhetskopieringstjänster.  \r\nPersonliga eller ohanterade data påverkas inte."
+                                              "tooltip":  "Välj {0} om du vill förhindra säkerhetskopiering av organisationsdata till Android-säkerhetskopieringstjänster.\r\nVälj {1} om du vill tillåta säkerhetskopiering av organisationsdata till Android-säkerhetskopieringstjänster.\r\nPersonliga eller ohanterade data påverkas inte."
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "Biometrik i stället för åtkomst via pin-kod",
@@ -1378,7 +1385,7 @@
                                                    "tooltip":  "I Android-operativsystemet autentiseras Android-användare via skanning av fingeravtryck. Funktionen kan användas med inbyggda biometriska reglage på Android-enheter. OEM-specifika biometriska inställningar, till exempel Samsung Pass, stöds inte. Om alternativet tillåts måste inbyggda biometriska reglage användas för att öppna appen på en aktiverad enhet."
                                                },
                         "AndroidOverrideFingerprint":  {
-                                                           "label":  "Åsidosätt fingeravtryck med PIN-kod efter uppnådd tidsgräns"
+                                                           "label":  "Åsidosätt biometri med PIN-  efter timeout"
                                                        },
                         "AppPIN":  {
                                        "label":  "PIN-appkod när enhetens PIN-kod har ställts in",
@@ -1409,7 +1416,7 @@
                                                    },
                         "CustomBrowserProtocol":  {
                                                       "label":  "Protokoll för ohanterad webbläsare",
-                                                      "tooltip":  "<p>Ange protokollet för en enskild ohanterad webbläsare. Webbinnehåll (http/s) från principhanterade program öppnas i en app som har stöd för protokollet. </p>\r\n \r\n<p><b>OBS! </b>Ange bara protokollets prefix. Om webbläsaren kräver länkar i formatet \"minwebbläsare://www.microsoft.com\" så skriver du \"minwebbläsare\".</p>"
+                                                      "tooltip":  "<p>Ange protokollet för en enskild ohanterad webbläsare. Webbinnehåll (http/s) från principhanterade program öppnas i en app som har stöd för protokollet.</p>\r\n\r\n<p><b>OBS! </b>Ange bara protokollets prefix. Om webbläsaren kräver länkar i formatet \"minwebbläsare://www.microsoft.com\" så skriver du \"minwebbläsare\".</p>"
                                                   },
                         "CustomDialerAppDisplayName":  {
                                                            "label":  "Namn på uppringningsapp"
@@ -1435,7 +1442,7 @@
                                             "tooltip":  "Välj {0} om du vill framtvinga kryptering av organisationsdata med applagerkryptering från Intune.\r\n <br/>\r\nVälj {1} om du inte vill framtvinga kryptering av organisationsdata med applagerkryptering från Intune.\r\n\r\n<br/>\r\nObs! Mer information om applagerkryptering från Intune finns i {2}."
                                         },
                         "EncryptDataAndroid":  {
-                                                   "tooltip":  "<p>Välj <b>Kräv</b> om du vill aktivera kryptering av arbets- eller skoldata i den här appen. I Intune används ett OpenSSL, 256-bitars AES-krypteringsschema tillsammans med Android Keystore-systemet för att kryptera appdata på ett säkert sätt. Data krypteras synkront under I/O-filåtgärder. Innehåll i enhetens lagringsutrymme krypteras alltid. SDK-paketet ger fortsatt stöd för 128-bitars nycklar för kompatibilitet med innehåll och appar som använder äldre SDK-versioner. </p>\r\n\r\n<p>Krypteringsmetoden är FIPS 140-2-kompatibel.</p>"
+                                                   "tooltip":  "<p>Välj <b>Require</b> för att aktivera kryptering av arbets- eller skoldata i den här appen. Intune använder ett wolfSSL- 256-bitars AES-krypteringsschema tillsammans med Android Keystore-systemet för att kryptera appdata på ett säkert sätt. Data krypteras synkront under fil-I/O-uppgifter. Innehållet på enhetens lagring är alltid krypterat. Nya filer krypteras med 256-bitarsnycklar. Befintliga 128-bitars krypterade filer genomgår ett migreringsförsök till 256-bitarsnycklar, men processen är inte garanterad. Filer som krypterats med 128-bitarsnycklar förblir läsbara. </p>\r\n\r\n<p>Krypteringsmetoden är FIPS 140-2-kompatibel.</p>"
                                                },
                         "EncryptDataIos":  {
                                                "tooltip1":  "Välj <b>Kräv</b> om du vill aktivera kryptering av arbets- eller skoldata i den här appen. I Intune används iOS-/iPadOS-enhetskryptering för att skydda appdata när enheten är låst. Program kan också kryptera appdata med hjälp av Intune APP-SDK-kryptering. I Intune APP-SDK används iOS-/iPadOS-kryptografimetoder för att tillämpa 128-bitars AES-kryptering av appdata.",
@@ -1463,11 +1470,11 @@
                                        },
                         "NotificationRestriction":  {
                                                         "label":  "Organisationsdatameddelanden",
-                                                        "tooltip":  "<p>Välj ett av följande alternativ för att ange hur meddelanden för organisationskonton ska visas för den här appen och alla anslutna enheter, till exempel kroppsnära enheter:</p> \r\n<p>{0}: Dela inte meddelanden.</p> \r\n<p>{1}: Dela inte organisationsdata i meddelanden. Om meddelanden inte stöds av programmet blockeras de. </p>\r\n<p>{2}:  Dela alla meddelanden. </p>\r\n <p>Endast Android:\r\n Obs! Den här inställningen gäller inte alla program. Mer information finns i {3} </p>\r\n \r\n <p>Endast iOS:\r\nObs! Den här inställningen gäller inte alla program. Mer information finns i {4}</p>"
+                                                        "tooltip":  "<p>Välj ett av följande alternativ för att ange hur meddelanden för organisationskonton ska visas för den här appen och alla anslutna enheter, till exempel kroppsnära enheter:</p>\r\n<p>{0}: Dela inte meddelanden.</p>\r\n<p>{1}: Dela inte organisationsdata i meddelanden. Om meddelanden inte stöds av programmet blockeras de. </p>\r\n<p>{2}:  Dela alla meddelanden. </p>\r\n <p>Endast Android:\r\n Obs! Den här inställningen gäller inte alla program. Mer information finns i {3} </p>\r\n\r\n<p>Endast iOS:\r\nObs! Den här inställningen gäller inte alla program. Mer information finns i {4}</p>"
                                                     },
                         "OpenLinksManagedBrowser":  {
                                                         "label":  "Begränsa överföring av webbinnehåll till andra appar",
-                                                        "tooltip":  "<p>Välj ett av följande alternativ för att ange de appar som den här appen kan öppna webbinnehåll i: </p>\r\n<p><b>Edge:</b> Tillåt endast att webbinnehåll öppnas i en Edge-hanterad webbläsare </p>\r\n<p><b>Ohanterad webbläsare:</b>  Tillåt endast att webbinnehåll öppnas i den ohanterade webbläsaren som anges i inställningen Protokoll för ohanterad webbläsare </p> \r\n<p><b>Valfri app:</b> Tillåt webblänkar i valfri app</p>"
+                                                        "tooltip":  "<p>Välj något av följande alternativ för att ange vilka appar som den här appen kan öppna webbinnehåll i: </p>\r\n<p><b> Microsoft Edge:</b> Tillåt webbinnehåll för att bara öppna i Microsoft Edge.<a href=\"{0}\" target=\"_blank\"> Lär dig hur Microsoft Edge skyddar dina data.</a></p>\r\n<p><b>Hanterad webbläsare:</b> Tillåt att webbinnehåll endast öppnas i den ohanterade webbläsaren som definieras av inställningen \"Ohanterat webbläsarprotokoll\"</p>\r\n<p><b>Alla appar:</b> Tillåt webblänkar i alla appar</p>"
                                                     },
                         "OverrideBiometric":  {
                                                   "tooltip":  "Om det krävs, åsidosätts biometrik av en PIN-kod, beroende på tidsgränsen (minuter av inaktivitet). Om tidsgränsvärdet inte har nåtts fortsätter biometriken att visas. Tidsgränsvärdet måste vara större än det värde som anges i Kontrollera åtkomstkraven igen efter (minuters inaktivitet). "
@@ -1502,7 +1509,7 @@
                                                     },
                         "RequirePinAfterBiometricChange":  {
                                                                "label":  "Åsidosätt biometrisk kod med PIN-kod efter biometriska uppdateringar",
-                                                               "tooltip":  "Om klass 3-biometrik stöds av enheten (läs mer <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">här</a>), och en ändring av biometrisk kod identifieras, åsidosätter en PIN-kod uppmaningar om biometrik."
+                                                               "tooltip":  "Om klass 3-biometrik stöds av enheten (läs mer <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">här</a>), och en ändring av biometrisk kod identifieras, åsidosätter en PIN-kod uppmaningar om biometrik. Den här inställningen börjar bara gälla när en biometrisk inställning har använts för att komma åt appen."
                                                            },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "Paketets id måste vara unikt.",
@@ -1515,7 +1522,7 @@
                                               },
                         "SaveData":  {
                                          "label":  "Spara kopior av organisationsdata",
-                                         "tooltip":  "Välj {0} om du inte vill att en kopia av organisationsdata ska kunna sparas på en annan plats än i de valda lagringstjänsterna med Spara som.\r\n Välj {1} om du vill tillåta att en kopia av organisationsdata sparas på en ny plats med Spara som. <br/> \r\n\r\n\r\nObs! Den här inställningen gäller inte alla program. Mer information finns i {2}.\r\n"
+                                         "tooltip":  "Välj {0} om du inte vill att en kopia av organisationsdata ska kunna sparas på en annan plats än i de valda lagringstjänsterna med Spara som.\r\n Välj {1} om du vill tillåta att en kopia av organisationsdata sparas på en ny plats med Spara som. <br/>\r\n\r\n\r\nObs! Den här inställningen gäller inte alla program. Mer information finns i {2}.\r\n"
                                      },
                         "SaveDataToSelected":  {
                                                    "label":  "Tillåt användaren att spara kopior i valda tjänster",
@@ -1606,7 +1613,7 @@
                             "pushNotification":  "Skicka push-meddelande till slutanvändare",
                             "remoteLock":  "Fjärrlås en inkompatibel enhet",
                             "removeSourceAccessProfile":  "Ta bort profil för källåtkomst",
-                            "retire":  "Ta icke-kompatibel enhet ur bruk",
+                            "retire":  "Lägg till enhet i listan över borttagningar",
                             "wipe":  "Rensa",
                             "emailNotification":  "Skicka e-post till slutanvändare"
                         },
@@ -1746,6 +1753,7 @@
                                                       "weeks1":  "1 gång i veckan"
                                                   },
                               "PolicyListToolBarOption":  {
+                                                              "linux":  "Linux",
                                                               "macOs":  "macOS",
                                                               "windows":  "Windows 10 och senare"
                                                           },
@@ -1765,6 +1773,7 @@
                                                  "uploadInfoBalloonContent":  "Ange PowerShell-skriptfilen. Filen måste vara mindre än 200 KB.",
                                                  "uploadLabel":  "Skriptplats"
                                              },
+                              "bashScriptObjectName":  "Bash-skript",
                               "createButtonText":  "Lägg till",
                               "createPowershellScriptFlowSectionName":  "Lägg till PowerShell-skript",
                               "customAttributeObjectName":  "Anpassat attribut",
@@ -1969,6 +1978,8 @@
                            "androidDeviceOwnerAlwaysOnVpnClientDescription":  "Den angivna VPN-klienten måste vara installerad på enheten och måste ha stöd för per app-VPN. I annat fall uppstår fel. Tänk på att du måste godkänna appen i den hanterade Google Play-butiken, synkronisera appen med Intune och distribuera den för att den ska kunna installeras.",
                            "androidDeviceOwnerCustomPasswordDescription":  "Skapa ett lösenord för enhet för enbart särskilda enheter. Kan vara 4–16 tecken och innehålla siffror, bokstäver och specialtecken.",
                            "androidDeviceOwnerCustomPasswordName":  "Eget lösenord",
+                           "androidElevenAndBelowPasswordHeader":  "Android 11 och tidigare",
+                           "androidElevenAndBelowPasswordHeaderDescription":  "Enheterna måste köra Android 11 eller tidigare för att inställningarna ska gälla.",
                            "androidEnterpriseAlwaysOnVpnClientName":  "VPN-klient",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierDescription":  "Ange paket-id för appen i Google Play-butiken. Om exempelvis webbadressen för appen i Play-butiken är https://play.google.com/store/details?id=com.contosovpn.android.prod, är paketets id be com.contosovpn.android.prod.",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierName":  "Paket-ID",
@@ -2016,6 +2027,9 @@
                            "androidTenDeprecationInfoBox":  "Från och med oktober 2020 stöds inte längre vissa inställningar på Android-enheter som kör Android 10 och senare och som inte är Samsung Knox. Inställningarna markeras med Android 9 och tidigare eller Samsung Knox. Klicka här om du vill veta mer.",
                            "androidTrustedServerCertificateNamesDescription":  "Det här är det DNS-namn som används i certifikatet som presenteras av Radius-servern under klientautentiseringen till WiFi-åtkomstpunkten. Om du har flera Radius-servrar som har samma DNS-suffix i sitt fullständiga domännamn kan suffixet också användas. På så sätt kan enheter lita på servercertifikatet som presenteras för dem. <a href=\"https://go.microsoft.com/fwlink/?linkid=2181354\" target=\"_blank\">Läs mer</a>.<br>",
                            "androidTrustedServerCertificateNamesName":  "Radius-servernamn",
+                           "androidTwelveAndAbovePasswordHeader":  "Android 12 eller senare",
+                           "androidTwelveAndAbovePasswordHeaderDescription":  "Enheterna måste köra Android 12 eller senare för att inställningarna ska gälla.",
+                           "androidTwelveDeprecationInfoBox":  "Från och med november 2022 stöds inte vissa inställningar på Android-enheter som kör Android 12 och senare. De här inställningarna är märkta med Android 11 och tidigare. Klicka om du vill veta mer.",
                            "androidZebraMxConfigurationFileXmlName":  "Välj en giltig Zebra MX XML-fil",
                            "androidZebraMxConfigurationLearnMore":  "Läs mer om att hantera Zebra-enheter",
                            "androidZebraMxConfigurationXmlName":  "MX-profil i .xml-format",
@@ -3792,8 +3806,6 @@
                            "exchangeActiveSyncHostExample":  "t.ex. outlook.office365.com",
                            "exchangeActiveSyncHostName":  "E-postserver",
                            "exclusionAppListColumn":  "App att utesluta",
-                           "expeditedCheckinEnableDescription":  "Checka in enheter en gång i timmen",
-                           "expeditedCheckinEnableName":  "Checka in enheter en gång i timmen",
                            "experienceAllowBrowserSyncSettingsDescription":  "Anger om användaren kan aktivera webbläsarens inställning för att synkronisera med alternativen för att synkronisera inställningar för att synkronisera information som historik och favoriter mellan användarens enheter. Om du vill ställa in den här inställningen måste du aktivera Synkronisera webbläsarinställningar mellan användarens enheter.",
                            "experienceAllowBrowserSyncSettingsName":  "Användaren kan aktivera synkronisering av webbläsarinställningar",
                            "experienceDoNotSyncBrowserSettingsDescription":  "När det är blockerat är standardkonfigurationen (Tillåt synkronisering av webbläsarinställningar mellan enheter) inaktiverad så att användarna inte kan synkronisera mellan enheter. När Blockera och aktivera användaråsidosättning är valt kan en användare åsidosätta utsedd administratör.",
@@ -4866,9 +4878,9 @@
                            "macOSSoftwareUpdatePolicySectionDescription":  "Skapa en profil för att tvinga tilldelade enheter att automatiskt installera de senaste macOS-uppdateringarna. Inställningarna anger hur och när programuppdateringar ska distribueras. Den här profilen hindrar inte användare från att uppdatera operativsystemet manuellt. Uppdateringarna tillämpas bara på enheter som har registrerats via automatisk enhetsregistrering i Apple (med ABM eller ASM).",
                            "macOSSoftwareUpdatePolicySectionDescriptionLearnMoreText":  "Läs mer",
                            "macOSSoftwareUpdatePolicySupervisedLearnMoreText":  "Läs mer",
-                           "macOSSoftwareUpdatePolicySupervisedName":  "Skapa en profil för att tvinga tilldelade enheter att automatiskt installera de senaste macOS-uppdateringarna. Inställningarna anger hur och när programuppdateringar ska distribueras. Den här profilen hindrar inte användare från att uppdatera operativsystemet manuellt. Uppdateringarna tillämpas bara på enheter som har registrerats via automatisk enhetsregistrering i Apple (med ABM eller ASM).",
+                           "macOSSoftwareUpdatePolicySupervisedName":  "Skapa en profil för att tvinga tilldelade enheter att automatiskt installera de senaste macOS-uppdateringarna. De här inställningarna avgör hur och när programuppdateringar distribueras. Den här profilen hindrar inte användare från att uppdatera operativsystemet manuellt. Uppdateringar gäller endast för övervakade enheter.",
                            "macOSSoftwareUpdatePolicyWeeklyScheduleName":  "Veckoschema",
-                           "macOSSoftwareUpdateSelectScheduleTypeName":  "När en princip för uppdatering av macOS-programvara tilldelas en enhet så distribuerar Intune automatiskt de senaste uppdateringarna när enheten checkas in. Du kan också skapa ett veckoschema och ange en tidsperiod då enheterna kan checkas in och ta emot uppdateringar. Om du väljer att uppdatera utanför den schemalagda tiden så distribuerar Intune inga uppdateringar förrän den schemalagda tidsperioden är slut.",
+                           "macOSSoftwareUpdateSelectScheduleTypeName":  "När en princip för uppdatering tilldelas en enhet, distribuerar Intune automatiskt de senaste uppdateringarna när enheten checkas in. Du kan istället skapa ett veckoschema med anpassade start- och sluttider. Om du väljer att uppdatera utanför den schemalagda tiden, distribuerar Intune inga uppdateringar förrän den schemalagda tidsperioden är slut.",
                            "macOSSoftwareUpdateSelectUpdateBehaviorName":  "Välj hur nedladdningar, installationer och/eller meddelanden ska hanteras för varje typ av uppdatering.",
                            "macOSSystemExtensionsExtensionTypeName":  "Tillåtna typer av systemtillägg",
                            "macRequireClassroomRequestPermissionToLeaveClassesDescription":  "Studenter som har registrerat sig för en ohanterad Klassrum-kurs måste få lärarens tillstånd för att lämna kursen.",
@@ -5143,9 +5155,9 @@
                            "nATKeepAliveOffloadEnableName":  "Lasta av NAT KeepAlive till maskinvara när enheten är i viloläge",
                            "nATKeepAliveOffloadEnableToolTip":  "När en enhet är i viloläge fortsätter NAT-systemet att kontrollera att enheten fortfarande är ansluten till VPN-nätverket. Med den här inställningen kan du inaktivera den funktionen.",
                            "nacIdCheckBoxLabel":  "Jag godkänner.",
-                           "nacIdDescCisco":  "Intune-enhetens ID måste finnas med i VPN-profilen för att Cisco AnyConnect ska kunna aktivera nätverksåtkomstkontroll.<br><br>Jag tillåter att Microsoft lägger till enhetsinformation i VPN-profilen och att informationen får användas av Cisco och dess partner.",
-                           "nacIdDescCitrix":  "Intune-enhetens ID måste finnas i VPN-profilen för att Cisco SSO ska kunna aktivera nätverksåtkomstkontroll.<br><br>Jag tillåter att Microsoft lägger till enhetsinformation i VPN-profilen och att informationen får användas av Cisco och dess partner.",
-                           "nacIdDescF5":  "Intune-enhetens ID måste finnas i VPN-profilen för att F5 Access ska kunna aktivera nätverksåtkomstkontroll.<br><br>Jag tillåter att Microsoft lägger till enhetsinformation i VPN-profilen och att informationen får användas av F5 Access och dess partner.",
+                           "nacIdDescCisco":  "Intune-enhetens ID måste finnas med i VPN-profilen för att Cisco AnyConnect ska kunna aktivera nätverksåtkomstkontroll.<br><br>Jag tillåter att Microsoft lägger till enhetsinformation i VPN-profilen och att informationen får användas av Cisco och dess partner. Klicka här om du vill veta mer, inklusive vilka data som delas med tjänstleverantören.",
+                           "nacIdDescCitrix":  "Citrix SSO kräver att Intune-enhets-ID:t inkluderas i VPN-profilen för att aktivera NAC.<br><br>I så att Microsoft kan inkludera enhetsinformation i VPN-profilen, som kan användas av Citrix och deras partner. Klicka här om du vill veta mer, inklusive vilka data som delas med tjänstleverantören.",
+                           "nacIdDescF5":  "F5 Access kräver att Intune-enhets-ID:t inkluderas i VPN-profilen för att aktivera NAC.<br><br>I så att Microsoft kan inkludera enhetsinformation i VPN-profilen, som kan användas av F5 Access och deras partner. Klicka här om du vill veta mer, inklusive vilka data som delas med tjänstleverantören.",
                            "nacIdHeader":  "Aktivera nätverksåtkomstkontroll",
                            "nacIdHeaderCiscoToolTip":  "Enhetens ID krypteras och läggs till i VPN-profilen. När användaren försöker ansluta till VPN skickar Cisco AnyConnect det här värdet till nätverksåtkomstkontrollinfrastrukturen, som sedan efterfrågar värdet i Intune för att fastställa om enheten är registrerad och kompatibel.<br><br>Cisco AnyConnect har inte åtkomst till enhetens ID direkt, så för att kunna aktivera nätverksåtkomstkontroll måste värdet läggas till i VPN-profilen.",
                            "nacIdHeaderCitrixToolTip":  "Enhetens ID krypteras och läggs till i VPN-profilen. När användaren försöker ansluta till VPN skickar Cisco SSO det här värdet till nätverksåtkomstkontrollinfrastrukturen, som sedan efterfrågar värdet i Intune för att fastställa om enheten är registrerad och kompatibel.<br><br>Cisco SSO har inte åtkomst till enhetens ID direkt, så för att kunna aktivera nätverksåtkomstkontroll måste värdet läggas till i VPN-profilen.",
@@ -6016,6 +6028,15 @@
                            "shutdown":  "Avstängning",
                            "signatureUpdateIntervalInHoursName":  "Intervall för uppdatering av säkerhetsinsikter (i timmar)",
                            "signingCertificateType":  "Typ av signeringscertifikat",
+                           "silentCertAccessAddApps":  "Lägg till appar",
+                           "silentCertAccessApplicationsName":  "Program",
+                           "silentCertAccessMaxAppsWarn":  "Välj minst 50 appar som ska beviljas certifikatåtkomst i bakgrunden",
+                           "silentCertAccessMinAppsWarn":  "Välj minst en app som ska beviljas certifikatåtkomst i bakgrunden",
+                           "silentCertAccessSpecificApps":  "Bevilja i bakgrunden för särskilda appar (kräv användargodkännande för andra appar)",
+                           "silentCertAccessTabName":  "Appar",
+                           "silentCertAccessTypeDescription":  "Välj hur certifikatåtkomst ska beviljas program",
+                           "silentCertAccessTypeName":  "Certifikatåtkomst",
+                           "silentCertAccessUserApproval":  "Kräv användargodkännande för alla appar",
                            "simpleDownloadOption":  "Läge för enkel nedladdning utan peering (99)",
                            "simultaneousMultiThreadingName":  "Samtidig flertrådskörning",
                            "singleAppModeAppNameDescription":  "Appens namn.",
@@ -7151,6 +7172,8 @@
                            "windows10ProfessionalOption":  "Windows 10/11 Pro",
                            "windows10ProfessionalWorkstationNOption":  "Windows 10/11 Pro for Workstations N",
                            "windows10ProfessionalWorkstationOption":  "Windows 10/11 Pro for Workstations",
+                           "windows11CloudEditionNOption":  "Windows 11 SE N",
+                           "windows11CloudEditionOption":  "Windows 11 SE",
                            "windows11EULA":  "Genom att välja det här alternativ godkänner du att när du använder detta operativsystem på en enhet antingen så köptes (1) den tillämpliga Windows-licensen genom volymlicensiering, eller att (2) du har behörighet att binda din organisation och accepterar relevanta Licensvillkor för Programvara från Microsoft. <a>{0}</a>.",
                            "windowsAppNonComplianceTypeDescription":  "Vi rekommenderar att du ber användarna godkänna användningsvillkoren och samtycka till att vissa appar kommer att blockeras från att installeras. Använd listan över blockerade appar för att ange de Windows Phone-appar som inte hanteras av Intune och som användarna inte får installera. Alla appar, även företagsportalen och alla distribuerade appar, måste läggas till i listan över tillåtna appar i formatet för appbutikens webbadress",
                            "windowsAppUrlExample":  "e.g. https://www.microsoft.com/sv-se/store/apps/remote-desktop/9wzdncrfj3ps",
@@ -7239,6 +7262,8 @@
                            "workProfilePersonalUsagAndroidEnrollmentTypesHeaderDescription":  "De här inställningarna fungerar för företagsägda arbetsprofilenheter och tillämpas endast vid personlig användning.",
                            "workProfileRequirePasswordDescription":  "Kräv ett lösenord för att använda arbetsappar. Detta kan skilja sig från enhetslösenordet. Android 7.0+ krävs ",
                            "workProfileRequirePasswordName":  "Kräv lösenord för arbetsprofil",
+                           "workProfileRequiredPasswordComplexityDescription":  "Ange den lösenordskomplexitet som krävs.",
+                           "workProfileRequiredPasswordComplexityName":  "Lösenordskomplexitet för arbetsprofil",
                            "workProfileRequiredPasswordTypeDescription":  "Ange vilken typ av lösenord som krävs.",
                            "workProfileRequiredPasswordTypeName":  "Krav på lösenordstyp",
                            "workspaceIDName":  "Id för arbetsyta",
@@ -7601,7 +7626,7 @@
                            "isMamEnabled":  "Är mobilprogramhantering aktiverat?",
                            "itemsCount":  "{0} objekt",
                            "jailbrokenRootedDevices":  "Jailbrokade/rotade enheter",
-                           "lastModifiedDate":  "Last Modified Date",
+                           "lastModifiedDate":  "Datum för senaste ändring",
                            "lastReportedDate":  "Senast rapporterade datum",
                            "lastSync":  "Senaste synkronisering",
                            "lastSyncGmt":  "Senaste synkronisering (GMT)",
@@ -7633,6 +7658,7 @@
                            "mdmDeviceId":  "ID för hanterad mobilenhet",
                            "mdmWipInvalidVersionSettings":  "En eller flera appar innehåller ogiltiga definitioner av högsta och lägsta tillåtna version.<br /> <br />Enligt Windows informationsskydd med registreringsprinciper kan du bara ange en version, såvida de inte är likvärdiga. Om endast den lägsta versionen anges, ställs regeln in på större än eller lika med den lägsta versionen. Och om endast maxversionen anges, ställs regeln in på mindre än lika med maxversionen.",
                            "mdmWipReport":  "Rapport över Windows informationsskydd med mobilenhetshantering",
+                           "microsoftDefenderForEndpoint":  "Microsoft Defender för Endpoint",
                            "microsoftEdgeOptionText":  "Microsoft Edge",
                            "minAppVersion":  "Lägsta appversion",
                            "minMaxValidation":  "Operativsystemets minimiversion måste vara lägre än den högsta versionen när åtgärden är densamma.",
@@ -7642,11 +7668,13 @@
                            "minimumCompanyPortalVersion":  "Lägsta företagsportalversion",
                            "minimumDeviceSelection":  "Minst 1 enhet måste väljas",
                            "mobileAppCRUDpermission":  "Behörighet för mobilappar: läsa, skapa och tilldela",
+                           "mobileThreatDefenseNonMicrosoft":  "Skydd mot mobilhot (icke-Microsoft)",
                            "monitor":  "Övervaka",
                            "moreApps":  "Fler appar",
                            "moreAppsTextBoxTooltip":  "Lägg till verksamhetsspecifika appar här om du inte har åtkomst till den fullständiga Intune-portalen.",
-                           "mtdConnectorInfoBox1":  "<b>Viktigt!</b> Se till att Mobile Threat Defense-anslutningen har ställts in så att organisationens data är ordentligt skyddade utifrån de hotnivåutvärderingar som gjorts av de anslutna Mobile Threat Defense-tjänsterna.",
+                           "mtdConnectorInfoBox1":  "<b>Viktigt!</b> Se till att Mobile Threat Defense (MTD)-anslutningen har ställts in så att organisationens data är ordentligt skyddade utifrån de hotnivåutvärderingar som gjorts av de anslutna Mobile Threat Defense-tjänsterna.",
                            "mtdConnectorInfoBox2":  "Läs mer om Mobile Threat Defense för oregistrerade enheter.",
+                           "mtdConnectorInfoBox3":  "Om din klientorganisation har en anslutning konfigurerad med både Microsoft Defender för Endpoint och en MTD-tjänst (icke-Microsoft) och inte konfigurerar någon primär MTD-tjänst eller om det finns en konflikt när du riktar dig mot en användare, kommer standardinställningen att vara Microsoft Defender för Endpoint.",
                            "name":  "Namn",
                            "networkBoundariesInfoBoxText":  "Lägg till /*AppCompat*/ i listan med molnresurser för att aktivera TLS-anslutningar av personliga appar som ansluter direkt till en molnresurs via en IP-adress.",
                            "networkBoundariesInfoParagraph1":  "Välj var skyddade appar ska ha åtkomst till företagsdata i nätverket.",
@@ -7735,6 +7763,7 @@
                            "portNumber":  "Portnummer",
                            "portNumberDesc":  "Port för proxyn som angetts i proxyadressen",
                            "prefix":  "Prefix",
+                           "primaryMtdService":  "Primär MTD-tjänst",
                            "productName":  "Produktnamn",
                            "properties":  "Egenskaper",
                            "protected":  "Skyddad",
@@ -7777,7 +7806,7 @@
                            "resourcesToBeCreated":  "Resurser som ska skapas",
                            "restrictWebContentNo":  "Valfri app",
                            "restrictWebContentOption2":  "{0}: Tillåt webblänkar i alla appar",
-                           "rootCertificate":  "Root Certificate",
+                           "rootCertificate":  "Rotcertifikat",
                            "safetyNetDeviceAttestation":  "SafetyNet-enhetsbestyrkande",
                            "saveAppsNotificationText":  "Sparar valda appar",
                            "saveChangesCommandText":  "Spara",
@@ -7813,6 +7842,7 @@
                            "setting":  "Inställning",
                            "settingName":  "Inställningsnamn",
                            "settings":  "Inställningar",
+                           "settingsCatalog":  "Inställningskatalog",
                            "settingsSelectorLabel":  "Inställningar",
                            "silent":  "Tyst",
                            "specificUserIsLicensedIntune":  "{0} är licensierad för Microsoft Intune.",
@@ -7840,6 +7870,7 @@
                            "targetedUserPartWithPolicy":  "Hanteras av princip",
                            "targetediOSUserPartTitle":  "Användarstatus för iOS",
                            "threatCategory":  "Hotkategori",
+                           "tileDeprecated":  "Den här panelen är inaktuell. Ta bort den från instrumentpanelen.",
                            "timeColumnLabel":  "Tid",
                            "timebombLabel":  "Offlineintervall innan appdata rensas (dagar)",
                            "timebombToolTip":  "Efter angivet antal dagar som enheten inte har synkroniserats med Intune utför Windows en selektiv radering på enheten. Då avregistreras apparna för MAM-registrering och krypterade och skyddade företagsdata tas bort. Standardvärdet för den här inställningen är 90 dagar. Om värdet anges till 0 inaktiveras inställningen.",
@@ -7912,7 +7943,7 @@
                            "windows10AppProtectionPolicy":  "Windows 10 och senare appskyddsprincip",
                            "windows10PlatformLabel":  "Windows 10 och senare",
                            "windows10x":  "Windows 10X",
-                           "windows8":  "Windows 8.1 and later",
+                           "windows8":  "Windows 8.1 och senare",
                            "windowsInformationProtectionPlatformLabel":  "Windows informationsskydd",
                            "windowsPhone":  "Windows Phone 8.1",
                            "windowsPlatformLabel":  "Windows",
@@ -7944,6 +7975,7 @@
                            "wipSMBStringTooltip":  "Visar en lista över filnamnstillägg så att filer med de här tilläggen krypteras när de kopieras från en SMB-resurs inom den företagsgräns som definieras i nätverksplatslistan. Om den här principen inte har ställts in används det befintliga funktionssättet för automatisk kryptering. När principen är inställd krypteras endast filer som har de filnamnstillägg som finns i listan. ",
                            "wipStoreApps":  "Store-appar",
                            "wipWeAppsListInfo":  "De här apparna har åtkomst till din företagsinformation och fungerar på olika sätt när de används med otillåtna, personliga appar eller appar som inte är kompatibla med företaget. Endast appar som är kompatibla för användning med Windows informationsskydd tillåts på enheter utan MDM.",
+                           "wipWeDeprecationWarning":  "Creating new WIP without enrollment policies (WIP-WE) is no longer supported. For more information, see <a target=\"_blank\" href={0}>Windows Information Protection</a> ",
                            "wipWeWarning":  "Innan Windows 10 och senare principer kan börja gälla <a target=\"_blank\" href={0}>måste du ställa in MAM URL:erna i AAD</a> på Microsoft Intune genom att välja alternativet för att återställa standard-URL:er och ange användaromfattning.",
                            "wipWebsiteLearningTitle":  "Webbplatsinlärning för Windows informationsskydd",
                            "wipeData":  "Rensa data",
@@ -8042,7 +8074,9 @@
                                "windows10ProfessionalEducationN":  "Windows 10/11 Professional Education N",
                                "windows10ProfessionalN":  "Windows 10 Professional N",
                                "windows10ProfessionalWorkstation":  "Windows 10/11 Professional Workstation",
-                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professionell Workstation N"
+                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professionell Workstation N",
+                               "windows11CloudEdition":  "Windows 11 SE",
+                               "windows11CloudEditionN":  "Windows 11 SE N"
                            },
     "DetectionRules":  {
                            "ComparisonOperators":  {
@@ -8059,6 +8093,7 @@
                                                 "header":  "Använd ett anpassat identifieringsskript",
                                                 "runAs32Bit":  "Kör skript som 32-bitarsprocess på 64-bitarsklienter",
                                                 "runAs32BitTooltip":  "Välj Ja om du vill köra skriptet i en 32-bitarsprocess på 64-bitarsklienter. Välj Nej (standard) om du vill köra skriptet i en 64-bitarsprocess på 64-bitarsklienter. 32-bitarsklienter kör skriptet i en 32-bitarsprocess.",
+                                                "scriptContent":  "Script content",
                                                 "scriptFile":  "Skriptfil",
                                                 "scriptFileNotSelectedValidation":  "Ingen skriptfil har valts.",
                                                 "scriptFileTooltip":  "Välj ett PowerShell-skript som identifierar förekomst av appen på klienten. Appen identifieras när skriptet både returnerar värdet 0 som slutkod och skriver ett strängvärde till STDOUT.",
@@ -8307,9 +8342,6 @@
                                                                                                              "string":  "Sträng",
                                                                                                              "version":  "Version"
                                                                                                          },
-                                                                            "ScriptContent":  {
-                                                                                                  "emptyMessage":  "Skriptinnehåll måste anges."
-                                                                                              },
                                                                             "duplicateName":  "Skriptnamnet {0} har redan använts. Ange ett annat namn.",
                                                                             "enforceSignatureCheck":  "Framtvinga signaturkontroll av skript",
                                                                             "enforceSignatureCheckTooltip":  "Välj Ja om du vill kontrollera att skriptet har signerats av en betrodd utgivare så att skriptet körs utan varningar eller uppmaningar. Skriptet körs avblockerat. Välj Nej (standard) om du vill köra skriptet med slutanvändarens bekräftelse men utan signaturkontroll.",
@@ -8318,6 +8350,7 @@
                                                                             "operatorTooltip":  "Välj operator för kravjämförelsen.",
                                                                             "requirementMethod":  "Välj typ av utdata",
                                                                             "requirementMethodTooltip":  "Välj den datatyp som används vid fastställande av krav på identifieringsmatchning.",
+                                                                            "scriptContent":  "Script content",
                                                                             "scriptFile":  "Skriptfil",
                                                                             "scriptFileTooltip":  "Välj ett PowerShell-skript som identifierar förekomst av appen på klienten. Om appen har identifierats visar kravprocessen en slutkod med värdet 0 och skriver strängvärdet STDOUT.",
                                                                             "scriptName":  "Skriptets namn",
@@ -8370,6 +8403,7 @@
                                                       },
                                          "InfoBlade":  {
                                                            "createTitle":  "Lägg till autentiseringssammanhang",
+                                                           "deleteDisallowed":  "Du kan inte ta bort det här autentiseringssammanhanget eftersom principerna för villkorsstyrd åtkomst hänvisar till det.",
                                                            "descPlaceholder":  "Lägg till beskrivning av autentiseringssammanhanget",
                                                            "modifyTitle":  "Ändra autentiseringssammanhang",
                                                            "namePlaceholder":  "Exempel: Betrodd plats, betrodd enhet, stark auktorisering",
@@ -8396,15 +8430,15 @@
                                          "description":  "Beskrivning",
                                          "documentation":  "Dokumentation",
                                          "getStarted":  "Kom igång",
-                                         "label":  "Autentiseringssammanhang (förhandsversion)",
-                                         "menuLabel":  "Autentiseringssammanhang (förhandsversion)",
+                                         "label":  "Autentiseringssammanhang",
+                                         "menuLabel":  "Autentiseringssammanhang",
                                          "name":  "Namn",
                                          "noAuthContextConfigured":  "Inga autentiseringskontexter har konfigurerats.",
                                          "noAuthContextSet":  "Det finns inga autentiseringssammanhang",
                                          "noData":  "Inga autentiseringssammanhang att visa",
                                          "selectionInfo":  "Autentiseringssammanhang används för att skydda programdata och åtgärder i appar som SharePoint och Microsoft Cloud App Security.",
                                          "step":  "Steg",
-                                         "tabDescription":  "Hantera autentiseringssammanhang för att skydda data och åtgärder i dina appar. [Learn more][1]\n[1]: https://go.microsoft.com/fwlink/?linkid=2150965",
+                                         "tabDescription":  "Hantera autentiseringssammanhang för att skydda data och åtgärder i dina appar. Det går inte att ta bort autentiseringssammanhang när principer för villkorsstyrd åtkomst refererar till dem. [Learn more][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
                                          "tagResources":  "Tagga resurser med ett autentiseringssammanhang"
                                      },
                      "AuthenticationStrength":  {
@@ -8554,12 +8588,13 @@
                                                    "guestOrExternalUsersLabel":  "Gäster eller externa användare",
                                                    "internalGuestLabel":  "Lokala gästanvändare",
                                                    "otherExternalUserLabel":  "Andra externa användare",
-                                                   "serviceProviderUsersLabel":  "Service provider users"
+                                                   "previewTag":  "{0} (förhandsgranskning)",
+                                                   "serviceProviderUsersLabel":  "Tjänstleverantörsanvändare"
                                                },
                      "NamedLocation":  {
                                            "Form":  {
                                                         "CountryLookup":  {
-                                                                              "ariaLabel":  "Sökmetod för land",
+                                                                              "ariaLabel":  "Sökmetod för land/region",
                                                                               "gps":  "Fastställ plats efter GPS-koordinater",
                                                                               "info":  "När platsvillkoret för en princip för villkorsstyrd åtkomst har konfigurerats uppmanas användarna av Authenticator-appen att dela sina GPS-platser. ",
                                                                               "ip":  "Bestäm plats efter IP-adress (endast IPv4)"
@@ -8696,7 +8731,7 @@
                                                       "ServicePrincipalRisk":  {
                                                                                    "description":  "Konfigurera risknivåerna för tjänstens huvudnamn som krävs för att principen ska tillämpas​",
                                                                                    "infoBalloonContent":  "Konfigurera risken för tjänstens huvudnamn för att tillämpa principen för specifika risknivåer",
-                                                                                   "title":  "Risknivå för tjänstens huvudnamn (förhandsversion)"
+                                                                                   "title":  "Risk för tjänstens huvudnamn"
                                                                                }
                                                   }
                                 },
@@ -8985,6 +9020,11 @@
                                  "optionsPickerTitle":  "Aktivera/inaktivera Kontinuerlig tillgänglighetskontroll",
                                  "upsellInfo":  "Du kan inte ändra inställningarna på den här sidan längre och eventuella inställningar här bör ignoreras. Din tidigare inställning kommer att hanteras. Du kan konfigurera dina CAE-inställningar under Villkorsstyrd åtkomst framöver. Klicka här för mer information."
                              },
+                     "SamlReauth":  {
+                                        "Filter":  {
+                                                       "warning":  "Rikta dig mot program med hjälp av en dynamisk fråga. Vissa program kanske inte kan användas med sessionskontrollen Inloggningsfrekvens varje gång. {0}Läs mer om rekommenderade scenarier.{1}"
+                                                   }
+                                    },
                      "SelectOrganizations":  {
                                                  "Blade":  {
                                                                "Lower":  {
@@ -9198,9 +9238,10 @@
                                                                           "infoBalloon":  "Lista med attribut på den enhet som använts under inloggningen."
                                                                       }
                                                },
-                                    "noTenantSelected":  "No tenant selected",
-                                    "tenantIdWithPlaceholder":  "Tenant ID: {0}",
-                                    "tenantSelectionRequired":  "Tenant required"
+                                    "noTenantSelected":  "Ingen klientorganisation har valts",
+                                    "selectOrganization":  "Välj organisation",
+                                    "tenantIdWithPlaceholder":  "Klientorganisations-ID: {0}",
+                                    "tenantSelectionRequired":  "Klientorganisation krävs"
                                 },
                      "advancedTabText":  "Avancerad",
                      "allCloudAppsErrorBox":  "Du måste välja \"Alla molnappar\" när beviljandet \"Tillåt lösenordsändring\" har valts",
@@ -9224,7 +9265,7 @@
                      "appContextUriPlaceholder":  "Exempel: uri:contoso.com:level3",
                      "appEnforceInfoBubble":  "App-framtvingade begränsningar kan kräva ytterligare administratörskonfigurationer inom molnapparna. Begränsningarna börjar bara gälla för nya sessioner.",
                      "appNotSetSeletorLabel":  "0 molnappar valda",
-                     "appReauthNotSupported":  "This app does not support the \"sign-in frequency every time\" session control.",
+                     "appReauthNotSupported":  "Den här appen stöder inte sessionskontrollen Inloggningsfrekvens varje gång.",
                      "applyConditionClientAppInfoBalloonContent":  "Konfigurera klientapparna för att tillämpa principen på specifika klientappar",
                      "applyConditionDevicePlatformInfoBalloonContent":  "Konfigurera enhetsplattformarna för att tillämpa principen för specifika plattformar",
                      "applyConditionDeviceStateInfoBalloonContent":  "Konfigurera enhetstillståndet att tillämpa principen för specifika enhetstillstånd",
@@ -9483,10 +9524,12 @@
                      "downloadDefaultFileName":  "IP-intervall",
                      "downloadExampleFileName":  "Exempel",
                      "downloadExampleHeader":  "Detta är en exempelfil med demonstationer av de typer av data som kan godkännas. Rader som börjar med # ignoreras.",
+                     "duplicate":  "Duplicera",
+                     "duplicatePolicyName":  "{0} KOPIERA",
                      "endDatePickerLabel":  "Slutar",
                      "endTimePickerLabel":  "Sluttid",
-                     "enterCountryText":  "IP-adress och land utvärderas parvis. Välj land.",
-                     "enterIpText":  "IP-adress och land utvärderas parvis. Ange IP-adressen.",
+                     "enterCountryText":  "IP-adress och land/region utvärderas parvis. Välj land.",
+                     "enterIpText":  "IP-adress och land/region utvärderas parvis. Ange IP-adressen.",
                      "enterUserText":  "Ingen användare har valts. Välj en användare.",
                      "evaluationResult":  "Utvärderingsresultat",
                      "exchangeActiveSyncSelectedLabel":  "Exchange ActiveSync",
@@ -9528,7 +9571,7 @@
                      "infoCommandLabel":  "Info",
                      "invalidCertDuration":  "Ogiltig varaktighet för certifikat",
                      "invalidIpAddress":  "Värdet måste vara en giltig IP-adress",
-                     "invalidReAuthSignInRiskOptionSelected":  "Sessionskontrollen Inloggningsfrekvens varje gång, tillåter inte alternativet Ingen risk, i villkorskontrollen Risknivå vid inloggning.",
+                     "invalidReAuthSignInRiskOptionSelected":  "Sessionskontrollen “inloggningsfrekvens varje gång” tillåter inte alternativet “ingen risk” i villkorskontrollen “inloggningsrisk”.",
                      "invalidUriErrorMsg":  "Ange en giltig URI. Till exempel, uri:contoso.com:acr",
                      "iosDisplayName":  "iOS",
                      "linuxDisplayName":  "Linux",
@@ -9569,7 +9612,7 @@
                      "namedLocationUpsellBanner":  "Den här vyn är inaktuell. Gå till den nya och förbättrade vyn Namngivna platser.",
                      "namedLocationsHelpDescription":  "Namngivna platser används av Azure AD-säkerhetsrapporter för att minska falskt positiva resultat och Azure AD-principer för villkorsstyrd åtkomst.\n[Läs mer][1]\n[1]: https://aka.ms/namedlocationupdate",
                      "namedNetworkAddIpRanges":  "Lägg till ett nytt IP-intervall (t.ex. 40.77.182.32/27)",
-                     "namedNetworkCountryNeeded":  "Du måste välja minst ett land",
+                     "namedNetworkCountryNeeded":  "Du måste välja minst ett land/en region",
                      "namedNetworkDeleteCommand":  "Ta bort",
                      "namedNetworkDeleteDescription":  "Vill du ta bort {0}? Du kan inte ångra den här åtgärden.",
                      "namedNetworkDeleteTitle":  "Är du säker?",
@@ -9653,9 +9696,9 @@
                      "policyConditionLocation":  "Platser",
                      "policyConditionLocationDescription":  "Platsen (fastställs av IP-adressintervallet) som användaren loggar in från",
                      "policyConditionLocationPreview":  "Platser (förhandsversion)",
-                     "policyConditionSigninRisk":  "Risknivå vid inloggning",
+                     "policyConditionSigninRisk":  "Inloggningsrisk",
                      "policyConditionSigninRiskDescription":  "Sannolikhet att inloggningen kommer från någon annan än användaren. Risknivån kan vara hög, medel eller låg. Kräver en Azure AD Premium 2-licens.",
-                     "policyConditionUserRisk":  "Risknivå för användare",
+                     "policyConditionUserRisk":  "Användarrisk",
                      "policyConditionUserRiskDescription":  "Konfigurera de användarrisknivåer som krävs för att principen ska tillämpas",
                      "policyConditioniClientApp":  "Klientappar",
                      "policyControlAllowAccessDisplayedName":  "Bevilja åtkomst",
@@ -9874,8 +9917,8 @@
                      "whatIfBladeTitle":  "What If",
                      "whatIfClassicPoliciesWarning":  "Klassiska principer utvärderas inte av det här verktyget.",
                      "whatIfClientAppInfo":  "Den klientapp som användaren loggar in från. Exempel: webbläsare.",
-                     "whatIfCountry":  "Land",
-                     "whatIfCountryInfo":  "Landet som användaren loggar in från.",
+                     "whatIfCountry":  "Land/region",
+                     "whatIfCountryInfo":  "Landet/regionen som användaren loggar in från.",
                      "whatIfDevicePlatformInfo":  "Den enhetsplattform från vilken användaren loggar in.",
                      "whatIfDeviceStateInfo":  "Den enhetsstatus från vilken användaren loggar in",
                      "whatIfEnterIpAddress":  "Ange IP-adress (t.ex. 40.77.182.32)",
@@ -9893,14 +9936,14 @@
                      "whatIfEvaResultUsers":  "Användare och grupper",
                      "whatIfIpAddress":  "IP-adress",
                      "whatIfIpAddressInfo":  "Den IP-adress användaren in från.",
-                     "whatIfIpCountryInfoBoxText":  "Om du använder en IP-adress eller land, krävs bägge fälten och bör mappa tillsammans korrekt.",
+                     "whatIfIpCountryInfoBoxText":  "Om du använder en IP-adress eller land/region måste båda fälten fyllas i och mappas ihop korrekt.",
                      "whatIfPolicyAppliesTab":  "Principer som ska tillämpas",
                      "whatIfPolicyAppliesTabWithCount":  "Principer som kan tillämpas ({0})",
                      "whatIfPolicyDoesNotApplyTab":  "Principer som inte ska tillämpas",
                      "whatIfPolicyDoesNotApplyTabWithCount":  "Principer som inte kan tillämpas ({0})",
                      "whatIfReasons":  "Orsaker till varför den här principen inte ska tillämpas",
                      "whatIfSelectClientApp":  "Välj en klientapp...",
-                     "whatIfSelectCountry":  "Välj land...",
+                     "whatIfSelectCountry":  "Välj land/region...",
                      "whatIfSelectDevicePlatform":  "Välj enhetsplattform...",
                      "whatIfSelectPrivateLink":  "Välj privat länk...",
                      "whatIfSelectServicePrincipalRisk":  "Välj risknivå för tjänstens huvudnamn...",
@@ -9919,6 +9962,7 @@
                      "windowsDisplayName":  "Windows",
                      "windowsPhoneDisplayName":  "Windows Phone",
                      "workloadIdentities":  "Arbetsbelastningsidentiteter (förhandsversion)",
+                     "workloadIdentitiesLicenseText":  "En P1- eller P2-licens för arbetsbelastningsidentiteter krävs för att redigera den här principen.",
                      "workloadIdentity":  "Arbetsbelastningsidentitet"
                  },
     "AppResources":  {
@@ -10047,6 +10091,14 @@
                                         }
                      },
     "WindowsEnrollment":  {
+                              "DevicePreparation":  {
+                                                        "description":  "Konfigurera enheter för inledande etablering och tilldela till användare.",
+                                                        "title":  "Enhetsförberedelse"
+                                                    },
+                              "EnrollmentSettings":  {
+                                                         "description":  "Konfigurera registreringsinställningar, som att blockera registrering och tilldela till användare.",
+                                                         "title":  "Registreringsinställningar"
+                                                     },
                               "coManagementAuthorityDesc":  "Ställ in samhanteringsinställningar för Configuration Manager-integrering",
                               "coManagementAuthorityTitle":  "Samhanteringsinställningar ",
                               "deploymentProfiles":  "Windows AutoPilot-distributionsprofiler",
@@ -10196,6 +10248,8 @@
                    "informationUrlSizeHint":  "Informationswebbadressen får bestå av högst 1 024 tecken.",
                    "installAsManaged":  "Installera som hanterat",
                    "installationSourceLabel":  "Apptyp",
+                   "installerTypeInfoBalloon":  "The installer type of the application package.",
+                   "installerTypeLabel":  "Installer Type",
                    "isFeatured":  "Visa den här som aktuell app på företagsportalen",
                    "isMAMEnabledToggleLabel":  "Ja",
                    "lastModifiedDateTime":  "Senast uppdaterad",
@@ -10408,6 +10462,8 @@
                                                         "qualityUpdateSettings":  "Inställningar"
                                                     },
                                         "infoBoxText":  "Den enda kontrollen av kvalitetsuppdateringar som just nu är tillgänglig förutom den befintliga principen för uppdateringsringar för Windows 10 och senare är möjligheten att skicka kvalitetsuppdateringar för enheter som hamnat under en angiven korrigeringsnivå. Det kommer att finnas fler kontroller i framtiden.",
+                                        "licenseLearnMoreText":  "Läs mer om krav och principer för kvalitetsuppdatering.",
+                                        "licenseWarningBoxText":  "För att skapa principer för kvalitetsuppdatering krävs specifik licensiering.",
                                         "warningBoxText":  "Utskick av programuppdateringar kan visserligen förkorta tiden till regelefterlevnad men påverkar också användarnas produktivitet. Risken för att användarna måste starta om datorn under arbetstid ökar markant."
                                     },
     "TermsOfUse":  {
@@ -10492,6 +10548,7 @@
                                          "ptBR":  "Portuguese (Brazil)",
                                          "ptPT":  "Portuguese (Portugal)",
                                          "quz":  "Quechua",
+                                         "removeLanguage":  "Remove language",
                                          "ro":  "Romanian",
                                          "ru":  "Russian",
                                          "rw":  "Kinyarwanda",
@@ -10542,10 +10599,7 @@
                                                                      },
                                       "PolicyFile":  {
                                                          "Languages":  {
-                                                                           "Empty":  {
-                                                                                         "default":  "Select default language",
-                                                                                         "nonDefault":  "Select a language"
-                                                                                     }
+
                                                                        },
                                                          "Validations":  {
                                                                              "duplicateLanguage":  "Oops, {0} appears to be selected multiple times. Language selection must be unique."
@@ -10581,6 +10635,7 @@
                                       "agreementNamePlaceholderText":  "Example: 'All users terms of use'",
                                       "agreementRequirmentLabel":  "Required Upon",
                                       "agreementTargetEntityLabel":  "Users targeted",
+                                      "agreementUploadPolicyAriaLabelText":  "Upload required PDF {0}",
                                       "agreementUploadPolicyLabel":  "Terms of use",
                                       "agreementUploadPolicyPlaceholderText":  "Upload required PDF",
                                       "createButtonLabel":  "Create",
@@ -10594,7 +10649,32 @@
                                       "policyTemplateInfo":  "These templates are pre configured conditional access policies that are targeted to specific users and applications.",
                                       "policyTemplateLabel":  "Policy templates",
                                       "title":  "New terms of use"
-                                  }
+                                  },
+                       "Details":  {
+                                       "Link":  {
+                                                    "auditEvent":  "View audit logs",
+                                                    "delete":  "Delete",
+                                                    "download":  "Preview PDF",
+                                                    "edit":  "Edit"
+                                                },
+                                       "Property":  {
+                                                        "acceptanceDuration":  "Duration before re-acceptance required (days)",
+                                                        "acceptanceExpirationFrequency":  "Frequency",
+                                                        "acceptanceExpirationStartDateTime":  "Expire starting on",
+                                                        "accepted":  "Users accepted",
+                                                        "declined":  "Users declined",
+                                                        "displayname":  "Display name",
+                                                        "isAcceptanceExpirationEnable":  "Expire consents",
+                                                        "isPerDeviceAcceptanceRequired":  "Require users to consent on every device",
+                                                        "isViewingBeforeAcceptanceRequired":  "Require users to expand the terms of use",
+                                                        "name":  "Name"
+                                                    },
+                                       "Tab":  {
+                                                   "cAPolicies":  "Conditional access policies",
+                                                   "details":  "Details",
+                                                   "languages":  "Languages"
+                                               }
+                                   }
                    },
     "TACSettings":  {
                         "edgeSettings":  "Edge-konfigurationsinställningar",
@@ -10660,6 +10740,23 @@
                               "withEnrollment":  "Med registrering",
                               "withoutEnrollment":  "Utan registrering"
                           },
+    "PolicySelection":  {
+                            "Grid":  {
+                                         "Column":  {
+                                                        "author":  "Upphovsperson",
+                                                        "template":  "Mallnamn"
+                                                    }
+                                     },
+                            "SettingsCatalog":  {
+                                                    "subtitle":  "Börja från början och välj önskade inställningar från biblioteket med tillgängliga inställningar",
+                                                    "title":  "Inställningskatalog"
+                                                },
+                            "Templates":  {
+                                              "subtitle":  "Mallar innehåller grupper av inställningar, sorterade efter funktion. Använd en mall när du inte vill sätta upp principer manuellt eller vill ge enheter behörighet till företagsnätverk, till exempel konfigurering av trådlös anslutning eller VPN.",
+                                              "title":  "Mallar"
+                                          },
+                            "noData":  "Inga principmallar hittades"
+                        },
     "OfficeApplicationAdditionalType":  {
                                             "projectProRetail":  "Project Online Desktop Client",
                                             "visioProRetail":  "Visio Online, abonnemang 2"
@@ -10844,6 +10941,12 @@
                           "withEnrollment":  "Med registrering",
                           "withoutEnrollment":  "Utan registrering"
                       },
+    "DisplayRoleTypes":  {
+                             "builtInRole":  "Inbyggd roll",
+                             "customCloudPCRole":  "Anpassad Windows 365-roll",
+                             "customIntuneRole":  "Anpassad Intune-roll",
+                             "customRole":  "Anpassad roll"
+                         },
     "InstallContextType":  {
                                "device":  "Enhet",
                                "deviceContext":  "Enhetssammanhang",
@@ -11019,7 +11122,7 @@
                                                                      "Schedule":  {
                                                                                       "always":  "Uppdatera vid nästa incheckning",
                                                                                       "duringTimeWindows":  "Uppdatera under schemalagd tid",
-                                                                                      "header":  "När en princip för uppdatering av iOS/iPadOS-programvara tilldelas en enhet, distribuerar Intune automatiskt de senaste uppdateringarna när enheten checkas in (ungefär var 8:e timme). Du kan istället skapa ett veckoschema med anpassade start- och sluttider. Om du väljer att uppdatera utanför den schemalagda tiden, distribuerar Intune inga uppdateringar förrän den schemalagda tidsperioden är slut.",
+                                                                                      "header":  "När en princip för uppdatering tilldelas en enhet, distribuerar Intune automatiskt de senaste uppdateringarna när enheten checkas in. Du kan istället skapa ett veckoschema med anpassade start- och sluttider. Om du väljer att uppdatera utanför den schemalagda tiden, distribuerar Intune inga uppdateringar förrän den schemalagda tidsperioden är slut.",
                                                                                       "infoBalloon":  "När uppdateringarna sker. Ytterligare indata krävs för att schemalägga uppdateringar under eller utanför schemalagda tider.",
                                                                                       "label":  "Schematyp",
                                                                                       "outsideActiveHours":  "Uppdatera utanför aktiv tid (tidigare)",
@@ -11443,6 +11546,7 @@
                    "ManagedDesktop":  {
                                           "adminContacts":  "Administratörskontakter",
                                           "appPackaging":  "Appaket",
+                                          "businessGroups":  "Affärsgrupper",
                                           "devices":  "Enheter",
                                           "feedback":  "Feedback",
                                           "gettingStarted":  "Komma igång",
@@ -11479,6 +11583,7 @@
                    "cartProfiles":  "Kundvagnsprofiler",
                    "certificateConnectors":  "Certifikatanslutningsprogram",
                    "chromeEnterprise":  "Chrome Enterprise (förhandsversion)",
+                   "cloudAttachedDevices":  "Molnanslutna enheter (förhandsversion)",
                    "compliancePolicies":  "Kompatibilitetsprinciper",
                    "complianceScriptManagement":  "Skript",
                    "complianceScriptManagementPreview":  "Skript (förhandsversion)",
@@ -11512,7 +11617,7 @@
                    "failuresForFeatureUpdates":  "Fel vid funktionsuppdatering (förhandsversion)",
                    "failuresForQualityUpdates":  "Snabbuppdateringsfel i Windows (förhandsversion)",
                    "featureFlighting":  "Förhandsversionstestning av funktioner",
-                   "featureUpdateDeployments":  "Funktionsuppdateringar för Windows 10 och senare (förhandsversion)",
+                   "featureUpdateDeployments":  "Funktionsuppdateringar för Windows 10 och senare",
                    "flighting":  "Förhandsversionstestning",
                    "fotaUpdate":  "OTA-uppdatering (Over The Air) av inbyggd programvara",
                    "groupPolicy":  "Administrativa mallar",
@@ -11523,8 +11628,8 @@
                    "incompleteUserEnrollments":  "Ofullständiga användarregistreringar",
                    "iosUpdates":  "Uppdatera principer för iOS/iPadOS",
                    "legacyPcManagement":  "Hantering av äldre datorer",
-                   "macOSSoftwareUpdate":  "Uppdateringsprinciper för macOS",
-                   "macOSSoftwareUpdateAccountSummaries":  "Installationsstatus för macOS-enheter",
+                   "macOSSoftwareUpdate":  "Uppdatera principer för macOS (förhandsversion)",
+                   "macOSSoftwareUpdateAccountSummaries":  "Installationsstatus för macOS-enheter (förhandsversion)",
                    "macOSSoftwareUpdateCategorySummaries":  "Sammanfattning av programuppdateringar",
                    "macOSSoftwareUpdateStateSummaries":  "uppdateringar",
                    "managedGooglePlay":  "Hanterat Google Play-konto",
@@ -11570,11 +11675,12 @@
                    "warranty":  "Garantileverantörer",
                    "wdacSupplementalPolicies":  "Tilläggsprinciper för S-läge",
                    "windows10DriverUpdate":  "Drivrutinsuppdateringar för Windows 10 och senare (förhandsversion)",
-                   "windows10QualityUpdate":  "Kvalitetsuppdateringar för Windows 10 och senare (förhandsversion)",
+                   "windows10QualityUpdate":  "Kvalitetsuppdateringar för Windows 10 och senare",
                    "windows10UpdateRings":  "Uppdateringringar för Windows 10 och senare",
                    "windows10XPolicyFailures":  "Windows 10X-principfel",
                    "windows365Connector":  "Windows 365 Citrix-anslutningsprogram",
-                   "windows365ConnectorPublicPreview":  "Windows 365 Citrix connector (preview)",
+                   "windows365ConnectorPublicPreview":  "Windows 365 Citrix-anslutningsprogram (förhandsversion)",
+                   "windowsDiagnosticData":  "Windows-data",
                    "windowsEnterpriseCertificate":  "Windows Enterprise-certifikat",
                    "windowsManagement":  "PowerShell-skript",
                    "windowsSideLoadingKeys":  "Nycklar för separat inläsning i Windows",

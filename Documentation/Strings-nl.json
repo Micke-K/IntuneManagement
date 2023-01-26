@@ -367,7 +367,6 @@
                      "educationTeacherCerts":  "Docentcertificaten",
                      "emailProfile":  "E-mail",
                      "enterpriseDataProtection":  "Windows Information Protection",
-                     "expeditedCheckin":  "Configuratie voor Mobile Device Management",
                      "extensibleSingleSignOn":  "App-extensie voor eenmalige aanmelding",
                      "filevault":  "FileVault",
                      "firewall":  "Firewall",
@@ -508,7 +507,10 @@
                                                         "deploymentSettings":  "Implementatie-instellingen",
                                                         "groupAssignmentSettings":  "Toewijzingen",
                                                         "scopeSettings":  "Bereiktags"
-                                                    }
+                                                    },
+                                        "gradualRolloutLicenseWarning":  "Voor deze mogelijkheid zijn specifieke licenties vereist.",
+                                        "gradualRolloutLicenseWarningEdit":  "Deze mogelijkheid kan worden gebruikt en geconfigureerd totdat het beleid wordt opgeslagen zonder dat deze mogelijkheid is geselecteerd.",
+                                        "licenseLearnMoreText":  "Meer informatie over vereisten en beleidsregels voor onderdelenupdates."
                                     },
     "WIPPinRequirements":  {
                                "WipLowercaseCharacterPinRequirements":  {
@@ -676,7 +678,8 @@
                                            "selectApp":  "Zoek in de App Store naar iOS Store-apps die u wilt implementeren met Intune.",
                                            "useManagedBrowser":  "Als dit vereist is en een gebruiker de web-app opent, wordt deze geopend in een door Intune beveiligde browser zoals Microsoft Edge of Intune Managed Browser. Deze instelling is van toepassing op iOS- en Android-apparaten.",
                                            "useManagedBrowserLink":  "https://docs.microsoft.com/en-us/intune/apps/app-configuration-managed-browser",
-                                           "win32AppPackageFile":  "Een bestand dat uw app bevat in een indeling die kan worden gesideload op een apparaat. Geldig pakkettype: .intunewin.​"
+                                           "win32AppPackageFile":  "Een bestand dat uw app bevat in een indeling die kan worden gesideload op een apparaat. Geldig pakkettype: .intunewin.​",
+                                           "winGetStoreSelectApp":  "Zoek in de Microsoft Store-opslagplaats naar store-apps die u wilt implementeren met Intune."
                                        },
                               "descriptionPreview":  "Preview",
                               "descriptionRequired":  "Een beschrijving is vereist.",
@@ -800,10 +803,10 @@
                                                     "azureADDevice":  "Gekoppeld Azure AD-apparaat",
                                                     "batch":  "Groepstag",
                                                     "dateAssigned":  "Datum van toewijzing",
-                                                    "deviceAccountFriendlyName":  "Beschrijvende naam van apparaataccount",
                                                     "deviceAccountPwd":  "Wachtwoord van apparaataccount",
                                                     "deviceAccountUpn":  "Device account",
                                                     "deviceDisplayName":  "Apparaatnaam",
+                                                    "deviceFriendlyName":  "Beschrijvende naam van het apparaat",
                                                     "deviceName":  "Apparaatnaam",
                                                     "deviceUseType":  "Type apparaatgebruik",
                                                     "enrollmentState":  "Inschrijvingsstatus",
@@ -924,10 +927,10 @@
                                        "azureADDevice":  "Ga naar Apparaatdetails voor het gekoppelde apparaat. N.v.t. betekent dat er geen gekoppeld apparaat is.",
                                        "batch":  "Een tekenreekskenmerk dat kan worden gebruikt om een groep apparaten te identificeren. Met het veld Groepstag van Intune wordt het kenmerk OrderID op Azure AD-apparaten toegewezen.",
                                        "dateAssigned":  "Tijdstempel van het moment waarop het profiel is toegewezen aan het apparaat.",
-                                       "deviceAccountFriendlyName":  "Beschrijvende naam van apparaataccount voor Surface Hub-apparaten",
-                                       "deviceAccountPwd":  "Wachtwoord van apparaataccount voor Surface Hub-apparaten",
-                                       "deviceAccountUpn":  "E-mailadres van apparaataccount voor Surface Hub-apparaten",
+                                       "deviceAccountPwd":  "Wachtwoord van apparaataccount voor Surface Hub-apparaten. Indien ingevoerd, vult u ook het apparaataccount en de beschrijvende naam in.",
+                                       "deviceAccountUpn":  "E-mailadres van apparaataccount voor Surface Hub-apparaten. Indien ingevoerd, vult u ook het wachtwoord en de beschrijvende naam van het apparaataccount in.",
                                        "deviceDisplayName":  "Een unieke naam voor een apparaat configureren. Deze naam wordt genegeerd in implementaties die hybride Azure AD-gekoppeld zijn. De apparaatnaam is nog steeds afkomstig uit het profiel voor domeindeelname voor hybride Azure AD-apparaten.",
+                                       "deviceFriendlyName":  "Beschrijvende naam voor Surface Hub-apparaten. Indien ingevoerd, vult u ook het wachtwoord voor het apparaataccount en het apparaataccount in.",
                                        "deviceName":  "De naam die wordt weergegeven wanneer iemand heeft geprobeerd het apparaat te detecteren en verbinding te maken.",
                                        "deviceUseType":  "      Het apparaat wordt ingesteld op basis van uw keuze. U kunt later altijd wijzigingen aanbrengen in de instellingen.​\r\n      <ul>\r\n      <li> Voor vergaderingen en presentaties is Windows Hello niet ingeschakeld en worden de gegevens na elke sessie verwijderd.\r\n      </li>\r\n      <li> Voor teamsamenwerking is Windows Hello ingeschakeld en worden de profielen opgeslagen voor snelle aanmelding</li>\r\n      </ul>",
                                        "enrollmentState":  "Hiermee wordt aangegeven of het apparaat is ingeschreven.",
@@ -1047,6 +1050,9 @@
                                                          },
                                                  "V12":  {
                                                              "0":  "macOS Monterey 12.0"
+                                                         },
+                                                 "V13":  {
+                                                             "0":  "macOS Ventura 13.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -1102,6 +1108,7 @@
                                    "customMessageTextBox":  "Foutbericht",
                                    "customMessageToggle":  "Aangepast bericht weergeven als de tijdslimiet bereikt wordt of er zich een fout voordoet",
                                    "enableForAutopilotOnlyToggle":  "Alleen pagina weergeven voor apparaten die zijn ingericht door Out-of-Box Experience (OOBE)",
+                                   "installQualityUpdatesToggle":  "Windows-kwaliteitsupdates installeren (het apparaat wordt mogelijk opnieuw opgestart)",
                                    "progressToggle":  "De voortgang van de app- en profielconfiguratie weergeven",
                                    "resetToggle":  "Toestaan dat gebruikers het apparaat opnieuw instellen als er een installatiefout optreedt",
                                    "timeout":  "Een foutbericht weergeven als de installatie langer duurt dan het opgegeven aantal minuten"
@@ -1367,7 +1374,7 @@
                                                           },
                         "AndroidBackup":  {
                                               "label":  "Back-up maken van organisatiegegevens in de Android-back-upservices",
-                                              "tooltip":  "Selecteer {0} om te voorkomen dat er van organisatiegegevens een back-up wordt gemaakt in de Android-back-upservices. \r\nSelecteer {1} om toe te staan dat er van organisatiegegevens een back-up wordt gemaakt in de Android-back-upservices. \r\nDit is niet van toepassing op persoonlijke of onbeheerde gegevens."
+                                              "tooltip":  "Selecteer {0} om te voorkomen dat er van organisatiegegevens een back-up wordt gemaakt in de Android-back-upservices.\r\nSelecteer {1} om toe te staan dat er van organisatiegegevens een back-up wordt gemaakt in de Android-back-upservices.\r\nDit is niet van toepassing op persoonlijke of onbeheerde gegevens."
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "Biometrische gegevens in plaats van pincode voor toegang",
@@ -1378,7 +1385,7 @@
                                                    "tooltip":  "Het Android-besturingssysteem gebruikt vingerafdrukscans om gebruikers van Android-apparaten te verifiëren. Deze functie ondersteunt de systeemeigen biometrische beheerelementen op Android-apparaten. Biometrische instellingen voor OEM, zoals Samsung Pass, worden niet ondersteund. Indien toegestaan, moeten systeemeigen biometrische beheerelementen worden gebruikt voor toegang tot de app op een compatibel apparaat."
                                                },
                         "AndroidOverrideFingerprint":  {
-                                                           "label":  "Vingerafdruk overschrijven met pincode na time-out"
+                                                           "label":  "Biometrie overschrijven met pincode   na time-out"
                                                        },
                         "AppPIN":  {
                                        "label":  "Pincode voor app wanneer pincode is ingesteld",
@@ -1409,7 +1416,7 @@
                                                    },
                         "CustomBrowserProtocol":  {
                                                       "label":  "Protocol onbeheerde browser",
-                                                      "tooltip":  "<p>Voer het protocol voor één onbeheerde browser in. Webinhoud (http/s) van door beleid beheerde toepassingen wordt geopend in alle apps die dit protocol ondersteunen. </p>\r\n \r\n<p><b>Opmerking: </b>Neem alleen het protocolprefix op. Als uw browser koppelingen in de vorm 'mybrowser://www.microsoft.com' vereist, voert u 'mybrowser' in.</p>"
+                                                      "tooltip":  "<p>Voer het protocol voor één onbeheerde browser in. Webinhoud (http/s) van door beleid beheerde toepassingen wordt geopend in alle apps die dit protocol ondersteunen. </p>\r\n\r\n<p><b>Opmerking: </b>Neem alleen het protocolprefix op. Als uw browser koppelingen in de vorm 'mybrowser://www.microsoft.com' vereist, voert u 'mybrowser' in.</p>"
                                                   },
                         "CustomDialerAppDisplayName":  {
                                                            "label":  "Naam van kiezer-app"
@@ -1435,7 +1442,7 @@
                                             "tooltip":  "Selecteer {0} om versleuteling van de organisatiegegevens met versleuteling op het niveau van apps van Intune af te dwingen.\r\n <br/>\r\nSelecteer {1} om geen versleuteling van de organisatiegegevens met versleuteling op het niveau van apps van Intune af te dwingen.\r\n\r\n<br/>\r\nOpmerking: zie {2} voor meer informatie over versleuteling op het niveau van apps van Intune."
                                         },
                         "EncryptDataAndroid":  {
-                                                   "tooltip":  "<p>Kies <b>Vereisen</b> om versleuteling van werk- of schoolgegevens in deze app in te schakelen. In Intune wordt een OpenSSL 256-bits AES-versleutelingsschema gebruikt in combinatie met het Android Keystore-systeem om app-gegevens veilig te versleutelen. Gegevens worden tijdens I/O-taken synchroon versleuteld. Inhoud in de apparaatopslag is altijd versleuteld. De SDK blijft 128-bits sleutels ondersteunen voor compatibiliteit met inhoud en apps waarvoor oudere SDK-versies worden gebruikt. </p>\r\n\r\n<p>De versleutelingsmethode is niet FIPS 140-2-compatibel.</p>"
+                                                   "tooltip":  "<p>Kies <b>Vereisen</b> om versleuteling van werk- of schoolgegevens in deze app in te schakelen. Intune gebruikt een wolfSSL-, 256-bits AES-versleutelingsschema samen met het Android Keystore-systeem om app-gegevens veilig te versleutelen. Gegevens worden synchroon versleuteld tijdens bestands-I/O-taken. Inhoud op de apparaatopslag is altijd versleuteld. Nieuwe bestanden worden versleuteld met 256-bits sleutels. Voor bestaande 128-bits versleutelde bestanden wordt een migratiepoging uitgevoerd naar 256-bits sleutels, maar het verwerken wordt niet gegarandeerd. Bestanden die zijn versleuteld met 128-bits sleutels blijven leesbaar. </p>\r\n\r\n<p>De versleutelingsmethode voldoet aan FIPS 140-2.</p>"
                                                },
                         "EncryptDataIos":  {
                                                "tooltip1":  "Kies <b>Vereisen</b> om versleuteling van werk- of schoolgegevens in deze app in te schakelen. Met Intune wordt iOS/iPadOS-apparaatversleuteling afgedwongen om app-gegevens te beveiligen wanneer het apparaat is vergrendeld. Optioneel kunnen app-gegevens met toepassingen worden versleuteld met behulp van Intune App SDK-versleuteling. Met de Intune App SDK worden iOS/iPadOS-cryptografiemethoden gebruikt om 128-bits AES-versleuteling op app-gegevens toe te passen.",
@@ -1463,11 +1470,11 @@
                                        },
                         "NotificationRestriction":  {
                                                         "label":  "Meldingen van organisatiegegevens",
-                                                        "tooltip":  "<p>Selecteer een van de volgende opties om op te geven hoe meldingen voor organisatieaccounts worden weergegeven voor deze app en alle verbonden apparaten, bijvoorbeeld draagbare apparaten:</p> \r\n<p>{0}: geen meldingen delen.</p> \r\n<p>{1}: geen organisatiegegevens delen in meldingen. Als dit niet wordt ondersteund door de toepassing, worden de meldingen geblokkeerd. </p>\r\n<p>{2}: alle meldingen delen. </p>\r\n <p>Alleen Android:\r\n Opmerking: Deze instelling geldt niet voor alle toepassingen. Zie {3}  voor meer informatie</p>\r\n \r\n <p>Alleen iOS:\r\nOpmerking: Deze instelling geldt niet voor alle toepassingen. Zie {4}  voor meer informatie</p>"
+                                                        "tooltip":  "<p>Selecteer een van de volgende opties om op te geven hoe meldingen voor organisatieaccounts worden weergegeven voor deze app en alle verbonden apparaten, bijvoorbeeld draagbare apparaten:</p> \r\n<p>{0}: geen meldingen delen.</p>\r\n<p>{1}: geen organisatiegegevens delen in meldingen. Als dit niet wordt ondersteund door de toepassing, worden de meldingen geblokkeerd. </p>\r\n<p>{2}: alle meldingen delen. </p>\r\n <p>Alleen Android:\r\n Opmerking: Deze instelling geldt niet voor alle toepassingen. Zie {3}  voor meer informatie</p>\r\n\r\n <p>Alleen iOS:\r\nOpmerking: Deze instelling geldt niet voor alle toepassingen. Zie {4} voor meer informatie</p>"
                                                     },
                         "OpenLinksManagedBrowser":  {
                                                         "label":  "Overdracht van webinhoud met andere apps beperken",
-                                                        "tooltip":  "<p>Selecteer een van de volgende opties om de apps op te geven waarin deze app webinhoud kan openen: </p>\r\n<p><b>Edge:</b> toestaan dat webinhoud alleen wordt geopend in Edge </p>\r\n<p><b>Onbeheerde browser:</b> toestaan dat webinhoud alleen wordt geopend in de onbeheerde browser die is gedefinieerd met de instelling Protocol van onbeheerde browser </p> \r\n<p><b>Alle apps:</b> webkoppelingen in alle apps toestaan</p>"
+                                                        "tooltip":  "<p>Selecteer een van de volgende opties om de apps op te geven waarin deze app webinhoud kan openen: </p>\r\n<p><b>Microsoft Edge:</b> toestaan dat webinhoud alleen wordt geopend in Microsoft Edge.<a href=\"{0}\" target=\"_blank\"> Ontdek hoe Microsoft Edge uw gegevens beschermt.</a></p>\r\n<p><b>Onbeheerde browser:</b> toestaan dat webinhoud alleen wordt geopend in de onbeheerde browser die is gedefinieerd met de instelling Protocol van onbeheerde browser </p>\r\n<p><b>Alle apps:</b> webkoppelingen in alle apps toestaan</p>"
                                                     },
                         "OverrideBiometric":  {
                                                   "tooltip":  "Indien nodig, worden afhankelijk van de time-out (minuten van inactiviteit) biometrische prompts overschreven door een prompt voor de pincode. Als niet aan deze waarde voor de time-out wordt voldaan, wordt de biometrische prompt nog steeds weergegeven. Deze waarde voor de time-out moet groter zijn dan de opgegeven waarde onder 'Toegangsvereisten opnieuw controleren na (minuten van inactiviteit)'."
@@ -1502,7 +1509,7 @@
                                                     },
                         "RequirePinAfterBiometricChange":  {
                                                                "label":  "Biometrie overschrijven met pincode na biometrische updates",
-                                                               "tooltip":  "Als biometrie van klasse 3 wordt ondersteund door het apparaat (meer informatie <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">hier</a>), wanneer een wijziging in biometrie wordt gedetecteerd, overschrijft een pincode-prompt biometrische prompts."
+                                                               "tooltip":  "Als biometrie van klasse 3 wordt ondersteund door het apparaat (meer informatie <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">hier</a>), wanneer een wijziging in biometrie wordt gedetecteerd, overschrijft een pincode-prompt biometrische prompts. Deze instelling wordt pas van kracht zodra biometrische gegevens zijn gebruikt voor toegang tot de app."
                                                            },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "De pakket-id moet uniek zijn.",
@@ -1515,7 +1522,7 @@
                                               },
                         "SaveData":  {
                                          "label":  "Kopieën van organisatiegegevens opslaan",
-                                         "tooltip":  "Selecteer {0} om te voorkomen dat met 'Opslaan als' een kopie van organisatiegegevens wordt opgeslagen in een andere locatie dan de geselecteerde opslagservices.\r\n Selecteer {1} om toe te staan dat met 'Opslaan als' een kopie van organisatiegegevens wordt opgeslagen in een andere locatie. <br/> \r\n\r\n\r\nOpmerking: Deze instelling geldt niet voor alle toepassingen. Zie {2} voor meer informatie.\r\n"
+                                         "tooltip":  "Selecteer {0} om te voorkomen dat met 'Opslaan als' een kopie van organisatiegegevens wordt opgeslagen in een andere locatie dan de geselecteerde opslagservices.\r\n Selecteer {1} om toe te staan dat met 'Opslaan als' een kopie van organisatiegegevens wordt opgeslagen in een andere locatie. <br/>\r\n\r\n\r\nOpmerking: Deze instelling geldt niet voor alle toepassingen. Zie {2} voor meer informatie.\r\n"
                                      },
                         "SaveDataToSelected":  {
                                                    "label":  "De gebruiker toestaan om kopieën op te slaan in de geselecteerde services",
@@ -1606,7 +1613,7 @@
                             "pushNotification":  "Pushmelding verzenden naar eindgebruiker",
                             "remoteLock":  "Het niet-compatibele apparaat extern vergrendelen",
                             "removeSourceAccessProfile":  "Brontoegangsprofiel verwijderen",
-                            "retire":  "Het niet-compatibele apparaat buiten gebruik stellen",
+                            "retire":  "Apparaat toevoegen aan buitengebruikstellingslijst",
                             "wipe":  "Wissen",
                             "emailNotification":  "E-mail verzenden naar de eindgebruiker"
                         },
@@ -1746,6 +1753,7 @@
                                                       "weeks1":  "Elke week"
                                                   },
                               "PolicyListToolBarOption":  {
+                                                              "linux":  "Linux",
                                                               "macOs":  "macOS",
                                                               "windows":  "Windows 10 en later"
                                                           },
@@ -1765,6 +1773,7 @@
                                                  "uploadInfoBalloonContent":  "Het PowerShell-scriptbestand opgeven. Het bestand moet kleiner zijn dan 200 kB.",
                                                  "uploadLabel":  "Locatie van script"
                                              },
+                              "bashScriptObjectName":  "Bash-script",
                               "createButtonText":  "Toevoegen",
                               "createPowershellScriptFlowSectionName":  "PowerShell-script toevoegen",
                               "customAttributeObjectName":  "Aangepast kenmerk",
@@ -1969,6 +1978,8 @@
                            "androidDeviceOwnerAlwaysOnVpnClientDescription":  "De opgegeven VPN-client moet zijn geïnstalleerd op het apparaat en moet VPN per app ondersteunen; anders treedt er een fout op. U moet de app goedkeuren in de beheerde Google Play Store, synchroniseren met Intune en implementeren om ervoor te zorgen dat de app kan worden geïnstalleerd.",
                            "androidDeviceOwnerCustomPasswordDescription":  "Maak een apparaatwachtwoordcode die alleen voor speciale apparaten is bedoeld. Deze code moet 4 tot 16 tekens lang zijn en nummers, letters en speciale tekens bevatten.",
                            "androidDeviceOwnerCustomPasswordName":  "Aangepaste wachtwoordcode",
+                           "androidElevenAndBelowPasswordHeader":  "Android 11 en lager",
+                           "androidElevenAndBelowPasswordHeaderDescription":  "Deze instellingen zijn geschikt voor apparaten waarop Android 11 of lager wordt uitgevoerd.",
                            "androidEnterpriseAlwaysOnVpnClientName":  "VPN-client",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierDescription":  "Geef de pakket-id van de app in de Google Play Store op. Als de URL van de app in de Play Store bijvoorbeeld https://play.google.com/store/details?id=com.contosovpn.android.prod is, is de pakket-id com.contosovpn.android.prod.",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierName":  "Pakket-id",
@@ -2016,6 +2027,9 @@
                            "androidTenDeprecationInfoBox":  "Vanaf oktober 2020 worden sommige instellingen niet ondersteund op Android-apparaten waarop Android 10 of later wordt uitgevoerd en die niet Samsung Knox zijn. Deze instellingen worden aangeduid met Android 9 en eerder of Samsung Knox. Klik voor meer informatie.",
                            "androidTrustedServerCertificateNamesDescription":  "Dit is de DNS-naam die wordt gebruikt in het certificaat dat door de Radius Server wordt gepresenteerd tijdens clientverificatie bij het Wifi-toegangspunt. Als u meerdere Radius-servers heeft met hetzelfde DNS-achtervoegsel in hun volledig gekwalificeerde domeinnaam, dan kan alleen het achtervoegsel worden gebruikt. Hierdoor kunnen apparaten het aan hen gepresenteerde servercertificaat vertrouwen. <a href=\"https://go.microsoft.com/fwlink/?linkid=2181354\" target=\"_blank\">Meer informatie</a>.<br>",
                            "androidTrustedServerCertificateNamesName":  "Radius-servernaam",
+                           "androidTwelveAndAbovePasswordHeader":  "Android 12 en hoger",
+                           "androidTwelveAndAbovePasswordHeaderDescription":  "Deze instellingen zijn geschikt voor apparaten waarop Android 12 of hoger wordt uitgevoerd.",
+                           "androidTwelveDeprecationInfoBox":  "Vanaf november 2022 worden sommige instellingen niet ondersteund op Android-apparaten met Android 12 en hoger. Deze instellingen worden gelabeld met Android 11 en lager. Klik voor meer informatie.",
                            "androidZebraMxConfigurationFileXmlName":  "Selecteer een geldig Zebra MX XML-bestand",
                            "androidZebraMxConfigurationLearnMore":  "Meer informatie over het beheren van Zebra-apparaten",
                            "androidZebraMxConfigurationXmlName":  "MX-profiel in xml-indeling",
@@ -3792,8 +3806,6 @@
                            "exchangeActiveSyncHostExample":  "bijvoorbeeld outlook.office365.com",
                            "exchangeActiveSyncHostName":  "E-mailserver",
                            "exclusionAppListColumn":  "App die moet worden uitgesloten",
-                           "expeditedCheckinEnableDescription":  "Apparaten elk uur laten inchecken",
-                           "expeditedCheckinEnableName":  "Apparaten elk uur laten inchecken",
                            "experienceAllowBrowserSyncSettingsDescription":  "Hiermee wordt ingesteld of een gebruiker browserinstellingen kan inschakelen om te synchroniseren met de opties voor instellingen synchroniseren om gegevens te synchroniseren zoals geschiedenis en favorieten tussen apparaten van de gebruiker. Als u deze instelling wilt configureren, moet u de instelling Browserinstellingen tussen apparaten van gebruiker inschakelen.",
                            "experienceAllowBrowserSyncSettingsName":  "Gebruiker kan browserinstellingen synchroniseren inschakelen",
                            "experienceDoNotSyncBrowserSettingsDescription":  "Als deze functie is ingesteld op Blokkeren, wordt de standaardconfiguratie (synchroniseren van browserinstellingen tussen apparaten toestaan) uitgeschakeld en kunnen gebruikers de apparaten niet synchroniseren. Als de functie is ingesteld op Blokkeren en negeren door gebruiker inschakelen, kan de gebruiker de toewijzing door een beheerder negeren.",
@@ -4866,9 +4878,9 @@
                            "macOSSoftwareUpdatePolicySectionDescription":  "Maak een profiel om te forceren dat de nieuwste macOS-updates automatisch worden geïnstalleerd op toegewezen apparaten. De instellingen bepalen hoe en wanneer software-updates worden geïmplementeerd. Het profiel voorkomt niet dat gebruikers het besturingssysteem handmatig kunnen bijwerken. De updates zijn alleen van toepassing op apparaten die zijn ingeschreven via automatische apparaatinschrijving van Apple (met ABM of ASM).",
                            "macOSSoftwareUpdatePolicySectionDescriptionLearnMoreText":  "Meer informatie",
                            "macOSSoftwareUpdatePolicySupervisedLearnMoreText":  "Meer informatie",
-                           "macOSSoftwareUpdatePolicySupervisedName":  "Maak een profiel om te forceren dat de nieuwste macOS-updates automatisch worden geïnstalleerd op toegewezen apparaten. De instellingen bepalen hoe en wanneer software-updates worden geïmplementeerd. Het profiel voorkomt niet dat gebruikers het besturingssysteem handmatig kunnen bijwerken. De updates zijn alleen van toepassing op apparaten die zijn ingeschreven via automatische apparaatinschrijving van Apple (met ABM of ASM).",
+                           "macOSSoftwareUpdatePolicySupervisedName":  "Create a profile to force assigned devices to automatically install the latest macOS updates. These settings determine how and when software updates deploy. This profile doesn't prevent users from updating the OS manually. Updates will only apply to supervised devices.",
                            "macOSSoftwareUpdatePolicyWeeklyScheduleName":  "Wekelijkse planning",
-                           "macOSSoftwareUpdateSelectScheduleTypeName":  "Wanneer een beleid voor het bijwerken van macOS-software wordt toegewezen aan een apparaat, implementeert Intune de recentste updates bij het inchecken van het apparaat. U kunt ook een wekelijkse planning maken en een tijdsperiode opgeven waarin apparaten kunnen inchecken en updates ontvangen. Als u ervoor kiest om updates buiten de geplande tijd uit te voeren, implementeert Intune deze pas wanneer de geplande tijd is geëindigd.",
+                           "macOSSoftwareUpdateSelectScheduleTypeName":  "Wanneer een updatebeleid is toegewezen aan een apparaat, implementeert Intune standaard de nieuwste updates bij het inchecken van het apparaat. U kunt in plaats daarvan een wekelijks schema maken met aangepaste begin- en eindtijden. Als u ervoor kiest om bij te werken buiten de geplande tijd, implementeert Intune geen updates totdat de geplande tijd is afgelopen.",
                            "macOSSoftwareUpdateSelectUpdateBehaviorName":  "Selecteer voor elk type update hoe downloads, installaties en/of meldingen moeten plaatsvinden.",
                            "macOSSystemExtensionsExtensionTypeName":  "Toegestane typen systeemextensies",
                            "macRequireClassroomRequestPermissionToLeaveClassesDescription":  "Studenten die zijn ingeschreven bij een niet-beheerde Classroom-cursus, hebben toestemming van de docent nodig om de cursus te verlaten.",
@@ -5143,9 +5155,9 @@
                            "nATKeepAliveOffloadEnableName":  "De keepalive-interval voor NAT offloaden naar hardware als het apparaat in de slaapstand staat",
                            "nATKeepAliveOffloadEnableToolTip":  "Wanneer een apparaat in de slaapstand staat, controleert het NAT-systeem standaard doorlopend of het apparaat nog wel met het VPN is verbonden. Via deze instelling kunt u dit gedrag uitschakelen.",
                            "nacIdCheckBoxLabel":  "Ik ga akkoord.",
-                           "nacIdDescCisco":  "Voor Cisco AnyConnect is vereist dat de Intune-apparaat-id wordt opgenomen in het VPN-profiel om NAC in te schakelen.<br><br>Ik sta Microsoft toe apparaatgegevens op te nemen in het VPN-profiel, die kunnen worden gebruikt door Cisco en hun partners.",
-                           "nacIdDescCitrix":  "Voor Citrix SSO is vereist dat de Intune apparaat-id wordt opgenomen in het VPN-profiel om NAC in te schakelen.<br><br>Ik sta Microsoft toe apparaatgegevens op te nemen in het VPN-profiel, die kunnen worden gebruikt door Citrix SSO en hun partners.",
-                           "nacIdDescF5":  "Voor F5 Access is vereist dat de Intune apparaat-id wordt opgenomen in het VPN-profiel om NAC in te schakelen.<br><br>Ik sta Microsoft toe apparaatgegevens op te nemen in het VPN-profiel, die kunnen worden gebruikt door F5 Access en hun partners.",
+                           "nacIdDescCisco":  "Cisco AnyConnect vereist dat de Intune-apparaat-id wordt opgenomen in het VPN-profiel om NAC in te schakelen.<br><br>Ik geef Microsoft toestemming om apparaatgegevens op te nemen in het VPN-profiel, die kunnen worden gebruikt door Cisco en hun partners. Klik voor meer informatie, inclusief welke gegevens worden gedeeld met de serviceprovider.",
+                           "nacIdDescCitrix":  "Citrix SSO vereist dat de Intune-apparaat-id wordt opgenomen in het VPN-profiel om NAC in te schakelen.<br><br>Ik geef Microsoft toestemming om apparaatgegevens op te nemen in het VPN-profiel, die kunnen worden gebruikt door Citrix en hun partners. Klik voor meer informatie, inclusief welke gegevens worden gedeeld met de serviceprovider.",
+                           "nacIdDescF5":  "F5 Access vereist dat de Intune-apparaat-id wordt opgenomen in het VPN-profiel om NAC in te schakelen.<br><br>Ik geef Microsoft toestemming om apparaatgegevens op te nemen in het VPN-profiel, die kunnen worden gebruikt door F5 Access en hun partners. Klik voor meer informatie, inclusief welke gegevens worden gedeeld met de serviceprovider.",
                            "nacIdHeader":  "Netwerktoegangsbeheer (NAC) inschakelen",
                            "nacIdHeaderCiscoToolTip":  "De apparaat-id wordt versleuteld en opgenomen in het VPN-profiel. Wanneer de gebruiker probeert verbinding maken met de VPN-verbinding, wordt deze waarde door Cisco AnyConnect doorgegeven aan uw NAC-infrastructuur. Er wordt met deze waarde een query uitgevoerd bij Intune om te bepalen of het apparaat is ingeschreven en compatibel is. <br><br>Cisco AnyConnect heeft geen rechtstreekse toegang tot de apparaat-id dus om NAC te kunnen inschakelen, moet deze waarde worden opgenomen in het VPN-profiel.",
                            "nacIdHeaderCitrixToolTip":  "De apparaat-id wordt versleuteld en opgenomen in het VPN-profiel. Wanneer de gebruiker probeert verbinding te maken met het VPN, wordt deze waarde door Citrix SSO doorgegeven aan uw NAC-infrastructuur. Er wordt met deze waarde een query uitgevoerd bij Intune om te bepalen of het apparaat is ingeschreven en compatibel is. <br><br>Citrix SSO heeft geen rechtstreekse toegang tot de apparaat-id. Deze waarde moet daarom worden opgenomen in het VPN-profiel om NAC in te schakelen.",
@@ -6016,6 +6028,15 @@
                            "shutdown":  "Afsluiten",
                            "signatureUpdateIntervalInHoursName":  "Update-interval voor beveiligingsinformatie (in uur)",
                            "signingCertificateType":  "Certificaattype ondertekenen",
+                           "silentCertAccessAddApps":  "Apps toevoegen",
+                           "silentCertAccessApplicationsName":  "Toepassingen",
+                           "silentCertAccessMaxAppsWarn":  "Selecteer maximaal 50 apps om stille certificaattoegang tot te verlenen",
+                           "silentCertAccessMinAppsWarn":  "Selecteer ten minste één app om stille certificaattoegang toe te kennen",
+                           "silentCertAccessSpecificApps":  "Op de achtergrond verlenen voor specifieke apps (goedkeuring van de gebruiker vereisen voor andere apps)",
+                           "silentCertAccessTabName":  "Apps",
+                           "silentCertAccessTypeDescription":  "Kiezen hoe certificaattoegang wordt verleend aan toepassingen",
+                           "silentCertAccessTypeName":  "Certificaattoegang",
+                           "silentCertAccessUserApproval":  "Goedkeuring van de gebruiker vereisen voor alle apps",
                            "simpleDownloadOption":  "Eenvoudige downloadmodus zonder peering (99)",
                            "simultaneousMultiThreadingName":  "Gelijktijdige multithreading",
                            "singleAppModeAppNameDescription":  "De naam van de app.",
@@ -7151,6 +7172,8 @@
                            "windows10ProfessionalOption":  "Windows 10/11 Pro",
                            "windows10ProfessionalWorkstationNOption":  "Windows 10/11 Pro voor werkstations N-editie",
                            "windows10ProfessionalWorkstationOption":  "Windows 10/11 Pro voor werkstations",
+                           "windows11CloudEditionNOption":  "Windows 11 SE N",
+                           "windows11CloudEditionOption":  "Windows 11 SE",
                            "windows11EULA":  "Door deze optie in te schakelen, gaat u ermee akkoord dat bij het toepassen van dit besturingssysteem op een apparaat (1) de toepasselijke Windows-licentie is aangeschaft via de volumelicentie of (2) dat u gemachtigd bent om uw organisatie te binden en namens haar de relevante Licentievoorwaarden voor Microsoft-software accepteert die u hier kunt vinden <a>{0}</a>.",
                            "windowsAppNonComplianceTypeDescription":  "U kunt het beste uw gebruikers vragen de gebruiksvoorwaarden te accepteren om te bevestigen dat de installatie van bepaalde apps wordt geblokkeerd. Gebruik de lijst met geblokkeerde apps om de Windows Phone-apps op te geven die niet door Intune worden beheerd en die gebruikers niet kunnen installeren. Voor de lijst met toegestane apps moeten alle apps, waaronder de bedrijfsportal en de geïmplementeerde apps, aan de lijst worden toegevoegd aan de hand van de URL-indeling van de App Store",
                            "windowsAppUrlExample":  "bijvoorbeeld https://www.microsoft.com/en-us/store/apps/remote-desktop/9wzdncrfj3ps",
@@ -7239,6 +7262,8 @@
                            "workProfilePersonalUsagAndroidEnrollmentTypesHeaderDescription":  "Deze instellingen zijn geschikt voor werkprofielapparaten in bedrijfseigendom en zijn alleen van toepassing bij persoonlijk gebruik.",
                            "workProfileRequirePasswordDescription":  "Een wachtwoord vereisen voor het gebruik van bedrijfs-apps. Mag afwijken van het apparaatwachtwoord. Vereist Android 7.0 of hoger ",
                            "workProfileRequirePasswordName":  "Werkprofielwachtwoord vereisen",
+                           "workProfileRequiredPasswordComplexityDescription":  "Geef de vereiste wachtwoordcomplexiteit op.",
+                           "workProfileRequiredPasswordComplexityName":  "Work Profile Password Complexity",
                            "workProfileRequiredPasswordTypeDescription":  "Geef hier het type wachtwoord op dat is vereist.",
                            "workProfileRequiredPasswordTypeName":  "Vereist wachtwoordtype",
                            "workspaceIDName":  "Werkruimte-id",
@@ -7601,7 +7626,7 @@
                            "isMamEnabled":  "Is MAM ingeschakeld?",
                            "itemsCount":  "{0} items",
                            "jailbrokenRootedDevices":  "Apparaten met jailbreak/roottoegang",
-                           "lastModifiedDate":  "Last Modified Date",
+                           "lastModifiedDate":  "Laatst gewijzigd op",
                            "lastReportedDate":  "Datum laatste rapport",
                            "lastSync":  "Laatste synchronisatie",
                            "lastSyncGmt":  "Laatste synchronisatie (GMT)",
@@ -7633,6 +7658,7 @@
                            "mdmDeviceId":  "MDM-apparaat-id",
                            "mdmWipInvalidVersionSettings":  "Een of meer apps hebben ongeldige definities voor minimum-/maximumversie.<br /> <br />Beleidsregels van Windows-gegevensbescherming met inschrijving ondersteunen alleen het opgeven van de minimum- of de maximumversie, tenzij beide versies zijn gedefinieerd als gelijk. Wanneer alleen de minimumversie is opgegeven, wordt de regel ingesteld op hoger dan of gelijk aan de minimumversie. Wanneer alleen de maximumversie is opgegeven, wordt de regel ingesteld op lager dan of gelijk aan de maximumversie.",
                            "mdmWipReport":  "Rapport voor MDM Windows Information Protection",
+                           "microsoftDefenderForEndpoint":  "Microsoft Defender voor Eindpunt",
                            "microsoftEdgeOptionText":  "Microsoft Edge",
                            "minAppVersion":  "Minimale app-versie",
                            "minMaxValidation":  "Bij gelijke acties moet de minimumversie van het besturingssysteem lager zijn dan de maximumversie van het besturingssysteem.",
@@ -7642,11 +7668,13 @@
                            "minimumCompanyPortalVersion":  "Minimale versie van de bedrijfsportal",
                            "minimumDeviceSelection":  "Er moet ten minste één apparaat zijn geselecteerd",
                            "mobileAppCRUDpermission":  "Machtiging voor het lezen, maken en toewijzen van mobiele apps",
+                           "mobileThreatDefenseNonMicrosoft":  "Mobile Threat Defense (niet-Microsoft)",
                            "monitor":  "Monitor",
                            "moreApps":  "Meer apps",
                            "moreAppsTextBoxTooltip":  "Voeg Line-Of-Business-apps toe als u geen toegang hebt tot de volledige Intune-portal.",
-                           "mtdConnectorInfoBox1":  "<b>Belangrijk! </b> Zorg ervoor dat de Mobile Threat Defense-connector is ingesteld om de gegevens van uw organisatie op de juiste wijze te beveiligen op basis van de bedreigingsevaluaties van de verbonden Mobile Threat Defense Connector-services.",
+                           "mtdConnectorInfoBox1":  "<b>Belangrijk! </b> Zorg ervoor dat de Mobile Threat Defense-connector (MTD) is ingesteld om de gegevens van uw organisatie op de juiste wijze te beveiligen op basis van de bedreigingsevaluaties van de verbonden Mobile Threat Defense Connector-services.",
                            "mtdConnectorInfoBox2":  "Meer informatie over Mobile Threat Defense voor niet-geregistreerde apparaten.",
+                           "mtdConnectorInfoBox3":  "Als uw tenant een verbinding heeft ingesteld met zowel Microsoft Defender voor Eindpunt als een MTD-service (niet-Microsoft) en geen primaire MTD-service configureert of als er een conflict is bij het instellen van een gebruiker, wordt de standaardwaarde Microsoft Defender voor Eindpunt.",
                            "name":  "Naam",
                            "networkBoundariesInfoBoxText":  "Voeg /*AppCompat*/ toe aan uw lijst met cloudresources om TLS-verbindingen mogelijk te maken via persoonlijke apps die rechtstreeks via een IP-adres verbinding maken met een cloudresource.",
                            "networkBoundariesInfoParagraph1":  "Kies waar beveiligde apps toegang hebben tot bedrijfsgegevens in uw netwerk.",
@@ -7735,6 +7763,7 @@
                            "portNumber":  "Poortnummer",
                            "portNumberDesc":  "Poort voor de proxy die is opgegeven in het proxyadres",
                            "prefix":  "Voorvoegsel",
+                           "primaryMtdService":  "Primaire MTD-service",
                            "productName":  "Productnaam",
                            "properties":  "Eigenschappen",
                            "protected":  "Beveiligd",
@@ -7777,7 +7806,7 @@
                            "resourcesToBeCreated":  "Resources die moeten worden gemaakt",
                            "restrictWebContentNo":  "Willekeurige app",
                            "restrictWebContentOption2":  "{0}: Webkoppelingen toestaan in elke app",
-                           "rootCertificate":  "Root Certificate",
+                           "rootCertificate":  "Basiscertificaat",
                            "safetyNetDeviceAttestation":  "SafetyNet-apparaatattestation",
                            "saveAppsNotificationText":  "Geselecteerde apps opslaan",
                            "saveChangesCommandText":  "Opslaan",
@@ -7813,6 +7842,7 @@
                            "setting":  "Instelling",
                            "settingName":  "Naam van instelling",
                            "settings":  "Instellingen",
+                           "settingsCatalog":  "Catalogus met instellingen",
                            "settingsSelectorLabel":  "Instellingen",
                            "silent":  "Stil",
                            "specificUserIsLicensedIntune":  "{0} heeft een licentie voor Microsoft Intune.",
@@ -7840,6 +7870,7 @@
                            "targetedUserPartWithPolicy":  "Beheerd door beleid",
                            "targetediOSUserPartTitle":  "Gebruikersstatus voor iOS",
                            "threatCategory":  "Bedreigingscategorie",
+                           "tileDeprecated":  "Deze tegel is afgeschaft. Verwijder de tegel uit uw dashboard.",
                            "timeColumnLabel":  "Tijd",
                            "timebombLabel":  "Offline-interval (dagen) voor gegevens van app worden gewist",
                            "timebombToolTip":  "Na het opgegeven aantal dagen waarbij het apparaat niet met Intune is gesynchroniseerd, voert Windows een selectieve wisbewerking uit op het apparaat. Hierdoor worden de apps uitgeschreven voor MAM-registratie en worden versleutelde en beveiligde bedrijfsgegevens verwijderd. De standaardinstelling is 90 dagen. Als u deze waarde instelt op 0, wordt de instelling uitgeschakeld.",
@@ -7912,7 +7943,7 @@
                            "windows10AppProtectionPolicy":  "App-beveiligingsbeleid voor Windows 10 en hoger",
                            "windows10PlatformLabel":  "Windows 10 en later",
                            "windows10x":  "Windows 10X",
-                           "windows8":  "Windows 8.1 and later",
+                           "windows8":  "Windows 8.1 en later",
                            "windowsInformationProtectionPlatformLabel":  "Windows-gegevensbescherming",
                            "windowsPhone":  "Windows Phone 8.1",
                            "windowsPlatformLabel":  "Windows",
@@ -7944,6 +7975,7 @@
                            "wipSMBStringTooltip":  "Hiermee wordt een lijst met bestandsextensies gespecificeerd, zodat bestanden met deze extensies worden versleuteld tijdens het kopiëren van een SMB-share binnen de bedrijfsgrenzen die zijn gedefinieerd in de netwerklocatielijst. Als dit beleid niet is opgegeven, wordt het bestaande automatische versleutelingsgedrag toegepast. Als het beleid is geconfigureerd, worden alleen bestanden met extensies in de lijst versleuteld.",
                            "wipStoreApps":  "Store-apps",
                            "wipWeAppsListInfo":  "Deze apps hebben toegang tot uw ondernemingsgegevens en reageren anders wanneer ze worden gebruikt voor niet-toegestane, niet-ondernemingsbewuste of persoonlijke apps. Alleen geschikte apps zijn toegestaan op apparaten zonder MDM.",
+                           "wipWeDeprecationWarning":  "Creating new WIP without enrollment policies (WIP-WE) is no longer supported. For more information, see <a target=\"_blank\" href={0}>Windows Information Protection</a> ",
                            "wipWeWarning":  "Voordat beleid voor Windows 10 en hoger kan worden uitgevoerd, moet u de <a target=\"_blank\" href={0}>MAM-URL's in AAD instellen</a> op Microsoft Intune door de optie voor het herstellen van de standaard-URL's te selecteren en het gebruikersbereik te definiëren.",
                            "wipWebsiteLearningTitle":  "Website-learning voor Windows Information Protection",
                            "wipeData":  "Gegevens wissen",
@@ -8042,7 +8074,9 @@
                                "windows10ProfessionalEducationN":  "Windows 10/11 Professional Education N",
                                "windows10ProfessionalN":  "Windows 10 Professional N",
                                "windows10ProfessionalWorkstation":  "Windows 10/11 Professional Workstation",
-                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professional Workstation N"
+                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professional Workstation N",
+                               "windows11CloudEdition":  "Windows 11 SE",
+                               "windows11CloudEditionN":  "Windows 11 SE N"
                            },
     "DetectionRules":  {
                            "ComparisonOperators":  {
@@ -8059,6 +8093,7 @@
                                                 "header":  "Een aangepast detectiescript gebruiken",
                                                 "runAs32Bit":  "Script uitvoeren als 32 bitsproces op 64 bitsclients",
                                                 "runAs32BitTooltip":  "Selecteer Ja als u het script in een 32 bitsproces op 64 bitsclients wilt uitvoeren. Selecteer Nee (standaard) als u het script in een 64 bitsproces op 64 bitsclients wilt uitvoeren. 32 bitsclients voeren het script uit in een 32 bitsproces.",
+                                                "scriptContent":  "Script content",
                                                 "scriptFile":  "Scriptbestand",
                                                 "scriptFileNotSelectedValidation":  "Er is geen scriptbestand geselecteerd.",
                                                 "scriptFileTooltip":  "Selecteer een PowerShell-script waarmee de aanwezigheid van een app op de client wordt gedetecteerd. De app wordt gedetecteerd als het script zowel een afsluitcode van de waarde 0 retourneert als een tekenreekswaarde naar STDOUT schrijft.",
@@ -8307,9 +8342,6 @@
                                                                                                              "string":  "Tekenreeks",
                                                                                                              "version":  "Versie"
                                                                                                          },
-                                                                            "ScriptContent":  {
-                                                                                                  "emptyMessage":  "Scriptinhoud mag niet leeg zijn."
-                                                                                              },
                                                                             "duplicateName":  "De scriptnaam {0} is al gebruikt. Voer een andere naam in.",
                                                                             "enforceSignatureCheck":  "Controle van scripthandtekening afdwingen",
                                                                             "enforceSignatureCheckTooltip":  "Selecteer Ja om op te geven dat het script is ondertekend door een vertrouwde uitgever. Hierdoor kan het script zonder waarschuwingen of prompts worden uitgevoerd. Het script wordt niet geblokkeerd en wordt uitgevoerd. Selecteer Nee (standaardwaarde) om het script met bevestiging door de eindgebruiker maar zonder handtekeningverificatie uit te voeren.",
@@ -8318,6 +8350,7 @@
                                                                             "operatorTooltip":  "Selecteer de operator voor de vergelijking van vereisten.",
                                                                             "requirementMethod":  "Uitvoergegevenstype selecteren",
                                                                             "requirementMethodTooltip":  "Selecteer het gegevenstype dat wordt gebruikt bij het bepalen van een vereiste voor detectieovereenkomsten.",
+                                                                            "scriptContent":  "Script content",
                                                                             "scriptFile":  "Scriptbestand",
                                                                             "scriptFileTooltip":  "Selecteer een PowerShell-script waarmee de aanwezigheid van een app op de client wordt gedetecteerd. Als de app wordt gedetecteerd, wordt met het proces van de vereist een afsluitcode met de waarde 0 geretourneerd en een tekenreekswaarde naar STDOUT geschreven.",
                                                                             "scriptName":  "Scriptnaam",
@@ -8370,6 +8403,7 @@
                                                       },
                                          "InfoBlade":  {
                                                            "createTitle":  "Verificatiecontext toevoegen",
+                                                           "deleteDisallowed":  "U kunt deze verificatiecontext niet verwijderen terwijl ernaar wordt verwezen door uw beleid voor voorwaardelijke toegang.",
                                                            "descPlaceholder":  "Beschrijving voor de verificatiecontext toevoegen",
                                                            "modifyTitle":  "Verificatiecontext wijzigen",
                                                            "namePlaceholder":  "Bijvoorbeeld Vertrouwde locatie, Vertrouwd apparaat, Sterke autorisatie",
@@ -8396,15 +8430,15 @@
                                          "description":  "Beschrijving",
                                          "documentation":  "Documentatie",
                                          "getStarted":  "Aan de slag",
-                                         "label":  "Verificatiecontext (preview)",
-                                         "menuLabel":  "Verificatiecontext (preview)",
+                                         "label":  "Verificatiecontext",
+                                         "menuLabel":  "Verificatiecontext",
                                          "name":  "Naam",
                                          "noAuthContextConfigured":  "Er zijn geen verificatiecontexten geconfigureerd.",
                                          "noAuthContextSet":  "Er zijn geen verificatiecontexten",
                                          "noData":  "Er zijn geen verificatiecontexten om weer te geven",
                                          "selectionInfo":  "Verificatiecontext wordt gebruikt om toepassingsgegevens en acties te beveiligen in apps als SharePoint en Microsoft Cloud App Security.",
                                          "step":  "Stap",
-                                         "tabDescription":  "Beheer de verificatiecontext om gegevens en acties in uw apps te beveiligen. [Meer informatie][1]\n[1]https://go.microsoft.com/fwlink/?linkid=2150965",
+                                         "tabDescription":  "Beheer de verificatiecontext om gegevens en acties in uw apps te beveiligen. Verificatiecontexten kunnen niet worden verwijderd wanneer ernaar wordt verwezen door beleid voor voorwaardelijke toegang. [Meer informatie][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
                                          "tagResources":  "Labelen van resources met een verificatiecontext"
                                      },
                      "AuthenticationStrength":  {
@@ -8554,12 +8588,13 @@
                                                    "guestOrExternalUsersLabel":  "Gasten of externe gebruikers",
                                                    "internalGuestLabel":  "Lokale gastgebruikers",
                                                    "otherExternalUserLabel":  "Andere externe gebruikers",
-                                                   "serviceProviderUsersLabel":  "Service provider users"
+                                                   "previewTag":  "{0} (preview)",
+                                                   "serviceProviderUsersLabel":  "Gebruikers van serviceproviders"
                                                },
                      "NamedLocation":  {
                                            "Form":  {
                                                         "CountryLookup":  {
-                                                                              "ariaLabel":  "Zoekmethode voor landen",
+                                                                              "ariaLabel":  "Opzoekmethode voor land/regio",
                                                                               "gps":  "Locatie bepalen op basis van GPS-coördinaten",
                                                                               "info":  "Wanneer de locatievoorwaarde van een beleid voor voorwaardelijke toegang is geconfigureerd, worden gebruikers in de Authenticator-app gevraagd om hun GPS-locatie te delen. ",
                                                                               "ip":  "Locatie bepalen op basis van IP-adres (alleen IPv4)"
@@ -8696,7 +8731,7 @@
                                                       "ServicePrincipalRisk":  {
                                                                                    "description":  "Risiconiveaus voor service-principal configureren die nodig zijn om beleid af te dwingen​",
                                                                                    "infoBalloonContent":  "Risico voor service-principal configureren om beleid toe te passen op geselecteerd(e) risiconiveau(s)",
-                                                                                   "title":  "Risico van service-principal (preview)"
+                                                                                   "title":  "RIsico voor service-principal"
                                                                                }
                                                   }
                                 },
@@ -8985,6 +9020,11 @@
                                  "optionsPickerTitle":  "Continue toegangsevaluatie inschakelen/uitschakelen",
                                  "upsellInfo":  "U kunt de instellingen op deze pagina niet meer wijzigen en alle instellingen hier moeten worden genegeerd. Uw vorige instelling wordt bewaard. U kunt uw CAE-instellingen voortaan configureren onder Voorwaardelijke toegang. Klik hier voor meer informatie."
                              },
+                     "SamlReauth":  {
+                                        "Filter":  {
+                                                       "warning":  "U richt zich op toepassingen met behulp van een dynamische query. Sommige toepassingen worden mogelijk niet ondersteund voor gebruik met sessiebeheer 'aanmeldingsfrequentie elke keer'. {0}Meer informatie over de aanbevolen scenario's.{1}"
+                                                   }
+                                    },
                      "SelectOrganizations":  {
                                                  "Blade":  {
                                                                "Lower":  {
@@ -9198,9 +9238,10 @@
                                                                           "infoBalloon":  "Lijst met kenmerken van het apparaat dat wordt gebruikt bij de aanmelding."
                                                                       }
                                                },
-                                    "noTenantSelected":  "No tenant selected",
-                                    "tenantIdWithPlaceholder":  "Tenant ID: {0}",
-                                    "tenantSelectionRequired":  "Tenant required"
+                                    "noTenantSelected":  "Er is geen tenant geselecteerd",
+                                    "selectOrganization":  "Organisatie selecteren",
+                                    "tenantIdWithPlaceholder":  "Tenant-id: {0}",
+                                    "tenantSelectionRequired":  "Tenant vereist"
                                 },
                      "advancedTabText":  "Geavanceerd",
                      "allCloudAppsErrorBox":  "Alle cloud-apps moet worden geselecteerd wanneer de toekenning Wachtwoordwijziging vereisen is geselecteerd",
@@ -9224,7 +9265,7 @@
                      "appContextUriPlaceholder":  "Voorbeeld: uri:contoso.com:level3",
                      "appEnforceInfoBubble":  "Er zijn voor door apps gehandhaafde beperkingen mogelijk aanvullende beheerdersconfiguraties vereist in de cloud-apps. De beperkingen zijn alleen van toepassing op nieuwe sessies.",
                      "appNotSetSeletorLabel":  "0 cloud-apps geselecteerd",
-                     "appReauthNotSupported":  "This app does not support the \"sign-in frequency every time\" session control.",
+                     "appReauthNotSupported":  "Deze app biedt geen ondersteuning voor het sessiebeheer 'elke keer aanmelden'.",
                      "applyConditionClientAppInfoBalloonContent":  "Client-apps configureren om het beleid toe te passen op specifieke client-apps",
                      "applyConditionDevicePlatformInfoBalloonContent":  "Apparaatplatformen configureren om het beleid toe te passen op specifieke platformen",
                      "applyConditionDeviceStateInfoBalloonContent":  "Apparaatstatus configureren om het beleid toe te passen op specifieke apparaatstatussen",
@@ -9483,10 +9524,12 @@
                      "downloadDefaultFileName":  "IP-bereiken",
                      "downloadExampleFileName":  "Voorbeeld",
                      "downloadExampleHeader":  "Dit is een voorbeeldbestand waarin u kunt zien wat voor soort gegevens kunnen worden geaccepteerd. Regels die beginnen met # worden genegeerd.",
+                     "duplicate":  "Dupliceren",
+                     "duplicatePolicyName":  "{0} KOPIËREN",
                      "endDatePickerLabel":  "Eindigt op",
                      "endTimePickerLabel":  "Eindtijd",
-                     "enterCountryText":  "Het IP-adres en het land/regio worden als paar geëvalueerd. Selecteer het land.",
-                     "enterIpText":  "Het IP-adres en het land/regio worden als paar geëvalueerd. Geef het IP-adres op.",
+                     "enterCountryText":  "IP-adres en land/regio worden als paar geëvalueerd. Selecteer het land.",
+                     "enterIpText":  "IP-adres en land/regio worden als paar geëvalueerd. Voer het IP-adres in.",
                      "enterUserText":  "Er is geen gebruiker geselecteerd. Selecteer een gebruiker.",
                      "evaluationResult":  "Resultaat van de evaluatie",
                      "exchangeActiveSyncSelectedLabel":  "Exchange ActiveSync",
@@ -9528,7 +9571,7 @@
                      "infoCommandLabel":  "Info",
                      "invalidCertDuration":  "Ongeldige certificaatduur",
                      "invalidIpAddress":  "De waarde moet een geldig IP-adres zijn",
-                     "invalidReAuthSignInRiskOptionSelected":  "Het sessiebesturingselement 'aanmeldingsfrequentie elke keer' staat de selectie 'geen risico' in het voorwaardebesturingselement 'aanmeldingsrisiconiveau' niet toe.",
+                     "invalidReAuthSignInRiskOptionSelected":  "Het sessiebesturingselement 'aanmeldingsfrequentie elke keer' staat de selectie 'geen risico' in het besturingselement voor aanmeldingsrisico's niet toe.",
                      "invalidUriErrorMsg":  "Voer een geldige URI in. Bijvoorbeeld: uri:contoso.com:acr",
                      "iosDisplayName":  "iOS",
                      "linuxDisplayName":  "Linux",
@@ -9569,7 +9612,7 @@
                      "namedLocationUpsellBanner":  "Deze weergave is afgeschaft. Ga naar de nieuwe en verbeterde weergave 'Benoemde locaties'.",
                      "namedLocationsHelpDescription":  "Benoemde locaties worden gebruikt voor de Azure AD-beveiligingsrapporten voor het reduceren van het aantal fout-positieven en Azure AD-beleid voor voorwaardelijke toegang.\n[Meer informatie][1]\n[1]: https://aka.ms/namedlocationupdate",
                      "namedNetworkAddIpRanges":  "Een nieuw IP-bereik toevoegen (bijvoorbeeld 40.77.182.32/27)",
-                     "namedNetworkCountryNeeded":  "U moet ten minste één land selecteren",
+                     "namedNetworkCountryNeeded":  "U moet ten minste één land/regio selecteren",
                      "namedNetworkDeleteCommand":  "Verwijderen",
                      "namedNetworkDeleteDescription":  "Weet u zeker dat u {0} wilt verwijderen? Deze bewerking kan niet ongedaan worden gemaakt.",
                      "namedNetworkDeleteTitle":  "Weet u het zeker?",
@@ -9653,9 +9696,9 @@
                      "policyConditionLocation":  "Locaties",
                      "policyConditionLocationDescription":  "Locatie (bepaald op basis van IP-adresbereik) waarvandaan de gebruiker zich aanmeldt",
                      "policyConditionLocationPreview":  "Locaties (preview)",
-                     "policyConditionSigninRisk":  "Niveau van aanmeldingsrisico",
+                     "policyConditionSigninRisk":  "Aanmeldingsrisico",
                      "policyConditionSigninRiskDescription":  "De kans dat iemand anders dan de gebruiker zich probeert aan te melden. Het risiconiveau kan hoog, gemiddeld of laag zijn. Hiervoor is een Azure AD Premium 2-licentie vereist.",
-                     "policyConditionUserRisk":  "Niveau van gebruikersrisico",
+                     "policyConditionUserRisk":  "Gebruikersrisico",
                      "policyConditionUserRiskDescription":  "Gebruikersrisiconiveaus configureren die nodig zijn om beleid af te dwingen",
                      "policyConditioniClientApp":  "Client-apps",
                      "policyControlAllowAccessDisplayedName":  "Toegang verlenen",
@@ -9874,8 +9917,8 @@
                      "whatIfBladeTitle":  "What If",
                      "whatIfClassicPoliciesWarning":  "Klassiek beleid wordt niet door dit hulpprogramma geëvalueerd.",
                      "whatIfClientAppInfo":  "De client-app waarmee de gebruiker zich aanmeldt, bijvoorbeeld Browser.",
-                     "whatIfCountry":  "Land",
-                     "whatIfCountryInfo":  "Het land waaruit de gebruiker zich aanmeldt.",
+                     "whatIfCountry":  "Land/regio",
+                     "whatIfCountryInfo":  "Het land/de regio van waaruit de gebruiker zich aanmeldt.",
                      "whatIfDevicePlatformInfo":  "Het apparaatplatform waarmee de gebruiker zich aanmeldt.",
                      "whatIfDeviceStateInfo":  "De apparaatstatus waarmee de gebruiker zich aanmeldt",
                      "whatIfEnterIpAddress":  "IP-adres invoeren (bijvoorbeeld 40.77.182.32)",
@@ -9893,14 +9936,14 @@
                      "whatIfEvaResultUsers":  "Gebruikers en groepen",
                      "whatIfIpAddress":  "IP-adres",
                      "whatIfIpAddressInfo":  "Het IP-adres waarvandaan de gebruiker zich aanmeldt.",
-                     "whatIfIpCountryInfoBoxText":  "Als u een IP-adres of land/regio gebruikt, zijn beide velden vereist en moeten correct samen toegewezen zijn.",
+                     "whatIfIpCountryInfoBoxText":  "Als u een IP-adres of land/regio gebruikt, zijn beide velden vereist en moeten ze correct aan elkaar worden toegewezen.",
                      "whatIfPolicyAppliesTab":  "Beleidsregels die worden toegepast",
                      "whatIfPolicyAppliesTabWithCount":  "Toepasbaar beleid ({0})",
                      "whatIfPolicyDoesNotApplyTab":  "Beleidsregels die niet worden toegepast",
                      "whatIfPolicyDoesNotApplyTabWithCount":  "Niet-toepasbaar beleid ({0})",
                      "whatIfReasons":  "Redenen waarom dit beleid niet wordt toegepast",
                      "whatIfSelectClientApp":  "Een client-app selecteren...",
-                     "whatIfSelectCountry":  "Land selecteren...",
+                     "whatIfSelectCountry":  "Land/regio selecteren",
                      "whatIfSelectDevicePlatform":  "Apparaatplatformen selecteren...",
                      "whatIfSelectPrivateLink":  "Privékoppeling selecteren...",
                      "whatIfSelectServicePrincipalRisk":  "Risico van service-principal selecteren...",
@@ -9919,6 +9962,7 @@
                      "windowsDisplayName":  "Windows",
                      "windowsPhoneDisplayName":  "Windows Phone",
                      "workloadIdentities":  "Workloadidentiteiten (preview-versie)",
+                     "workloadIdentitiesLicenseText":  "Er is een premium P1- of P2-licentie voor workload-identiteiten vereist om dit beleid te bewerken.",
                      "workloadIdentity":  "Workload-identiteit"
                  },
     "AppResources":  {
@@ -10047,6 +10091,14 @@
                                         }
                      },
     "WindowsEnrollment":  {
+                              "DevicePreparation":  {
+                                                        "description":  "Configureer apparaten voor de eerste inrichting en wijs ze toe aan gebruikers.",
+                                                        "title":  "Apparaatvoorbereiding"
+                                                    },
+                              "EnrollmentSettings":  {
+                                                         "description":  "Inschrijvingsinstellingen configureren, zoals het blokkeren van de inschrijving en toewijzen aan gebruikers.",
+                                                         "title":  "Inschrijvingsinstellingen"
+                                                     },
                               "coManagementAuthorityDesc":  "Co-beheerinstellingen configureren voor Configuration Manager-integratie",
                               "coManagementAuthorityTitle":  "Instellingen voor co-beheer  ",
                               "deploymentProfiles":  "Windows AutoPilot-implementatieprofielen",
@@ -10196,6 +10248,8 @@
                    "informationUrlSizeHint":  "De maximale lengte van de informatie-URL is 1024 tekens",
                    "installAsManaged":  "Installeren als beheerd",
                    "installationSourceLabel":  "App-type",
+                   "installerTypeInfoBalloon":  "The installer type of the application package.",
+                   "installerTypeLabel":  "Installer Type",
                    "isFeatured":  "Deze weergeven als aanbevolen app in de bedrijfsportal",
                    "isMAMEnabledToggleLabel":  "Ja",
                    "lastModifiedDateTime":  "Tijd laatst bijgewerkt",
@@ -10408,6 +10462,8 @@
                                                         "qualityUpdateSettings":  "Instellingen"
                                                     },
                                         "infoBoxText":  "Het enige besturingselement voor kwaliteitsupdates dat momenteel beschikbaar is naast het bestaande beleid voor update-ringen van Windows 10 en hoger, is de mogelijkheid om kwaliteitsupdates te versnellen voor apparaten die buiten een opgegeven patchniveau vallen. In de toekomst zullen meer besturingselementen beschikbaar zijn.",
+                                        "licenseLearnMoreText":  "Meer informatie over vereisten en beleid voor kwaliteitsupdates.",
+                                        "licenseWarningBoxText":  "Voor het maken van beleid voor kwaliteitsupdates zijn specifieke licenties vereist.",
                                         "warningBoxText":  "Door het versnellen van software-updates kunt u weliswaar de benodigde tijd voor het verkrijgen van naleving (indien nodig) verkorten, maar dit heeft bredere gevolgen voor de productiviteit van eindgebruikers. De kans dat gebruikers te maken krijgen met een herstart tijdens kantooruren neemt hierdoor aanzienlijk toe."
                                     },
     "TermsOfUse":  {
@@ -10492,6 +10548,7 @@
                                          "ptBR":  "Portuguese (Brazil)",
                                          "ptPT":  "Portuguese (Portugal)",
                                          "quz":  "Quechua",
+                                         "removeLanguage":  "Remove language",
                                          "ro":  "Romanian",
                                          "ru":  "Russian",
                                          "rw":  "Kinyarwanda",
@@ -10542,10 +10599,7 @@
                                                                      },
                                       "PolicyFile":  {
                                                          "Languages":  {
-                                                                           "Empty":  {
-                                                                                         "default":  "Select default language",
-                                                                                         "nonDefault":  "Select a language"
-                                                                                     }
+
                                                                        },
                                                          "Validations":  {
                                                                              "duplicateLanguage":  "Oops, {0} appears to be selected multiple times. Language selection must be unique."
@@ -10581,6 +10635,7 @@
                                       "agreementNamePlaceholderText":  "Example: 'All users terms of use'",
                                       "agreementRequirmentLabel":  "Required Upon",
                                       "agreementTargetEntityLabel":  "Users targeted",
+                                      "agreementUploadPolicyAriaLabelText":  "Upload required PDF {0}",
                                       "agreementUploadPolicyLabel":  "Terms of use",
                                       "agreementUploadPolicyPlaceholderText":  "Upload required PDF",
                                       "createButtonLabel":  "Create",
@@ -10594,7 +10649,32 @@
                                       "policyTemplateInfo":  "These templates are pre configured conditional access policies that are targeted to specific users and applications.",
                                       "policyTemplateLabel":  "Policy templates",
                                       "title":  "New terms of use"
-                                  }
+                                  },
+                       "Details":  {
+                                       "Link":  {
+                                                    "auditEvent":  "View audit logs",
+                                                    "delete":  "Delete",
+                                                    "download":  "Preview PDF",
+                                                    "edit":  "Edit"
+                                                },
+                                       "Property":  {
+                                                        "acceptanceDuration":  "Duration before re-acceptance required (days)",
+                                                        "acceptanceExpirationFrequency":  "Frequency",
+                                                        "acceptanceExpirationStartDateTime":  "Expire starting on",
+                                                        "accepted":  "Users accepted",
+                                                        "declined":  "Users declined",
+                                                        "displayname":  "Display name",
+                                                        "isAcceptanceExpirationEnable":  "Expire consents",
+                                                        "isPerDeviceAcceptanceRequired":  "Require users to consent on every device",
+                                                        "isViewingBeforeAcceptanceRequired":  "Require users to expand the terms of use",
+                                                        "name":  "Name"
+                                                    },
+                                       "Tab":  {
+                                                   "cAPolicies":  "Conditional access policies",
+                                                   "details":  "Details",
+                                                   "languages":  "Languages"
+                                               }
+                                   }
                    },
     "TACSettings":  {
                         "edgeSettings":  "Configuratie-instellingen voor Microsoft Edge",
@@ -10660,6 +10740,23 @@
                               "withEnrollment":  "Met inschrijving",
                               "withoutEnrollment":  "Zonder inschrijving"
                           },
+    "PolicySelection":  {
+                            "Grid":  {
+                                         "Column":  {
+                                                        "author":  "Auteur",
+                                                        "template":  "Sjabloonnaam"
+                                                    }
+                                     },
+                            "SettingsCatalog":  {
+                                                    "subtitle":  "Begin nieuwe instellingen en selecteer de gewenste instellingen in de bibliotheek met beschikbare instellingen",
+                                                    "title":  "Catalogus met instellingen"
+                                                },
+                            "Templates":  {
+                                              "subtitle":  "Sjablonen bevatten groepen instellingen, geordend op functionaliteit. Gebruik een sjabloon als u niet handmatig beleidsregels wilt maken of als u apparaten wilt configureren voor toegang tot bedrijfsnetwerken, zoals het configureren van wifi of een VPN.",
+                                              "title":  "Sjablonen"
+                                          },
+                            "noData":  "Er zijn geen beleidssjablonen gevonden"
+                        },
     "OfficeApplicationAdditionalType":  {
                                             "projectProRetail":  "Project Online Desktop Client",
                                             "visioProRetail":  "Visio Online-abonnement 2"
@@ -10844,6 +10941,12 @@
                           "withEnrollment":  "Met inschrijving",
                           "withoutEnrollment":  "Zonder inschrijving"
                       },
+    "DisplayRoleTypes":  {
+                             "builtInRole":  "Ingebouwde rol",
+                             "customCloudPCRole":  "Aangepaste Windows 365-rol",
+                             "customIntuneRole":  "Aangepaste Intune-rol",
+                             "customRole":  "Aangepaste rol"
+                         },
     "InstallContextType":  {
                                "device":  "Apparaat",
                                "deviceContext":  "Apparaatcontext",
@@ -11019,7 +11122,7 @@
                                                                      "Schedule":  {
                                                                                       "always":  "Bijwerken bij volgende keer inchecken",
                                                                                       "duringTimeWindows":  "Bijwerken op gepland tijdstip",
-                                                                                      "header":  "Wanneer een beleid voor het bijwerken van iOS/iPadOS-software wordt toegewezen aan een apparaat, worden met Intune de recentste updates geïmplementeerd bij het inchecken van het apparaat (ongeveer ééns per 8 uur). U kunt in plaats daarvan een wekelijkse planning maken met aangepaste begin- en eindtijden. Als u ervoor kiest om updates buiten de geplande tijd uit te voeren, worden deze pas met Intune geïmplementeerd wanneer de geplande tijd is geëindigd.",
+                                                                                      "header":  "Wanneer een updatebeleid is toegewezen aan een apparaat, implementeert Intune standaard de nieuwste updates bij het inchecken van het apparaat. U kunt in plaats daarvan een wekelijks schema maken met aangepaste begin- en eindtijden. Als u ervoor kiest om bij te werken buiten de geplande tijd, implementeert Intune geen updates totdat de geplande tijd is afgelopen.",
                                                                                       "infoBalloon":  "Wanneer de updates worden uitgevoerd. Aanvullende invoer is vereist om updates te plannen tijdens of buiten geplande tijden.",
                                                                                       "label":  "Type planning",
                                                                                       "outsideActiveHours":  "Bijwerken buiten gebruikstijden (verouderd)",
@@ -11443,6 +11546,7 @@
                    "ManagedDesktop":  {
                                           "adminContacts":  "Contactpersonen van beheerder",
                                           "appPackaging":  "Apps verpakken",
+                                          "businessGroups":  "Bedrijfsgroepen",
                                           "devices":  "Apparaten",
                                           "feedback":  "Feedback",
                                           "gettingStarted":  "Aan de slag",
@@ -11479,6 +11583,7 @@
                    "cartProfiles":  "Winkelwagenprofielen",
                    "certificateConnectors":  "Certificaatconnectors",
                    "chromeEnterprise":  "Chrome Enterprise (preview)",
+                   "cloudAttachedDevices":  "Apparaten met cloudkoppeling (preview)",
                    "compliancePolicies":  "Nalevingsbeleid",
                    "complianceScriptManagement":  "Scripts",
                    "complianceScriptManagementPreview":  "Scripts (preview)",
@@ -11512,7 +11617,7 @@
                    "failuresForFeatureUpdates":  "Fouten bij onderdelenupdates (preview)",
                    "failuresForQualityUpdates":  "Fouten bij versnelde updates van Windows (preview)",
                    "featureFlighting":  "Functieflighting",
-                   "featureUpdateDeployments":  "Onderdelenupdates voor Windows 10 en hoger (preview)",
+                   "featureUpdateDeployments":  "Feature updates for Windows 10 and later",
                    "flighting":  "Flighting",
                    "fotaUpdate":  "Geautomatiseerde firmware-update",
                    "groupPolicy":  "Beheersjablonen",
@@ -11523,8 +11628,8 @@
                    "incompleteUserEnrollments":  "Onvolledige gebruikersinschrijvingen",
                    "iosUpdates":  "Beleid voor iOS/iPadOS bijwerken",
                    "legacyPcManagement":  "Beheer van verouderde pc's",
-                   "macOSSoftwareUpdate":  "Updatebeleid voor macOS",
-                   "macOSSoftwareUpdateAccountSummaries":  "Installatiestatus voor macOS-apparaten",
+                   "macOSSoftwareUpdate":  "Beleid voor macOS bijwerken (preview)",
+                   "macOSSoftwareUpdateAccountSummaries":  "Installation status for macOS devices (preview)",
                    "macOSSoftwareUpdateCategorySummaries":  "Samenvatting van software-updates",
                    "macOSSoftwareUpdateStateSummaries":  "updates",
                    "managedGooglePlay":  "Beheerde Google Play",
@@ -11570,11 +11675,12 @@
                    "warranty":  "Leveranciers van garantie",
                    "wdacSupplementalPolicies":  "Aanvullende beleidsregels S-modus",
                    "windows10DriverUpdate":  "Stuurprogramma-updates voor Windows 10 en hoger (preview)",
-                   "windows10QualityUpdate":  "Kwaliteitsupdates voor Windows 10 en hoger (preview)",
+                   "windows10QualityUpdate":  "Quality updates for Windows 10 and later",
                    "windows10UpdateRings":  "Ringen bijwerken voor Windows 10 en hoger",
                    "windows10XPolicyFailures":  "Fouten met Windows 10X-beleid",
                    "windows365Connector":  "Windows 365 Citrix connector",
-                   "windows365ConnectorPublicPreview":  "Windows 365 Citrix connector (preview)",
+                   "windows365ConnectorPublicPreview":  "Windows 365 Citrix-connector (preview)",
+                   "windowsDiagnosticData":  "Windows-gegevens",
                    "windowsEnterpriseCertificate":  "Windows Enterprise-certificaat",
                    "windowsManagement":  "PowerShell-scripts",
                    "windowsSideLoadingKeys":  "Windows-sleutels voor extern laden",

@@ -367,7 +367,6 @@
                      "educationTeacherCerts":  "Certifikáty učitelů",
                      "emailProfile":  "E-mail",
                      "enterpriseDataProtection":  "Windows Information Protection",
-                     "expeditedCheckin":  "Konfigurace správy mobilních zařízení",
                      "extensibleSingleSignOn":  "Rozšíření aplikace jednotného přihlašování",
                      "filevault":  "FileVault",
                      "firewall":  "Firewall",
@@ -508,7 +507,10 @@
                                                         "deploymentSettings":  "Nastavení nasazení",
                                                         "groupAssignmentSettings":  "Přiřazení",
                                                         "scopeSettings":  "Značky oboru"
-                                                    }
+                                                    },
+                                        "gradualRolloutLicenseWarning":  "Tato funkce vyžaduje konkrétní licencování.",
+                                        "gradualRolloutLicenseWarningEdit":  "Tato funkce se může dál používat a konfigurovat, dokud se zásady neuloží bez výběru této funkce.",
+                                        "licenseLearnMoreText":  "Přečtěte si další informace o požadavcích a zásadách aktualizace funkcí."
                                     },
     "WIPPinRequirements":  {
                                "WipLowercaseCharacterPinRequirements":  {
@@ -676,7 +678,8 @@
                                            "selectApp":  "Vyhledejte v App Storu aplikace pro iOS, které chcete nasadit s Intune.",
                                            "useManagedBrowser":  "Pokud je to požadováno, tato webová aplikace se uživateli otevře v prohlížeči chráněném s Intune, jako je Microsoft Edge nebo Intune Managed Browser. Toto nastavení platí pro zařízení s iOS i Androidem.",
                                            "useManagedBrowserLink":  "https://docs.microsoft.com/en-us/intune/apps/app-configuration-managed-browser",
-                                           "win32AppPackageFile":  "Soubor, který obsahuje vaši aplikaci ve formátu, který se dá zkušebně načíst na zařízení. Platné typy balíčků: .intunewin."
+                                           "win32AppPackageFile":  "Soubor, který obsahuje vaši aplikaci ve formátu, který se dá zkušebně načíst na zařízení. Platné typy balíčků: .intunewin.",
+                                           "winGetStoreSelectApp":  "V úložišti Microsoft Storu vyhledejte aplikace Storu, které chcete nasadit pomocí Intune."
                                        },
                               "descriptionPreview":  "Preview",
                               "descriptionRequired":  "Popis je povinný.",
@@ -800,10 +803,10 @@
                                                     "azureADDevice":  "Přidružené zařízení Azure AD",
                                                     "batch":  "Značka skupiny",
                                                     "dateAssigned":  "Datum přiřazení",
-                                                    "deviceAccountFriendlyName":  "Popisný název účtu zařízení",
                                                     "deviceAccountPwd":  "Heslo účtu zařízení",
                                                     "deviceAccountUpn":  "Účet zařízení",
                                                     "deviceDisplayName":  "Název zařízení",
+                                                    "deviceFriendlyName":  "Popisný název zařízení",
                                                     "deviceName":  "Název zařízení",
                                                     "deviceUseType":  "Typ využití zařízení",
                                                     "enrollmentState":  "Stav registrace",
@@ -924,10 +927,10 @@
                                        "azureADDevice":  "Přejděte na podrobnosti přidruženého zařízení. Hodnota N/A znamená, že žádné přidružené zařízení neexistuje.",
                                        "batch":  "Řetězcový atribut, pomocí kterého se dá identifikovat skupina zařízení. Pole značky skupiny Intune se mapuje na atribut OrderID v zařízeních Azure Active Directory.",
                                        "dateAssigned":  "Časové razítko, kdy se profil přiřadil k zařízení",
-                                       "deviceAccountFriendlyName":  "Popisný název účtu zařízení pro zařízení Surface Hub",
-                                       "deviceAccountPwd":  "Heslo účtu zařízení pro zařízení Surface Hub",
-                                       "deviceAccountUpn":  "E-mail účtu zařízení pro zařízení Surface Hub",
+                                       "deviceAccountPwd":  "Heslo účtu zařízení pro zařízení Surface Hub. Pokud ho zadáte, vyplňte také účet zařízení a popisný název.",
+                                       "deviceAccountUpn":  "E-mail účtu zařízení pro zařízení Surface Hub. Pokud ho zadáte, vyplňte také heslo účtu zařízení a popisný název.",
                                        "deviceDisplayName":  "Nakonfigurujte jedinečný název zařízení. Tento název se bude ignorovat v nasazeních připojených službou Hybrid Azure AD Join. Název zařízení stále pochází z profilu připojení k doméně pro zařízení hybridní služby Azure AD.",
+                                       "deviceFriendlyName":  "Popisný název zařízení pro zařízení Surface Hub. Pokud ho zadáte, vyplňte také účet zařízení a heslo účtu zařízení.",
                                        "deviceName":  "Název, který se zobrazuje, když se někdo pokusí zjistit zařízení a připojit se k němu",
                                        "deviceUseType":  "      Zařízení by se nastavilo podle vaší volby. V nastavení se to dá vždy změnit.​\r\n      <ul>\r\n      <li> Pro schůzky a prezentace není funkce Windows Hello zapnutá a data se po každé relaci odeberou.\r\n      </li>\r\n      <li> V případě týmové spolupráce je funkce Windows Hello zapnutá a profily se ukládají pro rychlé přihlašování.</li>\r\n      </ul>",
                                        "enrollmentState":  "Určuje, jestli je zařízení zaregistrované.",
@@ -1047,6 +1050,9 @@
                                                          },
                                                  "V12":  {
                                                              "0":  "macOS Monterey 12.0"
+                                                         },
+                                                 "V13":  {
+                                                             "0":  "MacOS Ventura 13.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -1102,6 +1108,7 @@
                                    "customMessageTextBox":  "Chybová zpráva",
                                    "customMessageToggle":  "Zobrazit vlastní zprávu, když dojde k časovému limitu nebo chybě",
                                    "enableForAutopilotOnlyToggle":  "Stránku zobrazit jenom pro zařízení, která jsou zřízena pomocí prostředí prvního spuštění (OOBE)",
+                                   "installQualityUpdatesToggle":  "Nainstalovat aktualizace pro zvýšení kvality Windows (zařízení se může restartovat)",
                                    "progressToggle":  "Zobrazit průběh konfigurace aplikací a profilů",
                                    "resetToggle":  "Povolit uživatelům resetovat zařízení, když dojde k chybě instalace",
                                    "timeout":  "Zobrazit chybu, pokud instalace trvá déle než zadaný počet minut"
@@ -1367,7 +1374,7 @@
                                                           },
                         "AndroidBackup":  {
                                               "label":  "Zálohovat data organizace do služeb zálohování Androidu",
-                                              "tooltip":  "Pokud chcete zabránit tomu, aby se data organizace zálohovala do služeb zálohování Androidu, vyberte {0}.  \r\nPokud chcete zálohování dat organizace do služeb zálohování Androidu povolit, vyberte {1}.  \r\nNa osobní nebo nespravovaná data to nemá žádný vliv."
+                                              "tooltip":  "Pokud chcete zabránit tomu, aby se data organizace zálohovala do služeb zálohování Androidu, vyberte {0}.\r\nPokud chcete zálohování dat organizace do služeb zálohování Androidu povolit, vyberte {1}.\r\nNa osobní a nespravovaná data to nemá žádný vliv."
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "Přístup pomocí biometriky místo PIN kódu",
@@ -1378,7 +1385,7 @@
                                                    "tooltip":  "Operační systém Androidu ověřuje uživatele zařízení s Androidem pomocí otisku prstu. Tato funkce podporuje nativní biometrické ovládací prvky na zařízeních s Androidem. Nastavení biometriky specifická pro výrobce OEM, třeba Samsung Pass, se nepodporují. Když se tato možnost povolí, musí se pro přístup k aplikaci na zařízení, které to podporuje, použít nativní biometrické ovládací prvky."
                                                },
                         "AndroidOverrideFingerprint":  {
-                                                           "label":  "Po vypršení časového limitu obejít otisk prstu PIN kódem"
+                                                           "label":  "Po vypršení časového limitu přepsat ověření pomocí biometrických údajů PIN kódem"
                                                        },
                         "AppPIN":  {
                                        "label":  "PIN kód aplikace, když je nastavený PIN kód zařízení",
@@ -1409,7 +1416,7 @@
                                                    },
                         "CustomBrowserProtocol":  {
                                                       "label":  "Protokol nespravovaného prohlížeče",
-                                                      "tooltip":  "<p>Zadejte protokol pro jeden nespravovaný prohlížeč. Webový obsah (HTTP/S) z aplikací spravovaných zásadami se otevře v jakékoli aplikaci, která podporuje tento protokol. </p>\r\n \r\n<p><b>Poznámka: </b>Zahrňte jen předponu protokolu. Pokud váš prohlížeč vyžaduje, aby odkazy měly tvar mybrowser://www.microsoft.com, zadejte mybrowser.</p>"
+                                                      "tooltip":  "<p>Zadejte protokol pro jeden nespravovaný prohlížeč. Webový obsah (HTTP/S) z aplikací spravovaných zásadami se otevře ve kterékoli aplikaci, která podporuje tento protokol. </p>\r\n \r\n<p><b>Poznámka: </b>Zahrňte jen předponu protokolu. Pokud váš prohlížeč vyžaduje, aby odkazy měly tvar mybrowser://www.microsoft.com, zadejte mybrowser.</p>"
                                                   },
                         "CustomDialerAppDisplayName":  {
                                                            "label":  "Název aplikace pro vytáčení"
@@ -1435,7 +1442,7 @@
                                             "tooltip":  "Pokud chcete vynutit šifrování dat organizace pomocí šifrování na aplikační vrstvě Intune, vyberte {0}.\r\n <br/>\r\nPokud na zaregistrovaných zařízeních šifrování dat organizace pomocí šifrování na aplikační vrstvě Intune vynucovat nechcete, vyberte {1}.\r\n\r\n<br/>\r\nPoznámka: Další informace o šifrování na aplikační vrstvě Intune najdete tady: {2}"
                                         },
                         "EncryptDataAndroid":  {
-                                                   "tooltip":  "<p>Pokud chcete v této aplikaci povolit šifrování pracovních nebo školních dat, zvolte <b>Vyžadovat</b>. Intune používá schéma OpenSSL s 256b šifrováním AES a systém Úložiště klíčů Android, pomocí kterých bezpečně šifruje data aplikací. Data se šifrují synchronně během V/V operací se soubory. Obsah v úložišti zařízení je vždy šifrovaný. Sada SDK bude i nadále podporovat 128bitové klíče, aby se zachovala kompatibilita s obsahem a aplikacemi, které používají starší verze sady SDK. </p>\r\n\r\n<p>Metoda šifrování odpovídá standardu FIPS 140-2.</p>"
+                                                   "tooltip":  "<p>Zvolte <b>Vyžadovat</b> a povolte tak šifrování pracovních nebo školních dat v této aplikaci. Intune používá 256bitové schéma AES šifrování wolfSSL spolu se systémem Android Keystore k bezpečnému šifrování dat aplikací. Data se šifrují synchronně během souborových vstupně-výstupních úloh. Obsah v úložišti zařízení je vždy šifrovaný. Nové soubory budou šifrovány pomocí 256bitových klíčů. Stávající 128bitově zašifrované soubory projdou pokusem o migraci na 256bitové klíče, ale výsledek není zaručený. Soubory zašifrované pomocí 128bitových klíčů zůstanou čitelné. </p>\r\n\r\n<p> Metoda šifrování je kompatibilní se standardem FIPS 140-2.</p>"
                                                },
                         "EncryptDataIos":  {
                                                "tooltip1":  "Pokud chcete v této aplikaci povolit šifrování pracovních nebo školních dat, zvolte <b>Vyžadovat</b>. Služba Intune vynucuje šifrování zařízení s iOS/iPadOS, aby chránila data aplikací ve chvíli, kdy je zařízení zamknuté. Aplikace můžou volitelně šifrovat svá data pomocí šifrování v sadě Intune APP SDK. Tato sada používá kryptografické metody iOS, pomocí kterých data aplikací šifruje pomocí 128bitového šifrování AES.",
@@ -1463,11 +1470,11 @@
                                        },
                         "NotificationRestriction":  {
                                                         "label":  "Oznámení dat organizace",
-                                                        "tooltip":  "<p>Pokud chcete zadat, jak se pro tuto aplikaci a všechna připojená zařízení, třeba nositelnou elektroniku, zobrazují oznámení pro účty organizace, vyberte jednu z těchto možností:</p> \r\n<p>{0}: Nesdílet oznámení</p> \r\n<p>{1}: Nesdílet v oznámeních data organizace. Pokud aplikace tuto možnost nepodporuje, oznámení se zablokují. </p>\r\n<p>{2}:  Sdílet všechna oznámení </p>\r\n <p>Jen Android:\r\n Poznámka: Toto nastavení se nevztahuje na všechny aplikace. Další informace najdete tady: {3} </p>\r\n \r\n <p>Jen iOS:\r\nPoznámka: Toto nastavení se nevztahuje na všechny aplikace. Další informace najdete tady: {4}</p>"
+                                                        "tooltip":  "<p>Pokud chcete zadat, jak se pro tuto aplikaci a všechna připojená zařízení, třeba nositelnou elektroniku, zobrazují oznámení pro účty organizace, vyberte jednu z těchto možností:</p>\r\n<p>{0}: Nesdílet oznámení</p>\r\n<p>{1}: Nesdílet v oznámeních data organizace. Pokud aplikace tuto možnost nepodporuje, oznámení se zablokují. </p>\r\n<p>{2}: Sdílet všechna oznámení </p>\r\n <p>Jen Android:\r\n Poznámka: Toto nastavení se nevztahuje na všechny aplikace. Další informace najdete tady: {3} </p>\r\n\r\n <p>Jen iOS:\r\nPoznámka: Toto nastavení se nevztahuje na všechny aplikace. Další informace najdete tady: {4}</p>"
                                                     },
                         "OpenLinksManagedBrowser":  {
                                                         "label":  "Omezit přenos webového obsahu s jinými aplikacemi",
-                                                        "tooltip":  "<p>Vyberte jednu z následujících možností pro určení aplikací, ve kterých tato aplikace bude moci otevírat webový obsah: </p>\r\n<p><b>Edge:</b> Dovolí otevírat webový obsah jen v Microsoft Edgi. </p>\r\n<p><b>Nespravovaný prohlížeč:</b>  Dovolí otevírat webový obsah jen v nespravovaném prohlížeči definovaném v nastavení Protokol nespravovaného prohlížeče. </p> \r\n<p><b>Libovolná aplikace:</b> Dovolí otevírat webové odkazy v jakékoli aplikaci.</p>"
+                                                        "tooltip":  "<p>Vyberte jednu z následujících možností pro určení aplikací, ve kterých tato aplikace bude moci otevírat webový obsah: </p>\r\n<p><b> Microsoft Edge:</b> Dovolí otevírat webový obsah jen v Microsoft Edgi. <a href=\"{0}\" target=\"_blank\">Zjistěte, jak Microsoft Edge chrání vaše data.</a></p>\r\n<p><b>Nespravovaný prohlížeč:</b> Dovolí otevírat webový obsah jen v nespravovaném prohlížeči definovaném v nastavení Protokol nespravovaného prohlížeče.</p> \r\n<p><b>Libovolná aplikace:</b> Dovolí otevírat webové odkazy v jakékoli aplikaci.</p>"
                                                     },
                         "OverrideBiometric":  {
                                                   "tooltip":  "V případě potřeby, v závislosti na časovém limitu (počet minut neaktivity), přepíše výzva zadat PIN kód výzvy použít biometriku. Pokud ještě časový limit nevyprší, výzva použít biometriku se bude zobrazovat nadále. Tato hodnota časového limitu by měla být větší než hodnota zadaná v části Znovu zkontrolovat požadavky na přístup po (počet minut neaktivity). "
@@ -1502,7 +1509,7 @@
                                                     },
                         "RequirePinAfterBiometricChange":  {
                                                                "label":  "Po biometrických aktualizacích přepsat biometriku kódem PIN",
-                                                               "tooltip":  "Pokud zařízení podporuje biometriku třídy 3 (další informace najdete <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">tady</a>) a pokud je zjištěna změna biometriky, výzva k zadání kódu PIN přepíše biometrické výzvy."
+                                                               "tooltip":  "Pokud zařízení podporuje biometriku třídy 3 (další informace najdete <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">tady</a>) a pokud je zjištěna změna biometriky, výzva k zadání kódu PIN přepíše biometrické výzvy. Toto nastavení se projeví jenom v případě, že se pro přístup k aplikaci použije biometrika."
                                                            },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "ID balíčku musí být jedinečné.",
@@ -1515,7 +1522,7 @@
                                               },
                         "SaveData":  {
                                          "label":  "Ukládat kopie dat organizace",
-                                         "tooltip":  "Pokud chcete zabránit ukládání kopie dat organizace pomocí Uložit jako do nového umístění, které nepatří mezi vybrané služby úložiště, vyberte {0}.\r\n Pokud chcete ukládání kopie dat organizace do nového umístění pomocí Uložit jako povolit, vyberte {1}. <br/> \r\n\r\n\r\nPoznámka: Toto nastavení neplatí pro všechny aplikace. Další informace najdete tady: {2}\r\n"
+                                         "tooltip":  "Pokud chcete zabránit ukládání kopie dat organizace pomocí Uložit jako do nového umístění, které nepatří mezi vybrané služby úložiště, vyberte {0}.\r\n Pokud chcete ukládání kopie dat organizace do nového umístění pomocí Uložit jako povolit, vyberte {1}.<br/>\r\n\r\n\r\nPoznámka: Toto nastavení neplatí pro všechny aplikace. Další informace najdete tady: {2}\r\n"
                                      },
                         "SaveDataToSelected":  {
                                                    "label":  "Povolit uživateli ukládat kopie do vybraných služeb",
@@ -1606,7 +1613,7 @@
                             "pushNotification":  "Poslat nabízené oznámení koncovému uživateli",
                             "remoteLock":  "Vzdáleně uzamknout zařízení, které nedodržuje předpisy",
                             "removeSourceAccessProfile":  "Odebrat zdrojový profil přístupu",
-                            "retire":  "Vyřadit (z provozu) zařízení, která nedodržují předpisy",
+                            "retire":  "Přidat zařízení do seznamu k vyřazení",
                             "wipe":  "Vymazat",
                             "emailNotification":  "Odeslat e-mail koncovému uživateli"
                         },
@@ -1746,6 +1753,7 @@
                                                       "weeks1":  "Každý 1 týden"
                                                   },
                               "PolicyListToolBarOption":  {
+                                                              "linux":  "Linux",
                                                               "macOs":  "macOS",
                                                               "windows":  "Windows 10 a novější"
                                                           },
@@ -1765,6 +1773,7 @@
                                                  "uploadInfoBalloonContent":  "Zadejte soubor powershellového skriptu. Soubor musí být menší než 200 kB.",
                                                  "uploadLabel":  "Umístění skriptu"
                                              },
+                              "bashScriptObjectName":  "Skript Bash",
                               "createButtonText":  "Přidat",
                               "createPowershellScriptFlowSectionName":  "Přidat powershellový skript",
                               "customAttributeObjectName":  "Vlastní atribut",
@@ -1969,6 +1978,8 @@
                            "androidDeviceOwnerAlwaysOnVpnClientDescription":  "Zadaný klient VPN musí být nainstalovaný na zařízení a musí podporovat VPN pro aplikaci. Jinak dojde k chybě. Poznámka: Abyste mohli aplikaci nainstalovat, bude nutné ji schválit ve spravovaném obchodě Google Play, synchronizovat ji s Intune a nasadit ji.",
                            "androidDeviceOwnerCustomPasswordDescription":  "Vytvořte přístupový kód zařízení jenom pro vyhrazená zařízení. Může mít 4-16 znaků a obsahovat číslice, písmena a speciální znaky.",
                            "androidDeviceOwnerCustomPasswordName":  "Vlastní přístupový kód",
+                           "androidElevenAndBelowPasswordHeader":  "Android 11 a starší",
+                           "androidElevenAndBelowPasswordHeaderDescription":  "Tato nastavení fungují pro zařízení s Androidem 11 nebo starším.",
                            "androidEnterpriseAlwaysOnVpnClientName":  "Klient VPN",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierDescription":  "Zadejte ID balíčku aplikace v obchodě Google Play. Pokud je adresa URL pro aplikaci v obchodě Play třeba https://play.google.com/store/details?id=com.contosovpn.android.prod, ID balíčku je com.contosovpn.android.prod.",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierName":  "ID balíčku",
@@ -2016,6 +2027,9 @@
                            "androidTenDeprecationInfoBox":  "Počínaje říjnem 2020 se některá nastavení nebudou podporovat na zařízeních s Androidem, která používají Android 10 a novější a nejedná se o Samsung KNOX. Tato nastavení jsou označená jako Android 9 a starší nebo Samsung KNOX. Další informace získáte kliknutím sem.",
                            "androidTrustedServerCertificateNamesDescription":  "Toto je název DNS používaný v certifikátu, který server protokolu RADIUS předkládá během ověřování klienta k přístupovému bodu Wi-Fi. Pokud máte více serverů protokolu RADIUS, které mají v plně kvalifikovaném názvu domény stejnou příponu DNS, můžete použít samotnou příponu. To umožňuje zařízením důvěřovat certifikátu serveru, který jim byl předložen.<a href=\"https://go.microsoft.com/fwlink/?linkid=2181354\" target=\"_blank\">Další informace</a>.<br>",
                            "androidTrustedServerCertificateNamesName":  "Název serveru protokolu RADIUS",
+                           "androidTwelveAndAbovePasswordHeader":  "Android 12 a novější",
+                           "androidTwelveAndAbovePasswordHeaderDescription":  "Tato nastavení fungují pro zařízení s Androidem 12 nebo novějším.",
+                           "androidTwelveDeprecationInfoBox":  "Od listopadu 2022 se na zařízeních s Androidem, na kterých běží Android 12 a novější, nepodporují některá nastavení. Tato nastavení mají označení Android 11 a starší. Kliknutím získáte další informace.",
                            "androidZebraMxConfigurationFileXmlName":  "Zvolte platný soubor Zebra MX XML",
                            "androidZebraMxConfigurationLearnMore":  "Další informace o správě zařízení Zebra",
                            "androidZebraMxConfigurationXmlName":  "Profil MX ve formátu .xml",
@@ -3792,8 +3806,6 @@
                            "exchangeActiveSyncHostExample":  "třeba outlook.office365.com",
                            "exchangeActiveSyncHostName":  "E-mailový server",
                            "exclusionAppListColumn":  "Vyloučená aplikace",
-                           "expeditedCheckinEnableDescription":  "Provádět kontrolu zařízení každou hodinu",
-                           "expeditedCheckinEnableName":  "Provádět kontrolu zařízení každou hodinu",
                            "experienceAllowBrowserSyncSettingsDescription":  "Určuje, jestli uživatelé můžou zapnout nastavení prohlížeče pro synchronizaci pomocí možností Synchronizovat nastavení, aby se mezi zařízeními uživatele mohly synchronizovat informace, jako jsou historie a oblíbené položky. Aby se toto nastavení dalo nakonfigurovat, musíte povolit nastavení Synchronizovat nastavení prohlížeče mezi zařízeními uživatele.",
                            "experienceAllowBrowserSyncSettingsName":  "Uživatelé můžou zapnout nastavení synchronizace prohlížeče​",
                            "experienceDoNotSyncBrowserSettingsDescription":  "Když se zablokuje, výchozí konfigurace (povolit synchronizaci nastavení prohlížeče mezi zařízeními) se vypne, aby uživatelé nemohli provádět synchronizaci mezi zařízeními. Když se vybere možnost Zablokovat a povolit přepsání uživatelem, uživatel bude moct přepsat nastavení správce.",
@@ -4866,9 +4878,9 @@
                            "macOSSoftwareUpdatePolicySectionDescription":  "Pokud chcete vynutit, aby přiřazená zařízení automaticky nainstalovala nejnovější aktualizace pro macOS, vytvořte profil. Tato nastavení určí, jak a kdy se budou aktualizace softwaru nasazovat. Tento profil neznemožní uživatelům, aby operační systém aktualizovali ručně. Aktualizace se nainstalují jen na zařízení zaregistrovaná prostřednictvím automatické registrace zařízení Applu (s ABM nebo ASM).",
                            "macOSSoftwareUpdatePolicySectionDescriptionLearnMoreText":  "Další informace",
                            "macOSSoftwareUpdatePolicySupervisedLearnMoreText":  "Další informace",
-                           "macOSSoftwareUpdatePolicySupervisedName":  "Pokud chcete vynutit, aby přiřazená zařízení automaticky nainstalovala nejnovější aktualizace pro macOS, vytvořte profil. Tato nastavení určí, jak a kdy se budou aktualizace softwaru nasazovat. Tento profil neznemožní uživatelům, aby operační systém aktualizovali ručně. Aktualizace se nainstalují jen na zařízení zaregistrovaná prostřednictvím automatické registrace zařízení Applu (s ABM nebo ASM).",
+                           "macOSSoftwareUpdatePolicySupervisedName":  "Create a profile to force assigned devices to automatically install the latest macOS updates. These settings determine how and when software updates deploy. This profile doesn't prevent users from updating the OS manually. Updates will only apply to supervised devices.",
                            "macOSSoftwareUpdatePolicyWeeklyScheduleName":  "Týdenní plán",
-                           "macOSSoftwareUpdateSelectScheduleTypeName":  "Ve výchozím nastavení, když se k zařízení přiřadí zásady aktualizace softwaru macOS, služba Intune nasadí nejnovější aktualizace ve chvíli, kdy se zařízení ohlásí. Navíc můžete vytvořit týdenní plán a zadat období, kdy se zařízení můžou ohlašovat a dostávat aktualizace. Pokud se rozhodnete, že aktualizace budou probíhat mimo naplánovaný čas, Intune nebude aktualizace nasazovat, dokud naplánovaný čas neskončí.",
+                           "macOSSoftwareUpdateSelectScheduleTypeName":  "Když se k zařízení přiřadí zásady aktualizace, Intune ve výchozím nastavení nasadí nejnovější aktualizace ve chvíli, kdy se zařízení ohlásí. Místo toho můžete vytvořit týdenní plán s vlastními počátečními a koncovými časy. Pokud se rozhodnete, že aktualizace budou probíhat mimo naplánovaný čas, Intune nebude aktualizace nasazovat, dokud naplánovaný čas neskončí.",
                            "macOSSoftwareUpdateSelectUpdateBehaviorName":  "Vyberte, jak by se pro jednotlivé typy aktualizací mělo provádět stahování, instalace nebo oznamování.",
                            "macOSSystemExtensionsExtensionTypeName":  "Povolené typy rozšíření systému",
                            "macRequireClassroomRequestPermissionToLeaveClassesDescription":  "Studenti zaregistrovaní do nespravovaného kurzu Classroom musí pro opuštění kurzu získat souhlas učitele.",
@@ -5143,9 +5155,9 @@
                            "nATKeepAliveOffloadEnableName":  "Přesměrovat zachování překladu adres (NAT) na hardware, pokud je zařízení v režimu spánku",
                            "nATKeepAliveOffloadEnableToolTip":  "Ve výchozím nastavení, pokud je zařízení v režimu spánku, systém překladu adres (NAT) průběžně kontroluje, jestli je zařízení připojené k síti VPN. Toto nastavení umožňuje toto chování zakázat.",
                            "nacIdCheckBoxLabel":  "Souhlasím.",
-                           "nacIdDescCisco":  "Aby bylo možné povolit NAC, Cisco AnyConnect vyžaduje, aby se do profilu sítě VPN zahrnulo ID zařízení Intune.<br><br>Povoluji Microsoftu zahrnout do profilu sítě VPN informace o zařízení, které může používat společnost Cisco a její partneři.",
-                           "nacIdDescCitrix":  "Aby bylo možné povolit NAC, Citrix SSO vyžaduje, aby se do profilu sítě VPN zahrnulo ID zařízení Intune.<br><br>Povoluji Microsoftu zahrnout do profilu sítě VPN informace o zařízení, které může používat společnost Citrix a její partneři.",
-                           "nacIdDescF5":  "Aby bylo možné povolit NAC, F5 Access vyžaduje, aby se do profilu sítě VPN zahrnulo ID zařízení Intune.<br><br>Povoluji Microsoftu zahrnout do profilu sítě VPN informace o zařízení, které může používat autor aplikace F5 Access a jeho partneři.",
+                           "nacIdDescCisco":  "Aby bylo možné povolit NAC, Cisco AnyConnect vyžaduje, aby se do profilu sítě VPN zahrnulo ID zařízení Intune.<br><br>Povoluji Microsoftu zahrnout do profilu sítě VPN informace o zařízení, které může používat společnost Cisco a její partneři. Kliknutím se dozvíte další informace o tom, která data jsou sdílena s poskytovatelem služeb.",
+                           "nacIdDescCitrix":  "Aby bylo možné povolit NAC, Citrix SSO vyžaduje, aby se do profilu sítě VPN zahrnulo ID zařízení Intune.<br><br>Povoluji Microsoftu zahrnout do profilu sítě VPN informace o zařízení, které může používat Citrix SSO a příslušní partneři. Kliknutím se dozvíte další informace o tom, která data jsou sdílena s poskytovatelem služeb.",
+                           "nacIdDescF5":  "Aby bylo možné povolit NAC, F5 Access vyžaduje, aby se do profilu sítě VPN zahrnulo ID zařízení Intune.<br><br>Povoluji Microsoftu zahrnout do profilu sítě VPN informace o zařízení, které může používat společnost F5 Access a její partneři. Kliknutím se dozvíte další informace o tom, která data jsou sdílena s poskytovatelem služeb.",
                            "nacIdHeader":  "Povolit řízení přístupu k síti (NAC)",
                            "nacIdHeaderCiscoToolTip":  "ID zařízení se zašifruje a zahrne do profilu sítě VPN. Když se uživatel pokusí připojit k síti VPN, Cisco AnyConnect předá tuto hodnotu infrastruktuře NAC, která pak na Intune pošle dotaz s touto hodnotou, aby se určilo, jestli je zařízení zaregistrované a jestli dodržuje předpisy.<br><br>Cisco AnyConnect nemůže k ID zařízení přistupovat přímo, takže abyste mohli povolit NAC, musí se tato hodnota zahrnout do profilu sítě VPN.",
                            "nacIdHeaderCitrixToolTip":  "ID zařízení se zašifruje a zahrne do profilu sítě VPN. Když se uživatel pokusí připojit k síti VPN, Citrix SSO předá tuto hodnotu infrastruktuře NAC, která pak na Intune pošle dotaz s touto hodnotou, aby se určilo, jestli je zařízení zaregistrované a jestli dodržuje předpisy.<br><br>Citrix SSO nemůže k ID zařízení přistupovat přímo, takže abyste mohli povolit NAC, musí se tato hodnota zahrnout do profilu sítě VPN.",
@@ -6016,6 +6028,15 @@
                            "shutdown":  "Vypnout",
                            "signatureUpdateIntervalInHoursName":  "Interval aktualizací bezpečnostní analýzy (v hodinách)",
                            "signingCertificateType":  "Typ podpisového certifikátu",
+                           "silentCertAccessAddApps":  "Přidat aplikace",
+                           "silentCertAccessApplicationsName":  "Aplikace",
+                           "silentCertAccessMaxAppsWarn":  "Vyberte maximálně 50 aplikací, kterým chcete udělit přístup k tichému certifikátu",
+                           "silentCertAccessMinAppsWarn":  "Vyberte alespoň jednu aplikaci, které chcete udělit přístup k tichému certifikátu.",
+                           "silentCertAccessSpecificApps":  "Udělovat bezobslužně pro konkrétní aplikace (vyžadovat schválení uživatelem pro jiné aplikace)",
+                           "silentCertAccessTabName":  "Aplikace",
+                           "silentCertAccessTypeDescription":  "Zvolit způsob udělení přístupu k certifikátu aplikacím",
+                           "silentCertAccessTypeName":  "Přístup k certifikátu",
+                           "silentCertAccessUserApproval":  "Vyžadovat schválení uživatelem pro všechny aplikace",
                            "simpleDownloadOption":  "Jednoduchý režim stahování bez partnerů (99)",
                            "simultaneousMultiThreadingName":  "Souběžný multithreading",
                            "singleAppModeAppNameDescription":  "Název aplikace",
@@ -7151,6 +7172,8 @@
                            "windows10ProfessionalOption":  "Windows 10/11 Pro",
                            "windows10ProfessionalWorkstationNOption":  "Edice Windows 10/11 Pro for Workstations N",
                            "windows10ProfessionalWorkstationOption":  "Windows 10/11 Pro for Workstations",
+                           "windows11CloudEditionNOption":  "Windows 11 SE N",
+                           "windows11CloudEditionOption":  "Windows 11 SE",
                            "windows11EULA":  "Pokud tuto možnost vyberete, vyjadřujete souhlas s tím, že při použití tohoto operačního systému na zařízení buď (1) byla v multilicenčním programu zakoupena platná licence Windows, nebo (2) jste oprávněný zástupce organizace s pravomocí přijímat jejím jménem příslušné licenční podmínky pro software společnosti Microsoft. Tyto podmínky najdete tady <a>{0}</a>.",
                            "windowsAppNonComplianceTypeDescription":  "Doporučujeme, abyste uživatele požádali o přijetí podmínek použití, čímž vezmou na vědomí, že bude blokována instalace některých aplikací. K určení aplikací pro Windows Phone, které se nespravují přes Intune a které si uživatelé nemůžou nainstalovat, použijte seznam blokovaných aplikací. Pokud jde o seznam povolených aplikací, je třeba všechny aplikace, včetně těch, co jsou na Portálu společnosti, a všech nasazených aplikací, přidat ve formátu adresy URL z obchodu s aplikacemi.",
                            "windowsAppUrlExample":  "třeba https://www.microsoft.com/en-us/store/apps/remote-desktop/9wzdncrfj3ps",
@@ -7239,6 +7262,8 @@
                            "workProfilePersonalUsagAndroidEnrollmentTypesHeaderDescription":  "Tato nastavení fungují pro zařízení s pracovními profily vlastněná společností a používají se jenom pro osobní využití.",
                            "workProfileRequirePasswordDescription":  "Nastaví, jestli se k používání pracovních aplikací vyžaduje heslo. Heslo se může lišit od hesla zařízení. Vyžaduje Android 7.0+. ",
                            "workProfileRequirePasswordName":  "Vyžadovat heslo pracovního profilu",
+                           "workProfileRequiredPasswordComplexityDescription":  "Zadejte požadovanou složitost hesla.",
+                           "workProfileRequiredPasswordComplexityName":  "Work Profile Password Complexity",
                            "workProfileRequiredPasswordTypeDescription":  "Zadejte požadovaný typ hesla.",
                            "workProfileRequiredPasswordTypeName":  "Požadovaný typ hesla",
                            "workspaceIDName":  "ID pracovního prostoru",
@@ -7601,7 +7626,7 @@
                            "isMamEnabled":  "Je MAM povolený?",
                            "itemsCount":  "Počet položek: {0}",
                            "jailbrokenRootedDevices":  "Zařízení s jailbreakem nebo rootem",
-                           "lastModifiedDate":  "Last Modified Date",
+                           "lastModifiedDate":  "Datum poslední změny",
                            "lastReportedDate":  "Datum poslední sestavy",
                            "lastSync":  "Poslední synchronizace",
                            "lastSyncGmt":  "Poslední synchronizace (GMT)",
@@ -7633,6 +7658,7 @@
                            "mdmDeviceId":  "ID zařízení MDM",
                            "mdmWipInvalidVersionSettings":  "Nejméně jedna aplikace má neplatné definice minimální a maximální verze.<br /> <br />Zásady Windows Information Protection With Enrollment podporují možnost zadat jenom minimální nebo maximální verzi, pokud se obě verze nezadají jako ekvivalentní. Když se zadá jenom minimální verze, pravidlo se nastaví pro verzi, která bude stejná nebo vyšší než minimální verze. Podobně, když se zadá jenom maximální verze, pravidlo se nastaví pro verzi, která bude stejná nebo nižší než maximální verze.",
                            "mdmWipReport":  "Sestava pro MDM Windows Information Protection",
+                           "microsoftDefenderForEndpoint":  "Microsoft Defender pro koncové body",
                            "microsoftEdgeOptionText":  "Microsoft Edge",
                            "minAppVersion":  "Minimální verze aplikace",
                            "minMaxValidation":  "Pokud je akce stejná, musí být minimální verze operačního systému nižší než maximální verze operačního systému.",
@@ -7642,11 +7668,13 @@
                            "minimumCompanyPortalVersion":  "Minimální verze Portálu společnosti",
                            "minimumDeviceSelection":  "Je třeba vybrat aspoň 1 zařízení.",
                            "mobileAppCRUDpermission":  "Oprávnění mobilní aplikace číst, vytvářet a přiřazovat ",
+                           "mobileThreatDefenseNonMicrosoft":  "Ochrana před mobilními hrozbami (jiná než od Microsoftu)",
                            "monitor":  "Sledovat",
                            "moreApps":  "Další aplikace",
                            "moreAppsTextBoxTooltip":  "Sem přidejte obchodní aplikace, pokud nemáte přístup k úplnému portálu Intune.",
-                           "mtdConnectorInfoBox1":  "<b>Důležité! </b> Ujistěte se, jestli je konektor ochrany před mobilními hrozbami nastavený tak, aby data organizace na základě hodnocení hrozeb z připojených služeb ochrany před mobilními hrozbami správně zabezpečil.",
+                           "mtdConnectorInfoBox1":  "<b>Důležité! </b> Ujistěte se, jestli je konektor ochrany před mobilními hrozbami (MTD) nastavený tak, aby data organizace na základě hodnocení hrozeb z připojených služeb ochrany před mobilními hrozbami správně zabezpečil.",
                            "mtdConnectorInfoBox2":  "Další informace o ochraně před mobilními hrozbami pro nezaregistrovaná zařízení.",
+                           "mtdConnectorInfoBox3":  "Pokud má váš tenant nastavené připojení ke službě Microsoft Defender for Endpoint i službě MTD (která není od Microsoftu) a nenakonfiguruje primární službu MTD nebo dojde ke konfliktu při cílení na uživatele, výchozí nastavení bude Microsoft Defender for Endpoint.",
                            "name":  "Název",
                            "networkBoundariesInfoBoxText":  "Pokud chcete povolit připojení TLS, pomocí kterých se osobní aplikace připojují přes určitou IP adresu přímo k prostředku cloudu, přidejte do seznamu prostředků cloudu /*AppCompat*/.",
                            "networkBoundariesInfoParagraph1":  "Zvolte, kde můžou chráněné aplikace přistupovat k podnikovým datům ve vaší síti.",
@@ -7735,6 +7763,7 @@
                            "portNumber":  "Číslo portu",
                            "portNumberDesc":  "Port zadaný v adrese proxy serveru",
                            "prefix":  "Předpona",
+                           "primaryMtdService":  "Primární služba MTD",
                            "productName":  "Název produktu",
                            "properties":  "Vlastnosti",
                            "protected":  "Chráněno",
@@ -7777,7 +7806,7 @@
                            "resourcesToBeCreated":  "Prostředky, které se mají vytvořit",
                            "restrictWebContentNo":  "Libovolná aplikace",
                            "restrictWebContentOption2":  "{0}: Povolit webové odkazy v jakékoli aplikaci",
-                           "rootCertificate":  "Root Certificate",
+                           "rootCertificate":  "Kořenový certifikát",
                            "safetyNetDeviceAttestation":  "Ověření zařízení SafetyNet",
                            "saveAppsNotificationText":  "Ukládají se vybrané aplikace",
                            "saveChangesCommandText":  "Uložit",
@@ -7813,6 +7842,7 @@
                            "setting":  "Nastavení",
                            "settingName":  "Název nastavení",
                            "settings":  "Nastavení",
+                           "settingsCatalog":  "Katalog nastavení",
                            "settingsSelectorLabel":  "Nastavení",
                            "silent":  "Tiché",
                            "specificUserIsLicensedIntune":  "{0} má licenci pro Microsoft Intune.",
@@ -7840,6 +7870,7 @@
                            "targetedUserPartWithPolicy":  "Spravováno zásadou",
                            "targetediOSUserPartTitle":  "Stav uživatele pro iOS",
                            "threatCategory":  "Kategorie hrozby",
+                           "tileDeprecated":  "Tato dlaždice je zastaralá. Odeberte ji prosím ze svého řídicího panelu.",
                            "timeColumnLabel":  "Čas",
                            "timebombLabel":  "Doba v offline režimu před vymazáním dat (ve dnech)",
                            "timebombToolTip":  "Po zadaném počtu dní, kdy se zařízení nesynchronizuje s Intune, Windows provede selektivní vymazání zařízení. Tím dojde ke zrušení registrace aplikací v MAM a odebrání šifrovaných a chráněných firemních dat. Výchozí hodnotou pro toto nastavení je 90 dní. Když se hodnota nastaví na 0, nastavení se zakáže.",
@@ -7912,7 +7943,7 @@
                            "windows10AppProtectionPolicy":  "Zásady ochrany aplikací systému Windows 10 a novějšího",
                            "windows10PlatformLabel":  "Windows 10 a novější",
                            "windows10x":  "Windows 10X",
-                           "windows8":  "Windows 8.1 and later",
+                           "windows8":  "Windows 8.1 a novější",
                            "windowsInformationProtectionPlatformLabel":  "Windows Information Protection",
                            "windowsPhone":  "Windows Phone 8.1",
                            "windowsPlatformLabel":  "Windows",
@@ -7944,6 +7975,7 @@
                            "wipSMBStringTooltip":  "Určuje seznam přípon souborů, aby se soubory, které tyto přípony mají, šifrovaly při kopírování ze sdílené složky SMB v rámci hranic firmy definovaných seznamem síťových umístění. Když se tyto zásady nezadají, použije se stávající chování automatického šifrování. Pokud se tyto zásady nakonfigurují, budou se šifrovat jen soubory, které mají přípony uvedené v seznamu.",
                            "wipStoreApps":  "Aplikace pro Store",
                            "wipWeAppsListInfo":  "Tyto aplikace můžou přistupovat k podnikovým datům a budou se chovat jinak, když se použijí spolu s nepovolenými, nepodnikovými nebo čistě osobními aplikacemi. Na zařízeních bez MDM se povolují jenom aplikace s nativní podporou WIP.",
+                           "wipWeDeprecationWarning":  "Creating new WIP without enrollment policies (WIP-WE) is no longer supported. For more information, see <a target=\"_blank\" href={0}>Windows Information Protection</a> ",
                            "wipWeWarning":  "Než se budou moct zásady systému Windows 10 a novějšího projevit, <a target=\"_blank\" href={0}>nastavte adresy URL pro MAM v AAD</a> na Microsoft Intune. To se dělá tak, že zvolíte Obnovit výchozí adresy URL a definujete obor uživatele.",
                            "wipWebsiteLearningTitle":  "Referát o webu pro Windows Information Protection",
                            "wipeData":  "Vymazat data",
@@ -8042,7 +8074,9 @@
                                "windows10ProfessionalEducationN":  "Windows 10/11 Professional Education N",
                                "windows10ProfessionalN":  "Windows 10 Professional N",
                                "windows10ProfessionalWorkstation":  "Windows 10/11 Professional Workstation",
-                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professional Workstation N"
+                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professional Workstation N",
+                               "windows11CloudEdition":  "Windows 11 SE",
+                               "windows11CloudEditionN":  "Windows 11 SE N"
                            },
     "DetectionRules":  {
                            "ComparisonOperators":  {
@@ -8059,6 +8093,7 @@
                                                 "header":  "Použít vlastní skript zjišťování",
                                                 "runAs32Bit":  "Na 64bitových klientech spouštět skript jako 32bitový proces",
                                                 "runAs32BitTooltip":  "Pokud chcete na 64bitových klientech spouštět skript jako 32bitový proces, vyberte Ano. Pokud ho na těchto klientech chcete spouštět jako 64bitový proces, vyberte Ne (výchozí). 32bitoví klienti budou skript spouštět jako 32bitový proces.",
+                                                "scriptContent":  "Script content",
                                                 "scriptFile":  "Soubor skriptu",
                                                 "scriptFileNotSelectedValidation":  "Nevybral se žádný soubor skriptu.",
                                                 "scriptFileTooltip":  "Vyberte powershellový skript, který zjistí přítomnost aplikace v klientovi. Aplikace se bude považovat za zjištěnou, když skript vrátí ukončovací kód s hodnotou 0 a zapíše řetězcovou hodnotu na STDOUT.",
@@ -8307,9 +8342,6 @@
                                                                                                              "string":  "Řetězec",
                                                                                                              "version":  "Verze"
                                                                                                          },
-                                                                            "ScriptContent":  {
-                                                                                                  "emptyMessage":  "Obsah skriptu by neměl být prázdný."
-                                                                                              },
                                                                             "duplicateName":  "Název skriptu {0} se už používá. Zadejte prosím jiný název.",
                                                                             "enforceSignatureCheck":  "Vynutit kontrolu podpisu skriptu",
                                                                             "enforceSignatureCheckTooltip":  "Pokud chcete ověřit, že skript je podepsaný důvěryhodným vydavatelem, který umožní skriptu běžet bez toho, aby se zobrazovaly výzvy nebo upozornění, vyberte Ano. Skript se spustí neblokovaný. Pokud chcete skript spustit s potvrzením koncového uživatele, ale bez ověření podpisu, vyberte Ne (výchozí).",
@@ -8318,6 +8350,7 @@
                                                                             "operatorTooltip":  "Vyberte operátor pro porovnání požadavků.",
                                                                             "requirementMethod":  "Vyberte typ výstupních dat.",
                                                                             "requirementMethodTooltip":  "Vyberte datový typ, který se použije při určování požadavku na shodu zjišťování.",
+                                                                            "scriptContent":  "Script content",
                                                                             "scriptFile":  "Soubor skriptu",
                                                                             "scriptFileTooltip":  "Vyberte powershellový skript, který zjistí přítomnost aplikace v klientovi. Když se aplikace zjistí, proces požadavku poskytne ukončovací kód s hodnotou 0 a zapíše řetězcovou hodnotu na STDOUT.",
                                                                             "scriptName":  "Název skriptu",
@@ -8370,6 +8403,7 @@
                                                       },
                                          "InfoBlade":  {
                                                            "createTitle":  "Přidat kontext ověřování",
+                                                           "deleteDisallowed":  "Tento kontext ověřování nemůžete odstranit, dokud na něj odkazují zásady podmíněného přístupu.",
                                                            "descPlaceholder":  "Přidat popis kontextu ověřování",
                                                            "modifyTitle":  "Upravit kontext ověřování",
                                                            "namePlaceholder":  "Např. Důvěryhodné umístění, Důvěryhodné zařízení, Silná autorizace",
@@ -8396,15 +8430,15 @@
                                          "description":  "Popis",
                                          "documentation":  "Dokumentace",
                                          "getStarted":  "Začínáme",
-                                         "label":  "Kontext ověřování (Preview)",
-                                         "menuLabel":  "Kontext ověřování (Preview)",
+                                         "label":  "Kontext ověřování",
+                                         "menuLabel":  "Kontext ověřování",
                                          "name":  "Název",
                                          "noAuthContextConfigured":  "Nebyly nakonfigurovány žádné kontexty ověřování.",
                                          "noAuthContextSet":  "Neexistují žádné kontexty ověrování",
                                          "noData":  "Nejsou k dispozici žádné kontexty ověřování, které by se daly zobrazit.",
                                          "selectionInfo":  "Kontext ověřování se používá k zabezpečení dat a akcí v aplikacích, jako jsou SharePoint a Microsoft Cloud App Security.",
                                          "step":  "Krok",
-                                         "tabDescription":  "Pokud chcete ve svých aplikacích chránit data a akce, spravujte kontext ověřování. [Další informace][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
+                                         "tabDescription":  "Spravujte kontext ověřování, abyste zajistili ochranu dat a akcí ve vašich aplikacích. Kontexty ověřování nelze odstranit, dokud na ně odkazují zásady podmíněného přístupu. [Další informace][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
                                          "tagResources":  "Označit prostředky pomocí kontextu ověřování"
                                      },
                      "AuthenticationStrength":  {
@@ -8554,12 +8588,13 @@
                                                    "guestOrExternalUsersLabel":  "Host nebo externí uživatelé",
                                                    "internalGuestLabel":  "Místní uživatelé typu host",
                                                    "otherExternalUserLabel":  "Další externí uživatelé",
-                                                   "serviceProviderUsersLabel":  "Service provider users"
+                                                   "previewTag":  "{0} (Preview)",
+                                                   "serviceProviderUsersLabel":  "Uživatelé poskytovatele služeb"
                                                },
                      "NamedLocation":  {
                                            "Form":  {
                                                         "CountryLookup":  {
-                                                                              "ariaLabel":  "Metoda vyhledání země",
+                                                                              "ariaLabel":  "Metoda vyhledávání země/oblasti",
                                                                               "gps":  "Určení polohy podle souřadnic GPS",
                                                                               "info":  "Když se nakonfiguruje podmínka polohy zásad podmíněného přístupu, uživatelům se zobrazí výzva aplikace Authenticator, aby sdíleli svou polohu GPS. ",
                                                                               "ip":  "Zjistit polohu podle IP adresy (jen protokol IPv4)"
@@ -8696,7 +8731,7 @@
                                                       "ServicePrincipalRisk":  {
                                                                                    "description":  "Umožňuje nakonfigurovat úrovně rizika instančního objektu potřebné k vynucení zásad ​",
                                                                                    "infoBalloonContent":  "Konfigurace rizika instančního objektu pro použití zásad na vybrané úrovně rizika",
-                                                                                   "title":  "Riziko instančního objektu (Preview)"
+                                                                                   "title":  "Riziko instančního objektu"
                                                                                }
                                                   }
                                 },
@@ -8985,6 +9020,11 @@
                                  "optionsPickerTitle":  "Povolit nebo zakázat Nepřetržité vyhodnocování přístupu",
                                  "upsellInfo":  "Nastavení na této stránce už nemůžete změnit a všechna zdejší nastavení by se měla ignorovat. Vaše předchozí nastavení bude respektováno. Nastavení CAE můžete do budoucna nakonfigurovat v části Podmíněný přístup. Další informace získáte kliknutím sem."
                              },
+                     "SamlReauth":  {
+                                        "Filter":  {
+                                                       "warning":  "Cílíte na aplikace pomocí dynamického dotazu. Některé aplikace nemusí být podporované pro použití s ovládacím prvkem relace „frekvence přihlašování pokaždé“. {0}Přečtěte si další informace o doporučených scénářích.{1}"
+                                                   }
+                                    },
                      "SelectOrganizations":  {
                                                  "Blade":  {
                                                                "Lower":  {
@@ -9198,9 +9238,10 @@
                                                                           "infoBalloon":  "Seznam atributů na zařízení použitých během přihlašování."
                                                                       }
                                                },
-                                    "noTenantSelected":  "No tenant selected",
-                                    "tenantIdWithPlaceholder":  "Tenant ID: {0}",
-                                    "tenantSelectionRequired":  "Tenant required"
+                                    "noTenantSelected":  "Nevybral se žádný tenant",
+                                    "selectOrganization":  "Vyberte organizaci.",
+                                    "tenantIdWithPlaceholder":  "ID tenanta: {0}",
+                                    "tenantSelectionRequired":  "Vyžaduje se tenant"
                                 },
                      "advancedTabText":  "Upřesnit",
                      "allCloudAppsErrorBox":  "Když se vybere oprávnění Požadovat změnu hesla, musí se vybrat i možnost Všechny cloudové aplikace.",
@@ -9224,7 +9265,7 @@
                      "appContextUriPlaceholder":  "Příklad: uri:contoso.com:level3",
                      "appEnforceInfoBubble":  "Omezení vynucená aplikací můžou vyžadovat další konfiguraci v cloudových aplikacích. Omezení budou platit jenom pro nové relace.",
                      "appNotSetSeletorLabel":  "0 vybraných aplikací",
-                     "appReauthNotSupported":  "This app does not support the \"sign-in frequency every time\" session control.",
+                     "appReauthNotSupported":  "Tato aplikace nepodporuje řízení relace frekvence přihlašování pokaždé.",
                      "applyConditionClientAppInfoBalloonContent":  "Konfigurace klientských aplikací tak, aby se dané zásady používaly pro konkrétní klientské aplikace",
                      "applyConditionDevicePlatformInfoBalloonContent":  "Konfigurace platforem zařízení tak, aby se dané zásady používaly pro konkrétní platformy",
                      "applyConditionDeviceStateInfoBalloonContent":  "Konfigurace stavu zařízení tak, aby se dané zásady používaly pro konkrétní stavy zařízení",
@@ -9483,10 +9524,12 @@
                      "downloadDefaultFileName":  "Rozsahy IP adres",
                      "downloadExampleFileName":  "Příklad",
                      "downloadExampleHeader":  "Toto je ukázkový soubor s ukázkami typů dat, které se dají přijmout. Řádky, které začínají znakem #, se budou ignorovat.",
+                     "duplicate":  "Duplikovat",
+                     "duplicatePolicyName":  "{0} – KOPIE",
                      "endDatePickerLabel":  "Končí",
                      "endTimePickerLabel":  "Koncový čas",
-                     "enterCountryText":  "IP adresa a země se vyhodnocují v páru. Vyberte zemi.",
-                     "enterIpText":  "IP adresa a země se vyhodnocují v páru. Zadejte IP adresu.",
+                     "enterCountryText":  "IP adresa a země/oblast se vyhodnocují v páru. Vyberte zemi.",
+                     "enterIpText":  "IP adresa a země/oblast se vyhodnocují v páru. Zadejte IP adresu.",
                      "enterUserText":  "Nevybral se žádný uživatel. Vyberte nějakého uživatele.",
                      "evaluationResult":  "Výsledek hodnocení",
                      "exchangeActiveSyncSelectedLabel":  "Exchange ActiveSync",
@@ -9528,7 +9571,7 @@
                      "infoCommandLabel":  "Informace",
                      "invalidCertDuration":  "Neplatná doba platnosti certifikátu",
                      "invalidIpAddress":  "Hodnotou musí být platná IP adresa.",
-                     "invalidReAuthSignInRiskOptionSelected":  "Kontrolní prvek relace „Frekvence přihlášení (pokaždé)“ nepovoluje výběr „bez rizika“ v ovládacím prvku podmínky „Úroveň rizika přihlášení“.",
+                     "invalidReAuthSignInRiskOptionSelected":  "Kontrolní prvek relace „Frekvence přihlášení (pokaždé)“ nepovoluje výběr „bez rizika“ v ovládacím prvku podmínky „Riziko přihlášení“.",
                      "invalidUriErrorMsg":  "Zadejte prosím platný identifikátor URI. Příklad: uri:contoso.com:acr ",
                      "iosDisplayName":  "iOS",
                      "linuxDisplayName":  "Linux",
@@ -9569,7 +9612,7 @@
                      "namedLocationUpsellBanner":  "Toto zobrazení je zastaralé. Přejděte do nového a vylepšeného zobrazení Pojmenovaná umístění.",
                      "namedLocationsHelpDescription":  "Pojmenovaná umístění se používají v sestavách zabezpečení, aby se snížil počet falešně pozitivních výsledků, a v zásadách Podmíněného přístupu Azure AD.\n[Další informace][1]\n[1]: https://aka.ms/namedlocationupdate",
                      "namedNetworkAddIpRanges":  "Přidat nový rozsah IP adres (např.: 40.77.182.32/27)",
-                     "namedNetworkCountryNeeded":  "Je třeba vybrat aspoň jednu zemi.",
+                     "namedNetworkCountryNeeded":  "Je třeba vybrat aspoň jednu zemi/oblast.",
                      "namedNetworkDeleteCommand":  "Odstranit",
                      "namedNetworkDeleteDescription":  "Opravdu chcete odstranit síť {0}? Tato akce je nevratná.",
                      "namedNetworkDeleteTitle":  "Jste si jistí?",
@@ -9653,9 +9696,9 @@
                      "policyConditionLocation":  "Umístění",
                      "policyConditionLocationDescription":  "Lokalita, ze které se uživatel přihlašuje (určuje se podle rozsahu IP adres)",
                      "policyConditionLocationPreview":  "Umístění (Preview)",
-                     "policyConditionSigninRisk":  "Úroveň rizika přihlášení",
+                     "policyConditionSigninRisk":  "Riziko přihlášení",
                      "policyConditionSigninRiskDescription":  "Pravděpodobnost, že se přihlašuje někdo jiný než daný uživatel. Úroveň rizika může být vysoká, střední nebo nízká. Vyžaduje licenci Azure AD Premium 2.",
-                     "policyConditionUserRisk":  "Úroveň rizika uživatele",
+                     "policyConditionUserRisk":  "Riziko uživatele",
                      "policyConditionUserRiskDescription":  "Umožňuje nakonfigurovat úrovně rizika uživatelů potřebné k vynucování zásad.",
                      "policyConditioniClientApp":  "Klientské aplikace",
                      "policyControlAllowAccessDisplayedName":  "Udělit přístup",
@@ -9875,7 +9918,7 @@
                      "whatIfClassicPoliciesWarning":  "Tento nástroj nevyhodnocuje klasické zásady.",
                      "whatIfClientAppInfo":  "Klientská aplikace, ze které se uživatel přihlašuje. Příklad: Prohlížeč",
                      "whatIfCountry":  "Země/oblast",
-                     "whatIfCountryInfo":  "Země, ze které se uživatel přihlašuje",
+                     "whatIfCountryInfo":  "Země/oblast, ze které se uživatel přihlašuje.",
                      "whatIfDevicePlatformInfo":  "Platforma zařízení, ze které se uživatel přihlašuje",
                      "whatIfDeviceStateInfo":  "Stav zařízení, ze kterého se uživatel přihlašuje",
                      "whatIfEnterIpAddress":  "Zadat IP adresu (např.: 40.77.182.32)",
@@ -9893,14 +9936,14 @@
                      "whatIfEvaResultUsers":  "Uživatelé a skupiny",
                      "whatIfIpAddress":  "IP adresa",
                      "whatIfIpAddressInfo":  "IP adresa, ze které se uživatel přihlašuje",
-                     "whatIfIpCountryInfoBoxText":  "Pokud používáte IP adresu nebo zemi, budou se vyžadovat obě pole, která by si měla vzájemně odpovídat.",
+                     "whatIfIpCountryInfoBoxText":  "Pokud používáte IP adresu nebo zemi/oblast, budou se vyžadovat obě pole, která by si měla vzájemně odpovídat.",
                      "whatIfPolicyAppliesTab":  "Zásady, které se použijí",
                      "whatIfPolicyAppliesTabWithCount":  "Použitelné zásady ({0})",
                      "whatIfPolicyDoesNotApplyTab":  "Zásady, které se nepoužijí",
                      "whatIfPolicyDoesNotApplyTabWithCount":  "Nepoužitelné zásady ({0})",
                      "whatIfReasons":  "Důvody, proč se tyto zásady nepoužijí",
                      "whatIfSelectClientApp":  "Vybrat klientskou aplikaci...",
-                     "whatIfSelectCountry":  "Vybrat zemi...",
+                     "whatIfSelectCountry":  "Vyberte zemi nebo oblast…",
                      "whatIfSelectDevicePlatform":  "Vybrat platformu zařízení...",
                      "whatIfSelectPrivateLink":  "Vyberte Private Link...",
                      "whatIfSelectServicePrincipalRisk":  "Vyberte riziko pro objekt služby…",
@@ -9919,6 +9962,7 @@
                      "windowsDisplayName":  "Windows",
                      "windowsPhoneDisplayName":  "Windows Phone",
                      "workloadIdentities":  "Identity úloh (Preview)",
+                     "workloadIdentitiesLicenseText":  "K úpravám těchto zásad se vyžaduje licence P1 nebo P2 k identitám úloh úrovně Premium.",
                      "workloadIdentity":  "Identita úlohy"
                  },
     "AppResources":  {
@@ -10047,6 +10091,14 @@
                                         }
                      },
     "WindowsEnrollment":  {
+                              "DevicePreparation":  {
+                                                        "description":  "Nakonfigurujte zařízení pro počáteční zřizování a přiřaďte je uživatelům.",
+                                                        "title":  "Příprava zařízení"
+                                                    },
+                              "EnrollmentSettings":  {
+                                                         "description":  "Nakonfigurujte nastavení registrace, jako jsou blokování registrace a přiřazování k uživatelům.",
+                                                         "title":  "Nastavení registrace"
+                                                     },
                               "coManagementAuthorityDesc":  "Konfigurovat nastavení spolusprávy pro integraci Configuration Manageru",
                               "coManagementAuthorityTitle":  "Nastavení spolusprávy  ",
                               "deploymentProfiles":  "Profily nasazení Windows AutoPilot",
@@ -10196,6 +10248,8 @@
                    "informationUrlSizeHint":  "Maximální délka adresy URL informací je 1024 znaků.",
                    "installAsManaged":  "Instalovat jako spravované",
                    "installationSourceLabel":  "Typ aplikace",
+                   "installerTypeInfoBalloon":  "The installer type of the application package.",
+                   "installerTypeLabel":  "Installer Type",
                    "isFeatured":  "Zobrazit na Portálu společnosti jako vybranou aplikaci",
                    "isMAMEnabledToggleLabel":  "Ano",
                    "lastModifiedDateTime":  "Čas poslední aktualizace",
@@ -10408,6 +10462,8 @@
                                                         "qualityUpdateSettings":  "Nastavení"
                                                     },
                                         "infoBoxText":  "Jediným vyhrazeným ovládacím prvkem aktualizace pro zvýšení kvality, který je kromě stávající zásady aktualizačního okruhu pro systém Windows 10 a novější aktuálně k dispozici, je možnost urychleně zpracovat aktualizace pro zvýšení kvality na zařízeních, která překračují zadanou úroveň opravy. Další ovládací prvky budou k dispozici v budoucnu.",
+                                        "licenseLearnMoreText":  "Přečtěte si další informace o požadavcích a zásadách aktualizace pro zvýšení kvality.",
+                                        "licenseWarningBoxText":  "Vytváření zásad aktualizace pro zvýšení kvality vyžaduje konkrétní licencování.",
                                         "warningBoxText":  "I když urychlené zpracování aktualizací softwaru můžete zkrátit čas na to, aby se v případě potřeby dosáhlo shody s předpisy, má větší dopad na produktivitu koncového uživatele. Výrazně se zvýší pravděpodobnost, že během pracovní doby dojde k restartování."
                                     },
     "TermsOfUse":  {
@@ -10492,6 +10548,7 @@
                                          "ptBR":  "Portuguese (Brazil)",
                                          "ptPT":  "Portuguese (Portugal)",
                                          "quz":  "Quechua",
+                                         "removeLanguage":  "Remove language",
                                          "ro":  "Romanian",
                                          "ru":  "Russian",
                                          "rw":  "Kinyarwanda",
@@ -10542,10 +10599,7 @@
                                                                      },
                                       "PolicyFile":  {
                                                          "Languages":  {
-                                                                           "Empty":  {
-                                                                                         "default":  "Select default language",
-                                                                                         "nonDefault":  "Select a language"
-                                                                                     }
+
                                                                        },
                                                          "Validations":  {
                                                                              "duplicateLanguage":  "Oops, {0} appears to be selected multiple times. Language selection must be unique."
@@ -10581,6 +10635,7 @@
                                       "agreementNamePlaceholderText":  "Example: 'All users terms of use'",
                                       "agreementRequirmentLabel":  "Required Upon",
                                       "agreementTargetEntityLabel":  "Users targeted",
+                                      "agreementUploadPolicyAriaLabelText":  "Upload required PDF {0}",
                                       "agreementUploadPolicyLabel":  "Terms of use",
                                       "agreementUploadPolicyPlaceholderText":  "Upload required PDF",
                                       "createButtonLabel":  "Create",
@@ -10594,7 +10649,32 @@
                                       "policyTemplateInfo":  "These templates are pre configured conditional access policies that are targeted to specific users and applications.",
                                       "policyTemplateLabel":  "Policy templates",
                                       "title":  "New terms of use"
-                                  }
+                                  },
+                       "Details":  {
+                                       "Link":  {
+                                                    "auditEvent":  "View audit logs",
+                                                    "delete":  "Delete",
+                                                    "download":  "Preview PDF",
+                                                    "edit":  "Edit"
+                                                },
+                                       "Property":  {
+                                                        "acceptanceDuration":  "Duration before re-acceptance required (days)",
+                                                        "acceptanceExpirationFrequency":  "Frequency",
+                                                        "acceptanceExpirationStartDateTime":  "Expire starting on",
+                                                        "accepted":  "Users accepted",
+                                                        "declined":  "Users declined",
+                                                        "displayname":  "Display name",
+                                                        "isAcceptanceExpirationEnable":  "Expire consents",
+                                                        "isPerDeviceAcceptanceRequired":  "Require users to consent on every device",
+                                                        "isViewingBeforeAcceptanceRequired":  "Require users to expand the terms of use",
+                                                        "name":  "Name"
+                                                    },
+                                       "Tab":  {
+                                                   "cAPolicies":  "Conditional access policies",
+                                                   "details":  "Details",
+                                                   "languages":  "Languages"
+                                               }
+                                   }
                    },
     "TACSettings":  {
                         "edgeSettings":  "Nastavení konfigurace Edge",
@@ -10660,6 +10740,23 @@
                               "withEnrollment":  "S registrací",
                               "withoutEnrollment":  "Bez registrace"
                           },
+    "PolicySelection":  {
+                            "Grid":  {
+                                         "Column":  {
+                                                        "author":  "Autor",
+                                                        "template":  "Název šablony"
+                                                    }
+                                     },
+                            "SettingsCatalog":  {
+                                                    "subtitle":  "Začněte od začátku a vyberte požadovaná nastavení z knihovny dostupných nastavení",
+                                                    "title":  "Katalog nastavení"
+                                                },
+                            "Templates":  {
+                                              "subtitle":  "Šablony obsahují skupiny nastavení uspořádané podle funkcí. Pokud nechcete zásady sestavovat ručně nebo chcete zařízení nakonfigurovat pro přístup k firemním sítím, třeba při konfiguraci Wi-Fi nebo VPN, použijte šablonu.",
+                                              "title":  "Šablony"
+                                          },
+                            "noData":  "Nepovedlo se najít žádné šablony zásad"
+                        },
     "OfficeApplicationAdditionalType":  {
                                             "projectProRetail":  "Project Online Desktop Client",
                                             "visioProRetail":  "Visio Online Plan 2"
@@ -10844,6 +10941,12 @@
                           "withEnrollment":  "S registrací",
                           "withoutEnrollment":  "Bez registrace"
                       },
+    "DisplayRoleTypes":  {
+                             "builtInRole":  "Předdefinovaná role",
+                             "customCloudPCRole":  "Vlastní role Windows 365",
+                             "customIntuneRole":  "Vlastní role Intune",
+                             "customRole":  "Vlastní role"
+                         },
     "InstallContextType":  {
                                "device":  "Zařízení",
                                "deviceContext":  "Kontext zařízení",
@@ -11019,7 +11122,7 @@
                                                                      "Schedule":  {
                                                                                       "always":  "Aktualizovat při dalším ohlášení",
                                                                                       "duringTimeWindows":  "Aktualizovat v naplánovaný čas",
-                                                                                      "header":  "Ve výchozím nastavení, když se k zařízení přiřadí zásady aktualizace softwaru iOS/iPadOS, nasadí Intune nejnovější aktualizace ve chvíli, kdy se zařízení ohlásí (přibližně každých 8 hodin). Místo toho můžete vytvořit týdenní plán s vlastními počátečními a koncovými časy. Pokud se rozhodnete, že aktualizace budou probíhat mimo naplánovaný čas, Intune nebude aktualizace nasazovat, dokud naplánovaný čas neskončí.",
+                                                                                      "header":  "Když se k zařízení přiřadí zásady aktualizace, Intune ve výchozím nastavení nasadí nejnovější aktualizace ve chvíli, kdy se zařízení ohlásí. Místo toho můžete vytvořit týdenní plán s vlastními počátečními a koncovými časy. Pokud se rozhodnete, že aktualizace budou probíhat mimo naplánovaný čas, Intune nebude aktualizace nasazovat, dokud naplánovaný čas neskončí.",
                                                                                       "infoBalloon":  "Kdy dojde k aktualizacím. Pro plánování aktualizací během plánované doby nebo mimo ni je povinný další vstup.",
                                                                                       "label":  "Typ plánu",
                                                                                       "outsideActiveHours":  "Aktualizovat mimo dobu aktivního používání (starší verze)",
@@ -11443,6 +11546,7 @@
                    "ManagedDesktop":  {
                                           "adminContacts":  "Kontakty správce",
                                           "appPackaging":  "Balení aplikace",
+                                          "businessGroups":  "Obchodní skupiny",
                                           "devices":  "Zařízení",
                                           "feedback":  "Zpětná vazba",
                                           "gettingStarted":  "Začínáme",
@@ -11479,6 +11583,7 @@
                    "cartProfiles":  "Profily košíků",
                    "certificateConnectors":  "Konektory certifikátů",
                    "chromeEnterprise":  "Chrome Enterprise (Preview)",
+                   "cloudAttachedDevices":  "Zařízení připojená cloudem (Preview)",
                    "compliancePolicies":  "Zásady dodržování předpisů",
                    "complianceScriptManagement":  "Skripty",
                    "complianceScriptManagementPreview":  "Skripty (Preview)",
@@ -11512,7 +11617,7 @@
                    "failuresForFeatureUpdates":  "Selhání aktualizace funkcí (Preview)",
                    "failuresForQualityUpdates":  "Selhání urychlené aktualizace systému Windows (Preview)",
                    "featureFlighting":  "Publikování testovacích verzí funkcí",
-                   "featureUpdateDeployments":  "Aktualizace funkcí pro systém Windows 10 a novější (Preview)",
+                   "featureUpdateDeployments":  "Feature updates for Windows 10 and later",
                    "flighting":  "Publikování testovacích verzí",
                    "fotaUpdate":  "Aktualizace FOTA",
                    "groupPolicy":  "Šablony pro správu",
@@ -11523,8 +11628,8 @@
                    "incompleteUserEnrollments":  "Nedokončené registrace uživatele",
                    "iosUpdates":  "Aktualizovat zásady pro iOS/iPadOS",
                    "legacyPcManagement":  "Starší verze správy počítače",
-                   "macOSSoftwareUpdate":  "Zásady aktualizace pro macOS",
-                   "macOSSoftwareUpdateAccountSummaries":  "Stav instalace pro zařízení s macOSem",
+                   "macOSSoftwareUpdate":  "Aktualizace zásad pro macOS (Preview)",
+                   "macOSSoftwareUpdateAccountSummaries":  "Installation status for macOS devices (preview)",
                    "macOSSoftwareUpdateCategorySummaries":  "Souhrn aktualizací softwaru",
                    "macOSSoftwareUpdateStateSummaries":  "aktualizace",
                    "managedGooglePlay":  "Spravovaný obchod Google Play",
@@ -11570,11 +11675,12 @@
                    "warranty":  "Dodavatelé se zárukou",
                    "wdacSupplementalPolicies":  "Doplňkové zásady režimu S",
                    "windows10DriverUpdate":  "Aktualizace ovladačů pro systém Windows 10 a novější (Preview)",
-                   "windows10QualityUpdate":  "Aktualizace pro zvýšení kvality pro systém Windows 10 a novější (Preview)",
+                   "windows10QualityUpdate":  "Quality updates for Windows 10 and later",
                    "windows10UpdateRings":  "Aktualizační okruhy pro Windows 10 a novější",
                    "windows10XPolicyFailures":  "Selhání zásad Windows 10X",
                    "windows365Connector":  "Konektor Citrix pro Windows 365",
-                   "windows365ConnectorPublicPreview":  "Windows 365 Citrix connector (preview)",
+                   "windows365ConnectorPublicPreview":  "Konektor Citrix pro Windows 365 (Preview)",
+                   "windowsDiagnosticData":  "Data Windows",
                    "windowsEnterpriseCertificate":  "Certifikát Windows Enterprise",
                    "windowsManagement":  "Powershellové skripty",
                    "windowsSideLoadingKeys":  "Klíče pro instalaci bokem ve Windows",

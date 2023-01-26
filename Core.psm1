@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.7.1'
+    '3.8.1'
 }
 
 function Initialize-Window
@@ -415,7 +415,7 @@ function Set-XamlProperty
 
 function Get-XamlProperty
 {
-    param($xamlObj, $controlName, $propertyName, $defaultValue)
+    param($xamlObj, $controlName, $propertyName, $defaultValue = $null)
 
     $obj = $xamlObj.FindName($controlName)
 
@@ -423,7 +423,7 @@ function Get-XamlProperty
     {
         if($obj)
         {
-            return (?? $obj."$propertyName" $null)
+            return (?? $obj."$propertyName" $defaultValue)
         }
         else 
         {
@@ -2663,6 +2663,34 @@ function Show-LogView
                 $obj.Parent.DataContext = $this.SelectedValue
             }
         })
+    }
+}
+
+function Get-Base64ScriptContent
+{
+    param($encodeContent, [switch]$RemoveSignature)
+
+    if(-not $encodeContent) { return }
+
+    try
+    {
+        $scriptContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($encodeContent))
+
+        if($RemoveSignature -eq $true)
+        {
+            $x = $scriptContent.IndexOf("# SIG # Begin signature block")
+            if($x -gt 0)
+            {
+                $scriptContent = $scriptContent.SubString(0,$x)
+                $scriptContent = $scriptContent + "# SIG # Begin signature block`nSignature data excluded..."
+            }
+        }
+
+        $scriptContent
+    }
+    catch
+    {
+
     }
 }
 

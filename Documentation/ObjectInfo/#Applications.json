@@ -8,6 +8,96 @@
         "category": "AppInformationTab.name"
     },
     {
+        "nameResourceKey":  "Inputs.packageIdLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "packageIdentifier",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {                            
+            "Expressions": [
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.winGetApp"
+                }                        
+            ]
+        } 
+    },
+    {
+        "nameResourceKey":  "Inputs.packageIdLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "packageIdentifier",
+        "dataType":  107,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "value": "UWP",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "packageIdentifier",
+                    "value": "9*",
+                    "operator": "like"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.winGetApp"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "Inputs.packageIdLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "packageIdentifier",
+        "dataType":  107,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "value": "Win32",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "packageIdentifier",
+                    "value": "X*",
+                    "operator": "like"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.winGetApp"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "Inputs.packageIdLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "packageIdentifier",
+        "dataType":  107,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "value": "Unsupported Store Type",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "packageIdentifier",
+                    "value": "9*",
+                    "operator": "notlike"
+                },
+                {
+                    "property": "packageIdentifier",
+                    "value": "X*",
+                    "operator": "notlike"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.winGetApp"
+                }
+            ]
+        }
+    },    
+    {
         "nameResourceKey":  "Inputs.displayVersionLabel",
         "descriptionResourceKey":  "",
         "entityKey":  "displayVersion",
@@ -836,10 +926,24 @@
                 ]
             },
             {
+                "Columns": [
+                    {
+                        "metadata": {
+                            "entityKey": "returnCode",
+                            "nameResourceKey": "Win32ReturnCodes.Columns.returnCode"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "entityKey": "type",
+                            "nameResourceKey": "Win32ReturnCodes.Columns.codeType"
+                        }
+                    }
+                ],
                 "nameResourceKey":  "Win32ReturnCodes.selectorLabel",
                 "descriptionResourceKey":  "",
                 "entityKey":  "returnCodes",
-                "dataType":  20,
+                "dataType":  21,
                 "booleanActions":  0,
                 "category": "Win32Program.selectorLabel"
             },

@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.7.4'
+    '3.8.1'
 }
 
 $global:msalAuthenticator = $null
@@ -37,7 +37,7 @@ function Invoke-InitializeModule
             Name = "Azure AD China"
             Value = "china"
             URL = "login.partner.microsoftonline.cn"
-            GraphURL = "https://microsoftgraph.chinacloudapi.cn"
+            GraphURL = "microsoftgraph.chinacloudapi.cn"
         }
     )
 
@@ -209,15 +209,14 @@ function Set-MSALGraphEnvironment
             }
         }
     }
-    elseif($cuAADEnv.GraphURL)
+    elseif($curAADEnv.GraphURL)
     {
-        $graphEnv = $cuAADEnv.GraphURL
+        $graphEnv = $curAADEnv.GraphURL
     }
     
     Write-Log "Use Graph environment: $graphEnv"
     $global:MSALGraphEnvironment = $graphEnv
 }
-
 
 function Get-MSALUserInfo
 {

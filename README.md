@@ -240,10 +240,10 @@ Start-WithJson.cmd is included as an example on how to start the script with jso
 **Note:** If the file can't be created, the script will revert back registry. Make sure that the script can write to the file. It is not recommended to store the file in a folder that requires UAC to get write permissions.  
 
 ## Supported Intune objects
-* ADMX Files
+* ADMX Files [^1]
 * App Configurations (App and Device)
 * App Protection
-* Applications
+* Applications [^2]
 * Apple Enrolment Types - NOT fully tested
 * Autopilot profiles
 * Baseline Security profiles
@@ -252,7 +252,7 @@ Start-WithJson.cmd is included as an example on how to start the script with jso
 * Conditional Access
 * Custom Attributes
 * Device Configuration (Administrative Templates, Configuration Policies, Android OEM Config, Settings Catalog)
-* Endpoint Security (Account Protection, Disk Encryption, Firewall, Security Baselines etc.) 
+* Endpoint Security (Account Protection, Disk Encryption, Firewall, Security Baselines etc.) [^3]
 * Enrollment Restrictions
 * Enrollment Status Page profiles
 * Feature Updates
@@ -263,6 +263,7 @@ Start-WithJson.cmd is included as an example on how to start the script with jso
 * Notifications
 * Policy Sets
 * Quality Updates
+* Reusable Settings
 * Role Definitions
 * Scope Tags
 * Scripts (PowerShell and Shell scripts, supports download of script)
@@ -271,6 +272,9 @@ Start-WithJson.cmd is included as an example on how to start the script with jso
 * Update Policies
 * Co-management Settings
 
+[^1]: ADMX file must be located in the export folder or in the folder defined in Settings. Administrative Template policies based on ADMX files must be imported after the ADMX file is imported.
+[^2]: Export is support but .intunewin files will not be exported. The .intunewin file must exist in the exported folder or in the folder defined in Settings -> App packages folder.
+[^3]: Some Endpoint Security policies will be exported to the SettingsCatalg since they are based the Settings Catalog API.
 
 **Note:** The scripts are using the BETA version of the Graph API which might change at any time.
 

@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.7.4'
+    '3.8.1'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -460,16 +460,26 @@ function Invoke-GraphRequest
                     $response = $reader.ReadToEnd() | ConvertFrom-Json
                     if($response.Error.Message)
                     {
-                        $message = $response.Error.Message | ConvertFrom-Json
-                        if($message.Message)
+                        $extMessage = $response.Error.Message
+                        try
                         {
-                            $extMessage = ". Response message: $($message.Message)"
+                            if($response.Error.Message.StartsWith("{") -and $response.Error.Message.EndsWith("}"))
+                            {
+                                $message = $response.Error.Message | ConvertFrom-Json
+                                if($message.Message)
+                                {
+                                    $extMessage = ". Response message: $($message.Message)"
+                                }
+                            }
                         }
+                        catch {}
+
+                        $extMessage = ". Response message: $($extMessage)"
                     }
                 }
                 catch{}
 
-                Write-LogError "Failed to invoke MS Graph with URL $Url (Request ID: $requestId). Status code: $($_.Exception.Response.StatusCode)$extMessage" $_.Excption
+                Write-LogError "Failed to invoke MS Graph with URL $Url (Request ID: $requestId). Status code: $($_.Exception.Response.StatusCode)$extMessage" $_.Exception
             }            
         }
     } while($retryRequest -eq $true)
@@ -1331,6 +1341,18 @@ function Get-GraphBatchObjectTypes
     } 
     
     $silentViewObjects
+}
+
+function Get-GraphObjectType
+{
+    param($objTypeId)
+
+    $intuneView = $global:viewObjects | Where { $_.ViewInfo.Id -eq "IntuneGraphAPI" }
+
+    if($intuneView)
+    {
+        ($intuneView.ViewItems | Where Id -eq $objTypeId)
+    }
 }
 
 function Start-GraphObjectExport
@@ -4165,7 +4187,14 @@ function Get-GraphObjectFromFile
         $json = $json -replace "%OrganizationId%",$global:Organization.Id
     }        
 
-    $json | ConvertFrom-Json
+    try 
+    {
+        $json | ConvertFrom-Json        
+    }
+    catch 
+    {
+        Write-LogError "Failed to convert json file $fileName" $_.Exception
+    }
 }
 
 function Save-GraphObjectToFile
@@ -4187,4 +4216,84 @@ function Save-GraphObjectToFile
     {
         Write-LogError "Failed to save file $fileName" $_.Exception
     }
+}
+
+function Get-GraphObjectFile
+{
+    param($obj, $objectType, $path)
+    $fileName = (Get-GraphObjectName $obj $objectType)
+
+    if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
+    {
+        $fileName = ($fileName + "_" + $obj.Id)
+    }
+    $fileName = "$((Remove-InvalidFileNameChars $fileName)).json"
+    if($path)
+    {
+        $fileName = "$path\$fileName"
+    }
+
+    $fileName
+}
+
+function Confirm-GraphMatchFilter
+{
+    param($graphObj, [string]$filter)
+
+    if(-not $filter.Trim()) { return $true }
+
+    $filterScope = ""
+
+    if($filter -like "scope:*" -or $filter -like "tag:*")
+    {
+        $filterScope = $filter.Split(':')[1]
+    }
+
+    $objName = Get-GraphObjectName $graphObj.Object $graphObj.ObjectType
+    if($filterScope)
+    {
+        if(($graphObj.Object.PSObject.Properties | Where Name -eq "roleScopeTagIds"))
+        {
+            $scopeTagProperty = "roleScopeTagIds"
+        }
+        elseif(($graphObj.Object.PSObject.Properties | Where Name -eq "roleScopeTags"))
+        {
+            $scopeTagProperty = "roleScopeTags"
+        }
+        else
+        {
+            Write-Log "$objName excluded based on Scope(Tags) not supported on $($graphObj.ObjectType.GroupId) objects"
+            continue
+        }
+
+        if(-not $script:scopeTags -and $script:offlineDocumentation -ne $true)
+        {
+            $script:scopeTags = (Invoke-GraphRequest -Url "/deviceManagement/roleScopeTags").Value
+        }
+        
+        $found = $false
+        foreach($scopeTagId in $graphObj.Object."$scopeTagProperty")
+        {                    
+            $scopeTagObj = $script:scopeTags | Where Id -eq $scopeTagId
+            if($scopeTagObj -and $filterScope -and $scopeTagObj.displayName -match [RegEx]::Escape($filterScope))
+            {
+                return $true               
+            }
+        }
+
+        if($found -eq $false)
+        {
+            Write-Log "$objName excluded based on no Scope(Tags) found that matches the filter"
+            return $false
+        }
+    }
+    else
+    {                
+        if($objName -and $filter -and $objName -notmatch [RegEx]::Escape($filter))
+        {
+            Write-Log "$objName excluded based on the name does not match the filter"
+            return $false
+        }
+    }
+    return $true
 }

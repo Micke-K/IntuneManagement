@@ -1,34 +1,127 @@
 function Get-ModuleVersion
 {
-    '1.0.0'
+    '1.1.0'
 }
 
 function Invoke-InitializeModule
 {
     Add-OutputType ([PSCustomObject]@{
-        Name="Markdown (Experimental)"
+        Name="Markdown"
         Value="md"
-        #OutputOptions = (Add-MDOptionsControl)
+        OutputOptions = (Add-MDOptionsControl)
         #Activate = { Invoke-MDActivate @args }
         PreProcess = { Invoke-MDPreProcessItems @args }
-        NewObjectGroup = { Invoke-MDNewObjectGroup @args }
+        NewObjectGroup = { Invoke-MDNewObjectGroup2 @args }
+        NewObjectType = { Invoke-MDNewObjectType2 @args }
         Process = { Invoke-MDProcessItem @args }
         PostProcess = { Invoke-MDPostProcessItems @args }
         ProcessAllObjects = { Invoke-MDProcessAllObjects @args }
     })        
 }
 
+function Add-MDOptionsControl
+{
+    $script:mdForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\DocumentationMDOptions.xaml") -AddVariables
+    
+    Set-XamlProperty $script:mdForm "txtMDDocumentName" "Text" (Get-Setting "Documentation" "MDDocumentName" "")
+    Set-XamlProperty $script:mdForm "txtMDCSSFile" "Text" (Get-Setting "Documentation" "MDCSSFile" "")
+    Set-XamlProperty $script:mdForm "chkMDIncludeCSS" "IsChecked" (Get-Setting "Documentation" "MDIncludeCSS" $true)
+    Set-XamlProperty $script:mdForm "chkMDOpenDocument" "IsChecked" (Get-Setting "Documentation" "MDOpenFile" $true)
+    Set-XamlProperty $script:mdForm "cbMDDocumentOutputFile" "ItemsSource" ("[ { Name: `"Single file`",Value: `"Full`" }, { Name: `"One file per object`",Value: `"Object`" }]" | ConvertFrom-Json)
+    Set-XamlProperty $script:mdForm "cbMDDocumentOutputFile" "SelectedValue" (Get-Setting "Documentation" "MDDocumentFileType" "Full")
 
+    Add-XamlEvent $script:mdForm "browseMDDocumentName" "add_click" {
+        $sf = [System.Windows.Forms.SaveFileDialog]::new()
+        $sf.DefaultExt = "*.md"
+        $sf.Filter = "MD (*.md)|*.md|All files (*.*)|*.*"
+        if($sf.ShowDialog() -eq "OK")
+        {
+            Set-XamlProperty $script:MDForm "txtMDDocumentName" "Text" $sf.FileName
+            Save-Setting "Documentation" "MDDocumentName" $sf.FileName
+        }                
+    }
+
+    Add-XamlEvent $script:mdForm "browseMDCSSFile" "add_click" {
+        $of = [System.Windows.Forms.OpenFileDialog]::new()
+        $of.Multiselect = $false
+        $of.Filter = "CSS Files (*.css)|*.css|All files (*.*)|*.*"
+        if($of.ShowDialog())
+        {
+            Set-XamlProperty $script:mdForm "txtMDCSSFile" "Text" $of.FileName
+            Save-Setting "Documentation" "txtMDCSSFile" $of.FileName
+        }                
+    }
+    
+    $script:mdForm
+}
+
+function Invoke-MDProcessAllObjects
+{
+    param($allObjectTypeObjects, $objectType)
+}
 
 function Invoke-MDPreProcessItems
 {
-    $script:mdStrings = [System.Text.StringBuilder]::new()
     $script:sectionAnchors = @()
     $script:totAnchors = @()
+    $script:mdStrings = $null
+    $script:currentItemFileName = $null
+
+    Save-Setting "Documentation" "MDDocumentName" (Get-XamlProperty $script:mdForm "txtMDDocumentName" "Text" "")
+    Save-Setting "Documentation" "MDIncludeCSS" (Get-XamlProperty $script:mdForm "chkMDIncludeCSS" "IsChecked")
+    Save-Setting "Documentation" "MDCSSFile" (Get-XamlProperty $script:mdForm "txtMDCSSFile" "Text" "")
+    Save-Setting "Documentation" "MDOpenFile" (Get-XamlProperty $script:mdForm "chkMDOpenDocument" "IsChecked")
+    Save-Setting "Documentation" "MDDocumentFileType" (Get-XamlProperty $script:mdForm "cbMDDocumentOutputFile" "SelectedValue" '')
+
+    $defaultCSSFile = $global:AppRootFolder + "\Documentation\DefaultMDStyle.css"
+    $MDCssFile = Get-XamlProperty $script:mdForm "txtMDCSSFile" "Text" $defaultCSSFile
+ 
+    if(-not $MDCssFile)
+    {
+        Write-Log "CSS file not specified. Using default" 2
+        $MDCssFile = $defaultCSSFile
+    }
+    elseif([IO.File]::Exists($MDCssFile) -eq -$false)
+    {
+        Write-Log "CSS file $($MDCssFile) not found. Using default" 2
+        $MDCssFile = $defaultCSSFile
+    }
+
+    $cssStyle = ""
+    if([IO.File]::Exists($MDCssFile))
+    {
+        Write-Log "Using CSS file $($MDCssFile)"
+        $cssStyle = Get-Content -Raw -Path $MDCssFile
+        $cssStyle += [System.Environment]::NewLine
+    }
+    else
+    {
+        Write-Log "CSS file $($MDCssFile) not found. No styles applied" 2
+    }
+    $script:cssStyle = $cssStyle
+
+    $fileName = Expand-FileName (Get-XamlProperty $script:mdForm "txtMDDocumentName" "Text" "%MyDocuments%\%Organization%-%Date%.md")
+
+    $script:outFile = $fileName
+    $script:documentPath = [io.path]::GetDirectoryName($fileName)
+
+    $script:outputType = (Get-XamlProperty $script:mdForm "cbMDDocumentOutputFile" "SelectedValue" "Full")
+
+    if($script:outputType -eq "Object")
+    {
+        Write-Log "Document one file for each object + index file"
+    }
+    else
+    {
+        Write-Log "Document one single file for all objects"
+        $script:outputType = "Full"
+        $script:mdStrings = [System.Text.StringBuilder]::new()        
+    }    
 }
 
 function Invoke-MDPostProcessItems
 {
+
     $userName = $global:me.displayName
     if($global:me.givenName -and $global:me.surname)
     {
@@ -59,24 +152,38 @@ function Invoke-MDPostProcessItems
 
     foreach($header in $script:sectionAnchors)
     {
-        $script:mdContent.AppendLine("[$($header.Name)](#$($header.Anchor))`n")
+        $indent = [String]::new(" ", (($header.Level - 1) * 2))
+        $script:mdContent.AppendLine("$($indent)- [$($header.Name)]($($header.FileName)#$($header.Anchor))`n")
     }
 
+    $mdText = $script:cssStyle 
+
     $script:mdContent.AppendLine("")
-    $mdText = $script:mdContent.ToString() 
-    $mdText += $script:mdStrings.ToString()
+    $mdText += $script:mdContent.ToString()
+    if($script:outputType -eq "Full")
+    {
+        $mdText += $script:mdStrings.ToString()
+    }    
     
-    $fileName = Expand-FileName "%MyDocuments%\%Organization%-%Date%.md"
+    Save-DocumentationFile $mdText $script:outFile -OpenFile:((Get-Setting "Documentation" "MDOpenFile" $true) -eq $true)
+    <#
+    $fileName = Expand-FileName (Get-XamlProperty $script:mdForm "txtMDDocumentName" "Text" "%MyDocuments%\%Organization%-%Date%.md")
     
     try
     {
         $mdText | Out-File -FilePath $fileName -Force -Encoding utf8 -ErrorAction Stop
         Write-Log "Markdown document $fileName saved successfully"
+
+        if((Get-Setting "Documentation" "MDOpenFile" $true) -eq $true)
+        {
+            Invoke-Item $fileName
+        }
     }
     catch
     {
-        Write-LogError "Failed to save Markdown file" $_.Exception
+        Write-LogError "Failed to save Markdown file: $fileName." $_.Exception
     }
+    #>
 }
 
 function Invoke-MDNewObjectGroup
@@ -86,7 +193,39 @@ function Invoke-MDNewObjectGroup
     $objectTypeString = Get-ObjectTypeString $obj.Object $obj.ObjectType
 
     Add-MDHeader "$((?? $objectTypeString $obj.ObjectType.Title))" -Level 1 -USEHtml
+}
 
+function Invoke-MDNewObjectType
+{
+    param($obj, $documentedObj, [int]$groupCategoryCount = 0)
+
+    if($obj.ObjectType.GroupId -eq "EndpointSecurity")
+    {
+        $objectTypeString = $obj.CategoryName
+    }
+    else
+    {
+        $objectTypeString = $obj.ObjectType.Title
+    }
+
+    Add-MDHeader "$((?? $objectTypeString $obj.ObjectType.Title))" -Level 2 -USEHtml
+
+}
+
+function Invoke-MDNewObjectGroup2
+{
+    param($groupId)
+
+    $objectTypeString = Get-ObjectTypeString -ObjectType $groupId
+
+    Add-MDHeader $objectTypeString -Level 1 -USEHtml
+}
+
+function Invoke-MDNewObjectType2
+{
+    param($objectTypeName)
+
+    Add-MDHeader $objectTypeName -Level 2 -USEHtml
 }
 
 function Invoke-MDProcessItem
@@ -97,7 +236,14 @@ function Invoke-MDProcessItem
 
     $objName = Get-GraphObjectName $obj $objectType
 
-    Add-MDHeader $objName -Level 2 -USEHtml
+    if($script:outputType -eq "Object")
+    {
+        $script:totAnchors = @()
+        $script:mdStrings = [System.Text.StringBuilder]::new()
+        $script:currentItemFileName = "./$((Remove-InvalidFileNameChars "$($objName).md").Replace(" ","_"))"
+    }    
+
+    Add-MDHeader $objName -Level 3 -USEHtml
 
     $script:mdStrings.AppendLine("")
 
@@ -164,7 +310,6 @@ function Invoke-MDProcessItem
 
         if(($documentedObj.Assignments | measure).Count -gt 0)
         {
-            $params = @{}
             if($documentedObj.Assignments[0].RawIntent)
             {
                 $properties = @("GroupMode","Group","Filter","FilterMode")
@@ -197,15 +342,26 @@ function Invoke-MDProcessItem
                 {
                     $properties += @("Filter","FilterMode")
                 }
-                $params.Add("AddCategories", $true)
             }
 
-            Add-MDTableItems $obj $objectType $documentedObj.Assignments $properties "TableHeaders.assignments" @params
+            Add-MDTableItems $obj $objectType $documentedObj.Assignments $properties "TableHeaders.assignments" -AddCategories
         }
     }
     catch 
     {
         Write-LogError "Failed to process object $objName" $_.Exception
+    }
+    
+    if($script:outputType -eq "Object")
+    {
+        $script:mdContent = [System.Text.StringBuilder]::new()
+        $script:mdContent.AppendLine($script:cssStyle)        
+        $mdText = $script:mdContent.ToString() 
+        $mdText += $script:mdStrings.ToString()
+
+        $fileName = "$($script:documentPath)\$($script:currentItemFileName)"
+        Save-DocumentationFile $mdText $fileName
+        $script:mdStrings = $null
     }    
 }
 
@@ -227,24 +383,17 @@ function Add-MDTableItems
     }
 
     $tableText =  [System.Text.StringBuilder]::new()
-    $tableText.AppendLine("<table>")
-    $tableText.AppendLine("<tr>")
-    $columnHeaders = "|"
-    $columnChars = "|"
+    $tableText.AppendLine("<table class='table-settings'>")
+    $tableText.AppendLine("<tr class='table-header1'>")
+
     $columnCount = 0
     foreach($prop in $properties)
     {
-        $tableText.AppendLine("<td> $($prop.Split(".")[-1]) </td>")
+        $tableText.AppendLine("<td>$((Invoke-DocTranslateColumnHeader $prop.Split(".")[-1]))</td>")
         $columnCount++
-
-        $columnHeaders += ((Invoke-DocTranslateColumnHeader ($prop.Split(".")[-1])) + "|")
-        $columnChars += "----|"
     }
     $tableText.AppendLine("</tr>")
 
-    #Add-MDText $columnHeaders
-    #Add-MDText $columnChars
-    
     $curCategory = ""
     $curSubCategory = ""
 
@@ -253,34 +402,39 @@ function Add-MDTableItems
 
     foreach($itemObj in $items)
     {
+        $additionalRowClass = ""
         if($itemObj.Category -and $curCategory -ne $itemObj.Category -and $AddCategories -eq $true)
         {
             $tableText.AppendLine("<tr>")
-            $tableText.AppendLine("<td colspan=`"$($columnCount)`">`n`n**$((Set-MDText $itemObj.Category))**`n`n</td>")
+            $tableText.AppendLine("<td colspan=`"$($columnCount)`" class='category-level1'>$((Set-MDText $itemObj.Category))</td>")
             $tableText.AppendLine("</tr>")
 
-            #$columnCategory = "|**" + (Set-MDText $itemObj.Category) + "**|"
-            #Add-MDText $columnCategory
             $curCategory = $itemObj.Category
             $curSubCategory = ""
+            $curentPropertyIndex = 0
         }
 
         if($itemObj.SubCategory -and $curSubCategory -ne $itemObj.SubCategory -and $AddSubcategories -eq $true)
         {
             $tableText.AppendLine("<tr>")
-            $tableText.AppendLine("<td colspan=`"$($columnCount)`">`n`n***$((Set-MDText $itemObj.SubCategory))***`n`n</td>")
+            $tableText.AppendLine("<td colspan=`"$($columnCount)`" class='category-level2'>$((Set-MDText $itemObj.SubCategory))</td>")
             $tableText.AppendLine("</tr>")
 
-            #$columnSubCategory = "|***" + (Set-MDText $itemObj.SubCategory) + "***|"
-            #Add-MDText $columnSubCategory
             $curSubCategory = $itemObj.SubCategory
+            $curentPropertyIndex = 0
+        }
+        
+        if($itemObj.PropertyIndex -is [int] -and $itemObj.PropertyIndex -gt 0 -and $itemObj.PropertyIndex -eq 1)
+        {
+            $curentPropertyIndex = $itemObj.PropertyIndex
+            $additionalRowClass = "row-new-property"
         }        
 
-        #$columnData = "|"
         try 
         {   
-            $tableText.AppendLine("<tr>")
+            $tableText.AppendLine("<tr class='$($additionalRowClass)'>")
 
+            $curCol = 1
             foreach($prop in $properties)
             {
                 try
@@ -293,7 +447,49 @@ function Add-MDTableItems
                     {
                         $tmpObj = $tmpObj."$($propArr[$x])"
                     }
-                    $tableText.AppendLine("<td>$((Set-MDText "$($tmpObj.$propName)" -CodeBlock))</td>")
+
+                    if($propName -eq "Value" -and ($itemObj.FullValueTable | measure).Count -gt 0)
+                    {
+                        $tableText.AppendLine("<td><table class='table-value'>")
+                        $tableText.AppendLine("<tr>")
+                        foreach($tableObjectProp in $itemObj.FullValueTable[0].PSObject.Properties)
+                        {
+                            $tableText.AppendLine("<td class='table-header1'>$($tableObjectProp.Name)</td>")
+                        }
+                        $tableText.AppendLine("</tr>")
+
+                        foreach($tableValue in $itemObj.FullValueTable)
+                        {
+                            $tableText.AppendLine("<tr>")
+                            foreach($tableObjectProp in $itemObj.FullValueTable[0].PSObject.Properties)
+                            {
+                                $tableText.AppendLine("<td>$($tableValue."$($tableObjectProp.Name)")</td>")
+                            }
+                            $tableText.AppendLine("</tr>")
+                        }
+                        $tableText.AppendLine("</table></td>")
+                    }
+                    else
+                    {
+                        $style = ""
+                        if($curCol -eq 1 -and $itemObj.Level)
+                        {
+                            try
+                            {
+                                $level = [int]$itemObj.Level
+                                $style = " style='padding-left:$((5 + ($level * 5)))px !important;'"
+                            }
+                            catch{}
+                        }
+                        $params = @{}
+                        if($curCol -gt 0)
+                        {
+                            $params.Add("CodeBlock", $true)
+                        }
+
+                        $tableText.AppendLine("<td class='property-column$($curCol)'$style>$((Set-MDText $tmpObj.$propName @params))</td>")
+                    }
+                    
                     #$columnData += "$((Set-MDText "$($tmpObj.$propName)"))|"
                 }
                 catch
@@ -301,6 +497,7 @@ function Add-MDTableItems
                     #$columnData += "|"
                     Write-LogError "Failed to add property value for $prop" $_.Exception
                 }
+                $curCol++         
             }
                           
         }
@@ -337,57 +534,93 @@ function Add-MDText
 
 function Set-MDText
 {
-    param($text, [switch]$CodeBlock)
+    param([string]$text, [switch]$CodeBlock)
+
+    if($null -eq $text) { return }
+
+    $txtSummary = ""
+    $textOut = ""
+
+    if($text -and $text.Length -gt 250)
+    {
+        $summaryMax = 40
+        # Show the first row or the first $max characters if first row is too short or too long
+        $idx = $text.IndexOfAny(@("`r","`n"))
+        if($idx -gt 10 -and $idx -lt 50)
+        {
+            $summaryMax = $idx
+        }
+        $txtSummary = $text.SubString(0,$summaryMax)
+    }
 
     if($CodeBlock -eq $true)
     {
         $trimText = $text.Trim()
-        if($trimText.StartsWith("<") -and $trimText.EndsWith(">"))
+        if($trimText.StartsWith("<?xml") -or $trimText.StartsWith("<xml") -or ($trimText.StartsWith("<") -and $trimText.EndsWith(">")))
         {
-            return ([Environment]::NewLine + [Environment]::NewLine + "``````xml" + [Environment]::NewLine + $text  + [Environment]::NewLine + "``````" + [Environment]::NewLine + [Environment]::NewLine)
+            $textOut = ([Environment]::NewLine + [Environment]::NewLine + "``````xml" + [Environment]::NewLine + $text  + [Environment]::NewLine + "``````" + [Environment]::NewLine + [Environment]::NewLine)
         }
     }
+    
+    if($CodeBlock -eq $false -or -not $textOut)
+    {
+        $text = $text.Replace("|", '`|')
+        $text = $text.Replace("*", '`*')
+        $text = $text.Replace("$", '`$')
+        $text = $text.Replace("`r`n", "<br />")
+        $textOut = $text.Replace("`n", "<br />")
+    }
 
-    $text = $text.Replace("|", '`|')
-    $text = $text.Replace("*", '`*')
-    $text = $text.Replace("$", '`$')
-    $text = $text.Replace("`r`n", "<br />")
-    $text = $text.Replace("`n", "<br />")
-
-    $text
+    if($txtSummary)
+    {
+        "<details class='description'><summary data-open='Minimize' data-close='$($txtSummary)...expand'></summary>$textOut</details>"
+    }
+    else
+    {
+        $textOut
+    }
 }
 
 function Add-MDHeader
 {
     param($text, [int]$level = 1, [switch]$AddParagraph, [switch]$UseHTML, [switch]$ToT, [switch]$SkipTOC)
 
-    $prefix = ""
-    if($ToT -eq $true)
+    if($script:mdStrings) 
     {
-        $prefix = "Table $(($script:totAnchors.Count + 1)). "
-    }    
-
-    if($UseHTML -eq $true)
-    {
+        $prefix = ""
         if($ToT -eq $true)
         {
-            $sectionAnchor = "table-$(($script:totAnchors.Count + 1))"            
-        }
-        else
-        {
-            $sectionAnchor = "section-$(($script:sectionAnchors.Count + 1))"
-        }
-        
-        $script:mdStrings.AppendLine("<h$level id=`"$prefix$($sectionAnchor)`">$text</h$level>")
-    }
-    else 
-    {
-        # Warnig: Not complete! Use HTML if not working...
-        $text = "$prefix$text"
-        $sectionAnchor = $text.ToLower().Replace(" ","-").Replace("[","").Replace("]","")
+            $prefix = "Table $(($script:totAnchors.Count + 1)). "
+        }    
 
-        $mdHeader = [String]::new('#',$level)
-        $script:mdStrings.AppendLine("$mdHeader $text")            
+        if($UseHTML -eq $true)
+        {
+            if($ToT -eq $true)
+            {
+                $sectionAnchor = "table-$(($script:totAnchors.Count + 1))"            
+            }
+            else
+            {
+                $sectionAnchor = "section-$(($script:sectionAnchors.Count + 1))"
+            }
+            
+            $script:mdStrings.AppendLine("<h$level id=`"$prefix$($sectionAnchor)`">$text</h$level>")
+        }
+        else 
+        {
+            # Warnig: Not complete! Use HTML if not working...
+            $text = "$prefix$text"
+            $sectionAnchor = $text.ToLower().Replace(" ","-").Replace("[","").Replace("]","")
+
+            $mdHeader = [String]::new('#',$level)
+            $script:mdStrings.AppendLine("$mdHeader $text")            
+        }
+        $FileName = $script:currentItemFileName
+    }
+    else
+    {
+        $sectionAnchor = $null
+        $FileName = $null
     }
     
     if($ToT -eq $true)
@@ -395,6 +628,8 @@ function Add-MDHeader
         $script:totAnchors += [PSCustomObject]@{
             Name = $text
             Anchor = $sectionAnchor
+            FileName = $FileName
+            Level = $level
         }
     }
     elseif($SkipTOC -ne $true)
@@ -402,6 +637,8 @@ function Add-MDHeader
         $script:sectionAnchors += [PSCustomObject]@{
             Name = $text
             Anchor = $sectionAnchor
+            FileName = $FileName
+            Level = $level
         }
     }    
 
@@ -415,68 +652,14 @@ function Add-MDHeader
 function Add-MDObjectSettings 
 {
     param($obj, $objectType, $documentedObj)
-
-    if($obj."@OData.Type" -eq "#microsoft.graph.deviceManagementScript")
+    
+    foreach($objectScript in $documentedObj.Scripts)
     {
-        if($obj.ScriptContent)
-        {
-            $script:mdStrings.AppendLine("~~~powershell")
-            $script:mdStrings.AppendLine((Get-DocScriptContent $obj.ScriptContent))
-            $script:mdStrings.AppendLine("~~~")
-            $caption = "{1} - {0}" -f $obj.fileName,(Get-LanguageString "WindowsManagement.powerShellScriptObjectName")            
-            Add-MDHeader $caption -Level 6 -SkipTOC -AddParagraph
-        }
-    }
-    if($obj."@OData.Type" -eq "#microsoft.graph.deviceShellScript")
-    {
-        if($obj.ScriptContent)
-        {
-            $script:mdStrings.AppendLine("~~~shell")
-            $script:mdStrings.AppendLine((Get-DocScriptContent $obj.ScriptContent))
-            $script:mdStrings.AppendLine("~~~")
+        if(-not $objectScript.ScriptContent -or -not $objectScript.Caption) { continue }
 
-            $caption = "{1} - {0}" -f $obj.fileName,(Get-LanguageString "WindowsManagement.shellScriptObjectName")
-            Add-MDHeader $caption -Level 6 -SkipTOC -AddParagraph
-        }
-    }
-    elseif($obj."@OData.Type" -eq "#microsoft.graph.deviceHealthScript")
-    {
-        if($obj.detectionScriptContent)
-        {
-            $script:mdStrings.AppendLine("~~~powershell")
-            $script:mdStrings.AppendLine((Get-DocScriptContent $obj.detectionScriptContent))
-            $script:mdStrings.AppendLine("~~~")
-            $caption = Get-LanguageString "ProactiveRemediations.Create.Settings.DetectionScriptMultiLineTextBox.label"
-            Add-MDHeader $caption -Level 6 -SkipTOC -AddParagraph
-        }
-
-        if($obj.remediationScriptContent)
-        {
-            $script:mdStrings.AppendLine("~~~powershell")
-            $script:mdStrings.AppendLine((Get-DocScriptContent $obj.remediationScriptContent))
-            $script:mdStrings.AppendLine("~~~")
-            $caption = Get-LanguageString "ProactiveRemediations.Create.Settings.RemediationScriptMultiLineTextBox.label"
-            Add-MDHeader $caption -Level 6 -SkipTOC -AddParagraph
-        }        
-    }
-    elseif($obj."@OData.Type" -eq "#microsoft.graph.win32LobApp")
-    {
-        foreach($rule in ($obj.requirementRules | Where { $_.'@OData.Type' -eq "#microsoft.graph.win32LobAppPowerShellScriptRequirement" } ))
-        {
-            $script:mdStrings.AppendLine("~~~powershell")
-            $script:mdStrings.AppendLine((Get-DocScriptContent $obj.scriptContent))
-            $script:mdStrings.AppendLine("~~~")
-            $caption = "{0} - {1}" -f @($obj.displayName, "Requirement script")
-            Add-MDHeader $caption -Level 6 -SkipTOC -AddParagraph
-        }
-
-        foreach($rule in ($obj.detectionRules | Where { $_.'@OData.Type' -eq "#microsoft.graph.win32LobAppPowerShellScriptDetection" } ))
-        {
-            $script:mdStrings.AppendLine("~~~powershell")
-            $script:mdStrings.AppendLine((Get-DocScriptContent $obj.scriptContent))
-            $script:mdStrings.AppendLine("~~~")
-            $caption = "{0} - {1}" -f @($obj.displayName,(Get-LanguageString "ProactiveRemediations.Create.Settings.DetectionScriptMultiLineTextBox.label"))
-            Add-MDHeader $caption -Level 6 -SkipTOC -AddParagraph
-        }        
+        $script:mdStrings.AppendLine("~~~powershell")
+        $script:mdStrings.AppendLine($objectScript.ScriptContent)
+        $script:mdStrings.AppendLine("~~~")
+        Add-MDHeader $objectScript.Caption -Level 6 -SkipTOC -AddParagraph
     }
 }

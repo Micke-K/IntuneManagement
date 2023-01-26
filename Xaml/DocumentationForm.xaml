@@ -19,6 +19,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -33,7 +35,7 @@
                                     <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the targeted object type for the documentation" />
                                 </StackPanel>
                     <ComboBox Name="cbDocumentationType" Margin="0,5,0,0" MinWidth="250" Grid.Column="1" HorizontalAlignment="Left" 
-                                DisplayMemberPath="Name" SelectedValuePath="Value"  />    
+                                DisplayMemberPath="Name" SelectedValuePath="Value"  />
 
                     <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="1">
                         <Label Content="Language" />
@@ -55,39 +57,18 @@
                     <ComboBox Name="cbDocumentationObjectSeparator" Margin="0,5,0,0" Width="100" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left"
                         DisplayMemberPath="Name" SelectedValuePath="Value" />
 
-                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="4">
-                        <Label Content="Output value" />
-                        <Rectangle Style="{DynamicResource InfoIcon}">
-                            <Rectangle.ToolTip>
-                                <TextBlock>
-                                    Specifys the output value for subproperties in Administrative Template policies<LineBreak />
-                                    <Bold>Value</Bold>: Documents only the value<LineBreak />
-                                    <Bold>Value with label</Bold>: Documents the sub-property value with the label of the property<LineBreak />
-                                    <Bold>Note</Bold>: This is only supported on Administrative Templates for the moment<LineBreak />
-                                </TextBlock>
-                            </Rectangle.ToolTip>
-                        </Rectangle>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="7" Grid.ColumnSpan="2" Name="spDocumentFilter">
+                        <Label Content="Filter" />
+                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Filter policies by name or Scope (Tag)" />
                     </StackPanel>
-                    <ComboBox Name="cbDocumentationValueOutputProperty" Margin="0,5,0,0" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" DisplayMemberPath="Name" SelectedValuePath="Value" />
+                    <TextBox Text="" Name="txtDocumentFilter" Padding="0,2,0,2" Grid.Row='8' Margin="5,0,0,0" Grid.ColumnSpan="2" />
 
-                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="5">
-                        <Label Content="Set unconfigured value" />
-                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Set the unconfigured value if the propery is not configured and the property definition has an unconfigured value set" />
-                    </StackPanel>
-                    <CheckBox Grid.Column='1' Grid.Row='5' Name='chkSetUnconfiguredValue' VerticalAlignment="Center" IsChecked="true" />            
-
-                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="6">
-                        <Label Content="Set default value" />
-                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Set the default value if the propery is not configured and the property definition has a default value configured" />
-                    </StackPanel>
-                    <CheckBox Grid.Column='1' Grid.Row='6' Name='chkSetDefaultValue' VerticalAlignment="Center" IsChecked="true" />            
-
-                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="7" Grid.ColumnSpan="2" Name="spDocumentFromFolder">
+                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="9" Grid.ColumnSpan="2" Name="spDocumentFromFolder">
                         <Label Content="Source files" />
                         <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Create documentation from exported files" />
                     </StackPanel>
 
-                    <Grid Grid.Row='8' Margin="5,0,0,0" Grid.ColumnSpan="2" Name="grdDocumentFromFolder">
+                    <Grid Grid.Row='10' Margin="5,0,0,0" Grid.ColumnSpan="2" Name="grdDocumentFromFolder">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />  
                             <ColumnDefinition Width="5" />                              
@@ -99,7 +80,6 @@
                         <TextBox Text="" Name="txtDocumentFromFolder" Padding="0,2,0,2" />
                         <Button Grid.Column="2" Name="browseDocumentFromFolder" Padding="5,0,5,0" Width="50" ToolTip="Browse for export folder">...</Button>
                     </Grid>
-
 
                     <Label Content="Objects to document" Grid.Row="0" Grid.Column="4" />
                     <DataGrid Name="grdDocumentObjects" Grid.Row="1" Grid.RowSpan="99" Grid.Column="4" CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" Margin="0,0,5,0">
@@ -130,6 +110,9 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -148,7 +131,7 @@
                             <Label Content="Skip unconfigured properties" />
                             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Exclude properties that are empty or set to 'Not configured'" />
                         </StackPanel>
-                        <CheckBox Grid.Column='1' Grid.Row='1' Name='chkSkipNotConfigured' VerticalAlignment="Center" IsChecked="true" />            
+                        <CheckBox Grid.Column='1' Grid.Row='1' Name='chkSkipNotConfigured' VerticalAlignment="Center" IsChecked="true" />
 
                         <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="2">
                             <Label Content="Skip default values" />
@@ -161,6 +144,51 @@
                             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Exclude properties that are marked as disabled. If this is NOT checked, dispabled properties will still be excluded if the same EntityKey is used on an enabled property" />
                         </StackPanel>
                         <CheckBox Grid.Column='1' Grid.Row='3' Name='chkSkipDisabled' VerticalAlignment="Center" IsChecked="true" />            
+
+                        <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="4">
+                            <Label Content="Output value" />
+                            <Rectangle Style="{DynamicResource InfoIcon}">
+                                <Rectangle.ToolTip>
+                                    <TextBlock>
+                                        Specifys the output value for subproperties in Administrative Template policies<LineBreak />
+                                        <Bold>Value</Bold>: Documents only the value<LineBreak />
+                                        <Bold>Value with label</Bold>: Documents the sub-property value with the label of the property<LineBreak />
+                                        <Bold>Note</Bold>: This is only supported on Administrative Templates for the moment<LineBreak />
+                                    </TextBlock>
+                                </Rectangle.ToolTip>
+                            </Rectangle>
+                        </StackPanel>
+                        <ComboBox Name="cbDocumentationValueOutputProperty" Margin="0,5,0,0" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" DisplayMemberPath="Name" SelectedValuePath="Value" />
+
+                        <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="5">
+                            <Label Content="Set unconfigured value" />
+                            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Set the unconfigured value if the propery is not configured and the property definition has an unconfigured value set" />
+                        </StackPanel>
+                        <CheckBox Grid.Column='1' Grid.Row='5' Name='chkSetUnconfiguredValue' VerticalAlignment="Center" IsChecked="true" />            
+
+                        <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="6">
+                            <Label Content="Set default value" />
+                            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Set the default value if the propery is not configured and the property definition has a default value configured" />
+                        </StackPanel>
+                        <CheckBox Grid.Column='1' Grid.Row='6' Name='chkSetDefaultValue' VerticalAlignment="Center" IsChecked="true" />            
+
+                        <StackPanel Orientation="Horizontal" Grid.Row='7' Margin="0,5,5,0">
+                            <Label Content="Document scripts" />
+                            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Include scripts in the documentation" />
+                        </StackPanel>
+                        <CheckBox Grid.Column='1' Grid.Row='7' Name='chkIncludeScripts' VerticalAlignment="Center" IsChecked="true" />    
+
+                        <StackPanel Orientation="Horizontal" Grid.Row='8' Margin="0,5,5,0">
+                            <Label Content="Remove script signature" />
+                            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Remove signature block from PowerShell scripts to reduce script documentation size" />
+                        </StackPanel>
+                        <CheckBox Grid.Column='1' Grid.Row='8' Name='chkExcludeScriptSignature' VerticalAlignment="Center" IsChecked="true" />    
+                                    
+                        <StackPanel Orientation="Horizontal" Grid.Row='9' Margin="0,5,5,0">
+                            <Label Content="Skip Assignments" />
+                            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Exclude assignments from the documentation" />
+                        </StackPanel>
+                        <CheckBox Grid.Column='1' Grid.Row='9' Name='chkExcludeAssignments' VerticalAlignment="Center" IsChecked="true" />    
                     </Grid>
 
                     <Label Name="lblCustomOptions" Grid.Row="1" Margin="0,10,5,0" />

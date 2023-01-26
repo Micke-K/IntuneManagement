@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.4.0'
+    '1.5.0'
 }
 
 function Invoke-InitializeModule
@@ -27,6 +27,7 @@ function Invoke-InitializeModule
         PostAddValue = { Invoke-CDDocumentCustomPostAdd @args }
         ObjectDocumented = { Invoke-CDDocumentCustomObjectDocumented @args }
         TranslateSectionFile = { Invoke-CDDocumentTranslateSectionFile @args }
+        PostSettingsCatalog = { Invoke-CDDocumentPostSettingsCatalog @args }
     })
 }
 
@@ -150,11 +151,16 @@ function Invoke-CDDocumentObject
     }
     elseif($type -eq '#microsoft.graph.deviceComplianceScript')
     {
-        Invoke-CDDocumentdeviceComplianceScript $documentationObj
+        Invoke-CDDocumentDeviceComplianceScript $documentationObj
         return [PSCustomObject]@{
             Properties = @("Name","Value","Category","SubCategory")
         }
-    }    
+    }
+    elseif($type -eq '#microsoft.graph.roleScopeTag')
+    {
+        Invoke-CDDocumentScopeTag $documentationObj
+        return $true
+    }
 }
 
 function Get-CDAllManagedApps
@@ -810,7 +816,13 @@ function Add-CDDocumentCustomProfileProperty
 
         $obj.outOfBoxExperienceSettings | Add-Member Noteproperty -Name "azureADJoinType" -Value $joinType
 
-        $obj.outOfBoxExperienceSettings | Add-Member Noteproperty -Name "isLanguageSet" -Value (?: ([String]::IsNullOrEmpty($obj.language)) $false  $true)
+        $obj.outOfBoxExperienceSettings | Add-Member Noteproperty -Name "isLanguageSet" -Value (?: ([String]::IsNullOrEmpty($obj.language)) $false $true)
+        
+        if([String]::IsNullOrEmpty($obj.language))
+        {
+            $obj.language = "user-select"
+        }
+        
         $retValue = $true
     }
     elseif($obj.'@OData.Type' -eq "#microsoft.graph.officeSuiteApp")
@@ -1188,7 +1200,11 @@ function Add-CDDocumentCustomProfileProperty
         $returnCodes = @()
         foreach($rc in $obj.returnCodes)
         {
-            $returnCodes += ("{0} {1}" -f @($rc.returnCode,(Get-LanguageString "Win32ReturnCodes.CodeTypes.$($rc.type)")))
+            $returnCodes += [PSCustomObject]@{
+                returnCode = $rc.returnCode
+                type = (Get-LanguageString "Win32ReturnCodes.CodeTypes.$($rc.type)")
+            }
+            #$returnCodes += ("{0} {1}" -f @($rc.returnCode,(Get-LanguageString "Win32ReturnCodes.CodeTypes.$($rc.type)")))
         }
 
         $dependencyApps = @()
@@ -1226,6 +1242,7 @@ function Add-CDDocumentCustomProfileProperty
             {
                 $lngId = "script"
                 $textValue = $rule.displayName
+                Add-ObjectScript $rule.displayName ("{0} - {1}" -f @($obj.displayName, "Requirement script")) $rule.ScriptContent
             }
             $requirementRulesSummary += ("{0} {1}" -f @((Get-LanguageString "Win32Requirements.AdditionalRequirements.RequirementTypeOptions.$lngId"),$textValue))
         }
@@ -1233,6 +1250,11 @@ function Add-CDDocumentCustomProfileProperty
         if(($obj.detectionRules | Where '@OData.Type' -eq "#microsoft.graph.win32LobAppPowerShellScriptDetection"))
         {
             $detectionRulesType = Get-LanguageString "DetectionRules.RuleConfigurationOptions.customScript"
+            foreach($rule in $obj.detectionRules)
+            {
+                $header = (Get-LanguageString "ProactiveRemediations.Create.Settings.DetectionScriptMultiLineTextBox.label")
+                Add-ObjectScript $header ("{0} - {1}" -f @($obj.displayName,$header)) $rule.ScriptContent
+            }
         }
         else
         {
@@ -1257,12 +1279,13 @@ function Add-CDDocumentCustomProfileProperty
                 $detectionRulesSummary += ("{0} {1}" -f @((Get-LanguageString "DetectionRules.Manual.RuleTypeOptions.$lngId"),$textValue))
             }
         }
+        
         $obj | Add-Member Noteproperty -Name "requirementRulesSummary" -Value ($requirementRulesSummary -join $objSeparator) -Force 
         $obj | Add-Member Noteproperty -Name "detectionRulesSummary" -Value ($detectionRulesSummary -join $objSeparator) -Force 
         $obj | Add-Member Noteproperty -Name "dependencyApps" -Value ($dependencyApps -join $objSeparator) -Force 
         $obj | Add-Member Noteproperty -Name "supersededApps" -Value ($supersededApps -join $objSeparator) -Force 
         $obj | Add-Member Noteproperty -Name "detectionRulesType" -Value $detectionRulesType -Force 
-        $obj | Add-Member Noteproperty -Name "returnCodes" -Value ($returnCodes -join $objSeparator) -Force 
+        $obj | Add-Member Noteproperty -Name "returnCodes" -Value $returnCodes -Force 
         $obj | Add-Member Noteproperty -Name "win10Release" -Value (Get-LanguageString "MinimumOperatingSystem.Windows.V10Release.release$($obj.minimumSupportedWindowsRelease)") -Force 
     }
     elseif($obj.'@OData.Type' -eq "#microsoft.graph.deviceHealthScript")
@@ -1274,12 +1297,29 @@ function Add-CDDocumentCustomProfileProperty
         if($obj.detectionScriptContent)
         {
             $obj | Add-Member Noteproperty -Name "detectionScriptContentString" -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(($obj.detectionScriptContent))))
+            $header = Get-LanguageString "ProactiveRemediations.Create.Settings.DetectionScriptMultiLineTextBox.label"
+            Add-ObjectScript $header ("{1} - {0}" -f $obj.displayName,$header) $obj.detectionScriptContent
         }
         if($obj.remediationScriptContent)
         {
             $obj | Add-Member Noteproperty -Name "remediationScriptContentString" -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(($obj.remediationScriptContent))))
+            $header = Get-LanguageString "ProactiveRemediations.Create.Settings.RemediationScriptMultiLineTextBox.label"
+            Add-ObjectScript $header ("{1} - {0}" -f $obj.displayName,$header) $obj.remediationScriptContent
         }
-
+    }
+    elseif($obj.'@OData.Type' -eq "#microsoft.graph.deviceManagementScript")
+    {
+        if($obj.ScriptContent)
+        {
+            Add-ObjectScript $obj.FileName ("{1} - {0}" -f $obj.displayName,(Get-LanguageString "WindowsManagement.powerShellScriptObjectName")) $obj.ScriptContent
+        }
+    }
+    elseif($obj.'@OData.Type' -eq "#microsoft.graph.deviceShellScript")
+    {
+        if($obj.ScriptContent)
+        {
+            Add-ObjectScript $obj.FileName ("{1} - {0}" -f $obj.displayName,(Get-LanguageString "WindowsManagement.shellScriptObjectName")) $rule.ScriptContent
+        }
     }
     elseif($obj.'@OData.Type' -eq "#microsoft.graph.windows10TeamGeneralConfiguration")
     {
@@ -1313,6 +1353,13 @@ function Add-CDDocumentCustomProfileProperty
             $obj | Add-Member Noteproperty -Name "hasForceRestart" -Value $true
         }
     }    
+    elseif($obj.'@OData.Type' -like "#microsoft.graph.windowsWifiConfiguration")
+    {
+        if($obj.wifiSecurityType -eq "wpa2Personal")
+        {
+            $obj.preSharedKey = "********"
+        }
+    }
 
     if(($obj.PSObject.Properties | where Name -eq "securityRequireSafetyNetAttestationBasicIntegrity") -and 
     ($obj.PSObject.Properties | where Name -eq "securityRequireSafetyNetAttestationCertifiedDevice"))
@@ -1331,6 +1378,7 @@ function Add-CDDocumentCustomProfileProperty
 
         $retValue = $true
     }
+    
     
     if(($obj.PSObject.Properties | Where Name -eq "periodOfflineBeforeWipeIsEnforced"))
     {
@@ -3851,7 +3899,7 @@ function Invoke-CDDocumentTranslateSectionFile
 #endregion
 
 #region
-function Invoke-CDDocumentdeviceComplianceScript
+function Invoke-CDDocumentDeviceComplianceScript
 {
     param($documentationObj)
 
@@ -3914,4 +3962,70 @@ function Invoke-CDDocumentdeviceComplianceScript
         SubCategory = $null
     }) 
 }
+#endregion
+
+#region Settings Catalog
+
+function Invoke-CDDocumentPostSettingsCatalog
+{
+    param($obj, $objectType, $settingsData)
+
+    if($obj.templateReference.TemplateId.StartsWith("19c8aa67-f286-4861-9aa0-f23541d31680"))
+    {
+        $reusableSettingsType = Get-GraphObjectType "ReusableSettings"
+        if($reusableSettingsType)
+        {
+            foreach($setting in ($settingsData | Where SettingId -eq "vendor_msft_firewall_mdmstore_firewallrules_{firewallrulename}_remoteaddressdynamickeywords"))
+            {
+                $reusableSettings = Invoke-GraphRequest -Url "$($reusableSettingsType.API)/$($setting.RawValue)"
+                if($reusableSettings.displayName)
+                {
+                    $setting.Value = $reusableSettings.displayName
+                }
+                else
+                {
+                    Write-Log "No Reusable Settings object found with ID $($setting.RawValue)" 2
+                }
+            }
+        }
+    }
+}
+#endregion
+
+#region Scope Tags
+function Invoke-CDDocumentScopeTag
+{
+    param($obj, $objectType)
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+
+    $groupIDs, $groupInfo, $filterIds,$filtersInfo = Get-ObjectAssignments $obj.Object
+
+    $nameLabel = Get-LanguageString "Inputs.displayNameLabel"
+    $descriptionLabel = Get-LanguageString "TableHeaders.description" 
+    $assignmentsLabel = Get-LanguageString "TableHeaders.assignments"
+
+    $scopeTagInfo = Get-TableObjects $obj.ObjectType
+    
+    if(-not $scopeTagInfo)
+    {
+        $scopeTagInfo = [PSCustomObject]@{
+            TypeName = (Get-LanguageString "SettingDetails.scopeTags")
+            ObjectType = $obj.ObjectType
+            Properties = @($nameLabel, "id", $descriptionLable, $assignmentsLabel)
+            Items = @()
+        }
+        Set-TableObjects $scopeTagInfo
+    }
+
+    $scopeTagInfo.Items += ([PSCustomObject]@{
+        $nameLabel = $obj.displayName
+        ID = $obj.Id
+        $descriptionLabel = $obj.Description
+        $assignmentsLabel = ($groupInfo.displayName -join $script:objectSeparator)
+        Object = $documentationObj.Object
+    })
+}
+
 #endregion

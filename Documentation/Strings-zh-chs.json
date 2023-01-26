@@ -367,7 +367,6 @@
                      "educationTeacherCerts":  "Teacher certificates",
                      "emailProfile":  "Email",
                      "enterpriseDataProtection":  "Windows Information Protection",
-                     "expeditedCheckin":  "Mobile device management configuration",
                      "extensibleSingleSignOn":  "Single sign-on app extension",
                      "filevault":  "FileVault",
                      "firewall":  "Firewall",
@@ -508,7 +507,10 @@
                                                         "deploymentSettings":  "Deployment settings",
                                                         "groupAssignmentSettings":  "Assignments",
                                                         "scopeSettings":  "Scope tags"
-                                                    }
+                                                    },
+                                        "gradualRolloutLicenseWarning":  "This capability requires specific licensing.",
+                                        "gradualRolloutLicenseWarningEdit":  "This capability may continue to be used and configured until the policy is saved without this capability selected.",
+                                        "licenseLearnMoreText":  "Learn more about pre-requisites and feature update policies."
                                     },
     "WIPPinRequirements":  {
                                "WipLowercaseCharacterPinRequirements":  {
@@ -649,7 +651,7 @@
                                                                "androidLink":  "https://play.google.com/store/apps/details?id=com.microsoft.office.outlook",
                                                                "microsoftStore":  "Enter the 'Link for Intune' URL for the app provided from the store. For more information, see {0}.",
                                                                "microsoftStoreLink":  "https://go.microsoft.com/fwlink/?linkid=2115228",
-                                                               "microsoftStoreLinkText":  "Add Microsoft Store apps to Microsoft Intune",
+                                                               "microsoftStoreLinkText":  "Add Microsoft Store apps (legacy) to Microsoft Intune",
                                                                "windows":  "Enter the link to the app listing in the Microsoft Store. For example:",
                                                                "windowsLink":  "https://www.microsoft.com/en-us/p/microsoft-to-do-lists-tasks-reminders/9nblggh5r558"
                                                            },
@@ -676,7 +678,8 @@
                                            "selectApp":  "Search the App Store for iOS store apps that you want to deploy with Intune.",
                                            "useManagedBrowser":  "If required, when a user opens the web app, it will open in an Intune-protected browser such as Microsoft Edge or Intune Managed Browser. This setting applies to both iOS and Android devices.",
                                            "useManagedBrowserLink":  "https://docs.microsoft.com/en-us/intune/apps/app-configuration-managed-browser",
-                                           "win32AppPackageFile":  "A file that contains your app in a format that can be sideloaded on a device. Valid package type: .intunewin.​"
+                                           "win32AppPackageFile":  "A file that contains your app in a format that can be sideloaded on a device. Valid package type: .intunewin.​",
+                                           "winGetStoreSelectApp":  "Search the Microsoft Store app (new) for store apps that you want to deploy with Intune."
                                        },
                               "descriptionPreview":  "Preview",
                               "descriptionRequired":  "Description is required.",
@@ -800,10 +803,10 @@
                                                     "azureADDevice":  "Associated Azure AD device",
                                                     "batch":  "Group tag",
                                                     "dateAssigned":  "Date assigned",
-                                                    "deviceAccountFriendlyName":  "Device account friendly name",
                                                     "deviceAccountPwd":  "Device account password",
                                                     "deviceAccountUpn":  "Device account",
                                                     "deviceDisplayName":  "Device name",
+                                                    "deviceFriendlyName":  "Device friendly name",
                                                     "deviceName":  "Device name",
                                                     "deviceUseType":  "Device-use type",
                                                     "enrollmentState":  "Enrollment state",
@@ -924,10 +927,10 @@
                                        "azureADDevice":  "Go to device details for associated device. N/A means that there's no associated device.",
                                        "batch":  "A string attribute that can be used to identify a group of devices. Intune's group tag field maps to the OrderID attribute on Azure AD devices.",
                                        "dateAssigned":  "Timestamp of when the profile was assigned to the device.",
-                                       "deviceAccountFriendlyName":  "Device account friendly name for Surface Hub devices",
-                                       "deviceAccountPwd":  "Device account password for Surface Hub devices",
-                                       "deviceAccountUpn":  "Device account email for Surface Hub devices",
+                                       "deviceAccountPwd":  "Device account password for Surface Hub devices. If entered, also fill out device account and friendly name.",
+                                       "deviceAccountUpn":  "Device account email for Surface Hub devices. If entered, also fill out device account password and friendly name.",
                                        "deviceDisplayName":  "Configure a unique name for a device. This name will be ignored in Hybrid Azure AD joined deployments. Device name still comes from the domain join profile for Hybrid Azure AD devices.",
+                                       "deviceFriendlyName":  "Device friendly name for Surface Hub devices. If entered, also fill out device account and device account password.",
                                        "deviceName":  "The name shown when someone tried to discover and connect to the device.",
                                        "deviceUseType":  "      Device would setup based on your choice. You can always change later in settings.​\n      <ul>\n      <li> For meetings and presentations, Windows Hello isn't turned on and data is removed after each session.\n      </li>\n      <li> For team collaboration, Windows Hello is turned on and profiles are saved for quick sign-in</li>\n      </ul>",
                                        "enrollmentState":  "Specifies if the device has enrolled.",
@@ -1047,6 +1050,9 @@
                                                          },
                                                  "V12":  {
                                                              "0":  "macOS Monterey 12.0"
+                                                         },
+                                                 "V13":  {
+                                                             "0":  "macOS Ventura 13.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -1102,6 +1108,7 @@
                                    "customMessageTextBox":  "Error message",
                                    "customMessageToggle":  "Show custom message when time limit or error occurs",
                                    "enableForAutopilotOnlyToggle":  "Only show page to devices provisioned by out-of-box experience (OOBE)",
+                                   "installQualityUpdatesToggle":  "Install Windows quality updates (might restart the device)",
                                    "progressToggle":  "Show app and profile configuration progress",
                                    "resetToggle":  "Allow users to reset device if installation error occurs",
                                    "timeout":  "Show an error when installation takes longer than specified number of minutes"
@@ -1355,7 +1362,7 @@
                     "windowsPhone81AppXLobApp":  "Windows Phone 8.1 AppX line-of-business app",
                     "windowsPhone81StoreApp":  "Windows Phone 8.1 store app",
                     "windowsPhoneXapLobApp":  "Windows Phone XAP line-of-business app",
-                    "windowsStoreApp":  "Microsoft Store app",
+                    "windowsStoreApp":  "Microsoft Store app (legacy)",
                     "windowsUniversalAppXLobApp":  "Windows Universal AppX line-of-business app",
                     "windowsUniversalLobApp":  "Windows Universal line-of-business app",
                     "windowsWebApp":  "Windows web link"
@@ -1367,7 +1374,7 @@
                                                           },
                         "AndroidBackup":  {
                                               "label":  "Backup org data to Android backup services",
-                                              "tooltip":  "Select {0} to prevent backup of org data to Android backup services.  \nSelect {1} to permit backup of org data to Android backup services.  \nPersonal or unmanaged data is not affected."
+                                              "tooltip":  "Select {0} to prevent backup of org data to Android backup services.\nSelect {1} to permit backup of org data to Android backup services.\nPersonal or unmanaged data is not affected."
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "Biometrics instead of PIN for access",
@@ -1409,7 +1416,7 @@
                                                    },
                         "CustomBrowserProtocol":  {
                                                       "label":  "Unmanaged browser protocol",
-                                                      "tooltip":  "<p>Enter the protocol for a single unmanaged browser.  Web content (http/s) from policy managed applications will open in any app that supports this protocol. </p>\n \n<p><b>Note: </b>Include only the protocol prefix.  If your browser requires links of the form \"mybrowser://www.microsoft.com\", enter \"mybrowser\".</p>"
+                                                      "tooltip":  "<p>Enter the protocol for a single unmanaged browser.  Web content (http/s) from policy managed applications will open in any app that supports this protocol. </p>\n\n<p><b>Note: </b>Include only the protocol prefix.  If your browser requires links of the form \"mybrowser://www.microsoft.com\", enter \"mybrowser\".</p>"
                                                   },
                         "CustomDialerAppDisplayName":  {
                                                            "label":  "Dialer App Name"
@@ -1435,7 +1442,7 @@
                                             "tooltip":  "Select {0} to enforce encrypting org data with Intune app layer encryption.\n <br/>\nSelect {1} to not enforce encrypting org data with Intune app layer encryption.\n\n<br/>\nNote: For more information on Intune app layer encryption, see {2}."
                                         },
                         "EncryptDataAndroid":  {
-                                                   "tooltip":  "<p>Choose <b>Require</b> to enable encryption of work or school data in this app. Intune uses an OpenSSL, 256-bit AES encryption scheme along with the Android Keystore system to securely encrypt app data. Data is encrypted synchronously during file I/O tasks. Content on the device storage is always encrypted. The SDK will continue to provide support of 128-bit keys for compatibility with content and apps that use older SDK versions. </p>\n\n<p>The encryption method is FIPS 140-2 compliant.</p>"
+                                                   "tooltip":  "<p>Choose <b>Require</b> to enable encryption of work or school data in this app. Intune uses a wolfSSL, 256-bit AES encryption scheme along with the Android Keystore system to securely encrypt app data. Data is encrypted synchronously during file I/O tasks. Content on the device storage is always encrypted. New files will be encrypted with 256-bit keys. Existing 128-bit encrypted files will undergo a migration attempt to 256-bit keys, but the process is not guaranteed. Files encrypted with 128-bit keys will remain readable. </p>\n\n<p>The encryption method is FIPS 140-2 compliant.</p>"
                                                },
                         "EncryptDataIos":  {
                                                "tooltip1":  "Choose <b>Require</b> to enable encryption of work or school data in this app.  Intune enforces iOS/iPadOS device encryption to protect app data  while the device is locked.  Applications may optionally encrypt app data using Intune APP SDK encryption.  Intune APP SDK uses iOS/iPadOS cryptography methods to apply 128-bit AES encryption to app data.",
@@ -1463,11 +1470,11 @@
                                        },
                         "NotificationRestriction":  {
                                                         "label":  "Org data notifications",
-                                                        "tooltip":  "<p>Select one of the following options to specify how notifications for org accounts are shown for this app and any connected devices such as wearables:</p> \n<p>{0}: Do not share notifications.</p> \n<p>{1}: Do not share org data in notifications.  If not supported by the application, notifications are blocked. </p>\n<p>{2}:  Share all notifications. </p>\n <p>Android only:\n Note: This setting does not apply to all applications. For more information see {3} </p>\n \n <p>iOS only:\nNote: This setting does not apply to all applications. For more information see {4}</p>"
+                                                        "tooltip":  "<p>Select one of the following options to specify how notifications for org accounts are shown for this app and any connected devices such as wearables:</p>\n<p>{0}: Do not share notifications.</p>\n<p>{1}: Do not share org data in notifications.  If not supported by the application, notifications are blocked. </p>\n<p>{2}:  Share all notifications. </p>\n <p>Android only:\n Note: This setting does not apply to all applications. For more information see {3} </p>\n\n <p>iOS only:\nNote: This setting does not apply to all applications. For more information see {4}</p>"
                                                     },
                         "OpenLinksManagedBrowser":  {
                                                         "label":  "Restrict web content transfer with other apps",
-                                                        "tooltip":  "<p>Select one of the following options to specify the apps that this app can open web content in: </p>\n<p><b>Edge:</b> Allow web content to open only in Edge </p>\n<p><b>Unmanaged browser:</b>  Allow web content to open only in the unmanaged browser defined by \"Unmanaged browser protocol\" setting </p> \n<p><b>Any app:</b> Allow web links in any app</p>"
+                                                        "tooltip":  "<p>Select one of the following options to specify the apps that this app can open web content in: </p>\n<p><b> Microsoft Edge:</b> Allow web content to open only in Microsoft Edge.<a href=\"{0}\" target=\"_blank\"> Learn how Microsoft Edge protects your data.</a></p>\n<p><b>Unmanaged browser:</b>  Allow web content to open only in the unmanaged browser defined by \"Unmanaged browser protocol\" setting</p>\n<p><b>Any app:</b> Allow web links in any app</p>"
                                                     },
                         "OverrideBiometric":  {
                                                   "tooltip":  "If required, depending on the timeout (minutes of inactivity), a PIN prompt will override biometric prompts. If this timeout value is not met, the biometric prompt will continue to show. This timeout value should be greater than the value specified under 'Recheck the access requirements after (minutes of inactivity)'. "
@@ -1515,7 +1522,7 @@
                                               },
                         "SaveData":  {
                                          "label":  "Save copies of org data",
-                                         "tooltip":  "Select {0} to prevent saving a copy of org data to a new location, other than the selected storage services, using \"Save As\".\n Select {1} to permit saving a copy of org data to a new location using \"Save As\". <br/> \n\n\nNote: This setting does not apply to all applications.  For more information see {2}.\n"
+                                         "tooltip":  "Select {0} to prevent saving a copy of org data to a new location, other than the selected storage services, using \"Save As\".\n Select {1} to permit saving a copy of org data to a new location using \"Save As\". <br/>\n\n\nNote: This setting does not apply to all applications.  For more information see {2}.\n"
                                      },
                         "SaveDataToSelected":  {
                                                    "label":  "Allow user to save copies to selected services",
@@ -1606,7 +1613,7 @@
                             "pushNotification":  "Send push notification to end user",
                             "remoteLock":  "Remotely lock the noncompliant device",
                             "removeSourceAccessProfile":  "Remove source access profile",
-                            "retire":  "Retire the noncompliant device",
+                            "retire":  "Add device to retire list",
                             "wipe":  "Wipe",
                             "emailNotification":  "Send email to end user"
                         },
@@ -1746,6 +1753,7 @@
                                                       "weeks1":  "Every 1 week"
                                                   },
                               "PolicyListToolBarOption":  {
+                                                              "linux":  "Linux",
                                                               "macOs":  "macOS",
                                                               "windows":  "Windows 10 and later"
                                                           },
@@ -1765,6 +1773,7 @@
                                                  "uploadInfoBalloonContent":  "Specify the PowerShell script file. File must be less than 200KB.",
                                                  "uploadLabel":  "Script location"
                                              },
+                              "bashScriptObjectName":  "Bash script",
                               "createButtonText":  "Add",
                               "createPowershellScriptFlowSectionName":  "Add PowerShell script",
                               "customAttributeObjectName":  "Custom attribute",
@@ -1969,6 +1978,8 @@
                            "androidDeviceOwnerAlwaysOnVpnClientDescription":  "The specified VPN client must be installed on the device, and it must support per-app VPN; otherwise, an error will occur. Note that you will need to approve the app in the Managed Google Play Store, sync the app to Intune, and deploy it in order for it to be installed.",
                            "androidDeviceOwnerCustomPasswordDescription":  "Create a device passcode for dedicated devices only. Can be 4-16 characters and contain numbers, letters, and special characters.",
                            "androidDeviceOwnerCustomPasswordName":  "Custom passcode",
+                           "androidElevenAndBelowPasswordHeader":  "Android 11 and earlier",
+                           "androidElevenAndBelowPasswordHeaderDescription":  "These settings work for devices running Android 11 or earlier.",
                            "androidEnterpriseAlwaysOnVpnClientName":  "VPN client",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierDescription":  "Enter the package ID of the app in the Google Play store. For example, if the URL for the app in the Play store is https://play.google.com/store/details?id=com.contosovpn.android.prod, the package ID would be com.contosovpn.android.prod.",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierName":  "Package ID",
@@ -2016,6 +2027,9 @@
                            "androidTenDeprecationInfoBox":  "Beginning in October 2020, some settings will not be supported on Android devices that are running Android 10 and later and are not Samsung Knox. These settings are labeled with Android 9 and earlier or Samsung Knox. Click to learn more.",
                            "androidTrustedServerCertificateNamesDescription":  "This is the DNS name used in the certificate presented by the Radius Server during client authentication to the Wifi access point. If you have multiple Radius servers which have the same DNS suffix in their fully qualified domain name then the suffix alone may also be used. This allows devices to trust the server certificate presented to them. <a href=\"https://go.microsoft.com/fwlink/?linkid=2181354\" target=\"_blank\">Learn more</a>.<br>",
                            "androidTrustedServerCertificateNamesName":  "Radius server name",
+                           "androidTwelveAndAbovePasswordHeader":  "Android 12 and later",
+                           "androidTwelveAndAbovePasswordHeaderDescription":  "These settings work for devices running Android 12 or later.",
+                           "androidTwelveDeprecationInfoBox":  "Beginning in November 2022, some settings are not supported on Android devices that are running Android 12 and later. These settings are labeled with Android 11 and earlier. Click to learn more.",
                            "androidZebraMxConfigurationFileXmlName":  "Choose a valid Zebra MX XML file",
                            "androidZebraMxConfigurationLearnMore":  "​Learn more about managing Zebra devices",
                            "androidZebraMxConfigurationXmlName":  "MX profile in .xml format",
@@ -3792,8 +3806,6 @@
                            "exchangeActiveSyncHostExample":  "e.g. outlook.office365.com",
                            "exchangeActiveSyncHostName":  "Email server",
                            "exclusionAppListColumn":  "App to exclude",
-                           "expeditedCheckinEnableDescription":  "Make devices check in every hour",
-                           "expeditedCheckinEnableName":  "Make devices check in every hour",
                            "experienceAllowBrowserSyncSettingsDescription":  "Specifies whether user can turn on browser setting to sync using the sync your settings options to sync information such as history and favorites between user’s devices. To configure this setting you must enable “Sync browser settings between user’s devices” setting.",
                            "experienceAllowBrowserSyncSettingsName":  "User can turn on sync browser settings​",
                            "experienceDoNotSyncBrowserSettingsDescription":  "When blocked, the default configuration (allow sync browser settings between devices) is turned off so that users cannot sync between devices. When \"block and enable user override\" is selected, user can override admin designation.",
@@ -4866,9 +4878,9 @@
                            "macOSSoftwareUpdatePolicySectionDescription":  "Create a profile to force assigned devices to automatically install the latest macOS updates. These settings determine how and when software updates deploy. This profile doesn't prevent users from updating the OS manually. Updates will only apply to devices enrolled through Apple's Automated Device Enrollment (with ABM or ASM).",
                            "macOSSoftwareUpdatePolicySectionDescriptionLearnMoreText":  "Learn More",
                            "macOSSoftwareUpdatePolicySupervisedLearnMoreText":  "Learn More",
-                           "macOSSoftwareUpdatePolicySupervisedName":  "Create a profile to force assigned devices to automatically install the latest macOS updates. These settings determine how and when software updates deploy. This profile doesn't prevent users from updating the OS manually. Updates will only apply to devices enrolled through Apple's Automated Device Enrollment (with ABM or ASM).",
+                           "macOSSoftwareUpdatePolicySupervisedName":  "Create a profile to force assigned devices to automatically install the latest macOS updates. These settings determine how and when software updates deploy. This profile doesn't prevent users from updating the OS manually. Updates will only apply to supervised devices.",
                            "macOSSoftwareUpdatePolicyWeeklyScheduleName":  "Weekly schedule",
-                           "macOSSoftwareUpdateSelectScheduleTypeName":  "By default, when a macOS Software Updates policy is assigned to a device, Intune deploys the latest updates at device check-in. You can also create a weekly schedule and specify a period of time when devices can check-in and receive updates. If you choose to update outside of the scheduled time, Intune won't deploy updates until the scheduled time ends.",
+                           "macOSSoftwareUpdateSelectScheduleTypeName":  "By default, when an update policy is assigned to a device, Intune deploys the latest updates at device check-in. You can instead create a weekly schedule with customized start and end times. If you choose to update outside of the scheduled time, Intune won't deploy updates until the scheduled time ends.",
                            "macOSSoftwareUpdateSelectUpdateBehaviorName":  "Select how downloads, installations, and/or notifications should occur for each type of update.",
                            "macOSSystemExtensionsExtensionTypeName":  "Allowed system extension types",
                            "macRequireClassroomRequestPermissionToLeaveClassesDescription":  "Students enrolled in an unmanaged Classroom course must get teacher consent to leave the course.",
@@ -5143,9 +5155,9 @@
                            "nATKeepAliveOffloadEnableName":  "Offload NAT keepalive to hardware when device is asleep",
                            "nATKeepAliveOffloadEnableToolTip":  "By default, when a device is asleep, the NAT system will continuously check to make sure it's connected to the VPN. This setting lets you disable that behavior.",
                            "nacIdCheckBoxLabel":  "I agree.",
-                           "nacIdDescCisco":  "Cisco AnyConnect requires the Intune device ID to be included in the VPN profile in order to enable NAC.<br><br>I allow Microsoft to include device information in the VPN profile, which can be used by Cisco and their partners.",
-                           "nacIdDescCitrix":  "Citrix SSO requires the Intune device ID to be included in the VPN profile in order to enable NAC.<br><br>I allow Microsoft to include device information in the VPN profile, which can be used by Citrix and their partners.",
-                           "nacIdDescF5":  "F5 Access requires the Intune device ID to be included in the VPN profile in order to enable NAC.<br><br>I allow Microsoft to include device information in the VPN profile, which can be used by F5 Access and their partners.",
+                           "nacIdDescCisco":  "Cisco AnyConnect requires the Intune device ID to be included in the VPN profile in order to enable NAC.<br><br>I allow Microsoft to include device information in the VPN profile, which can be used by Cisco and their partners. Click to learn more, including what data is shared with the service provider.",
+                           "nacIdDescCitrix":  "Citrix SSO requires the Intune device ID to be included in the VPN profile in order to enable NAC.<br><br>I allow Microsoft to include device information in the VPN profile, which can be used by Citrix and their partners. Click to learn more, including what data is shared with the service provider.",
+                           "nacIdDescF5":  "F5 Access requires the Intune device ID to be included in the VPN profile in order to enable NAC.<br><br>I allow Microsoft to include device information in the VPN profile, which can be used by F5 Access and their partners. Click to learn more, including what data is shared with the service provider.",
                            "nacIdHeader":  "Enable network access control (NAC)",
                            "nacIdHeaderCiscoToolTip":  "The device ID will be encrypted and included in the VPN profile. When the user attempts to connect to the VPN, Cisco AnyConnect will pass this value to your NAC infrastructure, which will then query Intune with this value to determine if the device is enrolled and compliant.<br><br>Cisco AnyConnect is unable to access the device ID directly so in order to enable NAC, this value must be included in the VPN profile.",
                            "nacIdHeaderCitrixToolTip":  "The device ID will be encrypted and included in the VPN profile. When the user attempts to connect to the VPN, Citrix SSO will pass this value to your NAC infrastructure, which will then query Intune with this value to determine if the device is enrolled and compliant.<br><br>Citrix SSO is unable to access the device ID directly so in order to enable NAC, this value must be included in the VPN profile.",
@@ -6016,6 +6028,15 @@
                            "shutdown":  "Shutdown",
                            "signatureUpdateIntervalInHoursName":  "Security intelligence update interval (in hours)",
                            "signingCertificateType":  "Signing certificate type",
+                           "silentCertAccessAddApps":  "Add apps",
+                           "silentCertAccessApplicationsName":  "Applications",
+                           "silentCertAccessMaxAppsWarn":  "Select a maximum of 50 apps to grant silent certificate access to",
+                           "silentCertAccessMinAppsWarn":  "Select at least one app to grant silent certificate access to",
+                           "silentCertAccessSpecificApps":  "Grant silently for specific apps (require user approval for other apps)",
+                           "silentCertAccessTabName":  "Apps",
+                           "silentCertAccessTypeDescription":  "Choose how certificate access is granted to applications",
+                           "silentCertAccessTypeName":  "Certificate access",
+                           "silentCertAccessUserApproval":  "Require user approval for all apps",
                            "simpleDownloadOption":  "Simple download mode with no peering (99)",
                            "simultaneousMultiThreadingName":  "Simultaneous multithreading",
                            "singleAppModeAppNameDescription":  "The name of the app.",
@@ -7151,6 +7172,8 @@
                            "windows10ProfessionalOption":  "Windows 10/11 Pro",
                            "windows10ProfessionalWorkstationNOption":  "Windows 10/11 Pro for Workstations N edition",
                            "windows10ProfessionalWorkstationOption":  "Windows 10/11 Pro for Workstations",
+                           "windows11CloudEditionNOption":  "Windows 11 SE N",
+                           "windows11CloudEditionOption":  "Windows 11 SE",
                            "windows11EULA":  "By selecting this option you are agreeing that when applying this operating system to a device either (1) the applicable Windows license was purchased though volume licensing, or (2) that you are authorized to bind your organization and are accepting on its behalf the relevant Microsoft Software License Terms to be found here <a>{0}</a>.",
                            "windowsAppNonComplianceTypeDescription":  "We recommend asking your users to accept a Terms of Use, to acknowledge that certain apps will be blocked from installation. Use the blocked apps list to specify the Windows Phone apps not managed by Intune that users cannot install. For the allowed apps list, all apps, including the company portal and any deployed apps must be added to the list using the app store URL format",
                            "windowsAppUrlExample":  "e.g. https://www.microsoft.com/en-us/store/apps/remote-desktop/9wzdncrfj3ps",
@@ -7239,6 +7262,8 @@
                            "workProfilePersonalUsagAndroidEnrollmentTypesHeaderDescription":  "These settings work for corporate-owned work profile devices and only apply during personal usage.",
                            "workProfileRequirePasswordDescription":  "Require a password to use work apps.  This can be separate from the device password. Requires Android 7.0+ ",
                            "workProfileRequirePasswordName":  "Require Work Profile Password",
+                           "workProfileRequiredPasswordComplexityDescription":  "Specify the required password complexity.",
+                           "workProfileRequiredPasswordComplexityName":  "Work Profile Password Complexity",
                            "workProfileRequiredPasswordTypeDescription":  "Specify the type of password required.",
                            "workProfileRequiredPasswordTypeName":  "Required password type",
                            "workspaceIDName":  "Workspace ID",
@@ -7633,6 +7658,7 @@
                            "mdmDeviceId":  "MDM Device ID",
                            "mdmWipInvalidVersionSettings":  "One or more apps have invalid minimum/maximum version definitions.<br /> <br />Windows Information Protection With Enrollment policies support specifying only one of the minimum or maximum versions, unless both versions are specified as being equivalent. When only the minimum version is specified, the rule is set for greater than or equal to minimum version. Similarly, when only the maximum version is specified, the rule is set for lesser that equal to the maximum version.",
                            "mdmWipReport":  "MDM Windows Information Protection Report",
+                           "microsoftDefenderForEndpoint":  "Microsoft Defender For Endpoint",
                            "microsoftEdgeOptionText":  "Microsoft Edge",
                            "minAppVersion":  "Min app version",
                            "minMaxValidation":  "Minimum OS version has to be lower than the Maximum OS version, when the action is the same.",
@@ -7642,11 +7668,13 @@
                            "minimumCompanyPortalVersion":  "Min Company Portal version",
                            "minimumDeviceSelection":  "At least 1 device has to be selected",
                            "mobileAppCRUDpermission":  "Mobile apps read, create, and assign permission",
+                           "mobileThreatDefenseNonMicrosoft":  "Mobile Threat Defense (Non-Microsoft)",
                            "monitor":  "Monitor",
                            "moreApps":  "More apps",
                            "moreAppsTextBoxTooltip":  "Add line-of-business apps here if you do not have access to the full Intune portal.",
-                           "mtdConnectorInfoBox1":  "<b>Important!</b> Make sure your Mobile Threat Defense Connector is set up in order to properly secure your organization’s data based on threat evaluations from the connected Mobile Threat Defense services.",
+                           "mtdConnectorInfoBox1":  "<b>Important!</b> Make sure your Mobile Threat Defense (MTD) connector is set up in order to properly secure your organization’s data based on threat evaluations from the connected Mobile Threat Defense services.",
                            "mtdConnectorInfoBox2":  "Learn more about Mobile Threat Defense for unenrolled devices.",
+                           "mtdConnectorInfoBox3":  "If your tenant has a connection set up with both Microsoft Defender for Endpoint and a MTD service (non-Microsoft) and do not configure a primary MTD service or there is a conflict when targeting a user, the default will be Microsoft Defender for Endpoint.",
                            "name":  "Name",
                            "networkBoundariesInfoBoxText":  "Add /*AppCompat*/ to your list of cloud resources to enable TLS connections by personal apps that connect directly to a cloud resource through an IP address.",
                            "networkBoundariesInfoParagraph1":  "Choose where protected apps can access enterprise data on your network.",
@@ -7735,6 +7763,7 @@
                            "portNumber":  "Port Number",
                            "portNumberDesc":  "Port for the proxy specified in proxy address",
                            "prefix":  "Prefix",
+                           "primaryMtdService":  "Primary MTD service",
                            "productName":  "Product name",
                            "properties":  "Properties",
                            "protected":  "Protected",
@@ -7813,6 +7842,7 @@
                            "setting":  "Setting",
                            "settingName":  "Setting name",
                            "settings":  "Settings",
+                           "settingsCatalog":  "Settings catalog",
                            "settingsSelectorLabel":  "Settings",
                            "silent":  "Silent",
                            "specificUserIsLicensedIntune":  "{0} is licensed for Microsoft Intune.",
@@ -7840,6 +7870,7 @@
                            "targetedUserPartWithPolicy":  "Managed by policy",
                            "targetediOSUserPartTitle":  "User status for iOS",
                            "threatCategory":  "Threat category",
+                           "tileDeprecated":  "This tile has been deprecated. Please remove this tile from your dashboard.",
                            "timeColumnLabel":  "Time",
                            "timebombLabel":  "Offline interval before app data is wiped (days)",
                            "timebombToolTip":  "After the specified number of days without the device syncing to Intune, Windows will perform a selective wipe on the device, which will unenroll the apps for MAM enrollment and remove encrypted and protected corporate data. The default for this setting is 90 days. Setting this value to 0 will disable the setting.",
@@ -7944,6 +7975,7 @@
                            "wipSMBStringTooltip":  "Specifies a list of file extensions, so that files with these extensions are encrypted when copying from an SMB share within the corporate boundary as defined in the network location list. When this policy is not specified, the existing auto-encryption behavior is applied. When this policy is configured, only files with the extensions in the list will be encrypted.​",
                            "wipStoreApps":  "Store apps",
                            "wipWeAppsListInfo":  "These apps are allowed to access your enterprise data and will interact differently when used with unallowed, non-enterprise aware, or personal-only apps. Only enlightened apps are allowed on devices without MDM.",
+                           "wipWeDeprecationWarning":  "Creating new WIP without enrollment policies (WIP-WE) is no longer supported. For more information, see <a target=\"_blank\" href={0}>Windows Information Protection</a> ",
                            "wipWeWarning":  "Before Windows 10 and later policies can take effect, <a target=\"_blank\" href={0}>set the MAM URLs in AAD</a> to Microsoft Intune by choosing “Restore default URLs” and defining the user scope.",
                            "wipWebsiteLearningTitle":  "Website learning for Windows Information Protection",
                            "wipeData":  "Wipe data",
@@ -8042,7 +8074,9 @@
                                "windows10ProfessionalEducationN":  "Windows 10/11 Professional Education N",
                                "windows10ProfessionalN":  "Windows 10 Professional N",
                                "windows10ProfessionalWorkstation":  "Windows 10/11 Professional Workstation",
-                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professional Workstation N"
+                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professional Workstation N",
+                               "windows11CloudEdition":  "Windows 11 SE",
+                               "windows11CloudEditionN":  "Windows 11 SE N"
                            },
     "DetectionRules":  {
                            "ComparisonOperators":  {
@@ -8059,6 +8093,7 @@
                                                 "header":  "Use a custom detection script",
                                                 "runAs32Bit":  "Run script as 32-bit process on 64-bit clients",
                                                 "runAs32BitTooltip":  "Select 'Yes' to run the script in a 32-bit process on 64-bit clients. Select 'No' (default) to run the script in a 64-bit process on 64-bit clients. 32-bit clients run the script in a 32-bit process.",
+                                                "scriptContent":  "Script content",
                                                 "scriptFile":  "Script file",
                                                 "scriptFileNotSelectedValidation":  "No script file is selected.",
                                                 "scriptFileTooltip":  "Select a PowerShell script that will detect the presence of the app on the client. The app will be detected when the script both returns a 0 value exit code and writes a string value to STDOUT.",
@@ -8307,9 +8342,6 @@
                                                                                                              "string":  "String",
                                                                                                              "version":  "Version"
                                                                                                          },
-                                                                            "ScriptContent":  {
-                                                                                                  "emptyMessage":  "Script content should not be empty."
-                                                                                              },
                                                                             "duplicateName":  "Script name {0} has already been used. Please enter a different name.",
                                                                             "enforceSignatureCheck":  "Enforce script signature check",
                                                                             "enforceSignatureCheckTooltip":  "Select ‘Yes’ to verify that the script is signed by a trusted publisher, which will allow the script to run without warnings or prompts. The script will run unblocked. Select ‘No’ (default) to run the script with end-user confirmation, but without signature verification.",
@@ -8318,6 +8350,7 @@
                                                                             "operatorTooltip":  "Select the operator for the requirement comparison.",
                                                                             "requirementMethod":  "Select output data type",
                                                                             "requirementMethodTooltip":  "Select the data type used when determining a detection match requirement.",
+                                                                            "scriptContent":  "Script content",
                                                                             "scriptFile":  "Script file",
                                                                             "scriptFileTooltip":  "Select a PowerShell script that will detect the presence of the app on the client. If the app is detected, the requirement process will provide a 0 value exit code and will write a string value to STDOUT.",
                                                                             "scriptName":  "Script name",
@@ -8370,6 +8403,7 @@
                                                       },
                                          "InfoBlade":  {
                                                            "createTitle":  "Add authentication context",
+                                                           "deleteDisallowed":  "You cannot delete this authentication context while it is referenced by your Conditional Access policies.",
                                                            "descPlaceholder":  "Add description for the authentication context",
                                                            "modifyTitle":  "Modify authentication context",
                                                            "namePlaceholder":  "Ex. Trusted location, Trusted device, Strong authorization",
@@ -8396,15 +8430,15 @@
                                          "description":  "Description",
                                          "documentation":  "Documentation",
                                          "getStarted":  "Get started",
-                                         "label":  "Authentication context (preview)",
-                                         "menuLabel":  "Authentication context (Preview)",
+                                         "label":  "Authentication context",
+                                         "menuLabel":  "Authentication context",
                                          "name":  "Name",
                                          "noAuthContextConfigured":  "No authentication contexts have been configured.",
                                          "noAuthContextSet":  "There are no authentication contexts",
                                          "noData":  "No authentication contexts to display",
                                          "selectionInfo":  "Authentication context is used to secure application data and actions in apps like SharePoint and Microsoft Cloud App Security.",
                                          "step":  "Step",
-                                         "tabDescription":  "Manage authentication context to protect data and actions in your apps. [Learn more][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
+                                         "tabDescription":  "Manage authentication context to protect data and actions in your apps. Authentication contexts cannot be deleted when they are referenced by Conditional Access policies. [Learn more][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
                                          "tagResources":  "Tag resources with an authentication context"
                                      },
                      "AuthenticationStrength":  {
@@ -8554,12 +8588,13 @@
                                                    "guestOrExternalUsersLabel":  "Guest or external users",
                                                    "internalGuestLabel":  "Local guest users",
                                                    "otherExternalUserLabel":  "Other external users",
+                                                   "previewTag":  "{0} (preview)",
                                                    "serviceProviderUsersLabel":  "Service provider users"
                                                },
                      "NamedLocation":  {
                                            "Form":  {
                                                         "CountryLookup":  {
-                                                                              "ariaLabel":  "Country lookup method",
+                                                                              "ariaLabel":  "Country/Region lookup method",
                                                                               "gps":  "Determine location by GPS coordinates",
                                                                               "info":  "When the location condition of a Conditional Access policy is configured, users will be prompted by the Authenticator app to share their GPS location. ",
                                                                               "ip":  "Determine location by IP address (IPv4 only)"
@@ -8696,7 +8731,7 @@
                                                       "ServicePrincipalRisk":  {
                                                                                    "description":  "Configure service principal risk levels needed for policy to be enforced​",
                                                                                    "infoBalloonContent":  "Configure service principal risk to apply the policy to selected risk level(s)",
-                                                                                   "title":  "Service principal risk (Preview)"
+                                                                                   "title":  "Service principal risk"
                                                                                }
                                                   }
                                 },
@@ -8985,6 +9020,11 @@
                                  "optionsPickerTitle":  "Enable/Disable Continuous access evaluation",
                                  "upsellInfo":  "You cannot change your settings on this page anymore and any settings here should be disregarded. Your previous setting will be honored. You can configure your CAE settings under Conditional Access going forward. Click here to learn more."
                              },
+                     "SamlReauth":  {
+                                        "Filter":  {
+                                                       "warning":  "You are targeting applications using a dynamic query. Some applications might not be supported to use with \"sign-in frequency every time\" session control. {0}Read more about the recommended scenarios.{1}"
+                                                   }
+                                    },
                      "SelectOrganizations":  {
                                                  "Blade":  {
                                                                "Lower":  {
@@ -9199,6 +9239,7 @@
                                                                       }
                                                },
                                     "noTenantSelected":  "No tenant selected",
+                                    "selectOrganization":  "Select organization",
                                     "tenantIdWithPlaceholder":  "Tenant ID: {0}",
                                     "tenantSelectionRequired":  "Tenant required"
                                 },
@@ -9483,10 +9524,12 @@
                      "downloadDefaultFileName":  "IP Ranges",
                      "downloadExampleFileName":  "Example",
                      "downloadExampleHeader":  "This is an example file with demonstrations of the kinds of data which can be accepted. Lines starting with # will be ignored.",
+                     "duplicate":  "Duplicate",
+                     "duplicatePolicyName":  "{0} COPY",
                      "endDatePickerLabel":  "Ends",
                      "endTimePickerLabel":  "End time",
-                     "enterCountryText":  "IP address and Country are evaluated in a pair. Select the Country.",
-                     "enterIpText":  "IP address and Country are evaluated in a pair. Input the IP address.",
+                     "enterCountryText":  "IP address and Country/Region are evaluated in a pair. Select the Country.",
+                     "enterIpText":  "IP address and Country/Region are evaluated in a pair. Input the IP address.",
                      "enterUserText":  "No user is selected. Select a user.",
                      "evaluationResult":  "Evaluation result",
                      "exchangeActiveSyncSelectedLabel":  "Exchange ActiveSync",
@@ -9528,7 +9571,7 @@
                      "infoCommandLabel":  "Info",
                      "invalidCertDuration":  "Invalid cert duration",
                      "invalidIpAddress":  "Value must be a valid IP address",
-                     "invalidReAuthSignInRiskOptionSelected":  "The \"sign-in frequency every time\" session control does not allow the \"no risk\" selection in the \"sign-in risk level\" condition control.",
+                     "invalidReAuthSignInRiskOptionSelected":  "The \"sign-in frequency every time\" session control does not allow the \"no risk\" selection in the \"sign-in risk\" condition control.",
                      "invalidUriErrorMsg":  "Please enter a valid Uri. For example,'uri:contoso.com:acr' ",
                      "iosDisplayName":  "iOS",
                      "linuxDisplayName":  "Linux",
@@ -9569,7 +9612,7 @@
                      "namedLocationUpsellBanner":  "This view has been deprecated. Go to the new and improved 'Named locations' view.",
                      "namedLocationsHelpDescription":  "Named locations are used by Azure AD security reports to reduce false positives and Azure AD Conditional Access policies.\n[Learn more][1]\n[1]: https://aka.ms/namedlocationupdate",
                      "namedNetworkAddIpRanges":  "Add a new IP range (ex: 40.77.182.32/27)",
-                     "namedNetworkCountryNeeded":  "You need to select at least one country",
+                     "namedNetworkCountryNeeded":  "You need to select at least one country/region",
                      "namedNetworkDeleteCommand":  "Delete",
                      "namedNetworkDeleteDescription":  "Are you sure you want to delete '{0}'? This action cannot be undone.",
                      "namedNetworkDeleteTitle":  "Are you sure?",
@@ -9653,9 +9696,9 @@
                      "policyConditionLocation":  "Locations",
                      "policyConditionLocationDescription":  "Location (determined using IP address range) the user is signing in from",
                      "policyConditionLocationPreview":  "Locations (Preview)",
-                     "policyConditionSigninRisk":  "Sign-in risk level",
+                     "policyConditionSigninRisk":  "Sign-in risk",
                      "policyConditionSigninRiskDescription":  "Likelihood that the sign-in is coming from someone other than the user. Risk level can be high, medium or low. Requires Azure AD Premium 2 license.",
-                     "policyConditionUserRisk":  "User risk level",
+                     "policyConditionUserRisk":  "User risk",
                      "policyConditionUserRiskDescription":  "Configure user risk levels needed for policy to be enforced",
                      "policyConditioniClientApp":  "Client apps",
                      "policyControlAllowAccessDisplayedName":  "Grant access",
@@ -9874,8 +9917,8 @@
                      "whatIfBladeTitle":  "What If",
                      "whatIfClassicPoliciesWarning":  "Classic policies are not evaluated by this tool.",
                      "whatIfClientAppInfo":  "The client app the user is signing in from. For example, 'Browser'.",
-                     "whatIfCountry":  "Country",
-                     "whatIfCountryInfo":  "The country the user is signing in from.",
+                     "whatIfCountry":  "Country/Region",
+                     "whatIfCountryInfo":  "The country/region the user is signing in from.",
                      "whatIfDevicePlatformInfo":  "The device platform the user is signing in from.",
                      "whatIfDeviceStateInfo":  "The device state the user is signing in from",
                      "whatIfEnterIpAddress":  "Enter IP address (ex: 40.77.182.32)",
@@ -9893,14 +9936,14 @@
                      "whatIfEvaResultUsers":  "Users and groups",
                      "whatIfIpAddress":  "IP address",
                      "whatIfIpAddressInfo":  "IP address the user is signing in from.",
-                     "whatIfIpCountryInfoBoxText":  "If using an IP address or Country, both fields will be required and should correctly map together.",
+                     "whatIfIpCountryInfoBoxText":  "If using an IP address or Country/Region, both fields will be required and should correctly map together.",
                      "whatIfPolicyAppliesTab":  "Policies that will apply",
                      "whatIfPolicyAppliesTabWithCount":  "Applicable policies ({0})",
                      "whatIfPolicyDoesNotApplyTab":  "Policies that will not apply",
                      "whatIfPolicyDoesNotApplyTabWithCount":  "Inapplicable policies ({0})",
                      "whatIfReasons":  "Reasons why this policy will not apply",
                      "whatIfSelectClientApp":  "Select a client app...",
-                     "whatIfSelectCountry":  "Select country...",
+                     "whatIfSelectCountry":  "Select country/region...",
                      "whatIfSelectDevicePlatform":  "Select device platform...",
                      "whatIfSelectPrivateLink":  "Select private link...",
                      "whatIfSelectServicePrincipalRisk":  "Select service principal risk...",
@@ -9919,6 +9962,7 @@
                      "windowsDisplayName":  "Windows",
                      "windowsPhoneDisplayName":  "Windows Phone",
                      "workloadIdentities":  "Workload identities (preview)",
+                     "workloadIdentitiesLicenseText":  "A workload identities premium P1 or P2 license is required to edit this policy.",
                      "workloadIdentity":  "Workload identity"
                  },
     "AppResources":  {
@@ -9977,7 +10021,7 @@
                                          "teamsApp":  "Teams app",
                                          "webApp":  "Web link",
                                          "winGetPublicApp":  "Windows Package Manager Community Repository",
-                                         "winGetStoreApp":  "Microsoft Store Repository",
+                                         "winGetStoreApp":  "Microsoft Store app (new)",
                                          "windowsAppXLobApp":  "Windows AppX line-of-business app",
                                          "windowsClassicApp":  "Windows app (Win32)",
                                          "windowsEdgeApp":  "Microsoft Edge (Windows 10 and later)",
@@ -9986,7 +10030,7 @@
                                          "windowsPhone81AppXLobApp":  "Windows Phone 8.1 AppX line-of-business app",
                                          "windowsPhone81StoreApp":  "Windows Phone 8.1 store app",
                                          "windowsPhoneXapLobApp":  "Windows Phone XAP line-of-business app",
-                                         "windowsStoreApp":  "Microsoft Store app",
+                                         "windowsStoreApp":  "Microsoft Store app (legacy)",
                                          "windowsUniversalAppXLobApp":  "Windows Universal AppX line-of-business app",
                                          "windowsUniversalLobApp":  "Windows Universal line-of-business app",
                                          "windowsWebApp":  "Windows web link"
@@ -10047,6 +10091,14 @@
                                         }
                      },
     "WindowsEnrollment":  {
+                              "DevicePreparation":  {
+                                                        "description":  "Configure devices for initial provisioning and assign to users.",
+                                                        "title":  "Device preparation"
+                                                    },
+                              "EnrollmentSettings":  {
+                                                         "description":  "Configure enrollment settings such as blocking enrollment and assign to users.",
+                                                         "title":  "Enrollment settings"
+                                                     },
                               "coManagementAuthorityDesc":  "Configure co-management settings for Configuration Manager integration​",
                               "coManagementAuthorityTitle":  "Co-management Settings  ",
                               "deploymentProfiles":  "Windows Autopilot deployment profiles",
@@ -10196,6 +10248,8 @@
                    "informationUrlSizeHint":  "The maximum length of the information url is 1024 characters",
                    "installAsManaged":  "Install as managed",
                    "installationSourceLabel":  "App type",
+                   "installerTypeInfoBalloon":  "The installer type of the application package.",
+                   "installerTypeLabel":  "Installer Type",
                    "isFeatured":  "Show this as a featured app in the Company Portal",
                    "isMAMEnabledToggleLabel":  "Yes",
                    "lastModifiedDateTime":  "Last updated Time",
@@ -10235,7 +10289,7 @@
                    "searchAppLabel":  "Select app",
                    "searchAppLinkText":  "Search the App Store",
                    "searchWinGetPublicRepositoryLinkText":  "Search the Windows Package Manager Community Repository",
-                   "searchWinGetStoreRepositoryLinkText":  "Search the Microsoft Store Repository",
+                   "searchWinGetStoreRepositoryLinkText":  "Search the Microsoft Store app (new)",
                    "selectAAD":  "Select an AAD attribute",
                    "selectAppFileLabel":  "Select file",
                    "selectAppFileLinkText":  "Select app package file",
@@ -10408,6 +10462,8 @@
                                                         "qualityUpdateSettings":  "Settings"
                                                     },
                                         "infoBoxText":  "The only dedicated quality update control currently available other than the existing update rings policy for Windows 10 and later is the ability to expedite quality updates for devices that fall behind a specified patch level. Additional controls will be available in the future.",
+                                        "licenseLearnMoreText":  "Learn more about pre-requisites and quality update policies.",
+                                        "licenseWarningBoxText":  "Creating quality update policies requires specific licensing.",
                                         "warningBoxText":  "While expediting software updates can help decrease the time to get to compliance when necessary, it has a larger impact on end-user productivity. The chances that they will experience a restart during business hours is significantly increased."
                                     },
     "TermsOfUse":  {
@@ -10492,6 +10548,7 @@
                                          "ptBR":  "Portuguese (Brazil)",
                                          "ptPT":  "Portuguese (Portugal)",
                                          "quz":  "Quechua",
+                                         "removeLanguage":  "Remove language",
                                          "ro":  "Romanian",
                                          "ru":  "Russian",
                                          "rw":  "Kinyarwanda",
@@ -10542,10 +10599,7 @@
                                                                      },
                                       "PolicyFile":  {
                                                          "Languages":  {
-                                                                           "Empty":  {
-                                                                                         "default":  "Select default language",
-                                                                                         "nonDefault":  "Select a language"
-                                                                                     }
+
                                                                        },
                                                          "Validations":  {
                                                                              "duplicateLanguage":  "Oops, {0} appears to be selected multiple times. Language selection must be unique."
@@ -10581,6 +10635,7 @@
                                       "agreementNamePlaceholderText":  "Example: 'All users terms of use'",
                                       "agreementRequirmentLabel":  "Required Upon",
                                       "agreementTargetEntityLabel":  "Users targeted",
+                                      "agreementUploadPolicyAriaLabelText":  "Upload required PDF {0}",
                                       "agreementUploadPolicyLabel":  "Terms of use",
                                       "agreementUploadPolicyPlaceholderText":  "Upload required PDF",
                                       "createButtonLabel":  "Create",
@@ -10594,7 +10649,32 @@
                                       "policyTemplateInfo":  "These templates are pre configured conditional access policies that are targeted to specific users and applications.",
                                       "policyTemplateLabel":  "Policy templates",
                                       "title":  "New terms of use"
-                                  }
+                                  },
+                       "Details":  {
+                                       "Link":  {
+                                                    "auditEvent":  "View audit logs",
+                                                    "delete":  "Delete",
+                                                    "download":  "Preview PDF",
+                                                    "edit":  "Edit"
+                                                },
+                                       "Property":  {
+                                                        "acceptanceDuration":  "Duration before re-acceptance required (days)",
+                                                        "acceptanceExpirationFrequency":  "Frequency",
+                                                        "acceptanceExpirationStartDateTime":  "Expire starting on",
+                                                        "accepted":  "Users accepted",
+                                                        "declined":  "Users declined",
+                                                        "displayname":  "Display name",
+                                                        "isAcceptanceExpirationEnable":  "Expire consents",
+                                                        "isPerDeviceAcceptanceRequired":  "Require users to consent on every device",
+                                                        "isViewingBeforeAcceptanceRequired":  "Require users to expand the terms of use",
+                                                        "name":  "Name"
+                                                    },
+                                       "Tab":  {
+                                                   "cAPolicies":  "Conditional access policies",
+                                                   "details":  "Details",
+                                                   "languages":  "Languages"
+                                               }
+                                   }
                    },
     "TACSettings":  {
                         "edgeSettings":  "Edge configuration settings",
@@ -10660,6 +10740,23 @@
                               "withEnrollment":  "With enrollment",
                               "withoutEnrollment":  "Without enrollment"
                           },
+    "PolicySelection":  {
+                            "Grid":  {
+                                         "Column":  {
+                                                        "author":  "Author",
+                                                        "template":  "Template name"
+                                                    }
+                                     },
+                            "SettingsCatalog":  {
+                                                    "subtitle":  "Start from scratch and select settings you want from the library of available settings",
+                                                    "title":  "Settings catalog"
+                                                },
+                            "Templates":  {
+                                              "subtitle":  "Templates contain groups of settings, organized by functionality. Use a template when you don't want to build policies manually or want to configure devices to access corporate networks, such as configuring WiFi or VPN.",
+                                              "title":  "Templates"
+                                          },
+                            "noData":  "No policy templates found"
+                        },
     "OfficeApplicationAdditionalType":  {
                                             "projectProRetail":  "Project Online Desktop Client",
                                             "visioProRetail":  "Visio Online Plan 2"
@@ -10844,6 +10941,12 @@
                           "withEnrollment":  "With enrollment",
                           "withoutEnrollment":  "Without enrollment"
                       },
+    "DisplayRoleTypes":  {
+                             "builtInRole":  "Built-in Role",
+                             "customCloudPCRole":  "Custom Windows 365 role",
+                             "customIntuneRole":  "Custom Intune role",
+                             "customRole":  "Custom Role"
+                         },
     "InstallContextType":  {
                                "device":  "Device",
                                "deviceContext":  "Device context",
@@ -11019,7 +11122,7 @@
                                                                      "Schedule":  {
                                                                                       "always":  "Update at next check-in",
                                                                                       "duringTimeWindows":  "Update during scheduled time",
-                                                                                      "header":  "By default, when an iOS/iPadOS Software Updates policy is assigned to a device, Intune deploys the latest updates at device check-in (approximately every 8 hours). You can instead create a weekly schedule with customized start and end times. If you choose to update outside of the scheduled time, Intune won't deploy updates until the scheduled time ends.",
+                                                                                      "header":  "By default, when an update policy is assigned to a device, Intune deploys the latest updates at device check-in. You can instead create a weekly schedule with customized start and end times. If you choose to update outside of the scheduled time, Intune won't deploy updates until the scheduled time ends.",
                                                                                       "infoBalloon":  "When the updates will occur. Additional input is required to schedule updates during or outside of scheduled times.",
                                                                                       "label":  "Schedule type",
                                                                                       "outsideActiveHours":  "Update outside of active hours (legacy)",
@@ -11443,6 +11546,7 @@
                    "ManagedDesktop":  {
                                           "adminContacts":  "Admin contacts",
                                           "appPackaging":  "App packaging",
+                                          "businessGroups":  "Business Groups",
                                           "devices":  "Devices",
                                           "feedback":  "Feedback",
                                           "gettingStarted":  "Getting started",
@@ -11479,6 +11583,7 @@
                    "cartProfiles":  "Cart profiles",
                    "certificateConnectors":  "Certificate connectors",
                    "chromeEnterprise":  "Chrome Enterprise (preview)",
+                   "cloudAttachedDevices":  "Cloud attached devices (preview)",
                    "compliancePolicies":  "Compliance policies",
                    "complianceScriptManagement":  "Scripts",
                    "complianceScriptManagementPreview":  "Scripts (preview)",
@@ -11512,7 +11617,7 @@
                    "failuresForFeatureUpdates":  "Feature update failures (preview)",
                    "failuresForQualityUpdates":  "Windows Expedited update failures (preview)",
                    "featureFlighting":  "Feature flighting",
-                   "featureUpdateDeployments":  "Feature updates for Windows 10 and later (preview)",
+                   "featureUpdateDeployments":  "Feature updates for Windows 10 and later",
                    "flighting":  "Flighting",
                    "fotaUpdate":  "Firmware over-the-air update",
                    "groupPolicy":  "Administrative Templates",
@@ -11523,8 +11628,8 @@
                    "incompleteUserEnrollments":  "Incomplete user enrollments",
                    "iosUpdates":  "Update policies for iOS/iPadOS",
                    "legacyPcManagement":  "Legacy PC management",
-                   "macOSSoftwareUpdate":  "Update policies for macOS",
-                   "macOSSoftwareUpdateAccountSummaries":  "Installation status for macOS devices",
+                   "macOSSoftwareUpdate":  "Update policies for macOS (preview)",
+                   "macOSSoftwareUpdateAccountSummaries":  "Installation status for macOS devices (preview)",
                    "macOSSoftwareUpdateCategorySummaries":  "Software updates summary",
                    "macOSSoftwareUpdateStateSummaries":  "updates",
                    "managedGooglePlay":  "Managed Google Play",
@@ -11570,11 +11675,12 @@
                    "warranty":  "Warranty vendors",
                    "wdacSupplementalPolicies":  "S mode supplemental policies",
                    "windows10DriverUpdate":  "Driver updates for Windows 10 and later (preview)",
-                   "windows10QualityUpdate":  "Quality updates for Windows 10 and later (preview)",
+                   "windows10QualityUpdate":  "Quality updates for Windows 10 and later",
                    "windows10UpdateRings":  "Update rings for Windows 10 and later",
                    "windows10XPolicyFailures":  "Windows 10X policy failures",
                    "windows365Connector":  "Windows 365 Citrix connector",
                    "windows365ConnectorPublicPreview":  "Windows 365 Citrix connector (preview)",
+                   "windowsDiagnosticData":  "Windows data",
                    "windowsEnterpriseCertificate":  "Windows enterprise certificate",
                    "windowsManagement":  "PowerShell scripts",
                    "windowsSideLoadingKeys":  "Windows side loading keys",

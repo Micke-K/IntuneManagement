@@ -1,5 +1,4 @@
 <#
-<#
 .SYNOPSIS
 Module for managing Intune objects
 
@@ -11,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.7.4'
+    '3.8.1'
 }
 
 function Invoke-InitializeModule
@@ -121,7 +120,7 @@ function Invoke-InitializeModule
         ViewID = "IntuneGraphAPI"
         API = "/identity/conditionalAccess/policies"
         Permissons=@("Policy.Read.All","Policy.ReadWrite.ConditionalAccess","Application.Read.All")
-        Dependencies = @("NamedLocations","Applications","TermsOfUse")
+        Dependencies = @("NamedLocations","Applications","TermsOfUse","AuthenticationStrengths")
         GroupId = "ConditionalAccess"
         ImportExtension = { Add-ConditionalAccessImportExtensions @args }
         PreImportCommand = { Start-PreImportConditionalAccess @args }
@@ -172,7 +171,8 @@ function Invoke-InitializeModule
         PostCopyCommand = { Start-PostCopyEndpointSecurity @args }
         PreUpdateCommand = { Start-PreUpdateEndpointSecurity @args }
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
-        GroupId = "EndpointSecurity"
+        Dependencies = @("ReusableSettings")
+        GroupId = "EndpointSecurity"        
     })    
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -454,6 +454,9 @@ function Invoke-InitializeModule
         DetailExtension = { Add-DetailExtensionApplications @args }
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsApplications @args }
         PreDeleteCommand = { Start-PreDeleteApplications @args }
+        PostExportCommand = { Start-PostExportApplications @args }
+        PostListCommand = { Start-PostListApplications @args }
+        ExportExtension = { Add-ScriptExportExtensions @args }
         GroupId = "Apps"
         ScopeTagsReturnedInList = $false
     })
@@ -557,6 +560,8 @@ function Invoke-InitializeModule
         Icon="DeviceConfiguration"
         PostExportCommand = { Start-PostExportSettingsCatalog  @args }
         PreUpdateCommand = { Start-PreUpdateSettingsCatalog  @args }
+        PostGetCommand = { Start-PostGetSettingsCatalog  @args }
+        Dependencies = @("ReusableSettings")
         GroupId = "DeviceConfiguration"        
     })   
     
@@ -586,6 +591,7 @@ function Invoke-InitializeModule
         QUERYLIST = "`$filter=isBuiltIn%20eq%20false"
         Permissons=@("DeviceManagementRBAC.ReadWrite.All")
         PostExportCommand = { Start-PostExportScopeTags @args }
+        PostGetCommand = { Start-PostGetScopeTags @args }
         ImportOrder = 10
         DocumentAll = $true
         GroupId = "TenantAdmin"
@@ -658,6 +664,8 @@ function Invoke-InitializeModule
         PreDeleteCommand = { Start-PreDeleteDeviceHealthScripts @args }
         PreImportCommand = { Start-PreImportDeviceHealthScripts @args }
         PreUpdateCommand = { Start-PreUpdateDeviceHealthScripts @args }
+        PostExportCommand = { Start-PostExportDeviceHealthScripts  @args }
+        ExportExtension = { Add-ScriptExportExtensions @args }
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         GroupId = "EndpointAnalytics"
         Icon = "Report"
@@ -696,6 +704,35 @@ function Invoke-InitializeModule
         ViewProperties = @("fileName","status","Id")
     })
     #>
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Reusable Settings"
+        Id = "ReusableSettings"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/reusablePolicySettings"
+        PropertiesToRemove = @('Settings','@OData.Type')        
+        PostGetCommand = { Start-PostGetReusableSettings @args }
+        ImportOrder = 70
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")        
+        ExpandAssignmentsList = $false
+        SkipRemoveProperties = @("@OData.Type")
+        Icon = "EndpointSecurity"
+        GroupId = "EndpointSecurity"
+    })
+    
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Authentication Strengths"
+        Id = "AuthenticationStrengths"
+        ViewID = "IntuneGraphAPI"
+        API = "/identity/conditionalAccess/authenticationStrengths/policies"
+        PreImportCommand = { Start-PreImportCommandAuthenticationStrengths @args }
+        PropertiesToRemove = @()
+        ImportOrder = 45
+        Permissons=@("Policy.ReadWrite.ConditionalAccess")        
+        ExpandAssignmentsList = $false
+        Icon = "ConditionalAccess"
+        GroupId = "EndpointSecurity"
+    })
 }
 
 function Invoke-EMAuthenticateToMSAL
@@ -1951,7 +1988,6 @@ function Start-PreImportCommandApplication
         @{ "Import" = $false }
     }
 
-    Write-Log "### TEST ### OData.Type: $($obj.'@OData.Type')"
     if($obj.'@OData.Type' -eq '#microsoft.graph.officeSuiteApp')
     {
         if($obj.officeSuiteAppDefaultFileFormat -eq "notConfigured")
@@ -2034,6 +2070,70 @@ function Start-PreDeleteApplications
         @{ "Delete" = $false }
     }
 }
+
+function Start-PostExportApplications
+{
+    param($obj, $objectType, $path)
+    
+    if($global:chkExportScript.IsChecked)
+    {
+        $fileName = Get-GraphObjectFile $obj $objectType
+        $fi = [IO.FileInfo]"$path\$fileName"
+
+        try
+        {
+            foreach($rule in ($obj.detectionRules | Where '@OData.Type' -eq "#microsoft.graph.win32LobAppPowerShellScriptDetection"))
+            {
+                if($rule.ScriptContent)
+                {
+                    [IO.File]::WriteAllBytes(("$path\$($fi.BaseName)_DetectionScript.ps1"), ([System.Convert]::FromBase64String($rule.ScriptContent)))
+        
+                }
+            }
+
+            foreach($rule in $obj.requirementRules)
+            {
+                if($rule.'@OData.Type' -eq "#microsoft.graph.win32LobAppPowerShellScriptRequirement")
+                {
+                    if($rule.ScriptContent)
+                    {
+                        [IO.File]::WriteAllBytes(("$path\$($fi.BaseName)_RequirementScript.ps1"), ([System.Convert]::FromBase64String($rule.ScriptContent)))
+                    }
+                }
+            }
+        }
+        catch
+        {
+            Write-LogError "Failed to export scripts" $_.Exception
+        }
+    }
+}
+
+function Start-PostListApplications
+{
+    param($objList, $objectType)
+
+    foreach($obj in ($objList | Where { $_.Object."@OData.Type" -eq "#microsoft.graph.winGetApp"}))
+    {
+        if($obj.Object.packageIdentifier -like "9*")
+        {
+            $installerType = "UWP"
+        }
+        elseif($obj.Object.packageIdentifier -like "X*")
+        {
+            $installerType = "Win32"
+        }
+        else
+        {
+            $objName = Get-GraphObjectName $obj.Object $objectType
+            Write-Log "Unknown package identifier for app $($objName): $($obj.Object.packageIdentifier)" 2
+            $installerType = "Unknown"
+        }
+        $obj.Object | Add-Member -MemberType NoteProperty -Name "InstallerType" -Value $installerType
+    }
+    $objList   
+}
+
 #endregion
 
 #region Group Policy/Administrative Templates functions
@@ -2587,6 +2687,21 @@ function Start-PreUpdateSettingsCatalog
     @{"Method"="PUT"}
 }
 
+function Start-PostGetSettingsCatalog
+{
+    param($obj, $objectType)
+
+    if(-not $obj.Object.Assignments)
+    {
+        $url = "$($objectType.API)/$($obj.id)/assignments"
+        $assignments = (Invoke-GraphRequest -Url $url).Value
+        if($assignments)
+        {
+            $obj.Object.Assignments = $assignments
+        }
+    }
+}
+
 #endregion
 
 #region Notification functions
@@ -2787,6 +2902,19 @@ function Start-PostExportScopeTags
 
     Add-EMAssignmentsToExportFile $obj $objectType $path
 }
+
+function Start-PostGetScopeTags
+{
+    param($obj, $objectType)
+
+    $strAPI = "$($objectType.API)/$($obj.Object.Id)/assignments"
+    $tmpObj = Invoke-GraphRequest -Url $strAPI
+
+    if(($tmpObj.value | measure).count -gt 0)
+    {
+        $obj.Object.assignments = $tmpObj.value
+    }  
+}
 #endregion
 
 #region AutoPilot
@@ -2853,6 +2981,34 @@ function Start-PreUpdateDeviceHealthScripts
     if($curObject.Object.isGlobalScript -eq $true)
     {
         @{ "Import" = $false }
+    }
+}
+
+function Start-PostExportDeviceHealthScripts
+{
+    param($obj, $objectType, $path)
+
+    if($global:chkExportScript.IsChecked)
+    {
+        $fileName = Get-GraphObjectFile $obj $objectType
+        $fi = [IO.FileInfo]"$path\$fileName"
+
+        try
+        {
+            if($obj.detectionScriptContent)
+            {
+                [IO.File]::WriteAllBytes(("$path\$($fi.BaseName)_DetectionScript.ps1"), ([System.Convert]::FromBase64String($obj.detectionScriptContent)))
+            }
+
+            if($obj.remediationScriptContent)
+            {
+                [IO.File]::WriteAllBytes(("$path\$($fi.BaseName)_RemediationScript.ps1"), ([System.Convert]::FromBase64String($obj.remediationScriptContent)))
+            }
+        }
+        catch
+        {
+            Write-LogError "Failed to export scripts" $_.Exception
+        }
     }
 }
 
@@ -2942,6 +3098,7 @@ function Add-EMAssignmentsToExportFile
         Write-Log "File not found: $fileName. Could not add assignments to file" 3
         return
     }
+    
     $tmpObj = Get-GraphObjectFromFile $fileName
 
     if(-not $url)
@@ -3077,6 +3234,17 @@ function Start-PreImportConditionalAccess
     if($global:cbImportCAState.SelectedValue -and $global:cbImportCAState.SelectedValue -ne "AsExported")
     {
         $obj.state = $global:cbImportCAState.SelectedValue
+    }
+
+    if($obj.grantControls.authenticationStrength)
+    {
+        $obj.grantControls.operator = "AND"
+        $tmpObj = Get-GraphObjectFromFile $file
+
+        $authSetting = [PSCustomObject]@{
+            id = $tmpObj.grantControls.authenticationStrength.id
+        }
+        $obj.grantControls.authenticationStrength = $authSetting
     }
 }
 
@@ -3256,6 +3424,35 @@ function Start-PreDeleteADMXFiles
     @{ "Delete" = $false }
 }
 
+#endregion
+
+#region Reusable Groups
+function Start-PostGetReusableSettings
+{
+    param($obj, $objectType)
+
+    $strAPI = "$($objectType.API)/$($obj.Object.Id)?`$select=settinginstance,displayname,description"
+    $tmpObj = Invoke-GraphRequest -Url $strAPI
+
+    if($tmpObj.settingInstance)
+    {
+        $obj.Object | Add-Member Noteproperty -Name "settingInstance" -Value $tmpObj.settingInstance -Force 
+    }
+}
+
+#endregon
+
+#region Authentication Strength
+function Start-PreImportCommandAuthenticationStrengths
+{
+    param($obj, $objectType, $file, $assignments)
+
+    if($obj.policyType -ne "custom")
+    {
+        Write-Log "Built-in Authentication Strength objects cannot be imported" 2
+        @{ "Import" = $false }
+    }
+}
 #endregion
 
 Export-ModuleMember -alias * -function *

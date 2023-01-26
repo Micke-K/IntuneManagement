@@ -367,7 +367,6 @@
                      "educationTeacherCerts":  "Öğretmen sertifikaları",
                      "emailProfile":  "E-posta",
                      "enterpriseDataProtection":  "Windows Bilgi Koruması",
-                     "expeditedCheckin":  "Mobil cihaz yönetimi yapılandırması",
                      "extensibleSingleSignOn":  "Çoklu oturum açma uygulama uzantısı",
                      "filevault":  "FileVault",
                      "firewall":  "Güvenlik Duvarı",
@@ -508,7 +507,10 @@
                                                         "deploymentSettings":  "Dağıtım ayarları",
                                                         "groupAssignmentSettings":  "Atamalar",
                                                         "scopeSettings":  "Kapsam etiketleri"
-                                                    }
+                                                    },
+                                        "gradualRolloutLicenseWarning":  "Bu yetenek belirli lisanslar gerektirir.",
+                                        "gradualRolloutLicenseWarningEdit":  "İlke bu özellik seçilmeden kaydedilene kadar bu özellik kullanılmaya ve yapılandırılmaya devam eder.",
+                                        "licenseLearnMoreText":  "Önkoşullar ve özellik güncelleştirmesi ilkeleri hakkında daha fazla bilgi edinin."
                                     },
     "WIPPinRequirements":  {
                                "WipLowercaseCharacterPinRequirements":  {
@@ -676,7 +678,8 @@
                                            "selectApp":  "Intune ile dağıtmak istediğiniz iOS için App Store mağaza uygulamalarını arayın.",
                                            "useManagedBrowser":  "Gerekirse, kullanıcı web uygulamasını açtığında uygulama, Microsoft Edge veya Intune Managed Browser gibi Intune korumalı bir tarayıcıda açılır. Bu ayar hem iOS hem de Android cihazlar için geçerlidir.",
                                            "useManagedBrowserLink":  "https://docs.microsoft.com/en-us/intune/apps/app-configuration-managed-browser",
-                                           "win32AppPackageFile":  "Cihaza dışarıdan yüklenebilecek biçimdeki uygulamanızı içeren dosya. Geçerli paket türü: .intunewin.​"
+                                           "win32AppPackageFile":  "Cihaza dışarıdan yüklenebilecek biçimdeki uygulamanızı içeren dosya. Geçerli paket türü: .intunewin.​",
+                                           "winGetStoreSelectApp":  "Intune ile dağıtmak istediğiniz mağaza uygulamaları için Microsoft Store deposunu arayın."
                                        },
                               "descriptionPreview":  "Önizleme",
                               "descriptionRequired":  "Açıklama gerekiyor.",
@@ -800,10 +803,10 @@
                                                     "azureADDevice":  "İlişkili Azure AD cihazı",
                                                     "batch":  "Group tag",
                                                     "dateAssigned":  "Atama tarihi",
-                                                    "deviceAccountFriendlyName":  "Cihaz hesabına uygun ad",
                                                     "deviceAccountPwd":  "Cihaz hesabı şifresi",
                                                     "deviceAccountUpn":  "Device account",
                                                     "deviceDisplayName":  "Device name",
+                                                    "deviceFriendlyName":  "Cihaz kolay adı",
                                                     "deviceName":  "Cihaz adı",
                                                     "deviceUseType":  "Cihaz kullanım türü",
                                                     "enrollmentState":  "Kayıt durumu",
@@ -924,10 +927,10 @@
                                        "azureADDevice":  "İlişkili cihaz için cihaz ayrıntılarına gidin. Yok, ilişkili cihaz olmadığını gösterir.",
                                        "batch":  "Bir cihaz grubunu tanımlamak için kullanılabilen bir dize özniteliği. Intune'un Grup Etiketi alanı, Azure AD cihazlarındaki OrderID özniteliğine eşlenir.",
                                        "dateAssigned":  "Profilin cihaza atandığı tarihin zaman damgası.",
-                                       "deviceAccountFriendlyName":  "Surface Hub cihazları için cihaz hesabına uygun ad",
-                                       "deviceAccountPwd":  "Surface Hub cihazları için cihaz hesabı parolası",
-                                       "deviceAccountUpn":  "Surface Hub cihazları için cihaz hesabı e-postası",
+                                       "deviceAccountPwd":  "Surface Hub cihazları için cihaz hesabı parolası. Bu bilgi girildiyse cihaz hesabını ve kolay adı da girin.",
+                                       "deviceAccountUpn":  "Surface Hub cihazları için cihaz hesabı e-posta adresi. Bu bilgi girildiyse cihaz hesabı parolasını ve kolay adı da girin.",
                                        "deviceDisplayName":  "Bir cihaz için benzersiz bir ad yapılandırın. Bu ad, Hibrit Azure AD ile katılan dağıtımlarda yok sayılacak. Cihaz adı, Hibrit Azure AD cihazları için hala etki alanı katılım profilinden gelir.",
+                                       "deviceFriendlyName":  "Surface Hub cihazları için kolay ad. Bu bilgi girildiyse cihaz hesabını ve cihaz hesabı parolasını da girin.",
                                        "deviceName":  "Kullanıcı, cihazı bulmaya ve bu cihaza bağlanmaya çalışırken görüntülenen ad.",
                                        "deviceUseType":  "      Cihaz, seçiminize bağlı olarak ayarlanır. Daha sonra her zaman Ayarlar'dan değişiklik yapabilirsiniz.\r\n      <ul>\r\n      <li> Toplantılar ve sunular için, Windows Hello açık değildir ve her oturumdan sonra veriler kaldırılır.\r\n      </li>\r\n      <li> Ekip işbirliği için, Windows Hello açıktır ve profiller hızlı oturum açma için kaydedilir</li>\r\n      </ul>",
                                        "enrollmentState":  "Cihazın kaydolup kaydolmadığını belirtir.",
@@ -1047,6 +1050,9 @@
                                                          },
                                                  "V12":  {
                                                              "0":  "macOS Monterey 12.0"
+                                                         },
+                                                 "V13":  {
+                                                             "0":  "macOS Ventura 13.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -1102,6 +1108,7 @@
                                    "customMessageTextBox":  "Hata iletisi",
                                    "customMessageToggle":  "Zaman sınırı veya hatası oluştuğunda özel ileti göster",
                                    "enableForAutopilotOnlyToggle":  "İlk çalıştırma deneyimi (OOBE) tarafından sağlanan cihazlarda yalnızca sayfayı göster",
+                                   "installQualityUpdatesToggle":  "Windows kalite güncelleştirmelerini yükleyin (cihazı yeniden başlatabilir)",
                                    "progressToggle":  "Uygulama ve profil yapılandırma ilerlemesini göster",
                                    "resetToggle":  "Yükleme hatası oluşursa kullanıcıların cihazı sıfırlamasına izin ver",
                                    "timeout":  "Yükleme belirtilen dakikadan uzun sürerse hata göster"
@@ -1367,7 +1374,7 @@
                                                           },
                         "AndroidBackup":  {
                                               "label":  "Kuruluş verilerini Android yedekleme hizmetlerine yedekleme",
-                                              "tooltip":  "Kuruluş verilerinin Android yedekleme hizmetlerine yedeklenmesini engellemek için {0} seçeneğini belirleyin.  \r\nKuruluş verilerinin Android yedekleme hizmetlerine yedeklenmesine izin vermek için {1} seçeneğini belirleyin.  \r\nKişisel veya yönetilmeyen veriler bu ayardan etkilenmez."
+                                              "tooltip":  "Kuruluş verilerinin Android yedekleme hizmetlerine yedeklenmesini engellemek için {0} seçeneğini belirleyin.\r\nKuruluş verilerinin Android yedekleme hizmetlerine yedeklenmesine izin vermek için {1} seçeneğini belirleyin.\r\nKişisel veya yönetilmeyen veriler bu ayardan etkilenmez."
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "Erişim için PIN yerine biyometri",
@@ -1378,7 +1385,7 @@
                                                    "tooltip":  "Android işletim sistemi, Android cihaz kullanıcılarının kimliğini doğrulamak için parmak izi taramalarını kullanır. Bu özellik, Android cihazlardaki yerel biyometrik denetimleri destekler. Samsung Geçiş İzni gibi OEM'ye özgü biyometrik ayarlar desteklenmez. İzin verilirse, biyometrik denetimi olan bir cihazda uygulamaya erişmek için bu yerel biyometrik denetimler kullanılmalıdır."
                                                },
                         "AndroidOverrideFingerprint":  {
-                                                           "label":  "Zaman aşımından sonra parmak izini PIN ile geçersiz kıl"
+                                                           "label":  "Zaman aşımından sonra biyometriyi PIN  ile geçersiz kıl"
                                                        },
                         "AppPIN":  {
                                        "label":  "Cihaz PIN'i ayarlı olduğunda uygulama PIN'i",
@@ -1435,7 +1442,7 @@
                                             "tooltip":  "Kuruluş verilerini Intune uygulama katmanı şifrelemesiyle şifrelemeyi zorunlu kılmak için {0} seçeneğini belirleyin.\r\n <br/>\r\nKuruluş verilerini Intune uygulama katmanı şifrelemesi ile şifrelemeyi zorunlu kılmamak için {1} seçeneğini belirleyin.\r\n\r\n<br/>\r\nNot: Intune uygulama katmanı şifrelemesi hakkında daha fazla bilgi için bkz. {2}."
                                         },
                         "EncryptDataAndroid":  {
-                                                   "tooltip":  "<p>Bu uygulamada iş veya okul verilerinin şifrelenmesini etkinleştirmek için <b>Gerektir</b> seçeneğini belirleyin. Intune, uygulama verilerini güvenle şifrelemek için Android Keystore sisteminin yanı sıra bir OpenSSL, 256 bit AES şifreleme düzenini kullanır. Veriler, dosya G/Ç görevleri sırasında eş zamanlı olarak şifrelenir. Cihaz depolamasındaki içerik her zaman şifrelenir. SDK, eski SDK sürümlerini kullanan içerik ve uygulamalarla uyumluluğu sürdürmek amacıyla 128 bit anahtar desteği sağlamaya devam eder. </p>\r\n\r\n<p>Şifreleme yöntemi FIPS 140-2 uyumludur.</p>"
+                                                   "tooltip":  "<p>Bu uygulamada iş veya okul verilerini şifrelemeyi etkinleştirmeyi <b>gerektir</b> seçeneğini belirleyin. Intune, uygulama verilerini güvenli bir şekilde şifrelemek için Android Keystore sistemiyle birlikte wolfSSL, 256 bit AES şifreleme şemasını kullanıyor. Dosya G/Ç görevleri sırasında veriler zaman uyumlu olarak şifrelenir. Cihaz depolama alanı içeriği her zaman şifrelenir. Yeni dosyalar 256 bit anahtarlarla şifrelenecek. Mevcut 128 bit şifreli dosyalar 256 bit anahtarlara geçiş denemesi olacak ancak işlem garanti edilmiyor. 128 bit anahtarlarla şifrelenmiş dosyalar okunabilir olarak kalacak. </p>\r\n\r\n<p>Şifreleme yöntemi FIPS 140-2 uyumlu.</p>"
                                                },
                         "EncryptDataIos":  {
                                                "tooltip1":  "Bu uygulamada iş veya okul verilerinin şifrelemesini etkinleştirmek için <b>Gerektir</b> seçeneğini belirleyin. Intune, cihaz kilitliyken uygulama verilerini korumak için iOS/iPadOS cihaz şifrelemesini zorunlu tutar. Uygulamalar, Intune APP SDK'sı şifrelemesini kullanarak isteğe bağlı olarak uygulama verilerini şifreleyebilir. Intune APP SDK'sı, uygulama verilerine 128 bit AES şifrelemesi uygulamak amacıyla iOS/iPadOS şifreleme yöntemlerini kullanır.",
@@ -1467,7 +1474,7 @@
                                                     },
                         "OpenLinksManagedBrowser":  {
                                                         "label":  "Diğer uygulamalarla web içerik aktarımını kısıtla",
-                                                        "tooltip":  "<p>Bu uygulamanın, web içeriğini açabileceği uygulamaları belirtmek için şu seçeneklerden birini belirleyin: </p>\r\n<p><b>Microsoft Edge:</b> Web içeriğinin yalnızca Microsoft Edge’de açılmasına izin ver </p>\r\n<p><b>Yönetilmeyen tarayıcı:</b> Web içeriğinin yalnızca \"Yönetilmeyen tarayıcı protokolü\" ayarıyla tanımlanan yönetilmeyen tarayıcıda açılmasına izin verin. </p> \r\n<p><b>Tüm uygulamalar:</b> Web bağlantılarının tüm uygulamalarda açılmasına izin ver</p>"
+                                                        "tooltip":  "<p>Bu uygulamanın, web içeriğini açabileceği uygulamaları belirtmek için şu seçeneklerden birini belirleyin: </p>\r\n<p><b>Microsoft Edge:</b> Web içeriğinin yalnızca Microsoft Edge’de açılmasına izin ver.<a href=\"{0}\" target=\"_blank\"> Microsoft Edge’in verilerinizi nasıl koruduğu hakkında bilgi edinin.</a></p>\r\n<p><b>Yönetilmeyen tarayıcı:</b> Web içeriğinin yalnızca \"Yönetilmeyen tarayıcı protokolü\" ayarıyla tanımlanan yönetilmeyen tarayıcıda açılmasına izin verin.</p> \r\n<p><b>Tüm uygulamalar:</b> Web bağlantılarının tüm uygulamalarda açılmasına izin ver</p>"
                                                     },
                         "OverrideBiometric":  {
                                                   "tooltip":  "Gerekirse zaman aşımına (dakika olarak eylemsizlik süresi) bağlı olarak bir PIN istemi, biyometrik istemlerini geçersiz kılar. Bu zaman aşımı değerine ulaşılmazsa biyometrik istemi gösterilmeye devam eder. Bu zaman aşımı değeri, 'Erişim gereksinimlerini yeniden denetlemek için geçecek süre (dakika olarak eylemsizlik süresi)' altında belirtilen değerden büyük olmalıdır. "
@@ -1502,7 +1509,7 @@
                                                     },
                         "RequirePinAfterBiometricChange":  {
                                                                "label":  "Biyometrik güncelleştirmeler sonrasında PIN ile Biyometriyi geçersiz kıl",
-                                                               "tooltip":  "Sınıf 3 biyometrisi cihaz tarafından destekleniyorsa (daha fazla bilgiyi <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">burada</a> bulabilirsiniz), biyometride bir değişiklik algılandığında bir PIN istemi, biyometrik istemleri geçersiz kılar."
+                                                               "tooltip":  "3. sınıf biyometri cihaz tarafından destekleniyorsa (daha fazla bilgi <a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%) 20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">burada</a>), biyometride bir değişiklik algılandığında, bir PIN istemi biyometrik istemleri geçersiz kılar . Bu ayar, yalnızca uygulamaya erişmek için bir biyometrik kullanıldığında etkili olur."
                                                            },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "Paket kimliği benzersiz olmalıdır.",
@@ -1606,7 +1613,7 @@
                             "pushNotification":  "Son kullanıcıya anında iletme bildirimi gönder",
                             "remoteLock":  "Uyumsuz cihazı uzaktan kilitle",
                             "removeSourceAccessProfile":  "Kaynak erişim profilini kaldır",
-                            "retire":  "Uyumsuz cihazı devre dışı bırak",
+                            "retire":  "Cihazı kullanımdan kaldırma listesine ekle",
                             "wipe":  "Silme",
                             "emailNotification":  "Son kullanıcıya e-posta gönder"
                         },
@@ -1746,6 +1753,7 @@
                                                       "weeks1":  "Her hafta"
                                                   },
                               "PolicyListToolBarOption":  {
+                                                              "linux":  "Linux",
                                                               "macOs":  "macOS",
                                                               "windows":  "Windows 10 ve sonraki sürümler"
                                                           },
@@ -1765,6 +1773,7 @@
                                                  "uploadInfoBalloonContent":  "PowerShell betik dosyasını belirtin. Dosyanın 200 KB'tan küçük olması gerekir.",
                                                  "uploadLabel":  "Betik konumu"
                                              },
+                              "bashScriptObjectName":  "Bash betiği",
                               "createButtonText":  "Ekle",
                               "createPowershellScriptFlowSectionName":  "PowerShell betiğini ekle",
                               "customAttributeObjectName":  "Özel öznitelik",
@@ -1969,6 +1978,8 @@
                            "androidDeviceOwnerAlwaysOnVpnClientDescription":  "Belirtilen VPN istemcisi cihazda yüklü olmalıdır ve uygulama başına VPN'yi desteklemelidir, aksi takdirde bir hata oluşacaktır. Uygulamayı Yönetilen Google Play Store'da onaylamanız, uygulamayı Intune ile eşitlemeniz ve kullanıcının iş profiline yüklenmesi için dağıtmanız gerekeceğini unutmayın.",
                            "androidDeviceOwnerCustomPasswordDescription":  "Yalnızca adanmış cihazlar için cihaz geçiş kodu oluşturun. 4-16 karakter olabilir ve sayı, harf ile özel karakterler içerebilir.",
                            "androidDeviceOwnerCustomPasswordName":  "Özel parola",
+                           "androidElevenAndBelowPasswordHeader":  "Android 11 ve önceki sürümler",
+                           "androidElevenAndBelowPasswordHeaderDescription":  "Bu ayarlar Android 11 veya önceki sürümlerinde çalıştırılan cihazlar için geçerlidir.",
                            "androidEnterpriseAlwaysOnVpnClientName":  "VPN istemcisi",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierDescription":  "Uygulamanın paket kimliğini Google Play Store'da girin. Örneğin Play Store'daki uygulama URL'si https://play.google.com/store/details?id=com.contosovpn.android.prod ise paket kimliği com.contosovpn.android.prod olur.",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierName":  "Paket Kimliği",
@@ -2016,6 +2027,9 @@
                            "androidTenDeprecationInfoBox":  "Ekim 2020'den itibaren bazı ayarlar, Android 10 ve üzeri sürümleri çalıştıran ancak Samsung Knox çalıştırmayan Android cihazlarında desteklenmeyecek. Bu ayarlar, Android 9 ve önceki sürümler veya Samsung Knox ile etiketlenir. Daha fazla bilgi edinmek için tıklayın.",
                            "androidTrustedServerCertificateNamesDescription":  "Bu, Wifi erişim noktasına istemci kimlik doğrulaması sırasında Radius Sunucusu tarafından sunulan sertifikada kullanılan DNS adıdır. Tam etki alanı adlarında aynı DNS sonekine sahip birden çok Radius sunucunuz varsa, yalnızca sonek de kullanılabilir. Bu, cihazların onlara sunulan sunucu sertifikasına güvenmelerini sağlar. <a href=\"https://go.microsoft.com/fwlink/?linkid=2181354\" target=\"_blank\">Daha fazla bilgi</a>.<br>",
                            "androidTrustedServerCertificateNamesName":  "Radius sunucusu adı",
+                           "androidTwelveAndAbovePasswordHeader":  "Android 12 ve üzeri sürümler",
+                           "androidTwelveAndAbovePasswordHeaderDescription":  "Bu ayarlar Android 12 veya üzeri sürümlerinde çalıştırılan cihazlar için geçerlidir.",
+                           "androidTwelveDeprecationInfoBox":  "Kasım 2022'den itibaren, Android 12 ve üzeri sürümlerinde çalıştıran Android cihazlarda bazı ayarlar desteklenmeyecek. Bu ayarlar Android 11 ve önceki olarak etiketlenmiştir. Daha fazla bilgi edinmek için tıklayın.",
                            "androidZebraMxConfigurationFileXmlName":  "Geçerli bir Zebra MX XML dosyası seçin",
                            "androidZebraMxConfigurationLearnMore":  "Zebra cihazlarını yönetme hakkında daha fazla bilgi edinin",
                            "androidZebraMxConfigurationXmlName":  ".xml biçiminde MX profili",
@@ -3792,8 +3806,6 @@
                            "exchangeActiveSyncHostExample":  "örn. outlook.office365.com",
                            "exchangeActiveSyncHostName":  "E-posta sunucusu",
                            "exclusionAppListColumn":  "Hariç tutulacak uygulama",
-                           "expeditedCheckinEnableDescription":  "Cihazların her saat kontrol iletişimi kurmasını sağlayın",
-                           "expeditedCheckinEnableName":  "Cihazların her saat kontrol iletişimi kurmasını sağlayın",
                            "experienceAllowBrowserSyncSettingsDescription":  "Kullanıcının cihazları arasında geçmiş ve sık kullanılanlar gibi bilgileri eşitlemek amacıyla ayarlar seçeneklerinizi kullanmak için tarayıcı ayarlarını eşitlemeyi açıp açamayacağını belirtir. Bu ayarı yapılandırmak için \"Tarayıcı ayarlarını kullanıcının cihazları arasında eşitle\" ayarını etkinleştirmeniz gerekir.",
                            "experienceAllowBrowserSyncSettingsName":  "Kullanıcı, tarayıcı ayarlarını eşitlemeyi açabilir",
                            "experienceDoNotSyncBrowserSettingsDescription":  "Engellendiğinde, kullanıcıların cihazlar arasında eşitleme yapamaması için varsayılan yapılandırma (cihazlar arasında tarayıcı ayarlarını eşitlemeye izin ver) kapatılır. \"Kullanıcı geçersiz kılmasını engelle ve etkinleştir\" seçildiğinde, kullanıcı yöneticinin atadığı ayarı geçersiz kılabilir.",
@@ -4866,9 +4878,9 @@
                            "macOSSoftwareUpdatePolicySectionDescription":  "Atanan cihazların son macOS güncelleştirmelerini otomatik olarak yüklemesini zorlamak için bir profil oluşturun. Bu ayarlar, yazılım güncelleştirmelerinin nasıl ve ne zaman dağıtılacağını belirler. Bu profil, kullanıcıların işletim sistemini kendilerinin güncelleştirmesini engellemez. Güncelleştirmeler yalnızca Apple Otomatik Cihaz Kaydı (ABM veya ASM) aracılığıyla kaydedilen cihazlara uygulanır.",
                            "macOSSoftwareUpdatePolicySectionDescriptionLearnMoreText":  "Daha Fazla Bilgi",
                            "macOSSoftwareUpdatePolicySupervisedLearnMoreText":  "Daha Fazla Bilgi",
-                           "macOSSoftwareUpdatePolicySupervisedName":  "Atanan cihazların son macOS güncelleştirmelerini otomatik olarak yüklemesini zorlamak için bir profil oluşturun. Bu ayarlar, yazılım güncelleştirmelerinin nasıl ve ne zaman dağıtılacağını belirler. Bu profil, kullanıcıların işletim sistemini kendilerinin güncelleştirmesini engellemez. Güncelleştirmeler yalnızca Apple Otomatik Cihaz Kaydı (ABM veya ASM) aracılığıyla kaydedilen cihazlara uygulanır.",
+                           "macOSSoftwareUpdatePolicySupervisedName":  "Create a profile to force assigned devices to automatically install the latest macOS updates. These settings determine how and when software updates deploy. This profile doesn't prevent users from updating the OS manually. Updates will only apply to supervised devices.",
                            "macOSSoftwareUpdatePolicyWeeklyScheduleName":  "Haftalık zamanlama",
-                           "macOSSoftwareUpdateSelectScheduleTypeName":  "Varsayılan olarak Intune, bir cihaza macOS Yazılım Güncelleştirmeleri ilkesi atandıysa, cihaz kontrol iletişiminde en son güncelleştirmeleri dağıtır. Ayrıca haftalık bir zamanlama oluşturabilir ve cihazların kontrol iletişimi kurup güncelleştirmeleri alabileceği zaman dilimini belirtebilirsiniz. Zamanlanan sürenin dışında güncelleştirmeyi seçerseniz, Intune planlanan süre sona erene kadar güncelleştirmeleri dağıtmaz.",
+                           "macOSSoftwareUpdateSelectScheduleTypeName":  "Bir cihaza güncelleştirme ilkesi atandığında varsayılan olarak Intune, en son güncelleştirmeleri cihaz kontrol iletişimi sırasında dağıtır. Bunun yerine özelleştirilmiş başlangıç ve bitiş saatlerini içeren haftalık bir zamanlama oluşturabilirsiniz. Planlanan zamanın dışında güncelleştirmeyi seçerseniz, Intune planlanan zaman sona erene kadar güncelleştirmeleri dağıtmaz.",
                            "macOSSoftwareUpdateSelectUpdateBehaviorName":  "İndirme, yükleme ve/veya bildirimlerin her güncelleştirme türünde nasıl yapılacağını seçin.",
                            "macOSSystemExtensionsExtensionTypeName":  "İzin verilen sistem uzantısı türleri",
                            "macRequireClassroomRequestPermissionToLeaveClassesDescription":  "Yönetilmeyen bir Classroom kursuna kayıtlı öğrencilerin kurstan ayrılmak için öğretmenin onayını alması gerekir.",
@@ -5143,9 +5155,9 @@
                            "nATKeepAliveOffloadEnableName":  "Cihaz uykuda olduğunda NAT etkin tutma yükünü donanıma boşalt",
                            "nATKeepAliveOffloadEnableToolTip":  "Varsayılan olarak, cihaz uykuda olduğunda NAT sistemi, cihazın VPN'ye bağlı olduğundan emin olmak için sürekli olarak denetleme yapar. Bu ayar, bu davranışı devre dışı bırakmanızı sağlar.",
                            "nacIdCheckBoxLabel":  "Kabul ediyorum.",
-                           "nacIdDescCisco":  "Cisco AnyConnect, NAC'yi etkinleştirmek için Intune cihaz kimliğinin VPN profiline dahil edilmesini gerektirir.<br><br>Microsoft'un cihaz bilgilerini Cisco ve iş ortakları tarafından kullanılabilecek şekilde VPN profiline dahil etmesine izin veriyorum.",
-                           "nacIdDescCitrix":  "Citrix SSO, NAC'yi etkinleştirmek için Intune cihaz kimliğinin VPN profiline dahil edilmesini gerektirir.<br><br>Microsoft'un cihaz bilgilerini Citrix SSO ve iş ortakları tarafından kullanılabilecek şekilde VPN profiline dahil etmesine izin veriyorum.",
-                           "nacIdDescF5":  "F5 Access, NAC'yi etkinleştirmek için Intune cihaz kimliğinin VPN profiline dahil edilmesini gerektirir.<br><br>Microsoft'un cihaz bilgilerini F5 Access ve iş ortakları tarafından kullanılabilecek şekilde VPN profiline dahil etmesine izin veriyorum.",
+                           "nacIdDescCisco":  "Cisco AnyConnect, NAC'yi etkinleştirmek için Intune cihaz kimliğinin VPN profiline dahil edilmesini gerektirir.<br><br>Microsoft'un cihaz bilgilerini Cisco ve iş ortakları tarafından kullanılabilecek şekilde VPN profiline dahil etmesine izin veriyorum. Servis sağlayıcıyla hangi verilerin paylaşıldığı da dahil olmak üzere daha fazla bilgi edinmek için tıklayın.",
+                           "nacIdDescCitrix":  "Citrix SSO, NAC'yi etkinleştirmek için Intune cihaz kimliğinin VPN profiline dahil edilmesini gerektirir.<br><br>Microsoft'un cihaz bilgilerini Citrix ve iş ortakları tarafından kullanılabilecek şekilde VPN profiline dahil etmesine izin veriyorum. Servis sağlayıcıyla hangi verilerin paylaşıldığı da dahil olmak üzere daha fazla bilgi edinmek için tıklayın.",
+                           "nacIdDescF5":  "F5 Access, NAC'yi etkinleştirmek için Intune cihaz kimliğinin VPN profiline dahil edilmesini gerektirir.<br><br>Microsoft'un cihaz bilgilerini F5 Access ve iş ortakları tarafından kullanılabilecek şekilde VPN profiline dahil etmesine izin veriyorum. Servis sağlayıcıyla hangi verilerin paylaşıldığı da dahil olmak üzere daha fazla bilgi edinmek için tıklayın.",
                            "nacIdHeader":  "Ağ erişim denetimini (NAC) etkinleştir",
                            "nacIdHeaderCiscoToolTip":  "Cihaz kimliği şifrelenecek ve VPN profiline dahil edilecek. Kullanıcı VPN'ye bağlanmayı denediğinde, Cisco AnyConnect bu değeri NAC altyapınıza aktaracak, altyapı ise daha sonra cihazın kayıtlı ve uyumlu olduğundan emin olmak için Intune'u bu değerle sorgulayacak.<br><br>Cisco AnyConnect, NAC'yi etkinleştirmek için cihaz kimliğine doğrudan erişemediğinden bu değerin VPN profiline dahil edilmesi gerekir.",
                            "nacIdHeaderCitrixToolTip":  "Cihaz kimliği şifrelenecek ve VPN profiline dahil edilecek. Kullanıcı VPN'ye bağlanmaya çalıştığında, Citrix SSO bu değeri NAC altyapınıza aktaracak; altyapı ise daha sonra cihazın kayıtlı ve uyumlu olduğundan emin olmak için Intune'u bu değerle sorgulayacak.<br><br>Citrix SSO, NAC'yi etkinleştirmek için cihaz kimliğine doğrudan erişemediğinden bu değerin VPN profiline dahil edilmesi gerekir.",
@@ -6016,6 +6028,15 @@
                            "shutdown":  "Kapat",
                            "signatureUpdateIntervalInHoursName":  "Güvenlik bilgisi güncelleştirme aralığı (saat cinsinden)",
                            "signingCertificateType":  "İmzalama sertifikası türü",
+                           "silentCertAccessAddApps":  "Uygulama ekle",
+                           "silentCertAccessApplicationsName":  "Uygulamalar",
+                           "silentCertAccessMaxAppsWarn":  "Sessiz sertifika erişimi vermek için en fazla 50 uygulama seçin",
+                           "silentCertAccessMinAppsWarn":  "Sessiz sertifika erişimi vermek için en az bir uygulama seçin",
+                           "silentCertAccessSpecificApps":  "Belirli uygulamalar için sessizce izin ver (diğer uygulamalar için kullanıcı onayı iste)",
+                           "silentCertAccessTabName":  "Uygulamalar",
+                           "silentCertAccessTypeDescription":  "Uygulamalara sertifika erişiminin nasıl verileceğini seçin",
+                           "silentCertAccessTypeName":  "Sertifika erişimi",
+                           "silentCertAccessUserApproval":  "Tüm uygulamalar için kullanıcı onayı iste",
                            "simpleDownloadOption":  "Eşlemesiz basit indirme modu (99)",
                            "simultaneousMultiThreadingName":  "Eşzamanlı çoklu iş parçacığı kullanımı",
                            "singleAppModeAppNameDescription":  "Uygulamanın adı.",
@@ -7151,6 +7172,8 @@
                            "windows10ProfessionalOption":  "Windows 10/11 Pro",
                            "windows10ProfessionalWorkstationNOption":  "Windows 10/11 Pro for Workstations N sürümü",
                            "windows10ProfessionalWorkstationOption":  "Windows 10/11 Pro for Workstations",
+                           "windows11CloudEditionNOption":  "Windows 11 SE N",
+                           "windows11CloudEditionOption":  "Windows 11 SE",
                            "windows11EULA":  "Bu seçeneği işaretleyerek, bu işletim sistemini bir cihaza uygularken (1) geçerli Windows lisansının toplu lisanslama yoluyla satın alındığını veya (2) kuruluşunuzu bağlama yetkisine sahip olduğunuzu ve burada bulabileceğiniz ilgili Microsoft Yazılımı Lisans Koşulları’nı kuruluş adına kabul ettiğinizi onaylıyorsunuz: <a>{0}</a>.",
                            "windowsAppNonComplianceTypeDescription":  "Kullanıcılardan Kullanım Koşulları'nı ve belirli uygulamaların yüklenmesinin engelleneceğini kabul etmelerini istemenizi öneririz. Kullanıcıların yükleyemeyeceği Intune tarafından yönetilmeyen Windows Phone uygulamalarını belirtmek için engellenen uygulamalar listesini kullanın. İzin verilen uygulamalar listesinde, şirket portalı ve dağıtılmış uygulamalar dahil tüm uygulamalar, uygulama mağazası URL biçimi kullanılarak listeye eklenmelidir",
                            "windowsAppUrlExample":  "örn. https://www.microsoft.com/en-us/store/apps/remote-desktop/9wzdncrfj3ps",
@@ -7239,6 +7262,8 @@
                            "workProfilePersonalUsagAndroidEnrollmentTypesHeaderDescription":  "Bu ayarlar şirkete ait iş profili cihazları için geçerlidir ve yalnızca kişisel kullanım sırasında uygulanır.",
                            "workProfileRequirePasswordDescription":  "İş uygulamalarını kullanmak için parola girilmesini zorunlu kılın. Bu parola cihaz parolasından ayrı olabilir. Android 7.0+ gerektirir ",
                            "workProfileRequirePasswordName":  "İş Profili Parolası Gerektir",
+                           "workProfileRequiredPasswordComplexityDescription":  "Gerekli parola karmaşıklığını belirtin.",
+                           "workProfileRequiredPasswordComplexityName":  "Work Profile Password Complexity",
                            "workProfileRequiredPasswordTypeDescription":  "Gereken parola türünü belirtin.",
                            "workProfileRequiredPasswordTypeName":  "Gerekli parola türü",
                            "workspaceIDName":  "Çalışma Alanı Kimliği",
@@ -7601,7 +7626,7 @@
                            "isMamEnabled":  "MAM etkinleştirildi mi?",
                            "itemsCount":  "{0} öğe",
                            "jailbrokenRootedDevices":  "Jailbreak yapılmış/kök erişim izni verilmiş cihazlar",
-                           "lastModifiedDate":  "Last Modified Date",
+                           "lastModifiedDate":  "En Son Değişiklik Tarihi",
                            "lastReportedDate":  "Son raporlanan tarih",
                            "lastSync":  "Son eşitleme",
                            "lastSyncGmt":  "Son eşitleme (GMT)",
@@ -7633,6 +7658,7 @@
                            "mdmDeviceId":  "MDM Cihaz Kimliği",
                            "mdmWipInvalidVersionSettings":  "Bir veya birden fazla uygulamanın en düşük/en yüksek sürüm tanımı geçersiz.<br /> <br />Kayıt ile Windows Bilgi Koruması ilkeleri, en düşük veya en yüksek sürümlerden her ikisi de eşit olarak belirtilmediği takdirde yalnızca birini belirtmeyi destekler. Yalnızca en düşük sürüm belirtildiğinde kural, en düşük sürümden daha yüksek veya bu sürüme eşit olarak ayarlanır. Benzer şekilde yalnızca en yüksek sürüm belirtildiğinde kural, en yüksek sürümden daha düşük veya bu sürüme eşit olarak ayarlanır.",
                            "mdmWipReport":  "MDM Windows Bilgi Koruması Raporu",
+                           "microsoftDefenderForEndpoint":  "Uç Nokta için Microsoft Defender",
                            "microsoftEdgeOptionText":  "Microsoft Edge",
                            "minAppVersion":  "En düşük uygulama sürümü",
                            "minMaxValidation":  "Eylem aynı olduğunda En düşük işletim sistemi sürümünün En yüksek işletim sistemi sürümünden düşük olması gerekir.",
@@ -7642,11 +7668,13 @@
                            "minimumCompanyPortalVersion":  "En düşük Şirket Portalı sürümü",
                            "minimumDeviceSelection":  "En az 1 cihaz seçilmelidir",
                            "mobileAppCRUDpermission":  "Mobil uygulama okuma, oluşturma ve atama izni",
+                           "mobileThreatDefenseNonMicrosoft":  "Mobil Tehdit Savunması Durumu (Microsoft olmayan)",
                            "monitor":  "İzleyici",
                            "moreApps":  "Daha fazla uygulama",
                            "moreAppsTextBoxTooltip":  "Intune portalının tamamına erişiminiz yoksa iş kolu uygulamalarını buraya ekleyin.",
-                           "mtdConnectorInfoBox1":  "<b>Önemli!</b> Kuruluşunuzun verilerini, bağlı Mobil Tehdit Savunması hizmetlerindeki tehdit değerlendirmelerine göre doğru şekilde korumak için Mobil Tehdit Savunması Bağlayıcısı'nın ayarlanmış olduğundan emin olun.",
+                           "mtdConnectorInfoBox1":  "<b>Önemli!</b> Kuruluşunuzun verilerini, bağlı Mobil Tehdit Savunması hizmetlerindeki tehdit değerlendirmelerine göre doğru şekilde korumak için Mobil Tehdit Savunması (MTD) Bağlayıcısı'nın ayarlanmış olduğundan emin olun.",
                            "mtdConnectorInfoBox2":  "Kayıtlı olmayan cihazlar için Mobil Tehdit Savunması hakkında daha fazla bilgi edinin.",
+                           "mtdConnectorInfoBox3":  "Kiracınızın hem Uç Nokta için Microsoft Defender hem de MTD hizmeti (Microsoft olmayan) ile ayarlanmış bir bağlantısı varsa ve birincil MTD hizmetini yapılandırmazsa veya bir kullanıcı hedeflendiğinde bir çakışma oluyorsa varsayılan değer Uç Nokta için Microsoft Defender olur.",
                            "name":  "Ad",
                            "networkBoundariesInfoBoxText":  "Bir bulut kaynağına bir IP adresi aracılığıyla doğrudan bağlanan kişisel uygulamaların TLS bağlantılarını etkinleştirmek için bulut kaynağı listenize /*AppCompat*/ ifadesini ekleyin.",
                            "networkBoundariesInfoParagraph1":  "Korumalı uygulamaların ağınızdaki kurumsal verilere erişebileceği yeri seçin.",
@@ -7735,6 +7763,7 @@
                            "portNumber":  "Bağlantı Noktası Numarası",
                            "portNumberDesc":  "Ara sunucu adresinde belirtilen ara sunucunun bağlantı noktası",
                            "prefix":  "Önek",
+                           "primaryMtdService":  "Birincil MTD hizmeti",
                            "productName":  "Ürün adı",
                            "properties":  "Özellikler",
                            "protected":  "Korumalı",
@@ -7777,7 +7806,7 @@
                            "resourcesToBeCreated":  "Oluşturulacak kaynaklar",
                            "restrictWebContentNo":  "Herhangi bir uygulama",
                            "restrictWebContentOption2":  "{0}: Herhangi bir uygulama web bağlantılara izin ver",
-                           "rootCertificate":  "Root Certificate",
+                           "rootCertificate":  "Kök Sertifika",
                            "safetyNetDeviceAttestation":  "SafetyNet cihaz kanıtı",
                            "saveAppsNotificationText":  "Seçilen uygulamalar kaydediliyor",
                            "saveChangesCommandText":  "Kaydet",
@@ -7813,6 +7842,7 @@
                            "setting":  "Ayar",
                            "settingName":  "Ayar adı",
                            "settings":  "Ayarlar",
+                           "settingsCatalog":  "Ayarlar kataloğu",
                            "settingsSelectorLabel":  "Ayarlar",
                            "silent":  "Sessiz",
                            "specificUserIsLicensedIntune":  "{0} adlı kullanıcıya Microsoft Intune lisansı atandı.",
@@ -7840,6 +7870,7 @@
                            "targetedUserPartWithPolicy":  "İlke tarafından yönetiliyor",
                            "targetediOSUserPartTitle":  "iOS için kullanıcı durumu",
                            "threatCategory":  "Tehdit kategorisi",
+                           "tileDeprecated":  "Bu kutucuk kullanım dışı bırakıldı. Lütfen bu kutucuğu panonuzdan kaldırın.",
                            "timeColumnLabel":  "Saat",
                            "timebombLabel":  "Uygulama verileri silinmeden önce geçen (gün cinsinden) çevrimdışı süre",
                            "timebombToolTip":  "Cihaz Intune ile eşitlenmeden geçen belirtilen sayıda günden sonra Windows cihazda seçmeli bir silme işlemi gerçekleştirir, bu ise uygulamaların kaydının MAM kaydı için geri alınmasına ve şifrelenmiş ve korumalı kurumsal verilerin kaldırılmasına neden olur. Bu ayar için varsayılan değer 90 gündür. Bu değerin 0 olarak ayarlanması ayarı devre dışı bırakır.",
@@ -7912,7 +7943,7 @@
                            "windows10AppProtectionPolicy":  "Windows 10 ve sonraki işletim sistemlerinde uygulama koruma İlkesi",
                            "windows10PlatformLabel":  "Windows 10 ve sonraki sürümler",
                            "windows10x":  "Windows 10X",
-                           "windows8":  "Windows 8.1 and later",
+                           "windows8":  "Windows 8.1 ve sonraki sürümler",
                            "windowsInformationProtectionPlatformLabel":  "Windows Bilgi Koruması",
                            "windowsPhone":  "Windows Phone 8.1",
                            "windowsPlatformLabel":  "Windows",
@@ -7944,6 +7975,7 @@
                            "wipSMBStringTooltip":  "Belirli uzantılara sahip dosyaların ağ konumu listesinde tanımlanan şirket sınırları içinde bir SMB paylaşımından kopyalanırken şifrelenmesi için bir dosya uzantıları listesi belirtir. Bu ilkenin belirtilmediği durumlarda, varolan otomatik şifreleme davranışı uygulanır. Bu ilke yapılandırıldığında, yalnızca uzantıları listede olan dosyalar şifrelenir.",
                            "wipStoreApps":  "Mağaza uygulamaları",
                            "wipWeAppsListInfo":  "Bu uygulamaların kurumsal verilerinize erişmesine izin verilir ve izin verilmeyen, kurum dışında kullanılan veya yalnızca kişiye özel uygulamalar ile birlikte kullanıldığında farklı şekilde etkileşime geçerler. MDM olmayan cihazlarda yalnızca uyumlu uygulamalara izin verilir.",
+                           "wipWeDeprecationWarning":  "Creating new WIP without enrollment policies (WIP-WE) is no longer supported. For more information, see <a target=\"_blank\" href={0}>Windows Information Protection</a> ",
                            "wipWeWarning":  "Windows 10 ve sonraki işletim sistemi ilkelerinin etkili olabilmesi için “Varsayılan URL’leri geri yükle” seçeneğini belirleyip kullanıcı kapsamını tanımlayarak <a target=\"_blank\" href={0}>AAD'deki MAM URL’lerini Microsoft Intune olarak ayarlayın</a>.",
                            "wipWebsiteLearningTitle":  "Windows Bilgi Koruması için Web sitesinde öğrenme",
                            "wipeData":  "Verileri sil",
@@ -8042,7 +8074,9 @@
                                "windows10ProfessionalEducationN":  "Windows 10/11 Professional Education N",
                                "windows10ProfessionalN":  "Windows 10 Professional N",
                                "windows10ProfessionalWorkstation":  "Windows 10/11 Professional Workstation",
-                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professional Workstation N"
+                               "windows10ProfessionalWorkstationN":  "Windows 10/11 Professional Workstation N",
+                               "windows11CloudEdition":  "Windows 11 SE",
+                               "windows11CloudEditionN":  "Windows 11 SE N"
                            },
     "DetectionRules":  {
                            "ComparisonOperators":  {
@@ -8059,6 +8093,7 @@
                                                 "header":  "Özel algılama betiği kullan",
                                                 "runAs32Bit":  "Betiği 64 bitlik istemcilerde 32 bitlik işlem olarak çalıştır",
                                                 "runAs32BitTooltip":  "Betiği 64 bit istemcilerde 32 bit işlem olarak çalıştırmak için 'Evet' seçeneğini belirleyin. Betiği 64 bit istemcilerde 64 bit işlem olarak çalıştırmak için 'Hayır' (varsayılan) seçeneğini belirleyin. 32 bit istemciler, betiği 32 bit işlemde çalıştırır.",
+                                                "scriptContent":  "Script content",
                                                 "scriptFile":  "Betik dosyası",
                                                 "scriptFileNotSelectedValidation":  "Bir betik dosyası seçilmedi.",
                                                 "scriptFileTooltip":  "Uygulamanın istemci üzerindeki varlığını algılayacak bir PowerShell betiğini seçin. Betik, 0 değerli bir çıkış kodu döndürdüğünde veya STDOUT'a bir dize değeri yazdığında uygulama algılanır.",
@@ -8307,9 +8342,6 @@
                                                                                                              "string":  "Dize",
                                                                                                              "version":  "Sürüm"
                                                                                                          },
-                                                                            "ScriptContent":  {
-                                                                                                  "emptyMessage":  "Betik içeriği boş olmamalıdır."
-                                                                                              },
                                                                             "duplicateName":  "{0} betik adı zaten kullanılıyor. Lütfen farklı bir ad girin.",
                                                                             "enforceSignatureCheck":  "Betik imzası denetimini zorla",
                                                                             "enforceSignatureCheckTooltip":  "Betiğin güvenilen bir yayıncı tarafından imzalandığını doğrulamak için \"Evet\" seçeneğini belirleyin. Bunun yapılması, betiğin uyarı ya da komut istemi görüntülenmeden çalıştırılmasına olanak tanır. Betik engellenmeden çalışır. Betiği imza doğrulaması olmadan, son kullanıcı onayıyla çalıştırmak için \"Hayır\" (varsayılan) seçeneğini belirleyin.",
@@ -8318,6 +8350,7 @@
                                                                             "operatorTooltip":  "Gereksinim karşılaştırması için işleci seçin.",
                                                                             "requirementMethod":  "Çıkış veri türünü seçin",
                                                                             "requirementMethodTooltip":  "Bir algılama eşleşme gereksinimi belirlenirken kullanılan veri türünü seçin.",
+                                                                            "scriptContent":  "Script content",
                                                                             "scriptFile":  "Betik dosyası",
                                                                             "scriptFileTooltip":  "İstemcide uygulamanın olup olmadığını algılayacak bir PowerShell betiği seçin. Uygulama algılanırsa gereksinim süreci tarafından 0 değerli bir çıkış kodu sağlanır ve STDOUT'a bir dize değeri yazılır.",
                                                                             "scriptName":  "Betik adı",
@@ -8370,13 +8403,14 @@
                                                       },
                                          "InfoBlade":  {
                                                            "createTitle":  "Kimlik doğrulaması bağlamı ekleme",
+                                                           "deleteDisallowed":  "Koşullu Erişim ilkeleriniz tarafından başvurulan bu kimlik doğrulaması bağlamını silemezsiniz.",
                                                            "descPlaceholder":  "Kimlik doğrulaması bağlamı için açıklama ekleyin",
                                                            "modifyTitle":  "Kimlik doğrulaması bağlamını değiştirme",
                                                            "namePlaceholder":  "Ör. Güvenilen konum, Güvenilen cihaz, Güçlü yetkilendirme",
                                                            "publishDesc":  "Uygulamalarda yayımlama, kullanılacak uygulamalar için kimlik doğrulaması bağlamını kullanılabilir hale getirir. Etiket için Koşullu Erişim ilkesini yapılandırmayı tamamladıktan sonra yayımlayın. [Daha fazla bilgi][1]\n[1]: https://go.microsoft.com/fwlink/?linkid=2150966",
                                                            "publishLabel":  "Uygulamalara yayınla",
                                                            "titleDesc":  "Uygulama verilerini ve eylemlerini korumak için kullanılacak bir kimlik doğrulaması bağlamı yapılandırın. Uygulama yöneticileri tarafından anlaşılabilecek adlar ve açıklamalar kullanın. [Daha fazla bilgi][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
-                                                           "unpublishWarning":  "Unpublishing this authentication context could result in losing access to the resource that is being secured by the authentication context."
+                                                           "unpublishWarning":  "Bu kimlik doğrulama bağlamının yayımdan kaldırılması, kimlik doğrulama bağlamı tarafından güvenliği sağlanmakta olan kaynağa erişimin kaybedilmesi ile sonuçlanabilir."
                                                        },
                                          "Notify":  {
                                                         "failure":  "{0} güncelleştirilemedi",
@@ -8396,15 +8430,15 @@
                                          "description":  "Açıklama",
                                          "documentation":  "Belgeler",
                                          "getStarted":  "Kullanmaya başlayın",
-                                         "label":  "Kimlik doğrulaması bağlamı (önizleme)",
-                                         "menuLabel":  "Kimlik doğrulaması bağlamı (Önizleme)",
+                                         "label":  "Kimlik doğrulaması bağlamı",
+                                         "menuLabel":  "Kimlik doğrulaması bağlamı",
                                          "name":  "Ad",
                                          "noAuthContextConfigured":  "Hiçbir kimlik doğrulaması bağlamı yapılandırılmadı.",
                                          "noAuthContextSet":  "Kimlik doğrulama bağlamı yok",
                                          "noData":  "Görüntülenecek kimlik doğrulaması bağlamı yok",
                                          "selectionInfo":  "Kimlik doğrulaması bağlamı, SharePoint ve Microsoft Cloud App Security gibi uygulamalardaki uygulama verilerinin ve eylemlerinin güvenliğini sağlamak için kullanılır.",
                                          "step":  "Adım",
-                                         "tabDescription":  "Uygulamalarınızda verileri ve eylemleri korumak için kimlik doğrulaması bağlamını yönetin. [Daha fazla bilgi][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
+                                         "tabDescription":  "Uygulamalarınızdaki verileri ve eylemleri korumak için kimlik doğrulaması bağlamını yönetin. Koşullu Erişim ilkeleri tarafından başvurulan kimlik doğrulaması bağlamları silinemez. [Daha fazla bilgi edinin][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
                                          "tagResources":  "Kaynakları kimlik doğrulama bağlamıyla etiketleyin"
                                      },
                      "AuthenticationStrength":  {
@@ -8554,12 +8588,13 @@
                                                    "guestOrExternalUsersLabel":  "Konuklar veya dış kullanıcılar",
                                                    "internalGuestLabel":  "Yerel konuk kullanıcılar",
                                                    "otherExternalUserLabel":  "Diğer dış kullanıcılar",
-                                                   "serviceProviderUsersLabel":  "Service provider users"
+                                                   "previewTag":  "{0} (önizleme)",
+                                                   "serviceProviderUsersLabel":  "Hizmet sağlayıcısı kullanıcıları"
                                                },
                      "NamedLocation":  {
                                            "Form":  {
                                                         "CountryLookup":  {
-                                                                              "ariaLabel":  "Ülke arama yöntemi",
+                                                                              "ariaLabel":  "Ülke/Bölge arama yöntemi",
                                                                               "gps":  "GPS koordinatlarına göre konumu belirle",
                                                                               "info":  "Bir Koşullu Erişim ilkesinin konum koşulu yapılandırıldığında, Authenticator uygulaması tarafından kullanıcılardan GPS konumlarını paylaşması istenir. ",
                                                                               "ip":  "IP adresine göre konumu belirle (yalnızca IPv4)"
@@ -8696,7 +8731,7 @@
                                                       "ServicePrincipalRisk":  {
                                                                                    "description":  "İlkenin zorlanması için gereken hizmet sorumlusu risk düzeylerini yapılandırın​",
                                                                                    "infoBalloonContent":  "İlkeyi seçili risk düzeylerinde uygulamak için hizmet sorumlusu riskini yapılandırın",
-                                                                                   "title":  "Hizmet sorumlusu riski (Önizleme)"
+                                                                                   "title":  "Hizmet sorumlusu riski"
                                                                                }
                                                   }
                                 },
@@ -8985,6 +9020,11 @@
                                  "optionsPickerTitle":  "Sürekli Erişim Değerlendirmesini Etkinleştir/Devre Dışı Bırak",
                                  "upsellInfo":  "Artık bu sayfadaki ayarlarınızı değiştiremezsiniz ve buradaki tüm ayarların yoksayılması gerekir. Önceki ayarınız kabul edilir. Bundan sonra CAE ayarlarınızı Koşullu Erişim altından yapılandırabilirsiniz. Daha fazla bilgi edinmek için buraya tıklayın."
                              },
+                     "SamlReauth":  {
+                                        "Filter":  {
+                                                       "warning":  "Dinamik bir sorgu kullanarak uygulamaları hedefliyorsunuz. Bazı uygulamalar “oturum açma sıklığı (her seferinde)” oturum denetimiyle kullanılmayı desteklemeyebilir. {0}Önerilen senaryolar hakkında daha fazla bilgi edinin.{1}"
+                                                   }
+                                    },
                      "SelectOrganizations":  {
                                                  "Blade":  {
                                                                "Lower":  {
@@ -9198,9 +9238,10 @@
                                                                           "infoBalloon":  "Cihazda oturum açma sırasında kullanıma alınan özniteliklerin listesi."
                                                                       }
                                                },
-                                    "noTenantSelected":  "No tenant selected",
-                                    "tenantIdWithPlaceholder":  "Tenant ID: {0}",
-                                    "tenantSelectionRequired":  "Tenant required"
+                                    "noTenantSelected":  "Kiracı seçilmedi",
+                                    "selectOrganization":  "Kuruluş seçin",
+                                    "tenantIdWithPlaceholder":  "Kiracı Kimliği: {0}",
+                                    "tenantSelectionRequired":  "Kiracı gerekli"
                                 },
                      "advancedTabText":  "Gelişmiş",
                      "allCloudAppsErrorBox":  "\"Parola değişikliği iste\" izni seçildiğinde \"Tüm bulut uygulamaları\" seçilmelidir",
@@ -9224,7 +9265,7 @@
                      "appContextUriPlaceholder":  "Örnek: uri:contoso.com:level3",
                      "appEnforceInfoBubble":  "Uygulama tarafından zorlanan kısıtlamalar, bulut uygulamaları içinde ek yönetim yapılandırmaları gerektirebilir. Kısıtlamalar yalnızca yeni oturumlar için geçerli olur.",
                      "appNotSetSeletorLabel":  "0 bulut uygulaması seçili",
-                     "appReauthNotSupported":  "This app does not support the \"sign-in frequency every time\" session control.",
+                     "appReauthNotSupported":  "Bu uygulama “her zaman oturum açma sıklığı” oturum denetimini desteklemez.",
                      "applyConditionClientAppInfoBalloonContent":  "Belirli istemci uygulamalarında ilkeyi uygulamak için istemci uygulamalarını yapılandırın",
                      "applyConditionDevicePlatformInfoBalloonContent":  "Belirli platformlarda ilkeyi uygulamak için cihaz platformlarını yapılandırın",
                      "applyConditionDeviceStateInfoBalloonContent":  "Belirli cihaz durumlarına ilkeyi uygulamak için cihaz durumlarını yapılandırın",
@@ -9483,10 +9524,12 @@
                      "downloadDefaultFileName":  "IP Aralıkları",
                      "downloadExampleFileName":  "Örnek",
                      "downloadExampleHeader":  "Bu örnek dosyasında, kabul edilebilir veri türleri gösterilmektedir. # ile başlayan satırlar yoksayılır.",
+                     "duplicate":  "Çoğalt",
+                     "duplicatePolicyName":  "{0} KOPYASI",
                      "endDatePickerLabel":  "Uçlar",
                      "endTimePickerLabel":  "Bitiş saati",
-                     "enterCountryText":  "IP adresi ve Ülke bir çift olarak değerlendirilir. Ülke seçin.",
-                     "enterIpText":  "IP adresi ve Ülke bir çift olarak değerlendirilir. IP adresi girin.",
+                     "enterCountryText":  "IP adresi ve Ülke/Bölge bir çift olarak değerlendirilir. Ülkeyi seçin.",
+                     "enterIpText":  "IP adresi ve Ülke/Bölge bir çift olarak değerlendirilir. IP adresi girin.",
                      "enterUserText":  "Hiçbir kullanıcı seçilmedi. Bir kullanıcı seçin.",
                      "evaluationResult":  "Değerlendirme sonucu",
                      "exchangeActiveSyncSelectedLabel":  "Exchange ActiveSync",
@@ -9528,7 +9571,7 @@
                      "infoCommandLabel":  "Bilgi",
                      "invalidCertDuration":  "Sertifika süresi geçersiz",
                      "invalidIpAddress":  "Değer, geçerli bir IP adresi olmalıdır",
-                     "invalidReAuthSignInRiskOptionSelected":  "“Oturum açma sıklığı her zaman” oturum denetimi, “oturum açma risk düzeyi” koşul denetiminde “risk yok” seçimine izin vermiyor.",
+                     "invalidReAuthSignInRiskOptionSelected":  "“Oturum açma sıklığı her zaman” oturum denetimi, “oturum açma riski” koşul denetiminde “risk yok” seçimine izin vermiyor.",
                      "invalidUriErrorMsg":  "Lütfen geçerli bir URI girin. Örneğin, 'uri:contoso.com:acr' ",
                      "iosDisplayName":  "iOS",
                      "linuxDisplayName":  "Linux",
@@ -9569,7 +9612,7 @@
                      "namedLocationUpsellBanner":  "Bu görünüm kullanımdan kaldırıldı. Yeni ve iyileştirilmiş ‘Adlandırılmış konumlar’ görünümüne gidin.",
                      "namedLocationsHelpDescription":  "Adlandırılmış konumlar, Azure AD güvenlik raporları tarafından hatalı pozitif sonuçları ve Azure AD Koşullu Erişim ilkelerini azaltmak için kullanılır.\n[Daha fazla bilgi][1]\n[1]: https://aka.ms/namedlocationupdate",
                      "namedNetworkAddIpRanges":  "Yeni bir IP aralığı ekleyin (ör: 40.77.182.32/27)",
-                     "namedNetworkCountryNeeded":  "En az bir ülke seçmeniz gerekiyor",
+                     "namedNetworkCountryNeeded":  "En az bir ülke/bölge seçmeniz gerekiyor",
                      "namedNetworkDeleteCommand":  "Sil",
                      "namedNetworkDeleteDescription":  "'{0}' adlı ağı silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.",
                      "namedNetworkDeleteTitle":  "Emin misiniz?",
@@ -9653,9 +9696,9 @@
                      "policyConditionLocation":  "Konumlar",
                      "policyConditionLocationDescription":  "Kullanıcının oturum açtığı konum (IP adresi aralığı kullanılarak belirlenir)",
                      "policyConditionLocationPreview":  "Konumlar (Önizleme)",
-                     "policyConditionSigninRisk":  "Oturum açma risk düzeyi",
+                     "policyConditionSigninRisk":  "Oturum açma riski",
                      "policyConditionSigninRiskDescription":  "Oturum açma eyleminin, hesabın kullanıcısı dışındaki biri tarafından gerçekleştirilme olasılığı. Risk düzeyi yüksek, orta veya düşük olabilir. Azure AD Premium 2 lisansı gerektirir.",
-                     "policyConditionUserRisk":  "Kullanıcı risk düzeyi",
+                     "policyConditionUserRisk":  "Kullanıcı riski",
                      "policyConditionUserRiskDescription":  "İlkenin zorlanması için gereken kullanıcı risk düzeylerini yapılandırın",
                      "policyConditioniClientApp":  "İstemci uygulamaları",
                      "policyControlAllowAccessDisplayedName":  "Erişim izni ver",
@@ -9874,8 +9917,8 @@
                      "whatIfBladeTitle":  "What If",
                      "whatIfClassicPoliciesWarning":  "Klasik ilkeler bu araç tarafından değerlendirilmez.",
                      "whatIfClientAppInfo":  "Kullanıcının oturum açmak için kullandığı istemci uygulaması. Örneğin, 'Tarayıcı'.",
-                     "whatIfCountry":  "Ülke",
-                     "whatIfCountryInfo":  "Kullanıcının oturum açtığı ülke.",
+                     "whatIfCountry":  "Ülke/Bölge",
+                     "whatIfCountryInfo":  "Kullanıcının oturum açtığı ülke/bölge.",
                      "whatIfDevicePlatformInfo":  "Kullanıcının oturum açmak için kullandığı cihaz platformu.",
                      "whatIfDeviceStateInfo":  "Kullanıcının oturum açmak için kullandığı cihazın durumu",
                      "whatIfEnterIpAddress":  "IP adresi girin (ör: 40.77.182.32)",
@@ -9893,14 +9936,14 @@
                      "whatIfEvaResultUsers":  "Kullanıcılar ve gruplar",
                      "whatIfIpAddress":  "IP adresi",
                      "whatIfIpAddressInfo":  "Kullanıcının oturum açtığı konumun IP adresi.",
-                     "whatIfIpCountryInfoBoxText":  "IP adresi veya Ülke kullanıyorsanız, her iki alan gereklidir ve birlikte doğru eşlenmelidir.",
+                     "whatIfIpCountryInfoBoxText":  "IP adresi veya Ülke/Bölge kullanıyorsanız, her iki alan gereklidir ve birlikte doğru eşlenmelidir.",
                      "whatIfPolicyAppliesTab":  "Uygulanacak ilkeler",
                      "whatIfPolicyAppliesTabWithCount":  "Geçerli ilkeler ({0})",
                      "whatIfPolicyDoesNotApplyTab":  "Uygulanmayacak ilkeler",
                      "whatIfPolicyDoesNotApplyTabWithCount":  "Geçerli olmayan ilkeler ({0})",
                      "whatIfReasons":  "Bu ilkenin uygulanmama nedenleri",
                      "whatIfSelectClientApp":  "Bir istemci uygulaması seçin...",
-                     "whatIfSelectCountry":  "Ülke seçin...",
+                     "whatIfSelectCountry":  "Ülke/bölge seçin...",
                      "whatIfSelectDevicePlatform":  "Cihaz platformunu seçin...",
                      "whatIfSelectPrivateLink":  "Özel bağlantı seçin...",
                      "whatIfSelectServicePrincipalRisk":  "Hizmet sorumlusu riskini seçin...",
@@ -9919,6 +9962,7 @@
                      "windowsDisplayName":  "Windows",
                      "windowsPhoneDisplayName":  "Windows Phone",
                      "workloadIdentities":  "İş yükü kimlikleri (önizleme)",
+                     "workloadIdentitiesLicenseText":  "Bu ilkeyi düzenlemek için iş yükü kimlikleri premium P1 veya P2 lisansı gereklidir.",
                      "workloadIdentity":  "İş yükü kimliği"
                  },
     "AppResources":  {
@@ -10047,6 +10091,14 @@
                                         }
                      },
     "WindowsEnrollment":  {
+                              "DevicePreparation":  {
+                                                        "description":  "Cihazları ilk sağlama için yapılandırın ve kullanıcılara atayın.",
+                                                        "title":  "Cihaz hazırlama"
+                                                    },
+                              "EnrollmentSettings":  {
+                                                         "description":  "Kaydı engelleme ve kullanıcılara atama gibi kayıt ayarlarını yapılandırın.",
+                                                         "title":  "Kayıt ayarları"
+                                                     },
                               "coManagementAuthorityDesc":  "Configuration Manager tümleştirmesi için ortak yönetim ayarlarını yapılandırın",
                               "coManagementAuthorityTitle":  "Ortak yönetim ayarları  ",
                               "deploymentProfiles":  "Windows Autopilot dağıtım profilleri",
@@ -10196,6 +10248,8 @@
                    "informationUrlSizeHint":  "Bilgi URL’sinin en yüksek uzunluğu 1024 karakterdir",
                    "installAsManaged":  "Yönetilen olarak yükle",
                    "installationSourceLabel":  "Uygulama türü",
+                   "installerTypeInfoBalloon":  "The installer type of the application package.",
+                   "installerTypeLabel":  "Installer Type",
                    "isFeatured":  "Bunu Şirket Portalı'nda öne çıkan uygulama olarak görüntüle",
                    "isMAMEnabledToggleLabel":  "Evet",
                    "lastModifiedDateTime":  "Son güncelleştirme Zamanı",
@@ -10408,6 +10462,8 @@
                                                         "qualityUpdateSettings":  "Ayarlar"
                                                     },
                                         "infoBoxText":  "Windows 10 ve sonrası için mevcut güncelleştirme kademeleri ilkesi dışında şu anda kullanılabilir tek ayrılmış kalite güncelleştirmesi denetimi, belirtilen yama seviyesinin gerisinde kalan cihazlar için kalite güncelleştirmelerini hızlandırabilir. Gelecekte ek denetimler kullanıma sunulacaktır.",
+                                        "licenseLearnMoreText":  "Önkoşullar ve kalite güncelleştirmesi ilkeleri hakkında daha fazla bilgi edinin.",
+                                        "licenseWarningBoxText":  "Kalite güncelleştirmesi ilkeleri oluşturmak belirli lisanslar gerektirir.",
                                         "warningBoxText":  "Yazılım güncelleştirmelerinin hızlandırılması, gerektiğinde uyumluluğa ulaşma süresinin kısaltılmasına yardımcı olabilir ve son kullanıcı üretkenliği üzerinde daha büyük bir etkiye sahiptir. Mesai saatleri içinde yeniden başlatma deneyimi yaşama olasılıkları önemli ölçüde artar."
                                     },
     "TermsOfUse":  {
@@ -10492,6 +10548,7 @@
                                          "ptBR":  "Portuguese (Brazil)",
                                          "ptPT":  "Portuguese (Portugal)",
                                          "quz":  "Quechua",
+                                         "removeLanguage":  "Remove language",
                                          "ro":  "Romanian",
                                          "ru":  "Russian",
                                          "rw":  "Kinyarwanda",
@@ -10542,10 +10599,7 @@
                                                                      },
                                       "PolicyFile":  {
                                                          "Languages":  {
-                                                                           "Empty":  {
-                                                                                         "default":  "Select default language",
-                                                                                         "nonDefault":  "Select a language"
-                                                                                     }
+
                                                                        },
                                                          "Validations":  {
                                                                              "duplicateLanguage":  "Oops, {0} appears to be selected multiple times. Language selection must be unique."
@@ -10581,6 +10635,7 @@
                                       "agreementNamePlaceholderText":  "Example: 'All users terms of use'",
                                       "agreementRequirmentLabel":  "Required Upon",
                                       "agreementTargetEntityLabel":  "Users targeted",
+                                      "agreementUploadPolicyAriaLabelText":  "Upload required PDF {0}",
                                       "agreementUploadPolicyLabel":  "Terms of use",
                                       "agreementUploadPolicyPlaceholderText":  "Upload required PDF",
                                       "createButtonLabel":  "Create",
@@ -10594,7 +10649,32 @@
                                       "policyTemplateInfo":  "These templates are pre configured conditional access policies that are targeted to specific users and applications.",
                                       "policyTemplateLabel":  "Policy templates",
                                       "title":  "New terms of use"
-                                  }
+                                  },
+                       "Details":  {
+                                       "Link":  {
+                                                    "auditEvent":  "View audit logs",
+                                                    "delete":  "Delete",
+                                                    "download":  "Preview PDF",
+                                                    "edit":  "Edit"
+                                                },
+                                       "Property":  {
+                                                        "acceptanceDuration":  "Duration before re-acceptance required (days)",
+                                                        "acceptanceExpirationFrequency":  "Frequency",
+                                                        "acceptanceExpirationStartDateTime":  "Expire starting on",
+                                                        "accepted":  "Users accepted",
+                                                        "declined":  "Users declined",
+                                                        "displayname":  "Display name",
+                                                        "isAcceptanceExpirationEnable":  "Expire consents",
+                                                        "isPerDeviceAcceptanceRequired":  "Require users to consent on every device",
+                                                        "isViewingBeforeAcceptanceRequired":  "Require users to expand the terms of use",
+                                                        "name":  "Name"
+                                                    },
+                                       "Tab":  {
+                                                   "cAPolicies":  "Conditional access policies",
+                                                   "details":  "Details",
+                                                   "languages":  "Languages"
+                                               }
+                                   }
                    },
     "TACSettings":  {
                         "edgeSettings":  "Edge yapılandırma ayarları",
@@ -10660,6 +10740,23 @@
                               "withEnrollment":  "Kayıt ile",
                               "withoutEnrollment":  "Kayıt olmadan"
                           },
+    "PolicySelection":  {
+                            "Grid":  {
+                                         "Column":  {
+                                                        "author":  "Yazar",
+                                                        "template":  "Şablon adı"
+                                                    }
+                                     },
+                            "SettingsCatalog":  {
+                                                    "subtitle":  "Baştan başlayın ve kullanılabilir ayarlar kitaplığından istediğiniz ayarları seçin",
+                                                    "title":  "Ayarlar kataloğu"
+                                                },
+                            "Templates":  {
+                                              "subtitle":  "Şablonlar, işlevlere göre düzenlenmiş ayar grupları içerir. İlkeleri kendiniz oluşturmak istemiyorsanız veya cihazları WiFi ya da VPN gibi şirket ağlarına erişmek üzere yapılandırmak istiyorsanız şablon kullanın.",
+                                              "title":  "Şablonlar"
+                                          },
+                            "noData":  "İlke şablonu bulunamadı"
+                        },
     "OfficeApplicationAdditionalType":  {
                                             "projectProRetail":  "Proje Çevrimiçi Masaüstü İstemcisi",
                                             "visioProRetail":  "Visio Çevrimiçi Plan 2"
@@ -10844,6 +10941,12 @@
                           "withEnrollment":  "Kayıt ile",
                           "withoutEnrollment":  "Kayıt olmadan"
                       },
+    "DisplayRoleTypes":  {
+                             "builtInRole":  "Yerleşik Rol",
+                             "customCloudPCRole":  "Özel Windows 365 rolü",
+                             "customIntuneRole":  "Özel Intune rolü",
+                             "customRole":  "Özel Rol"
+                         },
     "InstallContextType":  {
                                "device":  "Cihaz",
                                "deviceContext":  "Cihaz bağlamı",
@@ -11019,7 +11122,7 @@
                                                                      "Schedule":  {
                                                                                       "always":  "Sonraki kontrol iletişiminde güncelleştir",
                                                                                       "duringTimeWindows":  "Zamanlanmış saatler içinde güncelleştir",
-                                                                                      "header":  "Varsayılan olarak Intune, bir cihaza iOS Yazılım Güncelleştirmeleri ilkesi atandıysa, cihaz kontrol iletişiminde (yaklaşık her 8 saatte bir) en son güncelleştirmeleri dağıtır. Bunun yerine özelleştirilmiş başlangıç ve bitiş saatlerini içeren haftalık bir zamanlama oluşturabilirsiniz. Zamanlanan sürenin dışında güncelleştirmeyi seçerseniz, Intune planlanan süre sona erene kadar güncelleştirmeleri dağıtmaz.",
+                                                                                      "header":  "Bir cihaza güncelleştirme ilkesi atandığında varsayılan olarak Intune, en son güncelleştirmeleri cihaz kontrol iletişimi sırasında dağıtır. Bunun yerine özelleştirilmiş başlangıç ve bitiş saatlerini içeren haftalık bir zamanlama oluşturabilirsiniz. Planlanan zamanın dışında güncelleştirmeyi seçerseniz, Intune planlanan zaman sona erene kadar güncelleştirmeleri dağıtmaz.",
                                                                                       "infoBalloon":  "Güncelleştirmelerin gerçekleştirileceği zaman. Günecelleştirmeleri zamanlanmış saatlerde veya bu saatlerin dışında zamanlamak için ek giriş gerekir.",
                                                                                       "label":  "Zamanlama çizelgesi türü",
                                                                                       "outsideActiveHours":  "Etkin saatlerin dışında güncelleştir (eski)",
@@ -11443,6 +11546,7 @@
                    "ManagedDesktop":  {
                                           "adminContacts":  "Yönetici kişileri",
                                           "appPackaging":  "Uygulama paketleme",
+                                          "businessGroups":  "İş Grupları",
                                           "devices":  "Cihazlar",
                                           "feedback":  "Geri Bildirim",
                                           "gettingStarted":  "Başlarken",
@@ -11479,6 +11583,7 @@
                    "cartProfiles":  "Kart profilleri",
                    "certificateConnectors":  "Sertifika bağlayıcıları",
                    "chromeEnterprise":  "Chrome Enterprise (önizleme)",
+                   "cloudAttachedDevices":  "Buluta ekli cihazlar (önizleme)",
                    "compliancePolicies":  "Uyumluluk ilkeleri",
                    "complianceScriptManagement":  "Betikler",
                    "complianceScriptManagementPreview":  "Betikler (önizleme)",
@@ -11512,7 +11617,7 @@
                    "failuresForFeatureUpdates":  "Özellik güncelleştirme hataları (önizleme)",
                    "failuresForQualityUpdates":  "Windows Hızlandırılmış güncelleştirme hataları (önizleme)",
                    "featureFlighting":  "Özellik yayını",
-                   "featureUpdateDeployments":  "Windows 10 ve sonraki sürümler için özellik güncelleştirmeleri (önizleme)",
+                   "featureUpdateDeployments":  "Feature updates for Windows 10 and later",
                    "flighting":  "Süreleme",
                    "fotaUpdate":  "Üretici yazılımı kablosuz güncelleştirmesi",
                    "groupPolicy":  "Yönetim Şablonları",
@@ -11523,8 +11628,8 @@
                    "incompleteUserEnrollments":  "Eksik kullanıcı kayıtları",
                    "iosUpdates":  "iOS/iPadOS ilkelerini güncelleştir",
                    "legacyPcManagement":  "Eski bilgisayar yönetimi",
-                   "macOSSoftwareUpdate":  "macOS için güncelleştirme ilkeleri",
-                   "macOSSoftwareUpdateAccountSummaries":  "macOS cihazlar için yükleme durumu",
+                   "macOSSoftwareUpdate":  "macOS (önizleme) için güncelleştirme ilkeleri",
+                   "macOSSoftwareUpdateAccountSummaries":  "Installation status for macOS devices (preview)",
                    "macOSSoftwareUpdateCategorySummaries":  "Yazılım güncelleştirmeleri özeti",
                    "macOSSoftwareUpdateStateSummaries":  "güncelleştirmeler",
                    "managedGooglePlay":  "Yönetilen Google Play",
@@ -11570,11 +11675,12 @@
                    "warranty":  "Garanti satıcıları",
                    "wdacSupplementalPolicies":  "S modu ek ilkeleri",
                    "windows10DriverUpdate":  "Windows 10 ve sonraki sürümleri için sürücü güncelleştirmeleri (önizleme)",
-                   "windows10QualityUpdate":  "Windows 10 ve sonrası için kalite güncelleştirmeleri (önizleme)",
+                   "windows10QualityUpdate":  "Quality updates for Windows 10 and later",
                    "windows10UpdateRings":  "Windows 10 ve sonraki sürümler için güncelleştirme kademeleri",
                    "windows10XPolicyFailures":  "Windows 10X ilke hataları",
                    "windows365Connector":  "Windows 365 Citrix bağlayıcısı",
-                   "windows365ConnectorPublicPreview":  "Windows 365 Citrix connector (preview)",
+                   "windows365ConnectorPublicPreview":  "Windows 365 Citrix bağlayıcısı (önizleme)",
+                   "windowsDiagnosticData":  "Windows verileri",
                    "windowsEnterpriseCertificate":  "Windows Enterprise sertifikası",
                    "windowsManagement":  "PowerShell betikleri",
                    "windowsSideLoadingKeys":  "Windows dışarıdan yükleme anahtarları",

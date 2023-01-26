@@ -367,7 +367,6 @@
                      "educationTeacherCerts":  "教师证书",
                      "emailProfile":  "电子邮件",
                      "enterpriseDataProtection":  "Windows 信息保护",
-                     "expeditedCheckin":  "移动设备管理配置",
                      "extensibleSingleSignOn":  "单一登录应用扩展",
                      "filevault":  "FileVault",
                      "firewall":  "防火墙",
@@ -508,7 +507,10 @@
                                                         "deploymentSettings":  "部署设置",
                                                         "groupAssignmentSettings":  "分配",
                                                         "scopeSettings":  "作用域标签"
-                                                    }
+                                                    },
+                                        "gradualRolloutLicenseWarning":  "此功能需要特定许可。",
+                                        "gradualRolloutLicenseWarningEdit":  "在未选择此功能的情况下保存策略之前，可以继续使用和配置此功能。",
+                                        "licenseLearnMoreText":  "详细了解先决条件和功能更新策略。"
                                     },
     "WIPPinRequirements":  {
                                "WipLowercaseCharacterPinRequirements":  {
@@ -676,7 +678,8 @@
                                            "selectApp":  "在 App Store 中搜索要使用 Intune 部署的 iOS 应用商店应用。",
                                            "useManagedBrowser":  "如果需要，用户打开 web 应用时，它将在受 Intune 保护的浏览器(如 Microsoft Edge 或 Intune Managed Browser)中打开。此设置适用于 iOS 和 Android 设备。",
                                            "useManagedBrowserLink":  "https://docs.microsoft.com/en-us/intune/apps/app-configuration-managed-browser",
-                                           "win32AppPackageFile":  "包含你的应用的文件，其格式可在设备上旁加载。有效的包类型为: .intunewin。"
+                                           "win32AppPackageFile":  "包含你的应用的文件，其格式可在设备上旁加载。有效的包类型为: .intunewin。",
+                                           "winGetStoreSelectApp":  "在 Microsoft Store 存储库中搜索要使用 Intune 部署的应用商店应用。"
                                        },
                               "descriptionPreview":  "预览",
                               "descriptionRequired":  "说明是必需的。",
@@ -800,10 +803,10 @@
                                                     "azureADDevice":  "关联的 Azure AD 设备",
                                                     "batch":  "组标记",
                                                     "dateAssigned":  "分配日期",
-                                                    "deviceAccountFriendlyName":  "设备帐户易记名称",
                                                     "deviceAccountPwd":  "设备帐户密码",
                                                     "deviceAccountUpn":  "Device account",
                                                     "deviceDisplayName":  "Device name",
+                                                    "deviceFriendlyName":  "设备友好名称",
                                                     "deviceName":  "设备名",
                                                     "deviceUseType":  "设备使用类型",
                                                     "enrollmentState":  "注册状态",
@@ -924,10 +927,10 @@
                                        "azureADDevice":  "转到关联设备的设备详细信息。N/A 是指没有关联的设备。",
                                        "batch":  "可用于标识一组设备的字符串属性。Intune 的组标记字段映射到 Azure AD 设备上的 OrderID 属性。",
                                        "dateAssigned":  "向设备分配配置文件时的时间戳。",
-                                       "deviceAccountFriendlyName":  "Surface Hub 设备的设备帐户易记名称",
-                                       "deviceAccountPwd":  "Surface Hub 设备的设备帐户密码",
-                                       "deviceAccountUpn":  "Surface Hub 设备的设备帐户电子邮件",
+                                       "deviceAccountPwd":  "Surface Hub 设备的设备帐户密码。如果已输入，则还需填写设备帐户和友好名称。",
+                                       "deviceAccountUpn":  "Surface Hub 设备的设备帐户电子邮件。如果已输入，则还需填写设备帐户密码和友好名称。",
                                        "deviceDisplayName":  "为设备配置唯一的名称。在已建立混合 Azure AD 联接的部署中，此名称将被忽略。设备名称仍来自混合 Azure AD 设备的域加入配置文件。",
+                                       "deviceFriendlyName":  "Surface Hub 设备的设备友好名称。如果已输入，则还需填写设备帐户和设备帐户密码。",
                                        "deviceName":  "有人尝试发现并连接到设备时显示的名称。",
                                        "deviceUseType":  "      设备将根据所选项进行设置。可以随时在“设置”中进行更改。\r\n      <ul>\r\n      <li> 对于会议和演示文稿，不会打开 Windows Hello，并且在每个会话后都会删除数据。\r\n      </li>\r\n      <li>对于团队协作，将会打开 Windows Hello，并保存配置文件以供快速登录</li>\r\n      </ul>",
                                        "enrollmentState":  "指定设备是否已注册。",
@@ -1047,6 +1050,9 @@
                                                          },
                                                  "V12":  {
                                                              "0":  "macOS Monterey 12.0"
+                                                         },
+                                                 "V13":  {
+                                                             "0":  "macOS Ventura 13.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -1102,6 +1108,7 @@
                                    "customMessageTextBox":  "错误消息",
                                    "customMessageToggle":  "发生时间限制或出错时显示自定义消息",
                                    "enableForAutopilotOnlyToggle":  "仅向通过全新安装体验(OOBE)预配的设备显示页面",
+                                   "installQualityUpdatesToggle":  "安装 Windows 质量更新(可能会重启设备)",
                                    "progressToggle":  "显示应用和配置文件安装进度",
                                    "resetToggle":  "如果发生安装错误，允许用户重置设备",
                                    "timeout":  "在安装时间超过指定的分钟数时显示错误信息"
@@ -1367,7 +1374,7 @@
                                                           },
                         "AndroidBackup":  {
                                               "label":  "将组织数据备份到 Android 备份服务",
-                                              "tooltip":  "选择 {0} 会阻止将组织数据备份到 Android 备份服务。\r\n选择 {1} 则允许将组织数据备份到 Android 备份服务。\r\n个人或非托管数据不受影响。"
+                                              "tooltip":  "选择“{0}”可阻止将组织数据备份到 Android 备份服务。\r\n选择“{1}”则允许将组织数据备份到 Android 备份服务。\r\n个人或非托管数据不受影响。"
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "访问时使用生物特征而非 PIN",
@@ -1378,7 +1385,7 @@
                                                    "tooltip":  "Android OS 使用指纹扫描对 Android 设备用户进行身份验证。此功能支持 Android 设备上的本机生物识别控件。不支持 OEM 特定生物识别设置，如 Samsung Pass。如果允许，必须使用本机生物识别控件在支持该控件的设备上访问该应用。"
                                                },
                         "AndroidOverrideFingerprint":  {
-                                                           "label":  "超时后使用 PIN 覆盖指纹"
+                                                           "label":  "超时后 使用 PIN 替代生物特征"
                                                        },
                         "AppPIN":  {
                                        "label":  "应用 PIN(设置了设备 PIN 时)",
@@ -1409,7 +1416,7 @@
                                                    },
                         "CustomBrowserProtocol":  {
                                                       "label":  "非托管浏览器协议",
-                                                      "tooltip":  "<p>为单个非托管浏览器输入协议。来自策略托管应用程序的 Web 内容(http/s)将在支持此协议的任意应用中打开。</p>\r\n \r\n<p><b>注意: </b>仅包含协议前缀。如果浏览器需要 \"mybrowser://www.microsoft.com\" 形式的链接，请输入 \"mybrowser\"。</p>"
+                                                      "tooltip":  "<p>为单个非托管浏览器输入协议。来自策略托管应用程序的 Web 内容(http/s)将在支持此协议的任意应用中打开。</p>\r\n\r\n<p><b>注意: </b>仅包含协议前缀。如果浏览器需要 \"mybrowser://www.microsoft.com\" 形式的链接，请输入 \"mybrowser\"。</p>"
                                                   },
                         "CustomDialerAppDisplayName":  {
                                                            "label":  "拨号器应用名称"
@@ -1435,7 +1442,7 @@
                                             "tooltip":  "选择 {0} 会使用 Intune 应用层加密功能强制加密组织数据。<br/>\r\n\r\n选择 {1} 则不使用 Intune 应用层加密功能强制加密组织数据。\r\n\r\n<br/>\r\n注意: 有关 Intune 应用层加密功能的详细信息，请参阅 {2}。"
                                         },
                         "EncryptDataAndroid":  {
-                                                   "tooltip":  "<p>选择“必需”<b></b>以对此应用中的工作或学校数据启用加密。Intune 使用 OpenSSL、256 位 AES 加密方案和 Android 密钥存储系统来安全加密应用数据。数据在文件 I/O 任务过程中同步加密。设备存储上的内容始终保持加密状态。SDK 将继续提供 128 位密钥支持，以兼容使用较旧 SDK 版本的内容和应用。</p>\r\n\r\n<p>加密方法符合 FIPS 140-2。</p>"
+                                                   "tooltip":  "<p>选择“需要”以启用对此应用中工作或学校数据的加密<b></b>。Intune 使用 wolfSSL 256 位 AES 加密方案以及 Android 密钥存储系统来安全地加密应用数据。数据在文件 I/O 任务期间同步加密。设备存储上的内容始终加密。新文件将使用 256 位密钥进行加密。现有的 128 位加密文件将尝试迁移到 256 位密钥，但不保证该过程。使用 128 位密钥加密的文件将保持可读性。</p>\r\n\r\n<p>加密方法符合 FIPS 140-2。</p>"
                                                },
                         "EncryptDataIos":  {
                                                "tooltip1":  "选择“必需”<b></b>可启用此应用中工作或学校数据的加密。Intune 强制 iOS/iPadOS 设备加密在设备锁定时保护应用数据。应用程序可以选择使用 Intune APP SDK 加密加密应用数据。Intune APP SDK 使用 iOS/iPadOS 加密方法将 128 位 AES 加密应用于应用数据。",
@@ -1463,11 +1470,11 @@
                                        },
                         "NotificationRestriction":  {
                                                         "label":  "组织数据通知",
-                                                        "tooltip":  "<p>选择下述一个选项来指定如何为此应用和任何连接的设备(例如可穿戴设备)显示组织帐户的通知:</p> \r\n<p>{0}: 不共享通知。</p> \r\n<p>{1}: 不在通知中共享组织数据。如果不受应用程序支持，则阻止通知。</p>\r\n<p>{2}: 共享所有通知。</p>\r\n <p>仅限 Android:\r\n 注意: 此设置不适用于所有应用程序。有关详细信息，请参阅 {3} </p>\r\n \r\n <p>仅限 iOS:\r\n注意: 此设置不适用于所有应用程序。有关详细信息，请参阅 {4}</p>"
+                                                        "tooltip":  "<p>选择下列选项之一来指定如何为此应用和任何连接的设备(例如可穿戴设备)显示组织帐户的通知:</p>\r\n<p>{0}: 不共享通知。</p>\r\n<p>{1}: 不在通知中共享组织数据。如果应用程序不支持，则阻止通知。</p>\r\n<p>{2}: 共享所有通知。</p>\r\n<p>仅限 Android:\r\n注意: 此设置不适用于所有应用程序。有关详细信息，请参阅{3} </p>\r\n \r\n<p>仅限 iOS:\r\n注意: 此设置不适用于所有应用程序。有关详细信息，请参阅 {4}</p>"
                                                     },
                         "OpenLinksManagedBrowser":  {
                                                         "label":  "限制与其他应用的 Web 内容传输",
-                                                        "tooltip":  "<p>选择下列选项之一，以指定此应用可在其中打开 Web 内容的应用: </p>\r\n<p><b>Edge:</b> 仅允许在 Edge 中打开 Web 内容 </p>\r\n<p><b>非托管浏览器:</b> 仅允许在由“非托管浏览器协议”设置定义的非托管浏览器中打开 Web 内容 </p>\r\n<p><b>任何应用:</b> 允许在任何应用中打开 Web 链接</p>"
+                                                        "tooltip":  "<p>选择下列选项之一，以指定此应用可在其中打开 Web 内容的应用: </p>\r\n<p><b>Microsoft Edge:</b> 仅允许在 Edge 中打开 Web 内容<a href=\"{0}\" target=\"_blank\"> 了解 Microsoft Edge 如何保护你的数据。</a></p>\r\n<p><b>非托管浏览器:</b> 仅允许在由“非托管浏览器协议”设置定义的非托管浏览器中打开 Web 内容</p>\r\n<p><b>任何应用:</b> 允许在任何应用中打开 Web 链接</p>"
                                                     },
                         "OverrideBiometric":  {
                                                   "tooltip":  "如果有相应要求，PIN 提示将覆盖生物计量提示，具体取决于超时时间(非活动状态分钟数)。如果不满足此超时值，将持续显示 生物计量提示。此超时值应大于“(非活动状态分钟数)分钟后重新检查访问要求”下指定的值。"
@@ -1502,7 +1509,7 @@
                                                     },
                         "RequirePinAfterBiometricChange":  {
                                                                "label":  "生物识别更新后使用 PIN 替代生物识别",
-                                                               "tooltip":  "如果设备支持类 3 生物识别(详细信息请参见<a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">here</a>)，当检测到生物识别更改时，PIN 提示将替代生物识别提示。"
+                                                               "tooltip":  "如果设备支持第 3 类生物特征(请访问<a href=\"https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt#authenticate(android.hardware.biometrics.BiometricPrompt.CryptoObject,%20android.os.CancellationSignal,%20java.util.concurrent.Executor,%20android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)\">此处</a>以了解详细信息)，则当检测到生物特征更改时，PIN 提示将替代生物特征提示。此设置仅当使用生物特征访问应用时才会生效。"
                                                            },
                         "RestrictKeyboards":  {
                                                   "duplicatePackageError":  "包 ID 必须是唯一的。",
@@ -1515,7 +1522,7 @@
                                               },
                         "SaveData":  {
                                          "label":  "保存组织数据的副本",
-                                         "tooltip":  "选择 {0} 则阻止使用“另存为”将组织数据的副本保存到新位置而非所选的存储服务。\r\n 选择 {1} 则允许使用“另存为”将组织数据的副本保存到新位置而非所选的存储服务。<br/>\r\n\r\n\r\n注意: 此设置并非适用于所有应用程序。有关详细信息，请参阅 {2}。\r\n"
+                                         "tooltip":  "选择“{0}”可阻止使用“另存为”将组织数据的副本保存到新位置而非所选的存储服务。\r\n选择“{1}”则允许使用“另存为”将组织数据的副本保存到新位置。<br/>\r\n\r\n\r\n注意: 此设置不适用于所有应用程序。有关详细信息，请参阅 {2}。\r\n"
                                      },
                         "SaveDataToSelected":  {
                                                    "label":  "允许用户将副本保存到选定的服务",
@@ -1606,7 +1613,7 @@
                             "pushNotification":  "向最终用户发送推送通知",
                             "remoteLock":  "远程锁定不合规设备",
                             "removeSourceAccessProfile":  "删除源访问配置文件",
-                            "retire":  "停用不相容设备",
+                            "retire":  "将设备添加到停用列表",
                             "wipe":  "擦除",
                             "emailNotification":  "向最终用户发送电子邮件"
                         },
@@ -1746,6 +1753,7 @@
                                                       "weeks1":  "每 1 周"
                                                   },
                               "PolicyListToolBarOption":  {
+                                                              "linux":  "Linux",
                                                               "macOs":  "macOS",
                                                               "windows":  "Windows 10 和更高版本"
                                                           },
@@ -1765,6 +1773,7 @@
                                                  "uploadInfoBalloonContent":  "指定 PowerShell 脚本文件。文件必须小于 200KB。",
                                                  "uploadLabel":  "脚本位置"
                                              },
+                              "bashScriptObjectName":  "Bash 脚本",
                               "createButtonText":  "添加",
                               "createPowershellScriptFlowSectionName":  "添加 PowerShell 脚本",
                               "customAttributeObjectName":  "自定义属性",
@@ -1969,6 +1978,8 @@
                            "androidDeviceOwnerAlwaysOnVpnClientDescription":  "指定的 VPN 客户端必须安装在设备上，并且它必须支持应用级别 VPN；否则，将发生错误。请注意，要安装应用，必须在托管 Google Play 商店中批准该应用，将应用同步到 Intune，然后对其进行部署。",
                            "androidDeviceOwnerCustomPasswordDescription":  "仅为专用设备创建设备密码。可以是 4-16 个字符，包含数字、字母和特殊字符。",
                            "androidDeviceOwnerCustomPasswordName":  "自定义密码",
+                           "androidElevenAndBelowPasswordHeader":  "Android 11 及更早版本",
+                           "androidElevenAndBelowPasswordHeaderDescription":  "这些设置适用于运行 Android 11 或更早版本的设备。",
                            "androidEnterpriseAlwaysOnVpnClientName":  "VPN 客户端",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierDescription":  "在 Google Play 商店中输入应用的包 ID。例如，如果 Play 商店中应用的 URL 是 https://play.google.com/store/details?id=com.contosovpn.android.prod，则包 ID 为 com.contosovpn.android.prod。",
                            "androidEnterpriseAlwaysOnVpnClientPackageIdentifierName":  "包 ID",
@@ -2016,6 +2027,9 @@
                            "androidTenDeprecationInfoBox":  "从 2020 年 10 月开始，运行 Android 10 及更高版本且不是 Samsung Knox 的 Android 设备将不支持某些设置。这些设置均采用 Android 9 及更低版本或 Samsung Knox 进行标注。单击以了解详细信息。",
                            "androidTrustedServerCertificateNamesDescription":  "这是在客户端对 Wifi 访问点进行身份验证期间 Radius 服务器所提供证书中使用的 DNS 名称。如果多个 Radius 服务器的完全限定域名中具有相同的 DNS 后缀，则也可以单独使用后缀。这允许设备信任提供给它们的服务器证书。<a href=\"https://go.microsoft.com/fwlink/?linkid=2181354\" target=\"_blank\">了解详细信息</a>。<br>",
                            "androidTrustedServerCertificateNamesName":  "Radius 服务器名称",
+                           "androidTwelveAndAbovePasswordHeader":  "Android 12 及更高版本",
+                           "androidTwelveAndAbovePasswordHeaderDescription":  "这些设置适用于运行 Android 12 或更高版本的设备。",
+                           "androidTwelveDeprecationInfoBox":  "从 2022 年 11 月开始，运行 Android 12 及更高版本的 Android 设备不再支持某些设置。这些设置将使用 Android 11 及更早版本进行标记。单击以了解详细信息。",
                            "androidZebraMxConfigurationFileXmlName":  "选择有效的 Zebra MX XML 文件",
                            "androidZebraMxConfigurationLearnMore":  "详细了解如何管理 Zebra 设备",
                            "androidZebraMxConfigurationXmlName":  ".xml 格式下的 MX 配置文件",
@@ -3792,8 +3806,6 @@
                            "exchangeActiveSyncHostExample":  "例如 outlook.office365.com",
                            "exchangeActiveSyncHostName":  "电子邮件服务器",
                            "exclusionAppListColumn":  "要排除的应用",
-                           "expeditedCheckinEnableDescription":  "使设备每小时签入一次",
-                           "expeditedCheckinEnableName":  "使设备每小时签入一次",
                            "experienceAllowBrowserSyncSettingsDescription":  "指定用户能否启用浏览器设置，进而使用在用户设备间同步历史记录和收藏夹等信息的同步设置选项进行同步。要配置此设置，必须启用“在用户设备间同步浏览器设置”设置。",
                            "experienceAllowBrowserSyncSettingsName":  "用户可启用同步浏览器设置",
                            "experienceDoNotSyncBrowserSettingsDescription":  "若已阻止，则禁用默认配置(允许在设备之间同步浏览器设置)，这样用户便无法在设备之间同步。选择“阻止并启用用户替代”后，用户可以替代管理员指定。",
@@ -4866,9 +4878,9 @@
                            "macOSSoftwareUpdatePolicySectionDescription":  "创建配置文件以强制所分配的设备自动安装最新的 macOS 更新。这些设置决定了何时、如何部署软件更新。此配置文件不会阻止用户手动更新 OS。更新将仅应用于通过 Apple 的自动化设备注册进行注册的设备(ABM 或 ASM)。",
                            "macOSSoftwareUpdatePolicySectionDescriptionLearnMoreText":  "了解更多",
                            "macOSSoftwareUpdatePolicySupervisedLearnMoreText":  "了解详细信息",
-                           "macOSSoftwareUpdatePolicySupervisedName":  "创建配置文件以强制所分配的设备自动安装最新的 macOS 更新。这些设置决定了何时、如何部署软件更新。此配置文件不会阻止用户手动更新 OS。更新将仅应用于通过 Apple 的自动化设备注册进行注册的设备(ABM 或 ASM)。",
+                           "macOSSoftwareUpdatePolicySupervisedName":  "Create a profile to force assigned devices to automatically install the latest macOS updates. These settings determine how and when software updates deploy. This profile doesn't prevent users from updating the OS manually. Updates will only apply to supervised devices.",
                            "macOSSoftwareUpdatePolicyWeeklyScheduleName":  "每周计划",
-                           "macOSSoftwareUpdateSelectScheduleTypeName":  "默认情况下，如果向设备分配了 macOS 软件更新策略，Intune 会在设备签入时部署最新更新。你还可创建每周计划并指定决定设备可签入和接收更新的时间段。如果选择在计划时间外更新，则在计划时间结束之前，Intune 不会部署更新。",
+                           "macOSSoftwareUpdateSelectScheduleTypeName":  "默认情况下，如果将更新策略分配给一台设备，则 Intune 会在设备签入时部署最新的更新。可以改为创建包含自定义开始时间和结束时间的每周计划。如果选择在计划外时间更新，Intune 不会在计划时间结束前部署更新。",
                            "macOSSoftwareUpdateSelectUpdateBehaviorName":  "选择每种类型的更新的下载、安装和/或通知方式。",
                            "macOSSystemExtensionsExtensionTypeName":  "允许的系统扩展类型",
                            "macRequireClassroomRequestPermissionToLeaveClassesDescription":  "注册非托管 Classroom 课程的学生必须获得教师的同意才能退出课程。",
@@ -5143,9 +5155,9 @@
                            "nATKeepAliveOffloadEnableName":  "设备处于睡眠状态时，将 NAT 保持连接卸载到硬件",
                            "nATKeepAliveOffloadEnableToolTip":  "默认情况下，当设备处于休眠状态时，NAT 系统会持续进行检查以确保其连接到 VPN。使用此设置可以禁用该行为。",
                            "nacIdCheckBoxLabel":  "我同意。",
-                           "nacIdDescCisco":  "Cisco AnyConnect 需要在 VPN 配置文件中包含 Intune 设备 ID 以便启用 NAC。<br><br>我允许 Microsoft 在 VPN 配置文件中包含设备信息，以供 Cisco 及其合作伙伴使用。",
-                           "nacIdDescCitrix":  "Citrix SSO 需要在 VPN 配置文件中包含 Intune 设备 ID 以便启用 NAC。<br><br>我允许 Microsoft 在 VPN 配置文件中包含设备信息，以供 Citrix 及其合作伙伴使用。",
-                           "nacIdDescF5":  "F5 Access 需要在 VPN 配置文件中包含 Intune 设备 ID 以便启用 NAC。<br><br>允许 Microsoft 在 VPN 配置文件中包含设备信息，以供 F5 Access 及其合作伙伴使用。",
+                           "nacIdDescCisco":  "Cisco AnyConnect 要求在 VPN 配置文件中包含 Intune 设备 ID 才能启用 NAC。<br><br>我允许 Microsoft 在 VPN 配置文件中包含设备信息，以供 Cisco 及其合作伙伴使用。单击以了解详细信息，包括与服务提供商共享的数据。",
+                           "nacIdDescCitrix":  "Citrix SSO 要求在 VPN 配置文件中包含 Intune 设备 ID 才能启用 NAC。<br><br>我允许 Microsoft 在 VPN 配置文件中包含设备信息，以供 Citrix SSO 及其合作伙伴使用。单击以了解详细信息，包括与服务提供商共享的数据。",
+                           "nacIdDescF5":  "F5 Access 要求在 VPN 配置文件中包含 Intune 设备 ID 才能启用 NAC。<br><br>我允许 Microsoft 在 VPN 配置文件中包含设备信息，以供 F5 Access 及其合作伙伴使用。单击以了解详细信息，包括与服务提供商共享的数据。",
                            "nacIdHeader":  "启用网络访问控制(NAC)",
                            "nacIdHeaderCiscoToolTip":  "将对设备 ID 进行加密并将其包含在 VPN 配置文件中。用户尝试连接 VPN 时，Cisco AnyConnect 会将此值将传递到 NAC 基础结构，然后使用此值来查询 Intune，确定设备已注册并符合规定。<br><br>Cisco AnyConnect 不能直接访问设备 ID，因此为了启用 NAC，必须将此值包含在 VPN 配置文件。",
                            "nacIdHeaderCitrixToolTip":  "将对设备 ID 进行加密并将其包含在 VPN 配置文件中。用户尝试连接 VPN 时，Citrix SSO 会将此值将传递到 NAC 基础结构，然后使用此值来查询 Intune，确定设备已注册并符合规定。<br><br>Citrix SSO 不能直接访问设备 ID，因此为了启用 NAC，必须将此值包含在 VPN 配置文件。",
@@ -6016,6 +6028,15 @@
                            "shutdown":  "关闭",
                            "signatureUpdateIntervalInHoursName":  "安全智能更新间隔(小时)",
                            "signingCertificateType":  "签名证书类型",
+                           "silentCertAccessAddApps":  "添加应用",
+                           "silentCertAccessApplicationsName":  "应用程序",
+                           "silentCertAccessMaxAppsWarn":  "最多选择 50 个应用以授予无提示证书访问权限",
+                           "silentCertAccessMinAppsWarn":  "至少选择一个应用以向其授予对此项的无提示证书访问权限:",
+                           "silentCertAccessSpecificApps":  "对特定应用以无提示方式授予(需要用户对其他应用的批准)",
+                           "silentCertAccessTabName":  "应用",
+                           "silentCertAccessTypeDescription":  "选择如何向应用程序授予证书访问权限",
+                           "silentCertAccessTypeName":  "证书访问权限",
+                           "silentCertAccessUserApproval":  "要求用户对所有应用进行批准",
                            "simpleDownloadOption":  "简单下载模式，无对等方(99)",
                            "simultaneousMultiThreadingName":  "并发多线程处理",
                            "singleAppModeAppNameDescription":  "应用名称。",
@@ -7151,6 +7172,8 @@
                            "windows10ProfessionalOption":  "Windows 10/11 专业版",
                            "windows10ProfessionalWorkstationNOption":  "Windows 10/11 专业工作站版 N 版",
                            "windows10ProfessionalWorkstationOption":  "Windows 10/11 专业工作站版",
+                           "windows11CloudEditionNOption":  "Windows 11 SE N",
+                           "windows11CloudEditionOption":  "Windows 11 SE",
                            "windows11EULA":  "选中此选项即表示你同意在将此操作系统应用到设备时，(1) 已通过批量许可购买了适用的 Windows 许可证，或 (2) 你已获授权绑定你的组织，并代表组织接受此处 <a>{0}</a> 的相关 Microsoft 软件许可条款。",
                            "windowsAppNonComplianceTypeDescription":  "建议要求用户接受条款的使用，告知将阻止安装某些应用。使用已阻止的应用列表指定用户不能安装的、不由 Intune 管理的 Windows Phone 应用。必须以应用商店 URL 格式将要允许的所有应用(包括公司门户和任何已部署的应用)添加到已允许的应用列表",
                            "windowsAppUrlExample":  "例如 https://www.microsoft.com/en-us/store/apps/remote-desktop/9wzdncrfj3ps",
@@ -7239,6 +7262,8 @@
                            "workProfilePersonalUsagAndroidEnrollmentTypesHeaderDescription":  "这些设置适用于公司拥有的工作配置文件设备，仅在个人使用时应用。",
                            "workProfileRequirePasswordDescription":  "需要密码才可使用工作应用。该密码可与设备密码不同。需使用 Android 7.0 及以上版本",
                            "workProfileRequirePasswordName":  "需要工作配置文件密码",
+                           "workProfileRequiredPasswordComplexityDescription":  "指定所需的密码复杂性。",
+                           "workProfileRequiredPasswordComplexityName":  "Work Profile Password Complexity",
                            "workProfileRequiredPasswordTypeDescription":  "指定所需密码类型。",
                            "workProfileRequiredPasswordTypeName":  "所需密码类型",
                            "workspaceIDName":  "工作区 ID",
@@ -7601,7 +7626,7 @@
                            "isMamEnabled":  "是否已启用 MAM?",
                            "itemsCount":  "{0} 项",
                            "jailbrokenRootedDevices":  "已越狱/获得根权限的设备",
-                           "lastModifiedDate":  "Last Modified Date",
+                           "lastModifiedDate":  "上次修改日期",
                            "lastReportedDate":  "上次报告日期",
                            "lastSync":  "上次同步时间",
                            "lastSyncGmt":  "上一次同步(GMT)",
@@ -7613,7 +7638,7 @@
                            "localStorage":  "本地存储",
                            "mAMShortTitle":  "Intune MAM",
                            "mAMSummaryBladeTitle":  "应用保护状态",
-                           "macOS":  "MacOS",
+                           "macOS":  "macOS",
                            "macPlatformLabel":  "Mac",
                            "mamGSTitle":  "保护 Microsoft Office 移动应用(预览)",
                            "manage":  "管理",
@@ -7633,6 +7658,7 @@
                            "mdmDeviceId":  "MDM 设备 ID",
                            "mdmWipInvalidVersionSettings":  "一个或多个应用具有无效的最低/最高版本定义。<br /> <br />“含注册的 Windows 信息保护”策略支持仅指定一个最低版本或最高版本，除非两个版本指定为相等。仅指定最低版本时，规则设置为大于或等于最低版本。同样，仅指定最高版本时，规则设置为小于或等于最高版本。",
                            "mdmWipReport":  "MDM Windows 信息保护报告",
+                           "microsoftDefenderForEndpoint":  "Microsoft Defender for Endpoint",
                            "microsoftEdgeOptionText":  "Microsoft Edge",
                            "minAppVersion":  "最低应用版本",
                            "minMaxValidation":  "当操作相同时，最低 OS 版本必须低于最高 OS 版本。",
@@ -7642,11 +7668,13 @@
                            "minimumCompanyPortalVersion":  "最低公司门户版本",
                            "minimumDeviceSelection":  "必须选择至少 1 个设备",
                            "mobileAppCRUDpermission":  "移动应用读取、创建和分配权限",
+                           "mobileThreatDefenseNonMicrosoft":  "移动威胁防御(非 Microsoft)",
                            "monitor":  "监视器",
                            "moreApps":  "更多应用",
                            "moreAppsTextBoxTooltip":  "如果你没有权限访问完整的 Intune 门户，请在此处添加业务线应用。",
-                           "mtdConnectorInfoBox1":  "<b>重要!</b> 请确保已设置 Mobile Threat Defense 连接器，以便根据来自已连接的 Mobile Threat Defense 服务的威胁评估正确地保护组织的数据。",
+                           "mtdConnectorInfoBox1":  "<b>重要!</b> 请确保已设置移动威胁防御(MTD)连接器，以便根据来自连接的移动威胁防御服务的威胁评估正确保护组织的数据。",
                            "mtdConnectorInfoBox2":  "了解适用于未注册设备的 Mobile Threat Defense 的详细信息。",
+                           "mtdConnectorInfoBox3":  "如果租户已设置与 Microsoft Defender for Endpoint 和 MTD 服务(非 Microsoft)的连接，并且未配置主 MTD 服务或在面向用户时发生冲突，则默认为 Microsoft Defender for Endpoint。",
                            "name":  "名称",
                            "networkBoundariesInfoBoxText":  "向云资源列表添加 /*AppCompat*/，以使用通过 IP 地址直接连接到云资源的个人应用启用 TLS 连接。",
                            "networkBoundariesInfoParagraph1":  "选择受保护的应用可在何处访问网络上的企业数据。",
@@ -7735,6 +7763,7 @@
                            "portNumber":  "端口号",
                            "portNumberDesc":  "代理地址中指定的代理端口",
                            "prefix":  "前缀",
+                           "primaryMtdService":  "主 MTD 服务",
                            "productName":  "产品名称",
                            "properties":  "属性",
                            "protected":  "已保护",
@@ -7777,7 +7806,7 @@
                            "resourcesToBeCreated":  "要创建的资源",
                            "restrictWebContentNo":  "任何应用",
                            "restrictWebContentOption2":  "{0}: 允许任何应用中的 Web 链接",
-                           "rootCertificate":  "Root Certificate",
+                           "rootCertificate":  "根证书",
                            "safetyNetDeviceAttestation":  "SafetyNet 设备证明",
                            "saveAppsNotificationText":  "正在保存所选的应用",
                            "saveChangesCommandText":  "保存",
@@ -7813,6 +7842,7 @@
                            "setting":  "设置",
                            "settingName":  "设置名称",
                            "settings":  "设置",
+                           "settingsCatalog":  "设置目录",
                            "settingsSelectorLabel":  "设置",
                            "silent":  "静默",
                            "specificUserIsLicensedIntune":  "已授权 {0} 使用 Microsoft Intune。",
@@ -7840,6 +7870,7 @@
                            "targetedUserPartWithPolicy":  "由策略管理",
                            "targetediOSUserPartTitle":  "iOS 用户状态",
                            "threatCategory":  "威胁类别",
+                           "tileDeprecated":  "已弃用此磁贴。请从仪表板中移除此磁贴。",
                            "timeColumnLabel":  "时间",
                            "timebombLabel":  "擦除应用数据之前的脱机间隔时间(天数)",
                            "timebombToolTip":  "设备未同步到 Intune 达到指定的天数后，Windows 将在设备上执行选择性擦除，取消注册应用的 MAM 注册，并删除加密数据和受保护的公司数据。此设置的默认值为 90 天。将此值设置为 0 将禁用该设置。",
@@ -7912,7 +7943,7 @@
                            "windows10AppProtectionPolicy":  "Windows 10 及更高版本的应用保护策略",
                            "windows10PlatformLabel":  "Windows 10 和更高版本",
                            "windows10x":  "Windows 10X",
-                           "windows8":  "Windows 8.1 and later",
+                           "windows8":  "Windows 8.1 和更高版本",
                            "windowsInformationProtectionPlatformLabel":  "Windows 信息保护",
                            "windowsPhone":  "Windows Phone 8.1",
                            "windowsPlatformLabel":  "Windows",
@@ -7944,6 +7975,7 @@
                            "wipSMBStringTooltip":  "指定一列文件扩展名，以便在网络位置列表中定义的公司范围内从 SMB 共享进行复制时，对具有这些扩展名的文件进行加密。如果未指定此策略，则应用现有的自动加密行为。配置此策略时，将仅加密列表中具有这些扩展名的文件。",
                            "wipStoreApps":  "应用商店应用",
                            "wipWeAppsListInfo":  "这些应用可以访问企业数据，并且在与不允许、非企业知晓或仅限个人的应用一起使用时将以不同的方式交互。不含 MDM 的设备上仅允许使用标识性应用。",
+                           "wipWeDeprecationWarning":  "Creating new WIP without enrollment policies (WIP-WE) is no longer supported. For more information, see <a target=\"_blank\" href={0}>Windows Information Protection</a> ",
                            "wipWeWarning":  "请通过选择“还原默认 URL”并定义用户范围，将 <a target=\"_blank\" href={0}>AAD 中的 MAM URL 设置为</a> Microsoft Intune，然后 Windows 10 及更高版本的策略才会生效。",
                            "wipWebsiteLearningTitle":  "Windows 信息保护的网站学习",
                            "wipeData":  "擦除数据",
@@ -8042,7 +8074,9 @@
                                "windows10ProfessionalEducationN":  "Windows 10/11 教育专业版 N",
                                "windows10ProfessionalN":  "Windows 10 专业版 N 版",
                                "windows10ProfessionalWorkstation":  "Windows 10/11 专业版工作站",
-                               "windows10ProfessionalWorkstationN":  "Windows 10/11 专业版工作站 N"
+                               "windows10ProfessionalWorkstationN":  "Windows 10/11 专业版工作站 N",
+                               "windows11CloudEdition":  "Windows 11 SE",
+                               "windows11CloudEditionN":  "Windows 11 SE N"
                            },
     "DetectionRules":  {
                            "ComparisonOperators":  {
@@ -8059,6 +8093,7 @@
                                                 "header":  "使用自定义脚本",
                                                 "runAs32Bit":  "在 64 位客户端上以 32 位进程形式运行脚本",
                                                 "runAs32BitTooltip":  "选择“是”以在 64 位客户端上的 32 位进程中运行脚本。选择“否”(默认)以在 64 位客户端上的 64 位进程中运行脚本。32 位客户端将始终在 32 位进程中运行脚本。",
+                                                "scriptContent":  "Script content",
                                                 "scriptFile":  "脚本文件",
                                                 "scriptFileNotSelectedValidation":  "未选择任何脚本文件。",
                                                 "scriptFileTooltip":  "选择将检测应用是否存在于客户端上的 PowerShell 脚本。脚本返回值为 0 的退出代码并将字符串值写入到 STDOUT 时，即表示检测到应用。",
@@ -8307,9 +8342,6 @@
                                                                                                              "string":  "字符串",
                                                                                                              "version":  "版本"
                                                                                                          },
-                                                                            "ScriptContent":  {
-                                                                                                  "emptyMessage":  "脚本内容不应为空。"
-                                                                                              },
                                                                             "duplicateName":  "脚本名称 {0} 已使用。请输入其他名称。",
                                                                             "enforceSignatureCheck":  "强制执行脚本签名检查",
                                                                             "enforceSignatureCheckTooltip":  "选择“是”以验证脚本是否已由受信任的发行商签名，这将允许运行脚本而不显示警告或提示。脚本运行将不受阻。选择“否”(默认)，在需要最终用户确认但不验证签名的情况下运行脚本。",
@@ -8318,6 +8350,7 @@
                                                                             "operatorTooltip":  "选择用于要求比较的运算符。",
                                                                             "requirementMethod":  "选择输出数据类型",
                                                                             "requirementMethodTooltip":  "选择在确定检测匹配要求时使用的数据类型。",
+                                                                            "scriptContent":  "Script content",
                                                                             "scriptFile":  "脚本文件",
                                                                             "scriptFileTooltip":  "选择将检测客户端上是否存在应用的 PowerShell 脚本。如果检测到应用，则要求进程将返回 0 值退出代码，并将字符串值写入 STDOUT。",
                                                                             "scriptName":  "脚本名称",
@@ -8370,6 +8403,7 @@
                                                       },
                                          "InfoBlade":  {
                                                            "createTitle":  "添加身份验证上下文",
+                                                           "deleteDisallowed":  "无法删除此身份验证上下文，因为条件访问策略正在引用它。",
                                                            "descPlaceholder":  "为身份验证上下文添加说明",
                                                            "modifyTitle":  "修改身份验证上下文",
                                                            "namePlaceholder":  "例如，“可信位置”、“受信任设备”、“强授权”",
@@ -8396,15 +8430,15 @@
                                          "description":  "说明",
                                          "documentation":  "文档",
                                          "getStarted":  "入门",
-                                         "label":  "身份验证上下文(预览)",
-                                         "menuLabel":  "身份验证上下文(预览)",
+                                         "label":  "身份验证上下文",
+                                         "menuLabel":  "身份验证上下文",
                                          "name":  "名称",
                                          "noAuthContextConfigured":  "尚未配置任何身份验证上下文。",
                                          "noAuthContextSet":  "没有身份验证上下文。",
                                          "noData":  "没有身份验证上下文可显示",
                                          "selectionInfo":  "身份验证上下文用于保护 SharePoint 和 Microsoft Cloud App Security 等应用中的应用程序数据和操作。",
                                          "step":  "步骤",
-                                         "tabDescription":  "管理身份验证上下文，以保护应用中的数据和操作。[了解更多][1]\n[1]: https://go.microsoft.com/fwlink/?linkid=2150965",
+                                         "tabDescription":  "管理身份验证上下文以保护应用中的数据和操作。当条件访问策略引用身份验证上下文时，无法删除这些上下文。[了解详细信息][1]\n[1]:https://go.microsoft.com/fwlink/?linkid=2150965",
                                          "tagResources":  "使用身份验证上下文来标记资源"
                                      },
                      "AuthenticationStrength":  {
@@ -8554,7 +8588,8 @@
                                                    "guestOrExternalUsersLabel":  "来宾或外部用户",
                                                    "internalGuestLabel":  "本地来宾用户",
                                                    "otherExternalUserLabel":  "其他外部用户",
-                                                   "serviceProviderUsersLabel":  "Service provider users"
+                                                   "previewTag":  "{0} (预览版)",
+                                                   "serviceProviderUsersLabel":  "服务提供商用户"
                                                },
                      "NamedLocation":  {
                                            "Form":  {
@@ -8696,7 +8731,7 @@
                                                       "ServicePrincipalRisk":  {
                                                                                    "description":  "配置强制实施策略所需的服务主体风险级别​",
                                                                                    "infoBalloonContent":  "配置服务主体风险，以将策略应用于所选风险级别",
-                                                                                   "title":  "服务主体风险(预览)"
+                                                                                   "title":  "服务主体风险"
                                                                                }
                                                   }
                                 },
@@ -8985,6 +9020,11 @@
                                  "optionsPickerTitle":  "启用/禁用连续访问评估",
                                  "upsellInfo":  "无法再更改此页上的设置，并应忽略此处的任何设置。将遵守你以前的设置。你可以在将来的条件访问下配置 CAE 设置。单击此处以了解详细信息。"
                              },
+                     "SamlReauth":  {
+                                        "Filter":  {
+                                                       "warning":  "你正在使用动态查询将目标定为应用程序。某些应用程序可能不支持使用“每次登录频率”会话控制。{0}详细阅读建议的方案。{1}"
+                                                   }
+                                    },
                      "SelectOrganizations":  {
                                                  "Blade":  {
                                                                "Lower":  {
@@ -9198,9 +9238,10 @@
                                                                           "infoBalloon":  "登录时使用的设备上的属性列表。"
                                                                       }
                                                },
-                                    "noTenantSelected":  "No tenant selected",
-                                    "tenantIdWithPlaceholder":  "Tenant ID: {0}",
-                                    "tenantSelectionRequired":  "Tenant required"
+                                    "noTenantSelected":  "未选择租户",
+                                    "selectOrganization":  "选择组织",
+                                    "tenantIdWithPlaceholder":  "租户 ID: {0}",
+                                    "tenantSelectionRequired":  "需要租户"
                                 },
                      "advancedTabText":  "高级",
                      "allCloudAppsErrorBox":  "选择“需要更改密码”授权时，必须选择“所有云应用”",
@@ -9224,7 +9265,7 @@
                      "appContextUriPlaceholder":  "示例: uri:contoso.com:level3",
                      "appEnforceInfoBubble":  "应用强制实施的限制可能要求在云应用中进行额外的管理配置。这些限制将仅对新会话生效。",
                      "appNotSetSeletorLabel":  "已选择 0 个云应用",
-                     "appReauthNotSupported":  "This app does not support the \"sign-in frequency every time\" session control.",
+                     "appReauthNotSupported":  "此应用不支持“每次登录频率”会话控件。",
                      "applyConditionClientAppInfoBalloonContent":  "配置客户端应用以将策略应用到特定客户端应用",
                      "applyConditionDevicePlatformInfoBalloonContent":  "配置设备平台以将策略应用到特定平台",
                      "applyConditionDeviceStateInfoBalloonContent":  "配置设备状态以将策略应用到特定设备状态",
@@ -9483,10 +9524,12 @@
                      "downloadDefaultFileName":  "IP 范围",
                      "downloadExampleFileName":  "示例",
                      "downloadExampleHeader":  "此示例文件含可接受的数据种类的展示。以 # 开头的行将被忽视。",
+                     "duplicate":  "复制",
+                     "duplicatePolicyName":  "{0} 复制",
                      "endDatePickerLabel":  "端",
                      "endTimePickerLabel":  "结束时间",
-                     "enterCountryText":  "IP 地址和国家/地区是捆绑计算的。选择国家/地区。",
-                     "enterIpText":  "IP 地址和国家/地区是捆绑计算的。输入 IP 地址。",
+                     "enterCountryText":  "IP 地址和国家/地区是成对计算的。请选择国家/地区。",
+                     "enterIpText":  "IP 地址和国家/地区是成对计算的。请输入 IP 地址。",
                      "enterUserText":  "未选择用户。选择一个用户。",
                      "evaluationResult":  "计算结果",
                      "exchangeActiveSyncSelectedLabel":  "Exchange ActiveSync ",
@@ -9528,7 +9571,7 @@
                      "infoCommandLabel":  "信息",
                      "invalidCertDuration":  "无效的证书持续时间",
                      "invalidIpAddress":  "值必须是有效的 IP 地址",
-                     "invalidReAuthSignInRiskOptionSelected":  "“每次登录频率”会话控制不允许在“登录风险级别”条件控制中选择“无风险”。",
+                     "invalidReAuthSignInRiskOptionSelected":  "“每次登录频率”会话控制不允许在“登录风险”条件控件中选择“无风险”。",
                      "invalidUriErrorMsg":  "请输入有效的 URI。例如 uri:contoso.com:acr",
                      "iosDisplayName":  "iOS",
                      "linuxDisplayName":  "Linux",
@@ -9569,7 +9612,7 @@
                      "namedLocationUpsellBanner":  "此视图已弃用。转到新的和改进的“已命名位置”视图。",
                      "namedLocationsHelpDescription":  "Azure AD 安全报告使用命名位置来减少误报和 Azure AD 条件访问策略。\n[了解更多][1]\n[1]: https://aka.ms/namedlocationupdate",
                      "namedNetworkAddIpRanges":  "添加新的 IP 范围(示例: 40.77.182.32/27)",
-                     "namedNetworkCountryNeeded":  "需至少选择一个国家/地区",
+                     "namedNetworkCountryNeeded":  "必须至少选择一个国家/地区",
                      "namedNetworkDeleteCommand":  "删除",
                      "namedNetworkDeleteDescription":  "是否确实要删除“{0}”? 此操作无法撤消。",
                      "namedNetworkDeleteTitle":  "是否确定?",
@@ -9653,9 +9696,9 @@
                      "policyConditionLocation":  "位置",
                      "policyConditionLocationDescription":  "用户从其登录的位置(使用 IP 地址范围确定)",
                      "policyConditionLocationPreview":  "位置(预览)",
-                     "policyConditionSigninRisk":  "登录风险级别",
+                     "policyConditionSigninRisk":  "登录风险",
                      "policyConditionSigninRiskDescription":  "除用户本人之外的其他人登录的可能性。风险级别可为高、中或低。需要 Azure AD Premium 2 许可证。",
-                     "policyConditionUserRisk":  "用户风险级别",
+                     "policyConditionUserRisk":  "用户风险",
                      "policyConditionUserRiskDescription":  "配置强制执行策略所需的用户风险级别",
                      "policyConditioniClientApp":  "客户端应用",
                      "policyControlAllowAccessDisplayedName":  "授予访问权限",
@@ -9893,7 +9936,7 @@
                      "whatIfEvaResultUsers":  "用户和组",
                      "whatIfIpAddress":  "IP 地址",
                      "whatIfIpAddressInfo":  "用户正在从其登录的 IP 地址。",
-                     "whatIfIpCountryInfoBoxText":  "如果使用 IP 地址或国家/地区，则这两个字段将是必需字段，且应正确映射在一起。",
+                     "whatIfIpCountryInfoBoxText":  "如果使用了 IP 地址或国家/地区，则这两个字段将是必需字段，且应正确地映射在一起。",
                      "whatIfPolicyAppliesTab":  "将应用的策略",
                      "whatIfPolicyAppliesTabWithCount":  "适用策略({0})",
                      "whatIfPolicyDoesNotApplyTab":  "不应用的策略",
@@ -9919,6 +9962,7 @@
                      "windowsDisplayName":  "Windows",
                      "windowsPhoneDisplayName":  "Windows Phone",
                      "workloadIdentities":  "工作负载标识(预览)",
+                     "workloadIdentitiesLicenseText":  "编辑此策略需要工作负载标识高级 P1 或 P2 许可证。",
                      "workloadIdentity":  "工作负载标识"
                  },
     "AppResources":  {
@@ -10047,6 +10091,14 @@
                                         }
                      },
     "WindowsEnrollment":  {
+                              "DevicePreparation":  {
+                                                        "description":  "配置设备以进行初始预配并分配给用户。",
+                                                        "title":  "设备准备"
+                                                    },
+                              "EnrollmentSettings":  {
+                                                         "description":  "配置注册设置，例如阻止注册并分配给用户。",
+                                                         "title":  "注册设置"
+                                                     },
                               "coManagementAuthorityDesc":  "为 Configuration Manager 集成配置共同管理设置",
                               "coManagementAuthorityTitle":  "共同管理设置",
                               "deploymentProfiles":  "Windows AutoPilot Deployment 配置文件",
@@ -10196,6 +10248,8 @@
                    "informationUrlSizeHint":  "信息 URL 的最大长度为 1024 个字符",
                    "installAsManaged":  "安装为托管项",
                    "installationSourceLabel":  "应用类型",
+                   "installerTypeInfoBalloon":  "The installer type of the application package.",
+                   "installerTypeLabel":  "Installer Type",
                    "isFeatured":  "在公司门户中将其显示为特色应用",
                    "isMAMEnabledToggleLabel":  "是",
                    "lastModifiedDateTime":  "上次更新时间",
@@ -10408,6 +10462,8 @@
                                                         "qualityUpdateSettings":  "设置"
                                                     },
                                         "infoBoxText":  "除了适用于 Windows 10 及更高版本的现有更新通道策略之外，当前可用的唯一专用质量更新控制措施是，为落后于指定补丁级别的设备加快质量更新。将来还会提供其他控制措施。",
+                                        "licenseLearnMoreText":  "详细了解先决条件和质量更新策略。",
+                                        "licenseWarningBoxText":  "创建质量更新策略需要特定许可。",
                                         "warningBoxText":  "加速软件更新有助于在必要时在更短时间内实现合规性，它对最终用户的工作效率有较大的影响。在工作时间重启的可能性会显著增加。"
                                     },
     "TermsOfUse":  {
@@ -10492,6 +10548,7 @@
                                          "ptBR":  "Portuguese (Brazil)",
                                          "ptPT":  "Portuguese (Portugal)",
                                          "quz":  "Quechua",
+                                         "removeLanguage":  "Remove language",
                                          "ro":  "Romanian",
                                          "ru":  "Russian",
                                          "rw":  "Kinyarwanda",
@@ -10542,10 +10599,7 @@
                                                                      },
                                       "PolicyFile":  {
                                                          "Languages":  {
-                                                                           "Empty":  {
-                                                                                         "default":  "Select default language",
-                                                                                         "nonDefault":  "Select a language"
-                                                                                     }
+
                                                                        },
                                                          "Validations":  {
                                                                              "duplicateLanguage":  "Oops, {0} appears to be selected multiple times. Language selection must be unique."
@@ -10581,6 +10635,7 @@
                                       "agreementNamePlaceholderText":  "Example: 'All users terms of use'",
                                       "agreementRequirmentLabel":  "Required Upon",
                                       "agreementTargetEntityLabel":  "Users targeted",
+                                      "agreementUploadPolicyAriaLabelText":  "Upload required PDF {0}",
                                       "agreementUploadPolicyLabel":  "Terms of use",
                                       "agreementUploadPolicyPlaceholderText":  "Upload required PDF",
                                       "createButtonLabel":  "Create",
@@ -10594,7 +10649,32 @@
                                       "policyTemplateInfo":  "These templates are pre configured conditional access policies that are targeted to specific users and applications.",
                                       "policyTemplateLabel":  "Policy templates",
                                       "title":  "New terms of use"
-                                  }
+                                  },
+                       "Details":  {
+                                       "Link":  {
+                                                    "auditEvent":  "View audit logs",
+                                                    "delete":  "Delete",
+                                                    "download":  "Preview PDF",
+                                                    "edit":  "Edit"
+                                                },
+                                       "Property":  {
+                                                        "acceptanceDuration":  "Duration before re-acceptance required (days)",
+                                                        "acceptanceExpirationFrequency":  "Frequency",
+                                                        "acceptanceExpirationStartDateTime":  "Expire starting on",
+                                                        "accepted":  "Users accepted",
+                                                        "declined":  "Users declined",
+                                                        "displayname":  "Display name",
+                                                        "isAcceptanceExpirationEnable":  "Expire consents",
+                                                        "isPerDeviceAcceptanceRequired":  "Require users to consent on every device",
+                                                        "isViewingBeforeAcceptanceRequired":  "Require users to expand the terms of use",
+                                                        "name":  "Name"
+                                                    },
+                                       "Tab":  {
+                                                   "cAPolicies":  "Conditional access policies",
+                                                   "details":  "Details",
+                                                   "languages":  "Languages"
+                                               }
+                                   }
                    },
     "TACSettings":  {
                         "edgeSettings":  "Edge 配置设置",
@@ -10660,6 +10740,23 @@
                               "withEnrollment":  "已注册",
                               "withoutEnrollment":  "未注册"
                           },
+    "PolicySelection":  {
+                            "Grid":  {
+                                         "Column":  {
+                                                        "author":  "作者",
+                                                        "template":  "模板名称"
+                                                    }
+                                     },
+                            "SettingsCatalog":  {
+                                                    "subtitle":  "从头开始，从可用设置库中选择所需设置",
+                                                    "title":  "设置目录"
+                                                },
+                            "Templates":  {
+                                              "subtitle":  "模板包括几组按功能进行整理的设置。如果你不想手动生成策略，或者想要将设备配置为访问公司网络(例如配置 WiFi 或 VPN)，请使用模板。",
+                                              "title":  "模板"
+                                          },
+                            "noData":  "找不到策略模板"
+                        },
     "OfficeApplicationAdditionalType":  {
                                             "projectProRetail":  "Project Online 桌面客户端",
                                             "visioProRetail":  "Visio Online 计划 2"
@@ -10844,6 +10941,12 @@
                           "withEnrollment":  "已注册",
                           "withoutEnrollment":  "未注册"
                       },
+    "DisplayRoleTypes":  {
+                             "builtInRole":  "内置角色",
+                             "customCloudPCRole":  "自定义 Windows 365 角色",
+                             "customIntuneRole":  "自定义 Intune 角色",
+                             "customRole":  "自定义角色"
+                         },
     "InstallContextType":  {
                                "device":  "设备",
                                "deviceContext":  "设备上下文",
@@ -11019,7 +11122,7 @@
                                                                      "Schedule":  {
                                                                                       "always":  "下次签入时更新",
                                                                                       "duringTimeWindows":  "在计划时间内更新",
-                                                                                      "header":  "默认情况下，如果将 iOS/iPadOS 软件更新策略分配给一台设备，则 Intune 会在设备签入时(大约每 8 小时)部署最新的更新。可以改为创建包含自定义开始时间和结束时间的每周计划。如果选择在计划外时间更新，Intune 不会在计划时间结束前部署更新。",
+                                                                                      "header":  "默认情况下，如果将更新策略分配给一台设备，则 Intune 会在设备签入时部署最新的更新。可以改为创建包含自定义开始时间和结束时间的每周计划。如果选择在计划外时间更新，Intune 不会在计划时间结束前部署更新。",
                                                                                       "infoBalloon":  "更新将在何时进行。需要进行其他输入才可在计划的时间之内或之外计划更新。",
                                                                                       "label":  "计划类型",
                                                                                       "outsideActiveHours":  "非活动时间的更新 (旧版)",
@@ -11443,6 +11546,7 @@
                    "ManagedDesktop":  {
                                           "adminContacts":  "管理员联系人",
                                           "appPackaging":  "应用包",
+                                          "businessGroups":  "业务组",
                                           "devices":  "设备",
                                           "feedback":  "反馈",
                                           "gettingStarted":  "入门",
@@ -11479,6 +11583,7 @@
                    "cartProfiles":  "匣配置文件",
                    "certificateConnectors":  "证书连接器",
                    "chromeEnterprise":  "Chrome Enterprise (预览版)",
+                   "cloudAttachedDevices":  "云附加设备(预览版)",
                    "compliancePolicies":  "符合性策略",
                    "complianceScriptManagement":  "脚本",
                    "complianceScriptManagementPreview":  "脚本(预览)",
@@ -11512,7 +11617,7 @@
                    "failuresForFeatureUpdates":  "功能更新失败(预览)",
                    "failuresForQualityUpdates":  "Windows 加急更新失败(预览版)",
                    "featureFlighting":  "功能外部测试",
-                   "featureUpdateDeployments":  "Windows 10 及更高版本的功能更新(预览版)",
+                   "featureUpdateDeployments":  "Feature updates for Windows 10 and later",
                    "flighting":  "外部测试",
                    "fotaUpdate":  "无线固件更新",
                    "groupPolicy":  "管理模板",
@@ -11523,8 +11628,8 @@
                    "incompleteUserEnrollments":  "部分用户注册",
                    "iosUpdates":  "更新 iOS/iPadOS 的策略",
                    "legacyPcManagement":  "旧式电脑管理",
-                   "macOSSoftwareUpdate":  "更新 macOS 的策略",
-                   "macOSSoftwareUpdateAccountSummaries":  "macOS 设备的安装状态",
+                   "macOSSoftwareUpdate":  "更新 macOS 的策略(预览版)",
+                   "macOSSoftwareUpdateAccountSummaries":  "Installation status for macOS devices (preview)",
                    "macOSSoftwareUpdateCategorySummaries":  "软件更新摘要",
                    "macOSSoftwareUpdateStateSummaries":  "更新",
                    "managedGooglePlay":  "托管的 Google Play",
@@ -11570,11 +11675,12 @@
                    "warranty":  "保修供应商",
                    "wdacSupplementalPolicies":  "S 模式补充策略",
                    "windows10DriverUpdate":  "Windows 10 及更高版本的驱动程序更新(预览)",
-                   "windows10QualityUpdate":  "Windows 10 及更高版本的质量更新(预览版)",
+                   "windows10QualityUpdate":  "Quality updates for Windows 10 and later",
                    "windows10UpdateRings":  "Windows 10 及更高版本的更新通道",
                    "windows10XPolicyFailures":  "Windows 10X 策略失败",
                    "windows365Connector":  "Windows 365 Citrix 连接器",
-                   "windows365ConnectorPublicPreview":  "Windows 365 Citrix connector (preview)",
+                   "windows365ConnectorPublicPreview":  "Windows 365 Citrix 连接器(预览)",
+                   "windowsDiagnosticData":  "Windows 数据",
                    "windowsEnterpriseCertificate":  "Windows Enterprise 证书",
                    "windowsManagement":  "PowerShell 脚本",
                    "windowsSideLoadingKeys":  "Windows 边载密钥",

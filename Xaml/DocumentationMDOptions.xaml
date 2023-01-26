@@ -1,0 +1,88 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="grdWordOptions">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <StackPanel Orientation="Horizontal" Grid.Row='0' Margin="0,0,5,0">
+        <Label Content="Document name" />
+        <Rectangle Style="{DynamicResource InfoIcon}">
+            <Rectangle.ToolTip>
+                <TextBlock>
+                    Full path to the name of the output file<LineBreak />
+                    Default value is %MyDocuments%\%Organization%-%Date%.md<LineBreak />
+                    Special folders and environmentvariables can be used
+                </TextBlock>
+            </Rectangle.ToolTip>
+        </Rectangle>     
+    </StackPanel>
+    <Grid Grid.Column='1' Grid.Row='0' Margin="0,5,5,0" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />  
+            <ColumnDefinition Width="5" />                              
+            <ColumnDefinition Width="Auto" />                                
+        </Grid.ColumnDefinitions>                 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>                
+        </Grid.RowDefinitions>
+        <TextBox Text="" Name="txtMDDocumentName" />
+        <Button Grid.Column="2" Name="browseMDDocumentName" Padding="5,0,5,0" Width="50" ToolTip="Select output document">...</Button>    
+    </Grid>    
+
+    <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="0,0,5,0">
+        <Label Content="Include CSS" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify if the CSS document shouldbe added to the MD file(s)" />
+    </StackPanel>
+    <CheckBox Grid.Column='1' Grid.Row='1' Name='chkMDIncludeCSS' VerticalAlignment="Center" IsChecked="true" />
+
+    <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,0,5,0">
+        <Label Content="CSS Style" />
+        <Rectangle Style="{DynamicResource InfoIcon}">
+            <Rectangle.ToolTip>
+                <TextBlock>
+                    Species the CSS file used for styling the MD document.<LineBreak />
+                    The CSS file will be ingected to the output document<LineBreak />
+                    Default value is %ScriptRoot%\Documentation\DefaultMDStyle.css
+                </TextBlock>
+            </Rectangle.ToolTip>
+        </Rectangle>
+    </StackPanel>
+    <Grid Grid.Column='1' Grid.Row='2' Margin="0,5,5,0" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />  
+            <ColumnDefinition Width="5" />                              
+            <ColumnDefinition Width="Auto" />                                
+        </Grid.ColumnDefinitions>                 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>                
+        </Grid.RowDefinitions>
+        <TextBox Text="" Name="txtMDCSSFile" />
+        <Button Grid.Column="2" Name="browseMDCSSFile" Padding="5,0,5,0" Width="50" ToolTip="Browse for CSS file">...</Button>
+    </Grid>
+
+    <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,0,5,0">
+        <Label Content="Open document" />
+        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="This will open the document when finished" />
+    </StackPanel>
+    <CheckBox Grid.Column='1' Grid.Row='3' Name='chkMDOpenDocument' VerticalAlignment="Center" IsChecked="true" />
+    
+    <StackPanel Orientation="Horizontal" Grid.Row='4' Margin="0,5,5,0" >
+                    <Label Content="Output File" />
+                    <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the targeted file for the documentation. One single file for all objects or one file per object." />
+                </StackPanel>                
+    <ComboBox Name="cbMDDocumentOutputFile" Margin="0,5,0,0" MinWidth="250" Grid.Row='4' Grid.Column="1" HorizontalAlignment="Left" 
+                DisplayMemberPath="Name" SelectedValuePath="Value"  />
+
+</Grid>

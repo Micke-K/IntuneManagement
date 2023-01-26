@@ -1,4 +1,59 @@
 # Release Notes
+## 3.8.1  - 2023-01-26
+
+**New features**
+
+- **Added support for Reusable Settings objects**<br />
+  - These are used by some of the Endpoint Security polices like Firewall rules<br />
+  Based on private request<br />
+  Note: No documentation support yet<br />
+
+- **Added support for custom Authentication Strengths objects**<br />
+  - These can be used in Conditional Access policies<br />
+  Based on [Issue 109](https://github.com/Micke-K/IntuneManagement/issues/109)<br />
+  Note: Not all issues in 109 are fixed yet and no documentation support yet<br />
+
+- **Export/Import**<br />
+  - PowerShell files for Health Scripts exported to the Export folder<br />
+  - PowerShell files for Application Detection scripts are exported to the Export folder<br />
+  Both scripts exports are based on [Issue 103](https://github.com/Micke-K/IntuneManagement/issues/103)<br />  
+
+- **Documentation**<br />
+  - Documentation engine completely rewritten for Settings Catalog and had major updates for other object types<br />
+  Please create an issue if there are any problems<br />
+  - Added support for HTML output<br />
+  - MD output is now official with included support for CSS and single file Output.<br />
+  Based on [Issue 35](https://github.com/Micke-K/IntuneManagement/issues/35)<br />
+  - Added support for indent on sub-properties so it will be visible that a property is set based on a parent<br />
+  Based on [Discussion 90](https://github.com/Micke-K/IntuneManagement/discussions/90)<br />  
+  - Added option to skip assignments in the documentation<br />
+  Based on [Issue 102](https://github.com/Micke-K/IntuneManagement/issues/102)<br />
+  - Moved some Output options to generic output settings; Document scripts and Remove script signature<br />
+
+- **Generic**<br />
+  - Added new property on applications, InstallerType. This can be added as a new column to the View for Applications.<br />
+  It specifies the New Microsoft Store App type; UWP or Win32<br />
+  Based on [Issue 101](https://github.com/Micke-K/IntuneManagement/issues/101)<br />
+  - Added response information f an API call failed. The log should now have a better description on why an API failed.<br />
+
+  
+**Fixes**
+- **Documentation**<br />
+  - Lots of documentation issues fixed by the new Documentation engine<br />
+  - Sections and policies should now be in correct alphabetic order<br />
+  Based on [Discussion 90](https://github.com/Micke-K/IntuneManagement/discussions/90)<br />  
+  - Fixed issues with assignments for Setting Catalog issues<br />
+  Based on [Issue 102](https://github.com/Micke-K/IntuneManagement/issues/102)<br />
+  - Translation files re-generated<br />
+  - Fixed error message: "Invoke-WordTranslateColumnHeader is not recognized as the name of a cmdlet"
+  Based on [Issue 99](https://github.com/Micke-K/IntuneManagement/issues/99)<br />
+
+
+- **Authentication**<br />
+  - Fixed an issue when authentication to China Cloud<br />
+  Based on [Issue 106](https://github.com/Micke-K/IntuneManagement/issues/106)<br />  
+<br />
+
 ## 3.7.4  - 2022-11-17
 
 **Fixes**
@@ -31,8 +86,11 @@ Thank you **Dominique** for all the amazing help with testing!<br />
   - Missing groups will now only generate a warning instead of Graph API error<br />
   - No error for users without a profile photo<br />
 
+
+
 <br />
 <br />
+
 ## 3.7.3  - 2022-10-24
 
 **Fixes**
