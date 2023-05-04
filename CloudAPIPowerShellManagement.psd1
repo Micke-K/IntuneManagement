@@ -12,7 +12,7 @@
 RootModule = 'CloudAPIPowerShellManagement.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.8.1'
+ModuleVersion = '3.9.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -27,7 +27,7 @@ Author = 'Mikael Karlsson'
 # CompanyName = ''
 
 # Copyright statement for this module
-Copyright = '(c) 2022 Mikael Karlsson. Software released under MIT License.'
+Copyright = '(c) 2023 Mikael Karlsson. Software released under MIT License.'
 
 # Description of the functionality provided by this module
 Description = 'Management of Intune and Azure via Cloud APIs like Microsoft Graph API'
