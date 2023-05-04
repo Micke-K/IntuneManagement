@@ -10,7 +10,7 @@ This module manages Application objects in Intune e.g. uploading application fil
 #>
 function Get-ModuleVersion
 {
-    '3.7.4'
+    '3.9.0'
 }
 
 #########################################################################################
@@ -357,7 +357,7 @@ function Send-IntuneFileToAzureStorage
 			$ids += $id
 
 			$start = $chunk * $chunkSizeInBytes
-			$length = [Math]::Min($chunkSizeInBytes, $fileSize - $start)
+			$length = [Math]::Min([uint64]($chunkSizeInBytes), [uint64]($fileSize - $start))
 			$bytes = $reader.ReadBytes($length)
 			
 			$currentChunk = $chunk + 1			
@@ -462,7 +462,7 @@ function Write-AzureStorageChunk
         
         try
         {
-            $response = Invoke-WebRequest $uri -Method Put -Headers $headers -Body $encodedBody
+            $response = Invoke-WebRequest $uri -Method Put -Headers $headers -Body $encodedBody -UseBasicParsing
             if($retryCount -gt 0)
             {
                 Write-Log "Chunk uploaded successfully"

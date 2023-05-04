@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.8.1'
+    '3.9.0'
 }
 
 function Invoke-InitializeModule
@@ -89,7 +89,7 @@ function Invoke-InitializeModule
         Deactivating = { Invoke-EMDeactivateView }
         Activating = { Invoke-EMActivatingView  }
         Authentication = (Get-MSALAuthenticationObject)
-        Authenticate = { Invoke-EMAuthenticateToMSAL }
+        Authenticate = { Invoke-EMAuthenticateToMSAL @args }
         AppInfo = (Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547" "EM")
         SaveSettings = { Invoke-EMSaveSettings }
 
@@ -120,7 +120,7 @@ function Invoke-InitializeModule
         ViewID = "IntuneGraphAPI"
         API = "/identity/conditionalAccess/policies"
         Permissons=@("Policy.Read.All","Policy.ReadWrite.ConditionalAccess","Application.Read.All")
-        Dependencies = @("NamedLocations","Applications","TermsOfUse","AuthenticationStrengths")
+        Dependencies = @("NamedLocations","Applications","TermsOfUse","AuthenticationStrengths","AssignmentFilters")
         GroupId = "ConditionalAccess"
         ImportExtension = { Add-ConditionalAccessImportExtensions @args }
         PreImportCommand = { Start-PreImportConditionalAccess @args }
@@ -128,22 +128,19 @@ function Invoke-InitializeModule
         ExpandAssignmentsList = $false
     })
 
-    if((Get-SettingValue "PreviewFeatures" $false) -eq $true)
-    {
-        Add-ViewItem (New-Object PSObject -Property @{
-            Title = "Terms of use"
-            Id = "TermsOfUse"
-            ViewID = "IntuneGraphAPI"
-            ViewProperties = @("id", "displayName")
-            Expand = "files"
-            QUERYLIST = "`$expand=files"
-            API = "/identityGovernance/termsOfUse/agreements"
-            Permissons=@("Agreement.ReadWrite.All")
-            PreImportCommand = { Start-PreImportTermsOfUse @args }
-            PostExportCommand = { Start-PostExportTermsOfUse  @args }
-            GroupId = "ConditionalAccess"        
-        })
-    }
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Terms of use"
+        Id = "TermsOfUse"
+        ViewID = "IntuneGraphAPI"
+        ViewProperties = @("id", "displayName")
+        Expand = "files"
+        QUERYLIST = "`$expand=files"
+        API = "/identityGovernance/termsOfUse/agreements"
+        Permissons=@("Agreement.ReadWrite.All")
+        PreImportCommand = { Start-PreImportTermsOfUse @args }
+        PostExportCommand = { Start-PostExportTermsOfUse  @args }
+        GroupId = "ConditionalAccess"        
+    })
 
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Named Locations"
@@ -262,6 +259,7 @@ function Invoke-InitializeModule
         #QUERYLIST = "`$filter=endsWith(id,'Windows10EnrollmentCompletionPageConfiguration')"
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         SkipRemoveProperties = @('Id')
+        Dependencies = @("Applications")
         AssignmentsType = "enrollmentConfigurationAssignments"
         PropertiesToRemoveForUpdate = @('priority')
         GroupId = "WinEnrollment"
@@ -670,6 +668,7 @@ function Invoke-InitializeModule
         GroupId = "EndpointAnalytics"
         Icon = "Report"
         AssignmentsType = "deviceHealthScriptAssignments"
+        AssignmentProperties = @("target","runSchedule","runRemediationScript")
         PropertiesToRemoveForUpdate = @('version','isGlobalScript','highestAvailableVersion')
     })
 
@@ -733,13 +732,50 @@ function Invoke-InitializeModule
         Icon = "ConditionalAccess"
         GroupId = "EndpointSecurity"
     })
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Authentication Context"
+        Id = "AuthenticationContext"
+        ViewID = "IntuneGraphAPI"
+        API = "/identity/conditionalAccess/authenticationContextClassReferences"
+        PropertiesToRemove = @("@odata.type")
+        SkipRemoveProperties = @('Id') 
+        ImportOrder = 46
+        PreImportCommand = { Start-PreImportCommandAuthenticationContext @args }
+        Permissons=@("Policy.ReadWrite.ConditionalAccess")
+        ExpandAssignmentsList = $false
+        Icon = "ConditionalAccess"
+        GroupId = "EndpointSecurity"
+    })
+    
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "W365 Provisioning Policies"
+        Id = "W365ProvisioningPolicies"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/virtualEndpoint/provisioningPolicies"
+        Permissons=@("CloudPC.ReadWrite.All")
+        Icon = "Devices"
+        GroupId = "DeviceConfiguration"
+    })
+    
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "W365 User Settings"
+        Id = "W365UserSettings"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/virtualEndpoint/userSettings"
+        Permissons = @("CloudPC.ReadWrite.All")
+        Icon = "Devices"
+        GroupId = "DeviceConfiguration"
+    })
 }
 
 function Invoke-EMAuthenticateToMSAL
 {
+    param($params = @{})
+
     $global:EMViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547" "EM"
     Set-MSALCurrentApp $global:EMViewObject.AppInfo
-    & $global:msalAuthenticator.Login -Account (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser"))
+    & $global:msalAuthenticator.Login -Account (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser")) @params
 }
 
 function Invoke-EMDeactivateView
@@ -2060,6 +2096,29 @@ function Start-PreImportAssignmentsApplications
         }
         @{"Assignments"=$assignments}
     }
+    elseif($obj.'@odata.type' -eq "#microsoft.graph.winGetApp")
+    {
+        Write-LogDebug "Wait for app to be published"
+        $i = 2
+        Start-Sleep -s ($i)
+        $x = 0
+        while($x -lt 10)
+        {
+            ###!!!
+            $appInfo = Invoke-GraphRequest -Url "$($objectType.API)/$($obj.id)" -ODataMetadata "skip"
+            if($appInfo.publishingState -eq "Published")
+            {
+                Write-LogDebug "Application $($obj.displayName) is published"
+                return
+            }
+            Start-Sleep -s ($i)
+            $x++
+            if($x -ge 5) { $i++ }
+        }
+
+        Write-Log "Application '$($obj.displayName)' is not published. Skipping assignment" 2
+        @{"Import"=$false}
+    }
 }
 
 function Start-PreDeleteApplications
@@ -3246,6 +3305,11 @@ function Start-PreImportConditionalAccess
         }
         $obj.grantControls.authenticationStrength = $authSetting
     }
+
+    if($obj.sessionControls.disableResilienceDefaults -eq $false)
+    {
+        $obj.sessionControls.disableResilienceDefaults = $null
+    }
 }
 
 function Start-PostExportConditionalAccess
@@ -3454,5 +3518,16 @@ function Start-PreImportCommandAuthenticationStrengths
     }
 }
 #endregion
+
+#region Authentication Strength
+function Start-PreImportCommandAuthenticationContext
+{
+    param($obj, $objectType, $file, $assignments)
+
+    #@{ "Method" = "PATCH" }
+    
+}
+#endregion
+
 
 Export-ModuleMember -alias * -function *

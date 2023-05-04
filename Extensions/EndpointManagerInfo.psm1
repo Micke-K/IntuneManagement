@@ -10,7 +10,7 @@ This module is for the Endpoint Info View. It shows read-only objects in Intune
 #>
 function Get-ModuleVersion
 {
-    '3.5.0'
+    '3.9.0'
 }
 
 function Invoke-InitializeModule
@@ -22,6 +22,7 @@ function Invoke-InitializeModule
         ID = "EMInfoGraphAPI" 
         ViewPanel = $viewPanel 
         AuthenticationID = "MSAL"
+        AllowDelete = $false
         ItemChanged = { Show-GraphObjects -ObjectTypeChanged; Invoke-ModuleFunction "Invoke-GraphObjectsChanged"; Write-Status ""}
         Activating = { Invoke-EMInfoActivatingView }
         Authentication = (Get-MSALAuthenticationObject)
@@ -87,6 +88,24 @@ function Invoke-InitializeModule
         Permissons=@("DeviceManagementServiceConfig.ReadWrite.All")
         ExpandAssignmentsList = $false
     })
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Tenant Settings"
+        Id = "TenantSettings"
+        ViewID = "EMInfoGraphAPI"
+        API = "deviceManagement/settings"
+        NameProperty = "Name"
+        AlwaysImport = $true
+        #ExportFullObject = $true
+        ViewProperties = @("Name")
+        ShowButtons = @("Import","Export","View")
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        PreImportCommand = { Start-PreImportTenantSettings @args }
+        GetObjectName = { Start-GetObjectNameTenantSettings @args }
+        PostListCommand = { Start-PostListTenantSettings @args }
+        Icon="TenantSettings"
+        ExpandAssignmentsList = $false
+    })    
 }
 
 function Invoke-EMInfoActivatingView
@@ -107,4 +126,39 @@ function Invoke-EMInfoAuthenticateToMSAL
     {
         & $global:msalAuthenticator.Login -Account $usr
     }
+}
+
+function Start-PreImportTenantSettings
+{
+    param($obj, $objectType)
+
+    $objClone = $obj | ConvertTo-Json -Depth 50 | ConvertFrom-Json
+    if($objClone.deviceComplianceCheckinThresholdDays -lt 1)
+    {
+        $objClone.deviceComplianceCheckinThresholdDays = 30
+    }
+    Remove-Property $objClone "@odata.type"
+    $json = @{ "settings" = $objClone } | ConvertTo-Json -Depth 50
+    (Invoke-GraphRequest -Url "deviceManagement" -Content $json -HttpMethod "PATCH") | Out-Null
+
+    return (@{"Import"=$false})
+}
+
+function Start-GetObjectNameTenantSettings
+{
+    param($objList, $objectType)
+
+    return "Tenant Settings"
+}
+
+function Start-PostListTenantSettings
+{
+    param($objList, $objectType)
+
+    if(($objList | measure).Count -eq 1) 
+    {
+        $objList[0].Name = "Tenant Settings"
+        #$objList[0] | Add-Member -MemberType NoteProperty -Name "SettingName" -Value "Tenant Settings"
+    }
+    $objList
 }

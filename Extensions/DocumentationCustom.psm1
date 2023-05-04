@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.5.0'
+    '1.6.0'
 }
 
 function Invoke-InitializeModule
@@ -1198,6 +1198,8 @@ function Add-CDDocumentCustomProfileProperty
         $requirementRulesSummary = @()
         $detectionRulesSummary = @()
         $returnCodes = @()
+        $detectionRules = @()
+        $requirementRules = @()
         foreach($rc in $obj.returnCodes)
         {
             $returnCodes += [PSCustomObject]@{
@@ -1245,6 +1247,8 @@ function Add-CDDocumentCustomProfileProperty
                 Add-ObjectScript $rule.displayName ("{0} - {1}" -f @($obj.displayName, "Requirement script")) $rule.ScriptContent
             }
             $requirementRulesSummary += ("{0} {1}" -f @((Get-LanguageString "Win32Requirements.AdditionalRequirements.RequirementTypeOptions.$lngId"),$textValue))
+        
+            $requirementRules += Add-CDDocumentRequirementRule $rule
         }
 
         if(($obj.detectionRules | Where '@OData.Type' -eq "#microsoft.graph.win32LobAppPowerShellScriptDetection"))
@@ -1259,6 +1263,7 @@ function Add-CDDocumentCustomProfileProperty
         else
         {
             $detectionRulesType = Get-LanguageString "DetectionRules.RuleConfigurationOptions.manual"
+
             foreach($rule in $obj.detectionRules)
             {
                 if($rule.'@OData.Type' -eq "#microsoft.graph.win32LobAppFileSystemDetection")
@@ -1276,7 +1281,10 @@ function Add-CDDocumentCustomProfileProperty
                     $lngId = "mSI"
                     $textValue = $rule.productCode
                 }
+                
                 $detectionRulesSummary += ("{0} {1}" -f @((Get-LanguageString "DetectionRules.Manual.RuleTypeOptions.$lngId"),$textValue))
+
+                $detectionRules += Add-CDDocumentDetectionRule $rule
             }
         }
         
@@ -1285,6 +1293,8 @@ function Add-CDDocumentCustomProfileProperty
         $obj | Add-Member Noteproperty -Name "dependencyApps" -Value ($dependencyApps -join $objSeparator) -Force 
         $obj | Add-Member Noteproperty -Name "supersededApps" -Value ($supersededApps -join $objSeparator) -Force 
         $obj | Add-Member Noteproperty -Name "detectionRulesType" -Value $detectionRulesType -Force 
+        $obj | Add-Member Noteproperty -Name "requirementRulesTranslated" -Value $requirementRules -Force 
+        $obj | Add-Member Noteproperty -Name "detectionRulesTranslated" -Value $detectionRules -Force 
         $obj | Add-Member Noteproperty -Name "returnCodes" -Value $returnCodes -Force 
         $obj | Add-Member Noteproperty -Name "win10Release" -Value (Get-LanguageString "MinimumOperatingSystem.Windows.V10Release.release$($obj.minimumSupportedWindowsRelease)") -Force 
     }
@@ -1423,6 +1433,390 @@ function Add-CDDocumentCustomProfileProperty
     }
 
     return $retValue
+}
+
+function Add-CDDocumentRequirementRule
+{
+    param($rule)
+
+    $strYes = Get-LanguageString "SettingDetails.yes"
+    $strNo = Get-LanguageString "SettingDetails.no"
+
+    $ruleInfo = @()
+
+    if($rule.'@OData.Type' -eq "#microsoft.graph.win32LobAppFileSystemRequirement")
+    {
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.requirementType")
+            value = (Get-LanguageString "Win32Requirements.AdditionalRequirements.RequirementTypeOptions.fileType")
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.FileRule.path")
+            value = $rule.path
+        }
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.FileRule.fileOrFolder")
+            value = $rule.fileOrFolderName
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.File.property")
+            value = switch($rule.detectionType)
+            {
+                "createdDate" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.dateCreated") }
+                "modifiedDate" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.dateModified") }
+                "doesNotExist" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.doesNotExist") }
+                "exists" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.fileOrFolderExists") }
+                "sizeInMB" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.sizeInMB") }
+                "version" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.version") }
+                Default { Get-LanguageString "BooleanActions.notConfigured" }
+            }
+        }        
+        
+        if($rule.detectionValue -and $rule.operator)
+        {
+            $ruleInfo += [PSCustomObject]@{
+                property = (Get-LanguageString "DetectionRules.Manual.FileRule.operator")
+                value = (Get-CDDocumentOperatorString $rule.operator)
+            }
+
+            $detectionValue = $rule.detectionValue 
+            if($rule.detectionType -eq "createdDate" -or $rule.detectionType -eq "modifiedDate")
+            {
+                try { 
+                    $tmpDate = Get-Date $rule.detectionValue
+                    $detectionValue = $tmpDate.ToString()
+                } catch {}
+            }
+    
+            $ruleInfo += [PSCustomObject]@{
+                property = (Get-LanguageString "DetectionRules.Manual.FileRule.value")
+                value = $detectionValue
+            }
+        }
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.RegistryRule.associatedWith32Bit")
+            value = (?: ($rule.check32BitOn64System -eq $true) ($strYes) ($strNo))
+        }
+    }
+    elseif($rule.'@OData.Type' -eq "#microsoft.graph.win32LobAppRegistryRequirement")
+    {
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.requirementType")
+            value = (Get-LanguageString "Win32Requirements.AdditionalRequirements.RequirementTypeOptions.registry")
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.Registry.keyPath")
+            value = $rule.keyPath
+        }
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.Registry.valueName")
+            value = $rule.valueName
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.Registry.registryRequirement")
+            value = switch($rule.detectionType)
+            {
+                "doesNotExist" 
+                {
+                    if($rule.valueName)
+                    {
+                        (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.valueDoesNotExist")
+                    }
+                    else
+                    {
+                        (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.keyDoesNotExist")
+                    }
+                }
+                "exists" { 
+                    if($rule.valueName)
+                    {
+                        (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.valueExists")
+                    }
+                    else
+                    {
+                        (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.keyExists")
+                    }
+                }
+                "integer" { (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.integerComparison") }
+                "string" { (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.stringComparison") }
+                "version" { (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.versionComparison") }
+                Default { Get-LanguageString "BooleanActions.notConfigured" }
+            }
+        }        
+        
+        if($rule.detectionValue -and $rule.operator)
+        {
+            $ruleInfo += [PSCustomObject]@{
+                property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.Registry.operator")
+                value = (Get-CDDocumentOperatorString $rule.operator)
+            }
+    
+            $ruleInfo += [PSCustomObject]@{
+                property = (Get-LanguageString "DetectionRules.Manual.RegistryRule.value")
+                value = $rule.detectionValue
+            }
+        }
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.RegistryRule.associatedWith32Bit")
+            value = (?: ($rule.check32BitOn64System -eq $true) ($strYes) ($strNo))
+        }
+    }
+    elseif($rule.'@OData.Type' -eq "#microsoft.graph.win32LobAppPowerShellScriptRequirement")
+    {
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.requirementType")
+            value = (Get-LanguageString "Win32Requirements.AdditionalRequirements.RequirementTypeOptions.script")
+        }
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.scriptName")
+            value = $rule.displayName
+        }
+
+        <#
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.scriptContent")
+            $scriptContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($rule.scriptContent))
+            value = $scriptContent
+        }
+        #>
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.CustomScript.runAs32Bit")
+            value = (?: ($rule.runAs32Bit -eq $true) ($strYes) ($strNo))
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.loggedOnCredentials")
+            value = (?: ($rule.runAsAccount -ne "system") ($strYes) ($strNo))
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.enforceSignatureCheck")
+            value = (?: ($rule.enforceSignatureCheck -eq $true) ($strYes) ($strNo))
+        }        
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.requirementMethod")
+            value = switch($rule.detectionType)
+            {
+                "string" { (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.RequirementMethodOptions.string") }
+                "dateTime" { (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.RequirementMethodOptions.dateTime") }
+                "integer" { (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.RequirementMethodOptions.integer") }
+                "float" { (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.RequirementMethodOptions.float") }
+                "version" { (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.RequirementMethodOptions.version") }
+                "boolean" { (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.RequirementMethodOptions.boolean") }
+                Default { Get-LanguageString "BooleanActions.notConfigured" }
+            }
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.Registry.operator")
+            value = (Get-CDDocumentOperatorString $rule.operator)
+        }
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "Win32Requirements.AdditionalRequirements.Script.value")
+            value = $rule.detectionValue
+        }        
+    }
+    return $ruleInfo
+}
+
+function Add-CDDocumentDetectionRule
+{
+    param($rule)
+
+    $ruleInfo = @()
+    
+    if($rule.'@OData.Type' -eq "#microsoft.graph.win32LobAppFileSystemDetection")
+    {
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.ruleType")
+            value = (Get-LanguageString "DetectionRules.Manual.RuleTypeOptions.file")
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.FileRule.path")
+            value = $rule.path
+        }
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.FileRule.fileOrFolder")
+            value = $rule.fileOrFolderName
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.FileRule.detectionMethod")
+            value = switch($rule.detectionType)
+            {
+                "createdDate" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.dateCreated") }
+                "modifiedDate" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.dateModified") }
+                "doesNotExist" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.doesNotExist") }
+                "exists" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.fileOrFolderExists") }
+                "sizeInMB" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.sizeInMB") }
+                "version" { (Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.version") }
+                Default { Get-LanguageString "BooleanActions.notConfigured" }
+            }
+        }        
+        
+        if($rule.detectionValue -and $rule.operator)
+        {
+            $ruleInfo += [PSCustomObject]@{
+                property = (Get-LanguageString "DetectionRules.Manual.FileRule.operator")
+                value = (Get-CDDocumentOperatorString $rule.operator)
+            }
+
+            $detectionValue = $rule.detectionValue 
+            if($rule.detectionType -eq "createdDate" -or $rule.detectionType -eq "modifiedDate")
+            {
+                try { 
+                    $tmpDate = Get-Date $rule.detectionValue
+                    $detectionValue = $tmpDate.ToString()
+                } catch {}
+            }
+    
+            $ruleInfo += [PSCustomObject]@{
+                property = (Get-LanguageString "DetectionRules.Manual.FileRule.value")
+                value = $detectionValue
+            }
+        }
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.RegistryRule.associatedWith32Bit")
+            value = (?: ($rule.check32BitOn64System -eq $true) (Get-LanguageString "SettingDetails.yes") (Get-LanguageString "SettingDetails.no"))
+        }
+    }
+    elseif($rule.'@OData.Type' -eq "#microsoft.graph.win32LobAppRegistryDetection")
+    {
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.ruleType")
+            value = (Get-LanguageString "DetectionRules.Manual.RuleTypeOptions.registry")
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.RegistryRule.keyPath")
+            value = $rule.keyPath
+        }
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.RegistryRule.valueName")
+            value = $rule.valueName
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.RegistryRule.detectionMethod")
+            value = switch($rule.detectionType)
+            {
+                "doesNotExist" 
+                {
+                    if($rule.valueName)
+                    {
+                        (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.valueDoesNotExist")
+                    }
+                    else
+                    {
+                        (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.keyDoesNotExist")
+                    }
+                }
+                "exists" { 
+                    if($rule.valueName)
+                    {
+                        (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.valueExists")
+                    }
+                    else
+                    {
+                        (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.keyExists")
+                    }
+                }
+                "integer" { (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.integerComparison") }
+                "string" { (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.stringComparison") }
+                "version" { (Get-LanguageString "DetectionRules.Manual.RegistryRule.DetectionMethodOptions.versionComparison") }
+                Default { Get-LanguageString "BooleanActions.notConfigured" }
+            }
+        }        
+        
+        if($rule.detectionValue -and $rule.operator)
+        {
+            $ruleInfo += [PSCustomObject]@{
+                property = (Get-LanguageString "DetectionRules.Manual.RegistryRule.operator")
+                value = (Get-CDDocumentOperatorString $rule.operator)
+            }
+    
+            $ruleInfo += [PSCustomObject]@{
+                property = (Get-LanguageString "DetectionRules.Manual.RegistryRule.value")
+                value = $rule.detectionValue
+            }
+        }
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.RegistryRule.associatedWith32Bit")
+            value = (?: ($rule.check32BitOn64System -eq $true) (Get-LanguageString "SettingDetails.yes") (Get-LanguageString "SettingDetails.no"))
+        }
+    }
+    else #win32LobAppProductCodeDetection
+    {
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.ruleType")
+            value = (Get-LanguageString "DetectionRules.Manual.RuleTypeOptions.mSI")
+        }
+
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.MsiRule.productCode")
+            value = $rule.productCode
+        }
+        
+        $ruleInfo += [PSCustomObject]@{
+            property = (Get-LanguageString "DetectionRules.Manual.MsiRule.productVersionCheck")
+            value = (?: ($null -ne $rule.productVersion) (Get-LanguageString "SettingDetails.yes") (Get-LanguageString "SettingDetails.no"))
+        }
+
+        if($null -ne $rule.productVersion)
+        {
+            $ruleInfo += [PSCustomObject]@{
+                property = (Get-LanguageString "DetectionRules.Manual.MsiRule.operator")
+                value = (Get-CDDocumentOperatorString $rule.productVersionOperator)
+            }
+        }
+
+        if($null -ne $rule.productVersion)
+        {
+            $ruleInfo += [PSCustomObject]@{
+                property = (Get-LanguageString "DetectionRules.Manual.MsiRule.productVersion")
+                value = (Get-CDDocumentOperatorString $rule.productVersion)
+            }
+        }        
+    }    
+
+    return $ruleInfo   
+}
+
+function Get-CDDocumentOperatorString
+{
+    param($operator)
+
+    $lngString = switch ($operator)
+    {
+        "notConfigured" { Get-LanguageString "BooleanActions.notConfigured" }
+        "equal" { Get-LanguageString "DetectionRules.ComparisonOperators.equals" }
+        "notEqual" { Get-LanguageString "DetectionRules.ComparisonOperators.notEqualTo" }
+        "greaterThan" { Get-LanguageString "DetectionRules.ComparisonOperators.greaterThan" }
+        "greaterThanOrEqual" { Get-LanguageString "DetectionRules.ComparisonOperators.greaterThanOrEqualTo" }
+        "lessThan" { Get-LanguageString "DetectionRules.ComparisonOperators.lessThan" }
+        "lessThanOrEqual" { Get-LanguageString "DetectionRules.ComparisonOperators.lessThanOrEqualTo" }
+        "exists" { Get-LanguageString "DetectionRules.Manual.FileRule.DetectionMethodOptions.fileOrFolderExists" }
+        Default { $operator }
+    }
+
+    $lngString
 }
 
 # App Config

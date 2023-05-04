@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '2.0.0'
+    '2.0.1'
 }
 
 function Invoke-InitializeModule
@@ -1299,6 +1299,12 @@ function Add-SettingsSetting
 function Get-IntentCategory
 {
     param($templateType)
+
+    if(-not $templateType)
+    {
+        Write-Log "Get-IntentCategory called with empty Category" 2
+        return
+    }
 
     if($templateType.StartsWith("endpointSecurity"))
     {
@@ -3588,7 +3594,7 @@ function Invoke-TranslateAssignments
                                     $hours = ($endTime.ToUniversalTime() - $endTime).Hours
                                     $endTime = $endTime.AddHours($hours)
                                 }
-                                $value = "$($instTime.ToShortDateString()) $($instTime.ToShortTimeString())" 
+                                $value = "$($endTime.ToShortDateString()) $($endTime.ToShortTimeString())" 
                             }
                         }
 

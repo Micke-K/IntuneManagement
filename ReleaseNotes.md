@@ -1,4 +1,50 @@
 # Release Notes
+## 3.9.0  - 2023-05-04
+
+**New features**
+
+- **Added support for Authentication Context objects**<br />
+  - These are used by Conditional Access policies<br />
+  Based on [Issue 109](https://github.com/Micke-K/IntuneManagement/issues/109)<br />
+  
+- **Added support for Windows 365 Cloud PC settings**<br />
+  - Based on [Issue 125](https://github.com/Micke-K/IntuneManagement/issues/125)<br />
+
+- **Added support for Export/Import Tennant Settings**<br />
+  - This is added the Intune Info view for now (Views -> Intune Info)<br />
+  This means that there is no support for Bulk Import/Export. It must be done manually<br />
+  This is to minimize the risk of re-importing Tenant settings<br />
+  Based on [Discussion 131](https://github.com/Micke-K/IntuneManagement/discussions/131)<br />
+
+**Fixes**
+- **Documentation**<br />
+  - Added full documentation of Requirement and Detection rules for Win Apps<br />
+  Based on [Issue 119](https://github.com/Micke-K/IntuneManagement/issues/119)<br />
+  - Fixed issue were documentation could crash if Reusable Settings policies exists<br />
+  Based on [Issue 123](https://github.com/Micke-K/IntuneManagement/issues/123)<br />
+  - Regenerated Language files and Translation tables for Template policies<br />
+- **Intunwin File Upload**<br />
+  - Fixed issue when uploading very large files<br />
+  Based on [Issue 112](https://github.com/Micke-K/IntuneManagement/issues/112)<br />
+  - Fixed issue when IE not installed<br />
+- **Compare**<br />
+  - Fixed issue where Compare could generate an exception in the log<br />
+  Based on [Issue 128](https://github.com/Micke-K/IntuneManagement/issues/128)<br />
+  **Note:** Issue 128 is only partially fixed. Compare needs a major update to fix the rest<br />
+- **Import**<br />
+  - Fixed an issue when creating Cloud groups based on on-prem groups without MigTable<br />
+  - Fixed an issue when importing groups with a space in the beginning<br />
+  **Note:** Inital spaces will be removed when importing groups<br />
+  - Fixed issue when importing Endpoint Status Page polices with applications defined<br />
+  - Fixed issue when importing Proactive Remediations (Health Scripts) with assignments<br />
+  - Fixed issue when importing a Conditional Policy with Session propery disableResilienceDefaults set to $false<br />
+  - Fixed issue when importing WiFi profiles. Support for multiple references was added eg multiple server verification certificates<br />
+  Based on [Issue 114](https://github.com/Micke-K/IntuneManagement/issues/114)<br />
+  - Terms of Use was not visible in the menu<br />
+  **Note:** This might generate a Consent prompt if Use Default Permissions is not enabled<br />
+  Additional permission required on the Azure App: Agreement.ReadWrite.All<br />
+<br />
+
 ## 3.8.1  - 2023-01-26
 
 **New features**

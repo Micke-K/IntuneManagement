@@ -11,7 +11,7 @@ Objects can be compared based on Properties or Documentatation info.
 
 function Get-ModuleVersion
 {
-    '1.0.10'
+    '1.0.11'
 }
 
 function Invoke-InitializeModule
@@ -516,7 +516,11 @@ function Start-BulkCompareExportObjects
     Write-Log "****************************************************************"
     $compareObjectsResult = @()
 
-    $txtNameFilter = (Get-XamlProperty $global:ccContentProviderOptions.Content "txtCompareNameFilter" "Text").Trim()
+    $txtNameFilter = (Get-XamlProperty $global:ccContentProviderOptions.Content "txtCompareNameFilter" "Text")
+    if($txtNameFilter -is [String])
+    {
+        $txtNameFilter = $txtNameFilter.Trim()
+    }
     $rootFolder = (Get-XamlProperty $global:ccContentProviderOptions.Content "txtExportPath" "Text")
     
     $compareProps = $script:defaultCompareProps

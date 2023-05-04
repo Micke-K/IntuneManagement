@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.8.1'
+    '3.9.0'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -819,6 +819,7 @@ function Show-GraphObjects
         if($ctrl.Name -eq "btnDelete")
         {
             $allowDelete = Get-SettingValue "EMAllowDelete"
+            if($global:currentViewObject.ViewInfo.AllowDelete -eq $false) { $allowDelete = $false }
             $ctrl.Visibility = (?: ($allowDelete -eq $true) "Visible" "Collapsed")
         }
         elseif(-not $global:curObjectType.ShowButtons -or ($global:curObjectType.ShowButtons | Where-Object { $ctrl.Name -like "*$($_)" } ))
@@ -2247,9 +2248,9 @@ function Reset-GraphObject
     $nameProp = ?? $fileObj.ObjectType.NameProperty "displayName"
     $curObject = $objectList | Where { $_.Object.$nameProp -eq $fileObj.Object.$nameProp -and $_.Object.'@OData.Type' -eq $fileObj.Object.'@OData.Type' }
     
-    if($global:cbImportType.SelectedValue -eq "skipIfExist" -and ($curObject | measure).Count -gt 0)
+    if($global:cbImportType.SelectedValue -eq "skipIfExist" -and ($curObject | measure).Count -gt 0 -and $fileObj.ObjectType.AlwaysImport -ne $true)
     {
-        Write-Log "Objects with name $($fileObj.Object.$nameProp) already exists. Object will not be imported"
+        Write-Log "Object with name $($fileObj.Object.$nameProp) already exists. Object will not be imported"
         return $true
     }
     elseif(($curObject | measure).Count -gt 1)
@@ -2259,7 +2260,12 @@ function Reset-GraphObject
     }
     elseif(($curObject | measure).Count -eq 1)
     {
-        Write-Log "Update $((Get-GraphObjectName $fileObj.Object $fileObj.ObjectType)) with id $($curObject.Object.Id)"
+        $idInfo = ""
+        if([String]::IsNullOrEmpty($curObject.Object.Id) -eq $false)
+        {
+            $idInfo = " with id $($curObject.Object.Id)"
+        }
+        Write-Log "Update $((Get-GraphObjectName $fileObj.Object $fileObj.ObjectType))$idInfo"
         $objectType = $fileObj.ObjectType
 
         # Clone the object before removing properties
@@ -2538,7 +2544,6 @@ function Add-GraphMigrationInfo
             if($objType -eq "#microsoft.graph.groupAssignmentTarget" -or
                 $objType -eq "#microsoft.graph.exclusionGroupAssignmentTarget")
             {
-                #Add-GroupMigrationObject $objInfo.groupid
                 Add-GraphMigrationObject $objInfo.groupid "/groups" "Group"
             }
             elseif($objType -eq "#microsoft.graph.allLicensedUsersAssignmentTarget" -or
@@ -2660,13 +2665,13 @@ function Add-GraphMigrationObject
     if(-not $graphObj)
     {
         # Get object info
-        $graphObj = Invoke-GraphRequest "$($grapAPI)/$objId" -ODataMetadata "none"
+        $graphObj = Invoke-GraphRequest "$($grapAPI)/$objId" -ODataMetadata "none" -NoError
     }
 
     if($graphObj)
     {
         # Add object to cache
-        if($global:AADObjectCache.ContainsKey($objId) -eq $false) { $global:AADObjectCache.Add($objId, $ugraphObjserObj) }
+        if($global:AADObjectCache.ContainsKey($objId) -eq $false) { $global:AADObjectCache.Add($objId, $graphObj ) }
 
         # Add object to migration file
         if((Add-GraphMigrationObjectToFile $graphObj $path $objTypeName))
@@ -2680,6 +2685,10 @@ function Add-GraphMigrationObject
                 Save-GraphObjectToFile $graphObj $fileName
             }
         }
+    }
+    else
+    {
+        Write-Log "No $objTypeName found with ID $($groupId). It might be deleted." 2
     }
 }
 
@@ -2805,15 +2814,16 @@ function Get-GraphMigrationObjectsFromFile
         foreach($migObj in $migFileObj.Objects)
         {
             if($migObj.Type -like "*group*")
-            {                
-                $obj = (Invoke-GraphRequest "/groups?`$filter=displayName eq '$($migObj.DisplayName)'").Value
+            {    
+                $migTableGroupName = $migObj.DisplayName.Trim()
+                $obj = (Invoke-GraphRequest "/groups?`$filter=displayName eq '$($migTableGroupName)'").Value
                 if(-not $obj)
                 {
                     $groupFi = $null
                     if($global:GraphMigrationTable)
                     {
                         $fi = [IO.FileInfo]$global:GraphMigrationTable
-                        $groupFi = [IO.FileInfo]($fi.DirectoryName + "\Groups\$((Remove-InvalidFileNameChars $migObj.DisplayName)).json")
+                        $groupFi = [IO.FileInfo]($fi.DirectoryName + "\Groups\$((Remove-InvalidFileNameChars $migTableGroupName)).json")
                     }
 
                     if($groupFi.Exists -eq $true)
@@ -2830,31 +2840,47 @@ function Get-GraphMigrationObjectsFromFile
                             
                             Remove-Property $groupObj $prop.Name
                         }
+                        $groupObj.displayName = $groupObj.displayName.Trim()
                         $groupJson = ConvertTo-Json $groupObj -Depth 50
                     }
                     else
                     {
-                        Write-Log "No group object found for $($migObj.DisplayName). Creating a cloud group with default settings" 2
+                        $groupName = $migTableGroupName
+                        Write-Log "No group object found for $groupName. Creating a cloud group with default settings" 2
+                        $dateStr = ((Get-Date).ToString("yyMMddHHmmss"))
+                        
+                        if(($groupName.Length + $dateStr.Length) -gt 64)
+                        {
+                            $nickName = $groupName.Substring(0,(64-$dateStr.Length))
+                        }
+                        else
+                        {
+                            $nickName = $groupName
+                        }
+                        $nickName = $nickName + $dateStr
+                        
                         $groupJson = @"
                         { 
-                            "displayName": "$($migObj.DisplayName)",
-                            "groupTypes": [
-                                ],
+                            "displayName": "$($groupName)",
                             "mailEnabled": false,
-                            "mailNickname" "NotSet"
-                            "securityEnabled": true
+                            "mailNickname": "$($nickName)",
+                            "securityEnabled": true         
                         }
 "@
                     }
-                    Write-Log "Create AAD Group $($migObj.DisplayName)"
+                    Write-Log "Create AAD Group $($migTableGroupName)"
                 
                     $obj = Invoke-GraphRequest "/groups" -HttpMethod "POST" -Content $groupJson
                 }
-                $global:MigrationTableCache += (New-Object PSObject -Property @{
-                    OriginalId = $migObj.Id            
-                    Id = $obj.Id
-                    Type = $migObj.Type    
-                })
+
+                if($obj)
+                {
+                    $global:MigrationTableCache += (New-Object PSObject -Property @{
+                        OriginalId = $migObj.Id            
+                        Id = $obj.Id
+                        Type = $migObj.Type    
+                    })
+                }
             }
         }
     }
@@ -3172,25 +3198,49 @@ function Set-GraphNavigationProperties
         # Is this the correct way of filter out Assignments, summaries etc.?
         if($prop.ContainsTarget -eq $true) { continue }
 
+
         if(-not ($oldObj."$($prop.Name)@odata.associationLink")) { continue }
 
         $associationLink = $oldObj."$($prop.Name)@odata.associationLink" -replace $oldObj.Id,$newObj.Id
-        $refBodyObjs = $null #@()
+        $refBodyObjs = @()
         $refObjName = $null
         $refObjId = $null
+        if($prop.Type -like "Collection(*")
+        {
+            $multiNavProperty = $true
+            $method = "POST"
+        }
+        else
+        {
+            $multiNavProperty = $false
+            $method = "PUT"
+        }
 
         if($FromOldObject -eq $true)
         {
             $navProp = Invoke-GraphRequest -URL $oldObj."$($prop.Name)@odata.navigationLink" -ODataMetadata "minimal" -NoError
 
             if(-not $navProp) { continue }
+            
+            if($multiNavProperty)
+            {
+                $navProperties = $navProp.Value                
+            }
+            else
+            {
+                $navProperties = $navProp
+            }
 
-            $refObjName = Get-GraphObjectName $navProp $navProp
-            $refObjId = $navProp.Id
-
-            $refBodyObjs = ([PSCustomObject]@{
-                "@odata.id" = ("https://$global:MSALGraphEnvironment/beta/$($objectType.API)('$($navProp.Id)')")
-            })
+            foreach($navProp in $navProperties)
+            {
+                $refBodyObjs += [PSCustomObject]@{                    
+                    RefObjName = $navProp.displayName ### NOT Correct. Migh be another property but we don't know the type
+                    RefObjId = $navProp.Id
+                    RefBody = ([PSCustomObject]@{
+                        "@odata.id" = ("https://$global:MSALGraphEnvironment/beta/$($objectType.API)('$($navProp.Id)')")
+                    })
+                }
+            }
         }
         else
         {
@@ -3199,50 +3249,58 @@ function Set-GraphNavigationProperties
             $idx = $oldObj."#CustomRef_$($prop.Name)".IndexOf("|:|")
             if($idx -gt -1)
             {
-                $refObjName = $oldObj."#CustomRef_$($prop.Name)".SubString(0,$idx)
+                $refObjNames = $oldObj."#CustomRef_$($prop.Name)".SubString(0,$idx)
             }
             else
             {
-                $refObjName = $oldObj."#CustomRef_$($prop.Name)"
-            }        
-            
-            $refObjects = Invoke-GraphRequest -URL "$($objectType.API)?`$filter=$($nameProp) eq '$($refObjName)'" -NoError
+                $refObjNames = $oldObj."#CustomRef_$($prop.Name)"
+            }
 
-            $objectsFound = ($refObjects.value | measure).Count
+            foreach($refObjName in $refObjNames.Split(","))
+            {            
+                $refObjects = Invoke-GraphRequest -URL "$($objectType.API)?`$filter=$($nameProp) eq '$($refObjName)'" -NoError
 
-            if($objectsFound -eq 1)
-            {
-                # Are there any references that allows multiple ref objects?                
-                foreach($refObj in $refObjects.value)
+                $objectsFound = ($refObjects.value | measure).Count
+
+                if($objectsFound -eq 1)
                 {
-                    $refBodyObjs = ([PSCustomObject]@{
-                        "@odata.id" = ("https://$global:MSALGraphEnvironment/beta/$($objectType.API)('$($refObj.Id)')")
-                    })
-                    $refObjId = $refObj.Id
+                    # Are there any references that allows multiple ref objects?                
+                    foreach($refObj in $refObjects.value)
+                    {
+                        $refBodyObjs += [PSCustomObject]@{
+                            RefObjName = $refObjName
+                            RefObjId = $refObj.Id
+                            RefBody = ([PSCustomObject]@{
+                                "@odata.id" = ("https://$global:MSALGraphEnvironment/beta/$($objectType.API)('$($refObj.Id)')")
+                            })
+                        }
+                    }
                 }
-            }
-            elseif($objectsFound -gt 1)
-            {
-                Write-Log "Multiple objects ($objectsFound) found with $nameProp $refObjName. Skipping reference." 2
-                continue
-            }
-            else
-            {
-                Write-Log "No object found with $nameProp $refObjName" 2
-                continue
+                elseif($objectsFound -gt 1)
+                {
+                    Write-Log "Multiple objects ($objectsFound) found with $nameProp $refObjName. Skipping reference." 2
+                    continue
+                }
+                else
+                {
+                    Write-Log "No object found with $nameProp $refObjName" 2
+                    continue
+                }
             }
         }
 
-        Write-Log "Add $refObjName ($refObjId) to navigation property $($prop.Name)"
-
-        $body = $refBodyObjs | ConvertTo-Json -Depth 50
-        Invoke-GraphRequest -URL $associationLink -HttpMethod "PUT" -Content $body | Out-Null
+        foreach($refObject in $refBodyObjs)
+        {
+            Write-Log "Add $($refObject.RefObjName) ($($refObject.RefObjId)) to navigation property $($prop.Name)"
+            $body = $refObject.RefBody | ConvertTo-Json -Depth 50
+            Invoke-GraphRequest -URL $associationLink -HttpMethod $method -Content $body | Out-Null
+        }
     }    
 }
 
 
 <#
-    Add Navigation Property data to the object so it included in the exported json file
+    Add Navigation Property data to the object so they are included in the exported json file
 #>
 function Add-GraphNavigationProperties
 {
@@ -4031,6 +4089,12 @@ function Local:Show-ObjectDefaultColumnsSettings
 function Get-GraphObjectName
 {
     param($obj, $objectType)
+
+    if($objectType.GetObjectName)
+    {
+        return (& $objectType.GetObjectName $obj $objectType)
+
+    }
 
     $obj."$((?? ($objectType.NameProperty) "displayName"))"
 }
