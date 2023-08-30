@@ -10,7 +10,7 @@ This module manages Application objects in Intune e.g. uploading application fil
 #>
 function Get-ModuleVersion
 {
-    '3.9.0'
+    '3.9.1'
 }
 
 #########################################################################################
@@ -423,9 +423,17 @@ function Set-FinalizeAzureStorageUpload
 	}
 	$xml += '</BlockList>'
 
+    $params = @{}
+    $proxyURI = Get-ProxyURI
+    if($proxyURI)
+    {
+        $params.Add("proxy", $proxyURI)
+        $params.Add("UseBasicParsing", $true)
+    }    
+
 	try
 	{
-		Invoke-RestMethod $uri -Method Put -Body $xml
+		Invoke-RestMethod $uri -Method Put -Body $xml @params
 	}
 	catch
 	{
@@ -457,12 +465,18 @@ function Write-AzureStorageChunk
     
     $success = $false
     $retryCount = 0
-    while($true)
+    $params = @{}
+    $proxyURI = Get-ProxyURI
+    if($proxyURI)
     {
-        
+        $params.Add("proxy", $proxyURI)
+    }
+
+    while($true)
+    {        
         try
         {
-            $response = Invoke-WebRequest $uri -Method Put -Headers $headers -Body $encodedBody -UseBasicParsing
+            $response = Invoke-WebRequest $uri -Method Put -Headers $headers -Body $encodedBody -UseBasicParsing @params
             if($retryCount -gt 0)
             {
                 Write-Log "Chunk uploaded successfully"

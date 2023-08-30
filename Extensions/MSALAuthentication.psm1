@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.8.1'
+    '3.9.1'
 }
 
 $global:msalAuthenticator = $null
@@ -535,12 +535,14 @@ function Add-MSALPrereq
         Write-Log "Some MSAL features might not work!" 3
         Write-Log "This could happen if another version of MSAL.DLL was loaded beforethe script tried to load it" 3
         $RequiredAssemblies.Add($fiLoaded.FullName)
+        $script:msalFile = $fiLoaded.FullName
     }
     else
     {    
         Write-Log "Using MSAL file $msalPath. Version: $($fi.VersionInfo.FileVersion)"
         [void][System.Reflection.Assembly]::LoadFile($msalPath)
         $RequiredAssemblies.Add($msalPath)
+        $script:msalFile = $msalPath
     }
     $RequiredAssemblies.Add('System.Security.dll')
 
@@ -598,6 +600,7 @@ function Connect-MSALClientApp
         {
             return
         }
+        Add-MSALProxy $ClientApplicationBuilder
         $script:MSALApp = $ClientApplicationBuilder.Build()
     }
 
@@ -677,6 +680,43 @@ function Get-MsalAuthenticationToken
     $authResult
 }
 
+function Add-MSALProxy
+{
+    param($appBuilder)
+
+    $proxy = Get-SettingValue "ProxyURI"
+    if($proxy) 
+    {    
+        Write-Log "Use proxy $proxy"        
+        if(-not ("HttpFactoryWithProxy" -as [type]))
+        {                
+            try
+            {
+                Write-Log "Add type HttpFactoryWithProxy"
+                [System.Collections.Generic.List[string]] $RequiredAssemblies = New-Object System.Collections.Generic.List[string]
+                $RequiredAssemblies.Add($script:msalFile)
+                $RequiredAssemblies.Add('System.Net.Http.dll')
+                $RequiredAssemblies.Add('System.Net.Primitives.dll')
+
+                Add-Type -Path ($global:AppRootFolder + "\CS\HttpFactoryWithProxy.cs") -ReferencedAssemblies $RequiredAssemblies
+            }
+            catch
+            {
+                Write-LogError "Failed to compile HttpFactoryWithProxy" $_.Exception
+            }        
+        }
+
+        try
+        {
+            $hcf = [HttpFactoryWithProxy]::new($proxy)
+            [void] $appBuilder.WithHttpClientFactory($hcf)
+        }
+        catch
+        {
+            Write-LogError "Failed to set proxy for MSAL" $_.Exception
+        }
+    }
+}
 function Get-MSALLoginEnvironment
 {
     $loginEnv = $script:lstAADEnvironments | Where value -eq (Get-Setting "" "MSALCloudType" "public")
@@ -716,6 +756,8 @@ function Get-MSALApp
 
         [void] $appBuilder.WithClientName("CloudAPIPowerShellManagement") 
         [void] $appBuilder.WithClientVersion($PSVersionTable.PSVersion)
+
+        Add-MSALProxy $appBuilder
         
         # Ceck if correct version...
         #$appBuilder.WithMultiCloudSupport($true)        
@@ -1065,6 +1107,8 @@ function Connect-MSALUser
                 else { [void]$appBuilder.WithAuthority($global:MSALApp.Authority) }
                 if($global:appObj.RedirectUri) { [void]$appBuilder.WithRedirectUri($global:appObj.RedirectUri) }     
                 
+                Add-MSALProxy $appBuilder
+
                 $app = $appBuilder.Build()
 
                 if((Get-SettingValue "CacheMSALToken"))
@@ -1091,9 +1135,17 @@ function Connect-MSALUser
                         'Content-Type' = 'application/json'
                         'Authorization' = "Bearer " + $tmpResults.AccessToken
                         'ExpiresOn' = $tmpResults.ExpiresOn
-                        }
-                        
-                    $ret = Invoke-RestMethod "https://management.azure.com/tenants?api-version=2020-01-01" -Headers $Headers
+                    }
+
+                    $params = @{}
+                    $proxyURI = Get-ProxyURI
+                    if($proxyURI)
+                    {
+                        $params.Add("proxy", $proxyURI)
+                        $params.Add("UseBasicParsing", $true)
+                    }
+
+                    $ret = Invoke-RestMethod "https://management.azure.com/tenants?api-version=2020-01-01" -Headers $Headers @params
                     if($ret)
                     {
                         $script:AccessableTenants = $ret.Value

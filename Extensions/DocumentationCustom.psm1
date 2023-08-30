@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.6.0'
+    '1.6.1'
 }
 
 function Invoke-InitializeModule
@@ -267,7 +267,7 @@ function Invoke-CDDocumentCustomPostAdd
 
         if($prop.EntityKey -eq "featureUpdatesRollbackWindowInDays")
         {
-            if($obj.businessReadyUpdatesOnly -eq "businessReadyOnly")
+            if($obj.businessReadyUpdatesOnly -eq "businessReadyOnly" -or $obj.businessReadyUpdatesOnly -eq "all" -or $obj.businessReadyUpdatesOnly -eq "userDefined")
             {
                 $propValue = Get-LanguageString "BooleanActions.notConfigured"
             }
@@ -288,7 +288,7 @@ function Invoke-CDDocumentCustomPostAdd
 
             Add-PropertyInfo $tmpProp $propValue -originalValue $obj.businessReadyUpdatesOnly
 
-            if($obj.businessReadyUpdatesOnly -ne "businessReadyOnly")
+            if($obj.businessReadyUpdatesOnly -ne "businessReadyOnly" -and $obj.businessReadyUpdatesOnly -ne "all" -and $obj.businessReadyUpdatesOnly -ne "userDefined")
             {   
                 # Pre-release channel selected. Inject info 
                 $propValue = Get-LanguageString "SettingDetails.$($obj.businessReadyUpdatesOnly)Option"
@@ -2029,17 +2029,17 @@ function Invoke-CDDocumentCountryNamedLocation
     ###################################################
 
     Add-BasicDefaultValues $obj $objectType
-    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureIAM.menuItemNamedNetworks")
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureCA.menuItemNamedNetworks")
     Add-BasicAdditionalValues $obj $objectType
     
     Add-CustomSettingObject ([PSCustomObject]@{
-        Name = Get-LanguageString "AzureIAM.NamedLocation.Form.CountryLookup.ariaLabel"
-        Value = Get-LanguageString "AzureIAM.NamedLocation.Form.CountryLookup.$((?: ($obj.countryLookupMethod -eq "clientIpAddress") "ip" "gps"))"
+        Name = Get-LanguageString "AzureCA.NamedLocation.Form.CountryLookup.ariaLabel"
+        Value = Get-LanguageString "AzureCA.NamedLocation.Form.CountryLookup.$((?: ($obj.countryLookupMethod -eq "clientIpAddress") "ip" "gps"))"
         EntityKey = "countryLookupMethod"
     })
 
     Add-CustomSettingObject ([PSCustomObject]@{
-        Name = Get-LanguageString "AzureIAM.NamedLocation.Form.Include.label"
+        Name = Get-LanguageString "AzureCA.NamedLocation.Form.Include.label"
         Value = Get-LanguageString (?: ($obj.includeUnknownCountriesAndRegions -eq $true) "Inputs.enabled" "Inputs.disabled")
         EntityKey = "includeUnknownCountriesAndRegions"
     })        
@@ -2047,11 +2047,11 @@ function Invoke-CDDocumentCountryNamedLocation
     $countryList = @()
     foreach($country in $obj.countriesAndRegions)
     {
-        $countryList += Get-LanguageString "AzureIAMCommon.CountryNames.countryName$($country.ToLower())"
+        $countryList += Get-LanguageString "CountryNames.countryName$($country.ToLower())"
     }
 
     Add-CustomSettingObject ([PSCustomObject]@{
-        Name = Get-LanguageString "AzureIAM.NamedLocation.Type.countries"
+        Name = Get-LanguageString "AzureCA.NamedLocation.Type.countries"
         Value = $countryList -join $script:objectSeparator
         EntityKey = "countriesAndRegions"
     })         
@@ -2072,11 +2072,11 @@ function Invoke-CDDocumentIPNamedLocation
     ###################################################
 
     Add-BasicDefaultValues $obj $objectType
-    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureIAM.menuItemNamedNetworks")
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureCA.menuItemNamedNetworks")
     Add-BasicAdditionalValues $obj $objectType
 
     Add-CustomSettingObject ([PSCustomObject]@{
-        Name = Get-LanguageString "AzureIAM.NamedLocation.Form.Trusted.label"
+        Name = Get-LanguageString "AzureCA.NamedLocation.Form.Trusted.label"
         Value = Get-LanguageString (?: ($obj.isTrusted -eq $true) "Inputs.enabled" "Inputs.disabled")
         EntityKey = "isTrusted"
     })        
@@ -2088,7 +2088,7 @@ function Invoke-CDDocumentIPNamedLocation
     }
 
     Add-CustomSettingObject ([PSCustomObject]@{
-        Name = Get-LanguageString "AzureIAM.NamedLocation.Type.ipRanges"
+        Name = Get-LanguageString "AzureCA.NamedLocation.Type.ipRanges"
         Value = $ipList -join $script:objectSeparator
         EntityKey = "ipRanges"
     })         
@@ -2113,7 +2113,7 @@ function Invoke-CDDocumentTermsOfUse
     ###################################################
 
     Add-BasicPropertyValue (Get-LanguageString "SettingDetails.nameName") $obj.displayName
-    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureIAM.menuItemTermsOfUse") 
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureCA.menuItemTermsOfUse") 
         
     Add-CustomSettingObject ([PSCustomObject]@{
         Name = Get-LanguageString "TermsOfUse.Wizard.agreementIsViewingBeforeAcceptanceRequiredLabel"
@@ -2222,22 +2222,22 @@ function Invoke-CDDocumentConditionalAccess
 
     #Add-BasicDefaultValues $obj $objectType
     Add-BasicPropertyValue (Get-LanguageString "SettingDetails.nameName") $obj.displayName
-    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureIAM.conditionalAccessBladeTitle") 
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "AzureCA.conditionalAccessBladeTitle") 
 
     if($obj.state -eq "enabledForReportingButNotEnforced")
     {
-        $state = Get-LanguageString "AzureIAM.PolicyState.reportOnly"
+        $state = Get-LanguageString "AzureCA.PolicyState.reportOnly"
     }
     elseif($obj.state -eq "disabled")
     {
-        $state = Get-LanguageString "AzureIAM.PolicyState.off"
+        $state = Get-LanguageString "AzureCA.PolicyState.off"
     }
     else
     {
-        $state = Get-LanguageString "AzureIAM.PolicyState.on"
+        $state = Get-LanguageString "AzureCA.PolicyState.on"
     }
 
-    Add-BasicPropertyValue (Get-LanguageString "AzureIAM.policyEnforceLabel") $state
+    Add-BasicPropertyValue (Get-LanguageString "AzureCA.policyEnforceLabel") $state
 
     Add-BasicAdditionalValues $obj $objectType
 
@@ -2281,16 +2281,16 @@ function Invoke-CDDocumentConditionalAccess
         $script:allAadRoles =(Invoke-GraphRequest -url "/directoryRoleTemplates?`$select=Id,displayName" -ODataMetadata "minimal").value
     }
 
-    $includeLabel = Get-LanguageString "AzureIAM.userSelectionBladeIncludeTabTitle"
-    $excludeLabel = Get-LanguageString "AzureIAM.userSelectionBladeExcludeTabTitle"
+    $includeLabel = Get-LanguageString "AzureCA.userSelectionBladeIncludeTabTitle"
+    $excludeLabel = Get-LanguageString "AzureCA.userSelectionBladeExcludeTabTitle"
 
-    $category = Get-LanguageString "AzureIAM.usersGroupsLabel"
+    $category = Get-LanguageString "AzureCA.usersGroupsLabel"
 
     if((($obj.conditions.users.includeUsers | Where { $_ -eq "All"}) -ne $null))
     {
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = $includeLabel
-            Value = Get-LanguageString "AzureIAM.allUsersString"
+            Value = Get-LanguageString "AzureCA.allUsersString"
             Category = $category
             SubCategory = $includeLabel
             EntityKey = "includeUsers"
@@ -2300,7 +2300,7 @@ function Invoke-CDDocumentConditionalAccess
     {
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = $includeLabel
-            Value = Get-LanguageString "AzureIAM.chooseApplicationsNone"
+            Value = Get-LanguageString "AzureCA.chooseApplicationsNone"
             Category = $category
             SubCategory = $includeLabel
             EntityKey = "includeUsers"
@@ -2310,7 +2310,7 @@ function Invoke-CDDocumentConditionalAccess
     {
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = $includeLabel
-            Value = Get-LanguageString "AzureIAM.userSelectionBladeSelectedUsers"
+            Value = Get-LanguageString "AzureCA.userSelectionBladeSelectedUsers"
             Category = $category
             SubCategory = $includeLabel
             EntityKey = "includeUsers"
@@ -2319,7 +2319,7 @@ function Invoke-CDDocumentConditionalAccess
         if((($obj.conditions.users.includeUsers | Where { $_ -eq "GuestsOrExternalUsers"}) -ne $null))
         {
             Add-CustomSettingObject ([PSCustomObject]@{
-                Name = Get-LanguageString "AzureIAM.allGuestUserLabel"
+                Name = Get-LanguageString "AzureCA.allGuestUserLabel"
                 Value = Get-LanguageString "Inputs.enabled" #$((?: (($obj.conditions.users.includeUsers | Where { $_ -eq "GuestsOrExternalUsers"}) -ne $null) "enabled" "disabled"))"
                 Category = $category
                 SubCategory = $includeLabel
@@ -2337,7 +2337,7 @@ function Invoke-CDDocumentConditionalAccess
             }
 
             Add-CustomSettingObject ([PSCustomObject]@{
-                Name = Get-LanguageString "AzureIAM.directoryRolesLabel"
+                Name = Get-LanguageString "AzureCA.directoryRolesLabel"
                 Value = $tmpObjs -join $script:objectSeparator
                 Category = $category
                 SubCategory = $includeLabel
@@ -2367,7 +2367,7 @@ function Invoke-CDDocumentConditionalAccess
     if((($obj.conditions.users.excludeUsers | Where { $_ -eq "GuestsOrExternalUsers"}) -ne $null))
     {
         Add-CustomSettingObject ([PSCustomObject]@{
-            Name = Get-LanguageString "AzureIAM.allGuestUserLabel"
+            Name = Get-LanguageString "AzureCA.allGuestUserLabel"
             Value = Get-LanguageString "Inputs.enabled" #$((?: (($obj.conditions.users.excludeUsers | Where { $_ -eq "GuestsOrExternalUsers"}) -ne $null) "enabled" "disabled"))"
             Category = $category
             SubCategory = $excludeLabel
@@ -2385,7 +2385,7 @@ function Invoke-CDDocumentConditionalAccess
         }
 
         Add-CustomSettingObject ([PSCustomObject]@{
-            Name = Get-LanguageString "AzureIAM.directoryRolesLabel"
+            Name = Get-LanguageString "AzureCA.directoryRolesLabel"
             Value = $tmpObjs -join $script:objectSeparator
             Category = $category
             SubCategory = $excludeLabel
@@ -2416,8 +2416,8 @@ function Invoke-CDDocumentConditionalAccess
     # Cloud apps or actions
     ###################################################
 
-    $category = Get-LanguageString "AzureIAM.UserActions.appsOrActionsTitle"
-    $cloudAppsLabel = Get-LanguageString "AzureIAM.policyCloudAppsLabel"    
+    $category = Get-LanguageString "AzureCA.UserActions.appsOrActionsTitle"
+    $cloudAppsLabel = Get-LanguageString "AzureCA.policyCloudAppsLabel"    
     
     $cloudApps = Get-CDAllCloudApps
     
@@ -2425,7 +2425,7 @@ function Invoke-CDDocumentConditionalAccess
     {
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = $includeLabel
-            Value = Get-LanguageString "AzureIAM.cloudappsSelectionBladeAllCloudapps" #Get-LanguageString "Inputs.enabled"
+            Value = Get-LanguageString "AzureCA.cloudappsSelectionBladeAllCloudapps" #Get-LanguageString "Inputs.enabled"
             Category = $category
             SubCategory = $cloudAppsLabel
             EntityKey = "includeApplications"
@@ -2435,7 +2435,7 @@ function Invoke-CDDocumentConditionalAccess
     {
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = $includeLabel
-            Value = Get-LanguageString "AzureIAM.chooseApplicationsNone" #Get-LanguageString "Inputs.enabled"
+            Value = Get-LanguageString "AzureCA.chooseApplicationsNone" #Get-LanguageString "Inputs.enabled"
             Category = $category
             SubCategory = $cloudAppsLabel
             EntityKey = "includeApplications"
@@ -2477,18 +2477,18 @@ function Invoke-CDDocumentConditionalAccess
 
     if($obj.conditions.applications.includeUserActions.Count -gt 0)
     {
-        $userActionsLabel = Get-LanguageString "AzureIAM.UserActions.label"
+        $userActionsLabel = Get-LanguageString "AzureCA.UserActions.label"
         if(($obj.conditions.applications.includeUserActions | Where { $_ -eq "urn:user:registersecurityinfo" }))
         {
-            $value =  Get-LanguageString "AzureIAM.UserActions.registerSecurityInfo"
+            $value =  Get-LanguageString "AzureCA.UserActions.registerSecurityInfo"
         }
         else
         {
-            $value =  Get-LanguageString "AzureIAM.UserActions.registerOrJoinDevices"
+            $value =  Get-LanguageString "AzureCA.UserActions.registerOrJoinDevices"
         }
 
         Add-CustomSettingObject ([PSCustomObject]@{
-            Name = Get-LanguageString "AzureIAM.UserActions.selectionInfo"
+            Name = Get-LanguageString "AzureCA.UserActions.selectionInfo"
             Value =  $value
             Category = $category
             SubCategory = $userActionsLabel
@@ -2511,10 +2511,10 @@ function Invoke-CDDocumentConditionalAccess
         }
 
         Add-CustomSettingObject ([PSCustomObject]@{
-            Name = Get-LanguageString "AzureIAM.AuthContext.checkBoxInfo"
+            Name = Get-LanguageString "AzureCA.AuthContext.checkBoxInfo"
             Value =  $tmpObjs -join $script:objectSeparator
             Category = $category
-            SubCategory = Get-LanguageString "AzureIAM.AuthContext.label"
+            SubCategory = Get-LanguageString "AzureCA.AuthContext.label"
             EntityKey = "includeAuthenticationContextClassReferences"
         })           
     }
@@ -2523,23 +2523,23 @@ function Invoke-CDDocumentConditionalAccess
     # Conditions
     ###################################################
 
-    $category = Get-LanguageString "AzureIAM.helpConditionsTitle"
+    $category = Get-LanguageString "AzureCA.helpConditionsTitle"
 
-    #$category = Get-LanguageString "AzureIAM.policyConditionUserRisk"
+    #$category = Get-LanguageString "AzureCA.policyConditionUserRisk"
 
     if($obj.conditions.userRiskLevels.Count -gt 0)
     {
         $tmpObjs = @() 
         foreach($id in ($obj.conditions.userRiskLevels))
         {
-            $tmpObjs += Get-LanguageString "AzureIAM.$($id)Risk"
+            $tmpObjs += Get-LanguageString "AzureCA.$($id)Risk"
         }        
 
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = $includeLabel
             Value =  $tmpObjs -join $script:objectSeparator
             Category = $category
-            SubCategory = Get-LanguageString "AzureIAM.policyConditionUserRisk"
+            SubCategory = Get-LanguageString "AzureCA.policyConditionUserRisk"
             EntityKey = "userRiskLevels"
         })           
     }
@@ -2549,14 +2549,14 @@ function Invoke-CDDocumentConditionalAccess
         $tmpObjs = @() 
         foreach($id in ($obj.conditions.signInRiskLevels))
         {
-            $tmpObjs += Get-LanguageString "AzureIAM.$($id)Risk"
+            $tmpObjs += Get-LanguageString "AzureCA.$($id)Risk"
         }        
 
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = $includeLabel
             Value =  $tmpObjs -join $script:objectSeparator
             Category = $category
-            SubCategory = Get-LanguageString "AzureIAM.policyConditionSigninRisk"
+            SubCategory = Get-LanguageString "AzureCA.policyConditionSigninRisk"
             EntityKey = "signInRiskLevels"
         })           
     }
@@ -2568,11 +2568,11 @@ function Invoke-CDDocumentConditionalAccess
         {
             if($id -eq "all")
             {
-                $tmpObjs += Get-LanguageString "AzureIAM.allDevicePlatforms"
+                $tmpObjs += Get-LanguageString "AzureCA.allDevicePlatforms"
             }
             else
             {
-                $tmpObjs += Get-LanguageString "AzureIAM.$($id)DisplayName"
+                $tmpObjs += Get-LanguageString "AzureCA.$($id)DisplayName"
             }
         }        
 
@@ -2580,7 +2580,7 @@ function Invoke-CDDocumentConditionalAccess
             Name = $includeLabel
             Value =  $tmpObjs -join $script:objectSeparator
             Category = $category
-            SubCategory = Get-LanguageString "AzureIAM.devicePlatform"
+            SubCategory = Get-LanguageString "AzureCA.devicePlatform"
             EntityKey = "includePlatforms"
         })           
     }
@@ -2590,14 +2590,14 @@ function Invoke-CDDocumentConditionalAccess
         $tmpObjs = @() 
         foreach($id in ($obj.conditions.platforms.excludePlatforms))
         {
-            $tmpObjs += Get-LanguageString "AzureIAM.$($id)DisplayName"
+            $tmpObjs += Get-LanguageString "AzureCA.$($id)DisplayName"
         }        
 
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = $excludeLabel
             Value =  $tmpObjs -join $script:objectSeparator
             Category = $category
-            SubCategory = Get-LanguageString "AzureIAM.devicePlatform"
+            SubCategory = Get-LanguageString "AzureCA.devicePlatform"
             EntityKey = "excludePlatforms"
         })           
     }
@@ -2614,7 +2614,7 @@ function Invoke-CDDocumentConditionalAccess
         elseif($script:allNamedLocations -isnot [Object[]]) {  $script:allNamedLocations = @($script:allNamedLocations) }
 
         $script:allNamedLocations += [PSCustomObject]@{
-            displayName = Get-LanguageString "AzureIAM.chooseLocationTrustedIpsItem"
+            displayName = Get-LanguageString "AzureCA.chooseLocationTrustedIpsItem"
             id =  "00000000-0000-0000-0000-000000000000"
         }
     }
@@ -2637,11 +2637,11 @@ function Invoke-CDDocumentConditionalAccess
         {
             if($id -eq "AllTrusted")
             {
-                $tmpObjs += Get-LanguageString "AzureIAM.allTrustedLocationLabel"
+                $tmpObjs += Get-LanguageString "AzureCA.allTrustedLocationLabel"
             }
             elseif($id -eq "All")
             {
-                $tmpObjs += Get-LanguageString "AzureIAM.locationsAllLocationsLabel"
+                $tmpObjs += Get-LanguageString "AzureCA.locationsAllLocationsLabel"
             }
             else
             {
@@ -2654,7 +2654,7 @@ function Invoke-CDDocumentConditionalAccess
             Name = $includeLabel
             Value =  $tmpObjs -join $script:objectSeparator
             Category = $category
-            SubCategory = Get-LanguageString "AzureIAM.policyConditionLocation"
+            SubCategory = Get-LanguageString "AzureCA.policyConditionLocation"
             EntityKey = "includeLocations"
         })           
     }
@@ -2666,11 +2666,11 @@ function Invoke-CDDocumentConditionalAccess
         {
             if($id -eq "AllTrusted")
             {
-                $tmpObjs += Get-LanguageString "AzureIAM.allTrustedLocationLabel"
+                $tmpObjs += Get-LanguageString "AzureCA.allTrustedLocationLabel"
             }
             elseif($id -eq "All")
             {
-                $tmpObjs += Get-LanguageString "AzureIAM.locationsAllLocationsLabel"
+                $tmpObjs += Get-LanguageString "AzureCA.locationsAllLocationsLabel"
             }
             else
             {
@@ -2683,7 +2683,7 @@ function Invoke-CDDocumentConditionalAccess
             Name = $excludeLabel
             Value =  $tmpObjs -join $script:objectSeparator
             Category = $category
-            SubCategory = Get-LanguageString "AzureIAM.policyConditionLocation"
+            SubCategory = Get-LanguageString "AzureCA.policyConditionLocation"
             EntityKey = "excludeLocations"
         })           
     }
@@ -2693,10 +2693,10 @@ function Invoke-CDDocumentConditionalAccess
         $tmpObjs = @() 
         foreach($id in ($obj.conditions.clientAppTypes))
         {
-            if($id -eq "browser") { $tmpObjs += Get-LanguageString "AzureIAM.clientAppWebBrowser" }
-            elseif($id -eq "mobileAppsAndDesktopClients") { $tmpObjs += Get-LanguageString "AzureIAM.clientAppMobileDesktop" }
-            elseif($id -eq "exchangeActiveSync") { $tmpObjs += Get-LanguageString "AzureIAM.clientAppExchangeActiveSync" }
-            elseif($id -eq "other") { $tmpObjs += Get-LanguageString "AzureIAM.clientTypeOtherClients" }
+            if($id -eq "browser") { $tmpObjs += Get-LanguageString "AzureCA.clientAppWebBrowser" }
+            elseif($id -eq "mobileAppsAndDesktopClients") { $tmpObjs += Get-LanguageString "AzureCA.clientAppMobileDesktop" }
+            elseif($id -eq "exchangeActiveSync") { $tmpObjs += Get-LanguageString "AzureCA.clientAppExchangeActiveSync" }
+            elseif($id -eq "other") { $tmpObjs += Get-LanguageString "AzureCA.clientTypeOtherClients" }
             elseif($id -eq "all") { break } # Not configured
             else
             {
@@ -2711,7 +2711,7 @@ function Invoke-CDDocumentConditionalAccess
                 Name = $includeLabel
                 Value =  $tmpObjs -join $script:objectSeparator
                 Category = $category
-                SubCategory = Get-LanguageString "AzureIAM.policyConditioniClientApp"
+                SubCategory = Get-LanguageString "AzureCA.policyConditioniClientApp"
                 EntityKey = "clientAppTypes"
             })
         }           
@@ -2721,9 +2721,9 @@ function Invoke-CDDocumentConditionalAccess
     {
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = $includeLabel
-            Value =  Get-LanguageString "AzureIAM.deviceStateAll"
+            Value =  Get-LanguageString "AzureCA.deviceStateAll"
             Category = $category
-            SubCategory = Get-LanguageString "AzureIAM.deviceStateConditionSelectorLabel"
+            SubCategory = Get-LanguageString "AzureCA.deviceStateConditionSelectorLabel"
             EntityKey = "includeDevices"
         })           
     }
@@ -2733,14 +2733,14 @@ function Invoke-CDDocumentConditionalAccess
         $tmpObjs = @() 
         foreach($id in ($obj.conditions.devices.excludeDevices))
         {
-            $tmpObjs += Get-LanguageString "AzureIAM.classicPolicyControlRequire$($id)Device"
+            $tmpObjs += Get-LanguageString "AzureCA.classicPolicyControlRequire$($id)Device"
         }        
 
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = $excludeLabel
             Value =  $tmpObjs -join $script:objectSeparator
             Category = $category
-            SubCategory = Get-LanguageString "AzureIAM.deviceStateConditionSelectorLabel"
+            SubCategory = Get-LanguageString "AzureCA.deviceStateConditionSelectorLabel"
             EntityKey = "excludeDevices"
         })           
     }
@@ -2749,11 +2749,11 @@ function Invoke-CDDocumentConditionalAccess
     # Grant
     ###################################################
 
-    $category = Get-LanguageString "AzureIAM.policyControlBladeTitle"
+    $category = Get-LanguageString "AzureCA.policyControlBladeTitle"
 
     Add-CustomSettingObject ([PSCustomObject]@{
-        Name = Get-LanguageString "AzureIAM.policyControlContentDescription"
-        Value =  Get-LanguageString "AzureIAM.$((?: (($obj.grantControls.builtInControls | Where { $_ -eq "block"}) -ne $null) "policyControlBlockAccessDisplayedName" "policyControlAllowAccessDisplayedName"))"
+        Name = Get-LanguageString "AzureCA.policyControlContentDescription"
+        Value =  Get-LanguageString "AzureCA.$((?: (($obj.grantControls.builtInControls | Where { $_ -eq "block"}) -ne $null) "policyControlBlockAccessDisplayedName" "policyControlAllowAccessDisplayedName"))"
         Category = $category
         SubCategory = ""
         EntityKey = "policyControl"
@@ -2766,7 +2766,7 @@ function Invoke-CDDocumentConditionalAccess
             if(($obj.grantControls.builtInControls | Where { $_ -eq "mfa"}))
             {
                 Add-CustomSettingObject ([PSCustomObject]@{
-                    Name = Get-LanguageString "AzureIAM.policyControlMfaChallengeDisplayedName"
+                    Name = Get-LanguageString "AzureCA.policyControlMfaChallengeDisplayedName"
                     Value =   Get-LanguageString "Inputs.enabled"
                     Category = $category
                     SubCategory = ""
@@ -2777,7 +2777,7 @@ function Invoke-CDDocumentConditionalAccess
             if(($obj.grantControls.builtInControls | Where { $_ -eq "compliantDevice"}))
             {
                 Add-CustomSettingObject ([PSCustomObject]@{
-                    Name = Get-LanguageString "AzureIAM.policyControlCompliantDeviceDisplayedName"
+                    Name = Get-LanguageString "AzureCA.policyControlCompliantDeviceDisplayedName"
                     Value =   Get-LanguageString "Inputs.enabled"
                     Category = $category
                     SubCategory = ""
@@ -2788,7 +2788,7 @@ function Invoke-CDDocumentConditionalAccess
             if(($obj.grantControls.builtInControls | Where { $_ -eq "domainJoinedDevice"}))
             {
                 Add-CustomSettingObject ([PSCustomObject]@{
-                    Name = Get-LanguageString "AzureIAM.policyControlRequireDomainJoinedDisplayedName"
+                    Name = Get-LanguageString "AzureCA.policyControlRequireDomainJoinedDisplayedName"
                     Value =   Get-LanguageString "Inputs.enabled"
                     Category = $category
                     SubCategory = ""
@@ -2799,7 +2799,7 @@ function Invoke-CDDocumentConditionalAccess
             if(($obj.grantControls.builtInControls | Where { $_ -eq "approvedApplication"}))
             {
                 Add-CustomSettingObject ([PSCustomObject]@{
-                    Name = Get-LanguageString "AzureIAM.policyControlRequireMamDisplayedName"
+                    Name = Get-LanguageString "AzureCA.policyControlRequireMamDisplayedName"
                     Value =   Get-LanguageString "Inputs.enabled"
                     Category = $category
                     SubCategory = ""
@@ -2810,7 +2810,7 @@ function Invoke-CDDocumentConditionalAccess
             if(($obj.grantControls.builtInControls | Where { $_ -eq "compliantApplication"}))
             {
                 Add-CustomSettingObject ([PSCustomObject]@{
-                    Name = Get-LanguageString "AzureIAM.policyControlRequireCompliantAppDisplayedName"
+                    Name = Get-LanguageString "AzureCA.policyControlRequireCompliantAppDisplayedName"
                     Value =   Get-LanguageString "Inputs.enabled"
                     Category = $category
                     SubCategory = ""
@@ -2821,7 +2821,7 @@ function Invoke-CDDocumentConditionalAccess
             if(($obj.grantControls.builtInControls | Where { $_ -eq "passwordChange"}))
             {
                 Add-CustomSettingObject ([PSCustomObject]@{
-                    Name = Get-LanguageString "AzureIAM.policyControlRequiredPasswordChangeDisplayedName"
+                    Name = Get-LanguageString "AzureCA.policyControlRequiredPasswordChangeDisplayedName"
                     Value =   Get-LanguageString "Inputs.enabled"
                     Category = $category
                     SubCategory = ""
@@ -2840,7 +2840,7 @@ function Invoke-CDDocumentConditionalAccess
             }
     
             Add-CustomSettingObject ([PSCustomObject]@{
-                Name = Get-LanguageString "AzureIAM.menuItemTermsOfUse"
+                Name = Get-LanguageString "AzureCA.menuItemTermsOfUse"
                 Value =   $termsOfUse -join $script:objectSeparator
                 Category = $category
                 SubCategory = ""
@@ -2849,8 +2849,8 @@ function Invoke-CDDocumentConditionalAccess
         }
     
         Add-CustomSettingObject ([PSCustomObject]@{
-            Name = Get-LanguageString "AzureIAM.descriptionContentForControlsAndOr"
-            Value =   Get-LanguageString "AzureIAM.$((?: ($obj.grantControls.operator -eq "OR") "requireOneControlText" "requireAllControlsText"))" 
+            Name = Get-LanguageString "AzureCA.descriptionContentForControlsAndOr"
+            Value =   Get-LanguageString "AzureCA.$((?: ($obj.grantControls.operator -eq "OR") "requireOneControlText" "requireAllControlsText"))" 
             Category = $category
             SubCategory = ""
             EntityKey = "grantOperator"
@@ -2861,12 +2861,12 @@ function Invoke-CDDocumentConditionalAccess
     # Session
     ###################################################
 
-    $category = Get-LanguageString "AzureIAM.sessionControlBladeTitle"
+    $category = Get-LanguageString "AzureCA.sessionControlBladeTitle"
 
     if($obj.sessionControls.applicationEnforcedRestrictions.isEnabled -eq $true)
     {
         Add-CustomSettingObject ([PSCustomObject]@{
-            Name = Get-LanguageString "AzureIAM.sessionControlsAppEnforcedLabel"
+            Name = Get-LanguageString "AzureCA.sessionControlsAppEnforcedLabel"
             Value = Get-LanguageString "Inputs.enabled"
             Category = $category
             SubCategory = ""
@@ -2881,8 +2881,8 @@ function Invoke-CDDocumentConditionalAccess
         elseif($obj.sessionControls.cloudAppSecurity.cloudAppSecurityType -eq "blockDownloads") { $strId = "blockDownloads" }
 
         Add-CustomSettingObject ([PSCustomObject]@{
-            Name = Get-LanguageString "AzureIAM.sessionControlsCasLabel"
-            Value =  Get-LanguageString "AzureIAM.CAS.BuiltinPolicy.Option.$strId"
+            Name = Get-LanguageString "AzureCA.sessionControlsCasLabel"
+            Value =  Get-LanguageString "AzureCA.CAS.BuiltinPolicy.Option.$strId"
             Category = $category
             SubCategory = ""
             EntityKey = "cloudAppSecurity"
@@ -2899,27 +2899,27 @@ function Invoke-CDDocumentConditionalAccess
         {
             if($obj.sessionControls.signInFrequency.value -gt 1)
             {
-                $value = (Get-LanguageString "AzureIAM.SessionLifetime.SignInFrequency.Option.Hour.plural") -f $obj.sessionControls.signInFrequency.value
+                $value = (Get-LanguageString "AzureCA.SessionLifetime.SignInFrequency.Option.Hour.plural") -f $obj.sessionControls.signInFrequency.value
             }
             else
             {
-                $value = Get-LanguageString "AzureIAM.SessionLifetime.SignInFrequency.Option.Hour.singular"
+                $value = Get-LanguageString "AzureCA.SessionLifetime.SignInFrequency.Option.Hour.singular"
             }
         }
         else
         {
             if($obj.sessionControls.signInFrequency.value -gt 1)
             {
-                $value = (Get-LanguageString "AzureIAM.SessionLifetime.SignInFrequency.Option.Day.plural") -f $obj.sessionControls.signInFrequency.value
+                $value = (Get-LanguageString "AzureCA.SessionLifetime.SignInFrequency.Option.Day.plural") -f $obj.sessionControls.signInFrequency.value
             }
             else
             {
-                $value = Get-LanguageString "AzureIAM.SessionLifetime.SignInFrequency.Option.Day.singular"
+                $value = Get-LanguageString "AzureCA.SessionLifetime.SignInFrequency.Option.Day.singular"
             }
         }
 
         Add-CustomSettingObject ([PSCustomObject]@{
-            Name = Get-LanguageString "AzureIAM.SessionLifetime.SignInFrequency.Option.label"
+            Name = Get-LanguageString "AzureCA.SessionLifetime.SignInFrequency.Option.label"
             Value =  $value
             Category = $category
             SubCategory = ""
@@ -2930,8 +2930,8 @@ function Invoke-CDDocumentConditionalAccess
     if($obj.sessionControls.persistentBrowser.isEnabled -eq $true)
     {
         Add-CustomSettingObject ([PSCustomObject]@{
-            Name = Get-LanguageString "AzureIAM.SessionLifetime.PersistentBrowser.Option.label"
-            Value =  Get-LanguageString "AzureIAM.SessionLifetime.PersistentBrowser.Option.$($obj.sessionControls.persistentBrowser.mode)"
+            Name = Get-LanguageString "AzureCA.SessionLifetime.PersistentBrowser.Option.label"
+            Value =  Get-LanguageString "AzureCA.SessionLifetime.PersistentBrowser.Option.$($obj.sessionControls.persistentBrowser.mode)"
             Category = $category
             SubCategory = ""
             EntityKey = "persistentBrowser"
@@ -3899,7 +3899,7 @@ function Invoke-CDDocumentDeviceEnrollmentPlatformRestrictionConfiguration
 
     if($obj.'@OData.Type' -eq '#microsoft.graph.deviceEnrollmentPlatformRestrictionsConfiguration')
     {
-        $platform = Get-LanguageString "AzureIAM.classicPolicyAllPlatforms"
+        $platform = Get-LanguageString "AzureCA.classicPolicyAllPlatforms"
         $properties = @("androidForWorkRestriction","androidRestriction","iosRestriction","macRestriction","windowsRestriction")
         $policyType = "all"
     }

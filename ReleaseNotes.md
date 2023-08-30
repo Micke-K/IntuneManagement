@@ -1,4 +1,42 @@
 # Release Notes
+## 3.9.1  - 2023-08-30
+
+**New features**
+
+- **Added support for Windows Update Driver Policies**<br />
+
+- **Support for new Settings**<br />
+  - Proxy configuration - If configured, Proxy will be used for authentication, APIs and upload<br />
+  - Disable Write-Error output - Skip PowerShell errors in output<br />
+
+**Default Settings Value Changes**
+  - Conditional Access policies will now be imported as Disabled by default<br />
+  - New import option added: As Exported - Change On to Report-only<br />
+  - This is to avoid being locked out from the tenant when importing Conditional Access policies<br />
+  - Based on [Discussion 139](https://github.com/Micke-K/IntuneManagement/discussions/139)<br />
+
+**Fixes**
+- **Documentation**<br />
+  - Fixed issues with some Feature Updates properties<br />
+  - Added missing strings on Windows Update polices<br />
+  - Regenerated Language files and Translation tables for Template policies<br />
+  Note: Conditional Access string has changed file in background. Please report if there is anything missing<br />
+
+- **Custom ADMX Files**<br />
+  - Fixed issues with migrating custom policies between environments<br />
+  - Case reopened due to something broke the initial functionality<br />
+  - Only custom ADMX policies with #Definition properties can be imported into a new environment<br />
+  - Based on [Issue 124](https://github.com/Micke-K/IntuneManagement/issues/124)<br />
+
+- **Scope Tags**<br />
+  - Fixed issues with importing policies with Scope Tags but they were not set<br />
+  - Based on [Issue 133](https://github.com/Micke-K/IntuneManagement/issues/133)<br />
+
+**Generic**<br />
+  - Remove invalid characters from path.<br />
+  - Based on [Issue 150](https://github.com/Micke-K/IntuneManagement/issues/150)<br />
+  <br />
+
 ## 3.9.0  - 2023-05-04
 
 **New features**

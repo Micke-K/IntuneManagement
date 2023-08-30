@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.9.0'
+    '3.9.1'
 }
 
 function Invoke-InitializeModule
@@ -455,6 +455,7 @@ function Invoke-InitializeModule
         PostExportCommand = { Start-PostExportApplications @args }
         PostListCommand = { Start-PostListApplications @args }
         ExportExtension = { Add-ScriptExportExtensions @args }
+        PostGetCommand  = { Start-PostGetApplications @args }
         GroupId = "Apps"
         ScopeTagsReturnedInList = $false
     })
@@ -767,6 +768,16 @@ function Invoke-InitializeModule
         Icon = "Devices"
         GroupId = "DeviceConfiguration"
     })
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Driver Update Profiles"
+        Id = "DriverUpdateProfiles"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/windowsDriverUpdateProfiles"
+        Permissons = @("DeviceManagementConfiguration.ReadWrite.All")
+        Icon = "UpdatePolicies"
+        GroupId = "WinDriverUpdatePolicies"
+    })    
 }
 
 function Invoke-EMAuthenticateToMSAL
@@ -2193,6 +2204,29 @@ function Start-PostListApplications
     $objList   
 }
 
+function Start-PostGetApplications {
+    param($obj, $objectType)
+
+    $relationships = (Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$($obj.Id)/relationships?`$filter=targetType%20eq%20microsoft.graph.mobileAppRelationshipType%27child%27").value
+    $dependencyApps = @()
+    $supersededApps = @()
+    foreach ($rel in $relationships) {
+        if ($rel."@odata.type" -eq "#microsoft.graph.mobileAppDependency") {
+            $dependencyApps += "$($rel.targetDisplayName)|!|$($rel.targetDisplayVersion)|!|$($rel.targetId)|!|$($rel.dependencyType)"
+        }
+        elseif ($rel."@odata.type" -eq "#microsoft.graph.mobileAppSupersedence") {
+            $supersededApps += "$($rel.targetDisplayName)|!|$($rel.targetDisplayVersion)|!|$($rel.targetId)|!|$($rel.supersedenceType)"
+        }
+    }
+    if ($dependencyApps.Count -gt 0) {
+        $obj.Object | Add-Member -MemberType NoteProperty -Name "#CustomRefDependency" -Value ($dependencyApps -join "|*|")
+    }
+    
+    if ($supersededApps.Count -gt 0) {
+        $obj.Object | Add-Member -MemberType NoteProperty -Name "#CustomRefSupersedence" -Value ($supersededApps -join "|*|")
+    }    
+}
+
 #endregion
 
 #region Group Policy/Administrative Templates functions
@@ -2201,6 +2235,13 @@ function Get-GPOObjectSettings
     param($GPOObj)
 
     $gpoSettings = @()
+
+    if ($GPOObj.policyConfigurationIngestionType -eq "unknown") {
+        $tmpObj = (Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations?`$filter=id eq '$($GPOObj.id)'").value[0]
+        if ($tmpObj.policyConfigurationIngestionType) {
+            $GPOObj.policyConfigurationIngestionType = $tmpObj.policyConfigurationIngestionType
+        }
+    }
 
     # Get all configured policies in the Administrative Templates profile 
     $GPODefinitionValues = Invoke-GraphRequest -Url "/deviceManagement/groupPolicyConfigurations/$($GPOObj.id)/definitionValues?`$expand=definition" -ODataMetadata "skip"
@@ -3254,6 +3295,11 @@ function Add-ConditionalAccessImportExtensions
 
     $CAStates = @()
     $CAStates += [PSCustomObject]@{
+        Name  = "As Exported - Change On to Report-only"
+        Value = "AsExportedReportOnly"
+    }
+
+    $CAStates += [PSCustomObject]@{
         Name = "As Exported"
         Value = "AsExported"
     }
@@ -3277,7 +3323,7 @@ function Add-ConditionalAccessImportExtensions
     $global:cbImportCAState.DisplayMemberPath = "Name"
     $global:cbImportCAState.SelectedValuePath = "Value"
     $global:cbImportCAState.ItemsSource = $CAStates
-    $global:cbImportCAState.SelectedValue = "AsExported"
+    $global:cbImportCAState.SelectedValue = "disabled"
     $global:cbImportCAState.Margin="0,5,0,0"
     $global:cbImportCAState.HorizontalAlignment="Left"
     $global:cbImportCAState.Width=250
@@ -3290,9 +3336,14 @@ function Start-PreImportConditionalAccess
 {
     param($obj, $objectType, $file, $assignments)
 
-    if($global:cbImportCAState.SelectedValue -and $global:cbImportCAState.SelectedValue -ne "AsExported")
-    {
-        $obj.state = $global:cbImportCAState.SelectedValue
+    if ($global:cbImportCAState.SelectedValue -and $global:cbImportCAState.SelectedValue -ne "AsExported") {
+        if ($global:cbImportCAState.SelectedValue -eq "AsExportedReportOnly" -and $obj.state -eq "enabled") {
+            Write-Log "Change Enabled policy to Report-only"
+            $obj.state = "enabledForReportingButNotEnforced"
+        }
+        else {
+            $obj.state = $global:cbImportCAState.SelectedValue
+        }
     }
 
     if($obj.grantControls.authenticationStrength)

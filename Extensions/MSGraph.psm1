@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.9.0'
+    '3.9.1'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -392,6 +392,13 @@ function Invoke-GraphRequest
             $url = "$($url.Trim())&"
         }
         $url = "$($url.Trim())`$top=$($PageSize)"
+    }
+
+    $proxyURI = Get-ProxyURI
+    if($proxyURI)
+    {
+        $params.Add("proxy", $proxyURI)
+        $params.Add("UseBasicParsing", $true)
     }
 
     $ret = $null
@@ -1028,6 +1035,12 @@ function Get-GraphMetaData
             [void][System.Reflection.Assembly]::LoadWithPartialName("System.Web.Extensions")
             $wc = New-Object System.Net.WebClient
             $wc.Encoding = [System.Text.Encoding]::UTF8
+            $proxyURI = Get-ProxyURI
+            if($proxyURI)
+            {
+                $wc.Proxy = $proxyURI
+            }
+            
             try 
             {
                 [xml]$global:metaDataXML = $wc.DownloadString($url)
@@ -2497,25 +2510,36 @@ function Set-ScopeTags
     else { return }
 
     $scopesIds = @()
-    $loadedScopeTags = $global:LoadedDependencyObjects["ScopeTags"]
-    $usingDefault = (($obj."$scopeTagProperty" | measure).Count -eq 1 -and ($obj."$scopeTagProperty")[0] -eq "0")
-    if($loadedScopeTags -and $global:chkImportScopes.IsChecked -eq $true -and $usingDefault -eq $false -and $loadedScopeTags)
-    {        
-        foreach($scopeId in $obj."$scopeTagProperty")
+    if($global:chkReplaceDependencyIDs.IsChecked -eq $false -and $global:chkReplaceDependencyIDs.IsEnabled -eq $false)
+    {
+        if($global:chkImportScopes.IsChecked -eq $true) 
         {
-            if($scopeId -eq 0) { $scopesIds += "0"; continue } # Add default
-
-            $scopeMigObj = $loadedScopeTags | Where OriginalId -eq $scopeId
-            if($scopeMigObj -and $scopeMigObj.Id)
-            {
-                $scopesIds += "$($scopeMigObj.Id)"
-            }
-            elseif($scopeMigObj)
-            {
-                Write-Log "Could not find a ScopeTag for exported Id '$($obj.Id)' ($($scopeMigObj.Name)). Make sure all ScopeTags are imported into the environment" 2
-            }            
+            $scopesIds += $obj.$scopeTagProperty
         }
     }
+    else
+    {    
+        $loadedScopeTags = $global:LoadedDependencyObjects["ScopeTags"]
+        $usingDefault = (($obj."$scopeTagProperty" | measure).Count -eq 1 -and ($obj."$scopeTagProperty")[0] -eq "0")
+        if($loadedScopeTags -and $global:chkImportScopes.IsChecked -eq $true -and $usingDefault -eq $false -and $loadedScopeTags)
+        {        
+            foreach($scopeId in $obj."$scopeTagProperty")
+            {
+                if($scopeId -eq 0) { $scopesIds += "0"; continue } # Add default
+
+                $scopeMigObj = $loadedScopeTags | Where OriginalId -eq $scopeId
+                if($scopeMigObj -and $scopeMigObj.Id)
+                {
+                    $scopesIds += "$($scopeMigObj.Id)"
+                }
+                elseif($scopeMigObj)
+                {
+                    Write-Log "Could not find a ScopeTag for exported Id '$($obj.Id)' ($($scopeMigObj.Name)). Make sure all ScopeTags are imported into the environment" 2
+                }            
+            }
+        }
+    }
+
     if($scopesIds.Count -eq 0)
     {
         $scopesIds += "0" # Import with Default ScopeTag as default.
@@ -2961,7 +2985,7 @@ function Add-GraphDependencyObjects
     {
         if($global:LoadedDependencyObjects.ContainsKey($dep)) { continue }
 
-        $depObjectType = $global:currentViewObject.ViewItems | Where Id -eq $Dep
+        $depObjectType = $global:viewObjects.ViewItems | Where Id -eq $Dep
 
         if(-not $depObjectType)
         {

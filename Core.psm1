@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.8.1'
+    '3.9.1'
 }
 
 function Initialize-Window
@@ -58,6 +58,7 @@ function Start-CoreApp
 
     $global:useDefaultFolderDialog = $false
     $global:WindowsAPICodePackLoaded = $false
+    $script:proxyURI = $null
 
     $global:loadedModules = @()
     $global:viewObjects = @()
@@ -235,6 +236,8 @@ function Write-Log
 
     if(-not $global:logFileMaxSize) { [Int64]$global:logFileMaxSize =  Get-SettingValue "LogFileSize" 1024; $global:logFileMaxSize = $global:logFileMaxSize * 1kb }
 
+    if($null -eq $global:logOutputError) { $global:logOutputError = Get-SettingValue "LogOutputError" }
+
     $fi = [IO.FileInfo]$global:logFile
 
     if($fi.Length -gt $global:logFileMaxSize)
@@ -286,12 +289,19 @@ function Write-Log
     if($type -eq 2)
     {
         Write-Warning $Text
-        $typeStr = "Error"
+        $typeStr = "Warning"
     }
     elseif($type -eq 3)
     {
-        $host.ui.WriteErrorLine($Text)
-        $typeStr = "Warning"
+        if($global:logOutputError -ne $false)
+        {
+            $host.ui.WriteErrorLine($Text)
+        }
+        else
+        {
+            Write-Warning $Text
+        }        
+        $typeStr = "Error"
     }
     else
     {
@@ -667,8 +677,15 @@ function Show-UpdatesDialog
     {
         if($mystream) { $mystream.Dispose() }
     }
+    $params = @{}
+    $proxyURI = Get-ProxyURI
+    if($proxyURI)
+    {
+        $params.Add("proxy", $proxyURI)
+        $params.Add("UseBasicParsing", $true)
+    }
 
-    $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/contents/ReleaseNotes.md"
+    $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/contents/ReleaseNotes.md" @params
     if($content)
     {
         $txt = [System.Text.Encoding]::UTF8.GetString(([System.Convert]::FromBase64String($content.content)))
@@ -703,7 +720,15 @@ function Get-IsLatestVersion
 
     $gitHubVer = $null
 
-    $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/releases/latest"
+    $params = @{}
+    $proxyURI = Get-ProxyURI
+    if($proxyURI)
+    {
+        $params.Add("proxy", $proxyURI)
+        $params.Add("UseBasicParsing", $true)
+    }
+
+    $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/releases/latest" @params
     if($content.Name)
     {
         try
@@ -715,7 +740,15 @@ function Get-IsLatestVersion
 
     if($null -eq $gitHubVer)
     {
-        $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/contents/CloudAPIPowerShellManagement.psd1"
+        $params = @{}
+        $proxyURI = Get-ProxyURI
+        if($proxyURI)
+        {
+            $params.Add("proxy", $proxyURI)
+            $params.Add("UseBasicParsing", $true)
+        }
+    
+        $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/contents/CloudAPIPowerShellManagement.psd1" @params
         $gitHubText = [System.Text.Encoding]::UTF8.GetString(([System.Convert]::FromBase64String($content.content)))
         $gitHubInfo = Get-ModuleDataTable $gitHubText
         try
@@ -1150,6 +1183,10 @@ function Expand-FileName
     [Environment]::SetEnvironmentVariable("DateTime",$null,[System.EnvironmentVariableTarget]::Process)
     [Environment]::SetEnvironmentVariable("Organization",$null,[System.EnvironmentVariableTarget]::Process)
     
+    # Remove invalid path characters
+    $re = "[{0}]" -f [RegEx]::Escape(([IO.Path]::GetInvalidPathChars() -join ''))
+    $fileName = $fileName -replace $re
+  
     $fileName
 }
 
@@ -1167,7 +1204,9 @@ function Initialize-Settings
 
     $global:Debug = Get-SettingValue "Debug"
     $global:logFile = $null
-    $global:logFileMaxSize = $null    
+    $global:logFileMaxSize = $null
+    $global:logOutputError = $null
+    $script:proxyURI = $null
     
     if($Updated -eq $true)
     {
@@ -1944,6 +1983,14 @@ function Add-DefaultSettings
     }) "General"
 
     Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Add errors to PowerShell output"
+        Key = "LogOutputError"
+        Type = "Boolean"
+        Description = "Write errors to the Error Output of the PS Host. If disabled, errors will be written as a Warning. Eg. disable this if automation should skip logging PowerShell errors."
+        DefaultValue = $true
+    }) "General"    
+
+    Add-SettingsObject (New-Object PSObject -Property @{
             Title = "Debug"
             Key = "Debug"
             Type = "Boolean"
@@ -1997,6 +2044,12 @@ function Add-DefaultSettings
         DefaultValue = $true
         Description = "Adds the organization name next to the login info on the menu bar"
     }) "General" 
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Proxy URI"
+        Key = "ProxyURI"
+        Description = "Specify the URI for the proxy eg http://&lt;server&gt;:&lt;port&gt;"
+    }) "General"
 
 }
 
@@ -2434,6 +2487,15 @@ function Get-MainWindow
             }            
 
             Show-ModalForm $window.Title $script:welcomeForm -HideButtons            
+        }
+        else
+        {
+            ###!!! Force login here
+            if($global:currentViewObject.ViewInfo.Authenticate)
+            {
+                # Skip for now...need additional code to skip previous login and force this based on setting.
+                #!!!& $global:currentViewObject.ViewInfo.Authenticate -Params (@{"Interactve"=$true})
+            }
         }            
     })
 
@@ -2692,6 +2754,20 @@ function Get-Base64ScriptContent
     {
 
     }
+}
+
+function Get-ProxyURI
+{
+    if($null -eq $script:proxyURI)
+    {
+        $script:proxyUri = Get-SettingValue "ProxyURI"
+    }
+
+    if($null -eq $script:proxyURI)  
+    {
+        $script:proxyUri = ""
+    }
+    return $script:proxyURI
 }
 
 New-Alias -Name ?? -value Invoke-Coalesce

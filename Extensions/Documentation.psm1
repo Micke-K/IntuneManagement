@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '2.0.1'
+    '2.0.2'
 }
 
 function Invoke-InitializeModule
@@ -61,6 +61,7 @@ function Invoke-InitializeModule
         Settings="TableHeaders.settings"
         returnCode='Win32ReturnCodes.Columns.returnCode'
         type='Win32ReturnCodes.Columns.codeType'
+        RecommendedValue="AzureIAMCommon.Recommended"
     }    
 }
 
@@ -290,7 +291,8 @@ function Get-ObjectDocumentation
     elseif($type -eq "#microsoft.graph.deviceManagementIntent")
     {
         Invoke-TranslateIntentObject $obj $objectType | Out-Null
-        $properties = @("Name","Value","Category","FullValueTable","RawValue","SettingId","Description")
+        $properties = @("Name","Value","Category","FullValueTable","RawValue","RecommendedValue","SettingId","Description")
+        $defaultDocumentationProperties = @("Name","Value","RecommendedValue")
     }
     #endregion
     #region Administrative Templates
@@ -536,11 +538,15 @@ function Get-ObjectTypeString
     elseif($objTypeId -eq "WinFeatureUpdates")
     {
         return (Get-LanguageString "Titles.featureUpdateDeployments")
-    }    
+    }
     elseif($objTypeId -eq "WinQualityUpdates")
     {
         return (Get-LanguageString "Titles.windows10QualityUpdate")
     }    
+    elseif($objTypeId -eq "WinDriverUpdatePolicies")
+    {
+        return (Get-LanguageString "Titles.windows10DriverUpdate")
+    }
     elseif($objTypeId -eq "TenantAdmin")
     {
         return (Get-LanguageString "Titles.tenantAdmin")
@@ -1488,6 +1494,12 @@ function Add-IntentSettingObjectToList
         $objSetting.Level = $objSetting.Level + 1
     }
 
+    $recommendedSetting = $global:catRecommendedSettings[$objSetting.CategoryObject.Id] | Where definitionId -eq  $objSetting.SettingId
+
+    if($recommendedSetting.valueJson -and ($objSetting.ValueSet -eq $false -or $recommendedSetting.valueJson -ne ($objSetting.RawValue | ConvertTo-Json -Compress))) {
+        $objSetting | Add-Member Noteproperty -Name "RecommendedValue" -Value ($recommendedSetting.valueJson | ConvertFrom-Json) -Force
+    }    
+
     $script:objectSettingsData += $objSetting
 
     if($objSetting.ValueSet -eq $false) { return }
@@ -2415,6 +2427,17 @@ function Invoke-TranslateSection
                     }
                     $value = $arrTmp -join $script:objectSeparator
                 }                   
+                elseif($prop.dataType -eq 108) # String with format
+                {
+                    $value = $propValue
+                    if($prop.formatStringKey) {
+                        $str = Get-LanguageString $prop.formatStringKey
+                        if($str)
+                        {
+                            $value = $str -f $propValue
+                        }
+                    }
+                }
                 else
                 {
                     Write-Log "Unsupported property '$((Get-LanguageString "SettingDetails.$($prop.nameResourceKey)"))' ($($prop.nameResourceKey)) for object property $($prop.entityKey). Type: $($prop.dataType)" 2
