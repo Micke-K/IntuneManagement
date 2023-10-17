@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.9.1'
+    '3.9.2'
 }
 
 function Invoke-InitializeModule
@@ -73,6 +73,21 @@ function Invoke-InitializeModule
         SubPath = "EndpointManager"
     }) "EndpointManager"
 
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Save Encryption File"
+        Key = "EMSaveEncryptionFile"
+        Type = "Boolean"
+        Description = "Save encryption file when uploading an app. This can then be used to when downloading the app file."
+        SubPath = "EndpointManager"
+    }) "EndpointManager"    
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "App download folder"
+        Key = "EMIntuneAppDownloadFolder"
+        Type = "Folder"
+        Description = "Folder where app packages will be downloaded and where encryption files will be saved"
+        SubPath = "EndpointManager"
+    }) "EndpointManager"
 
     $viewPanel = Get-XamlObject ($global:AppRootFolder + "\Xaml\EndpointManagerPanel.xaml") -AddVariables
     
@@ -314,7 +329,7 @@ function Invoke-InitializeModule
         PostFileImportCommand = { Start-PostFileImportAdministrativeTemplate @args }
         PreImportCommand = { Start-PreImportAdministrativeTemplate @args }
         LoadObject = { Start-LoadAdministrativeTemplate @args }
-        PropertiesToRemove = @("definitionValues")
+        PropertiesToRemove = @("definitionValues","policyConfigurationIngestionType")
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon="DeviceConfiguration"
         GroupId = "DeviceConfiguration"
@@ -454,8 +469,10 @@ function Invoke-InitializeModule
         PreDeleteCommand = { Start-PreDeleteApplications @args }
         PostExportCommand = { Start-PostExportApplications @args }
         PostListCommand = { Start-PostListApplications @args }
-        ExportExtension = { Add-ScriptExportExtensions @args }
+        ExportExtension = { Add-ScriptExportApplications @args }
         PostGetCommand  = { Start-PostGetApplications @args }
+        PostImportCommand = { Start-PostImportApplications @args }
+        PostFilesImportCommand = { Start-PostFilesImportApplications @args }
         GroupId = "Apps"
         ScopeTagsReturnedInList = $false
     })
@@ -1985,23 +2002,40 @@ function local:Start-ImportApp
 
     if($appType -eq "microsoft.graph.win32LobApp")
     {
-        Copy-Win32LOBPackage $packageFile $obj
+        $fileEncryptionInfo = Copy-Win32LOBPackage $packageFile $obj
     }
     elseif($appType -eq "microsoft.graph.windowsMobileMSI")
     {
-        Copy-MSILOB $packageFile $obj
+        $fileEncryptionInfo = Copy-MSILOB $packageFile $obj
     }
     elseif($appType -eq "microsoft.graph.iosLOBApp")
     {
-        Copy-iOSLOB $packageFile $obj
+        $fileEncryptionInfo = Copy-iOSLOB $packageFile $obj
     }
     elseif($appType -eq "microsoft.graph.androidLOBApp")
     {
-        Copy-AndroidLOB $packageFile $obj
+        $fileEncryptionInfo = Copy-AndroidLOB $packageFile $obj
     }
     else
     {
         Write-Log "Unsupported application type $appType. File will not be uploaded" 2    
+    }
+
+    if((Get-SettingValue "EMSaveEncryptionFile") -eq $true)
+    {
+        #$fileEncryptionInfo = $fileEncryptionInfo | where { $null -ne $_.fileEncryptionInfo }
+        if($fileEncryptionInfo)
+        {
+            $jsonEncryptionInfo = $fileEncryptionInfo.fileEncryptionInfo | ConvertTo-Json -Depth 10
+            
+            $pkgPath = Get-SettingValue "EMIntuneAppDownloadFolder" (Get-SettingValue "EMIntuneAppPackages")
+            if($pkgPath -and [IO.Directory]::Exists($pkgPath))
+            {
+                $obj = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$($obj.id)" -ODataMetadata "Minimal"
+                $fullPath = $pkgPath + "\$($obj.displayName)_$($obj.id)_$($obj.committedContentVersion).json"
+                $jsonEncryptionInfo | Out-File -FilePath $fullPath -Force -Encoding utf8
+            }
+        }
     }
 }
 
@@ -2092,6 +2126,69 @@ function Add-DetailExtensionApplications
         $tmp.Children.Insert($index, $btnUpload)
     }
 
+    $btnDownload = New-Object System.Windows.Controls.Button    
+    $btnDownload.Content = 'Download'
+    $btnDownload.Name = 'btnDownloadAppfile'
+    $btnDownload.Margin = "0,0,5,0"  
+    $btnDownload.Width = "100"
+    
+    $btnDownload.Add_Click({
+        Write-Status "Download file"
+        $obj = $global:dgObjects.SelectedItem.Object
+        #$obj = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$($obj.id)"
+
+        $pkgPath = Get-SettingValue "EMIntuneAppDownloadFolder" (Get-SettingValue "EMIntuneAppPackages")
+
+        $dlgSave = [System.Windows.Forms.SaveFileDialog]::new()
+        $dlgSave.InitialDirectory = $pkgPath
+        $dlgSave.FileName = ($obj.FileName + ".encrypted")
+        if($dlgSave.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK -and $dlgSave.Filename)
+        {
+            Start-DownloadAppContent $obj $dlgSave.FileName
+
+            if([IO.File]::Exists($dlgSave.FileName))
+            {
+                $fullPath = $pkgPath + "\$($obj.displayName)_$($obj.id)_$($obj.committedContentVersion).json"
+                if([IO.File]::Exists($fullPath) -eq $false)
+                {
+                    if(([System.Windows.MessageBox]::Show("Could not find decryption file for $($obj.displayName)`nApp Id: $($obj.id)`nContent version $($obj.committedContentVersion)`n`nDo you want to browse for the file?", "Encryption file not found", "YesNo", "Warning")) -eq "Yes")
+                    {
+                        $of = [System.Windows.Forms.OpenFileDialog]::new()
+                        $of.InitialDirectory = $pkgPath
+                        $of.DefaultExt = "*.json"
+                        $of.Filter = "Json (*.json)|*.*"
+                        $of.Multiselect = $false
+                        
+                        if($of.ShowDialog() -eq "OK")
+                        {
+                            $fullPath = $of.FileName
+                        }                    
+                    }
+                }
+
+                if([IO.File]::Exists($fullPath))
+                {
+                    Write-Status "Decrypting file"
+                    $encryptionInfo = ConvertFrom-Json (Get-Content -Path $fullPath -Raw)
+                    $destination = $pkgPath + "\$($obj.FileName)"
+                    Start-DecryptFile $dlgSave.Filename $destination $encryptionInfo.encryptionKey $encryptionInfo.initializationVector
+                }
+                else
+                {
+                    Write-Log "Decryption file for $($obj.displayName) not found. Skipping decryption" 2
+                }
+            }
+        }
+
+        Write-Status ""
+    })
+
+    $tmp = $form.FindName($buttonPanel)
+    if($tmp) 
+    { 
+        $tmp.Children.Insert($index, $btnDownload)
+    }    
+
 }
 
 function Start-PreImportAssignmentsApplications
@@ -2177,6 +2274,42 @@ function Start-PostExportApplications
             Write-LogError "Failed to export scripts" $_.Exception
         }
     }
+
+    Save-Setting "Intune" "ExportAppFile" $global:chkExportApplicationFile.IsChecked
+    if($global:chkExportApplicationFile.IsChecked)
+    {
+        $encryptioSource = Get-SettingValue "EMIntuneAppDownloadFolder" (Get-SettingValue "EMIntuneAppPackages")
+        $pkgPath = $path 
+
+        if($pkgPath)
+        {
+            Write-Status "Download file"
+
+            $exportFile = $pkgPath + "\$($obj.FileName).encrypted"
+            $encryptionFile = $encryptioSource + "\$($obj.displayName)_$($obj.id)_$($obj.committedContentVersion).json"
+            if($encryptionFile -and [IO.File]::Exists($encryptionFile))
+            {
+                Start-DownloadAppContent $obj $exportFile
+
+                if([IO.File]::Exists($exportFile))
+                {
+                    Write-Status "Decrypting file"
+                    $encryptionInfo = ConvertFrom-Json (Get-Content -Path $encryptionFile -Raw)
+                    $destination = $pkgPath + "\$($obj.FileName)"
+                    Start-DecryptFile $exportFile $destination $encryptionInfo.encryptionKey $encryptionInfo.initializationVector
+                }
+
+                try { [IO.File]::Delete($exportFile) }
+                catch {
+                    Write-LogError "Filed to delete exported encrypted file" $_.Exception
+                }
+            }
+            else
+            {
+                Write-Log "Cound not file encryption file `"$($obj.displayName)_$($obj.id)_$($obj.committedContentVersion).json`""
+            }
+        }
+    }
 }
 
 function Start-PostListApplications
@@ -2204,26 +2337,174 @@ function Start-PostListApplications
     $objList   
 }
 
+function Add-ScriptExportApplications
+{
+    param($form, $buttonPanel, $index = 0)
+
+    Add-ScriptExportExtensions $form $buttonPanel $index
+
+    $ctrl = $form.FindName("chkExportApplicationFile")
+    if(-not $ctrl)
+    {
+        $xaml =  @"
+<StackPanel $($global:wpfNS) Orientation="Horizontal" Margin="0,0,5,0">
+<Label Content="Export application file" />
+<Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Export the application file. Note: Application file will only be exported if ecryption file is found." />
+</StackPanel>
+"@
+        $label = [Windows.Markup.XamlReader]::Parse($xaml)
+
+        $global:chkExportApplicationFile = [System.Windows.Controls.CheckBox]::new()
+        $global:chkExportApplicationFile.IsChecked = ((Get-Setting "Intune" "ExportAppFile" "false") -eq "true")
+        $global:chkExportApplicationFile.VerticalAlignment = "Center" 
+        $global:chkExportApplicationFile.Name = "chkExportApplicationFile" 
+
+        @($label, $global:chkExportApplicationFile)
+    }    
+}
+
 function Start-PostGetApplications {
     param($obj, $objectType)
 
-    $relationships = (Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$($obj.Id)/relationships?`$filter=targetType%20eq%20microsoft.graph.mobileAppRelationshipType%27child%27").value
-    $dependencyApps = @()
-    $supersededApps = @()
-    foreach ($rel in $relationships) {
-        if ($rel."@odata.type" -eq "#microsoft.graph.mobileAppDependency") {
-            $dependencyApps += "$($rel.targetDisplayName)|!|$($rel.targetDisplayVersion)|!|$($rel.targetId)|!|$($rel.dependencyType)"
+    if($obj.Object.dependentAppCount -is [Int] -and ($obj.Object.dependentAppCount -gt 0 -or $obj.Object.supersededAppCount -gt 0)) {
+        $relationships = (Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$($obj.Id)/relationships?`$filter=targetType%20eq%20microsoft.graph.mobileAppRelationshipType%27child%27").value
+        $dependencyApps = @()
+        $supersededApps = @()
+        foreach ($rel in $relationships) {
+            if ($rel."@odata.type" -eq "#microsoft.graph.mobileAppDependency") {
+                $dependencyApps += "$($rel.targetDisplayName)|!|$($rel.targetDisplayVersion)|!|$($rel.targetId)|!|$($rel.dependencyType)"
+            }
+            elseif ($rel."@odata.type" -eq "#microsoft.graph.mobileAppSupersedence") {
+                $supersededApps += "$($rel.targetDisplayName)|!|$($rel.targetDisplayVersion)|!|$($rel.targetId)|!|$($rel.supersedenceType)"
+            }
         }
-        elseif ($rel."@odata.type" -eq "#microsoft.graph.mobileAppSupersedence") {
-            $supersededApps += "$($rel.targetDisplayName)|!|$($rel.targetDisplayVersion)|!|$($rel.targetId)|!|$($rel.supersedenceType)"
+        if ($dependencyApps.Count -gt 0) {
+            $obj.Object | Add-Member -MemberType NoteProperty -Name "#CustomRefDependency" -Value ($dependencyApps -join "|*|")
+        }
+        
+        if ($supersededApps.Count -gt 0) {
+            $obj.Object | Add-Member -MemberType NoteProperty -Name "#CustomRefSupersedence" -Value ($supersededApps -join "|*|")
         }
     }
-    if ($dependencyApps.Count -gt 0) {
-        $obj.Object | Add-Member -MemberType NoteProperty -Name "#CustomRefDependency" -Value ($dependencyApps -join "|*|")
-    }
+}
+
+function Start-PostImportApplications
+{
+    param($obj, $objectType, $file)
+
+    #$tmpObj = Get-GraphObjectFromFile $file
+}
+
+function Start-PostFilesImportApplications
+{
+    param($objType, $importedObjects, $importedFiles)
+ 
+    $refObjects = $importedFiles | Where { $null -ne $_.Object."#CustomRefDependency" -or $null -ne $_.Object."#CustomRefSupersedence" }
     
-    if ($supersededApps.Count -gt 0) {
-        $obj.Object | Add-Member -MemberType NoteProperty -Name "#CustomRefSupersedence" -Value ($supersededApps -join "|*|")
+    if(($refObjects | measure).Count -gt 0)
+    {
+        Write-Log "Applicetions with Depnedency or Supersedence detected"
+        foreach($file in $refObjects)
+        {
+            Add-ApplicationReferences $file.ImportedObject $file.Object
+        }    
+    }
+}
+
+function local:Add-ApplicationReferences 
+{
+    param($obj, $fileObj)
+
+    if($fileObj."#CustomRefDependency" -or $fileObj."#CustomRefSupersedence")
+    {
+        Write-Log "Adding app references for $($obj.displayName)"
+
+        $depAppsInfo = $fileObj."#CustomRefDependency"
+        $supAppsInfo = $fileObj."#CustomRefSupersedence"
+
+        $releationShips = [PSCustomObject]@{
+            relationships = @()
+        }
+
+        if($depAppsInfo)
+        {
+            foreach($depApp in ($depAppsInfo -split "[|][*][|]"))
+            {
+                $appName, $appVer, $appId, $appType = $depApp -split "[|][!][|]"
+                if(-not $appName -or -not $appVer)
+                {
+                    Write-Log "Could not get Name and Version from string: $appApp" 2
+                    continue
+                }
+                $tmpApps = (Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps?`$filter=displayName eq '$appName'").value
+                if(-not $tmpApps)
+                {
+                    Write-Log "No application found with name $appName" 2
+                    continue
+                }
+                $tmpApp = $tmpApps | Where displayVersion -eq $appVer
+                if(-not $tmpApp)
+                {
+                    Write-Log "No $appName application found with version $appVer" 2
+                    continue
+                }
+                elseif(-not ($tmpApp | measure).Count -gt 1)
+                {
+                    Write-Log "Multiple $appName application found with version $appVer" 2
+                    continue
+                }
+                Write-Log "Add $appName ($appVer) to Dependency list"
+                $releationShips.relationships += [PSCustomObject]@{
+                    "@odata.type" = "#microsoft.graph.mobileAppDependency"
+                    targetId = $tmpApp.Id
+                    dependencyType = $appType
+                }
+            }
+        }
+
+        if($supAppsInfo)
+        {
+            foreach($suppApp in ($supAppsInfo -split "[|][*][|]"))
+            {
+                $appName, $appVer, $appId, $appType = $suppApp -split "[|][!][|]"
+                if(-not $appName -or -not $appVer)
+                {
+                    Write-Log "Could not get Name and Version from string: $appApp" 2
+                    continue
+                }
+                $tmpApps = (Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps?`$filter=displayName eq '$appName'").value
+                if(-not $tmpApps)
+                {
+                    Write-Log "No application found with name $appName" 2
+                    continue
+                }
+                $tmpApp = $tmpApps | Where displayVersion -eq $appVer
+                if(-not $tmpApp)
+                {
+                    Write-Log "No $appName application found with version $appVer" 2
+                    continue
+                }
+                elseif(-not ($tmpApp | measure).Count -gt 1)
+                {
+                    Write-Log "Multiple $appName application found with version $appVer" 2
+                    continue
+                }
+                Write-Log "Add $appName ($appVer) to Supersedence list"
+                $releationShips.relationships += [PSCustomObject]@{
+                    "@odata.type" = "#microsoft.graph.mobileAppSupersedence"
+                    targetId = $tmpApp.Id
+                    supersedenceType = $appType
+                }
+            }
+        }
+
+        if($releationShips.relationships.Count -gt 0)
+        {
+            $json = Update-JsonForEnvironment (ConvertTo-Json $releationShips -Depth 20)
+
+            Write-Log "Update app references"
+            Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$($obj.Id)/updateRelationships" -Method "POST" -Body $json
+        }
     }    
 }
 
@@ -3515,10 +3796,13 @@ function Start-PreImportADMXFiles
         return 
     }
 
-    $bytes = [IO.File]::ReadAllBytes($admxFile)
+    #$bytes = [IO.File]::ReadAllBytes($admxFile)
+    $bytes = Get-ASCIIBytes ([IO.File]::ReadAllText($admxFile))
     $obj.content = [Convert]::ToBase64String($bytes)
 
-    $bytes = [IO.File]::ReadAllBytes($admlFile)
+    #$bytes = [IO.File]::ReadAllBytes($admlFile)
+    $bytes = Get-ASCIIBytes ([IO.File]::ReadAllText($admlFile))
+
     $obj.groupPolicyUploadedLanguageFiles += [PSCustomObject]@{
         fileName = [io.path]::GetFileName($admlFile)
         content = [Convert]::ToBase64String($bytes)

@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.9.1'
+    '3.9.2'
 }
 
 function Initialize-Window
@@ -2768,6 +2768,67 @@ function Get-ProxyURI
         $script:proxyUri = ""
     }
     return $script:proxyURI
+}
+
+function Start-DownloadFile
+{
+    param($sourceURL, $targetFile)
+
+    Write-Log "Download file from $sourceURL"
+    if(-not $sourceURL)
+    {
+        return
+    }
+
+    if(-not $targetFile)
+    {
+        Write-Log "Target file is missing"
+        return
+    }    
+    
+    [void][System.Reflection.Assembly]::LoadWithPartialName("System.Web.Extensions")
+    $wc = New-Object System.Net.WebClient
+    $wc.Encoding = [System.Text.Encoding]::UTF8
+    $proxyURI = Get-ProxyURI
+    if($proxyURI)
+    {
+        $wc.Proxy = $proxyURI
+    }
+
+    try 
+    {
+        Write-Status "Download file: `n$sourceURL"
+        $wc.DownloadFile($sourceURL, $targetFile)
+        Write-Log "File downloaded to $targetFile"
+    }
+    catch
+    {
+        Write-LogError "Failed to download file" $_.Exception
+    }
+    finally
+    {
+        $wc.Dispose()
+    }
+}
+
+function Get-ASCIIBytes
+{
+    param($String)
+    
+    $bytes = [System.Text.Encoding]::ASCII.GetBytes($String)
+ 
+    if ($bytes[0] -eq 0x2b -and $bytes[1] -eq 0x2f -and $bytes[2] -eq 0x76) 
+    { [Text.Encoding]::UTF7.GetBytes($String) }
+    elseif ($bytes[0] -eq 0xff -and $bytes[1] -eq 0xfe) 
+    { [Text.Encoding]::Unicode.GetBytes($String) }
+    elseif ($bytes[0] -eq 0xfe -and $bytes[1] -eq 0xff) 
+    { [Text.Encoding]::BigEndianUnicode.GetBytes($String) }
+    elseif ($bytes[0] -eq 0x00 -and $bytes[1] -eq 0x00 -and $bytes[2] -eq 0xfe -and $bytes[3] -eq 0xff) 
+    { [Text.Encoding]::UTF32.GetBytes($String) }
+    elseif ($bytes[0] -eq 0xef -and $bytes[1] -eq 0xbb -and $bytes[2] -eq 0xbf) 
+    { [Text.Encoding]::UTF8.GetBytes($String) }
+
+    $bytes
 }
 
 New-Alias -Name ?? -value Invoke-Coalesce

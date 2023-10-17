@@ -1,4 +1,60 @@
 # Release Notes
+## 3.9.2  - 2023-10-17
+
+**New features**
+
+- **Application Content Export - Experimental**<br />
+  - Added support for Exporting Appliction with decrypted content<br />
+  App file can be downloaded during export or from the detail view of the Application<br />
+  Enable "Save Encryption File" and specify "App download folder" in Settings<br />
+  "App download folder" is used for encryption file and manual download<br />
+  File content will be downloaded to the export foler during export<br />
+  Files will be downloaded with .encrypted extension and then decrypted to original file name<br />
+  Please report any issue or any suggestions<br />
+  **NOTE:** This will ONLY work if the encryption file is exported and available<br />
+  
+- **Authentication**<br />
+  - Login with application<br />
+  This will login with specified Azure App ID and Secret/Certificate that is used for Batch processes<br />
+  NOTE: This will require a restart of the app<br />
+  Start with app **must** use -TenantID on command line. AppID and Secret/Certificate can be specified in Settings or command line<br />
+  Example: Start-IntuneManagement.ps1 -tenantId \"&lt;TenantID&gt;\" -appid \"&lt;AppID&gt;\" -secret \"&lt;Secret&gt;\"<br />
+  See *Start-WithApp.cmd* for samle file<br />
+  Based on [Issue 122](https://github.com/Micke-K/IntuneManagement/issues/122) and [Issue 134](https://github.com/Micke-K/IntuneManagement/issues/134)<br />
+
+- **Support for new Settings**<br />
+  - Save encryption file - Saves a json file with encryption data when an application file is uploaded eg created or uploaded in details view<br />
+  - App download folder - Folder where application files should be downloaded and decrypted<br />
+  - Login with App in UI (Preview) - Use app batch login in UI<br />
+  - Use Graph 1.0 (Not Recommended) - Use Graph v1.0 instead of Beta. **Note:** Some features will NOT work in v1.0<br />
+  Based on [Issue 170](https://github.com/Micke-K/IntuneManagement/issues/170)<br />
+
+**Fixes**
+- **Documentation**<br />
+  - Language files re-generated eg Supersedence (preview) -> Supersedence<br />
+  - Added support for documenting "Filter for devices" info for Conditional Access policies<br />
+  Based on [Issue 168](https://github.com/Micke-K/IntuneManagement/issues/168)<br />
+
+- **Custom ADMX Files**<br />
+  - Fixed issues with migrating custom policies between environments (3rd time)<br />
+  Based on [Issue 124](https://github.com/Micke-K/IntuneManagement/issues/124)<br />
+  - Fixed issue when importing ADMX files - Encoding issue eg ADMX/ADML file was UTF8<br />
+  Based on [Issue 169](https://github.com/Micke-K/IntuneManagement/issues/169)<br />
+
+- **Importing Windows LoB Apps**<br />
+  - Fixed issue when importing LoB Apps that was only targeted to System context<br />
+  Available Assignment option was missing after import<br />
+  Based on [Discussion 164](https://github.com/Micke-K/IntuneManagement/discussions/164)<br />
+  - Added support for Depnedency and Supersedence reations at import<br />
+  Application will need to be re-exported since additinal data is added to the export file<br />
+  Based on [Discussion 159](https://github.com/Micke-K/IntuneManagement/discussions/159)<br />
+
+- **Generic**<br />
+  - Fixed issue when compiling Procxy CS file<br />
+  - Tls 1.2 is now enforced.<br />
+  Based on [Discussion 166](https://github.com/Micke-K/IntuneManagement/discussions/166)<br />
+  <br />
+
 ## 3.9.1  - 2023-08-30
 
 **New features**

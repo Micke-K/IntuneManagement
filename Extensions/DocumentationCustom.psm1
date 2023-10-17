@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.6.1'
+    '1.6.2'
 }
 
 function Invoke-InitializeModule
@@ -2744,6 +2744,28 @@ function Invoke-CDDocumentConditionalAccess
             EntityKey = "excludeDevices"
         })           
     }
+
+    if($obj.conditions.devices.deviceFilter)
+    {
+        if($obj.conditions.devices.deviceFilter.mode -eq "include") 
+        {
+            $filterMode = "included"
+        }
+        else
+        {
+            $filterMode = "included"
+        }
+
+        #AzureCA.PolicyBlade.Conditions.DeviceAttributes.AssignmentFilter.Blade
+        #AzureCA.PolicyBlade.Conditions.DeviceAttributes.Blade.title
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "AzureCA.PolicyBlade.Conditions.DeviceAttributes.Blade.AppliesTo.$filterMode"
+            Value = $obj.conditions.devices.deviceFilter.rule
+            Category = $category
+            SubCategory = Get-LanguageString "AzureCA.PolicyBlade.Conditions.DeviceAttributes.Blade.title"
+            EntityKey = "includeDevices"
+        })           
+    }    
     
     ###################################################
     # Grant

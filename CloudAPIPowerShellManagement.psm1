@@ -93,11 +93,20 @@ function Initialize-CloudAPIManagement
     [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 
     Add-Type -AssemblyName PresentationFramework
 
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
     $global:hideUI = ($Silent -eq $true)
     $global:SilentBatchFile = $SilentBatchFile
 
+    if($tenantId)
+    {
+        $global:AzureAppId = $appId 
+        $global:ClientSecret = $secret 
+        $global:ClientCert = $certificate
+    }
+
     if($global:hideUI -ne $true)
-    {        
+    {                
         # Run with UI
         try 
         {
@@ -126,11 +135,10 @@ function Initialize-CloudAPIManagement
             Write-Error "Tenant Id is missing. Use -TenantId <Tenant-guid> on the command line to run silent batch jobs"
             return
         }
-        $global:TenantId = $tenantId 
-        $global:AzureAppId = $appId 
-        $global:ClientSecret = $secret 
-        $global:ClientCert = $certificate        
     }
+
+    $global:TenantId = $tenantId
+
 
     if($ShowConsoleWindow -ne $true)
     {

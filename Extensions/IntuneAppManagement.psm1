@@ -10,7 +10,7 @@ This module manages Application objects in Intune e.g. uploading application fil
 #>
 function Get-ModuleVersion
 {
-    '3.9.1'
+    '3.9.2'
 }
 
 #########################################################################################
@@ -94,26 +94,33 @@ function Copy-MSILOB
 
     $tmpFile = [IO.Path]::GetTempFileName()
 
-    $msiInfo = Get-MSIFileInformation $msiFile @("ProductName", "ProductCode", "ProductVersion", "ProductLanguage")       
+    $msiInfo = Get-MSIFileInformation $msiFile @("ProductName", "ProductCode", "ProductVersion", "ProductLanguage", "UpgradeCode", "ALLUSERS")
 
     if(-not $msiInfo) { return }
 
     $fileEncryptionInfo = New-IntuneEncryptedFile $msiFile $tmpFile
 
     [xml]$manifestXML = '<MobileMsiData MsiExecutionContext="Any" MsiRequiresReboot="false" MsiUpgradeCode="" MsiIsMachineInstall="true" MsiIsUserInstall="false" MsiIncludesServices="false" MsiContainsSystemRegistryKeys="false" MsiContainsSystemFolders="false"></MobileMsiData>'
-    $manifestXML.MobileMsiData.MsiUpgradeCode = $msiInfo["ProductCode"]
-
+    $manifestXML.MobileMsiData.MsiUpgradeCode = $msiInfo["UpgradeCode"]
+    if($msiInfo["ALLUSERS"] -eq 1)
+    {
+        $manifestXML.MobileMsiData.MsiExecutionContext = "System"
+    }
+    
     $appFileBody = @{
             "@odata.type" = "#microsoft.graph.mobileAppContentFile"
             name = [IO.Path]::GetFileName($msiFile)
 	        size = (Get-Item $msiFile).Length
 	        sizeEncrypted = (Get-Item $tmpFile).Length
 	        manifest = [Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($manifestXML.OuterXml))
+            isDependency = $false
     }
 
     Add-FileToIntuneApp $appId $appType $tmpFile $appFileBody
 
     Remove-Item $tmpFile -Force
+
+    $fileEncryptionInfo
 }
 
 function Copy-iOSLOB
@@ -149,6 +156,8 @@ function Copy-iOSLOB
     Add-FileToIntuneApp $appId $appType $tmpFile $appFileBody
 
     Remove-Item $tmpFile -Force
+
+    $fileEncryptionInfo
 }
 
 function Copy-AndroidLOB
@@ -185,6 +194,8 @@ function Copy-AndroidLOB
     Add-FileToIntuneApp $appId $appType $tmpFile $appFileBody
 
     Remove-Item $tmpFile -Force
+
+    $fileEncryptionInfo
 }
 
 function Copy-Win32LOBPackage
@@ -235,7 +246,7 @@ function Copy-Win32LOBPackage
 
     $fileBody = @{
             "@odata.type" = "#microsoft.graph.mobileAppContentFile"
-            name = $DetectionXML.ApplicationInfo.FileName
+            name = "IntunePackage.intunewin"
 	        size = [int64]$DetectionXML.ApplicationInfo.UnencryptedContentSize
 	        sizeEncrypted = (Get-Item $tmpIntunewinFile).Length
 	        manifest = $null
@@ -245,46 +256,59 @@ function Copy-Win32LOBPackage
     Add-FileToIntuneApp $appId $appType $tmpIntunewinFile $fileBody
 
     # Remove extracted inintunewin file
-    Remove-Item $tmpIntunewinPath -Force -Recurse    
+    Remove-Item $tmpIntunewinPath -Force -Recurse  
+    
+    $fileEncryptionInfo
 }
 
 function Add-FileToIntuneApp
 {
     param($appId, $appType, $appFile, $fileBody)
 
-    $contentVersion = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions" -HttpMethod POST -Content "{}"
+    $contentVersion = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions" -HttpMethod POST -Content "{}" -ODataMetadata "Minimal"
     $contentVersionId = $contentVersion.id
-    $fileObj = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVersionId/files" -HttpMethod POST -Content (ConvertTo-Json $fileBody -Depth 5)
+    $fileObj = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVersionId/files" -HttpMethod POST -Content (ConvertTo-Json $fileBody -Depth 5) -ODataMetadata "Minimal"
 
     if(-not $fileObj)
     {
         return
     }
+
+    Write-Log "File object created. ID: $($fileObj.id)"
 
     # Wait for Azure storage URI
     $fileObj = Wait-IntuneFileState "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVersionId/files/$($fileObj.Id)" "AzureStorageUriRequest"
     if(-not $fileObj)
     {
+        Write-Log "No File Object returned from commit. Upload failed" 3
         return
     }
 
     # Upload file    
-    Send-IntuneFileToAzureStorage $fileObj.azureStorageUri $appFile "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVersionId/files/$($fileObj.Id)"
+    Send-IntuneFileToAzureStorage $fileObj.azureStorageUri $appFile "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVersionId/files/$($fileObj.Id)" | Out-Null
 
 	# Commit the file
-    $reponse = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVersionId/files/$($fileObj.Id)/commit" -HttpMethod POST -Content (ConvertTo-Json $fileEncryptionInfo -Depth 5)
+    Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVersionId/files/$($fileObj.Id)/commit" -HttpMethod POST -Content (ConvertTo-Json $fileEncryptionInfo -Depth 5) | Out-Null
 
-    Wait-IntuneFileState "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVersionId/files/$($fileObj.Id)" "CommitFile"
+    Wait-IntuneFileState "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVersionId/files/$($fileObj.Id)" "CommitFile" | Out-Null
 
-    $fiUpload = [IO.FileInfo]$appFile
     # Commit the content version
     $commitAppBody = @{
             "@odata.type" = "#$appType"
             committedContentVersion = $contentVersionId
-            fileName = $fiUpload.Name
     }
 
-    $reponse = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId" -HttpMethod PATCH -Content (ConvertTo-Json $commitAppBody -Depth 5)
+#    if($fileBody.Name) {
+#        $fileUploadName = $fileBody.Name
+#    }
+#    else {
+        $fiUpload = [IO.FileInfo]$appFile
+        $fileUploadName = $fiUpload.Name
+#    }
+    $commitAppBody.Add("fileName",$fileUploadName)
+
+    Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId" -HttpMethod PATCH -Content (ConvertTo-Json $commitAppBody -Depth 5) | Out-Null
+    Write-Log "Upload finished for file $fileUploadName version $contentVersionId"
 }
 
 function Wait-IntuneFileState
@@ -318,7 +342,7 @@ function Wait-IntuneFileState
             return
 		}
 
-		Start-Sleep -s 5	
+		Start-Sleep -Seconds 1
 	}
 
 	if($succes -eq $false)
@@ -635,4 +659,102 @@ function New-IntuneEncryptedFile
 	$fileEncryptionInfo.fileEncryptionInfo = $encryptionInfo
 
 	$fileEncryptionInfo
+}
+
+function Start-DecryptFile
+{
+    param($sourceFile, $targetFile, $encryptionKey, $initializationVector)
+
+    if([IO.File]::Exists($targetFile)) 
+    {
+        $fi = [IO.FileInfo]$targetFile
+        $newName = $fi.Name + "_$((Get-Date).ToString("yyyyMMdd_HHmm"))" + $fi.Extension
+        $targetFile = $fi.DirectoryName + "\$newName"
+        Write-Log "Target file exists. Changing target file to $targetFile" 2
+    }
+
+	$bufferBlockSize = 1024 * 4
+
+	try
+	{
+		$aes = [System.Security.Cryptography.Aes]::Create()
+
+		$buffer = New-Object byte[] $bufferBlockSize
+		$bytesRead = 0
+
+        $targetStream = [System.IO.File]::Open($targetFile, [System.IO.FileMode]::Create, [System.IO.FileAccess]::ReadWrite, [System.IO.FileShare]::None)
+
+		try
+		{
+            $sourceStream = [System.IO.File]::Open($sourceFile, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
+			
+            $decryptor = $aes.CreateDecryptor([Convert]::FromBase64String($encryptionKey), [Convert]::FromBase64String($initializationVector))
+			
+            $decryptoStream = New-Object System.Security.Cryptography.CryptoStream -ArgumentList @($targetStream, $decryptor, [System.Security.Cryptography.CryptoStreamMode]::Write)
+
+            $sourceStream.Seek(48L, [System.IO.SeekOrigin]::Begin)
+
+			while (($bytesRead = $sourceStream.Read($buffer, 0, $bufferBlockSize)) -gt 0)
+			{
+				$decryptoStream.Write($buffer, 0, $bytesRead)
+				$decryptoStream.Flush()
+			}
+			$decryptoStream.FlushFinalBlock()
+		}
+		finally
+		{
+			if ($null -ne $decryptoStream) { $decryptoStream.Dispose() }
+			if ($null -ne $targetStream) { $targetStream.Dispose() }
+			if ($null -ne $decryptor) { $decryptor.Dispose() }
+			if ($null -ne $sourceStream) { $sourceStream.Dispose() }
+		}
+	}
+	finally
+	{
+		if ($null -ne $sourceStream) { $sourceStream.Dispose() }
+        if ($null -ne $aes) { $aes.Dispose() }
+	}
+}
+
+function Start-DownloadAppContent
+{
+    param($obj, $destinationFile)
+    # Not use but kept for reference. File can be download but it will be encrypted
+    
+    if([IO.File]::Exists($destinationFile)) 
+    {
+        try { [IO.File]::Delete($encryptionFile) }
+        catch {}
+    }
+
+    $appId = $obj.Id
+
+    $appInfo = Invoke-GraphRequest -Url "$($global:graphURL)/deviceAppManagement/mobileApps/$appId"
+
+    $appType = $appInfo.'@odata.type'.Trim('#')
+
+    #$contentVersions = Invoke-GraphRequest -Url "$($global:graphURL)/deviceAppManagement/mobileApps/$appId/$appType/contentVersions"
+    #$contentVerId = $contentVersions.Value[0].id
+
+    $contentVerId = $appInfo.committedContentVersion
+
+    $contentFiles = Invoke-GraphRequest "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVerId/files"
+
+    $contentFile = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVerId/files/$($contentFiles.value[-1].Id)" -NoError
+
+    if(-not $contentFile) 
+    {
+        foreach($file in $contentFiles.value)
+        {
+            if($contentFiles.value[-1].Id -eq $file.id) { continune }
+
+            # NOT happy about this. file objects are not always returned in the order of upload.
+            $contentFile = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$appId/$appType/contentVersions/$contentVerId/files/$($file.Id)" -NoError
+            if($contentFile)
+            {
+                break
+            }
+        }
+    }
+    Start-DownloadFile $contentFile.azureStorageUri $destinationFile
 }

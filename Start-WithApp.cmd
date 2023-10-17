@@ -1,0 +1,1 @@
+cmd /c powershell -version 5 -ex bypass -File "%~DP0Start-IntuneManagement.ps1" -tenantId "<TenantID>" -appid "<AppID>" -secret "<Secret>"

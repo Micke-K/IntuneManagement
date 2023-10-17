@@ -7,7 +7,7 @@ public class HttpFactoryWithProxy : IMsalHttpClientFactory
 {
     private static HttpClient _httpClient;
 
-    public public HttpFactoryWithProxy(string proxyURI) : this(proxyURI, null, null)
+    public HttpFactoryWithProxy(string proxyURI) : this(proxyURI, null, null)
     {
 
     }
