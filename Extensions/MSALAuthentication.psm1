@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.9.2'
+    '3.9.3'
 }
 
 $global:msalAuthenticator = $null
@@ -770,7 +770,7 @@ function Get-MSALApp
         [void] $appBuilder.WithClientName("CloudAPIPowerShellManagement") 
         [void] $appBuilder.WithClientVersion($PSVersionTable.PSVersion)
 
-        Add-MSALProxy $appBuilder
+        Add-MSALProxy $appBuilder   
         
         # Ceck if correct version...
         #$appBuilder.WithMultiCloudSupport($true)        
@@ -1148,7 +1148,7 @@ function Connect-MSALUser
             #########################################################################################################
             try 
             {
-                Write-Log "Get tennant list"
+                Write-Log "Get tenant list"
                 
                 # Can we reuse the app used for login?
                 $appBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::Create($global:appObj.ClientID)

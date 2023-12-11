@@ -1,4 +1,56 @@
 # Release Notes
+## 3.9.2  - 2023-12-11
+
+**New features**
+
+- **New tool - Get Assignment Filter usage**<br />
+  - List all policies and assignments with a Filter defined<br />
+  Based on [Issue 141](https://github.com/Micke-K/IntuneManagement/issues/141)<br />
+  **NOTE:** Start the tool from: Views -> Intune Tools -> Intune Filter Usage<br />
+  
+- **Batch Export of App Content Encryption Key from Intunewin files**<br />
+  This script can export encryption keys from existing intunewin files<br />
+  Example:<br />
+  Export-EncrytionKeys -RootFolder C:\Intune\Packages -ExportFolder C:\Intune\Download<br />
+  This will export the encryption key information for each .intunewinfiles under C:\Intune\Packages<br />
+  One json file will be created (for each .intunwinfile) in the C:\Intune\Download folder<br />
+  File name will be **<*IntunewinFileBaseName*>_<*UnencryptedFileSize*>.json**<br />
+  Do **NOT** rename this file since the script will search for that file when downloading or exporting App content<br />
+  The script will not require authentication and it will have no knowledge of apps in Intune<br />
+  Filename and unencrypted file size is used as the identifier to match app content in Intune with encryption file<br />
+  **Important notes:**<br /> 
+  Exported and decrypted .intunewin files are not supported to use for import at the moment.<br />
+  These files are just the "zip" version of the source and can be unzipped with any zip extraction tool<br />
+  The .intunewin file used for import has the "zip" version of the file and an xml with the encryption information +<br />
+  additional file information eg. msi properties, file size etc.<br />
+  Use the exported unencrypted "zip" version to restore the original files. Re-run the packaging tool if it should be re-used as applications content<br />
+  <br />
+  Please report any issues or create a discussion if there are any questions<br />
+  Script is located: **<*RootFolder*>\Scripts\Export-EncrytionKeys.ps1**<br />
+
+<br />
+
+**Fixes**
+- **Export**<br />
+  - Fixed issue where Assignments were included in export even if 'Export Assignments' was unchecked<br />
+  Based on [Issue 171](https://github.com/Micke-K/IntuneManagement/issues/171)<br />
+
+- **Documentation**<br />
+  - Fixed issue where filter was not documented on some policies<br />
+  - Fixed issue with Word Output provider if a policy only had one settings<br />
+  
+- **Custom ADMX Files**<br />
+  - Fixed bug with migrating custom policies between environments. Cache was not cleared when swapping tenants or imported additional ADMX files<br />
+  - Fixed documentention issue with Administrative template policies in GCC environment. Name and Category was missing<br />
+  Based on [Issue 174](https://github.com/Micke-K/IntuneManagement/issues/174)<br />
+  - Custom ADMX based policies was missing properties when swapping tenant<br />
+  Based on [Issue 124](https://github.com/Micke-K/IntuneManagement/issues/124)<br />
+
+- **Generic**<br />
+  - Fixed logging issues when processing objects with a group that was deleted. ID was not reported<br />
+  - Generic Batch request function created to support other batch requests eg Groups<br />
+  <br />
+
 ## 3.9.2  - 2023-10-17
 
 **New features**

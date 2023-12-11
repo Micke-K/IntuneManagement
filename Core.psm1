@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.9.2'
+    '3.9.3'
 }
 
 function Initialize-Window
@@ -2069,7 +2069,7 @@ function Add-SettingsObject
         $section.Values += $obj
     }
     catch { }
-}
+} 
 
 function Save-AllSettings
 {
@@ -2797,7 +2797,17 @@ function Start-DownloadFile
 
     try 
     {
-        Write-Status "Download file: `n$sourceURL"
+        $title = $sourceURL.Split("/")[-1]
+        $title = $title.Split("/")[0]        
+    }
+    catch 
+    {
+        $title = $sourceURL
+    }
+
+    try 
+    {
+        Write-Status "Download file: `n$title"
         $wc.DownloadFile($sourceURL, $targetFile)
         Write-Log "File downloaded to $targetFile"
     }
@@ -2830,6 +2840,25 @@ function Get-ASCIIBytes
 
     $bytes
 }
+
+function Get-DataGridValues
+{
+    param($dataGrid)
+    
+    $dgColumns = $dataGrid.Columns
+
+    $properties = @()
+
+    foreach($tmpCol in $dgColumns)
+    {
+        if(-not $tmpCol.Binding.Path.Path) { continue }
+        $propName = $tmpCol.Binding.Path.Path
+        $properties += @{n=$tmpCol.Header;e=([Scriptblock]::Create("`$_.$propName"))}
+    }
+
+    ($dataGrid.ItemsSource | Select -Property $properties)
+}
+
 
 New-Alias -Name ?? -value Invoke-Coalesce
 New-Alias -Name ?: -value Invoke-IfTrue

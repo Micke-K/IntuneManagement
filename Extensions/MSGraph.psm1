@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.9.2'
+    '3.9.3'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -278,6 +278,7 @@ function Invoke-GraphAuthenticationUpdated
     $global:MigrationTableCacheId = $null
     $global:LoadedDependencyObjects = $null
     $global:migFileObj = $null
+    $global:AADObjectCache = $null
 }
 
 function Invoke-SettingsUpdated
@@ -2719,7 +2720,7 @@ function Add-GroupMigrationObject
         }
     }
     else 
-    {
+    {        
         Write-Log "No group found with ID $($groupId). It might be deleted." 2
     }
 }
@@ -2738,7 +2739,7 @@ function Add-GraphMigrationObject
 
     # Check if object is already processed
     $graphObj = Get-GraphMigrationObject $objId
-    if(-not $graphObj)
+    if(-not $graphObj -and ($global:AADObjectCache.ContainsKey($objId) -eq $false))
     {
         # Get object info
         $graphObj = Invoke-GraphRequest "$($grapAPI)/$objId" -ODataMetadata "none" -NoError
@@ -2764,7 +2765,8 @@ function Add-GraphMigrationObject
     }
     else
     {
-        Write-Log "No $objTypeName found with ID $($groupId). It might be deleted." 2
+        if($global:AADObjectCache.ContainsKey($objId) -eq $false) { $global:AADObjectCache.Add($objId, $null) }
+        Write-Log "No $objTypeName found with ID $($objId). It might be deleted." 2
     }
 }
 
@@ -3198,7 +3200,7 @@ function Export-GraphObject
             [IO.Directory]::CreateDirectory($exportFolder) | Out-Null
         }
 
-        if($chkExportAssignments.IsChecked -ne $true -and $obj.Assignments)
+        if($global:chkExportAssignments.IsChecked -ne $true -and $obj.Assignments)
         {
             Remove-Property $obj "Assignments"
         }
@@ -3436,10 +3438,9 @@ function Get-GraphBatchObjects
 {
     param($objects, $txtNameFilter)
 
-    $curBatch = 1    
     $batchResults = @()
     $batchArr = @()
-    $batchTotal = 0
+    $skipped = 0
     $objectType = $null
 
     foreach($obj in $objects)
@@ -3449,7 +3450,7 @@ function Get-GraphBatchObjects
 
         if($objName -and $txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
         {
-            $batchTotal++            
+            $skipped++
         }
         else
         {
@@ -3460,31 +3461,74 @@ function Get-GraphBatchObjects
                 url = (Get-GraphObject $obj.Object $obj.ObjectType -GetAPI) 
                 headers = @{"Accept"="application/json;odata.metadata=$ometadata"}
             }
-        }        
+        }
+    }
+    
+    if($batchArr.Count -eq 0) { return }
 
-        if($batchArr.Count -eq 20 -or ($batchTotal + $batchArr.Count -eq $objects.Count))
+    $batchResults = (Invoke-GraphBatchRequest $batchArr $objectType.Title).body
+
+    if($batchResults.Count -ne ($objects.Count - $skipped))
+    {
+        Write-Log "Not all batch objects returned. Expected $($objects.Count - $skipped) but only got $($batchResults.Count)"
+    }    
+
+    if($objectType -and $batchResults.Count -gt 0)
+    {
+        $batchResultsTmp = $batchResults
+        $batchResults = Add-GraphObjectProperties $batchResultsTmp $objectType -property $objectType.ViewProperties
+        
+        $curObj = 1
+        foreach($obj in $batchResults)
+        {
+            if($obj.Object -and $obj.ObjectType.PostGetCommand)
+            {
+                Write-Status "Run PostGetCommand - $((Get-GraphObjectName $obj.Object $obj.ObjectType)) ($($curObj)/$(@($batchResults).Count))" -Force
+                & $obj.ObjectType.PostGetCommand $obj $obj.ObjectType
+            }
+            $curObj++
+        }
+    }
+    $batchResults
+}
+
+function Invoke-GraphBatchRequest
+{
+    param($batchObjects, $batchType, [switch]$SkipWarnings, [switch]$IncludedFailed)
+
+    $batchArr = @()
+    $batchResults = @()
+    $batchTotal = 0
+    $curBatch = 1
+
+    foreach($obj in $batchObjects)
+    {
+        $batchArr += $obj
+
+        if($batchArr.Count -eq 20 -or (($batchTotal + $batchArr.Count) -eq $batchObjects.Count))
         {            
             $batchObj = [PSCustomObject]@{
-                requests = $batchArr
-                }
+                requests = @($batchArr)
+            }
 
-            Write-Status "Get batch $curBatch $($obj.ObjectType.Title)" -Force            
+            Write-Status "Get batch $curBatch $batchType" -Force
+
             $batchTotal += $batchArr.Count
             $json = $batchObj | ConvertTo-Json -Depth 50
-
             $maxRetryCount = 10
             $curRetry = 0
             
             do
-            {
+            {                
                 $retry = $false
                 $retryArr = @()
                 $retryAfter = 0
-                $tmpResults = Invoke-GraphRequest -Url "`$batch" -Content $json -HttpMethod "POST" -Batch #-Url $api -property $obj.ObjectType.ViewProperties -objectType $obj.ObjectType -
+                $tmpResults = Invoke-GraphRequest -Url "`$batch" -Body $json -Method "POST"
+
                 foreach($batchResult in ($tmpResults.responses | Sort -Property Id))
                 {
-                    if($batchResult.Status -ne "200" -or -not $batchResult.body)
-                    {                         
+                    if($batchResult.Status -ge 300 -or -not $batchResult.body)
+                    {
                         $reqObj = $batchObj.requests | where id -eq $batchResult.Id
                         if($batchResult.Status -eq 429 -and $reqObj)
                         {                 
@@ -3500,11 +3544,19 @@ function Get-GraphBatchObjects
                         }
                         else
                         {
-                            Write-Log "Batch result $($batchResult.Status) for URL $($reqObj.URL). Skipping..." 2
+                            if($SkipWarnings -ne $true)
+                            {
+                                Write-Log "Batch result $($batchResult.Status) for URL $($reqObj.URL). Skipping..." 2
+                            }
+
+                            if($IncludedFailed -eq $true)
+                            {
+                                $batchResults += $batchResult
+                            }
                         }
                         continue
                     }
-                    $batchResults += $batchResult.body
+                    $batchResults += $batchResult
                 }
 
                 if($retryArr.Count -gt 0)
@@ -3521,7 +3573,7 @@ function Get-GraphBatchObjects
                         $retry = $true
                         $tmpBatchObj = [PSCustomObject]@{
                             requests = $retryArr
-                            }
+                        }
                         $json = $tmpBatchObj | ConvertTo-Json -Depth 50
                         Start-Sleep -Seconds $retryAfter
                     }
@@ -3533,27 +3585,11 @@ function Get-GraphBatchObjects
         }
     }
 
-    if($batchResults.Count -ne $objects.Count)
+    if($batchResults.Count -ne $batchObjects.Count -and $SkipWarnings -ne $true)
     {
-        Write-Log "Not all batch objects returned. Expected $($objects.Count) but only got $($batchResults.Count)"
+        Write-Log "Not all batch objects returned. Expected $($batchObjects.Count) but only got $($batchResults.Count)" 2
     }    
 
-    if($objectType -and $batchResults.Count -gt 0)
-    {
-        $batchResultsTmp = $batchResults
-        $batchResults = Add-GraphObjectProperties $batchResultsTmp $objectType -property $objectType.ViewProperties
-        
-        $curObj = 1
-        foreach($obj in $batchResults)
-        {
-            if($obj.Object -and $obj.ObjectType.PostGetCommand)
-            {
-                Write-Status "Get full info - $((Get-GraphObjectName $obj.Object $obj.ObjectType)) ($($curObj)/$(@($batchResults).Count))" -Force
-                & $obj.ObjectType.PostGetCommand $obj $obj.ObjectType
-            }
-            $curObj++
-        }
-    }
     $batchResults
 }
 

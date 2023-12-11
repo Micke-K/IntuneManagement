@@ -10,7 +10,7 @@ This module manages Application objects in Intune e.g. uploading application fil
 #>
 function Get-ModuleVersion
 {
-    '3.9.2'
+    '3.9.3'
 }
 
 #########################################################################################
@@ -718,7 +718,7 @@ function Start-DecryptFile
 
 function Start-DownloadAppContent
 {
-    param($obj, $destinationFile)
+    param($obj, $destinationFile, [switch]$GetContentFileInfoOnly)
     # Not use but kept for reference. File can be download but it will be encrypted
     
     if([IO.File]::Exists($destinationFile)) 
@@ -756,5 +756,17 @@ function Start-DownloadAppContent
             }
         }
     }
-    Start-DownloadFile $contentFile.azureStorageUri $destinationFile
+
+    if($contentFile.azureStorageUri)
+    {
+        if($GetContentFileInfoOnly -ne $true)
+        {
+            Start-DownloadFile $contentFile.azureStorageUri $destinationFile
+        }
+        return $contentFile
+    }
+    else 
+    {
+        Write-Log "Could not find file object for app $($obj.displayName) ($($appId))" 2
+    }
 }

@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '2.0.2'
+    '2.0.3'
 }
 
 function Invoke-InitializeModule
@@ -228,6 +228,7 @@ function Get-ObjectDocumentation
     $script:applicabilityRules = @()
     $script:objectAssignments = @()
     $script:objectScripts = @()
+    $script:admxCategories = $null
 
     $script:ObjectTypeFullTable = @{} # Hash table with objects that should be documented in a single table eg ScopeTags
 
@@ -384,6 +385,7 @@ function Invoke-ObjectDocumentation
     $global:catRecommendedSettings = $null
     $global:intentCategoryDefs = $null
     $global:cfgCategories = $null
+    $script:admxCategories = $null
 
     $script:DocumentationLanguage = "en"        
     $script:objectSeparator = [System.Environment]::NewLine
@@ -879,7 +881,8 @@ function Invoke-TranslateADMXObject
     {
         if(-not $definitionValue.definition -and $definitionValues.'definition@odata.bind')
         {
-            $definition = Invoke-GraphRequest -Url $definitionValue.'definition@odata.bind' -ODataMetadata "minimal" @params
+            $url = $definitionValue.'definition@odata.bind' -replace $global:graphURL, ("https://$((?? $global:MSALGraphEnvironment "graph.microsoft.com"))/beta")
+            $definition = Invoke-GraphRequest -Url $url -ODataMetadata "minimal" @params
             if($definition)
             {
                 $definitionValue | Add-Member -MemberType NoteProperty -Name "definition" -Value $definition
@@ -1924,7 +1927,8 @@ function Get-LanguageString
 
     if(-not $script:languageStrings)
     {
-        $fileContent = Get-Content ($global:AppRootFolder + "\Documentation\Strings-$($script:DocumentationLanguage).json") -Encoding UTF8
+        $lng = ?? $script:DocumentationLanguage "en"
+        $fileContent = Get-Content ($global:AppRootFolder + "\Documentation\Strings-$($lng).json") -Encoding UTF8
         $script:languageStrings =  $fileContent | ConvertFrom-Json
     }
 
@@ -4432,7 +4436,7 @@ function local:Invoke-StartDocumentatiom
     # Add each object to the documentation
     foreach($curGroupId in ($sourceList.ObjectType | Select GroupID -Unique).GroupID)
     {
-        # New object group e.g. Script, Tennant, Device Configuration
+        # New object group e.g. Script, Tenant, Device Configuration
         # A group matches a menu item in the protal but can contain multiple object types
         if($global:cbDocumentationType.SelectedItem.NewObjectGroup)
         {
@@ -5040,4 +5044,19 @@ function Set-TableObjects
     {
         $script:ObjectTypeFullTable.Add($objectInfo.ObjectType.Id, $objectInfo)
     }
+}
+
+function Get-PolicyTypeName
+{
+    param($type, $default = $null)
+
+    $categoryObj =  Get-TranslationFiles $type
+
+    if($null -eq $categoryObj) { return $default }
+
+    $lngStr = Get-LanguageString "PolicyType.$($categoryObj.PolicyTypeLanguageId)"
+
+    if($lngStr) { return $lngStr }
+
+    return $defult
 }

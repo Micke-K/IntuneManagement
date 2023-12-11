@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.5.0'
+    '1.6.0'
 }
 
 function Invoke-InitializeModule
@@ -600,7 +600,7 @@ function Invoke-WordProcessItem
                 $isFilterAssignment = $false
                 foreach($assignment in $documentedObj.Assignments)
                 {
-                    if(($assignment.target.PSObject.Properties | Where Name -eq "deviceAndAppManagementAssignmentFilterType"))
+                    if(($assignment.PSObject.Properties | Where Name -eq "FilterMode"))
                     {
                         $isFilterAssignment = $true
                         break
@@ -752,7 +752,7 @@ function Add-DocTableItems
 
     $range = $script:doc.application.selection.range
     
-    $script:docTable = $script:doc.Tables.Add($range, ($items.Count + 1), $properties.Count, [Microsoft.Office.Interop.Word.WdDefaultTableBehavior]::wdWord9TableBehavior, [Microsoft.Office.Interop.Word.WdAutoFitBehavior]::wdAutoFitWindow)
+    $script:docTable = $script:doc.Tables.Add($range, (($items | measure).Count + 1), $properties.Count, [Microsoft.Office.Interop.Word.WdDefaultTableBehavior]::wdWord9TableBehavior, [Microsoft.Office.Interop.Word.WdAutoFitBehavior]::wdAutoFitWindow)
     $script:docTable.ApplyStyleHeadingRows = $true
     Set-DocObjectStyle $script:docTable $global:txtWordTableStyle.Text | Out-null
 

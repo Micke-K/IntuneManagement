@@ -41,22 +41,13 @@
             <Button Grid.Column="4" Name="btnGetIntuneAssignments" Padding="5,2,5,2" Content="Get Assignments" ToolTip="Get assignments from the selected exported folder" />
         </Grid>
 
-        <StackPanel Grid.Row='1' Orientation="Horizontal" Margin="0,0,5,5" >
+        <StackPanel Grid.Row='1' Orientation="Horizontal" Margin="0,0,5,0" >
             <Label Content="Filter" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Filter rows" />
         </StackPanel>
 
-        <Grid Grid.Column='1' Grid.Row='1'>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />  
-                <ColumnDefinition Width="5" />                              
-                <ColumnDefinition Width="Auto" />                                
-            </Grid.ColumnDefinitions>                 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>                
-            </Grid.RowDefinitions>
-            <TextBox Text="" Name="txtIntuneAssignmentsFilter" ToolTip="Filter items" />            
-        </Grid>
+        <TextBox Text="" Grid.Column='1' Grid.Row='1' Margin="0,2,0,2" Name="txtIntuneAssignmentsFilter" ToolTip="Filter items" />
+
     </Grid>
 
     <DataGrid Name="dgIntuneAssignments" Margin="0,5,0,0" Grid.Row="1"

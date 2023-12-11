@@ -1,6 +1,6 @@
 function Get-ModuleVersion
 {
-    '1.0.0'
+    '1.0.1'
 }
 
 function Invoke-InitializeModule
@@ -374,7 +374,7 @@ function Invoke-HTMLProcessItem
                 $isFilterAssignment = $false
                 foreach($assignment in $documentedObj.Assignments)
                 {
-                    if(($assignment.target.PSObject.Properties | Where Name -eq "deviceAndAppManagementAssignmentFilterType"))
+                    if(($assignment.PSObject.Properties | Where Name -eq "FilterMode"))
                     {
                         $isFilterAssignment = $true
                         break
