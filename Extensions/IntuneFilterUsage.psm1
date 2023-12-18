@@ -9,7 +9,7 @@ Module for listing Intune assignment filter usage
 #>
 function Get-ModuleVersion
 {
-    '1.0.0'
+    '1.1.0'
 }
 
 function Invoke-InitializeModule
@@ -102,6 +102,8 @@ function Get-EMIntuneFilterUsage
     {   
         Write-Status "Get payloads for filter $($filter.displayName)"
 
+        $payloadsManual = @()
+
         $payloads = (Invoke-GraphRequest -Url "$($objectType.API)/$($filter.ID)/payloads").value
 
         $batchObjs = @()
@@ -136,10 +138,48 @@ function Get-EMIntuneFilterUsage
                 $payloadsObj.Requests += [ordered]@{
                     id = "$($guid)_mobileApps"
                     method = "GET"
-                    url = "//deviceAppManagement/mobileApps/$($payload.payloadId)/?`$select=displayName"
+                    url = "/deviceAppManagement/mobileApps/$($payload.payloadId)/?`$select=displayName"
                     headers = @{"x-ms-command-name"="AssignmentFilterPayloadProxy_resolvePayloadNames_BatchItem"}
                 }
-            }            
+            }
+            elseif($payload.payloadType -eq "deviceManagmentConfigurationAndCompliancePolicy")
+            {
+                $payloadsObj.Requests += [ordered]@{
+                    id = "$($guid)_configurationPolicies"
+                    method = "GET"
+                    url = "/deviceManagement/configurationPolicies/$($payload.payloadId)/?`$select=name,platforms,technologies,templateReference"
+                    headers = @{"x-ms-command-name"="AssignmentFilterPayloadProxy_resolvePayloadNames_BatchItem"}
+                }
+            }
+            elseif($payload.payloadType -eq "groupPolicyConfiguration")
+            {
+                $payloadsObj.Requests += [ordered]@{
+                    id = "$($guid)_groupPolicyConfigurations"
+                    method = "GET"
+                    url = "/deviceManagement/groupPolicyConfigurations/$($payload.payloadId)/?`$select=displayName"
+                    headers = @{"x-ms-command-name"="AssignmentFilterPayloadProxy_resolvePayloadNames_BatchItem"}
+                }
+            }
+            elseif($payload.payloadType -eq "enrollmentConfiguration")
+            {
+                if(-not $script:enrolmentConfigurations)
+                {
+                    $script:enrolmentConfigurations = @()
+                    $script:enrolmentConfigurations += (Invoke-GraphRequest -Url "/deviceManagement/deviceEnrollmentConfigurations?`$select=displayName,id,deviceEnrollmentConfigurationType").value
+                    $script:enrolmentConfigurations += (Invoke-GraphRequest -Url "/deviceManagement/deviceEnrollmentConfigurations?`$select=displayName,id,deviceEnrollmentConfigurationType&`$filter=deviceEnrollmentConfigurationType eq 'EnrollmentNotificationsConfiguration'").value
+                }
+
+                $payloadsManual += $payload
+
+                <#
+                $payloadsObj.Requests += [ordered]@{
+                    id = "$($guid)_enrollmentConfiguration"
+                    method = "GET"
+                    url = "/deviceManagement/deviceEnrollmentConfigurations/$($enrolmentConfig.Id)/?`$select=displayName"
+                    headers = @{"x-ms-command-name"="AssignmentFilterPayloadProxy_resolvePayloadNames_BatchItem"}
+                }
+                #>
+            }                                 
             else
             {
                 $payloadsObj.Requests += [ordered]@{
@@ -169,14 +209,8 @@ function Get-EMIntuneFilterUsage
         {
             $objName = Get-GraphObjectName $filter $objectType
             $responses = Invoke-GraphBatchRequest $batchObjs.Requests $objName -SkipWarnings
-            <#
-            $batchObj = [ordered]@{
-                requests = @($batchObjs.Requests)
-            }
 
-            $responses = (Invoke-GraphRequest -Url "`$batch" -Body ($batchObj | ConvertTo-Json -Depth 50 -Compress) -Method "POST").responses
-            #>
-            foreach($response in ($responses | Where Status -eq 200))
+            foreach($response in ($responses | Where Status -lt 300))
             {
                 $payload = ($batchObjs | Where { $response.id -like "$($_.ID)*"}).Payload
 
@@ -198,6 +232,14 @@ function Get-EMIntuneFilterUsage
                 {
                     $typeStr = "Proactive Remediations"
                 }
+                elseif($payload.payloadType -eq "groupPolicyConfiguration")
+                {
+                    $typeStr = "Settings Catalog"
+                }
+                elseif($payload.payloadType -eq "deviceManagmentConfigurationAndCompliancePolicy")
+                {
+                    $typeStr = "Administrative Templates"
+                }                
                 else
                 {
                     $typeStr = (Get-PolicyTypeName $response.body.'@odata.type' $payload.payloadType)
@@ -209,13 +251,61 @@ function Get-EMIntuneFilterUsage
                     FiterObject = $filter
                     PayloadObject = $payload
                     FilterName = $filter.displayName
-                    PolicyName = $response.body.displayName
+                    PolicyName = ?? $response.body.Name $response.body.displayName
                     Type = $response.body.'@odata.type'
                     PayloadType = $typeStr
                     Mode = $filterType
                     GroupID = $payload.groupId
                     GroupName = $payload.groupId
                 }
+            }
+
+            foreach($response in ($responses | Where Status -ge 300))
+            {
+                $payload = ($batchObjs | Where { $response.id -like "$($_.ID)*"}).Payload
+                Write-Log "Failed to get info for payload with id $($payload.payloadId) of type $($payload.payloadType). Might be deleted or not supported." 2
+            }
+        }
+
+        foreach($payload in $payloadsManual) 
+        {
+            $payloadPolicy = $script:enrolmentConfigurations | Where Id -like "$($payload.payloadId)*" | Select -First 1
+    
+            if($payloadPolicy)
+            {
+                if($payloadPolicy.deviceEnrollmentConfigurationType -eq "enrollmentNotificationsConfiguration")
+                {
+                    $typeStr = "Enrollment notifications"
+                }
+                elseif($payloadPolicy.deviceEnrollmentConfigurationType -eq "windows10EnrollmentCompletionPageConfiguration")
+                {
+                    $typeStr = "Enrollment Status Page"
+                }
+                else
+                {
+                    $typeStr = (Get-PolicyTypeName $payloadPolicy.body.'@odata.type' $payload.payloadType)                    
+                }
+
+                if($payload.assignmentFilterType -eq "Include")
+                {
+                    $filterType = "Include"
+                }
+                else
+                {
+                    $filterType = "Exclude"
+                }
+
+                $script:objFilterUsage += [PSCustomObject]@{
+                    FiterObject = $filter
+                    PayloadObject = $payload
+                    FilterName = $filter.displayName
+                    PolicyName = ?? $payloadPolicy.Name $payloadPolicy.displayName
+                    Type = $payloadPolicy.'@odata.type'
+                    PayloadType = $typeStr
+                    Mode = $filterType
+                    GroupID = $payload.groupId
+                    GroupName = $payload.groupId
+                }            
             }
         }
     }
@@ -240,13 +330,13 @@ function Get-EMIntuneFilterUsage
         if($groupObjs.Count -gt 0)
         {
             $responses = Invoke-GraphBatchRequest $groupObjs "Groups"
-            <#
+            
             $batchObj = [ordered]@{
                 requests = @($groupObjs)
                 }
                 
             $responses = (Invoke-GraphRequest -Url "`$batch" -Body ($batchObj | ConvertTo-Json -Depth 50 -Compress) -Method "POST").responses
-            #>
+            
             foreach($response in ($responses | Where Status -eq 200))
             {
                 if($response.body.displayName -and $response.body.id -and $loadedGroups.ContainsKey($response.body.id) -eq $false) 
@@ -258,12 +348,15 @@ function Get-EMIntuneFilterUsage
 
         foreach($groupID in $loadedGroups.Keys)
         {
-            $filterObj = $script:objFilterUsage | WHere GroupID -eq $groupID
-            if($filterObj -and $loadedGroups[$groupID])
+            $filterObjs = $script:objFilterUsage | WHere GroupID -eq $groupID
+            if($filterObjs -and $loadedGroups[$groupID])
             {
-                $filterObj.GroupName = $loadedGroups[$groupID]
+                foreach($filterObj in $filterObjs) {
+                    $filterObj.GroupName = $loadedGroups[$groupID]
+                }
             }
         }
+        $script:enrolmentConfigurations = $null
     }
 
     Add-XamlEvent $script:frmIntuneFilterUsage "txtIntuneFilterUsageFilter" "Add_LostFocus" ({

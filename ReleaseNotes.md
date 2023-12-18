@@ -1,4 +1,18 @@
 # Release Notes
+## 3.9.4 - 2023-12-18
+
+**Fixes**
+- **Get Assignment Filter usage**<br />
+  - All policies that supports filter should now be collected<br />
+  Please create an issue if not all expected filters are listed<br />
+  Based on [Issue 141](https://github.com/Micke-K/IntuneManagement/issues/141)<br />
+  **NOTE:** Start the tool from: Views -> Intune Tools -> Intune Filter Usage<br />
+
+- **Documentation**<br />
+  - Added support for documenting Conditional Access policies based on Workloads<br />
+  Not 100% tested. Please report if not documented correctly<br />
+  <br />
+
 ## 3.9.3  - 2023-12-11
 
 **New features**
