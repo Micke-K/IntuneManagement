@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.9.3'
+    '3.9.5'
 }
 
 function Invoke-InitializeModule
@@ -1131,7 +1131,7 @@ function Start-PostExportEndpointSecurity
 {
     param($obj, $objectType, $path)
 
-    $fileName = (Get-GraphObjectName $obj $objectType)
+    $fileName = (Get-GraphObjectName $obj $objectType).Trim('.')
     if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
     {
         $fileName = ($fileName + "_" + $obj.Id)
@@ -2144,6 +2144,9 @@ function Add-DetailExtensionApplications
         $dlgSave = [System.Windows.Forms.SaveFileDialog]::new()
         $dlgSave.InitialDirectory = $pkgPath
         $dlgSave.FileName = ($obj.FileName + ".encrypted")
+        $dlgSave.DefaultExt = "*.encrypted"
+        $dlgSave.Filter = "Encrypted intunewin (*.encrypted)|*.encrypted|All files (*.*)|*.*"
+
         if($dlgSave.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK -and $dlgSave.Filename)
         {
             $contentFileObj = Start-DownloadAppContent $obj $dlgSave.FileName
@@ -2158,7 +2161,7 @@ function Add-DetailExtensionApplications
                         $of = [System.Windows.Forms.OpenFileDialog]::new()
                         $of.InitialDirectory = $pkgPath
                         $of.DefaultExt = "*.json"
-                        $of.Filter = "Json (*.json)|*.*"
+                        $of.Filter = "Json (*.json)|*.json"
                         $of.Multiselect = $false
                         
                         if($of.ShowDialog() -eq "OK")
@@ -2745,7 +2748,7 @@ function Start-PostExportAdministrativeTemplate
 {
     param($obj, $objectType, $path)
 
-    $fileName = (Get-GraphObjectName $obj $objectType)
+    $fileName = (Get-GraphObjectName $obj $objectType).Trim('.')
     if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
     {
         $fileName = ($fileName + "_" + $obj.Id)
@@ -3009,7 +3012,7 @@ function Start-PostExportRoleDefinitions
 {
     param($obj, $objectType, $path)
 
-    $fileName = (Get-GraphObjectName $obj $objectType)
+    $fileName = (Get-GraphObjectName $obj $objectType).Trim('.')
     if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
     {
         $fileName = ($fileName + "_" + $obj.Id)
@@ -3511,7 +3514,7 @@ function Add-EMAssignmentsToExportFile
 
     if($global:chkExportAssignments.IsChecked -ne $true) { return }
 
-    $fileName = (Get-GraphObjectName $obj $objectType)
+    $fileName = (Get-GraphObjectName $obj $objectType).Trim('.')
     if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
     {
         $fileName = ($fileName + "_" + $obj.Id)

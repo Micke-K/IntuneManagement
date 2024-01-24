@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.6.3'
+    '1.6.4'
 }
 
 function Invoke-InitializeModule
@@ -35,6 +35,7 @@ function Initialize-CDDocumentation
 {
     $script:allTenantApps = $null
     $script:allTermsOfUse = $null 
+    $script:allAuthenticationStrength = $null
     $script:allAuthenticationContextClasses = $null 
     $script:allCustomCompliancePolicies = $null 
 }
@@ -760,9 +761,10 @@ function Add-CDDocumentCustomProfileProperty
     }
     elseif($obj.'@OData.Type' -eq "#microsoft.graph.androidManagedAppProtection")
     {
-        $obj | Add-Member Noteproperty -Name "overrideFingerprint" -Value ($obj.pinRequiredInsteadOfBiometricTimeout -ne $null)
-        $obj | Add-Member Noteproperty -Name "pinReset" -Value ($obj.pinRequiredInsteadOfBiometricTimeout -ne $null)
+        $obj | Add-Member Noteproperty -Name "overrideFingerprint" -Value ($obj.pinRequiredInsteadOfBiometricTimeout -ne $null -and $obj.pinRequiredInsteadOfBiometricTimeout -ne "PT0S")
+        $obj | Add-Member Noteproperty -Name "pinReset" -Value ($obj.periodBeforePinReset -ne $null -and $obj.periodBeforePinReset -ne "PT0S")
         $obj | Add-Member Noteproperty -Name "managedBrowserSelection" -Value (?: $obj.customBrowserPackageId  "unmanagedBrowser" $obj.managedBrowser)
+        $obj | Add-Member Noteproperty -Name "encryptOrgData" -Value ($obj.appDataEncryptionType -ne "useDeviceSettings")
         
         $retValue = $true
     }
@@ -785,10 +787,11 @@ function Add-CDDocumentCustomProfileProperty
 
         $obj | Add-Member Noteproperty -Name "sendDataSelector" -Value $sendDataOption
 
-        $obj | Add-Member Noteproperty -Name "overrideFingerprint" -Value ($obj.pinRequiredInsteadOfBiometricTimeout -ne $null)
-        $obj | Add-Member Noteproperty -Name "pinReset" -Value ($obj.pinRequiredInsteadOfBiometricTimeout -ne $null)
+        $obj | Add-Member Noteproperty -Name "overrideFingerprint" -Value ($obj.pinRequiredInsteadOfBiometricTimeout -ne $null -and $obj.pinRequiredInsteadOfBiometricTimeout -ne "PT0S")
+        $obj | Add-Member Noteproperty -Name "pinReset" -Value ($obj.periodBeforePinReset -ne $null -and $obj.periodBeforePinReset -ne "PT0S")
         $obj | Add-Member Noteproperty -Name "managedBrowserSelection" -Value (?: $obj.customBrowserPackageId  "unmanagedBrowser" $obj.managedBrowser)
-
+        $obj | Add-Member Noteproperty -Name "encryptOrgData" -Value ($obj.appDataEncryptionType -ne "useDeviceSettings")
+        
         $retValue = $true
     }
     elseif($obj.'@OData.Type' -eq "#microsoft.graph.windowsUpdateForBusinessConfiguration")
@@ -2759,6 +2762,19 @@ function Invoke-CDDocumentConditionalAccess
         elseif($script:allTermsOfUse  -isnot [Object[]]) {  $script:allTermsOfUse  = @($script:allTermsOfUse ) }
     }
 
+    <#
+    if(-not $script:allAuthenticationStrength -and (($obj.grantControls.authenticationStrength | measure).Count -gt 0))
+    {
+        $script:allAuthenticationStrength = Get-DocOfflineObjects "AuthenticationStrengths"
+        if(-not $script:allAuthenticationStrength)
+        {
+            $script:allAuthenticationStrength  = (Invoke-GraphRequest -url "/identity/conditionalAccess/authenticationStrengths/policies?`$select=displayName,Id" -ODataMetadata "minimal").value
+        }
+        if(-not $script:allAuthenticationStrength ) {  $script:allAuthenticationStrength  = @()}
+        elseif($script:allAuthenticationStrength  -isnot [Object[]]) {  $script:allAuthenticationStrength  = @($script:allAuthenticationStrength ) }
+    } 
+    #>   
+
     if($obj.conditions.locations.includeLocations.Count -gt 0)
     {
         $tmpObjs = @() 
@@ -2998,6 +3014,34 @@ function Invoke-CDDocumentConditionalAccess
                 EntityKey = "termsOfUse"
             })            
         }
+
+        if(($obj.grantControls.authenticationStrength | measure).Count -gt 0)
+        {
+            $authenticationStrngth = @()
+            foreach($tmpId in $obj.grantControls.authenticationStrength)
+            {
+                $authenticationStrngth += ?? $obj.grantControls.authenticationStrength.displayName $tmpId
+            }
+    
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "AzureCA.WhatIfBlade.authenticationStrength"
+                Value =   $termsOfUse -join $script:objectSeparator
+                Category = $category
+                SubCategory = ""
+                EntityKey = "authenticationStrength"
+            })            
+        }
+        
+        if(($obj.grantControls.customAuthenticationFactors | measure).Count -gt 0)
+        {    
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = Get-LanguageString "AzureCA.menuItemClaimProviderControls"
+                Value =   $obj.grantControls.customAuthenticationFactors -join $script:objectSeparator
+                Category = $category
+                SubCategory = ""
+                EntityKey = "customAuthenticationFactors"
+            })            
+        }        
     
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = Get-LanguageString "AzureCA.descriptionContentForControlsAndOr"
@@ -3042,10 +3086,6 @@ function Invoke-CDDocumentConditionalAccess
     
     if($obj.sessionControls.signInFrequency.isEnabled -eq $true)
     {
-        if($obj.sessionControls.cloudAppSecurity.cloudAppSecurityType -eq "mcasConfigured") { $strId = "useCustomControls" }
-        elseif($obj.sessionControls.cloudAppSecurity.cloudAppSecurityType -eq "monitorOnly") { $strId = "monitorOnly" }
-        elseif($obj.sessionControls.cloudAppSecurity.cloudAppSecurityType -eq "blockDownloads") { $strId = "blockDownloads" }
-
         if($obj.sessionControls.signInFrequency.type -eq "hours")
         {
             if($obj.sessionControls.signInFrequency.value -gt 1)
@@ -3057,7 +3097,7 @@ function Invoke-CDDocumentConditionalAccess
                 $value = Get-LanguageString "AzureCA.SessionLifetime.SignInFrequency.Option.Hour.singular"
             }
         }
-        else
+        elseif($obj.sessionControls.signInFrequency.type -eq "days")
         {
             if($obj.sessionControls.signInFrequency.value -gt 1)
             {
@@ -3068,6 +3108,10 @@ function Invoke-CDDocumentConditionalAccess
                 $value = Get-LanguageString "AzureCA.SessionLifetime.SignInFrequency.Option.Day.singular"
             }
         }
+        else
+        {
+            $value = Get-LanguageString "AzureCA.SessionControls.SignInFrequency.everytime"
+        }
 
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = Get-LanguageString "AzureCA.SessionLifetime.SignInFrequency.Option.label"
@@ -3077,6 +3121,26 @@ function Invoke-CDDocumentConditionalAccess
             EntityKey = "SignInFrequency"
         })
     }
+
+    if($null -ne $obj.sessionControls.continuousAccessEvaluation) 
+    {
+        if($obj.sessionControls.continuousAccessEvaluation.mode -eq "strictLocation")
+        {
+            $value = Get-LanguageString "AzureCA.SessionControls.Cae.strictLocation"
+        }
+        else
+        {
+            $value = Get-LanguageString "AzureCA.SessionControls.Cae.disable"
+        }        
+
+        Add-CustomSettingObject ([PSCustomObject]@{
+            Name = Get-LanguageString "AzureCA.SessionControls.Cae.checkboxLabel"
+            Value =  $value
+            Category = $category
+            SubCategory = ""
+            EntityKey = "continuousAccessEvaluation"
+        })        
+    }    
     
     if($obj.sessionControls.persistentBrowser.isEnabled -eq $true)
     {

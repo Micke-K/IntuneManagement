@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '2.0.3'
+    '2.1.0'
 }
 
 function Invoke-InitializeModule
@@ -1056,6 +1056,11 @@ function Invoke-TranslateSettingsObject
     #>
     $cfgSettings = (Invoke-GraphRequest "/deviceManagement/configurationPolicies('$($obj.Id)')/settings?`$expand=settingDefinitions&top=1000" -ODataMetadata "minimal" @params).Value
 
+    if($obj.'@ObjectFromFile')
+    {
+        $cfgSettings = $obj.Settings
+    }
+
     if(-not $global:cfgCategories)
     {
         $global:cfgCategories = (Invoke-GraphRequest "/deviceManagement/configurationCategories?`$filter=platforms has 'windows10' and technologies has 'mdm'" -ODataMetadata "minimal" @params).Value
@@ -1064,7 +1069,14 @@ function Invoke-TranslateSettingsObject
     $script:settingCatalogasCategories = @{}
     foreach($cfgSetting in $cfgSettings)
     {
-        $defObj = $cfgSetting.settingDefinitions | Where id -eq $cfgSetting.settingInstance.settingDefinitionId
+        if($obj.'@ObjectFromFile' -and -not $cfgSetting.settingDefinitions) 
+        {
+            $defObj = Invoke-GraphRequest "/deviceManagement/configurationSettings/$($cfgSetting.settingInstance.settingDefinitionId)"
+        }
+        else
+        {
+            $defObj = $cfgSetting.settingDefinitions | Where id -eq $cfgSetting.settingInstance.settingDefinitionId
+        }
         #$defObj = $cfgSetting.settingDefinitions | Where { $_.id -eq $cfgSetting.settingInstance.settingDefinitionId -or $_.id -eq $cfgSettings.settingInstanceTemplate.settingDefinitionId }
         if(-not $defObj -or $script:settingCatalogasCategories.ContainsKey($defObj.categoryId)) { continue }
 
@@ -1111,6 +1123,10 @@ function Add-SettingsSetting
     $childSettings = @()
 
     $settingsDef = $settingsDefs | Where id -eq $settingInstance.settingDefinitionId
+    if(-not $settingsDef -and $settingInstance.settingDefinitionId) 
+    {
+        $settingsDef = Invoke-GraphRequest "/deviceManagement/configurationSettings/$($settingInstance.settingDefinitionId)"
+    }
     $categoryDef = $global:cfgCategories | Where Id -eq $settingsDef.categoryId #$script:settingCatalogasCategories[$settingsDef.categoryId]
 
     if($settingsDef.categoryId -ne $categoryDef.rootCategoryId)
@@ -2092,6 +2108,7 @@ function Invoke-TranslateSection
         if($prop.dataType -eq 8)
         {
             if($prop.nameResourceKey -eq "LearnMore") { continue }
+            elseif($prop.nameResourceKey -eq "Empty") { $script:CurrentSubCategory = $null }
             elseif($prop.nameResourceKey -in $script:categoriesToIgnore) { continue }
             elseif($prop.nameResourceKey)
             {

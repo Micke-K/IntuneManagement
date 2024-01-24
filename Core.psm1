@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.9.3'
+    '3.9.5'
 }
 
 function Initialize-Window
@@ -2792,7 +2792,7 @@ function Start-DownloadFile
     $proxyURI = Get-ProxyURI
     if($proxyURI)
     {
-        $wc.Proxy = $proxyURI
+        $wc.Proxy = [System.Net.WebProxy]::new($proxyURI)
     }
 
     try 

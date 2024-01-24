@@ -9,7 +9,7 @@ Module for listing Intune assignment filter usage
 #>
 function Get-ModuleVersion
 {
-    '1.1.0'
+    '1.1.1'
 }
 
 function Invoke-InitializeModule
@@ -109,7 +109,7 @@ function Get-EMIntuneFilterUsage
         $batchObjs = @()
         foreach($payload in $payloads)
         {
-            $guid = (New-Guid).Guid 
+            $guid = [Guid]::NewGuid().Guid
             
             $payloadsObj = @{
                 Payload = $payload
@@ -208,7 +208,7 @@ function Get-EMIntuneFilterUsage
         if($batchObjs.Count -gt 0) 
         {
             $objName = Get-GraphObjectName $filter $objectType
-            $responses = Invoke-GraphBatchRequest $batchObjs.Requests $objName -SkipWarnings
+            $responses = Invoke-GraphBatchRequest @($batchObjs.Requests) $objName -SkipWarnings
 
             foreach($response in ($responses | Where Status -lt 300))
             {
@@ -312,7 +312,7 @@ function Get-EMIntuneFilterUsage
 
     if($groupIDs.Count -gt 0)
     {
-        $guid = (New-Guid).Guid
+        $guid = [Guid]::NewGuid().Guid
         $groupObjs = @()
         $x = 1
         foreach($groupID in $groupIDs)

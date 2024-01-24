@@ -1,4 +1,39 @@
 # Release Notes
+## 3.9.5 - 2024-01-20
+
+**Fixes**
+- **Import/Export**<br />
+  - Assignments were not exported for some policies with trailing . in the name<br />
+  Based on [Issue 184](https://github.com/Micke-K/IntuneManagement/issues/184)<br />
+  **NOTE:** Policy will not export if full path is over 260 characters<br /> 
+  - Fixed issue with policies not being exported when Batch was enabled in Settings<br />
+  and there was only one policy for the specified object type<br />
+  - Failed to get App Protection policies when Proxy was configured<br />
+  - Fixed issue with importing policies with dependency in tenants with 100+ policies for a single policy type<br />
+  Dependency only imported first page. All pages will be imported now to resolve dependencies<br /> 
+  Based on [Issue 183](https://github.com/Micke-K/IntuneManagement/issues/183)<br />
+ - Fixed issue with multiple export folders when using %DateTime% in path<br />
+  Based on [Issue 189](https://github.com/Micke-K/IntuneManagement/issues/189)<br />
+ 
+- **Get Assignment Filter usage**<br />
+  - Filters not returned if only assigned to one policy<br />
+  Based on [Issue 141](https://github.com/Micke-K/IntuneManagement/issues/141)<br />
+  **NOTE:** Start the tool from: Views -> Intune Tools -> Intune Filter Usage<br /> 
+
+- **Compare**<br />
+  - Comparing Settings Catalog objects with exported objects failed<br />
+  Issue cause by offline documentation was not working<br />
+  Based on [Issue 183](https://github.com/Micke-K/IntuneManagement/issues/183)<br />
+
+- **Documentation**<br />
+  - Offline documentation of Settings Catalog was not working.<br />
+  Values were always documented from online object<br />
+  - Conditional Access documentation updates for Android and iOS<br />
+  - App Protection documentation updates for Android and iOS<br />
+  - Language files re-generated. Azure shou now be Entra for some documentations.<br />
+
+  <br />
+
 ## 3.9.4 - 2023-12-18
 
 **Fixes**
