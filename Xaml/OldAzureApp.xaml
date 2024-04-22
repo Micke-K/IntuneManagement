@@ -1,0 +1,41 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"> 
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                  VerticalScrollBarVisibility="Auto"
+                  Name="scrollViewerObj"
+                  Margin="5">
+    <TextBlock 
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Height="{Binding ElementName=scrollViewerObj, Path=ViewportHeight}"
+        Width="{Binding ElementName=scrollViewerObj, Path=ViewportWidth}"
+        MinWidth="500"
+        MinHeight="300"
+    >
+    <Bold>'Microsoft Intune PowerShell' is being decommissioned!</Bold>
+    <LineBreak/><LineBreak/>
+    The current Entra application Microsoft Intune PowerShell with id 'd1ddf0e4-d672-4dae-b554-9d5bdfd93547' is being decommissioned by Microsoft. 
+    <LineBreak /><LineBreak />
+    The app might still work but might be retired at any time.
+    <LineBreak/>
+    Please change Apllication in Settings. Either use 'Microsoft Graph PowerShell' or register a custom app.
+    <LineBreak /><LineBreak />
+    See <Hyperlink Name="addCustomApp" NavigateUri="https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app"> Quickstart: Register an application with the Microsoft identity platform</Hyperlink>.
+    <LineBreak /><LineBreak />
+    <CheckBox Name='chkChangeApp' VerticalAlignment="Center" IsChecked="false" Margin="5,0,0,0" >Change app to 'Microsoft Graph PowerShell'</CheckBox>
+    <LineBreak /><LineBreak />
+    <Bold>Note:</Bold>
+    <LineBreak />
+    This might require additional consent prompt and additional app permissions.
+    </TextBlock>
+    </ScrollViewer>
+    
+    <StackPanel Grid.Row='1' Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,5">
+        <CheckBox Name='chkSkippMessage' VerticalAlignment="Center" IsChecked="false" Margin="5,0,0,0" >Do not show this message again</CheckBox>        
+        <Button Name="btnOK" Content="OK" Width='100' Margin="5,0,0,0" />
+    </StackPanel>
+</Grid>

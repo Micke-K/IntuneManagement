@@ -10,14 +10,18 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.9.5'
+    '3.9.6'
 }
 
 $global:MSGraphGlobalApps = @(
     (New-Object PSObject -Property @{Name="";ClientId="";RedirectUri="";Authority=""}),
-    (New-Object PSObject -Property @{Name="Microsoft Intune PowerShell";ClientId="d1ddf0e4-d672-4dae-b554-9d5bdfd93547";RedirectUri="urn:ietf:wg:oauth:2.0:oob"; }),
-    (New-Object PSObject -Property @{Name="Microsoft Graph PowerShell";ClientId="14d82eec-204b-4c2f-b7e8-296a70dab67e";RedirectUri="https://login.microsoftonline.com/common/oauth2/nativeclient";})
+    (New-Object PSObject -Property @{Name="Microsoft Graph PowerShell";ClientId="14d82eec-204b-4c2f-b7e8-296a70dab67e";RedirectUri="https://login.microsoftonline.com/common/oauth2/nativeclient";}),
+    (New-Object PSObject -Property @{Name="Decomissioned - Don't use - Microsoft Intune PowerShell";ClientId="d1ddf0e4-d672-4dae-b554-9d5bdfd93547";RedirectUri="urn:ietf:wg:oauth:2.0:oob"; })
     )
+
+$global:DefaultAzureApp = "14d82eec-204b-4c2f-b7e8-296a70dab67e"
+
+$global:OldAzureApps = @("d1ddf0e4-d672-4dae-b554-9d5bdfd93547")
 
 function Invoke-InitializeModule
 {

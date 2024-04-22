@@ -227,7 +227,6 @@
                       "co":  "Korsykański (Francja)",
                       "cs":  "Czeski (Czechy)",
                       "da":  "Duński (Dania)",
-                      "prs":  "Dari (Afganistan)",
                       "dv":  "Divehi (Malediwy)",
                       "et":  "Estoński (Estonia)",
                       "fo":  "Farerski (Wyspy Owcze)",
@@ -340,7 +339,7 @@
                      "defender":  "Program antywirusowy Microsoft Defender",
                      "defenderAntivirus":  "Program antywirusowy Microsoft Defender",
                      "defenderExploitGuard":  "Microsoft Defender Exploit Guard",
-                     "defenderFirewall":  "Zapora Microsoft Defender",
+                     "defenderFirewall":  "Zapora systemu Windows",
                      "defenderLocalSecurityOptions":  "Opcje zabezpieczeń urządzenia lokalnego",
                      "defenderSecurityCenter":  "Centrum zabezpieczeń usługi Microsoft Defender",
                      "deliveryOptimization":  "Optymalizacja dostarczania",
@@ -498,9 +497,9 @@
                                                                                            "disabled":  "Wyłączono",
                                                                                            "enabled":  "Włączono",
                                                                                            "infoBalloonContent":  "Określ, czy zainstalować najnowszą aktualizację funkcji systemu Windows 10 na urządzeniach, które nie kwalifikują się do instalacji systemu Windows 11",
-                                                                                           "label":  "Jeśli na urządzeniu nie można uruchomić systemu Windows 11, zainstaluj najnowszą aktualizację funkcji systemu Windows 10",
+                                                                                           "label":  "Jeśli urządzenie nie kwalifikuje się do uruchomienia systemu Windows 11, zainstaluj najnowszą aktualizację funkcji systemu Windows 10",
                                                                                            "notApplicable":  "Nie dotyczy",
-                                                                                           "summaryLabel":  "Zainstaluj system Windows 10 na urządzeniach, na których nie można uruchomić systemu Windows 11"
+                                                                                           "summaryLabel":  "Instalowanie systemu Windows 10 na urządzeniach, które nie kwalifikują się do uruchomienia systemu Windows 11"
                                                                                        },
                                                         "bladeTitle":  "Wdrożenia aktualizacji funkcji",
                                                         "deploymentSettingsTitle":  "Ustawienia wdrożenia",
@@ -687,6 +686,7 @@
                                                              "iOS":  "W przypadku urządzeń z systemem iOS/iPadOS można zezwolić na identyfikację przy użyciu odcisku palca zamiast numeru PIN. Użytkownicy są proszeni o identyfikację za pomocą odcisku palca podczas otwierania tej aplikacji przy użyciu konta służbowego.",
                                                              "mac":  "W przypadku urządzeń z systemem Mac można zezwolić na identyfikację przy użyciu odcisku palca zamiast numeru PIN. Użytkownicy są proszeni o identyfikację za pomocą odcisku palca podczas otwierania tej aplikacji przy użyciu konta służbowego."
                                                          },
+                                            "allowWidgetContentSync":  "Choose Block to prevent policy managed apps from saving data to app widgets. If you choose Allow, the policy managed app can save data to app widgets, if those features are supported and enabled within the policy managed app. \n\n \n\nApps may provide additional configuration capability with app configuration policies. For more information, see the app's documentation.",
                                             "appSharingFromLevel1":  "Wybierz jedną z następujących opcji, aby określić aplikacje, z których ta aplikacja może odbierać dane:",
                                             "appSharingFromLevel2":  "{0}: zezwalaj na odbieranie danych w ramach kont lub dokumentów organizacji tylko z innych aplikacji zarządzanych przez zasady",
                                             "appSharingFromLevel3":  "{0}: zezwalaj na odbieranie danych w ramach kont lub dokumentów organizacji z dowolnej aplikacji",
@@ -927,8 +927,7 @@
                                    "languageInfo":  "Określ język i region, które będą używane.",
                                    "licenseAgreement":  "Postanowienia licencyjne firmy Microsoft",
                                    "licenseAgreementInfo":  "Określ, czy użytkownikom ma być wyświetlana Umowa Licencyjna Użytkownika Oprogramowania (EULA).",
-                                   "plugAndForgetDevice":  "Wdrażanie samodzielne (wersja zapoznawcza)",
-                                   "plugAndForgetGA":  "Samodzielne wdrażanie",
+                                   "plugAndForgetDevice":  "Samodzielne wdrażanie",
                                    "privacySettingWarning":  "Wartość domyślna zbierania danych diagnostycznych została zmieniona dla urządzeń z systemem Windows 10 w wersji 1903 lub nowszej lub Windows 11.",
                                    "privacySettings":  "Ustawienia prywatności",
                                    "privacySettingsInfo":  "Określ, czy użytkownikom mają być wyświetlane ustawienia prywatności.",
@@ -1120,7 +1119,7 @@
                                },
     "EnrollmentStatusScreen":  {
                                    "Apps":  {
-                                                "allowNonBlockingAppInstallation":  "Tylko wybrane aplikacje blokujące zakończone niepowodzeniem w fazie (wersja zapoznawcza)",
+                                                "allowNonBlockingAppInstallation":  "Tylko wybrane aplikacje blokujące zakończone niepowodzeniem w fazie techników",
                                                 "apps":  "aplikacje",
                                                 "appsListName":  "Lista aplikacji",
                                                 "blockingApps":  "Blokowanie aplikacji",
@@ -1157,7 +1156,9 @@
                                },
     "TableHeaders":  {
                          "activity":  "Aktywność",
+                         "activityName":  "Nazwa działania",
                          "actor":  "Zainicjowane przez (aktor)",
+                         "actorType":  "Typ aktora",
                          "app":  "Aplikacja",
                          "appName":  "Nazwa aplikacji",
                          "applicationName":  "Nazwa aplikacji",
@@ -1228,6 +1229,7 @@
                          "mtdConnector":  "Łącznik MTD",
                          "name":  "Nazwa profilu",
                          "oSVersion":  "Wersja systemu operacyjnego",
+                         "operationType":  "Typ operacji",
                          "os":  "System operacyjny",
                          "packageName":  "Nazwa pakietu",
                          "partnerName":  "Partner",
@@ -1513,13 +1515,13 @@
                                            "tooltip":  "Funkcja Touch ID uwierzytelnia użytkowników na urządzeniach z systemem iOS za pomocą technologii rozpoznawania odcisku palca. Usługa Intune wywołuje interfejs API LocalAuthentication, aby uwierzytelnić użytkowników za pomocą funkcji Touch ID. Jeśli jest ona dozwolona, funkcja Touch ID musi być używana w celu uzyskiwania dostępu do aplikacji na urządzeniu obsługującym tę funkcję."
                                        },
                         "MessagingRedirectAppDisplayName":  {
-                                                                "label":  "Messaging App Name"
+                                                                "label":  "Nazwa aplikacji do obsługi wiadomości"
                                                             },
                         "MessagingRedirectAppPackageId":  {
-                                                              "label":  "Messaging App Package ID"
+                                                              "label":  "Identyfikator pakietu aplikacji do obsługi wiadomości"
                                                           },
                         "MessagingRedirectAppUrlScheme":  {
-                                                              "label":  "Messaging App URL Scheme"
+                                                              "label":  "Schemat adresu URL aplikacji do obsługi wiadomości"
                                                           },
                         "NotificationRestriction":  {
                                                         "label":  "Powiadomienia dotyczące danych organizacji",
@@ -1549,9 +1551,9 @@
                                          "tooltip":  "W przypadku zablokowania aplikacja nie może drukować chronionych danych."
                                      },
                         "ProtectedMessagingRedirectAppType":  {
-                                                                  "iosTooltip":  "Typically, when a user selects a hyperlinked messaging link in an app, a messaging app will open with the phone number prepopulated and ready to send. For this setting, choose how to handle this type of content transfer when it's initiated from a policy-managed app. Additional steps may be necessary in order for this setting to take effect. First, verify that sms has been removed from the Select apps to exempt list. Then, ensure the application is using a newer version of Intune SDK (Version > 18.1.1).",
-                                                                  "label":  "Transfer messaging data to",
-                                                                  "tooltip":  "Typically, when a user selects a hyperlinked messaging link in an app, a messaging app will open with the phone number prepopulated and ready to send. For this setting, choose how to handle this type of content transfer when it's initiated from a policy-managed app."
+                                                                  "iosTooltip":  "Zazwyczaj gdy użytkownik wybierze link do wiadomości hiperlinku w aplikacji, zostanie otwarta aplikacja do obsługi wiadomości z wstępnie wypełnionym numerem telefonu i gotową do wysłania. Dla tego ustawienia wybierz sposób obsługi transferu tego typu zawartości, gdy zostanie on zainicjowany z poziomu aplikacji zarządzanej przez zasady. Aby to ustawienie zostało wprowadzone, może być konieczne wykonanie dodatkowych czynności. Najpierw sprawdź, czy wiadomość SMS została usunięta z listy Wybierz aplikacje do wykluczenia. Następnie upewnij się, że aplikacja korzysta z nowszej wersji usługi Intune SDK (wersja > 19.0.0).",
+                                                                  "label":  "Przesyłanie danych wiadomości do",
+                                                                  "tooltip":  "Zazwyczaj gdy użytkownik wybierze link do wiadomości hiperlinku w aplikacji, zostanie otwarta aplikacja do obsługi wiadomości z wstępnie wypełnionym numerem telefonu i gotową do wysłania. Dla tego ustawienia wybierz sposób obsługi transferu tego typu zawartości, gdy zostanie on zainicjowany z poziomu aplikacji zarządzanej przez zasady."
                                                               },
                         "ReceiveData":  {
                                             "label":  "Odbierz dane z innych aplikacji",
@@ -2232,7 +2234,7 @@
                            "authenticationWebSignInDescription":  "Zezwalaj na internetowego dostawcę poświadczeń na potrzeby logowania się.",
                            "authenticationWebSignInName":  "Logowanie internetowe (ustawienie przestarzałe)",
                            "authorizedAppRulesDescription":  "Zastosuj autoryzowane reguły zapory w magazynie lokalnym do rozpoznawania i wymuszania.",
-                           "authorizedAppRulesName":  "Reguły zapory Microsoft Defender autoryzowanych aplikacji z magazynu lokalnego",
+                           "authorizedAppRulesName":  "Reguły zapory systemu Windows autoryzowanej aplikacji z magazynu lokalnego",
                            "authorizedUsersListHideAdminUsersName":  "Ukryj administratorów komputera",
                            "authorizedUsersListHideLocalUsersName":  "Ukryj użytkowników lokalnych",
                            "authorizedUsersListHideMobileAccountsName":  "Ukryj konta urządzeń przenośnych",
@@ -2983,6 +2985,7 @@
                            "complianceMinutesOfInactivityBeforePasswordRequiredDescription":  "To ustawienie określa czas bez interwencji użytkownika, po którym ekran urządzenia przenośnego jest blokowany. Zalecana wartość: 15 minut",
                            "complianceMinutesOfInactivityBeforePasswordRequiredDeviceDescription":  "To ustawienie określa czas braku aktywności użytkownika, po którym urządzenie będzie blokowane. Zalecana wartość: 15 min",
                            "complianceMinutesOfInactivityBeforePasswordRequiredName":  "Maksymalna liczba minut braku aktywności przed wymaganiem wprowadzenia hasła",
+                           "complianceMinutesOfInactivityBeforePasswordRequiredTrimmedDescription":  "Zalecana wartość: 15 min",
                            "complianceMobileOsVersionRestrictionMaximumDescription":  "Wybierz najnowszą wersję systemu operacyjnego obsługiwaną przez urządzenie przenośne.",
                            "complianceMobileOsVersionRestrictionMaximumName":  "Maksymalna wersja systemu operacyjnego dla urządzeń przenośnych",
                            "complianceMobileOsVersionRestrictionMinimumDescription":  "Wybierz najstarszą wersję systemu operacyjnego obsługiwaną przez urządzenie przenośne.",
@@ -2992,6 +2995,7 @@
                            "complianceNumberOfPreviousPasswordsToBlockDescription":  "To ustawienie określa liczbę ostatnich haseł, których nie można użyć ponownie. Zalecana wartość: 5",
                            "complianceNumberOfPreviousPasswordsToBlockName":  "Liczba poprzednich haseł, których nie można użyć ponownie",
                            "complianceNumberOfPreviousPasswordsToBlockPlaceholder":  "5",
+                           "complianceNumberOfPreviousPasswordsToBlockTrimmedDescription":  "Zalecana wartość: 5",
                            "complianceOsBuildVersionRestrictionMaximumDescription":  "Wprowadź najnowszą wersję kompilacji systemu operacyjnego, którą może mieć urządzenie. Na przykład: 20E252<br>. Jeśli chcesz ustawić aktualizację Apple Rapid Security Response jako maksymalną kompilację systemu operacyjnego, wprowadź dodatkową wersję kompilacji. Na przykład: 20E772520a.",
                            "complianceOsBuildVersionRestrictionMaximumName":  "Maksymalna wersja kompilacji systemu operacyjnego",
                            "complianceOsBuildVersionRestrictionMinimumDescription":  "Wprowadź najstarszą wersję kompilacji systemu operacyjnego, którą może mieć urządzenie. Na przykład: 20E252<br>. Jeśli chcesz ustawić aktualizację Apple Rapid Security Response jako maksymalną kompilację systemu operacyjnego, wprowadź dodatkową wersję kompilacji. Na przykład: 20E772520a.",
@@ -3036,6 +3040,7 @@
                            "complianceRequireWindowsDefenderSignatureDescription":  "Wymagaj, aby analiza zabezpieczeń usługi Microsoft Defender była aktualna.",
                            "complianceRequireWindowsDefenderSignatureName":  "Aktualna analiza zabezpieczeń usługi Microsoft Defender Antimalware",
                            "complianceRequiredPasswordTypeDescription":  "To ustawienie określa, czy hasła mogą składać się tylko z cyfr, czy muszą zawierać znaki inne niż cyfry. Zalecenia: wymagany typ hasła: alfanumeryczne, minimalna liczba zestawów znaków: 1",
+                           "complianceRequiredPasswordTypeTrimmedDescription":  "Rekomendacje: wymagany typ hasła: alfanumeryczne, minimalna liczba zestawów znaków: 1",
                            "complianceRootedAllowedDescription":  "Zablokuj urządzeniom z odblokowanym dostępem możliwość uzyskiwania dostępu do zasobów firmy.",
                            "complianceRootedAllowedName":  "Urządzenia z odblokowanym dostępem",
                            "complianceSecurityDisableUSBDebuggingDescription":  "To ustawienie określa, czy na urządzeniu ma być blokowana funkcja debugowania USB.",
@@ -3068,6 +3073,8 @@
                            "complianceWindowsOsVersionRestrictionMinimumDescription":  "Wybierz najstarszą wersję systemu operacyjnego, która może być zainstalowana na urządzeniu. Wersję podaj w formacie wersja_główna.wersja_pomocnicza.kompilacja.poprawka.",
                            "complianceWindowsRequiredPasswordTypeDescription":  "Wybierz typ hasła dla urządzenia.",
                            "complianceWindowsRequiredPasswordTypeName":  "Typ hasła",
+                           "complianceWorkProfilePasswordRequirementName":  "Wymagaj hasła do odblokowania profilu służbowego",
+                           "complianceWorkProfileSecurityHeader":  "Bezpieczeństwo profilu służbowego",
                            "compliantAppsOption":  "Lista zgodnych aplikacji. Zgłoś brak zgodności dla wszystkich zainstalowanych aplikacji nieznajdujących się na liście",
                            "computerNameStaticPrefixDescription":  "Do komputerów są przypisywane nazwy o długości 15 znaków. Określ prefiks, a pozostałe znaki będą losowe.",
                            "computerNameStaticPrefixName":  "Prefiks nazwy komputera",
@@ -3490,14 +3497,14 @@
                            "domainAllowListName":  "Lista dozwolonych domen Google",
                            "domainAllowListTableEmptyValueExample":  "Wprowadź domenę",
                            "domainAllowListTableName":  "Domena",
-                           "domainAuthorizedAppRulesSummaryLabel":  "Reguły zapory Microsoft Defender autoryzowanych aplikacji z magazynu lokalnego (sieci domeny)",
-                           "domainFirewallEnabledSummaryLabel":  "Zapora usługi Microsoft Defender (sieci domeny)",
-                           "domainGlobalRulesSummaryLabel":  "Globalne reguły zapory Microsoft Defender dotyczące portów z magazynu lokalnego (sieci domeny)",
+                           "domainAuthorizedAppRulesSummaryLabel":  "Reguły zapory systemu Windows autoryzowanej aplikacji z magazynu lokalnego (sieci domenowe)",
+                           "domainFirewallEnabledSummaryLabel":  "Zapora systemu Windows (sieci domenowe)",
+                           "domainGlobalRulesSummaryLabel":  "Globalne reguły zapory systemu Windows portów z magazynu lokalnego (sieci domenowe)",
                            "domainIPsecRulesSummaryLabel":  "Reguły protokołu IPsec z magazynu lokalnego (sieci domeny)",
                            "domainIPsecSecuredPacketExemptionSummaryLabel":  "Wykluczenie pakietu zabezpieczonego przez protokół IPsec z trybem niewidzialności (sieci domeny)",
                            "domainInboundConnectionsSummaryLabel":  "Domyślna akcja dla połączeń przychodzących (sieci domeny)",
                            "domainInboundNotificationsSummaryLabel":  "Powiadomienia przychodzące (sieci domeny)",
-                           "domainLocalStoreSummaryLabel":  "Reguły zapory Microsoft Defender z magazynu lokalnego (sieci domeny)",
+                           "domainLocalStoreSummaryLabel":  "Reguły zapory systemu Windows z magazynu lokalnego (sieci domenowe)",
                            "domainNameSourceOption":  "Źródło nazwy domeny użytkownika",
                            "domainNetworkName":  "Sieć z domeną (firmowa)",
                            "domainOutboundConnectionsSummaryLabel":  "Domyślna akcja dla połączeń wychodzących (sieci domeny)",
@@ -3804,7 +3811,7 @@
                            "enableSingleSignOnName":  "Logowanie jednokrotne (SSO) z certyfikatem alternatywnym",
                            "enableUsePrivateStoreOnly":  "Używaj tylko sklepu prywatnego",
                            "enableUsePrivateStoreOnlyDescription":  "Zezwala na pobieranie aplikacji tylko ze sklepu prywatnego, a nie ze sklepu publicznego.",
-                           "enableWindowsDefenderFirewallName":  "Zapora Microsoft Defender",
+                           "enableWindowsDefenderFirewallName":  "Zapora systemu Windows",
                            "enableWithUEFILock":  "Włącz z blokadą UEFI",
                            "enableWithoutUEFILock":  "Włącz bez blokady UEFI",
                            "enabledForAzureAdAndHybridOption":  "Rotacja kluczy włączona dla urządzeń dołączonych lub dołączonych hybrydowo do Microsoft Entra",
@@ -3996,7 +4003,7 @@
                            "firewallAppsBlockedHeader":  "Blokuj połączenia przychodzące dla następujących aplikacji.",
                            "firewallAppsBlockedPageDescription":  "Wybierz aplikacje, które powinny blokować połączenia przychodzące.",
                            "firewallAppsBlockedPageName":  "Aplikacje zablokowane",
-                           "firewallCreateRules":  "Utwórz reguły zapory Microsoft Defender. Jeden profil programu Endpoint Protection może zawierać maksymalnie 150 reguł.",
+                           "firewallCreateRules":  "Utwórz reguły Zapory systemu Windows. Jeden profil programu Endpoint Protection może zawierać maksymalnie 150 reguł.",
                            "firewallRequiredDescription":  "Wymagaj włączenia zapory",
                            "firewallRequiredName":  "Zapora",
                            "firewallRuleAction":  "Akcja",
@@ -4150,10 +4157,10 @@
                            "generalAvailabilityChannel":  "Kanał ogólnej dostępności",
                            "generalNetworkSettingsHeader":  "Ogólne",
                            "genericLocalUsersOrGroupsName":  "Ogólni użytkownicy lokalni lub grupy lokalne",
-                           "globalConfigurationsDescription":  "Skonfiguruj ustawienia zapory Microsoft Defender mające zastosowanie do wszystkich typów sieci.",
+                           "globalConfigurationsDescription":  "Skonfiguruj ustawienia zapory systemu Windows mające zastosowanie do wszystkich typów sieci.",
                            "globalConfigurationsName":  "Ustawienia globalne",
                            "globalRulesDescription":  "Zastosuj globalne reguły zapory portów w magazynie lokalnym do rozpoznawania i wymuszania.",
-                           "globalRulesName":  "Globalne reguły zapory Microsoft Defender dotyczące portów z magazynu lokalnego",
+                           "globalRulesName":  "Globalne reguły zapory systemu Windows portów z magazynu lokalnego",
                            "google":  "Google",
                            "googleAccountEmailAddresses":  "Adresy e-mail konta Google",
                            "googleAccountEmailAddressesDescription":  "Lista adresów e-mail rozdzielana średnikami",
@@ -4754,7 +4761,7 @@
                            "localSecurityOptionspromptForCredentialsOnTheSecureDesktopName":  "Monituj o poświadczenia na bezpiecznym pulpicie",
                            "localServerCachingHeader":  "Lokalne buforowanie serwera",
                            "localStoreDescription":  "Zastosuj globalne reguły zapory z magazynu lokalnego do rozpoznawania i wymuszania.",
-                           "localStoreName":  "Reguły zapory Microsoft Defender z magazynu lokalnego",
+                           "localStoreName":  "Reguły zapory systemu Windows z magazynu lokalnego",
                            "lockScreenAllowTimeoutConfigurationDescription":  "Określ, czy ma być wyświetlane ustawienie konfigurowane przez użytkownika umożliwiające sterowanie limitem czasu ekranu blokady urządzeń z systemem Windows 10 Mobile. Jeśli dla tych zasad ustawisz wartość Zezwól, wartość podana w ustawieniu „Limit czasu ekranu” będzie ignorowana.",
                            "lockScreenAllowTimeoutConfigurationName":  "Konfigurowany przez użytkownika limit czasu ekranu (tylko urządzenia przenośne)",
                            "lockScreenBackgroundImageURLDescription":  "Adres URL obrazu tła niestandardowego ekranu powitalnego. Musi być plikiem png z punktem końcowym https://",
@@ -4825,6 +4832,11 @@
                            "mTUSizeInBytesBounds":  "Rozmiar jednostki MTU musi należeć do zakresu od 1280 do 1400 bajtów",
                            "mTUSizeInBytesName":  "Maksymalna jednostka transmisji",
                            "mTUSizeInBytesToolTip":  "Największy pakiet danych (w bajtach), jaki można przesłać w sieci. Jeśli to ustawienie nie zostanie skonfigurowane, będzie używany domyślny rozmiar firmy Apple równy 1280 bajtów. Dotyczy systemu iOS 14 i nowszych.",
+                           "macAddressRandomizationModeAutomaticAndroid":  "Korzystanie z losowych adresów MAC",
+                           "macAddressRandomizationModeDefaultAndroid":  "Użyj domyślnego ustawienia urządzenia",
+                           "macAddressRandomizationModeDescriptionAndroid":  "Korzystanie z losowych adresów MAC tylko wtedy, gdy jest to potrzebne, na przykład w przypadku obsługi translatora adresów sieciowych. Użytkownicy mogą zmienić to ustawienie. Dotyczy systemu Android 13 lub nowszego.",
+                           "macAddressRandomizationModeHardwareAndroid":  "Korzystanie z adresu MAC urządzenia",
+                           "macAddressRandomizationModeTitleAndroid":  "Losowa obsługa adresów MAC",
                            "macAppStoreAndIdentifiedDevelopersOption":  "Sklep Mac App Store i zidentyfikowani deweloperzy",
                            "macAppStoreOption":  "Mac App Store",
                            "macBlockClassroomAppRemoteScreenObservationDescription":  "Blokuje funkcję AirPlay, udostępnianie ekranu innym urządzeniom oraz funkcję aplikacji Classroom używaną przez nauczycieli do wyświetlania ekranów uczniów. To ustawienie nie jest dostępne, jeśli zablokowano tworzenie zrzutów ekranów.",
@@ -5149,6 +5161,7 @@
                            "minimumPasswordLengthEmptyValueKeyFourToSixteen":  "Wprowadź liczbę (4–16)",
                            "minimumPasswordLengthEmptyValueKeySixToSixteen":  "Wprowadź liczbę (6–16)",
                            "minimumPasswordLengthName":  "Minimalna długość hasła",
+                           "minimumPasswordLengthTooltipText":  "Wprowadź liczbę",
                            "minimumUpdateAutoInstallClassificationDescription":  "Brakujące aktualizacje zostaną zainstalowane automatycznie",
                            "minimumUpdateAutoInstallClassificationName":  "Zainstaluj określoną klasyfikację aktualizacji",
                            "minimumUpdateAutoInstallClassificationValueImportant":  "Ważne",
@@ -5287,7 +5300,7 @@
                            "networkProxyUseManualServerName":  "Użyj ręcznego serwera proxy",
                            "networkProxyUseScriptUrlName":  "Użyj skryptu serwera proxy",
                            "networkSettingsName":  "Ustawienia sieciowe",
-                           "networkSettingsSubtitle":  "Skonfiguruj ustawienia zapory Microsoft Defender mające zastosowanie do określonych typów sieci.",
+                           "networkSettingsSubtitle":  "Skonfiguruj ustawienia zapory systemu Windows mające zastosowanie do określonych typów sieci.",
                            "networkUsageRulesBlockCellularHeaderName":  "Dodaj aplikacje zarządzane systemu iOS, które nie powinny używać danych komórkowych.",
                            "networkUsageRulesBlockCellularName":  "Zablokuj użycie danych komórkowych",
                            "networkUsageRulesBlockCellularRoamingHeaderName":  "Dodaj aplikacje zarządzane systemu iOS, które nie powinny używać danych komórkowych podczas roamingu.",
@@ -5647,14 +5660,14 @@
                            "privacyPreferencesTableName":  "Aplikacje i procesy",
                            "privacyPublishUserActivitiesDescription":  "Blokuj współużytkowane środowiska/odnajdywanie niedawno używanych zasobów w przełączniku zadań itp.",
                            "privacyPublishUserActivitiesName":  "Publikuj działania użytkownika",
-                           "privateAuthorizedAppRulesSummaryLabel":  "Reguły zapory Microsoft Defender autoryzowanych aplikacji z magazynu lokalnego (sieci prywatne)",
-                           "privateFirewallEnabledSummaryLabel":  "Zapora Microsoft Defender (sieci prywatne)",
-                           "privateGlobalRulesSummaryLabel":  "Globalne reguły zapory Microsoft Defender dotyczące portów z magazynu lokalnego (sieci prywatne)",
+                           "privateAuthorizedAppRulesSummaryLabel":  "Reguły zapory systemu Windows autoryzowanej aplikacji z magazynu lokalnego (sieci prywatne)",
+                           "privateFirewallEnabledSummaryLabel":  "Zapora systemu Windows (sieci prywatne)",
+                           "privateGlobalRulesSummaryLabel":  "Globalne reguły zapory systemu Windows portów z magazynu lokalnego (sieci prywatne)",
                            "privateIPsecRulesSummaryLabel":  "Reguły protokołu IPsec z magazynu lokalnego (sieci prywatne)",
                            "privateIPsecSecuredPacketExemptionSummaryLabel":  "Wykluczenie pakietu zabezpieczonego przez protokół IPsec z trybem niewidzialności (sieci prywatne)",
                            "privateInboundConnectionsSummaryLabel":  "Domyślna akcja dla połączeń przychodzących (sieci prywatne)",
                            "privateInboundNotificationsSummaryLabel":  "Powiadomienia przychodzące (sieci prywatne)",
-                           "privateLocalStoreSummaryLabel":  "Reguły zapory Microsoft Defender z magazynu lokalnego (sieci prywatne)",
+                           "privateLocalStoreSummaryLabel":  "Reguły zapory systemu Windows z magazynu lokalnego (sieci prywatne)",
                            "privateNetworkName":  "Sieć prywatna (wykrywalna)",
                            "privateOutboundConnectionsSummaryLabel":  "Domyślna akcja dla połączeń wychodzących (sieci prywatne)",
                            "privateShieldedSummaryLabel":  "Z osłoną (sieci prywatne)",
@@ -5697,14 +5710,14 @@
                            "proxyServerURLName":  "Adres URL serwera proxy",
                            "proxyServersAutoDetectionName":  "Automatyczne wykrywanie innych serwerów proxy przedsiębiorstwa",
                            "proxyUrlExample":  "np. itgproxy.contoso.com",
-                           "publicAuthorizedAppRulesSummaryLabel":  "Reguły zapory Microsoft Defender autoryzowanych aplikacji z magazynu lokalnego (sieci publiczne)",
-                           "publicFirewallEnabledSummaryLabel":  "Zapora Microsoft Defender (sieci publiczne)",
-                           "publicGlobalRulesSummaryLabel":  "Globalne reguły zapory Microsoft Defender dotyczące portów z magazynu lokalnego (sieci publiczne)",
+                           "publicAuthorizedAppRulesSummaryLabel":  "Reguły zapory systemu Windows autoryzowanej aplikacji z magazynu lokalnego (sieci publiczne)",
+                           "publicFirewallEnabledSummaryLabel":  "Zapora systemu Windows (sieci publiczne)",
+                           "publicGlobalRulesSummaryLabel":  "Globalne reguły zapory systemu Windows portów z magazynu lokalnego (sieci publiczne)",
                            "publicIPsecRulesSummaryLabel":  "Reguły protokołu IPsec z magazynu lokalnego (sieci publiczne)",
                            "publicIPsecSecuredPacketExemptionSummaryLabel":  "Wykluczenie pakietu zabezpieczonego przez protokół IPsec z trybem niewidzialności (sieci publiczne)",
                            "publicInboundConnectionsSummaryLabel":  "Domyślna akcja dla połączeń przychodzących (sieci publiczne)",
                            "publicInboundNotificationsSummaryLabel":  "Powiadomienia przychodzące (sieci publiczne)",
-                           "publicLocalStoreSummaryLabel":  "Reguły zapory Microsoft Defender z magazynu lokalnego (sieci publiczne)",
+                           "publicLocalStoreSummaryLabel":  "Reguły zapory systemu Windows z magazynu lokalnego (sieci publiczne)",
                            "publicNetworkName":  "Sieć publiczna (niewykrywalna)",
                            "publicOutboundConnectionsSummaryLabel":  "Domyślna akcja dla połączeń wychodzących (sieci publiczne)",
                            "publicPlayStoreEnabledDescription":  "Użytkownicy mogą uzyskiwać dostęp do wszystkich aplikacji, z wyjątkiem tych, których odinstalowanie jest wymagane w aplikacjach klienckich. Jeśli dla tego ustawienia wybierzesz opcję „Nie skonfigurowano”, użytkownicy będą mogli uzyskiwać dostęp tylko do aplikacji wymienionych jako dostępne lub wymagane w aplikacjach klienckich.",
@@ -5861,6 +5874,7 @@
                            "sCEPPolicyEnrollToSoftwareKSP":  "Zarejestruj u dostawcy magazynu kluczy oprogramowania",
                            "sCEPPolicyEnrollToTrustedOtherwiseFail":  "Zarejestruj u dostawcy magazynu kluczy modułu Trusted Platform Module (TPM), w przeciwnym razie niepowodzenie",
                            "sCEPPolicyEnrollToTrustedOtherwiseKSP":  "Zarejestruj u dostawcy magazynu kluczy modułu Trusted Platform Module (TPM), w przeciwnym razie u dostawcy magazynu kluczy oprogramowania",
+                           "sCEPPolicyExtendedKeyUsageAnyPurposeCloudCaWarning":  "OSTRZEŻENIE: z urzędem certyfikacji utworzonym w infrastrukturze PKI platformy Microsoft Cloud nie można używać żadnego EKU celu (OID 2.5.29.37.0) ani żadnego EKU zasad aplikacji (OID 1.3.6.1.4.1.311.10.12.1).",
                            "sCEPPolicyExtendedKeyUsageDescription":  "W większości przypadków certyfikat wymaga co najmniej uwierzytelniania klienta, aby można było uwierzytelnić użytkownika lub urządzenie na serwerze. Możesz jednak określić dodatkowe zastosowania w celu dokładniejszego zdefiniowania celu klucza.",
                            "sCEPPolicyExtendedKeyUsageName":  "Użycie kluczy rozszerzonych",
                            "sCEPPolicyHashAlgorithmDescription":  "Użyj typu algorytmu wyznaczania wartości skrótu z certyfikatem. Wybierz najwyższy poziom zabezpieczeń obsługiwany przez łączące się urządzenia.",
@@ -7359,6 +7373,7 @@
                            "workProfilePasswordExpirationInDaysEmptyValueKey":  "Wprowadź liczbę dni (1–255)",
                            "workProfilePasswordExpirationInDaysEmptyValueOneYearKey":  "Wprowadź liczbę dni (1–365)",
                            "workProfilePasswordExpirationInDaysName":  "Okres ważności hasła (dni)",
+                           "workProfilePasswordExpirationInDaysTooltipText":  "Wprowadź liczbę dni",
                            "workProfilePasswordMinimumLengthReportingName":  "Hasło profilu służbowego: minimalna długość hasła",
                            "workProfilePasswordMinimumLetterCharactersReportingName":  "Hasło profilu służbowego: wymagana liczba znaków ",
                            "workProfilePasswordMinimumLowerCaseCharactersReportingName":  "Hasło profilu służbowego: wymagana liczba małych liter",
@@ -7451,9 +7466,9 @@
                            "anyAppOptionText":  "Dowolna aplikacja",
                            "anyDestinationAnySourceOptionText":  "Dowolne miejsce docelowe i dowolne źródło",
                            "anyDialerAppOptionText":  "Dowolna aplikacja wybierania numerów",
-                           "anyMessagingAppOptionText":  "Any messaging app",
+                           "anyMessagingAppOptionText":  "Dowolna aplikacja do obsługi wiadomości",
                            "anyPolicyManagedDialerAppOptionText":  "Dowolna zarządzana przez zasady aplikacja wybierania numerów",
-                           "anyPolicyManagedMessagingAppOptionText":  "Any policy-managed messaging app",
+                           "anyPolicyManagedMessagingAppOptionText":  "Dowolna aplikacja do obsługi wiadomości zarządzanych przez zasady",
                            "appAdded":  "Dodano aplikację",
                            "appBasedConditionalAccess":  "Dostęp warunkowy na podstawie aplikacji",
                            "appColumnLabel":  "Aplikacja",
@@ -7773,9 +7788,9 @@
                            "mdmDeviceId":  "Identyfikator urządzenia MDM",
                            "mdmWipInvalidVersionSettings":  "Co najmniej jedna aplikacja zawiera nieprawidłowe definicje wersji minimalnej lub maksymalnej.<br /> <br />Rozwiązanie Windows Information Protection z zasadami rejestracji obsługuje określanie tylko jednej wersji minimalnej lub maksymalnej, chyba że obie określone wersje są takie same. Gdy określona jest tylko wersja minimalna, reguła jest ustawiana dla wersji większej lub równej wersji minimalnej. Podobnie jest w przypadku określenia tylko wersji maksymalnej — reguła jest ustawiana dla wersji mniejszej lub równej wersji maksymalnej.",
                            "mdmWipReport":  "Raport usługi MDM — Windows Information Protection",
-                           "messagingRedirectAppDisplayNameLabelAndroid":  "Messaging App Name (Android)",
-                           "messagingRedirectAppPackageIdLabelAndroid":  "Messaging App Package ID (Android)",
-                           "messagingRedirectAppUrlSchemeIos":  "Messaging App URL Scheme (iOS)",
+                           "messagingRedirectAppDisplayNameLabelAndroid":  "Nazwa aplikacji do obsługi wiadomości (Android)",
+                           "messagingRedirectAppPackageIdLabelAndroid":  "Identyfikator pakietu aplikacji do obsługi wiadomości (Android)",
+                           "messagingRedirectAppUrlSchemeIos":  "Schemat adresu URL aplikacji do obsługi wiadomości (iOS)",
                            "microsoftDefenderForEndpoint":  "Microsoft Defender For Endpoint",
                            "microsoftEdgeOptionText":  "Microsoft Edge",
                            "minAppVersion":  "Minimalna wersja aplikacji",
@@ -7964,7 +7979,7 @@
                            "settingsCatalog":  "Wykaz ustawień",
                            "settingsSelectorLabel":  "Ustawienia",
                            "silent":  "Cichy",
-                           "specificMessagingAppOptionText":  "A specific messaging app",
+                           "specificMessagingAppOptionText":  "Określona aplikacja do obsługi wiadomości",
                            "specificUserIsLicensedIntune":  "Użytkownik {0} ma licencję na korzystanie z usługi Microsoft Intune.",
                            "state":  "Stan",
                            "status":  "Stan",
@@ -8327,8 +8342,8 @@
                                                         "edgeSecurityBaseline":  "Punkt odniesienia programu Microsoft Edge",
                                                         "edgeSecurityBaselinePreview":  "Wersja zapoznawcza: punkt odniesienia programu Microsoft Edge",
                                                         "editionUpgradeConfiguration":  "Uaktualnianie wersji i przełączanie trybu",
-                                                        "firewall":  "Zapora Microsoft Defender",
-                                                        "firewallRules":  "Reguły zapory Microsoft Defender",
+                                                        "firewall":  "Zapora systemu Windows",
+                                                        "firewallRules":  "Reguły zapory systemu Windows",
                                                         "identityProtection":  "Ochrona konta",
                                                         "identityProtectionPreview":  "Ochrona konta (wersja zapoznawcza)",
                                                         "mDMSecurityBaseline1810":  "Plan bazowy zabezpieczeń MDM dla systemu Windows 10 i nowszych z października 2018 r.",
@@ -8345,15 +8360,15 @@
                                                         "office365BaselinePreview":  "Podgląd: punkt odniesienia dla usługi Microsoft Office O365",
                                                         "securityBaselines":  "Punkty odniesienia zabezpieczeń",
                                                         "test":  "Testuj szablon",
-                                                        "testFirewallRulesSecurityTemplateName":  "Reguły zapory Microsoft Defender (test)",
+                                                        "testFirewallRulesSecurityTemplateName":  "Reguły zapory systemu Windows (test)",
                                                         "testIdentityProtectionSecurityTemplateName":  "Ochrona konta (test)",
                                                         "windowsSecurityExperience":  "Środowisko zabezpieczeń systemu Windows"
                                                     },
                        "Firewall":  {
-                                        "mDE":  "Zapora Microsoft Defender"
+                                        "mDE":  "Zapora systemu Windows"
                                     },
                        "FirewallRules":  {
-                                             "mDE":  "Reguły zapory Microsoft Defender"
+                                             "mDE":  "Reguły zapory systemu Windows"
                                          },
                        "OneDriveKnownFolderMove":  {
                                                        "description":  "Ustawienia przenoszenia znanych folderów usługi OneDrive: Windows 10 w szablonie konfiguracji chmury. https://aka.ms/CloudConfigGuide"
@@ -8384,7 +8399,7 @@
                        "expeditedCheckin":  "Konfiguracja zarządzania urządzeniami przenośnymi",
                        "exploitProtection":  "Exploit Protection",
                        "extensions":  "Rozszerzenia",
-                       "hardwareConfigurations":  "Konfiguracje BIOS",
+                       "hardwareConfigurations":  "Konfiguracje systemu BIOS i inny ustawień",
                        "identityProtection":  "Identity Protection",
                        "iosCompliancePolicy":  "Zasady dotyczące zgodności dla systemu iOS",
                        "kiosk":  "Kiosk",
@@ -8394,7 +8409,7 @@
                        "microsoftDefenderAntivirus":  "Program antywirusowy Microsoft Defender",
                        "microsoftDefenderAntivirusexclusions":  "Wykluczenia programu Microsoft Defender Antivirus",
                        "microsoftDefenderAtpWindows10Desktop":  "Ochrona punktu końcowego w usłudze Microsoft Defender (urządzenia stacjonarne z systemem Windows 10 lub nowszym)",
-                       "microsoftDefenderFirewallRules":  "Reguły zapory Microsoft Defender",
+                       "microsoftDefenderFirewallRules":  "Reguły zapory systemu Windows",
                        "microsoftEdgeBaseline":  "Plan bazowy zabezpieczeń dla przeglądarki Microsoft Edge",
                        "mxProfileZebraOnly":  "Profil MX (tylko Zebra)",
                        "networkBoundary":  "Granica sieci",
@@ -8424,6 +8439,7 @@
                        "windows10XTrustedCertificate":  "Zaufany certyfikat — TEST",
                        "windows10XVPN":  "VPN — TEST",
                        "windows10XWifi":  "WIFI — TEST",
+                       "windows11SecurityBaseline":  "Punkt odniesienia zabezpieczeń dla systemu Windows 10 i nowszego",
                        "windows8CompliancePolicy":  "Zasady dotyczące zgodności dla systemu Windows 8",
                        "windowsHealthMonitoring":  "Monitorowanie kondycji systemu Windows",
                        "windowsInformationProtection":  "Windows Information Protection",
@@ -8578,7 +8594,7 @@
                      },
     "WindowsEnrollment":  {
                               "DevicePreparation":  {
-                                                        "description":  "Skonfiguruj urządzenia na potrzeby wstępnej aprowizacji i przypisz je do użytkowników.",
+                                                        "description":  "Skonfiguruj urządzenia na potrzeby wstępnej aprowizacji.",
                                                         "title":  "Przygotowywanie urządzenia"
                                                     },
                               "EnrollmentSettings":  {
@@ -8602,7 +8618,7 @@
                                                               "manual":  "Ręczne zatwierdzanie i wdrażanie aktualizacji sterowników"
                                                           },
                                        "BulkActions":  {
-                                                           "button":  "Bulk actions"
+                                                           "button":  "Akcje zbiorcze"
                                                        },
                                        "Details":  {
                                                        "ApprovalMethod":  {
@@ -8614,29 +8630,29 @@
                                                                                         "value":  "{0} dni"
                                                                                     },
                                                        "DriverAction":  {
-                                                                            "header":  "Select an action below.",
-                                                                            "label":  "Driver action",
-                                                                            "placeholder":  "Select an action"
+                                                                            "header":  "Wybierz akcję poniżej.",
+                                                                            "label":  "Akcja sterownika",
+                                                                            "placeholder":  "Wybierz akcję"
                                                                         },
                                                        "IncludedDrivers":  {
-                                                                               "label":  "Included drivers"
+                                                                               "label":  "Dołączone sterowniki"
                                                                            },
                                                        "SelectDrivers":  {
-                                                                             "header":  "Select drivers to include in your bulk action"
+                                                                             "header":  "Wybierz sterowniki do uwzględnienia w akcji zbiorczej"
                                                                          },
                                                        "SelectDriversToInclude":  {
-                                                                                      "button":  "Select drivers to include"
+                                                                                      "button":  "Wybierz sterowniki do uwzględnienia"
                                                                                   },
                                                        "SelectLessDrivers":  {
-                                                                                 "validation":  "At most one hundred drivers can be selected"
+                                                                                 "validation":  "Można wybrać maksymalnie sto sterowników"
                                                                              },
                                                        "SelectMoreDrivers":  {
-                                                                                 "validation":  "At least one driver should be selected"
+                                                                                 "validation":  "Należy wybrać co najmniej jeden sterownik"
                                                                              },
                                                        "SelectedDrivers":  {
-                                                                               "label":  "Selected drivers"
+                                                                               "label":  "Wybrane sterowniki:"
                                                                            },
-                                                       "availabilityDate":  "Make available in Windows Update",
+                                                       "availabilityDate":  "Udostępnij w usłudze Windows Update",
                                                        "bladeTitle":  "Aktualizacje sterowników dla systemu Windows 10 i nowszych (wersja zapoznawcza)",
                                                        "lastSync":  "Ostatnia synchronizacja:",
                                                        "lastSyncDefaultText":  "Oczekiwanie na początkowe zbieranie spisów",
@@ -9758,26 +9774,26 @@
                                 "Summary":  {
                                                 "placeholder":  "Wybierz komunikat powiadomienia z lewej strony, aby wyświetlić podgląd zawartości."
                                             },
-                                "companyContact":  "Stopka wiadomości e-mail — uwzględnij informacje kontaktowe",
-                                "companyLogo":  "Nagłówek wiadomości e-mail — uwzględnij logo firmy",
-                                "companyName":  "Stopka wiadomości e-mail — uwzględnij nazwę firmy",
+                                "companyContact":  "Pokaż informacje kontaktowe",
+                                "companyLogo":  "Pokaż logo firmy",
+                                "companyName":  "Pokaż nazwę firmy",
                                 "createEditDescription":  "Utwórz lub edytuj szablony powiadomienia.",
                                 "createMessage":  "Utwórz wiadomość",
-                                "deviceDetails":  "Show device details",
-                                "deviceDetailsInfoBox":  "This setting is turned off by default, as retrieving device details can cause a delay in email notifications being received.",
+                                "deviceDetails":  "Pokaż szczegóły urządzenia",
+                                "deviceDetailsInfoBox":  "To ustawienie jest domyślnie wyłączone, ponieważ pobieranie szczegółów urządzenia może spowodować opóźnienie odbierania wiadomości e-mail z powiadomieniami.",
                                 "editImpactInfo":  "Edycja tego szablonu komunikatów z powiadomieniem będzie miała wpływ na wszystkie zasady korzystającego z tego szablonu.",
                                 "editMessage":  "Edytuj wiadomość",
                                 "email":  "wiadomość e-mail",
-                                "emailFooterTitle":  "Email Footer",
-                                "emailHeaderFooterInfo":  "Email header and footer settings for email notifications rely on Customization settings within the Tenant admin node in Endpoint manager.",
-                                "emailHeaderTitle":  "Email Header",
+                                "emailFooterTitle":  "Stopka wiadomość e-mail",
+                                "emailHeaderFooterInfo":  "Ustawienia nagłówka i stopki wiadomości e-mail dla powiadomień e-mail zależą od ustawień dostosowywania w węźle administratora dzierżawy w programie Endpoint Manager.",
+                                "emailHeaderTitle":  "Nagłówek wiadomości e-mail",
                                 "emailInfoMoreLink":  "https://go.microsoft.com/fwlink/?linkid=2200912",
-                                "emailInfoMoreText":  "Configure Customization settings",
+                                "emailInfoMoreText":  "Konfiguruj ustawienia dostosowywania",
                                 "formSubTitle":  "Tworzenie lub modyfikowanie wiadomości e-mail z powiadomieniem",
-                                "headerFooterSettingsTab":  "Header and footer settings",
-                                "imgPreview":  "Image Preview",
+                                "headerFooterSettingsTab":  "Ustawienia nagłówka i stopki",
+                                "imgPreview":  "Podgląd obrazu",
                                 "infotext":  "Wybierz komunikat powiadomienia. Aby utworzyć nowe powiadomienie, przejdź do obszaru Powiadomienie w sekcji Zarządzaj obciążenia Ustaw zgodność urządzenia.",
-                                "iwLink":  "Link do witryny internetowej Portal firmy",
+                                "iwLink":  "Pokaż link do witryny internetowej portalu firmy",
                                 "listEmpty":  "Brak szablonów komunikatów.",
                                 "listEmptySelectOnly":  "Brak szablonów komunikatów. Aby utworzyć nowe powiadomienie, przejdź do obszaru Powiadomienia w sekcji Zarządzanie obciążenia Ustaw zgodność urządzenia.",
                                 "listSubTitle":  "Lista szablonów powiadomień",
@@ -9790,7 +9806,7 @@
                                 "notificationMessageTemplates":  "Szablony wiadomości z powiadomieniami",
                                 "rowValidationError":  "Wymagany jest co najmniej jeden szablon wiadomości",
                                 "selectDescription":  "Wybierz powiadomienie. Aby utworzyć nowe powiadomienie, przejdź do obszaru Powiadomienia w sekcji zarządzania obciążenia Ustaw zgodność urządzenia.",
-                                "tenantValueText":  "Tenant Value",
+                                "tenantValueText":  "Wartość dzierżawy",
                                 "testEmailLabel":  "Wyślij podgląd wiadomości e-mail",
                                 "localeLabel":  "Ustawienia regionalne",
                                 "isDefaultLocale":  "Domyślne"
@@ -9925,6 +9941,9 @@
                                                                "failed":  "With \"Selected locations\" you must choose at least one location.",
                                                                "selector":  "Choose at least one location"
                                                            },
+                                            "locationsTabInfo":  "'Locations' condition is moving! Locations will become the 'Network' assignment, with a new Global Secure Access feature - 'All Compliant network locations'.",
+                                            "mAMWarning":  "All Compliant Network locations\" does not work with \"Require app protection policy\" or \"Require approved client app\" grant controls.",
+                                            "networkTabInfo":  "'Locations' condition has moved! This is now the 'Network' assignment, with a new Global Secure Access feature - 'All Compliant network locations'.",
                                             "privateLinksInfo":  "Private Link for Microsoft Entra ID is best suited for Azure services. Ensure that the principals on which this policy is applied do not have requirement to hit any public services like M365."
                                         },
                     "ClaimProvider":  {
@@ -9997,7 +10016,8 @@
                                                            },
                                        "Locations":  {
                                                          "headerDescription":  "Control user access based on their physical location.",
-                                                         "headerLearnMoreAriaLabel":  "Learn more about using the location condition in a Conditional Access policy."
+                                                         "headerLearnMoreAriaLabel":  "Learn more about using the location condition in a Conditional Access policy.",
+                                                         "networkHeaderDescription":  "Control user access based on their network or physical location."
                                                      }
                                    },
                     "DeviceState":  {
@@ -10031,13 +10051,17 @@
                                               },
                     "MicrosoftManagedPolicies":  {
                                                      "alertBanner":  "Microsoft-managed policies will be enabled no sooner than {0} days after creation unless you take action. We recommend that you review these policies and take the recommended actions.",
+                                                     "alertBannerV2":  "Microsoft-managed policies in report-only state will be automatically turned on with advance email and {0}M365 message center{1} notifications. We recommend that you review these policies and recommended actions.",
+                                                     "learnMoreLinkAriaLabel":  "Learn more about Microsoft-managed policies.",
+                                                     "m365MessageCenterLinkAriaLabel":  "M365 message center",
                                                      "policySummaryMfa":  "This policy requires some administrator roles to perform multifactor authentication when accessing Microsoft admin portals. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
-                                                     "policySummaryPerUserMfa":  "This policy requires per-user multifactor authentication enforced users with recent sign-ins to perform MFA while accessing cloud applications. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
-                                                     "recActions1":  "Review the policy and its security benefits. If you are ready to turn it on now, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you.",
+                                                     "recActionsGlobal1":  "Review the policy and its benefits.",
+                                                     "recActionsGlobal2":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you.",
                                                      "recActionsMfa1":  "Exclude one or more break glass accounts from the policy.",
                                                      "recActionsMfa2":  "To prevent users from being locked out, verify that all users covered by this policy have at least one enabled authentication methods.",
-                                                     "recActionsPerUserMfa":  "Manage authentication methods in the Microsoft Entra ID portal by migrating your MFA verification options to the Authentication methods policy.",
+                                                     "recActionsPerUserMfaV2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
                                                      "signInRiskActions1":  "Exclude one or more break glass accounts from the policy.",
@@ -10249,9 +10273,10 @@
                                                                                                         "authenticationTransfer":  "Authentication transfer",
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
-                                                                                                        "label":  "Authentication flows",
+                                                                                                        "label":  "Authentication flows (Preview)",
                                                                                                         "multiple":  "\"{0}\" and \"{1}\""
-                                                                                                    }
+                                                                                                    },
+                                                                                       "singular":  "Authentication flow (Preview)"
                                                                                    },
                                                            "DeviceAttributes":  {
                                                                                     "AssignmentFilter":  {
@@ -10403,17 +10428,17 @@
                                                                 "ContextPane":  {
                                                                                     "LearnMore":  {
                                                                                                       "ariaLabel":  "Learn more about insider risk.",
-                                                                                                      "label":  "Control access for users who are assigned specific risk levels from Adaptive Protection, a Microsoft Purview Insider Risk Management feature that uses machine learning to help dynamically identify and mitigate critical risks."
+                                                                                                      "label":  "Control access for users who are assigned specific risk levels from Adaptive Protection, a Microsoft Purview Insider Risk Management feature. Insider risk levels are determined based on a user's risky data related activities."
                                                                                                   },
                                                                                     "configureInfoballoon":  "Configure insider risk to apply the policy to users who are assigned selected risk levels.",
                                                                                     "header":  "Select the risk levels that must be assigned to enforce the policy"
                                                                                 },
                                                                 "Selector":  {
                                                                                  "LearnMore":  {
-                                                                                                   "label":  "Adaptive Protection risk level that's assigned to the user. Risk levels define how risky a user's activity is and can be based on criteria like how many potential data theft activities they performed."
+                                                                                                   "label":  "Insider risk, configured in Adaptive Protection, assesses risk based on a user's risky data related activities."
                                                                                                }
                                                                              },
-                                                                "descriptor":  "Adaptive Protection risk level a Microsoft Purview Insider Risk Management feature.",
+                                                                "descriptor":  "Insider risk assesses the user's risky data-related activity in Microsoft Purview Insider Risk Management.",
                                                                 "label":  "Insider risk (Preview)"
                                                             },
                                             "SignInRisk":  {
@@ -10451,14 +10476,6 @@
                                                                                 "displayName":  "Phishing-resistant MFA"
                                                                             }
                                                   },
-                    "PolicyControlFedAuthMethod":  {
-                                                       "ariaLabel":  "Learn more about requiring authentication methods satisfied by federation providers.",
-                                                       "certificate":  "Certificate authentication",
-                                                       "infoBubble":  "Specify a required authentication method, that must be satisfied by federation provider, such as ADFS.",
-                                                       "multifactor":  "Multifactor authentication",
-                                                       "require":  "Require federated authentication method (Preview)",
-                                                       "whatIfFormat":  "{0} - {1}"
-                                                   },
                     "PolicyState":  {
                                         "off":  "Off",
                                         "on":  "On",
@@ -10585,6 +10602,7 @@
                                                                     "actorInvalid":  "The \"sign-in frequency every time\" session control cannot be used with \"{0}\"",
                                                                     "appWarning":  "Some of the applications currently selected are not compatible with the \"Sign-in frequency\" option of \"Every time\"",
                                                                     "everytime":  "Every time",
+                                                                    "everytimeInfoBalloon":  "\"Every time\" option is evaluated on every sign-in attempt to an application in scope for this policy. Some policy configurations for the \"sign-in frequency every time\" session control are in preview.",
                                                                     "periodic":  "Periodic reauthentication",
                                                                     "reqMFAWarning":  "\"Require multifactor authentication\" must be selected when using \"Secondary authentication methods only\"",
                                                                     "selectorInvalid":  "When \"Require password change\" grant is selected, only \"sign-in frequency every time\" session control can be used",
@@ -10794,9 +10812,11 @@
                                                                      }
                                               },
                                    "noTenantSelected":  "No tenant selected",
+                                   "revertWhatIfPreview":  "To revert to the classic 'What if' experience, click here. ",
                                    "selectOrganization":  "Select organization",
                                    "tenantIdWithPlaceholder":  "Tenant ID: {0}",
-                                   "tenantSelectionRequired":  "Tenant required"
+                                   "tenantSelectionRequired":  "Tenant required",
+                                   "tryWhatIfPreview":  "Try the new 'What If' experience powered by Microsoft Graph to test the impact of Conditional Access policies which include conditions such as insider risk and authentication flows. To turn on this preview feature, click here."
                                },
                     "WhatIfBlade":  {
                                         "ClientApp":  {
@@ -10842,6 +10862,7 @@
                     "allNetworkAccessLocationsLabel":  "All Compliant Network locations (Preview)",
                     "allRiskLevelsOption":  "All risk levels",
                     "allTrustedLocationLabel":  "All trusted locations",
+                    "allTrustedNetworkLocationLabel":  "All trusted networks and locations",
                     "allUserGroupSetSelectorLabel":  "All users and groups selected",
                     "allUsersReauth":  "The \"sign-in frequency every time\" session control requires \"All Users\" to be selected",
                     "allUsersString":  "All users",
@@ -10872,6 +10893,7 @@
                     "badRequest":  "Bad request",
                     "blockAccess":  "Block access",
                     "builtInDirectoryRoleLabel":  "Built-in directory roles",
+                    "caeDisableRequireEmptyExclude":  "Cannot exclude apps when \"Customize continuous access evaluation\" - \"Disable\" session control is selected.",
                     "cannotDeleteNamedLocationsConfiguredInCAPolicy":  "The named location cannot be deleted because it is referenced by one or more Conditional Access policies. You must remove this named location from all associated Conditional Access policies before deletion.",
                     "cannotDeleteTrustedNamedLocations":  "The named location cannot be deleted because it is marked as a trusted location. You must unmark this named location before deletion.",
                     "cannotExcludeBothAllMsftAppsAndO365":  "Exclude Office 365 apps doesn't have an impact when all Microsoft apps have been excluded.",
@@ -10904,7 +10926,6 @@
                     "chooseApplicationsSelected":  "Selected",
                     "chooseApplicationsSingular":  "{0} and 1 more",
                     "chooseApplicationsTooMany":  "More results than can be shown. Please filter using the search box.",
-                    "chooseLocationCorpnetItem":  "Corporate network",
                     "chooseLocationSelectedLocationsLabel":  "Selected locations",
                     "chooseLocationTrustedIpsItem":  "Multifactor authentication trusted IPs",
                     "chooseLocationsBladeSubtitle":  "",
@@ -10930,6 +10951,7 @@
                     "chooseLocationsSelectionBladeIncludedSelectorTitle":  "Select",
                     "chooseLocationsSingular":  "{0} and 1 more",
                     "chooseLocationsTooMany":  "More results than can be shown. Please filter using the search box.",
+                    "chooseNetworkLocationSelectedNetworksLocationsLabel":  "Selected networks and locations",
                     "claimProviderAddCommandText":  "New custom control",
                     "claimProviderAddNewBladeTitle":  "New custom control",
                     "claimProviderDeleteCommand":  "Delete",
@@ -11053,7 +11075,6 @@
                     "clientTypeOtherClientsInfo":  "This includes older office clients and other mail protocols(POP, IMAP, SMTP, etc). [Learn more][1]\n[1]: https://aka.ms/caclientapps\n",
                     "cloudAppCountDiffBannerText":  "{0} cloud apps configured in this policy have been deleted from the directory, but this doesn't affect the other apps in the policy. The next time you update the application section of the policy, the deleted apps will be automatically removed from it.",
                     "cloudAppsSelectionBladeAllMicrosoftApps":  "All Microsoft apps",
-                    "cloudAppsSelectionExcludeAllMicrosoftClients":  "Allow Microsoft cloud, desktop and mobile apps (Preview)",
                     "cloudappsSelectionBladeAllCloudapps":  "All cloud apps",
                     "cloudappsSelectionBladeExcludeDescription":  "Select the cloud apps to exempt from the policy",
                     "cloudappsSelectionBladeExcludedSelectorTitle":  "Select excluded cloud apps",
@@ -11061,8 +11082,10 @@
                     "cloudappsSelectionBladeIncludedSelectorTitle":  "Select",
                     "cloudappsSelectionBladeSelectedCloudapps":  "Select apps",
                     "cloudappsSelectorInfoBallonText":  "Services which the user accesses to do work. For example, 'Salesforce'",
+                    "cloudappsSelectorNone":  "No cloud apps, actions, or authentication context selected",
                     "cloudappsSelectorPluralExcluded":  "{0} apps excluded",
                     "cloudappsSelectorPluralIncluded":  "{0} apps included",
+                    "cloudappsSelectorRequired":  "Cloud apps, actions, or authentication context selection required",
                     "cloudappsSelectorSingularExcluded":  "1 app excluded",
                     "cloudappsSelectorSingularIncluded":  "1 app included",
                     "cloudappsSelectorUserPlural":  "{0} apps",
@@ -11195,6 +11218,7 @@
                     "locationSelectionBladeIncludeDescription":  "Select the locations to include in this policy",
                     "locationsAllLocationsLabel":  "Any location",
                     "locationsAllNamedLocationsLabel":  "All trusted IPs",
+                    "locationsAllNetworkLocationsLabel":  "Any network or location",
                     "locationsAllPrivateLinksLabel":  "All Private Links in my tenant",
                     "locationsIncludeExcludeLabel":  "{0} and exclude all trusted IPs",
                     "locationsSelectedPrivateLinksLabel":  "Selected Private Links",
@@ -11302,6 +11326,7 @@
                     "policiesBladeTitleWithAppName":  "Policies: {0}",
                     "policiesDisabledBannerText":  "Creating and editing policies is prohibited for applications with a linked single-sign-on attribute.",
                     "policiesHitMaxLimitStatusBarMessage":  "You've reached the maximum number of policies for this tenant. Delete some policies before creating more.",
+                    "policiesNewTabBadge":  "NEW",
                     "policyAssignmentsSection":  "Assignments",
                     "policyBlockAllInfoBox":  "The configured policy will block all users, so it is not supported. Review the assignments and controls. Exclude the current user {0}, if you would like to save this policy.",
                     "policyCloudAppsDisplayTextAllApp":  "All apps",
@@ -11312,14 +11337,21 @@
                     "policyConditionDevicePlatformDescription":  "Platform the user is signing in from. For example, 'iOS'",
                     "policyConditionHighUserRiskCheckboxAriaLabel":  "Group, configure user risk levels needed for policy to be enforced. High user risk level.",
                     "policyConditionLocation":  "Locations",
-                    "policyConditionLocationDescription":  "Location (determined using IP address range) the user is signing in from",
+                    "policyConditionLocationDescription":  "Locations (determined using IP address range) the user is signing in from",
                     "policyConditionLocationPreview":  "Locations (Preview)",
                     "policyConditionLowUserRiskCheckboxAriaLabel":  "Group, configure user risk levels needed for policy to be enforced. Low user risk level.",
                     "policyConditionMediumUserRiskCheckboxAriaLabel":  "Group, configure user risk levels needed for policy to be enforced. Medium user risk level.",
+                    "policyConditionNetwork":  "Network",
+                    "policyConditionNetworkLocationDescription":  "Network and locations (determined by IP address range or GPS coordinates) the user is signing in from",
+                    "policyConditionNetworks":  "Networks",
                     "policyConditionSigninRisk":  "Sign-in risk",
+                    "policyConditionSigninRiskCiamDescription":  "Sign-in risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionSigninRiskDescription":  "Likelihood that the sign-in is coming from someone other than the user. Risk level can be high, medium or low. Requires Microsoft Entra ID P2 license.",
+                    "policyConditionSigninRiskPreview":  "Sign-in risk (preview)",
                     "policyConditionUserRisk":  "User risk",
+                    "policyConditionUserRiskCiamDescription":  "User risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionUserRiskDescription":  "Configure user risk levels needed for policy to be enforced",
+                    "policyConditionUserRiskPreview":  "User risk (preview)",
                     "policyConditioniClientApp":  "Client apps",
                     "policyControlAllowAccessDisplayedName":  "Grant access",
                     "policyControlAuthenticationStrengthDisplayedName":  "Require authentication strength",
@@ -11450,6 +11482,7 @@
                     "startTimePickerLabel":  "Start time",
                     "sunday":  "Sunday",
                     "targetAppsReauthWarning":  "Over prompting users for reauthentication can occur when the \"Sign-in Frequency - every time\" setting is enabled in some applications. {0}Read more about the recommended scenarios.{1}",
+                    "targetSelect":  "Select target type",
                     "testButton":  "What If",
                     "thumbprintCol":  "Thumbprint",
                     "thursday":  "Thursday",
@@ -11550,8 +11583,9 @@
                     "whatIfEvaResultPolicyNotEnabled":  "Policy not enabled",
                     "whatIfEvaResultSignInRisk":  "Sign-in risk",
                     "whatIfEvaResultUsers":  "Users and groups",
+                    "whatIfFormat":  "{0} - {1}",
                     "whatIfInsiderRisk":  "Insider risk (Preview)",
-                    "whatIfInsiderRiskInfo":  "Adaptive Protection risk level that's assigned to the user. (Preview)",
+                    "whatIfInsiderRiskInfo":  "Insider risk that's assigned to user.",
                     "whatIfIpAddress":  "IP address",
                     "whatIfIpAddressInfo":  "IP address the user is signing in from.",
                     "whatIfIpCountryInfoBoxText":  "If using an IP address or Country, both fields will be required and should correctly map together.",
@@ -11559,6 +11593,7 @@
                     "whatIfPolicyAppliesTabWithCount":  "Applicable policies ({0})",
                     "whatIfPolicyDoesNotApplyTab":  "Policies that will not apply",
                     "whatIfPolicyDoesNotApplyTabWithCount":  "Inapplicable policies ({0})",
+                    "whatIfPreviewTitle":  "What If (Preview)",
                     "whatIfReasons":  "Reasons why this policy will not apply",
                     "whatIfSelectAuthenticationFlow":  "Select authentication flow...",
                     "whatIfSelectClientApp":  "Select a client app...",
@@ -11661,6 +11696,9 @@
                                                      "ariaLabel":  "wiersz {0} z {1} kolumny {2}"
                                                  }
                                      },
+                            "InventoryCatalog":  {
+                                                     "subtitle":  "Rozpocznij od podstaw i wybierz odpowiednie właściwości z biblioteki dostępnych właściwości spisu"
+                                                 },
                             "SettingsCatalog":  {
                                                     "subtitle":  "Zacznij od zera i wybierz żądane ustawienia z biblioteki dostępnych ustawień",
                                                     "title":  "Wykaz ustawień"
@@ -11947,8 +11985,8 @@
                                    "minVersion":  "Wersja minimalna",
                                    "nameHint":  "To będzie główny atrybut widoczny w celu identyfikacji zestawu ograniczeń.",
                                    "noAssignmentsStatusBar":  "Przypisz ograniczenie do co najmniej jednej grupy. Kliknij pozycję Właściwości.",
-                                   "nonAdminForbiddenCreate":  "You must be an admin to create restrictions.",
-                                   "nonAdminForbiddenEdit":  "You must be an admin to edit restrictions.",
+                                   "nonAdminForbiddenCreateError":  "You must be an Intune Service or Global Administrator to create, edit or delete restrictions.",
+                                   "nonAdminForbiddenEdit":  "Aby edytować ograniczenia, musisz być administratorem.",
                                    "notFound":  "Nie znaleziono ograniczenia. Być może zostało już usunięte.",
                                    "personallyOwned":  "Urządzenia osobiste",
                                    "restriction":  "Ograniczenie",
@@ -12348,6 +12386,7 @@
                                "complianceWindows8":  "Zasady dotyczące zgodności dla systemu Windows 8",
                                "complianceWindowsPhone":  "Zasady dotyczące zgodności dla systemu Windows Phone",
                                "exchangeActiveSync":  "Exchange Active Sync",
+                               "inventoryCatalog":  "Wykaz właściwości",
                                "iosCustom":  "Niestandardowe",
                                "iosDerivedCredentialAuthenticationConfiguration":  "Pochodne poświadczenie PIV ",
                                "iosDeviceFeatures":  "Funkcje urządzenia",
@@ -12515,12 +12554,12 @@
                                  },
     "Titles":  {
                    "ChromeOs":  {
-                                    "devices":  "Urządzenia z systemem operacyjnym Chrome (wersja zapoznawcza)"
+                                    "devices":  "Urządzenia z systemem ChromeOS"
                                 },
                    "ManagedDesktop":  {
                                           "adminContacts":  "Kontakty administracyjne",
                                           "appPackaging":  "Pakiety aplikacji",
-                                          "businessGroups":  "Grupy biznesowe",
+                                          "autopatchGroups":  "Grupy poprawek automatycznych",
                                           "devices":  "Urządzenia",
                                           "feedback":  "Opinie",
                                           "gettingStarted":  "Wprowadzenie",
@@ -12560,7 +12599,7 @@
                    "brandingAndCustomization":  "Dostosowywanie",
                    "cartProfiles":  "Profile koszyków",
                    "certificateConnectors":  "Łączniki certyfikatu",
-                   "chromeEnterprise":  "Chrome Enterprise (wersja zapoznawcza)",
+                   "chromeEnterprise":  "Chrome Enterprise",
                    "cloudAttachedDevices":  "Urządzenia podłączone do chmury (wersja zapoznawcza)",
                    "cloudPcActions":  "Akcje dotyczące komputerów w chmurze (wersja zapoznawcza)",
                    "cloudPcMaintenanceWindows":  "Okna obsługi komputera w chmurze (wersja zapoznawcza)",
@@ -12658,11 +12697,11 @@
                    "userExecutionStatus":  "Stan użytkownika",
                    "wdacSupplementalPolicies":  "Uzupełniające zasady trybu S",
                    "win32CatalogUpdateApp":  "Aktualizacje dla aplikacji wykazu systemu Windows (Win32)",
+                   "win32CatalogUpdateAppInPreview":  "Aktualizacje dla aplikacji wykazu systemu Windows (Win32) (wersja zapoznawcza)",
                    "windows10DriverUpdate":  "Aktualizacje sterowników dla systemu Windows 10 i nowszych",
                    "windows10QualityUpdate":  "Aktualizacje dotyczące jakości dla systemu Windows 10 i nowszych",
                    "windows10UpdateRings":  "Pierścienie aktualizacji dla systemu Windows 10 i nowszego",
                    "windows10XPolicyFailures":  "Błędy zasad systemu Windows 10X",
-                   "windows365Connector":  "Łącznik systemu Windows 365 Citrix",
                    "windows365PartnerConnector":  "Łączniki partnerów systemu Windows 365",
                    "windowsDiagnosticData":  "Dane systemu Windows",
                    "windowsEnterpriseCertificate":  "Certyfikat przedsiębiorstwa systemu Windows",

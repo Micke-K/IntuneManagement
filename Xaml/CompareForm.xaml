@@ -14,6 +14,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -45,10 +47,22 @@
                     </Grid>
 
                     <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,5,5,0" >
+                        <Label Content="Skip Basic Properties" />
+                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Skip basic properties like name, description, modified etc." />
+                    </StackPanel>
+                    <CheckBox Grid.Column='1' Grid.Row='2' Name='chkSkipCompareBasicProperties' VerticalAlignment="Center" IsChecked="false" />
+
+                    <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,5,5,0" >
+                        <Label Content="Skip Assignments" />
+                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Skip comapring assignments." />
+                    </StackPanel>
+                    <CheckBox Grid.Column='1' Grid.Row='3' Name='chkSkipCompareAssignments' VerticalAlignment="Center" IsChecked="false" />
+
+                    <StackPanel Orientation="Horizontal" Grid.Row='4' Margin="0,5,5,0" >
                                     <Label Content="Comparison Type" />
                                     <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify how objects should be compared" />
                     </StackPanel>
-                    <ComboBox Name="cbCompareType" Margin="0,5,0,0" MinWidth="250" Grid.Row='2' Grid.Column="1" HorizontalAlignment="Left" 
+                    <ComboBox Name="cbCompareType" Margin="0,5,0,0" MinWidth="250" Grid.Row='4' Grid.Column="1" HorizontalAlignment="Left" 
                                 DisplayMemberPath="Name" SelectedValuePath="Value"  />
                                 
                     <TextBlock Grid.Row='999' TextWrapping="Wrap" Margin="5,20,5,0" Grid.ColumnSpan="2">

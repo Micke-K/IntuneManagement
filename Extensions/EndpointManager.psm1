@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.9.5'
+    '3.9.6'
 }
 
 function Invoke-InitializeModule
@@ -89,6 +89,22 @@ function Invoke-InitializeModule
         SubPath = "EndpointManager"
     }) "EndpointManager"
 
+    Get-SettingValue "ProxyURI"
+
+    if($global:FirstTimeRunning) {
+        Save-Setting "EndpointManager" "EMAzureApp" $global:DefaultAzureApp
+    }
+
+    $currentAppID = Get-SettingValue "EMAzureApp"
+    $customAppID = Get-SettingValue "EMCustomAppId"
+    $global:informOldAzureApp = $false
+
+    if(($global:OldAzureApps -is [Array] -and $currentAppID -in $global:OldAzureApps) -or (-not $currentAppID -and -not $customAppID))
+    {
+        $global:informOldAzureApp = $true
+        Write-Log "Microsoft Intune PowerShell is being decomissioned. Please change to a supported app eg Microsoft Graph or a custom app!" 2            
+    }
+
     $viewPanel = Get-XamlObject ($global:AppRootFolder + "\Xaml\EndpointManagerPanel.xaml") -AddVariables
     
     Set-EMViewPanel $viewPanel
@@ -105,7 +121,7 @@ function Invoke-InitializeModule
         Activating = { Invoke-EMActivatingView  }
         Authentication = (Get-MSALAuthenticationObject)
         Authenticate = { Invoke-EMAuthenticateToMSAL @args }
-        AppInfo = (Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547" "EM")
+        AppInfo = (Get-GraphAppInfo "EMAzureApp" $global:DefaultAzureApp "EM")
         SaveSettings = { Invoke-EMSaveSettings }
 
         Permissions = @()
@@ -802,7 +818,7 @@ function Invoke-EMAuthenticateToMSAL
 {
     param($params = @{})
 
-    $global:EMViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547" "EM"
+    $global:EMViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" $global:DefaultAzureApp "EM"
     Set-MSALCurrentApp $global:EMViewObject.AppInfo
     & $global:msalAuthenticator.Login -Account (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser")) @params
 }
@@ -818,7 +834,7 @@ function Invoke-EMActivatingView
     Show-MSALError
     
     # Refresh values in case they have changed
-    $global:EMViewObject.AppInfo = (Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547" "EM")
+    $global:EMViewObject.AppInfo = (Get-GraphAppInfo "EMAzureApp" $global:DefaultAzureApp "EM")
     if(-not $global:EMViewObject.Authentication)
     {
         $global:EMViewObject.Authentication = Get-MSALAuthenticationObject    
@@ -830,7 +846,7 @@ function Invoke-EMActivatingView
 
 function Invoke-EMSaveSettings
 {
-    $tmpApp = Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547"
+    $tmpApp = Get-GraphAppInfo "EMAzureApp" $global:DefaultAzureApp
 
     if($global:appObj.ClientID -ne $tmpApp.ClientId -and $global:MSALToken)
     {
@@ -2011,6 +2027,10 @@ function local:Start-ImportApp
     {
         $fileEncryptionInfo = Copy-MSILOB $packageFile $obj
     }
+    elseif($appType -eq "microsoft.graph.windowsUniversalAppX")
+    {
+        $fileEncryptionInfo = Copy-MSIXLOB $packageFile $obj
+    }    
     elseif($appType -eq "microsoft.graph.iosLOBApp")
     {
         $fileEncryptionInfo = Copy-iOSLOB $packageFile $obj

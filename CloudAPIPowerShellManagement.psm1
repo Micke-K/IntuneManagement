@@ -88,6 +88,8 @@ function Initialize-CloudAPIManagement
         $certificate
     )
 
+    $PSModuleAutoloadingPreference = "none"
+
     $global:wpfNS = "xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'"
 
     [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 

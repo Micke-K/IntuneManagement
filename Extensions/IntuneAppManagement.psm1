@@ -10,7 +10,7 @@ This module manages Application objects in Intune e.g. uploading application fil
 #>
 function Get-ModuleVersion
 {
-    '3.9.3'
+    '3.9.6'
 }
 
 #########################################################################################
@@ -113,6 +113,42 @@ function Copy-MSILOB
 	        size = (Get-Item $msiFile).Length
 	        sizeEncrypted = (Get-Item $tmpFile).Length
 	        manifest = [Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($manifestXML.OuterXml))
+            isDependency = $false
+    }
+
+    Add-FileToIntuneApp $appId $appType $tmpFile $appFileBody
+
+    Remove-Item $tmpFile -Force
+
+    $fileEncryptionInfo
+}
+
+function Copy-MSIXLOB
+{
+    param($msixFile, $appObj)
+
+    if(-not $msixFile -or (Test-Path $msixFile) -eq $false)
+    {
+        return
+    }
+
+    $fi = [IO.FileInfo]$msixFile
+
+    $appId = $appObj.Id
+    $appType = $appObj.'@odata.type'.Trim('#')
+
+    $tmpFile = [IO.Path]::GetTempFileName()
+
+    $fileEncryptionInfo = New-IntuneEncryptedFile $msixFile $tmpFile
+
+    $manifest = $fi.Name
+    
+    $appFileBody = @{
+            "@odata.type" = "#microsoft.graph.mobileAppContentFile"
+            name = [IO.Path]::GetFileName($msixFile)
+	        size = (Get-Item $msixFile).Length
+	        sizeEncrypted = (Get-Item $tmpFile).Length
+	        manifest = [Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($manifest))
             isDependency = $false
     }
 

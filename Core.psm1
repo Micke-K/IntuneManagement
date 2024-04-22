@@ -11,7 +11,7 @@ This module handles the WPF UI
 
 function Get-ModuleVersion
 {
-    '3.9.5'
+    '3.9.6'
 }
 
 function Initialize-Window
@@ -1535,7 +1535,7 @@ function Add-RegKeyToSettings
 
     try
     {
-        $keyObj = Get-Item -Path $regKey
+        $keyObj = Get-Item -Path $regKey -ErrorAction SilentlyContinue
         foreach($keyValue in ($keyObj.GetValueNames() | Sort))
         {
             try
@@ -2463,6 +2463,7 @@ function Get-MainWindow
             
             Add-XamlEvent $script:welcomeForm "gitHubLink" "Add_RequestNavigate" ({ [System.Diagnostics.Process]::Start($_.Uri.AbsoluteUri); $_.Handled = $true })
             Add-XamlEvent $script:welcomeForm "licenseLink" "Add_RequestNavigate" ({ [System.Diagnostics.Process]::Start($_.Uri.AbsoluteUri); $_.Handled = $true })
+            Add-XamlEvent $script:welcomeForm "addCustomApp" "Add_RequestNavigate" ({ [System.Diagnostics.Process]::Start($_.Uri.AbsoluteUri); $_.Handled = $true })
             
             Add-XamlEvent $script:welcomeForm "chkAcceptConditions" "add_click" {
                 $global:btnAcceptConditions.IsEnabled = ($this.IsChecked -eq $true)
@@ -2471,6 +2472,7 @@ function Get-MainWindow
             Add-XamlEvent $script:welcomeForm "btnAcceptConditions" "add_click" {
                 Save-Setting "" "LicenseAccepted" "True"
                 Save-Setting "" "FirstTimeRunning" "False"
+                Save-Setting "" "AppChangeInformed" "true"
                 Show-ModalObject
                 
                 if($global:currentViewObject.ViewInfo.Authentication.ShowErrors)
@@ -2484,12 +2486,41 @@ function Get-MainWindow
                 {
                     $window.Close()                    
                 }
-            }            
+            }
 
-            Show-ModalForm $window.Title $script:welcomeForm -HideButtons            
+            Show-ModalForm $window.Title $script:welcomeForm -HideButtons
         }
         else
         {
+            if($global:informOldAzureApp -eq $true) 
+            {
+                $appIdChangeInformed = Get-Setting "" "AppChangeInformed" "false"
+                if($appIdChangeInformed -ne "true") {
+                    $script:oldAzureAppForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\OldAzureApp.xaml")
+
+                    Add-XamlEvent $script:oldAzureAppForm "addCustomApp" "Add_RequestNavigate" ({ [System.Diagnostics.Process]::Start($_.Uri.AbsoluteUri); $_.Handled = $true })
+
+                    Add-XamlEvent $script:oldAzureAppForm "btnOK" "add_click" {
+                        if((Get-XamlProperty $script:oldAzureAppForm "chkChangeApp" "IsChecked") -eq $true) {
+                            Write-Log "Set default app ID to $($global:DefaultAzureApp)"
+                            Save-Setting "EndpointManager" "EMAzureApp" $global:DefaultAzureApp
+                            $script:azureAppChanged = $true
+                        }
+
+                        if((Get-XamlProperty $script:oldAzureAppForm "chkSkippMessage" "IsChecked") -eq $true) {
+                            Save-Setting "" "AppChangeInformed" "true"
+                        }
+                        Show-ModalObject
+                        if($script:azureAppChanged -eq $true -and $global:currentViewObject) {
+                            [System.Windows.Forms.Application]::DoEvents()
+                            & $global:currentViewObject.ViewInfo.Authenticate
+                        }
+                    }
+
+                    Show-ModalForm $window.Title $script:oldAzureAppForm -HideButtons
+                }
+            }
+
             ###!!! Force login here
             if($global:currentViewObject.ViewInfo.Authenticate)
             {

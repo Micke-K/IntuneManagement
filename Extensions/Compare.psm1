@@ -160,8 +160,8 @@ function Invoke-ViewActivated
 
 function Show-CompareBulkForm
 {
-    $script:form = Get-XamlObject ($global:AppRootFolder + "\Xaml\BulkCompare.xaml") -AddVariables
-    if(-not $script:form) { return }
+    $script:cmpForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\BulkCompare.xaml") -AddVariables
+    if(-not $script:cmpForm) { return }
 
     $global:cbCompareProvider.ItemsSource = @(($global:compareProviders | Where BulkCompare -ne $null))
     $global:cbCompareProvider.SelectedValue = (Get-Setting "Compare" "Provider" "export")
@@ -210,12 +210,12 @@ function Show-CompareBulkForm
 
     $global:dgObjectsToCompare.ItemsSource = $script:compareObjects
 
-    Add-XamlEvent $script:form "btnClose" "add_click" {
-        $script:form = $null
+    Add-XamlEvent $script:cmpForm "btnClose" "add_click" {
+        $script:cmpForm = $null
         Show-ModalObject 
     }
 
-    Add-XamlEvent $script:form "btnStartCompare" "add_click" {
+    Add-XamlEvent $script:cmpForm "btnStartCompare" "add_click" {
         Write-Status "Compare objects"
         Save-Setting "Compare" "Provider" $global:cbCompareProvider.SelectedValue
         Save-Setting "Compare" "Type" $global:cbCompareType.SelectedValue
@@ -233,7 +233,7 @@ function Show-CompareBulkForm
 
     Set-CompareProviderOptions $global:cbCompareProvider
 
-    Show-ModalForm "Bulk Compare Objects" $script:form -HideButtons
+    Show-ModalForm "Bulk Compare Objects" $script:cmpForm -HideButtons
 }
 
 function Set-CompareProviderOptions
@@ -1114,12 +1114,12 @@ function Set-ColumnVisibility
 
 function Add-CompareProperty
 {
-    param($name, $value1, $value2, $category, $subCategory, $match = $null)
+    param($name, $value1, $value2, $category, $subCategory, $match = $null, [switch]$skip)
 
     $value1 = if($value1 -eq $null) { "" } else { $value1.ToString().Trim("`"") }
     $value2 = if($value2 -eq $null) { "" } else {  $value2.ToString().Trim("`"") }
 
-    $script:compareProperties += [PSCustomObject]@{
+    $compare += [PSCustomObject]@{
         PropertyName = $name
         Object1Value = $value1 #if($value1 -ne $null) { $value1.ToString().Trim("`"") } else { "" }
         Object2Value = $value2 #if($value2 -ne $null) { $value2.ToString().Trim("`"") } else { "" }
@@ -1127,6 +1127,11 @@ function Add-CompareProperty
         SubCategory = $subCategory
         Match = ?? $match ($value1 -eq $value2)
     }
+    if($skip -eq $true) {
+        $compare.Match = $null
+    }
+
+    $script:compareProperties += $compare
 }
 
 function Compare-ObjectsBasedonProperty
@@ -1137,8 +1142,11 @@ function Compare-ObjectsBasedonProperty
 
     Set-ColumnVisibility $false
 
+    $skipBasicProperties = Get-XamlProperty $script:cmpForm "chkSkipCompareBasicProperties" "IsChecked"    
+
     $coreProps = @((?? $objectType.NameProperty "displayName"), "Description", "Id", "createdDateTime", "lastModifiedDateTime", "version")
     $postProps = @("Advertisements")
+    $skipProps = @("@ObjectFromFile")
 
     foreach ($propName in $coreProps)
     {
@@ -1148,7 +1156,7 @@ function Compare-ObjectsBasedonProperty
         }
         $val1 = ($obj1.$propName | ConvertTo-Json -Depth 10)
         $val2 = ($obj2.$propName | ConvertTo-Json -Depth 10)
-        Add-CompareProperty $propName $val1 $val2
+        Add-CompareProperty $propName $val1 $val2 -Skip:($skipBasicProperties -eq $true)
     }    
 
     $addedProps = @()
@@ -1156,19 +1164,21 @@ function Compare-ObjectsBasedonProperty
     {
         if($propName -in $coreProps) { continue }
         if($propName -in $postProps) { continue }
+        if($propName -in $skipProps) { continue }
 
         if($propName -like "*@OData*" -or $propName -like "#microsoft.graph*") { continue }
 
         $addedProps += $propName
         $val1 = ($obj1.$propName | ConvertTo-Json -Depth 10)
         $val2 = ($obj2.$propName | ConvertTo-Json -Depth 10)
-        Add-CompareProperty $propName $val1 $val2
+        Add-CompareProperty $propName $val1 $val2 -Skip:($skipBasicProperties -eq $true)
     }
 
     foreach ($propName in ($obj2.PSObject.Properties | Select Name).Name) 
     {
         if($propName -in $coreProps) { continue }
         if($propName -in $postProps) { continue }
+        if($propName -in $skipProps) { continue }
         if($propName -in $addedProps) { continue }
 
         if($propName -like "*@OData*" -or $propName -like "#microsoft.graph*") { continue }
@@ -1178,6 +1188,7 @@ function Compare-ObjectsBasedonProperty
         Add-CompareProperty $propName $val1 $val2
     }    
 
+    $skipAssignments = Get-XamlProperty $script:cmpForm "chkSkipCompareAssignments" "IsChecked"
     foreach ($propName in $postProps)
     {
         if(-not ($obj1.PSObject.Properties | Where Name -eq $propName))
@@ -1186,7 +1197,7 @@ function Compare-ObjectsBasedonProperty
         }
         $val1 = ($obj1.$propName | ConvertTo-Json -Depth 10)
         $val2 = ($obj2.$propName | ConvertTo-Json -Depth 10)
-        Add-CompareProperty $propName $val1 $val2
+        Add-CompareProperty $propName $val1 $val2 -Skip:($skipAssignments -eq $true)
     }
     
     $script:compareProperties
@@ -1230,10 +1241,12 @@ function Compare-ObjectsBasedonDocumentation
 
     $settingsValue = ?? $objectType.CompareValue "Value"
 
+    $skipBasicProperties = Get-XamlProperty $script:cmpForm "chkSkipCompareBasicProperties" "IsChecked"    
+
     if($docObj1.BasicInfo -and -not ($docObj1.BasicInfo | where Value -eq $obj1.Id))
     {
         # Make sure the Id property is included
-        Add-CompareProperty "Id" $obj1.Id $obj2.Id $docObj1.BasicInfo[0].Category
+        Add-CompareProperty "Id" $obj1.Id $obj2.Id $docObj1.BasicInfo[0].Category -Skip:($skipBasicProperties -eq $true)
     }
 
     foreach ($prop in $docObj1.BasicInfo)
@@ -1241,7 +1254,7 @@ function Compare-ObjectsBasedonDocumentation
         $val1 = $prop.Value 
         $prop2 = $docObj2.BasicInfo | Where Name -eq $prop.Name
         $val2 = $prop2.Value 
-        Add-CompareProperty $prop.Name $val1 $val2 $prop.Category
+        Add-CompareProperty $prop.Name $val1 $val2 $prop.Category -Skip:($skipBasicProperties -eq $true)
     }
 
     $addedProperties = @()
@@ -1250,11 +1263,16 @@ function Compare-ObjectsBasedonDocumentation
     {
         foreach ($prop in $docObj1.Settings)
         {
-            if(($prop.SettingId + $prop.ParentSettingId) -in $addedProperties) { continue }
+            if(($prop.SettingId + $prop.ParentSettingId + $prop.RowIndex) -in $addedProperties) { continue }
 
-            $addedProperties += ($prop.SettingId + $prop.ParentSettingId)
+            $addedProperties += ($prop.SettingId + $prop.ParentSettingId + $prop.RowIndex)
             $val1 = $prop.Value 
-            $prop2 = $docObj2.Settings | Where { $_.SettingId -eq $prop.SettingId -and $_.ParentSettingId -eq $prop.ParentSettingId }
+            $prop2 = $docObj2.Settings | Where { $_.SettingId -eq $prop.SettingId -and $_.ParentSettingId -eq $prop.ParentSettingId -and $_.RowIndex -eq $prop.RowIndex }
+            if($val1 -isnot [Array] -and $prop2.Value -is [Array])
+            {
+                Write-Log "Compare property for $($prop.SettingId) found based on value" 2
+                $prop2 = $prop2 | Where Value -eq $val1
+            }
             $val2 = $prop2.Value
             Add-CompareProperty $prop.Name $val1 $val2 $prop.Category
 
@@ -1265,12 +1283,18 @@ function Compare-ObjectsBasedonDocumentation
             # Add children defined on Object 1 property
             foreach ($childProp in $children1)
             {
-                if(($childProp.SettingId + $childProp.ParentSettingId) -in $addedProperties) { continue }
+                if(($childProp.SettingId + $childProp.ParentSettingId + $childProp.RowIndex) -in $addedProperties) { continue }
 
-                $addedProperties += ($childProp.SettingId + $childProp.ParentSettingId)
+                $addedProperties += ($childProp.SettingId + $childProp.ParentSettingId + $childProp.RowIndex)
                 $val1 = $childProp.Value 
-                $prop2 = $docObj2.Settings | Where { $_.SettingId -eq $childProp.SettingId -and $_.ParentSettingId -eq $childProp.ParentSettingId }
+                $prop2 = $docObj2.Settings | Where { $_.SettingId -eq $childProp.SettingId -and $_.ParentSettingId -eq $childProp.ParentSettingId -and $_.RowIndex -eq $childProp.RowIndex}
+                if($val1 -isnot [Array] -and $prop2.Value -is [Array])
+                {
+                    Write-Log "Compare property for $($childProp.SettingId) found based on value" 2
+                    $prop2 = $prop2 | Where Value -eq $val1
+                }
                 $val2 = $prop2.Value
+
                 Add-CompareProperty $childProp.Name $val1 $val2 $prop.Category
             }
             
@@ -1278,11 +1302,16 @@ function Compare-ObjectsBasedonDocumentation
             # This is to make sure all children are added under its parent and not last in the table
             foreach ($childProp in $children2)
             {
-                if(($childProp.SettingId + $childProp.ParentSettingId) -in $addedProperties) { continue }
+                if(($childProp.SettingId + $childProp.ParentSettingId + $childProp.RowIndex) -in $addedProperties) { continue }
 
-                $addedProperties += ($childProp.SettingId + $childProp.ParentSettingId)
+                $addedProperties += ($childProp.SettingId + $childProp.ParentSettingId + $childProp.RowIndex)
                 $val2 = $childProp.Value 
-                $prop2 = $docObj1.Settings | Where { $_.SettingId -eq $childProp.SettingId -and $_.ParentSettingId -eq $childProp.ParentSettingId }
+                $prop2 = $docObj1.Settings | Where { $_.SettingId -eq $childProp.SettingId -and $_.ParentSettingId -eq $childProp.ParentSettingId -and $_.RowIndex -eq $childProp.RowIndex }
+                if($val2 -isnot [Array] -and $prop2.Value -is [Array])
+                {
+                    Write-Log "Compare property for $($childProp.SettingId) found based on value" 2
+                    $prop2 = $prop2 | Where Value -eq $val1
+                }
                 $val1 = $prop2.Value
                 Add-CompareProperty $childProp.Name $val1 $val2 $prop.Category
             }
@@ -1291,12 +1320,17 @@ function Compare-ObjectsBasedonDocumentation
         # These objects are defined only on Object 2. They will be last in the table
         foreach ($prop in $docObj2.Settings)
         {
-            if(($prop.SettingId + $prop.ParentSettingId) -in $addedProperties) { continue }
+            if(($prop.SettingId + $prop.ParentSettingId + $prop.RowIndex) -in $addedProperties) { continue }
 
-            $addedProperties += ($prop.SettingId + $prop.ParentSettingId)
+            $addedProperties += ($prop.SettingId + $prop.ParentSettingId + $prop.RowIndex)
             $val2 = $prop.Value    
-            $prop2 = $docObj1.Settings | Where  { $_.SettingId -eq $prop.SettingId -and $_.ParentSettingId -eq $prop.ParentSettingId }
-            $val1 = $prop2.Value   
+            $prop2 = $docObj1.Settings | Where  { $_.SettingId -eq $prop.SettingId -and $_.ParentSettingId -eq $prop.ParentSettingId -and $_.RowIndex -eq $childProp.RowIndex }
+            if($val2 -isnot [Array] -and $prop2.Value -is [Array])
+            {
+                Write-Log "Compare property for $($prop.SettingId) found based on value" 2
+                $prop2 = $prop2 | Where Value -eq $val2
+            }
+            $val1 = $prop2.Value
             Add-CompareProperty $prop.Name $val1 $val2 $prop.Category
         }    
     }
@@ -1464,12 +1498,14 @@ function Add-AssignmentInfo
         $val2 = $tmpVal
     }
 
+    $skipAssignments = Get-XamlProperty $script:cmpForm "chkSkipCompareAssignments" "IsChecked"
+
     if($assignment.RawIntent)
     {
-        Add-CompareProperty $assignment.Category $val1 $val2 -Category $assignment.GroupMode -match $match
+        Add-CompareProperty $assignment.Category $val1 $val2 -Category $assignment.GroupMode -match $match  -Skip:($skipAssignments -eq $true)
     }
     else
     {
-        Add-CompareProperty $assignmentStr $val1 $val2 -Category $assignment.GroupMode -match $match
+        Add-CompareProperty $assignmentStr $val1 $val2 -Category $assignment.GroupMode -match $match -Skip:($skipAssignments -eq $true)
     }
 }

@@ -227,7 +227,6 @@
                       "co":  "Corsican (France)",
                       "cs":  "Czech (Czech Republic)",
                       "da":  "Danish (Denmark)",
-                      "prs":  "Dari (Afghanistan)",
                       "dv":  "Divehi (Maldives)",
                       "et":  "Estonian (Estonia)",
                       "fo":  "Faroese (Faroe Islands)",
@@ -687,6 +686,7 @@
                                                              "iOS":  "On iOS/iPadOS devices, you can allow using fingerprint identification instead of a PIN. Users are prompted to provide their fingerprints when they access this app with their work accounts.",
                                                              "mac":  "On Mac devices, you can allow using fingerprint identification instead of a PIN. Users are prompted to provide their fingerprints when they access this app with their work accounts."
                                                          },
+                                            "allowWidgetContentSync":  "Choose Block to prevent policy managed apps from saving data to app widgets. If you choose Allow, the policy managed app can save data to app widgets, if those features are supported and enabled within the policy managed app. \n\n \n\nApps may provide additional configuration capability with app configuration policies. For more information, see the app's documentation.",
                                             "appSharingFromLevel1":  "Select one of the following options to specify the apps that this app can receive data from:",
                                             "appSharingFromLevel2":  "{0}: Only allow receiving data in org documents or accounts from other policy managed apps",
                                             "appSharingFromLevel3":  "{0}: Allow receiving data in org documents or accounts from any app",
@@ -927,8 +927,7 @@
                                    "languageInfo":  "Specify the language and region that will be used.",
                                    "licenseAgreement":  "Microsoft Software License Terms",
                                    "licenseAgreementInfo":  "Specify whether to show the EULA to users.",
-                                   "plugAndForgetDevice":  "Self-Deploying (preview)",
-                                   "plugAndForgetGA":  "Self-Deploying",
+                                   "plugAndForgetDevice":  "Self-Deploying",
                                    "privacySettingWarning":  "The default value for diagnostic data collection has changed for devices running Windows 10, version 1903 and later, or Windows 11. ",
                                    "privacySettings":  "Privacy settings",
                                    "privacySettingsInfo":  "Specify whether to show privacy settings to users.",
@@ -1120,7 +1119,7 @@
                                },
     "EnrollmentStatusScreen":  {
                                    "Apps":  {
-                                                "allowNonBlockingAppInstallation":  "Only fail selected blocking apps in technician phase (preview)",
+                                                "allowNonBlockingAppInstallation":  "Only fail selected blocking apps in technician phase",
                                                 "apps":  "apps",
                                                 "appsListName":  "Application list",
                                                 "blockingApps":  "Blocking apps",
@@ -1157,7 +1156,9 @@
                                },
     "TableHeaders":  {
                          "activity":  "Activity",
+                         "activityName":  "Activity name",
                          "actor":  "Initiated by (actor)",
+                         "actorType":  "Actor type",
                          "app":  "App",
                          "appName":  "App name",
                          "applicationName":  "Application name",
@@ -1228,6 +1229,7 @@
                          "mtdConnector":  "MTD Connector",
                          "name":  "Profile name",
                          "oSVersion":  "OS Version",
+                         "operationType":  "Operation type",
                          "os":  "OS",
                          "packageName":  "Package name",
                          "partnerName":  "Partner",
@@ -1549,7 +1551,7 @@
                                          "tooltip":  "If blocked, the app cannot print protected data."
                                      },
                         "ProtectedMessagingRedirectAppType":  {
-                                                                  "iosTooltip":  "Typically, when a user selects a hyperlinked messaging link in an app, a messaging app will open with the phone number prepopulated and ready to send. For this setting, choose how to handle this type of content transfer when it's initiated from a policy-managed app. Additional steps may be necessary in order for this setting to take effect. First, verify that sms has been removed from the Select apps to exempt list. Then, ensure the application is using a newer version of Intune SDK (Version > 18.1.1).",
+                                                                  "iosTooltip":  "Typically, when a user selects a hyperlinked messaging link in an app, a messaging app will open with the phone number prepopulated and ready to send. For this setting, choose how to handle this type of content transfer when it's initiated from a policy-managed app. Additional steps may be necessary in order for this setting to take effect. First, verify that sms has been removed from the Select apps to exempt list. Then, ensure the application is using a newer version of Intune SDK (Version > 19.0.0).",
                                                                   "label":  "Transfer messaging data to",
                                                                   "tooltip":  "Typically, when a user selects a hyperlinked messaging link in an app, a messaging app will open with the phone number prepopulated and ready to send. For this setting, choose how to handle this type of content transfer when it's initiated from a policy-managed app."
                                                               },
@@ -2983,6 +2985,7 @@
                            "complianceMinutesOfInactivityBeforePasswordRequiredDescription":  "This setting specifies the length of time without user input after which the mobile device screen is locked. Recommended value: 15 min",
                            "complianceMinutesOfInactivityBeforePasswordRequiredDeviceDescription":  "This setting specifies the length of time without user input after which the device is locked. Recommended value: 15 min",
                            "complianceMinutesOfInactivityBeforePasswordRequiredName":  "Maximum minutes of inactivity before password is required",
+                           "complianceMinutesOfInactivityBeforePasswordRequiredTrimmedDescription":  "Recommended value: 15 min",
                            "complianceMobileOsVersionRestrictionMaximumDescription":  "Select the newest OS version a mobile device can have.",
                            "complianceMobileOsVersionRestrictionMaximumName":  "Maximum OS version for mobile devices",
                            "complianceMobileOsVersionRestrictionMinimumDescription":  "Select the oldest OS version a mobile device can have.",
@@ -2992,6 +2995,7 @@
                            "complianceNumberOfPreviousPasswordsToBlockDescription":  "This setting specifies the number of recent passwords that cannot be reused. Recommended value: 5",
                            "complianceNumberOfPreviousPasswordsToBlockName":  "Number of previous passwords to prevent reuse",
                            "complianceNumberOfPreviousPasswordsToBlockPlaceholder":  "5",
+                           "complianceNumberOfPreviousPasswordsToBlockTrimmedDescription":  "Recommended value: 5",
                            "complianceOsBuildVersionRestrictionMaximumDescription":  "Enter the newest OS build version a device can have. For example: 20E252<br>If you want to set an Apple Rapid Security Response update as the maximum OS build, enter the supplemental build version. For example: 20E772520a",
                            "complianceOsBuildVersionRestrictionMaximumName":  "Maximum OS build version",
                            "complianceOsBuildVersionRestrictionMinimumDescription":  "Enter the oldest OS build version a device can have. For example: 20E252<br>If you want to set an Apple Rapid Security Response update as the minimum OS build, enter the supplemental build version. For example: 20E772520a",
@@ -3036,6 +3040,7 @@
                            "complianceRequireWindowsDefenderSignatureDescription":  "Require Microsoft Defender security intelligence to be up-to-date.",
                            "complianceRequireWindowsDefenderSignatureName":  "Microsoft Defender Antimalware security intelligence up-to-date",
                            "complianceRequiredPasswordTypeDescription":  "This setting specifies whether passwords are allowed to be comprised only of numeric characters, or whether they must contain characters other than numbers. Recommendations:  Required password type: Alphanumeric, Minimum number of character sets: 1",
+                           "complianceRequiredPasswordTypeTrimmedDescription":  "Recommendations:  Required password type: Alphanumeric, Minimum number of character sets: 1",
                            "complianceRootedAllowedDescription":  "Prevent rooted devices from having corporate access.",
                            "complianceRootedAllowedName":  "Rooted devices",
                            "complianceSecurityDisableUSBDebuggingDescription":  "This setting specifies whether to prevent the device from using the USB debugging feature.",
@@ -3068,6 +3073,8 @@
                            "complianceWindowsOsVersionRestrictionMinimumDescription":  "Select the oldest OS version a device can have. The operating system version is defined as major.minor.build.revision. ",
                            "complianceWindowsRequiredPasswordTypeDescription":  "Select the password type that will be on the device.",
                            "complianceWindowsRequiredPasswordTypeName":  "Password type",
+                           "complianceWorkProfilePasswordRequirementName":  "Require a password to unlock work profile",
+                           "complianceWorkProfileSecurityHeader":  "Work Profile Security",
                            "compliantAppsOption":  "Compliant apps list. Report noncompliance for any installed apps not in list",
                            "computerNameStaticPrefixDescription":  "Computers are assigned 15 characters long name. Specify a prefix, rest of 15 characters will be random.",
                            "computerNameStaticPrefixName":  "Computer name prefix",
@@ -4825,6 +4832,11 @@
                            "mTUSizeInBytesBounds":  "MTU must be between 1280 and 1400 bytes",
                            "mTUSizeInBytesName":  "Maximum transmission unit",
                            "mTUSizeInBytesToolTip":  "The largest packet of data, in bytes, that can be transmitted on the network. When not configured, the Apple default size is 1280 bytes. Applies to iOS 14 and later.",
+                           "macAddressRandomizationModeAutomaticAndroid":  "Use randomized MAC",
+                           "macAddressRandomizationModeDefaultAndroid":  "Use device default",
+                           "macAddressRandomizationModeDescriptionAndroid":  "Use randomized MAC only when needed, such as for NAC support. Users can change this setting. Applies to Android 13 and later.",
+                           "macAddressRandomizationModeHardwareAndroid":  "Use device MAC",
+                           "macAddressRandomizationModeTitleAndroid":  "MAC address randomization",
                            "macAppStoreAndIdentifiedDevelopersOption":  "Mac App Store and identified developers",
                            "macAppStoreOption":  "Mac App Store",
                            "macBlockClassroomAppRemoteScreenObservationDescription":  "Blocks AirPlay, screen sharing to other devices, and a Classroom app feature used by teachers to view their students' screens. This setting isn't available if you've blocked screenshots.",
@@ -5149,6 +5161,7 @@
                            "minimumPasswordLengthEmptyValueKeyFourToSixteen":  "Enter a number (4-16)",
                            "minimumPasswordLengthEmptyValueKeySixToSixteen":  "Enter a number (6-16)",
                            "minimumPasswordLengthName":  "Minimum password length",
+                           "minimumPasswordLengthTooltipText":  "Enter a number",
                            "minimumUpdateAutoInstallClassificationDescription":  "Missing updates will install automatically",
                            "minimumUpdateAutoInstallClassificationName":  "Install specified classification of updates",
                            "minimumUpdateAutoInstallClassificationValueImportant":  "Important",
@@ -5861,6 +5874,7 @@
                            "sCEPPolicyEnrollToSoftwareKSP":  "Enroll to Software KSP",
                            "sCEPPolicyEnrollToTrustedOtherwiseFail":  "Enroll to Trusted Platform Module (TPM) KSP, otherwise fail",
                            "sCEPPolicyEnrollToTrustedOtherwiseKSP":  "Enroll to Trusted Platform Module (TPM) KSP if present, otherwise Software KSP",
+                           "sCEPPolicyExtendedKeyUsageAnyPurposeCloudCaWarning":  "WARNING: Neither the Any Purpose EKU (OID 2.5.29.37.0) nor the Any App Policy EKU (OID 1.3.6.1.4.1.311.10.12.1) can be used with a certification authority created in Microsoft Cloud PKI.",
                            "sCEPPolicyExtendedKeyUsageDescription":  "In most cases, the certificate requires at least Client Authentication so that the user or device can authenticate to a server. However, you can specify additional usages to further define the purpose of the key.",
                            "sCEPPolicyExtendedKeyUsageName":  "Extended key usage",
                            "sCEPPolicyHashAlgorithmDescription":  "Use a hash algorithm type with the certificate. Make sure to select the strongest level of security that the connecting devices support.",
@@ -7359,6 +7373,7 @@
                            "workProfilePasswordExpirationInDaysEmptyValueKey":  "Enter number of days (1-255)",
                            "workProfilePasswordExpirationInDaysEmptyValueOneYearKey":  "Enter number of days (1 - 365)",
                            "workProfilePasswordExpirationInDaysName":  "Password expiration (days)",
+                           "workProfilePasswordExpirationInDaysTooltipText":  "Enter number of days",
                            "workProfilePasswordMinimumLengthReportingName":  "Work Profile password: Minimum password length",
                            "workProfilePasswordMinimumLetterCharactersReportingName":  "Work Profile password: Number of characters required",
                            "workProfilePasswordMinimumLowerCaseCharactersReportingName":  "Work Profile password: Number of lowercase characters required",
@@ -8384,7 +8399,7 @@
                        "expeditedCheckin":  "Mobile device management configuration",
                        "exploitProtection":  "Exploit Protection",
                        "extensions":  "Extensions",
-                       "hardwareConfigurations":  "BIOS Configurations",
+                       "hardwareConfigurations":  "BIOS Configurations and other settings",
                        "identityProtection":  "Identity protection",
                        "iosCompliancePolicy":  "iOS compliance policy",
                        "kiosk":  "Kiosk",
@@ -8424,6 +8439,7 @@
                        "windows10XTrustedCertificate":  "Trusted certificate - TEST",
                        "windows10XVPN":  "VPN - TEST",
                        "windows10XWifi":  "WIFI - TEST",
+                       "windows11SecurityBaseline":  "Security Baseline for Windows 10 and later",
                        "windows8CompliancePolicy":  "Windows 8 compliance policy",
                        "windowsHealthMonitoring":  "Windows health monitoring",
                        "windowsInformationProtection":  "Windows Information Protection",
@@ -8578,7 +8594,7 @@
                      },
     "WindowsEnrollment":  {
                               "DevicePreparation":  {
-                                                        "description":  "Configure devices for initial provisioning and assign to users.",
+                                                        "description":  "Configure devices for initial provisioning.",
                                                         "title":  "Device preparation"
                                                     },
                               "EnrollmentSettings":  {
@@ -9925,6 +9941,9 @@
                                                                "failed":  "With \"Selected locations\" you must choose at least one location.",
                                                                "selector":  "Choose at least one location"
                                                            },
+                                            "locationsTabInfo":  "'Locations' condition is moving! Locations will become the 'Network' assignment, with a new Global Secure Access feature - 'All Compliant network locations'.",
+                                            "mAMWarning":  "All Compliant Network locations\" does not work with \"Require app protection policy\" or \"Require approved client app\" grant controls.",
+                                            "networkTabInfo":  "'Locations' condition has moved! This is now the 'Network' assignment, with a new Global Secure Access feature - 'All Compliant network locations'.",
                                             "privateLinksInfo":  "Private Link for Microsoft Entra ID is best suited for Azure services. Ensure that the principals on which this policy is applied do not have requirement to hit any public services like M365."
                                         },
                     "ClaimProvider":  {
@@ -9997,7 +10016,8 @@
                                                            },
                                        "Locations":  {
                                                          "headerDescription":  "Control user access based on their physical location.",
-                                                         "headerLearnMoreAriaLabel":  "Learn more about using the location condition in a Conditional Access policy."
+                                                         "headerLearnMoreAriaLabel":  "Learn more about using the location condition in a Conditional Access policy.",
+                                                         "networkHeaderDescription":  "Control user access based on their network or physical location."
                                                      }
                                    },
                     "DeviceState":  {
@@ -10031,13 +10051,17 @@
                                               },
                     "MicrosoftManagedPolicies":  {
                                                      "alertBanner":  "Microsoft-managed policies will be enabled no sooner than {0} days after creation unless you take action. We recommend that you review these policies and take the recommended actions.",
+                                                     "alertBannerV2":  "Microsoft-managed policies in report-only state will be automatically turned on with advance email and {0}M365 message center{1} notifications. We recommend that you review these policies and recommended actions.",
+                                                     "learnMoreLinkAriaLabel":  "Learn more about Microsoft-managed policies.",
+                                                     "m365MessageCenterLinkAriaLabel":  "M365 message center",
                                                      "policySummaryMfa":  "This policy requires some administrator roles to perform multifactor authentication when accessing Microsoft admin portals. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
-                                                     "policySummaryPerUserMfa":  "This policy requires per-user multifactor authentication enforced users with recent sign-ins to perform MFA while accessing cloud applications. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
-                                                     "recActions1":  "Review the policy and its security benefits. If you are ready to turn it on now, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you.",
+                                                     "recActionsGlobal1":  "Review the policy and its benefits.",
+                                                     "recActionsGlobal2":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you.",
                                                      "recActionsMfa1":  "Exclude one or more break glass accounts from the policy.",
                                                      "recActionsMfa2":  "To prevent users from being locked out, verify that all users covered by this policy have at least one enabled authentication methods.",
-                                                     "recActionsPerUserMfa":  "Manage authentication methods in the Microsoft Entra ID portal by migrating your MFA verification options to the Authentication methods policy.",
+                                                     "recActionsPerUserMfaV2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
                                                      "signInRiskActions1":  "Exclude one or more break glass accounts from the policy.",
@@ -10249,9 +10273,10 @@
                                                                                                         "authenticationTransfer":  "Authentication transfer",
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
-                                                                                                        "label":  "Authentication flows",
+                                                                                                        "label":  "Authentication flows (Preview)",
                                                                                                         "multiple":  "\"{0}\" and \"{1}\""
-                                                                                                    }
+                                                                                                    },
+                                                                                       "singular":  "Authentication flow (Preview)"
                                                                                    },
                                                            "DeviceAttributes":  {
                                                                                     "AssignmentFilter":  {
@@ -10403,17 +10428,17 @@
                                                                 "ContextPane":  {
                                                                                     "LearnMore":  {
                                                                                                       "ariaLabel":  "Learn more about insider risk.",
-                                                                                                      "label":  "Control access for users who are assigned specific risk levels from Adaptive Protection, a Microsoft Purview Insider Risk Management feature that uses machine learning to help dynamically identify and mitigate critical risks."
+                                                                                                      "label":  "Control access for users who are assigned specific risk levels from Adaptive Protection, a Microsoft Purview Insider Risk Management feature. Insider risk levels are determined based on a user's risky data related activities."
                                                                                                   },
                                                                                     "configureInfoballoon":  "Configure insider risk to apply the policy to users who are assigned selected risk levels.",
                                                                                     "header":  "Select the risk levels that must be assigned to enforce the policy"
                                                                                 },
                                                                 "Selector":  {
                                                                                  "LearnMore":  {
-                                                                                                   "label":  "Adaptive Protection risk level that's assigned to the user. Risk levels define how risky a user's activity is and can be based on criteria like how many potential data theft activities they performed."
+                                                                                                   "label":  "Insider risk, configured in Adaptive Protection, assesses risk based on a user's risky data related activities."
                                                                                                }
                                                                              },
-                                                                "descriptor":  "Adaptive Protection risk level a Microsoft Purview Insider Risk Management feature.",
+                                                                "descriptor":  "Insider risk assesses the user's risky data-related activity in Microsoft Purview Insider Risk Management.",
                                                                 "label":  "Insider risk (Preview)"
                                                             },
                                             "SignInRisk":  {
@@ -10451,14 +10476,6 @@
                                                                                 "displayName":  "Phishing-resistant MFA"
                                                                             }
                                                   },
-                    "PolicyControlFedAuthMethod":  {
-                                                       "ariaLabel":  "Learn more about requiring authentication methods satisfied by federation providers.",
-                                                       "certificate":  "Certificate authentication",
-                                                       "infoBubble":  "Specify a required authentication method, that must be satisfied by federation provider, such as ADFS.",
-                                                       "multifactor":  "Multifactor authentication",
-                                                       "require":  "Require federated authentication method (Preview)",
-                                                       "whatIfFormat":  "{0} - {1}"
-                                                   },
                     "PolicyState":  {
                                         "off":  "Off",
                                         "on":  "On",
@@ -10585,6 +10602,7 @@
                                                                     "actorInvalid":  "The \"sign-in frequency every time\" session control cannot be used with \"{0}\"",
                                                                     "appWarning":  "Some of the applications currently selected are not compatible with the \"Sign-in frequency\" option of \"Every time\"",
                                                                     "everytime":  "Every time",
+                                                                    "everytimeInfoBalloon":  "\"Every time\" option is evaluated on every sign-in attempt to an application in scope for this policy. Some policy configurations for the \"sign-in frequency every time\" session control are in preview.",
                                                                     "periodic":  "Periodic reauthentication",
                                                                     "reqMFAWarning":  "\"Require multifactor authentication\" must be selected when using \"Secondary authentication methods only\"",
                                                                     "selectorInvalid":  "When \"Require password change\" grant is selected, only \"sign-in frequency every time\" session control can be used",
@@ -10794,9 +10812,11 @@
                                                                      }
                                               },
                                    "noTenantSelected":  "No tenant selected",
+                                   "revertWhatIfPreview":  "To revert to the classic 'What if' experience, click here. ",
                                    "selectOrganization":  "Select organization",
                                    "tenantIdWithPlaceholder":  "Tenant ID: {0}",
-                                   "tenantSelectionRequired":  "Tenant required"
+                                   "tenantSelectionRequired":  "Tenant required",
+                                   "tryWhatIfPreview":  "Try the new 'What If' experience powered by Microsoft Graph to test the impact of Conditional Access policies which include conditions such as insider risk and authentication flows. To turn on this preview feature, click here."
                                },
                     "WhatIfBlade":  {
                                         "ClientApp":  {
@@ -10842,6 +10862,7 @@
                     "allNetworkAccessLocationsLabel":  "All Compliant Network locations (Preview)",
                     "allRiskLevelsOption":  "All risk levels",
                     "allTrustedLocationLabel":  "All trusted locations",
+                    "allTrustedNetworkLocationLabel":  "All trusted networks and locations",
                     "allUserGroupSetSelectorLabel":  "All users and groups selected",
                     "allUsersReauth":  "The \"sign-in frequency every time\" session control requires \"All Users\" to be selected",
                     "allUsersString":  "All users",
@@ -10872,6 +10893,7 @@
                     "badRequest":  "Bad request",
                     "blockAccess":  "Block access",
                     "builtInDirectoryRoleLabel":  "Built-in directory roles",
+                    "caeDisableRequireEmptyExclude":  "Cannot exclude apps when \"Customize continuous access evaluation\" - \"Disable\" session control is selected.",
                     "cannotDeleteNamedLocationsConfiguredInCAPolicy":  "The named location cannot be deleted because it is referenced by one or more Conditional Access policies. You must remove this named location from all associated Conditional Access policies before deletion.",
                     "cannotDeleteTrustedNamedLocations":  "The named location cannot be deleted because it is marked as a trusted location. You must unmark this named location before deletion.",
                     "cannotExcludeBothAllMsftAppsAndO365":  "Exclude Office 365 apps doesn't have an impact when all Microsoft apps have been excluded.",
@@ -10904,7 +10926,6 @@
                     "chooseApplicationsSelected":  "Selected",
                     "chooseApplicationsSingular":  "{0} and 1 more",
                     "chooseApplicationsTooMany":  "More results than can be shown. Please filter using the search box.",
-                    "chooseLocationCorpnetItem":  "Corporate network",
                     "chooseLocationSelectedLocationsLabel":  "Selected locations",
                     "chooseLocationTrustedIpsItem":  "Multifactor authentication trusted IPs",
                     "chooseLocationsBladeSubtitle":  "",
@@ -10930,6 +10951,7 @@
                     "chooseLocationsSelectionBladeIncludedSelectorTitle":  "Select",
                     "chooseLocationsSingular":  "{0} and 1 more",
                     "chooseLocationsTooMany":  "More results than can be shown. Please filter using the search box.",
+                    "chooseNetworkLocationSelectedNetworksLocationsLabel":  "Selected networks and locations",
                     "claimProviderAddCommandText":  "New custom control",
                     "claimProviderAddNewBladeTitle":  "New custom control",
                     "claimProviderDeleteCommand":  "Delete",
@@ -11053,7 +11075,6 @@
                     "clientTypeOtherClientsInfo":  "This includes older office clients and other mail protocols(POP, IMAP, SMTP, etc). [Learn more][1]\n[1]: https://aka.ms/caclientapps\n",
                     "cloudAppCountDiffBannerText":  "{0} cloud apps configured in this policy have been deleted from the directory, but this doesn't affect the other apps in the policy. The next time you update the application section of the policy, the deleted apps will be automatically removed from it.",
                     "cloudAppsSelectionBladeAllMicrosoftApps":  "All Microsoft apps",
-                    "cloudAppsSelectionExcludeAllMicrosoftClients":  "Allow Microsoft cloud, desktop and mobile apps (Preview)",
                     "cloudappsSelectionBladeAllCloudapps":  "All cloud apps",
                     "cloudappsSelectionBladeExcludeDescription":  "Select the cloud apps to exempt from the policy",
                     "cloudappsSelectionBladeExcludedSelectorTitle":  "Select excluded cloud apps",
@@ -11061,8 +11082,10 @@
                     "cloudappsSelectionBladeIncludedSelectorTitle":  "Select",
                     "cloudappsSelectionBladeSelectedCloudapps":  "Select apps",
                     "cloudappsSelectorInfoBallonText":  "Services which the user accesses to do work. For example, 'Salesforce'",
+                    "cloudappsSelectorNone":  "No cloud apps, actions, or authentication context selected",
                     "cloudappsSelectorPluralExcluded":  "{0} apps excluded",
                     "cloudappsSelectorPluralIncluded":  "{0} apps included",
+                    "cloudappsSelectorRequired":  "Cloud apps, actions, or authentication context selection required",
                     "cloudappsSelectorSingularExcluded":  "1 app excluded",
                     "cloudappsSelectorSingularIncluded":  "1 app included",
                     "cloudappsSelectorUserPlural":  "{0} apps",
@@ -11195,6 +11218,7 @@
                     "locationSelectionBladeIncludeDescription":  "Select the locations to include in this policy",
                     "locationsAllLocationsLabel":  "Any location",
                     "locationsAllNamedLocationsLabel":  "All trusted IPs",
+                    "locationsAllNetworkLocationsLabel":  "Any network or location",
                     "locationsAllPrivateLinksLabel":  "All Private Links in my tenant",
                     "locationsIncludeExcludeLabel":  "{0} and exclude all trusted IPs",
                     "locationsSelectedPrivateLinksLabel":  "Selected Private Links",
@@ -11302,6 +11326,7 @@
                     "policiesBladeTitleWithAppName":  "Policies: {0}",
                     "policiesDisabledBannerText":  "Creating and editing policies is prohibited for applications with a linked single-sign-on attribute.",
                     "policiesHitMaxLimitStatusBarMessage":  "You've reached the maximum number of policies for this tenant. Delete some policies before creating more.",
+                    "policiesNewTabBadge":  "NEW",
                     "policyAssignmentsSection":  "Assignments",
                     "policyBlockAllInfoBox":  "The configured policy will block all users, so it is not supported. Review the assignments and controls. Exclude the current user {0}, if you would like to save this policy.",
                     "policyCloudAppsDisplayTextAllApp":  "All apps",
@@ -11312,14 +11337,21 @@
                     "policyConditionDevicePlatformDescription":  "Platform the user is signing in from. For example, 'iOS'",
                     "policyConditionHighUserRiskCheckboxAriaLabel":  "Group, configure user risk levels needed for policy to be enforced. High user risk level.",
                     "policyConditionLocation":  "Locations",
-                    "policyConditionLocationDescription":  "Location (determined using IP address range) the user is signing in from",
+                    "policyConditionLocationDescription":  "Locations (determined using IP address range) the user is signing in from",
                     "policyConditionLocationPreview":  "Locations (Preview)",
                     "policyConditionLowUserRiskCheckboxAriaLabel":  "Group, configure user risk levels needed for policy to be enforced. Low user risk level.",
                     "policyConditionMediumUserRiskCheckboxAriaLabel":  "Group, configure user risk levels needed for policy to be enforced. Medium user risk level.",
+                    "policyConditionNetwork":  "Network",
+                    "policyConditionNetworkLocationDescription":  "Network and locations (determined by IP address range or GPS coordinates) the user is signing in from",
+                    "policyConditionNetworks":  "Networks",
                     "policyConditionSigninRisk":  "Sign-in risk",
+                    "policyConditionSigninRiskCiamDescription":  "Sign-in risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionSigninRiskDescription":  "Likelihood that the sign-in is coming from someone other than the user. Risk level can be high, medium or low. Requires Microsoft Entra ID P2 license.",
+                    "policyConditionSigninRiskPreview":  "Sign-in risk (preview)",
                     "policyConditionUserRisk":  "User risk",
+                    "policyConditionUserRiskCiamDescription":  "User risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionUserRiskDescription":  "Configure user risk levels needed for policy to be enforced",
+                    "policyConditionUserRiskPreview":  "User risk (preview)",
                     "policyConditioniClientApp":  "Client apps",
                     "policyControlAllowAccessDisplayedName":  "Grant access",
                     "policyControlAuthenticationStrengthDisplayedName":  "Require authentication strength",
@@ -11450,6 +11482,7 @@
                     "startTimePickerLabel":  "Start time",
                     "sunday":  "Sunday",
                     "targetAppsReauthWarning":  "Over prompting users for reauthentication can occur when the \"Sign-in Frequency - every time\" setting is enabled in some applications. {0}Read more about the recommended scenarios.{1}",
+                    "targetSelect":  "Select target type",
                     "testButton":  "What If",
                     "thumbprintCol":  "Thumbprint",
                     "thursday":  "Thursday",
@@ -11550,8 +11583,9 @@
                     "whatIfEvaResultPolicyNotEnabled":  "Policy not enabled",
                     "whatIfEvaResultSignInRisk":  "Sign-in risk",
                     "whatIfEvaResultUsers":  "Users and groups",
+                    "whatIfFormat":  "{0} - {1}",
                     "whatIfInsiderRisk":  "Insider risk (Preview)",
-                    "whatIfInsiderRiskInfo":  "Adaptive Protection risk level that's assigned to the user. (Preview)",
+                    "whatIfInsiderRiskInfo":  "Insider risk that's assigned to user.",
                     "whatIfIpAddress":  "IP address",
                     "whatIfIpAddressInfo":  "IP address the user is signing in from.",
                     "whatIfIpCountryInfoBoxText":  "If using an IP address or Country, both fields will be required and should correctly map together.",
@@ -11559,6 +11593,7 @@
                     "whatIfPolicyAppliesTabWithCount":  "Applicable policies ({0})",
                     "whatIfPolicyDoesNotApplyTab":  "Policies that will not apply",
                     "whatIfPolicyDoesNotApplyTabWithCount":  "Inapplicable policies ({0})",
+                    "whatIfPreviewTitle":  "What If (Preview)",
                     "whatIfReasons":  "Reasons why this policy will not apply",
                     "whatIfSelectAuthenticationFlow":  "Select authentication flow...",
                     "whatIfSelectClientApp":  "Select a client app...",
@@ -11661,6 +11696,9 @@
                                                      "ariaLabel":  "row {0} of {1} column {2}"
                                                  }
                                      },
+                            "InventoryCatalog":  {
+                                                     "subtitle":  "Start from scratch and select the properties you want from the library of available inventory properties"
+                                                 },
                             "SettingsCatalog":  {
                                                     "subtitle":  "Start from scratch and select settings you want from the library of available settings",
                                                     "title":  "Settings catalog"
@@ -11947,7 +11985,7 @@
                                    "minVersion":  "Min Version",
                                    "nameHint":  "This will be the primary attribute visible for identifying the restriction set.",
                                    "noAssignmentsStatusBar":  "Assign restriction to at least one group. Click Properties.",
-                                   "nonAdminForbiddenCreate":  "You must be an admin to create restrictions.",
+                                   "nonAdminForbiddenCreateError":  "You must be an Intune Service or Global Administrator to create, edit or delete restrictions.",
                                    "nonAdminForbiddenEdit":  "You must be an admin to edit restrictions.",
                                    "notFound":  "Restriction not found. It may have already been deleted.",
                                    "personallyOwned":  "Personally owned devices",
@@ -12348,6 +12386,7 @@
                                "complianceWindows8":  "Windows 8 compliance policy",
                                "complianceWindowsPhone":  "Windows Phone compliance policy",
                                "exchangeActiveSync":  "Exchange Active Sync",
+                               "inventoryCatalog":  "Properties catalog",
                                "iosCustom":  "Custom",
                                "iosDerivedCredentialAuthenticationConfiguration":  "Derived PIV credential",
                                "iosDeviceFeatures":  "Device features",
@@ -12515,12 +12554,12 @@
                                  },
     "Titles":  {
                    "ChromeOs":  {
-                                    "devices":  "Chrome OS devices (preview)"
+                                    "devices":  "ChromeOS devices"
                                 },
                    "ManagedDesktop":  {
                                           "adminContacts":  "Admin contacts",
                                           "appPackaging":  "App packaging",
-                                          "businessGroups":  "Business Groups",
+                                          "autopatchGroups":  "Autopatch groups",
                                           "devices":  "Devices",
                                           "feedback":  "Feedback",
                                           "gettingStarted":  "Getting started",
@@ -12560,7 +12599,7 @@
                    "brandingAndCustomization":  "Customization",
                    "cartProfiles":  "Cart profiles",
                    "certificateConnectors":  "Certificate connectors",
-                   "chromeEnterprise":  "Chrome Enterprise (preview)",
+                   "chromeEnterprise":  "Chrome Enterprise",
                    "cloudAttachedDevices":  "Cloud attached devices (preview)",
                    "cloudPcActions":  "Cloud PC actions (preview)",
                    "cloudPcMaintenanceWindows":  "Cloud PC maintenance windows (Preview)",
@@ -12658,11 +12697,11 @@
                    "userExecutionStatus":  "User status",
                    "wdacSupplementalPolicies":  "S mode supplemental policies",
                    "win32CatalogUpdateApp":  "Updates for Windows (Win32) catalog apps",
+                   "win32CatalogUpdateAppInPreview":  "Updates for Windows (Win32) catalog apps (Preview)",
                    "windows10DriverUpdate":  "Driver updates for Windows 10 and later",
                    "windows10QualityUpdate":  "Quality updates for Windows 10 and later",
                    "windows10UpdateRings":  "Update rings for Windows 10 and later",
                    "windows10XPolicyFailures":  "Windows 10X policy failures",
-                   "windows365Connector":  "Windows 365 Citrix connector",
                    "windows365PartnerConnector":  "Windows 365 partner connectors",
                    "windowsDiagnosticData":  "Windows data",
                    "windowsEnterpriseCertificate":  "Windows enterprise certificate",

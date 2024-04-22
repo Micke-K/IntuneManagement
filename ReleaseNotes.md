@@ -1,4 +1,41 @@
 # Release Notes
+## 3.9.6 - 2024-04-22
+
+**BREAKING CHANGE**<br />
+Microsoft are decommissioning the Intune PowerShell App with id d1ddf0e4-d672-4dae-b554-9d5bdfd93547, mentioned [here](https://learn.microsoft.com/en-us/mem/intune/fundamentals/whats-new#plan-for-change-update-your-powershell-scripts-with-a-microsoft-entra-id-registered-app-id-by-april-2024)<br />
+This was the default app in IntuneManagement. The default app is now changed to Microsoft Graph PowerShell app with id 14d82eec-204b-4c2f-b7e8-296a70dab67e<br />
+The script will automatically use that app for new installationsbr<br />
+A warning to change will be displayed if d1ddf0e4-d672-4dae-b554-9d5bdfd93547 is used<br />
+You can also register a new app, documented [here](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) and then configure that app in Settings<br />
+<br />
+*Note*: This might require consent for the required permissions<br />
+<br />
+There is no change if you are currently using a custom app or already changed to Microsoft Graph PowerShell in Settings<br />
+<br />
+Also note that changing application will reset cached accounts<br />
+
+**New features**
+
+- **Compare**<br />
+  - Added support for ignoring Basic properties and Assignments<br />
+  Based on [Issue 203](https://github.com/Micke-K/IntuneManagement/issues/203) and [Issue 128](https://github.com/Micke-K/IntuneManagement/issues/128)<br />
+  **NOTE:** Properties will be logged but with empty value for Match<br />
+
+**Fixes**
+- **Compare**<br />
+  - Fixed issue when comparing Settings Catalog settings with child settings eg Hardened UNC Paths in Security Baseline<br />
+- **Import/Export**<br />
+  - Added support for import of MSIX app content<br />
+  Based on [Discussion 191](https://github.com/Micke-K/IntuneManagement/discussions/191)<br />
+  - Disable autoload of modules to prevent loading MSGraph module if found<br />
+  Based on [Issue 208](https://github.com/Micke-K/IntuneManagement/issues/208)<br />
+
+- **Documentation**<br />
+  - Language files re-generated.<br />
+  - AppTypes file re-generated. Some apps were not documented with proper name.<br />
+
+  <br />
+
 ## 3.9.5 - 2024-01-20
 
 **Fixes**

@@ -37,6 +37,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -44,27 +46,39 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='0'>
+        <StackPanel Orientation="Horizontal" Grid.Row='0' Margin="0,5,5,0" >
+            <Label Content="Skip Basic Properties" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Skip basic properties like name, description, modified etc." />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='0' Name='chkSkipCompareBasicProperties' VerticalAlignment="Center" IsChecked="false" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="0,5,5,0" >
+            <Label Content="Skip Assignments" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Skip comapring assignments." />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='1' Name='chkSkipCompareAssignments' VerticalAlignment="Center" IsChecked="false" />
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='2'>
             <Label Content="Save as" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specifies how the export csv should be saved. One file per ObjectType or one file for all objects." />
         </StackPanel>
-        <ComboBox Name="cbCompareSave" Margin="0,5,0,0" MinWidth="250" Grid.Row='0' Grid.Column="1" HorizontalAlignment="Left" 
+        <ComboBox Name="cbCompareSave" Margin="0,5,0,0" MinWidth="250" Grid.Row='2' Grid.Column="1" HorizontalAlignment="Left" 
                     DisplayMemberPath="Name" SelectedValuePath="Value"  />    
 
-        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='1' >
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='3' >
             <Label Content="Comparison Type" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify how objects should be compared" />
         </StackPanel>
-        <ComboBox Name="cbCompareType" Margin="0,5,0,0" MinWidth="250" Grid.Row='1'  Grid.Column="1" HorizontalAlignment="Left" 
+        <ComboBox Name="cbCompareType" Margin="0,5,0,0" MinWidth="250" Grid.Row='3'  Grid.Column="1" HorizontalAlignment="Left" 
                                 DisplayMemberPath="Name" SelectedValuePath="Value"  />
 
-        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='2' >
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='4' >
             <Label Content="CSV Delimiter" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the character to use for separating properties in the CSV file" />
         </StackPanel>
-        <ComboBox Name="cbCompareCSVDelimiter" Margin="0,5,0,0" MinWidth="250" Grid.Row='2'  Grid.Column="1" HorizontalAlignment="Left"  />                                
+        <ComboBox Name="cbCompareCSVDelimiter" Margin="0,5,0,0" MinWidth="250" Grid.Row='4'  Grid.Column="1" HorizontalAlignment="Left"  />                                
 
-        <Grid Margin="0,0,5,0" Grid.Row='3' >
+        <Grid Margin="0,0,5,0" Grid.Row='5' >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>                
             </Grid.RowDefinitions>
@@ -74,7 +88,7 @@
             </StackPanel>
         </Grid>
     
-        <DataGrid Name="dgObjectsToCompare" Margin="0,5,0,5" Grid.Row='3' Grid.Column='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" />
+        <DataGrid Name="dgObjectsToCompare" Margin="0,5,0,5" Grid.Row='5' Grid.Column='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" />
 
     </Grid>
 

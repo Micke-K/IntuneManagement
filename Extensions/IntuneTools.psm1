@@ -22,7 +22,7 @@ $global:EMToolsViewObject = $null
 
 function Get-ModuleVersion
 {
-    '1.0.4'
+    '1.0.5'
 }
 
 function Invoke-InitializeModule
@@ -82,7 +82,7 @@ function Add-EMToolsViewItem
             Activating = { Invoke-EMToolsActivatingView }
             Authentication = (Get-MSALAuthenticationObject)
             Authenticate = { Invoke-EMToolsAuthenticateToMSAL }
-            AppInfo = (Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547")
+            AppInfo = (Get-GraphAppInfo "EMAzureApp" $global:DefaultAzureApp)
             SaveSettings = { Invoke-EMSaveSettings }
             Permissions = @()
         })
@@ -121,7 +121,7 @@ function Invoke-EMToolsActivatingView
 
 function Invoke-EMToolsAuthenticateToMSAL
 {
-    $global:EMToolsViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" "d1ddf0e4-d672-4dae-b554-9d5bdfd93547"
+    $global:EMToolsViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" $global:DefaultAzureApp
     Set-MSALCurrentApp $global:EMToolsViewObject.AppInfo
     $usr = (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser"))
     if($usr)
