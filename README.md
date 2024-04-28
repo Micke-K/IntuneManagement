@@ -6,11 +6,11 @@
   </a>
 </p>
 
-These PowerShell scripts are using Microsoft Authentication Library (MSAL), Microsoft Graph APIs and Azure Management APIs to manage objects in Intune and Azure. The scripts has a simple WPF UI and it supports operations like Export, Import, Copy, Download, Compare etc.
+These PowerShell scripts are using Microsoft Authentication Library (MSAL), Microsoft Graph APIs and Azure Management APIs to manage objects in Intune and Azure. The scripts have a simple WPF UI and it supports operations like Export, Import, Copy, Download, Compare etc.
 
 This makes it easy to backup or clone a complete Intune environment. The scripts can export and import objects including assignments and support import/export between tenants. The scripts will create a migration table during export and use that for importing assignments in other environments. It will create missing groups in the target environment during import. Group information like name, description and type will be imported based on the exported group e.g. dynamic groups are supported. There will be one json file for each group in the export folder.
 
-The script also support dependencies e.g. an App Protection is depending on an App, Policy Sets are depending on Compliance Policies, objects has Scope Tags etc. Dependency support requires exported json files and that the dependency objects are imported in the environment. The script uses the exported json files to get the Id and name's of the exported object and uses that information and updates Id's before import an object from a json file. The Bulk Import form shows the import order of the objects. The objects with the lowest order number will be imported first.
+The script also support dependencies e.g. an App Protection is depending on an App, Policy Sets are depending on Compliance Policies, objects has Scope Tags etc. Dependency support requires exported json files and that the dependency objects are imported in the environment. The script uses the exported json files to get the Id and names of the exported object and uses that information and updates Id's before import an object from a json file. The Bulk Import form shows the import order of the objects. The objects with the lowest order number will be imported first.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/IntuneManagement.PNG" height="80%" width="80%"/>
@@ -29,7 +29,7 @@ Before starting the app:
 
 Before logging on:
 
-* The app will use the Intune PowerShell Azure Enterprise Application by default and only use the permissions granted to that appliction. Disable **Use Default Permissions** in Settings to request additional permissions. The will cause a consent prompt if one or more permissions are missing for the app.
+* The app will use the Intune PowerShell Azure Enterprise Application by default and only use the permissions granted to that appliction. Disable **Use Default Permissions** in Settings to request additional permissions. This will cause a consent prompt if one or more permissions are missing for the app.
   **Note:** If the app has not been approved for the organization, a consent prompt will be displayed.  
 * Enable **Get Tenant List** in Settings if accessing multiple environments with the same account e.g. a guest account in other tenants. This might cause a Consent prompt
 
@@ -46,7 +46,7 @@ Silent batch job is supported by the following features:
 
 The Silent Batch Job feature requires an Azure App to be configured with a secret or a certificate. The app must also be delegated with the required permissions to Graph objects used by the tool.
 
-The silent feature uses an exported json file with settings for the specified operation. This file can be generated in the Bulk Export/Import forms. Required settings for the silent job is configured in the form and then exported to a file. The path to the file is then passed on the command line. The file can be used for multiple environments if the **Add company name to the path** option is selected. Note that this requires that the appmust have at least read permission on the Organizations API.
+The silent feature uses an exported json file with settings for the specified operation. This file can be generated in the Bulk Export/Import forms. Required settings for the silent job is configured in the form and then exported to a file. The path to the file is then passed on the command line. The file can be used for multiple environments if the **Add company name to the path** option is selected. Note that this requires that the app must have at least read permission on the Organizations API.
 
 The following variables can be used in the path and filename:
 
@@ -96,7 +96,7 @@ The script can import the exported json files in multiple ways.
   
 * **Update (Preview):** This will update the existing object.
   
-  The update APIs does not support all the properties that the import API sdoes and object types behaves differently during update e.g. Settings for **Endpoint Security** objects will not be cleared. There is no API for removing settings, only adding. If a setting does not exist in the import file, the existing setting will be set to *Not Configured*. **Settings Catalog** replaces the whole settings property during update. 
+  The update APIs do not support all the properties that the import APIs do and object types behaves differently during update e.g. Settings for **Endpoint Security** objects will not be cleared. There is no API for removing settings, only adding. If a setting does not exist in the import file, the existing setting will be set to *Not Configured*. **Settings Catalog** replaces the whole settings property during update. 
   
   This has been tested with all supported object types *except* Import Scripts (Shell), Android OEM Config and Apple Enrollment Types.
   
@@ -163,7 +163,7 @@ Additional Intune Tools is included in the script.
 
 * Intune Assignments
   * Quickly gather all assignments from an export
-  * Easily identify all profiles/polices a group is assigned to
+  * Easily identify all profiles/policies a group is assigned to
   * Export as CSV to analyse in Excel 
 
 See [ADMX Import](ADMXImport.md) for more information about the ADMX tools
@@ -172,9 +172,9 @@ See [ADMX Import](ADMXImport.md) for more information about the ADMX tools
 
 Custom columns is supported. The script will by default add id, displayName and description with exception for some object types. These are configured in the EndpointManager.ps1 and  EndpointManagerInfo.psm1 files.
 
-Custom columns can be added for each Object Type in the detealed view of an Object. 
+Custom columns can be added for each Object Type in the detailed view of an Object. 
 
-Custom Columuns settings are stored in the regitry, in HKCU\SOFTWARE\CloudAPIPowerShellManagement\EndpointManager\ObjectColumns\\*ObjectType*.
+Custom Columns settings are stored in the regitry, in HKCU\SOFTWARE\CloudAPIPowerShellManagement\EndpointManager\ObjectColumns\\*ObjectType*.
 
 The *ObjectType* value represents the ViewItem ID specified in the EndpointManager.ps1 and EndpointManagerInfo.psm1 files. This is also the same as the parent folder when items are exported.
 
@@ -324,7 +324,7 @@ Logout will only clear the token from cache and not from the browser e.g. if log
 ~~Referenced settings will NOT be imported/copied. There is no value stored in a property on the object for these settings. Example: A VPN profile has certificates as referenced properties. The certificates must be added manually after import/copy.~~
 Issue fixed in 3.5.0 
 
-Terms of Use requires that the pdf file is available. This must be manually coped to either the Export folder for Terms of Use or to the Intune Application folder specified in Settings. It is currently not possible to export the pdf file with Graph API. 
+Terms of Use requires that the pdf file is available. This must be manually copied to either the Export folder for Terms of Use or to the Intune Application folder specified in Settings. It is currently not possible to export the pdf file with Graph API. 
 
 The ADMX/ADML files must be manually copied to either the Export folder for Administrative Templates or to the Intune Application folder specified in Settings. It is currently not possible to export the pdf file with Graph API.
 
