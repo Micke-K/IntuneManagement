@@ -29,7 +29,7 @@ The MSAL authentication will create a token that is used when calling APIs in Mi
 
 The token expire after 1 hour. The script will do a "login" every time it calls an API. MSAL will manage the refresh of the token and only refresh it when it is about to expire or after it has expired. If the token needs to be refreshed e.g. the user was added to a new role, a forced refresh can be triggered in the Profile Info popup.  
 
-The Token info will show information like role memberships, expiry time, scope etc. There are three toke information available:
+The Token info will show information like role memberships, expiry time, scope etc. There are three tokens with information available:
 
 * MSAL Token - Token created when authenticating with MSAL. Contains the Access and ID tokes
 * Access token - Token contains permissions information and used when calling Microsoft Graph APIs 

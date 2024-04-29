@@ -2,7 +2,7 @@
 
 The script can document most of the profiles and policies in Intune. The output can either be CSV or Word. Documenting to Word can either be to an existing Word template or empty document. There are many options for the documentation e.g. Language, Header styles, Table styles, managing not configured items etc.  
 
-The idea behind the documentation method in the script is to output the information as close to the Endpoint Manager portal as possible. Some of the objects has a different property name or value in the Summary text vs Edit mode in the portal. The documentation will then use the Edit mode information when possible. Some policies and profiles might have a slightly different order that the portal.
+The idea behind the documentation method in the script is to output the information as close to the Endpoint Manager portal as possible. Some of the objects has a different property name or value in the Summary text vs Edit mode in the portal. The documentation will then use the Edit mode information when possible. Some policies and profiles might have a slightly different order than the portal.
 
 The objects can be documented in three ways:
 
@@ -28,7 +28,7 @@ Please read the [Deep Dive](#deep-dive) section below for a detailed description
 
 The script can document the objects in any language supported by Intune. 
 
-Note that some profiles and properties does not have language support. These will be documented in English.
+Note that some profiles and properties do not have language support. These will be documented in English.
 
 **Known Issues**
 
@@ -36,7 +36,7 @@ This is the first version of the documentation support.
 
 * There are over 100 different object types. Not all are supported and not all supported object types are tested and verified. 
 
-* Property based profiles might be missing some properties. Some properties in the translation files are generated at runtime. Support for these properties are added in the custom documentation provider
+* Property based profiles might be missing some properties. Some properties in the translation files are generated at runtime. Support for these properties are added in the custom documentation provider.
 
 * Some complex type properties are not translated in this version e.g. the screen layout of apps on the iPhone. 
 
@@ -52,7 +52,7 @@ This is the first version of the documentation support.
 
 * Some Endpoint Security polices are NOT deviceManagementIntent objects. They are actually Settings Catalog objects and they will be listed with the Settings Catalog items e.g. *Antivirus - Windows 10 and Windows Server (ConfigMgr)* policies
 
-* Some Endpoint Security/Settings Catalog items is not translated based on Graph API in the portal e.g. *Antivirus - Windows 10 and Windows Server (ConfigMgr)* policies.  These will be documented based on Graph API information which might be different compared to the portal
+* Some Endpoint Security/Settings Catalog items are not translated based on Graph API in the portal e.g. *Antivirus - Windows 10 and Windows Server (ConfigMgr)* policies.  These will be documented based on Graph API information which might be different compared to the portal
 
 * Markdown is currently in experimental state. The script can document to an MD file created in the Documents folder but this can be to large in environments with many objects. The script will create HTML tables to support code blocks and column span. The MD View must support HTML tables to display the document. The *Markdown Viewer* extension in Chrome was used during testing.
 
@@ -93,7 +93,7 @@ Property based objects are very complex to document. These objects can be docume
 * PowerShell function
 * Or a combination of PowerShell and manually created json files 
 
-Json files for translating property objects to documentation is located in the Documentation\ObjectInfo folder. All files that start with a # is manually created. These can either be based on the object type (@OData.Type) or the Object Type Id (specified in the EndpointManager.psm1 file). Files that does not start with a # are automatically generated and the `ObjectCategories.json` file contains the mapping between the Intune object and associated json files. One object type can be associated with multiple files. Each file represents one category of the object.
+Json files for translating property objects to documentation is located in the Documentation\ObjectInfo folder. All files that start with a # are manually created. These can either be based on the object type (@OData.Type) or the Object Type Id (specified in the EndpointManager.psm1 file). Files that does not start with a # are automatically generated and the `ObjectCategories.json` file contains the mapping between the Intune object and associated json files. One object type can be associated with multiple files. Each file represents one category of the object.
 
 The generated files sometimes requires additional manually created properties. These could be properties in the UI that has a Yes/No, Enabled/Not Configured etc. trigger associated with a specific value. These properties must be manually added to the object before the documentation. The `DocumentationCustom.psm1` file takes care of this. This file is also used for overriding the documentation of specific values and other custom required processing.    
 
@@ -103,7 +103,7 @@ The `DocumentationCustom.psm1` file also takes care of custom documentation for 
 
 **Language Support**
 
-The Settings based objects get their language strings from Graph APIs with a few exemptions.
+The Settings based objects get their language strings from Graph APIs with a few exceptions.
 
 The property based objects uses static language files. Each language file is generated based on multiple language files. Not all the language information is included in these files to reduce the output size. This could reduce the possibility to create custom documentation with multi language support.
 
@@ -111,7 +111,7 @@ These files will have to be re-generated when new functionality is released in I
 
 **Scripts for Generated Files**
 
-The scripts that automatically generates language files, translation files, object info etc. are not included in the release. These scripts are currently not in a state that they can be released. The best would be if Microsoft released all the required information in Graph. A deep dive into graph suggests that it might be possible in the future since some information about the generated files are there but with some properties missing or language text missing. The information can't be accessed unless an API is called that gets the definition for all the profiles at the same time (the file is over 100MB). 
+The scripts that automatically generate language files, translation files, object info etc. are not included in the release. These scripts are currently not in a state that they can be released. The best would be if Microsoft released all the required information in Graph. A deep dive into graph suggests that it might be possible in the future since some information about the generated files are there but with some properties missing or language text missing. The information can't be accessed unless an API is called that gets the definition for all the profiles at the same time (the file is over 100MB). 
 
 ## Extending The Documentation
 
@@ -132,9 +132,9 @@ The priority order for object documentation is:
 
 **Documentation Provider**
 
-The documentation provider takes care of collecting all the information about the object. The `DocumentationCustom.psm1` file is an example of this. This file has examples of custom translation of properties for json files and examples of custom translation of objects via a PowerShell functions.
+The documentation provider takes care of collecting all the information about the object. The `DocumentationCustom.psm1` file is an example of this. This file has examples of custom translation of properties for json files and examples of custom translation of objects via PowerShell functions.
 
-Documentation providers has a Priority property. This defines in what order the providers will be triggered. The provider with the lowest priority number will be executed first. The included custom documentation provider has a priority number of 1000. The information gathering of the provider can be overridden by creating a custom documentation provider with a lower priority number.
+Documentation providers have a Priority property. This defines in what order the providers will be triggered. The provider with the lowest priority number will be executed first. The included custom documentation provider has a priority number of 1000. The information gathering of the provider can be overridden by creating a custom documentation provider with a lower priority number.
 
 **Documentation Output Provider**
 

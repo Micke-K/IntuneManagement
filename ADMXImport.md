@@ -12,7 +12,7 @@ Microsoft links:
 
 ## ADMX Import
 
-The **ADMX Import** tool is used for configuring 3rd party applications e.g. Chrome, Google Update etc., These ADMX files are available from the software vendor. An ADMX can be loaded in the tool and all settings can be configured using a similar UI as GPMC. When the ADMX is loaded, the script will look for an ADML file that is either in the same directory or in the en-US subdirectory. An ADML file can also be loaded manually, if another language should be used in the UI.
+The **ADMX Import** tool is used for configuring 3rd party applications e.g. Chrome, Google Update etc. These ADMX files are available from the software vendor. An ADMX can be loaded in the tool and all settings can be configured using a similar UI as GPMC. When the ADMX is loaded, the script will look for an ADML file that is either in the same directory or in the en-US subdirectory. An ADML file can also be loaded manually, if another language should be used in the UI.
 
 <img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/ADMXExample.png" height="50%" width="50%"/>
 
@@ -24,11 +24,11 @@ A policy setting can either be edited via double-clicking an item or right-click
 
 The *Intune OMA-URI name* property specifies the name of the OMA-URI row in the Custom Profile. This is optional and if it is not specified, the script will use the name of the policy.
 
-A policy must be set to Enabled before any changes can be made. The *Policy* tab will list all possible settings for the policy. This could be a dropdown box, text box, check box, numeric up-down box etc. The script creates the controls based on the presentation settings in the ADML file. An ADML is not mandatory but the controls and the UI could cause unpredictive results. Always use the associated ADML for correctly generated controls.
+A policy must be set to Enabled before any changes can be made. The *Policy* tab will list all possible settings for the policy. This could be a dropdown box, text box, check box, numeric up-down box etc. The script creates the controls based on the presentation settings in the ADML file. An ADML is not mandatory but the controls and the UI could cause unpredictable results. Always use the associated ADML for correctly generated controls.
 
 <img src="https://raw.githubusercontent.com/Micke-K/IntuneManagement/master/ADMXSettingExampleOMAURI.png" height="50%" width="50%"/>
 
-The *OMA-URI Settings* tab contains the configured settings. This is the string that will be added to the enabled policy. This can be manually configure in case there is something that is not supported by the script. Do **NOT** add <enabled /> or <disabled /> to this text box. The script will add that automatically.  If *Manual configuration* is checked, the script will upload the text as it is specified, including additional manual changes. If it is not checked, the script will generate the text when importing the profile. If manual configuration is added and then checkbox is cleared, those changes will be lost during the upload.
+The *OMA-URI Settings* tab contains the configured settings. This is the string that will be added to the enabled policy. This can be manually configured in case there is something that is not supported by the script. Do **NOT** add <enabled /> or <disabled /> to this text box. The script will add that automatically.  If *Manual configuration* is checked, the script will upload the text as it is specified, including additional manual changes. If it is not checked, the script will generate the text when importing the profile. If manual configuration is added and then checkbox is cleared, those changes will be lost during the upload.
 
 The *XML Definition* tab contains the XML node for the ADMX policy. This is used for reference in case manual configuration is required.
 
