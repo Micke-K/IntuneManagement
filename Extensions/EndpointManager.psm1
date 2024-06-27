@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.9.6'
+    '3.9.7'
 }
 
 function Invoke-InitializeModule
@@ -217,6 +217,21 @@ function Invoke-InitializeModule
     })
 
     Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Compliance Policies - V2"
+        Id = "CompliancePoliciesV2"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/compliancePolicies"
+        NameProperty = "Name"
+        PropertiesToRemove = @('settingCount')
+        ViewProperties = @("name","description","Id")
+        Expand="settings"
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        GroupId = "CompliancePolicies"
+        Icon = "CompliancePolicies"
+    })
+
+    
+    Add-ViewItem (New-Object PSObject -Property @{
         Title = "Compliance Scripts"
         Id = "ComplianceScripts"
         ViewID = "IntuneGraphAPI"
@@ -391,6 +406,8 @@ function Invoke-InitializeModule
         Icon="CustomAttributes"
         GroupId = "CustomAttributes" # MacOS Settings
         DetailExtension = { Add-ScriptExtensions @args }
+        ExportExtension = { Add-ScriptExportExtensions @args }
+        PostExportCommand = { Start-PostExportScripts @args }
         PropertiesToRemoveForUpdate = @('customAttributeName','customAttributeType','displayName')
         #PreUpdateCommand = { Start-PreUpdateMacCustomAttributes @args }
     })    
@@ -1348,7 +1365,7 @@ function Start-PostExportCompliancePolicies
             foreach($notificationMessageCCGroup in $scheduledActionConfiguration.notificationMessageCCList)
             {
                 Add-GroupMigrationObject $notificationMessageCCGroup
-            }            
+            }
         }
     }
 }

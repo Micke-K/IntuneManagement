@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '2.2.0'
+    '2.2.1'
 }
 
 function Invoke-InitializeModule
@@ -828,6 +828,10 @@ function Get-ObjectPlatformFromType
     elseif($lowerAppType.Contains("windows") -or $lowerAppType.Contains("win32") -or $lowerAppType.Contains("mirosoftstore"))
     {
         $platform = "Windows10"
+    }
+    elseif($lowerAppType.Contains("androidForWork"))
+    {
+        $platform = "androidForWork"
     }
     elseif($lowerAppType.Contains("android"))
     {
@@ -1916,7 +1920,7 @@ function Invoke-TranslateProfileObject
     }
     else
     {
-        # Shuld only be one file. Compliance policies might have more
+        # Should only be one file. Compliance policies might have more
         $files = [IO.Directory]::EnumerateFiles($global:AppRootFolder + "\Documentation\ObjectInfo", "*_$($objInfo.PolicyType).json")
         if(($files | measure).Count -eq 0)
         {
@@ -2655,7 +2659,8 @@ function Get-PropertyInfo
         RawJsonValue=$jsonValue
         DefaultValue=$defValue
         FullValueTable = $tableValue 
-        UnconfiguredValue=$prop.unconfiguredValue
+        UnconfiguredValue = $prop.unconfiguredValue
+        AlwaysAddValue = $prop.alwaysAddValue -eq $true
         Enabled=$prop.Enabled 
         EntityKey=$prop.EntityKey
         Level=$script:propLevel
@@ -4554,7 +4559,11 @@ function local:Invoke-StartDocumentatiom
                                 break
                             }
                             
-                            if($global:chkSkipNotConfigured.IsChecked -and (($item.RawValue -isnot [array] -and ([String]::IsNullOrEmpty($item.RawValue) -or ("$($item.RawValue)" -eq "notConfigured"))) -or ($item.RawValue -is [array] -and ($item.RawValue | measure).Count -eq 0)))
+                            if($item.AlwaysAddValue -eq $true)
+                            {
+                                
+                            }
+                            elseif($global:chkSkipNotConfigured.IsChecked -and (($item.RawValue -isnot [array] -and ([String]::IsNullOrEmpty($item.RawValue) -or ("$($item.RawValue)" -eq "notConfigured"))) -or ($item.RawValue -is [array] -and ($item.RawValue | measure).Count -eq 0)))
                             {
                                 # Skip unconfigured items e.g. properties with null values
                                 # Note: This could removed configured properties if RawValue is not specified
@@ -4602,7 +4611,7 @@ function local:Invoke-StartDocumentatiom
                         }
     
                         $documentedObj | Add-Member Noteproperty -Name "FilteredSettings" -Value $filteredSettings -Force 
-                                              
+
                         & $global:cbDocumentationType.SelectedItem.Process $obj.Object $obj.ObjectType $documentedObj
                     }
                 }

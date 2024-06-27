@@ -518,6 +518,7 @@ function Write-AzureStorageChunk
 	$encodedBody = $iso.GetString($body)
 	$headers = @{
 		"x-ms-blob-type" = "BlockBlob"
+        "Content-Type" = "application/octet-stream"
 	}
 
     $curProgressPreference = $ProgressPreference

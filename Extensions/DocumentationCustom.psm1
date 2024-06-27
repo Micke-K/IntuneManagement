@@ -10,7 +10,7 @@ This module will also document some objects based on PowerShell functions
 
 function Get-ModuleVersion
 {
-    '1.6.4'
+    '1.6.5'
 }
 
 function Invoke-InitializeModule
@@ -76,9 +76,18 @@ function Invoke-CDDocumentObject
             Properties = @("Name","Value") 
         }
     }
-    elseif($type -eq '#microsoft.graph.iosMobileAppConfiguration')
+    elseif($type -eq '#microsoft.graph.androidManagedStoreAppConfiguration') {
+
+        Invoke-CDDocumentAndroidManagedStoreAppConfiguration $documentationObj
+        
+        return [PSCustomObject]@{
+            Properties = @("Name","Value","Category","SubCategory")
+        }
+    }
+    elseif($type -eq '#microsoft.graph.androidForWorkMobileAppConfiguration' -or
+            $type -eq '#microsoft.graph.iosMobileAppConfiguration')
     {
-        Invoke-CDDocumentiosMobileAppConfiguration $documentationObj
+        Invoke-CDDocumentMobileAppConfiguration $documentationObj
         return [PSCustomObject]@{
             Properties = @("Name","Value","Category","SubCategory")
         }
@@ -1331,9 +1340,16 @@ function Add-CDDocumentCustomProfileProperty
     {
         if($obj.ScriptContent)
         {
-            Add-ObjectScript $obj.FileName ("{1} - {0}" -f $obj.displayName,(Get-LanguageString "WindowsManagement.shellScriptObjectName")) $rule.ScriptContent
+            Add-ObjectScript $obj.FileName ("{1} - {0}" -f $obj.displayName,(Get-LanguageString "WindowsManagement.shellScriptObjectName")) $obj.ScriptContent
         }
     }
+    elseif($obj.'@OData.Type' -eq "#microsoft.graph.deviceCustomAttributeShellScript")
+    {
+        if($obj.ScriptContent)
+        {
+            Add-ObjectScript $obj.FileName ("{1} - {0}" -f $obj.displayName,(Get-LanguageString "WindowsManagement.customAttributeObjectName")) $obj.ScriptContent
+        }
+    }    
     elseif($obj.'@OData.Type' -eq "#microsoft.graph.windows10TeamGeneralConfiguration")
     {
         $obj | Add-Member Noteproperty -Name "syntheticAzureOperationalInsightsEnabled" -Value ($obj.azureOperationalInsightsBlockTelemetry -eq $false)
@@ -1823,7 +1839,105 @@ function Get-CDDocumentOperatorString
 }
 
 # App Config
-function Invoke-CDDocumentiosMobileAppConfiguration
+function Invoke-CDDocumentAndroidManagedStoreAppConfiguration
+{
+    param($documentationObj)
+
+    $obj = $documentationObj.Object
+    $objectType = $documentationObj.ObjectType
+
+    $script:objectSeparator = ?? $global:cbDocumentationObjectSeparator.SelectedValue ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $global:cbDocumentationPropertySeparator.SelectedValue ","
+    
+    ###################################################
+    # Basic info
+    ###################################################
+
+    Add-BasicDefaultValues $obj $objectType
+    Add-BasicAdditionalValues $obj $objectType
+    #Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "SettingDetails.appConfiguration")
+    #Add-BasicPropertyValue (Get-LanguageString "Inputs.enrollmentTypeLabel") (Get-LanguageString "EnrollmentType.devicesWithEnrollment")
+
+    $allApps = Get-CDAllTenantApps
+    $appsList = @()
+
+    foreach($id in ($obj.targetedMobileApps))
+    {
+        $tmpApp = $allApps | Where Id -eq $id
+        $appsList += ?? $tmpApp.displayName $id
+    }
+
+    Add-BasicPropertyValue (Get-LanguageString "SettingDetails.targetedAppLabel") ($appsList -join $objSeparator)
+    
+    $category = Get-LanguageString "TableHeaders.settings"
+
+    if($obj.payloadJson)
+    {
+        $payloadData = $null
+        try
+        {
+            $payloadData = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.payloadJson)) | ConvertFrom-Json
+        }
+        catch
+        {
+            Write-LogError "Failed to get Json payload" $_.Exception
+            return
+        }
+
+        # Not the best way. BundleId should be used but then full app info is required
+        if($obj.packageId -eq "com.microsoft.office.outlook*")
+        {
+            if([IO.File]::Exists(($global:AppRootFolder + "\Documentation\ObjectInfo\#AppConfigOutlookDevice.json")))
+            {
+                $tmp = $obj.settings | Where { $_.appConfigKey -eq "com.microsoft.outlook.EmailProfile.AccountType" }
+                if($tmp){ $configEmail=$true }else{ $configEmail=$false }
+                $outlookSettings = [PSCustomObject]@{
+                    configureEmail = $configEmail
+                }
+                foreach($setting in $obj.settings)
+                {
+                    if($setting.appConfigKeyType -eq "booleanType")
+                    {
+                        $value = $setting.appConfigKeyValue -eq "true"
+                    }
+                    else
+                    {
+                        $value = $setting.appConfigKeyValue
+                    }
+                    $outlookSettings | Add-Member Noteproperty -Name $setting.appConfigKey -Value $value -Force
+                }
+
+                $jsonObj = Get-Content ($global:AppRootFolder + "\Documentation\ObjectInfo\#AppConfigOutlookDevice.json") | ConvertFrom-Json
+                Invoke-TranslateSection $outlookSettings $jsonObj
+            }
+        }                
+        
+        $addedSettings = Get-DocumentedSettings
+
+        foreach($managedProperty in $payloadData.managedProperty)
+        {
+            if(($addedSettings | Where EntityKey -eq $managedProperty.key)) { continue }
+
+            $valueProperty = $managedProperty.PSObject.Properties | Where-Object Name -like "value*"
+
+            $value = $valueProperty.value
+
+            if($value -is [Array]) {
+                $value = $value -join ","
+            }
+
+            Add-CustomSettingObject ([PSCustomObject]@{
+                Name = $managedProperty.key
+                Value = $value
+                EntityKey = $managedProperty.key
+                Category = Get-LanguageString "TACSettings.generalSettings"
+                SubCategory = Get-LanguageString "SettingDetails.additionalConfiguration"
+            })
+        }
+    }
+}
+
+function Invoke-CDDocumentMobileAppConfiguration
 {
     param($documentationObj)
 
@@ -1889,7 +2003,7 @@ function Invoke-CDDocumentiosMobileAppConfiguration
     else 
     {
         # Not the best way. BundleId should be used but then full app info is required
-        if(($obj.settings | Where { $_.appConfigKey -like "com.microsoft.outlook*" }))
+        if(($obj.packageId | Where { $_.appConfigKey -like "com.microsoft.outlook*" }))
         {
             if([IO.File]::Exists(($global:AppRootFolder + "\Documentation\ObjectInfo\#AppConfigOutlookDevice.json")))
             {

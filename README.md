@@ -43,6 +43,9 @@ Silent batch job is supported by the following features:
 
 * Export
 * Import
+* Documentation
+* Compare
+
 
 The Silent Batch Job feature requires an Azure App to be configured with a secret or a certificate. The app must also be delegated with the required permissions to Graph objects used by the tool.
 
@@ -248,6 +251,7 @@ Start-WithJson.cmd is included as an example on how to start the script with jso
 * Autopilot profiles
 * Baseline Security profiles
 * Compliance policies
+* Compliance policies v2
 * Compliance scripts
 * Conditional Access
 * Custom Attributes

@@ -39,6 +39,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -58,27 +60,39 @@
         </StackPanel>
         <CheckBox Grid.Column='1' Grid.Row='1' Name='chkSkipCompareAssignments' VerticalAlignment="Center" IsChecked="false" />
 
-        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='2'>
+        <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,5,5,0" >
+            <Label Content="Skip Missing Source Policies" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Skip policies that only exists in the destination." />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='2' Name='chkSkipMissingSourcePolicies' VerticalAlignment="Center" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,5,5,0" >
+            <Label Content="Skip Missing Destination Policies" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Skip policies missing in the destination." />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='3' Name='chkSkipMissingDestinationPolicies' VerticalAlignment="Center" />
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='4'>
             <Label Content="Save as" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specifies how the export csv should be saved. One file per ObjectType or one file for all objects." />
         </StackPanel>
-        <ComboBox Name="cbCompareSave" Margin="0,5,0,0" MinWidth="250" Grid.Row='2' Grid.Column="1" HorizontalAlignment="Left" 
+        <ComboBox Name="cbCompareSave" Margin="0,5,0,0" MinWidth="250" Grid.Row='4' Grid.Column="1" HorizontalAlignment="Left" 
                     DisplayMemberPath="Name" SelectedValuePath="Value"  />    
 
-        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='3' >
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='5' >
             <Label Content="Comparison Type" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify how objects should be compared" />
         </StackPanel>
-        <ComboBox Name="cbCompareType" Margin="0,5,0,0" MinWidth="250" Grid.Row='3'  Grid.Column="1" HorizontalAlignment="Left" 
+        <ComboBox Name="cbCompareType" Margin="0,5,0,0" MinWidth="250" Grid.Row='5'  Grid.Column="1" HorizontalAlignment="Left" 
                                 DisplayMemberPath="Name" SelectedValuePath="Value"  />
 
-        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='4' >
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='6' >
             <Label Content="CSV Delimiter" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the character to use for separating properties in the CSV file" />
         </StackPanel>
-        <ComboBox Name="cbCompareCSVDelimiter" Margin="0,5,0,0" MinWidth="250" Grid.Row='4'  Grid.Column="1" HorizontalAlignment="Left"  />                                
+        <ComboBox Name="cbCompareCSVDelimiter" Margin="0,5,0,0" MinWidth="250" Grid.Row='6'  Grid.Column="1" HorizontalAlignment="Left"  />                                
 
-        <Grid Margin="0,0,5,0" Grid.Row='5' >
+        <Grid Margin="0,0,5,0" Grid.Row='7' >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>                
             </Grid.RowDefinitions>
@@ -88,13 +102,24 @@
             </StackPanel>
         </Grid>
     
-        <DataGrid Name="dgObjectsToCompare" Margin="0,5,0,5" Grid.Row='5' Grid.Column='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" />
+        <DataGrid Name="dgObjectsToCompare" Margin="0,5,0,5" Grid.Row='7' Grid.Column='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" />
 
     </Grid>
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row='3' Grid.ColumnSpan='2' >
-        <Button Name="btnStartCompare" Content="Compare" Width='100' Margin="5,0,0,0" />
-        <Button Name="btnClose" Content="Close" Width='100' Margin="5,0,0,0" />
-    </StackPanel>                
+    <Grid Grid.Row='3' Grid.ColumnSpan='2' >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+            <Button Name="btnExportSettingsForSilentCompare" Content="Save" Width='100' Margin="5,0,0,0" ToolTip="Save settings for batch job" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"  Grid.Column="1" HorizontalAlignment="Right" >
+            <Button Name="btnStartCompare" Content="Compare" Width='100' Margin="5,0,0,0" />
+            <Button Name="btnClose" Content="Close" Width='100' Margin="5,0,0,0" />
+        </StackPanel>
+    </Grid >
 
 </Grid >

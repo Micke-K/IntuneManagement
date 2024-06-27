@@ -1,4 +1,45 @@
 # Release Notes
+## 3.9.7 - 2024-06-27
+
+**New features**
+
+- **Compare**<br />
+  - Added support for automation with batch job<br />
+  - Added a new Compare provider - Intune Objects with Exported Files (Name)<br />
+  This will support comparison exported policies between environments<br />
+  - Added support for skipping missing source policies<br />
+  - Added support for skipping missing destination policies<br />
+  Based on [Issue 203](https://github.com/Micke-K/IntuneManagement/issues/203) and [Issue 128](https://github.com/Micke-K/IntuneManagement/issues/128)<br />
+
+- **Compliance**<br />
+  - Added support for Compliance v2 policies eg Linx policies<br />
+
+**Fixes**
+- **Compare**<br />
+  - Renamed default provider to "Exported Files with Intune Objects (Id)" from "Intune Objects with Exported Files"<br />
+- **Generic**<br />
+  - Fixed issue with domain names with special characters in Profile info<br />
+  Based on [Issue 237](https://github.com/Micke-K/IntuneManagement/issues/237)<br />
+  - Lots of spelling and languag fixes  in documentation, script and UI<br />
+  A huge thank you to **@ee61r1** for doing all this!<br />
+
+- **Import/Export**<br />
+  - Added support for exporting script for MacOS Custom attribute<br />
+  Based on [Issue 244](https://github.com/Micke-K/IntuneManagement/issues/244)<br />
+
+- **Documentation**<br />
+  - App Configuration (Device) documentation updated<br />
+  Hopfully add support for Android. Not verified since I don't have one in my test environment<br />
+  Please continue discussion on the Issue below if this is still not working<br />
+  Based on [Issue 231](https://github.com/Micke-K/IntuneManagement/issues/231)<br />
+  - Added support for documenting MacOS Custom attribute<br />
+  Based on [Issue 244](https://github.com/Micke-K/IntuneManagement/issues/244)<br />
+  - Fixed issed when documenting Shell script. Code was not included<br />
+  - Language files re-generated<br />
+  - AppTypes file re-generated. Some apps were not documented with proper name<br />
+
+  <br />
+
 ## 3.9.6 - 2024-04-22
 
 **BREAKING CHANGE**<br />
