@@ -10,7 +10,7 @@ This module manages Microsoft Grap fuctions like calling APIs, managing graph ob
 #>
 function Get-ModuleVersion
 {
-    '3.9.6'
+    '3.9.8a'
 }
 
 $global:MSGraphGlobalApps = @(
@@ -804,7 +804,7 @@ function Show-GraphObjects
         $tableColumns = @()
 
         $additionalColumns = @()
-        $additionalColsStr = Get-Setting "EndpointManager\ObjectColumns" "$($global:curObjectType.Id)"
+        $additionalColsStr = ?? (Get-Setting "EndpointManager\ObjectColumns" "$($global:curObjectType.Id)") $global:curObjectType.DefaultColumns
         if($additionalColsStr)
         {
             $additionalColumns += $additionalColsStr.Split(',')
@@ -2635,7 +2635,8 @@ function Add-GraphMigrationInfo
             $objType = $objInfo."@odata.type"
 
             if($objType -eq "#microsoft.graph.groupAssignmentTarget" -or
-                $objType -eq "#microsoft.graph.exclusionGroupAssignmentTarget")
+                $objType -eq "#microsoft.graph.exclusionGroupAssignmentTarget" -or
+                $objType -eq "#microsoft.graph.cloudPcManagementGroupAssignmentTarget")
             {
                 Add-GraphMigrationObject $objInfo.groupid "/groups" "Group"
             }
@@ -4169,7 +4170,7 @@ function local:Add-ObjectColumnInfoClass
 
 function Local:Show-ObjectDefaultColumnsSettings
 {
-    $strColSettings = Get-Setting "EndpointManager\ObjectColumns" "$($global:curObjectType.Id)"
+    $strColSettings = ?? (Get-Setting "EndpointManager\ObjectColumns" "$($global:curObjectType.Id)") $global:curObjectType.DefaultColumns
     $script:colObjectProperties.Clear()
     $defaultColumns = (?? $global:curObjectType.ViewProperties (@("displayName","description","id")))
     if($strColSettings)

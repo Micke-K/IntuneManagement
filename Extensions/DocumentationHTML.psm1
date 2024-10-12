@@ -1,6 +1,6 @@
 function Get-ModuleVersion
 {
-    '1.0.1'
+    '1.1.0'
 }
 
 function Invoke-InitializeModule
@@ -332,7 +332,9 @@ function Invoke-HTMLProcessItem
             
             $lngId = ?: ($tableType -eq "BasicInfo") "SettingDetails.basics" "TableHeaders.settings" -AddCategories
 
-            Add-HTMLTableItems $obj $objectType ($documentedObj.$tableType) $properties $lngId -AddCategories -AddSubcategories
+            if(($documentedObj.$tableType).Count -gt 0) {
+                Add-HTMLTableItems $obj $objectType ($documentedObj.$tableType) $properties $lngId -AddCategories -AddSubcategories
+            }
         }
 
         if(($documentedObj.ComplianceActions | measure).Count -gt 0)
@@ -350,6 +352,11 @@ function Invoke-HTMLProcessItem
         }
 
         Add-HTMLObjectSettings $obj $objectType $documentedObj
+
+        foreach($customTable in ($documentedObj.CustomTables | Sort-Object -Property Order)) 
+        {
+            Add-HTMLTableItems $obj $objectType $customTable.Values $customTable.Columns $customTable.LanguageId -AddCategories -AddSubcategories
+        }
 
         if(($documentedObj.Assignments | measure).Count -gt 0)
         {

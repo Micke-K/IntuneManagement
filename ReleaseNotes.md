@@ -1,4 +1,51 @@
 # Release Notes
+## 3.9.8 - 2024-09-10
+
+**New features**
+
+- **Intune Info**<br />
+  - Added 'Baseline Templates - Settings Catalog'<br />
+  This list templates for Settings Catalog policies eg. Security Baseline for Windows 10 and later<br />
+
+**Fixes**
+
+- **Import/Export**<br />
+  - Fixed support for export/import App Configurations (Device) - Android between environments<br />
+  Based on [Issue 255](https://github.com/Micke-K/IntuneManagement/issues/255)<br />
+  Thank you @jimmywinberg for all the testing!<br />
+  - Fixed support for export/import App Configurations (Device) - iOS (VPP) between environments<br />
+  Based on [Issue 260](https://github.com/Micke-K/IntuneManagement/issues/260)<br />
+  Thank you @Arne-RFA for all the testing!<br />
+  - Added support for exporting Groups targeted in W365 assignments<br />
+  Based on [Issue 261](https://github.com/Micke-K/IntuneManagement/issues/261)<br />
+- Added tooltip that variables are supported in the Export folder path<br />
+  Based on [Discussions 269](https://github.com/Micke-K/IntuneManagement/discussions/269)<br />
+
+- **Documentation**<br />
+  - App Configuration (Device) documentation updated<br />
+  Added support for value type for Android policies<br />
+  Please continue discussion on the Issue below if this is still not working<br />
+  Based on [Issue 231](https://github.com/Micke-K/IntuneManagement/issues/231)<br />
+  This required some rewriting of the core documentation and an update to all output providers<br />
+  This will make it easier to add additional tables to the documentation in the future<br />
+  - Fixed issue with missing group name when exporting CSV<br />
+  Based on [Issue 274](https://github.com/Micke-K/IntuneManagement/issues/274)<br />
+  - Fixed issue with Authentication Strength when documenting Conditional Access policies<br />
+  - Language files re-generated<br />
+  - ObjectInfo files re-generated. Some Android updates<br />
+  - ObjectCategory file re-generated<br />
+
+- **Compare**<br />
+  - Fixed issue with assignments on exported files when doing a Documentation compare<br />
+  The group name was not resolved from migration table file<br />
+  Based on [Issue 274](https://github.com/Micke-K/IntuneManagement/issues/274)<br />
+
+- **Authentication**<br />
+  - Added setting to allow Sort Tenant List<br />
+  Based on [Issue 265](https://github.com/Micke-K/IntuneManagement/issues/265)<br />
+
+  <br />
+
 ## 3.9.7 - 2024-06-27
 
 **New features**
@@ -29,7 +76,7 @@
 
 - **Documentation**<br />
   - App Configuration (Device) documentation updated<br />
-  Hopfully add support for Android. Not verified since I don't have one in my test environment<br />
+  Initial support for Android<br />
   Please continue discussion on the Issue below if this is still not working<br />
   Based on [Issue 231](https://github.com/Micke-K/IntuneManagement/issues/231)<br />
   - Added support for documenting MacOS Custom attribute<br />

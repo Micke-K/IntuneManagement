@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.9.7'
+    '3.9.8'
 }
 
 function Invoke-InitializeModule
@@ -472,8 +472,9 @@ function Invoke-InitializeModule
         ViewID = "IntuneGraphAPI"
         Permissons=@("DeviceManagementApps.ReadWrite.All")
         Dependencies = @("Applications")
+        PreFilesImportCommand = { Start-PreFilesImportAppConfiguration @args }
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsAppConfiguration @args }
-        #PostExportCommand = { Start-PostExportAppConfiguration @args }
+        PostExportCommand = { Start-PostExportAppConfiguration @args }
         Icon = "AppConfiguration"
         GroupId = "AppConfiguration"
     })
@@ -674,6 +675,8 @@ function Invoke-InitializeModule
         QUERYLIST = "`$filter=microsoft.graph.androidManagedStoreAppConfiguration/appSupportsOemConfig%20eq%20true"
         API = "/deviceAppManagement/mobileAppConfigurations"
         PreImportAssignmentsCommand = { Start-PreImportAssignmentsAppConfiguration @args }
+        PreFilesImportCommand = { Start-PreFilesImportAppConfiguration @args }
+        PostExportCommand = { Start-PostExportAppConfiguration @args }
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon="DeviceConfiguration"
         Dependencies = @("Applications")
@@ -1961,7 +1964,134 @@ function Start-PostExportAppConfiguration
 {
     param($obj, $objectType, $path)
 
-    Add-EMAssignmentsToExportFile $obj $objectType $path 
+    #Add-EMAssignmentsToExportFile $obj $objectType $path
+
+    Write-Log "Export app config for $($objectType.Id) with OData.Type: $($obj.'@OData.Type')"
+
+    if($obj.'@OData.Type' -eq "#microsoft.graph.androidManagedAppProtection" -or
+        $obj.'@OData.Type' -eq "#microsoft.graph.androidForWorkMobileAppConfiguration" -or
+        $obj.'@OData.Type' -eq "#microsoft.graph.androidManagedStoreAppConfiguration" -or
+        $obj.'@OData.Type' -eq "#microsoft.graph.iosMobileAppConfiguration")
+    {
+        $fileName = (Get-GraphObjectName $obj $objectType).Trim('.')
+        if((Get-SettingValue "AddIDToExportFile") -eq $true -and $obj.Id)
+        {
+            $fileName = ($fileName + "_" + $obj.Id)
+        }
+        $tmpObj = $null
+        $fileName = "$path\$((Remove-InvalidFileNameChars $fileName)).json"
+        if([IO.File]::Exists($fileName))
+        {
+            $tmpObj = Get-GraphObjectFromFile $fileName
+        }
+        else
+        {
+            Write-Log "File not found: $fileName. Could not add App names." 3
+        }
+
+        if(($tmpObj.targetedMobileApps | measure).Count -gt 0)
+        {        
+            Write-Log "Add target apps info"
+            $targetedApps = @()
+            foreach($appId in $tmpObj.targetedMobileApps)
+            {            
+                $appObj = Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$($appId)" #?`select=id,displayName" -ODataMetadata "Minimal"
+                if($appObj) 
+                {
+                    Write-Log "Add target app info $($appObj.displayName) ($($appObj.Id)) of type $($appObj.'@OData.Type')"
+                    $targetedApps += $appObj.displayName + '|!|' + $appObj.Id  + '|!|' + $appObj.'@OData.Type'
+                }
+            }
+
+            if($targetedApps.Count -gt 0) 
+            {
+                Write-Log "Add CustomRefTargetedApps property"
+                $tmpObj | Add-Member -MemberType NoteProperty -Name "#CustomRefTargetedApps" -Value ($targetedApps -join "|*|")
+                Write-Log "Save file $fileName"
+                Save-GraphObjectToFile $tmpObj $fileName
+            }
+        }
+        else 
+        {
+            Write-Log "No target apps found" 2
+        }
+    }
+}
+
+function Start-PreFilesImportAppConfiguration
+{
+    param($objectType, $filesToImport)
+
+    $targetedAppsObjects = $filesToImport | Where { $null -ne $_.Object."#CustomRefTargetedApps" }
+    
+    if(($targetedAppsObjects | measure).Count -gt 0)
+    {
+        Write-Log "Policies with Targeted Apps detected"
+        foreach($fileObject in $targetedAppsObjects)
+        {
+            Add-AppConfigurationTargets $objectType $fileObject
+        }    
+    }
+    $filesToImport
+}
+
+function local:Add-AppConfigurationTargets
+{
+    param($obj, $fileObj)
+
+    if($fileObj.Object."#CustomRefTargetedApps" -and $fileObj.Object.targetedMobileApps)
+    {
+        Write-Log "Adding app target for $($fileObj.Object.displayName)"
+
+        $targetedAppsInfo = $fileObj.Object."#CustomRefTargetedApps"
+
+        $translatedTargetedApps = @()
+
+        if($targetedAppsInfo)
+        {
+            foreach($targetedApp in ($targetedAppsInfo -split "[|][*][|]"))
+            {
+                $appName, $appId, $appType = $targetedApp -split "[|][!][|]"
+                if(-not $appName -or -not $appId)
+                {
+                    Write-Log "App Name and Id is missing in string: $appApp" 2
+                    continue
+                }
+                $tmpApps = (Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps?`$filter=displayName eq '$appName'").value
+                if(-not $tmpApps)
+                {
+                    Write-Log "No application found with name $appName. $appId will not be translated and added to target list" 2
+                    continue
+                }
+
+                Write-Log "Found $(($tmpApps | measure).Count) applications" 2
+                foreach ($tmpApp in $tmpApps) {
+                    Write-Log "Found '$($tmpApp.displayName)' ($($tmpApp.id)) of type $($($tmpApp.'@OData.Type'))"
+                }
+
+                $tmpApp = $tmpApps | Where-Object '@OData.Type' -eq $appType
+                if(-not $tmpApp)
+                {
+                    Write-Log "No $appName application found of type $appType. $appId will not be translated and added to target list" 2
+                }
+                elseif(($tmpApp | measure).Count -gt 1) {
+                    Write-Log "$(($tmpApp | measure).Count) applications found with name '$appName' of type $appType. $appId will not be translated and added to target list" 2
+                }
+                else {
+                    Write-Log "Found '$appName' with id $($tmpApp.Id) ($appType)"
+                    $translatedTargetedApps += $tmpApp.Id
+                }
+            }
+
+            if($translatedTargetedApps.Count -gt 0) {
+                Write-Log "Updating translated targeted apps"
+                $fileObj.Object.targetedMobileApps = $translatedTargetedApps
+            }
+            else {
+                Write-Log "Could not find targeted apps in the evnironment. Verify that they are added. Policy import might fail" 3
+            }
+        }
+    }    
 }
 
 function Start-PreImportAssignmentsAppConfiguration
@@ -2479,7 +2609,7 @@ function Start-PostFilesImportApplications
     
     if(($refObjects | measure).Count -gt 0)
     {
-        Write-Log "Applicetions with Depnedency or Supersedence detected"
+        Write-Log "Applicetions with Dependency or Supersedence detected"
         foreach($file in $refObjects)
         {
             Add-ApplicationReferences $file.ImportedObject $file.Object

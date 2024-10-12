@@ -20,7 +20,7 @@ $global:documentationProviders = @()
 
 function Get-ModuleVersion
 {
-    '2.2.1'
+    '2.3.0'
 }
 
 function Invoke-InitializeModule
@@ -228,6 +228,7 @@ function Get-ObjectDocumentation
     $script:applicabilityRules = @()
     $script:objectAssignments = @()
     $script:objectScripts = @()
+    $script:customTables = @()
     $script:admxCategories = $null
 
     $script:ObjectTypeFullTable = @{} # Hash table with objects that should be documented in a single table eg ScopeTags
@@ -351,6 +352,7 @@ function Get-ObjectDocumentation
         Settings = $script:objectSettingsData
         ComplianceActions = $script:objectComplianceActionData
         ApplicabilityRules = $script:applicabilityRules
+        CustomTables = $script:customTables
         Assignments = $script:objectAssignments
         Scripts = $script:objectScripts
         DisplayProperties = $properties
@@ -386,10 +388,39 @@ function Invoke-ObjectDocumentation
     $global:intentCategoryDefs = $null
     $global:cfgCategories = $null
     $script:admxCategories = $null
+    $script:migTable = $null
 
     $script:DocumentationLanguage = "en"        
     $script:objectSeparator = [System.Environment]::NewLine
     $script:propertySeparator = ","
+
+    $loadExportedInfo = $false
+
+    if($documentationObj.Object."@ObjectFileName") {
+        $path = [IO.Path]::GetDirectoryName($documentationObj.Object."@ObjectFileName")
+        for($i = 0;$i -lt 2;$i++)
+        {
+            if($i -gt 0)
+            {
+                # Get parent directory
+                $path = [io.path]::GetDirectoryName($path)
+            }
+    
+            $migFileName = Join-Path $path "MigrationTable.json"
+            try
+            {
+                if([IO.File]::Exists($migFileName))
+                {
+                    Write-Log "Load Migration table from $migFileName"
+                    $script:migTable = ConvertFrom-Json (Get-Content $migFileName -Raw)        
+                }
+            }
+            catch {}
+        }
+        if(-not $script:migTable)  {
+            Write-Log "Migration table not found" 2
+        }
+    }
 
     Get-ObjectDocumentation $documentationObj
 }
@@ -633,6 +664,19 @@ function Add-BasicDefaultValues
             Id = "deviceManagementApplicabilityRuleOsVersion"
             Category = Get-LanguageString "SettingDetails.applicabilityRules"
         }        
+    }
+}
+
+function Add-CustomTable
+{
+    param($TableId, $Columns = @("Name", "Value"), $Values, [int]$Order = 100, $LanguageId = "")
+
+    $script:customTables += [PSCustomObject]@{
+        Id = $TableId
+        Columns = $Columns
+        Values = $Values
+        LanguageId = $LanguageId
+        Order = $Order
     }
 }
 
@@ -4385,7 +4429,7 @@ function local:Invoke-StartDocumentatiom
         $migFileName = [IO.Path]::Combine($diSource.FullName,"MigrationTable.json")
         if([IO.File]::Exists($migFileName) -eq $false)
         {
-            Write-Log "MigrationTable not found. Groups will be documented with GroupId" 2                 
+            Write-Log "MigrationTable not found. Groups will be documented with GroupId" 2
         }
         else
         {
@@ -4927,7 +4971,11 @@ function Invoke-CSVProcessItem
             {
                 if($documentedObj.Assignments[0].RawIntent)
                 {
-                    $properties = @("GroupMode","Group","Category","SubCategory")            
+                    $properties = @("GroupMode","Group","Category","SubCategory")
+                }
+                elseif($documentedObj.Assignments[0].Group)
+                {
+                    $properties = @("GroupMode","Group","Category")
                 }
                 else
                 {

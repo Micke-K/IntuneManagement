@@ -11,7 +11,7 @@ Objects can be compared based on Properties or Documentatation info.
 
 function Get-ModuleVersion
 {
-    '1.1.0'
+    '1.2.0'
 }
 
 function Invoke-InitializeModule
@@ -639,7 +639,8 @@ function Start-BulkCompareExportObjects
                 else
                 {
                     $sourceObj = Get-GraphObject $curObject.Object $curObject.ObjectType
-                    $fileObj.Object | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force 
+                    $fileObj.Object | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force
+                    $fileObj.Object | Add-Member Noteproperty -Name "@ObjectFileName" -Value $fileObj.FileInfo.FullName -Force
                     $compareProperties = Compare-Objects $sourceObj.Object $fileObj.Object $item.ObjectType                    
                 }
 
@@ -825,7 +826,8 @@ function Start-BulkCompareExportIntuneToNamedExportedObjects
                 else
                 {
                     $sourceObj = Get-GraphObject $graphObject.Object $graphObject.ObjectType
-                    $fileObj.Object | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force 
+                    $fileObj.Object | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force
+                    $fileObj.Object | Add-Member Noteproperty -Name "@ObjectFileName" -Value $fileObj.FileInfo.FullName -Force
                     $compareProperties = Compare-Objects $sourceObj.Object $fileObj.Object $item.ObjectType
                 }
 
@@ -1008,8 +1010,10 @@ function Start-BulkCompareExportFolders
                 }
                 else
                 {
-                    $fileSourceObj.Object | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force 
+                    $fileSourceObj.Object | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force
+                    $fileSourceObj.Object | Add-Member Noteproperty -Name "@ObjectFileName" -Value $fileSourceObj.FileInfo.FullName -Force
                     $compareObject.Object | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force 
+                    $compareObject.Object | Add-Member Noteproperty -Name "@ObjectFileName" -Value $compareObject.FileInfo.FullName -Force
                     $compareProperties = Compare-Objects $compareObject.Object $fileSourceObj.Object $item.ObjectType                    
                 }
 
@@ -1297,6 +1301,7 @@ function Start-CompareExportObject
         }
     }
 
+    $compareObj | Add-Member Noteproperty -Name "@ObjectFileName" -Value $global:txtCompareFile.Text -Force
     $compareObj | Add-Member Noteproperty -Name "@ObjectFromFile" -Value $true -Force
 
     $compareResult = Compare-Objects $obj.Object $compareObj $obj.ObjectType
@@ -1381,7 +1386,7 @@ function Compare-ObjectsBasedonProperty
 
     $coreProps = @((?? $objectType.NameProperty "displayName"), "Description", "Id", "createdDateTime", "lastModifiedDateTime", "version")
     $postProps = @("Advertisements")
-    $skipProps = @("@ObjectFromFile")
+    $skipProps = @("@ObjectFromFile","@ObjectFileName")
     $skipPropertiesToCompare = @()
     if($skipBasicProperties) {
         $skipPropertiesToCompare += "roleScopeTagIds"

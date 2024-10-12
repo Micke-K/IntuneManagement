@@ -1,6 +1,6 @@
 function Get-ModuleVersion
 {
-    '1.1.1'
+    '1.2.0'
 }
 
 function Invoke-InitializeModule
@@ -285,7 +285,9 @@ function Invoke-MDProcessItem
             
             $lngId = ?: ($tableType -eq "BasicInfo") "SettingDetails.basics" "TableHeaders.settings" -AddCategories
 
-            Add-MDTableItems $obj $objectType ($documentedObj.$tableType) $properties $lngId -AddCategories -AddSubcategories
+            if(($documentedObj.$tableType).Count -gt 0) {
+                Add-MDTableItems $obj $objectType ($documentedObj.$tableType) $properties $lngId -AddCategories -AddSubcategories
+            }
 
             #Add-MDTableItems $obj $objectType ($documentedObj.$tableType) $properties $lngId `
             #    -AddCategories:($global:chkMDAddCategories.IsChecked -eq $true) `
@@ -307,6 +309,11 @@ function Invoke-MDProcessItem
         }
 
         Add-MDObjectSettings $obj $objectType $documentedObj
+
+        foreach($customTable in ($documentedObj.CustomTables | Sort-Object -Property Order)) 
+        {
+            Add-MDTableItems $obj $objectType $documentedObj $customTable.Values $customTable.Columns $customTable.LanguageId -AddCategories -AddSubcategories
+        }
 
         if(($documentedObj.Assignments | measure).Count -gt 0)
         {

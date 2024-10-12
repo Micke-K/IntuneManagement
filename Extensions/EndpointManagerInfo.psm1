@@ -35,15 +35,28 @@ function Invoke-InitializeModule
     Add-ViewObject $global:EMInfoViewObject
 
     Add-ViewItem (New-Object PSObject -Property @{
-        Title = "Baseline Templates"
+        Title = "Baseline Templates - Intent"
         Id = "BaselineTemplates"
         ViewID = "EMInfoGraphAPI"
-        API = "/deviceManagement/templates"
+        API = "/deviceManagement/templates"        
         ShowButtons = @("Export","View")
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon="EndpointSecurity"
         ExpandAssignmentsList = $false
     })
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Baseline Templates - Settings Catalog"
+        Id = "BaselineTemplatesSettingsCatalog"
+        ViewID = "EMInfoGraphAPI"
+        API = "/deviceManagement/configurationPolicyTemplates"
+        QUERYLIST = "`$filter=(templateFamily eq 'Baseline')"
+        ShowButtons = @("Export","View")
+        DefaultColumns = "0,displayName=Template Name,displayVersion=Version,lifecycleState=State,baseId=Template Id,id"
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        Icon="EndpointSecurity"
+        ExpandAssignmentsList = $false
+    })    
 
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Android Google Play"

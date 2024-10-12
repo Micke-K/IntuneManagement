@@ -3,7 +3,7 @@
 #https://docs.microsoft.com/en-us/office/vba/api/overview/word
 function Get-ModuleVersion
 {
-    '1.6.0'
+    '1.7.0'
 }
 
 function Invoke-InitializeModule
@@ -208,7 +208,7 @@ function Invoke-WordPreProcessItems
     {
         try
         {
-            $script:doc = $wordApp.Documents.Add($global:txtWordDocumentTemplate.Text) 
+            $script:doc = $script:wordApp.Documents.Add($global:txtWordDocumentTemplate.Text) 
         }
         catch
         {
@@ -217,7 +217,7 @@ function Invoke-WordPreProcessItems
     }
     else
     {
-        $script:doc = $wordApp.Documents.Add() 
+        $script:doc = $script:wordApp.Documents.Add() 
     }
 
     #Get BuiltIn properties
@@ -547,10 +547,12 @@ function Invoke-WordProcessItem
             
             $lngId = ?: ($tableType -eq "BasicInfo") "SettingDetails.basics" "TableHeaders.settings" -AddCategories
 
-            Add-DocTableItems $obj $objectType ($documentedObj.$tableType) $properties $lngId `
+            if(($documentedObj.$tableType).Count -gt 0) {
+                Add-DocTableItems $obj $objectType ($documentedObj.$tableType) $properties $lngId `
                 -AddCategories:($global:chkWordAddCategories.IsChecked -eq $true) `
                 -AddSubcategories:($global:chkWordAddSubCategories.IsChecked -eq $true) `
                 -ForceFullValue:($tableType -eq "BasicInfo")
+            }
         }
 
         if($global:cbWordDocumentationLevel.SelectedValue -ne "basic")
@@ -570,6 +572,11 @@ function Invoke-WordProcessItem
             }
 
             Add-DocObjectSettings $obj $objectType $documentedObj
+
+            foreach($customTable in ($documentedObj.CustomTables | Sort-Object -Property Order)) 
+            {
+                Add-DocTableItems $obj $objectType $documentedObj $customTable.Values $customTable.Columns $customTable.LanguageId -AddCategories -AddSubcategories
+            }
         }
 
         if(($documentedObj.Assignments | measure).Count -gt 0)

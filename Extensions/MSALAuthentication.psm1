@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.9.7'
+    '3.9.8a'
 }
 
 $global:msalAuthenticator = $null
@@ -119,7 +119,15 @@ function Invoke-InitializeModule
         Type = "Boolean"
         DefaultValue = $false
         Description = "Sort the list of cached accounts based on user name. Updated at restart or account change"
-    }) "MSAL"    
+    }) "MSAL"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Sort Tenant List"
+        Key = "SortTenantList"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Sort the list of available tenants based on Tenant name. Updated at restart or account change"
+    }) "MSAL"
 
     Add-MSALPrereq
 }
@@ -1804,8 +1812,18 @@ function Get-MSALProfileEllipse
                     $lbObj = [Windows.Markup.XamlReader]::Parse("<TextBlock $wpfNS><Bold>Tenants:</Bold></TextBlock>")
                     $lbObj.Margin = "0,5,0,0"
 
+                    if((Get-SettingValue "SortTenantList") -eq $true)
+                    {
+                        $tenants = $script:AccessableTenants | Sort -Property DisplayName
+                    }
+                    else
+                    {
+                        $tenants = $script:AccessableTenants
+                    }
+    
+
                     Add-GridObject $otherLogins $lbObj
-                    foreach($tenant in $script:AccessableTenants)
+                    foreach($tenant in $tenants)
                     {
                         try
                         {

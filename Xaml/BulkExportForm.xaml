@@ -21,7 +21,17 @@
 
         <StackPanel Orientation="Horizontal" Margin="0,0,5,0" >
             <Label Content="Export root" />
-            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="The root folder where exported files will be stored" />
+            <Rectangle Style="{DynamicResource InfoIcon}">
+                <Rectangle.ToolTip>
+                    <TextBlock>
+                        The root folder where exported files will be stored. Supported variables:<LineBreak />
+                        <Bold>%Date%</Bold> Will be replaced by date in format: yyyy-MM-dd<LineBreak />
+                        <Bold>%DateTime%</Bold> Will be replaced by date and time in format: yyyyMMdd-HHmm<LineBreak />
+                        <Bold>%Organization%</Bold> Will be replaced with the Tenant name<LineBreak />
+                        <Bold>Any environment variable</Bold> Replace with the value of the environment variable
+                    </TextBlock>
+                </Rectangle.ToolTip>                        
+            </Rectangle>            
         </StackPanel>
 
         <Grid Grid.Column='1' Grid.Row='0'>
