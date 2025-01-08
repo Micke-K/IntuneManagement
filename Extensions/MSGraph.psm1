@@ -44,6 +44,10 @@ function Invoke-InitializeModule
             Value = "replace"
         },
         [PSCustomObject]@{
+            Name = "Replace with assignments (Preview)"
+            Value = "replace_with_assignments"
+        },        
+        [PSCustomObject]@{
             Name = "Update (Preview)"
             Value = "update"
         }
@@ -2353,7 +2357,10 @@ function Reset-GraphObject
         # Clone the object before removing properties
         $obj = $fileObj.Object | ConvertTo-Json -Depth 50 | ConvertFrom-Json
         Start-GraphPreImport $obj $objectType
-        Remove-Property $obj "Assignments"
+        if ($global:cbImportType.SelectedValue -eq "replace"){ 
+            # will use the assignments from the file for "replace_with_assignments" type
+            Remove-Property $obj "Assignments"
+        }
         Remove-Property $obj "isAssigned"
     
         if($global:cbImportType.SelectedValue -eq "update")
@@ -2417,7 +2424,7 @@ function Reset-GraphObject
             }
             return $true
         }
-        elseif($global:cbImportType.SelectedValue -eq "replace")
+        elseif($global:cbImportType.SelectedValue -in @("replace","replace_with_assignments"))
         {           
             $replace = $true
             $import = $true
@@ -2466,8 +2473,13 @@ function Reset-GraphObject
                         }
                     }
                 }
-    
-                Import-GraphObjectAssignment $newObj $objectType $curObject.Object.Assignments $fileObj.FileInfo.FullName -CopyAssignments | Out-Null
+                if ($global:cbImportType.SelectedValue -eq "replace")
+                {
+                    Import-GraphObjectAssignment $newObj $objectType $curObject.Object.Assignments $fileObj.FileInfo.FullName -CopyAssignments | Out-Null
+                }
+                else {
+                    Import-GraphObjectAssignment $newObj $objectType $obj.Assignments $file.FileInfo.FullName | Out-Null
+                }
 
                 if($delete)
                 {
