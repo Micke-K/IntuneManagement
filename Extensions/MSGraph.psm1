@@ -2357,7 +2357,7 @@ function Reset-GraphObject
         # Clone the object before removing properties
         $obj = $fileObj.Object | ConvertTo-Json -Depth 50 | ConvertFrom-Json
         Start-GraphPreImport $obj $objectType
-        if ($global:cbImportType.SelectedValue -eq "replace"){ 
+        if ($global:cbImportType.SelectedValue -ne "replace_with_assignments"){  
             # will use the assignments from the file for "replace_with_assignments" type
             Remove-Property $obj "Assignments"
         }
