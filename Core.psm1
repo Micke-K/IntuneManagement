@@ -2428,6 +2428,90 @@ function Get-MainWindow
 
     Add-XamlVariables $xaml $window
 
+    # Add keyboard navigation support for the main grid
+    $global:dgObjects.SelectionMode = "Extended" # Enables multi-selection
+    $global:dgObjects.CanUserSortColumns = $false # Prevent sorting to maintain selection order
+    
+    # Handle keyboard events for selection and checkbox toggling
+    $global:dgObjects.Add_PreviewKeyDown({
+        param($sender, $e)
+        
+        if($e.Key -eq "Space") {
+            $selectedItems = $sender.SelectedItems
+            if($selectedItems.Count -gt 0) {
+                $newValue = -not $selectedItems[0].IsSelected
+                foreach($item in $selectedItems) {
+                    $item.IsSelected = $newValue
+                }
+                $sender.Items.Refresh()
+                Invoke-EMSelectedItemsChanged # Update UI state based on selection
+                
+                # Move focus to DisplayName column and ensure grid stays focused
+                $sender.CurrentCell = New-Object System.Windows.Controls.DataGridCellInfo($sender.SelectedItem, $sender.Columns[1])
+                $sender.Focus()
+                
+                $e.Handled = $true
+            }
+        }
+        elseif($e.Key -eq "Up" -or $e.Key -eq "Down") {
+            # Always handle Up/Down to prevent menu activation
+            $e.Handled = $true
+            
+            if(-not [System.Windows.Input.Keyboard]::IsKeyDown([System.Windows.Input.Key]::LeftShift) -and
+               -not [System.Windows.Input.Keyboard]::IsKeyDown([System.Windows.Input.Key]::RightShift)) 
+            {
+                # Single selection navigation
+                $currentItem = $sender.CurrentItem
+                if($currentItem) {
+                    $index = $sender.Items.IndexOf($currentItem)
+                    $newIndex = if($e.Key -eq "Up") { [Math]::Max(0, $index - 1) } else { [Math]::Min($sender.Items.Count - 1, $index + 1) }
+                    
+                    if($index -ne $newIndex) {
+                        $sender.SelectedItem = $sender.Items[$newIndex]
+                        $sender.CurrentItem = $sender.Items[$newIndex]
+                        $sender.ScrollIntoView($sender.Items[$newIndex])
+                        
+                        # Keep focus on DisplayName column and ensure grid stays focused
+                        $sender.CurrentCell = New-Object System.Windows.Controls.DataGridCellInfo($sender.SelectedItem, $sender.Columns[1])
+                    }
+                }
+            }
+            else {
+                # Multi-selection with Shift
+                $currentItem = $sender.CurrentItem
+                if($currentItem) {
+                    $index = $sender.Items.IndexOf($currentItem)
+                    $newIndex = if($e.Key -eq "Up") { [Math]::Max(0, $index - 1) } else { [Math]::Min($sender.Items.Count - 1, $index + 1) }
+                    
+                    if($index -ne $newIndex) {
+                        # Add to selection without clearing existing selection
+                        $sender.SelectedItems.Add($sender.Items[$newIndex])
+                        $sender.CurrentItem = $sender.Items[$newIndex]
+                        $sender.ScrollIntoView($sender.Items[$newIndex])
+                        
+                        # Keep focus on DisplayName column
+                        $sender.CurrentCell = New-Object System.Windows.Controls.DataGridCellInfo($sender.Items[$newIndex], $sender.Columns[1])
+                    }
+                }
+            }
+            $sender.Focus()
+        }
+    })
+
+    # Set keyboard focus to grid when clicking on it
+    $global:dgObjects.Add_MouseLeftButtonDown({
+        if(-not $this.IsFocused) {
+            $this.Focus()
+        }
+    })
+
+    # Ensure grid maintains focus after selection changes
+    $global:dgObjects.Add_SelectionChanged({
+        if($this.IsLoaded) {
+            $this.Focus()
+        }
+    })
+
     $lstMenuItems.Add_SelectionChanged({
         if($global:currentViewObject.ViewInfo.ItemChanged)
         {
