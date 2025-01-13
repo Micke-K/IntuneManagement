@@ -2445,6 +2445,11 @@ function Get-MainWindow
                 }
                 $sender.Items.Refresh()
                 Invoke-EMSelectedItemsChanged # Update UI state based on selection
+                
+                # Move focus to DisplayName column and ensure grid stays focused
+                $sender.CurrentCell = New-Object System.Windows.Controls.DataGridCellInfo($sender.SelectedItem, $sender.Columns[1])
+                $sender.Focus()
+                
                 $e.Handled = $true
             }
         }
@@ -2462,6 +2467,10 @@ function Get-MainWindow
                     $sender.SelectedItem = $sender.Items[$newIndex]
                     $sender.CurrentItem = $sender.Items[$newIndex]
                     $sender.ScrollIntoView($sender.Items[$newIndex])
+                    
+                    # Keep focus on DisplayName column and ensure grid stays focused
+                    $sender.CurrentCell = New-Object System.Windows.Controls.DataGridCellInfo($sender.SelectedItem, $sender.Columns[1])
+                    $sender.Focus()
                 }
                 $e.Handled = $true
             }
@@ -2471,6 +2480,13 @@ function Get-MainWindow
     # Set keyboard focus to grid when clicking on it
     $global:dgObjects.Add_MouseLeftButtonDown({
         if(-not $this.IsFocused) {
+            $this.Focus()
+        }
+    })
+
+    # Ensure grid maintains focus after selection changes
+    $global:dgObjects.Add_SelectionChanged({
+        if($this.IsLoaded) {
             $this.Focus()
         }
     })
