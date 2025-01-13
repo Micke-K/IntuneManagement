@@ -2428,6 +2428,53 @@ function Get-MainWindow
 
     Add-XamlVariables $xaml $window
 
+    # Add keyboard navigation support for the main grid
+    $global:dgObjects.SelectionMode = "Extended" # Enables multi-selection
+    $global:dgObjects.CanUserSortColumns = $false # Prevent sorting to maintain selection order
+    
+    # Handle keyboard events for selection and checkbox toggling
+    $global:dgObjects.Add_PreviewKeyDown({
+        param($sender, $e)
+        
+        if($e.Key -eq "Space") {
+            $selectedItems = $sender.SelectedItems
+            if($selectedItems.Count -gt 0) {
+                $newValue = -not $selectedItems[0].IsSelected
+                foreach($item in $selectedItems) {
+                    $item.IsSelected = $newValue
+                }
+                $sender.Items.Refresh()
+                Invoke-EMSelectedItemsChanged # Update UI state based on selection
+                $e.Handled = $true
+            }
+        }
+        # Only handle Up/Down when Shift is not pressed to allow built-in multi-select
+        elseif(($e.Key -eq "Up" -or $e.Key -eq "Down") -and 
+               -not [System.Windows.Input.Keyboard]::IsKeyDown([System.Windows.Input.Key]::LeftShift) -and
+               -not [System.Windows.Input.Keyboard]::IsKeyDown([System.Windows.Input.Key]::RightShift)) 
+        {
+            $currentItem = $sender.CurrentItem
+            if($currentItem) {
+                $index = $sender.Items.IndexOf($currentItem)
+                $newIndex = if($e.Key -eq "Up") { [Math]::Max(0, $index - 1) } else { [Math]::Min($sender.Items.Count - 1, $index + 1) }
+                
+                if($index -ne $newIndex) {
+                    $sender.SelectedItem = $sender.Items[$newIndex]
+                    $sender.CurrentItem = $sender.Items[$newIndex]
+                    $sender.ScrollIntoView($sender.Items[$newIndex])
+                }
+                $e.Handled = $true
+            }
+        }
+    })
+
+    # Set keyboard focus to grid when clicking on it
+    $global:dgObjects.Add_MouseLeftButtonDown({
+        if(-not $this.IsFocused) {
+            $this.Focus()
+        }
+    })
+
     $lstMenuItems.Add_SelectionChanged({
         if($global:currentViewObject.ViewInfo.ItemChanged)
         {
