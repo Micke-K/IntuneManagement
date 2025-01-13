@@ -2453,27 +2453,48 @@ function Get-MainWindow
                 $e.Handled = $true
             }
         }
-        # Only handle Up/Down when Shift is not pressed to allow built-in multi-select
-        elseif(($e.Key -eq "Up" -or $e.Key -eq "Down") -and 
-               -not [System.Windows.Input.Keyboard]::IsKeyDown([System.Windows.Input.Key]::LeftShift) -and
+        elseif($e.Key -eq "Up" -or $e.Key -eq "Down") {
+            # Always handle Up/Down to prevent menu activation
+            $e.Handled = $true
+            
+            if(-not [System.Windows.Input.Keyboard]::IsKeyDown([System.Windows.Input.Key]::LeftShift) -and
                -not [System.Windows.Input.Keyboard]::IsKeyDown([System.Windows.Input.Key]::RightShift)) 
-        {
-            $currentItem = $sender.CurrentItem
-            if($currentItem) {
-                $index = $sender.Items.IndexOf($currentItem)
-                $newIndex = if($e.Key -eq "Up") { [Math]::Max(0, $index - 1) } else { [Math]::Min($sender.Items.Count - 1, $index + 1) }
-                
-                if($index -ne $newIndex) {
-                    $sender.SelectedItem = $sender.Items[$newIndex]
-                    $sender.CurrentItem = $sender.Items[$newIndex]
-                    $sender.ScrollIntoView($sender.Items[$newIndex])
+            {
+                # Single selection navigation
+                $currentItem = $sender.CurrentItem
+                if($currentItem) {
+                    $index = $sender.Items.IndexOf($currentItem)
+                    $newIndex = if($e.Key -eq "Up") { [Math]::Max(0, $index - 1) } else { [Math]::Min($sender.Items.Count - 1, $index + 1) }
                     
-                    # Keep focus on DisplayName column and ensure grid stays focused
-                    $sender.CurrentCell = New-Object System.Windows.Controls.DataGridCellInfo($sender.SelectedItem, $sender.Columns[1])
-                    $sender.Focus()
+                    if($index -ne $newIndex) {
+                        $sender.SelectedItem = $sender.Items[$newIndex]
+                        $sender.CurrentItem = $sender.Items[$newIndex]
+                        $sender.ScrollIntoView($sender.Items[$newIndex])
+                        
+                        # Keep focus on DisplayName column and ensure grid stays focused
+                        $sender.CurrentCell = New-Object System.Windows.Controls.DataGridCellInfo($sender.SelectedItem, $sender.Columns[1])
+                    }
                 }
-                $e.Handled = $true
             }
+            else {
+                # Multi-selection with Shift
+                $currentItem = $sender.CurrentItem
+                if($currentItem) {
+                    $index = $sender.Items.IndexOf($currentItem)
+                    $newIndex = if($e.Key -eq "Up") { [Math]::Max(0, $index - 1) } else { [Math]::Min($sender.Items.Count - 1, $index + 1) }
+                    
+                    if($index -ne $newIndex) {
+                        # Add to selection without clearing existing selection
+                        $sender.SelectedItems.Add($sender.Items[$newIndex])
+                        $sender.CurrentItem = $sender.Items[$newIndex]
+                        $sender.ScrollIntoView($sender.Items[$newIndex])
+                        
+                        # Keep focus on DisplayName column
+                        $sender.CurrentCell = New-Object System.Windows.Controls.DataGridCellInfo($sender.Items[$newIndex], $sender.Columns[1])
+                    }
+                }
+            }
+            $sender.Focus()
         }
     })
 
