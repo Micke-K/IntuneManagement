@@ -71,7 +71,7 @@
                                            "appPackageFile":  "Az alkalmazást egy eszközön közvetlenül telepíthető formátumban tartalmazó fájl. Az érvényes csomagtípusok a következők: Android (.apk), iOS (.ipa), macOS (.pkg), Windows (.msi, .appx, .appxbundle, .msix és .msixbundle).​",
                                            "applicableDeviceType":  "Válassza ki, hogy milyen eszköztípusok telepíthetik az alkalmazást.",
                                            "category":  "Az alkalmazás kategorizálásával megkönnyítheti a felhasználók számára a rendezést és a keresést a Céges portálon. Több kategóriát is kiválaszthat.",
-                                           "categoryLink":  "https://docs.microsoft.com/intune/apps/apps-add#create-and-edit-categories-for-apps​",
+                                           "categoryLink":  "https://go.microsoft.com/fwlink/?linkid=2295954",
                                            "description":  "Segítse az eszköz felhasználóit az alkalmazás jellegének és használati lehetőségeinek megadásával. Ez a leírás a Céges portálon lesz látható.",
                                            "developer":  "Az alkalmazást fejlesztő cég vagy személy neve. Ez az információ a felügyeleti központba bejelentkezett felhasználók számára lesz látható.",
                                            "displayVersion":  "Az alkalmazás verziója. Ez az információ a Céges portálon lesz látható a felhasználók számára.",
@@ -100,9 +100,11 @@
                                            "winGetStoreSelectApp":  "Az Intune-nal üzembe helyezni kívánt áruházbeli alkalmazásokat a Microsoft Store-alkalmazásban (új) keresheti meg."
                                        },
                               "descriptionPreview":  "Előnézet",
+                              "descriptionPreviewLabel":  "Előzetes verzió",
                               "descriptionRequired":  "A leírást meg kell adni.",
                               "editDescription":  "Leírás szerkesztése",
                               "macOSMinOperatingSystemAdditionalInfo":  "A .pkg-fájlok feltöltéséhez szükséges minimális operációs rendszer a macOS 10.14. Régebbi minimális operációs rendszer kiválasztásához töltsön fel egy .pkg-fájlt.​",
+                              "markdownHelpLink":  "Segítség kérése a leírásokhoz támogatott Markdown-leírásokhoz.",
                               "name":  "Alkalmazásadatok",
                               "nameForOfficeSuitApp":  "Alkalmazáscsomaggal kapcsolatos információk"
                           },
@@ -194,6 +196,10 @@
                                    "Android":  {
                                                    "v10":  "Android 10.0",
                                                    "v11":  "Android 11.0",
+                                                   "v12":  "Android 12.0",
+                                                   "v13":  "Android 13.0",
+                                                   "v14":  "Android 14.0",
+                                                   "v15":  "Android 15.0",
                                                    "v4":  "Android 4.0 (Ice Cream Sandwich)",
                                                    "v403":  "Android 4.0.3 (Ice Cream Sandwich)",
                                                    "v41":  "Android 4.1 (Jelly Bean)",
@@ -904,7 +910,7 @@
                                                         "template":  "Sablon neve"
                                                     },
                                          "Row":  {
-                                                     "ariaLabel":  "{1} oszlop {2} {0}. sora"
+                                                     "ariaLabel":  "{2} oszlop {0}/{1}. sora"
                                                  }
                                      },
                             "InventoryCatalog":  {
@@ -915,10 +921,10 @@
                                                     "title":  "Beállításkatalógus"
                                                 },
                             "Templates":  {
-                                              "subtitle":  "A sablonok funkciók szerint rendszerezve tartalmazzák a beállítások csoportjait. Akkor használjon sablont, ha nem szeretné manuálisan létrehozni a szabályzatokat, vagy hozzáférést szeretne adni az eszközöknek a vállalati hálózatokhoz, például Wi-Fi- vagy VPN-hálózathoz",
+                                              "subtitle":  "A sablonok funkció szerint rendezett beállításcsoportokat tartalmaznak. Használjon sablont, ha nem szeretne manuálisan létrehozni házirendeket, vagy ha vállalati hálózatok elérésére szeretne eszközöket konfigurálni, például Wi-Fi vagy VPN konfigurálására.",
                                               "title":  "Sablonok"
                                           },
-                            "noData":  "Nem találhatók szabályzatsablonok"
+                            "noData":  "Nem található házirendsablon"
                         },
     "PolicyType":  {
                        "EdgeSmartScreenSettings":  {
@@ -966,12 +972,21 @@
                                                         "testIdentityProtectionSecurityTemplateName":  "Fiókvédelem (teszt)",
                                                         "windowsSecurityExperience":  "A Windows Biztonság felhasználói élménye"
                                                     },
+                       "FileVault":  {
+                                         "macOS":  "MacOS Filevault"
+                                     },
                        "Firewall":  {
                                         "mDE":  "Windows tűzfal"
                                     },
                        "FirewallRules":  {
                                              "mDE":  "Windows tűzfalszabályok"
                                          },
+                       "IOS":  {
+                                   "pSSO":  "Platform SSO"
+                               },
+                       "MacOS":  {
+                                     "pSSO":  "Platform SSO"
+                                 },
                        "OneDriveKnownFolderMove":  {
                                                        "description":  "A OneDrive ismert mappaáthelyezési beállításai: Windows 10 a felhőkonfigurációs sablonban. https://aka.ms/CloudConfigGuide"
                                                    },
@@ -1034,6 +1049,7 @@
                        "unknown":  "Ismeretlen",
                        "unsupported":  "Nem támogatott",
                        "vpn":  "VPN",
+                       "wallpaper":  "Wallpaper",
                        "wiFi":  "Wi-Fi",
                        "wiFiImport":  "Wi-Fi importálás",
                        "windows10CompliancePolicy":  "Windows 10/11-es megfelelőségi házirend",
@@ -1064,9 +1080,11 @@
                                                         "prompt":  "Rákérdezés"
                                                     },
                                          "Permissions":  {
+                                                             "accessBackgroundLocation":  "Helyadatok elérése (háttér)",
                                                              "accessCoarseLocation":  "Tartózkodási hely felhasználása (durva)",
                                                              "accessFineLocation":  "Tartózkodási hely felhasználása (finom)",
                                                              "addVoicemail":  "Hangposta hozzáadása",
+                                                             "bluetoothConnect":  "Bluetooth-csatlakozás",
                                                              "bodySensors":  "Testérzékelők adatainak engedélyezése",
                                                              "bodySensorsBackground":  "Háttérbeli testérzékelői adatok engedélyezése",
                                                              "callPhone":  "Hívásindítás",
@@ -1674,17 +1692,17 @@
                              "aSR":  "Támadási felület csökkentése",
                              "accountProtection":  "Fiókvédelem",
                              "allDevices":  "Minden eszköz",
-                             "antivirus":  "Víruskereső",
-                             "antivirusReporting":  "Víruskereső-jelentéskészítés (előzetes verzió)",
+                             "antivirus":  "Vírusvédelem",
+                             "antivirusReporting":  "Víruskereső jelentés (előzetes verzió)",
                              "conditionalAccess":  "Feltételes hozzáférés",
-                             "deviceCompliance":  "Eszköz megfelelősége",
+                             "deviceCompliance":  "Eszközmegfelelőség",
                              "diskEncryption":  "Lemeztitkosítás",
                              "eDR":  "Végpontészlelés és -válasz",
-                             "ePM":  "Végponti jogosultságok kezelése",
+                             "ePM":  "Végponti jogosultságkezelés",
                              "firewall":  "Tűzfal",
                              "helpSupport":  "Súgó és támogatás",
-                             "setup":  "Telepítés",
-                             "wdapt":  "Microsoft Defender for Endpoint"
+                             "setup":  "Beállítás",
+                             "wdapt":  "Végponthoz készült Microsoft Defender"
                          },
     "OutlookAppConfig":  {
                              "DataProtectionConfiguration":  {
@@ -1970,6 +1988,7 @@
                                           "tenantManagement":  "Bérlőkezelés"
                                       },
                    "actions":  "Meg nem felelés esetén végrehajtandó műveletek",
+                   "adminPermissions":  "Rendszergazdai engedélyek",
                    "advancedExchangeSettings":  "Exchange Online-beállítások",
                    "advancedThreatProtection":  "Microsoft Defender for Endpoint",
                    "allApps":  "Minden alkalmazás",
@@ -2052,7 +2071,6 @@
                    "macOSSoftwareUpdateCategorySummaries":  "Szoftverfrissítések összegzése",
                    "macOSSoftwareUpdateStateSummaries":  "frissítések",
                    "managedGooglePlay":  "Felügyelt Google Play",
-                   "msfb":  "Microsoft Store Vállalatoknak",
                    "myPermissions":  "Engedélyeim",
                    "notifications":  "Értesítések",
                    "officeApps":  "Office-alkalmazások",
@@ -2076,6 +2094,7 @@
                    "retireNoncompliantDevices":  "Nem megfelelő eszközök kivonása",
                    "retireNoncompliantDevicesPreview":  "Nem megfelelő eszközök kivonása (előzetes verzió)",
                    "role":  "Szerepkör",
+                   "rolesByPermission":  "Szerepkörök engedély szerint",
                    "scriptManagement":  "Parancsfájlok",
                    "securityBaselines":  "Biztonsági alapkonfigurációk",
                    "serviceToServiceConnector":  "Exchange Online Connector",
@@ -2115,7 +2134,7 @@
                                                           },
                         "AndroidBackup":  {
                                               "label":  "Szervezeti adatok mentése Android biztonsági mentési szolgáltatásokba",
-                                              "tooltip":  "Válassza a(z) {0} lehetőséget a szervezeti adatok Android biztonsági mentési szolgáltatásokba történő mentésének megakadályozásához.\r\nVálassza a(z) {1} lehetőséget a szervezeti adatok Android biztonsági mentési szolgáltatásokba történő mentésének engedélyezéséhez.\r\nA személyes vagy nem felügyelt adatokat ez nem érinti."
+                                              "tooltip":  "A szervezeti adatok Android biztonsági mentési szolgáltatásokba történő biztonsági mentésének megakadályozásához válassza a {0} lehetőséget.\r\nA szervezeti adatok Android biztonsági mentési szolgáltatásokba történő biztonsági mentésének engedélyezéséhez válassza a {1} lehetőséget.\r\nA személyes vagy nem felügyelt adatokra nincs hatással."
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "PIN-kód helyett biometrikai adatok a hozzáféréshez",
@@ -2157,7 +2176,7 @@
                                                    },
                         "CustomBrowserProtocol":  {
                                                       "label":  "Nem felügyelt böngésző protokollja",
-                                                      "tooltip":  "<p>Adja meg a nem felügyelt böngésző protokollját. A szabályzat által felügyelt alkalmazások webes tartalma (http/s) minden olyan alkalmazásban meg fog nyílni, amely támogatja ezt a protokollt. </p>\r\n\r\n<p><b>Megjegyzés: </b>csak a protokoll előtagját adja meg. Ha a böngésző sajátböngésző://www.microsoft.com formátumú hivatkozásokat igényel, a „sajátböngésző” előtagot adja meg.</p>"
+                                                      "tooltip":  "<p>Adja meg egyetlen nem felügyelt böngésző protokollját.  A házirend által felügyelt alkalmazásokból származó webes tartalom (http/s) minden olyan alkalmazásban megnyílik, amely támogatja ezt a protokollt. </p>\r\n\r\n<p><b>Megjegyzés: </b>Zárja be csak a protokoll előtagját.  Ha a böngésző mybrowser://www.microsoft.com formátumú hivatkozásokat igényel, a „mybrowser” előtagot adja meg.</p>"
                                                   },
                         "CustomDialerAppDisplayName":  {
                                                            "label":  "Tárcsázóalkalmazás neve"
@@ -2183,10 +2202,10 @@
                                             "tooltip":  "Válassza a(z) {0} lehetőséget, ha kényszeríteni szeretné a szervezeti adatok Intune-beli alkalmazásréteg-titkosítással történő titkosítását.\r\n <br/>\r\nVálassza a(z) {1} lehetőséget, ha nem szeretné kényszeríteni a szervezeti adatok Intune-beli alkalmazásréteg-titkosítással történő titkosítását.\r\n\r\n<br/>\r\nMegjegyzés: Az Intune-beli alkalmazásréteg-titkosításról bővebben lásd: {2}."
                                         },
                         "EncryptDataAndroid":  {
-                                                   "tooltip":  "<p>Válassza a <b>Kötelező</b> lehetőséget, hogy engedélyezze ebben az alkalmazásban a munkahelyi vagy iskolai adatok titkosítását. Az Intune wolfSSL 256 bites AES titkosítási sémát használ az Android Keystore rendszerrel együtt az alkalmazásadatok biztonságos titkosításához. Az adatok szinkronban vannak titkosítva a fájl I/O-feladatai során. Az eszköz tárterületének tartalma mindig titkosítva van. Az új fájlok 256 bites kulcsokkal lesznek titkosítva. A meglévő 128 bites titkosított fájlokat a rendszer megpróbálja 256 bites kulcsokra áttelepíteni, de a folyamat nem garantált. A 128 bites kulcsokkal titkosított fájlok továbbra is olvashatóak maradnak. </p>\r\n\r\n<p>A titkosítási módszer megfelel a FIPS 140-2 szabványnak.</p>"
+                                                   "tooltip":  "<p>Válassza a <b>Kötelező</b> lehetőséget, hogy engedélyezze ebben az alkalmazásban a munkahelyi vagy iskolai adatok titkosítását. Az Intune wolfSSL 256 bites AES titkosítási sémát használ az Android Keystore rendszerrel együtt az alkalmazásadatok biztonságos titkosításához. Az adatok szinkronban vannak titkosítva a fájl I/O-feladatai során. Az eszköz tárterületének tartalma mindig titkosítva van. Az új fájlok 256 bites kulcsokkal lesznek titkosítva. A meglévő 128 bites titkosított fájlokat a rendszer megpróbálja 256 bites kulcsokra áttelepíteni, de a folyamat nem garantált. A 128 bites kulcsokkal titkosított fájlok olvashatók maradnak. </p>\r\n\r\n<p>A titkosítási módszer FIPS 140-2 szabványnak megfelelő.</p>"
                                                },
                         "EncryptDataIos":  {
-                                               "tooltip1":  "Válassza a <b>Kötelező</b> lehetőséget munkahelyi vagy iskolai adatok az alkalmazásban való titkosításának engedélyezéséhez.  Az Intune kényszeríti az iOS- vagy iPadOS-eszköztitkosítás alkalmazását az alkalmazásadatok védelme érdekében, amíg az eszköz zárolva van.  Az alkalmazások nem kötelezően titkosíthatják az alkalmazásadatokat az Intune APP SDK titkosításával.  Az Intune APP SDK az iOS vagy iPadOS kriptográfiai eljárásaival alkalmaz 128 bites AES titkosítást az alkalmazásadatokon.",
+                                               "tooltip1":  "Válassza a <b>Kötelező</b> lehetőséget munkahelyi vagy iskolai adatok az alkalmazásban való titkosításának engedélyezéséhez.  Az Intune kényszeríti az iOS- vagy iPadOS-eszköztitkosítás alkalmazását az alkalmazásadatok védelme érdekében, amíg az eszköz zárolva van.  Az alkalmazások nem kötelezően titkosíthatják az alkalmazásadatokat az Intune APP SDK titkosításával.  Az Intune APP SDK az iOS vagy iPadOS kriptográfiai eljárásaival alkalmaz 256 bites AES titkosítást az alkalmazásadatokon.",
                                                "tooltip2":  "Ha engedélyezi ezt a beállítást, a rendszer arra kérheti a felhasználót, hogy az eszközhöz való hozzáféréshez PIN-kódot állítson be és használjon. Ha az eszköznek nincs PIN-kódja, és a titkosítás kötelező, a rendszer PIN-kód beállítására kéri a felhasználót a következő üzenettel: „A szervezet megköveteli, hogy az alkalmazás eléréséhez először engedélyezze az eszköz PIN-kódjának használatát.”",
                                                "tooltip3":  "A <a href=\"{0}\" target=\"_blank\">hivatalos Apple-dokumentációban</a> tájékozódhat arról, hogy mely iOS-titkosítási modulok felelnek meg a FIPS 140-2 szabványnak, vagy van függőben a FIPS 140-2 szabványnak való megfelelőségük."
                                            },
@@ -2210,7 +2229,7 @@
                                            "tooltip":  "A Touch ID ujjlenyomat-felismerő technológiát használ a felhasználók hitelesítésére az iOS-eszközökön. Az Intune a LocalAuthentication API-t hívja a felhasználók Touch ID-vel történő hitelesítéséhez. Ha engedélyezve van, akkor a Touch ID-t kell használni az alkalmazás eléréséhez a Touch ID használatára alkalmas eszközön."
                                        },
                         "MessagingRedirectAppDisplayName":  {
-                                                                "label":  "Üzenetküldő alkalmazás neve"
+                                                                "label":  "Üzenetkezelő alkalmazás neve"
                                                             },
                         "MessagingRedirectAppPackageId":  {
                                                               "label":  "Üzenetkezelő alkalmazás csomagazonosítója"
@@ -2220,11 +2239,11 @@
                                                           },
                         "NotificationRestriction":  {
                                                         "label":  "Céges adatokkal kapcsolatos értesítések",
-                                                        "tooltip":  "<p>Az alábbi beállítások egyikének segítségével adja meg, hogy miként jelenjenek meg a céges fiókok értesítései ezen alkalmazás és az összes csatlakoztatott eszköz (például hordható eszköz) esetében:</p>\r\n<p>{0}: Ne legyenek megosztva az értesítések.</p>\r\n<p>{1}: Ne legyenek megosztva a céges adatok az értesítésekben.  Ha az alkalmazás nem támogatja, az értesítések le vannak tiltva. </p>\r\n<p>{2}:  Az összes értesítés megosztása. </p>\r\n <p>Csak Android esetén:\r\n Megjegyzés: Ez a beállítás nem vonatkozik minden alkalmazásra. További információ: {3} </p>\r\n\r\n <p>Csak iOS esetén:\r\nMegjegyzés: Ez a beállítás nem vonatkozik minden alkalmazásra. További információ: {4}</p>"
+                                                        "tooltip":  "<p>Az alábbi beállítások egyikének segítségével adja meg, hogy miként jelenjenek meg a céges fiókok értesítései ezen alkalmazás és az összes csatlakoztatott eszköz (például hordható eszköz) esetében:</p>\r\n<p>{0}: Ne ossza meg az értesítéseket.</p>\r\n<p>{1}: Ne osszon meg szervezeti adatokat az értesítésekben.  Ha az alkalmazás nem támogatja, az értesítések le lesznek tiltva. </p>\r\n<p>{2}: Az összes értesítés megosztása. </p>\r\n <p>Csak Android:\r\n Megjegyzés: Ez a beállítás nem vonatkozik minden alkalmazásra. További információ: {3}</p>\r \n\r\n <p>csak iOS:\r\nMegjegyzés: Ez a beállítás nem vonatkozik minden alkalmazásra. További információ: {4}</p>"
                                                     },
                         "OpenLinksManagedBrowser":  {
                                                         "label":  "Webes tartalom más alkalmazásokkal folytatott átvitelének korlátozása",
-                                                        "tooltip":  "<p>Válassza ki az alábbi lehetőségek közül, hogy az alkalmazás mely alkalmazásokban nyithat meg webes tartalmat: </p>\r\n<p><b> Microsoft Edge:</b> Webes tartalom csak a Microsoft Edge-ben nyitható meg.<a href=\"{0}\" target=\"_blank\"> Ismerje meg, hogyan védi a Microsoft Edge az Ön adatait</a>.</p>\r\n<p><b>Nem felügyelt böngésző:</b> Webes tartalom csak a „Nem felügyelt böngésző protokollja” beállításnál megadott nem felügyelt böngészőben nyitható meg</p>\r\n<p><b>Bármely alkalmazás:</b> Webhivatkozások bármely alkalmazásban megnyithatók</p>"
+                                                        "tooltip":  "<p>Az alábbi lehetőségek egyikének kiválasztásával adhatja meg, hogy az alkalmazás mely alkalmazásokban nyithat meg webes tartalmakat: </p>\r\n<p><b> Microsoft Edge:</b> A webes tartalom csak a Microsoft Edge-ben nyitható meg.<a href=\"{0}\" target=\"_blank\"> Megtudhatja, hogyan védi a Microsoft Edge az adatait.</a></p>\r\n<p><b>Nem felügyelt böngésző:</b> A webes tartalom csak a \"Nem felügyelt böngészőprotokoll\" beállítás által meghatározott nem felügyelt böngészőben nyitható meg</p>\r\n<p><b>Bármely alkalmazás:</b> Webes hivatkozások engedélyezése bármely alkalmazásban</p>"
                                                     },
                         "OverrideBiometric":  {
                                                   "tooltip":  "Ha szükséges, az időkorlát (inaktív percek) alapján a PIN-kód megadását kérő üzenet felülbírálja a biometrikus hitelesítést kérő üzeneteket. Ha nem érte el az időkorlátban megadott időtartamot, továbbra is a biometrikus hitelesítést kérő üzenet fog megjelenni. Ennek az időkorlátértéknek nagyobbnak kell lennie, mint a Hozzáférési követelmények újbóli ellenőrzése ennyi idő után (inaktív perc) alatt megadott érték. "
@@ -2246,9 +2265,9 @@
                                          "tooltip":  "Az alkalmazás nem tudja kinyomtatni a védett adatokat, ha le van tiltva."
                                      },
                         "ProtectedMessagingRedirectAppType":  {
-                                                                  "iosTooltip":  "Amikor egy felhasználó egy alkalmazásban kiválaszt egy hiperhivatkozással ellátott üzenetküldő hivatkozást, általában egy üzenetkezelő alkalmazás nyílik meg a telefonszámmal, amely előre kitöltve készen áll a küldésre. Ehhez a beállításhoz válassza ki, hogy a rendszer hogyan kezelje ezt a tartalomátvitelt, ha egy szabályzat által felügyelt alkalmazásból lett kezdeményezve. További lépésekre lehet szükség ahhoz, hogy a beállítás érvénybe lépjen. Először ellenőrizze, hogy az SMS el lett-e távolítva a Kivételt képező alkalmazások kijelölésére szolgáló listából. Ezt követően gondoskodjon arról, hogy az alkalmazás az Intune SDK újabb (19.0.0+) verzióját használja.",
-                                                                  "label":  "Üzenetküldési adatok átvitele a következőbe:",
-                                                                  "tooltip":  "Amikor egy felhasználó egy alkalmazásban kiválaszt egy hiperhivatkozással ellátott üzenetküldő hivatkozást, általában egy üzenetkezelő alkalmazás nyílik meg a telefonszámmal, amely előre kitöltve készen áll a küldésre. Ehhez a beállításhoz válassza ki, hogy a rendszer hogyan kezelje ezt a tartalomátvitelt, ha egy szabályzat által felügyelt alkalmazásból lett kezdeményezve."
+                                                                  "iosTooltip":  "Ha a felhasználó egy alkalmazásban üzenetkezelési hiperhivatkozásra kattint vagy koppint, általában megnyílik egy üzenetkezelő alkalmazás, amelyben előre ki van töltve a címzett telefonszáma. Ezzel a beállítással megadhatja, hogy a rendszer hogyan kezelje ezt a tartalomátvitel-típust szabályzat által felügyelt alkalmazásból történő átvitel esetén. További lépésekre lehet szükség ahhoz, hogy a beállítás érvénybe lépjen. Először ellenőrizze, hogy az SMS el lett-e távolítva a kivételt képező alkalmazások kiválasztására szolgáló listából. Ezt követően gondoskodjon arról, hogy az alkalmazás az Intune SDK újabb (19.0.0+) verzióját használja.",
+                                                                  "label":  "Üzenetkezelési adatok átvitele a következőbe:",
+                                                                  "tooltip":  "Ha a felhasználó egy alkalmazásban üzenetkezelési hiperhivatkozásra kattint vagy koppint, általában megnyílik egy üzenetkezelő alkalmazás, amelyben előre ki van töltve a címzett telefonszáma. Ezzel a beállítással megadhatja, hogy a rendszer hogyan kezelje ezt a tartalomátvitel-típust szabályzat által felügyelt alkalmazásból történő átvitel esetén."
                                                               },
                         "ReceiveData":  {
                                             "label":  "Adatok fogadása más alkalmazásokból",
@@ -2277,7 +2296,7 @@
                                               },
                         "SaveData":  {
                                          "label":  "Szervezeti adatok másolatának mentése",
-                                         "tooltip":  "Válassza a(z) {0} lehetőséget, ha meg szeretné akadályozni a szervezeti adatok másolatának kiválasztott társzolgáltatáson kívüli, új helyre történő mentését a Mentés másként használatakor.\r\n Válassza a(z) {1} lehetőséget, ha szeretné engedélyezni a szervezeti adatok másolatának új helyre történő mentését a Mentés másként használatakor. <br/>\r\n\r\n\r\nMegjegyzés: Ez a beállítás nem vonatkozik az összes alkalmazásra.  További információért lásd: {2}.\r\n"
+                                         "tooltip":  "Válassza a {0} lehetőséget, ha meg szeretné akadályozni a szervezeti adatok másolatának mentését a kiválasztott tárolási szolgáltatásoktól eltérő új helyre a Mentés másként funkcióval.\r\n Válassza a {1} lehetőséget, ha engedélyezni szeretné a szervezeti adatok másolatának mentését egy új helyre a Mentés másként funkcióval. <br/>\r\n\r\n\r\nMegjegyzés: Ez a beállítás nem vonatkozik minden alkalmazásra.  További információ: {2}.\r\n"
                                      },
                         "SaveDataToSelected":  {
                                                    "label":  "Másolatok kiválasztott szolgáltatásokba történő mentésének engedélyezése a felhasználó számára",
@@ -2307,7 +2326,7 @@
                                     },
                         "WinCutCopyPaste":  {
                                                 "label":  "Kivágás, másolás és beillesztés engedélyezése a következőhöz:",
-                                                "tooltip":  "Válassza ki az alábbi beállítások egyikét a szervezeti felhasználók számára, a szervezeti adatok kivágásához, másolásához vagy beillesztéséhez: <br/>\r\n\r\n<b>Bármely célhely és bármely forrás</b>: A szervezeti felhasználók bármilyen fiókba, dokumentumba, helyre vagy alkalmazásba beilleszthetnek adatokat, illetve kivághatnak/másolhatnak adatokat.<br/>\r\n\r\n<b>Nincs cél vagy forrás</b>: A szervezeti felhasználók nem vághatnak, másolhatnak vagy illeszthetnek be adatokat külső fiókokba, dokumentumokba, helyekre vagy alkalmazásokba a szervezeti környezetből vagy a szervezeti környezetbe."
+                                                "tooltip":  "Válassza az alábbi lehetőségek egyikét a szervezeti adatok kivágására, másolására vagy beillesztésére jogosult források és célhelyek megadásához: <br/>\r\n\r\n<b>Bármely célhely és bármely forrás</b>: A szervezeti felhasználók adatokat illeszthetnek be, illetve kivághatnak/másolhatnak adatokat bármely fiókba, dokumentumba, helyre vagy alkalmazásba.<br/>\r\n\r\n<b>Semmilyen cél vagy forrás</b>: A szervezeti felhasználók nem vághatják ki, másolhatják és nem illeszthetik be a külső fiókokból, dokumentumokból, helyekről vagy alkalmazásokból származó adatokat a szervezeti környezetből vagy azok környezetébe."
                                             },
                         "WinPrintData":  {
                                              "label":  "Szervezeti adatok nyomtatása",
@@ -2315,11 +2334,11 @@
                                          },
                         "WinReceiveData":  {
                                                "label":  "Adatok fogadása innen:",
-                                               "tooltip":  "Az alábbi lehetőségek közül választva megadhatja, hogy a szervezeti felhasználók mely forrásokból fogadhatnak adatokat: <br/>\r\n\r\n<b>Minden forrás</b>: A szervezeti felhasználók bármilyen fiókból, dokumentumból, helyről vagy alkalmazásból megnyithatnak adatokat a szervezeti környezetbe.<br/>\r\n\r\n<b>Nincs forrás</b>: A szervezeti felhasználók nem nyithatnak meg külső fiókokból, dokumentumokból, helyekről vagy alkalmazásokból származó adatokat a szervezeti környezetbe."
+                                               "tooltip":  "Válassza ki az alábbi lehetőségek egyikét annak megadásához, hogy a szervezet felhasználói milyen forrásokból fogadhatnak adatokat: <br/>\r\n\r\n<b>Minden forrás</b>: A szervezeti felhasználók bármilyen fiókból, dokumentumból, helyről vagy alkalmazásból megnyithatnak adatokat a szervezeti környezetbe.<br/>\r\n\r\n<b>Semmilyen forrás</b>: A szervezeti felhasználók nem nyithatják meg a külső fiókokból, dokumentumokból, helyekről vagy alkalmazásokból származó adatokat a szervezeti környezetbe."
                                            },
                         "WinSendData":  {
                                             "label":  "Szervezeti adatok küldése ide:",
-                                            "tooltip":  "Az alábbi lehetőségek közül választva megadhatja, hogy a szervezeti felhasználók mely helyekre küldhetnek adatokat: <br/>\r\n\r\n<b>Minden célhely</b>: A szervezeti felhasználók bármilyen fiókba, dokumentumba, helyre vagy alkalmazásba küldhetnek szervezeti adatokat. <br/>\r\n\r\n<b>Nincs célhely</b>: A szervezeti felhasználók nem küldhetnek szervezeti adatokat külső fiókokba, dokumentumokba, helyekre vagy alkalmazásokba a szervezeti környezetből."
+                                            "tooltip":  "Válassza ki az alábbi lehetőségek egyikét annak megadásához, hogy a szervezet felhasználói milyen forrásokból fogadhatnak adatokat: <br/>\r\n\r\n<b>Minden célhely</b>: A szervezeti felhasználók bármilyen fiókba, dokumentumba, helyre vagy alkalmazásba küldhetnek szervezeti adatokat.<br/>\r\n\r\n<b>Semmilyen célhely</b>: A szervezeti felhasználók nem küldhetnek szervezeti adatokat külső fiókokba, dokumentumokba, helyekre vagy alkalmazásokba a szervezeti környezetből."
                                         },
                         "Tap":  {
                                     "numberOfDays":  "Napok száma",
@@ -2387,19 +2406,19 @@
     "PolicySet":  {
                       "appManagement":  "Alkalmazáskezelés",
                       "assignments":  "Hozzárendelések",
-                      "basics":  "Alapvető beállítások",
-                      "deviceEnrollment":  "Eszközök beléptetése",
+                      "basics":  "Alapadatok",
+                      "deviceEnrollment":  "Eszközregisztráció",
                       "deviceManagement":  "Eszközkezelés",
                       "scopeTags":  "Hatókörcímkék",
-                      "appConfigurationTitle":  "Alkalmazáskonfigurációs szabályzatok",
-                      "appProtectionTitle":  "Alkalmazásvédelmi szabályzatok",
+                      "appConfigurationTitle":  "Alkalmazáskonfigurációs házirendek",
+                      "appProtectionTitle":  "Alkalmazásvédelmi házirendek",
                       "appTitle":  "Alkalmazások",
-                      "iOSAppProvisioningTitle":  "iOS-es alkalmazáskiépítési profilok",
+                      "iOSAppProvisioningTitle":  "iOS alkalmazáskiépítési profilok",
                       "deviceLimitRestrictionTitle":  "Eszközszámkorlátok",
                       "deviceTypeRestrictionTitle":  "Eszköztípus-korlátozások",
                       "enrollmentStatusSettingTitle":  "Regisztráció állapotát jelző lapok",
-                      "windowsAutopilotDeploymentProfileTitle":  "Windows AutoPilot Deployment-profilok",
-                      "deviceComplianceTitle":  "Eszközmegfelelőségi szabályzatok",
+                      "windowsAutopilotDeploymentProfileTitle":  "Windows Autopilot Deployment profilok",
+                      "deviceComplianceTitle":  "Eszközmegfelelőségi házirendek",
                       "deviceConfigurationTitle":  "Eszközkonfigurációs profilok",
                       "powershellScriptTitle":  "PowerShell-szkriptek"
                   },
@@ -2421,19 +2440,35 @@
                          "availableUninstall":  "Eltávolítás elérhetőségének engedélyezése",
                          "availableUninstallTooltip":  "Válassza az Igen lehetőséget, ha lehetővé szeretné tenni a Céges portál felhasználóinak, hogy eltávolíthassák az alkalmazást. Válassza a Nem lehetőséget, ha nem szeretné, hogy a felhasználók eltávolíthassák az alkalmazást a Céges portálról.",
                          "bladeTitle":  "Program",
+                         "commandLineDropdownText":  "Parancssor",
                          "deviceRestartBehavior":  "Viselkedés az eszköz újraindításához",
                          "deviceRestartBehaviorTooltip":  "Válassza ki az eszköz sikeres alkalmazástelepítés utáni újraindítási viselkedését. Az eszköz a visszatérési kódok konfigurációs beállításai alapján történő újraindításához válassza a Viselkedés meghatározása a visszatérési kódok alapján lehetőséget. Válassza a Nincs megadott művelet lehetőséget az eszköz újraindításának letiltásához az MSI-alapú alkalmazások telepítése során. Válassza Az alkalmazástelepítés kényszerítheti az eszköz újraindítását lehetőséget annak engedélyezéséhez, hogy az alkalmazástelepítés az újraindítások letiltása nélkül befejeződjön. Válassza Az Intune kényszeríti az eszköz kötelező újraindítását lehetőséget ahhoz, hogy sikeres alkalmazástelepítés után mindig újrainduljon az eszköz.",
                          "header":  "Adja meg a parancsokat az alkalmazás telepítéséhez és leválasztásához:",
                          "installCommand":  "Telepítési parancs",
                          "installCommandMaxLengthErrorMessage":  "A telepítési parancs nem lehet hosszabb 1024 karakternél.",
                          "installCommandTooltip":  "Az alkalmazás telepítéséhez használt teljes telepítési parancssor.",
+                         "installScript":  "Telepítési szkript",
+                         "installScriptErrorText":  "A telepítési szkriptet kötelező megadni.",
+                         "installScriptToolTip":  "Az alkalmazás telepítéséhez használt telepítési parancsokkal rendelkező PowerShell-szkriptfájl.",
+                         "installScriptsHeader":  "Adja meg az alkalmazástelepítési és -eltávolítási beállításokat, beleértve azt is, hogy szkriptet vagy parancssort használjon-e, az időkorlátokat, az újraindítási viselkedést és a visszatérési kódokat.",
+                         "installerTypeText":  "Telepítő típusa",
                          "runAs32Bit":  "Telepítési és leválasztási parancsok futtatása 32 bites folyamatban 64 bites ügyfeleken",
                          "runAs32BitTooltip":  "Válassza az Igen lehetőséget az alkalmazás 32 bites folyamatban való telepítéséhez és leválasztásához 64 bites ügyfeleken. Válassza a Nem (alapértelmezett) lehetőséget, ha az alkalmazást 64 bites folyamatban szeretné telepíteni és leválasztani 64 bites ügyfeleken. A 32 bites ügyfelek mindig 32 bites folyamatot fognak használni.",
                          "runAsAccount":  "Telepítési viselkedés",
                          "runAsAccountTooltip":  "Ha az alkalmazást az összes felhasználó számára szeretné telepíteni, és ez támogatott, válassza a Rendszer lehetőséget. Ha az alkalmazást az eszközön bejelentkezett felhasználó számára szeretné telepíteni, válassza a Felhasználó lehetőséget. A kettős célú MSI-alkalmazások esetében a módosítások mindaddig megakadályozzák a frissítések és az eltávolítások sikeres végrehajtását, amíg vissza nem állítja az eredeti telepítés időpontjában alkalmazott értéket.",
+                         "scriptDropdownText":  "PowerShell-szkript",
+                         "scriptsErrorText":  "Telepítési és eltávolítási szkript szükséges.",
+                         "selectCustomScript":  "Egyéni szkript kiválasztása",
+                         "selectScriptLinkAriaText":  "Nincs kiválasztva szkript. Megnyitja a környezeti panelt egy szkript feltöltéséhez.",
+                         "selectScriptLinkText":  "Szkript kiválasztása",
+                         "selectedScriptLinkAriaText":  "{0} szkript kiválasztva. Megnyitja a környezeti panelt a szerkesztéshez vagy egy új szkript feltöltéséhez.",
                          "selectorLabel":  "Program",
                          "uninstallCommand":  "Leválasztási parancs",
-                         "uninstallCommandTooltip":  "Az alkalmazás eltávolításához használt teljes eltávolítási parancssor."
+                         "uninstallCommandTooltip":  "Az alkalmazás eltávolításához használt teljes eltávolítási parancssor.",
+                         "uninstallScript":  "Eltávolítási szkript",
+                         "uninstallScriptErrorText":  "Az eltávolítási szkriptet kötelező megadni.",
+                         "uninstallScriptToolTip":  "Az alkalmazás eltávolításához használt eltávolítási parancsokkal rendelkező PowerShell-szkriptfájl.",
+                         "uninstallerTypeText":  "Eltávolító típusa"
                      },
     "TermsOfUse":  {
                        "Languages":  {
@@ -2847,8 +2882,8 @@
                       "description":  "Leírás",
                       "deviceType":  "Eszköztípus",
                       "deviceUse":  "Eszköz használata",
-                      "directoryServiceHintForSurfaceHub2":  " <p>\r\n        Az Autopilot csak a Surface Hub 2 eszközöknél támogatja a Microsoft Entrához csatlakoztatott beállítást. Adja meg, hogyan csatlakoznak az eszközök az Active Directoryhoz (AD) a szervezetben.\r\n        </p>\r\n        <ul>\r\n        <li>\r\n            Microsoft Entrához csatlakozott: Csak felhőalapú, nincs helyszíni Windows Server Active Directory.\r\n        </li>\r\n        </ul>\r\n    ",
-                      "directoryServiceHintForWindowsPC":  "\r\n        <p>\r\n        Adja meg, hogyan csatlakozhatnak az eszközök az Active Directoryhoz (AD) a munkahelyen:\r\n        </p>\r\n        <ul>\r\n        <li>\r\n            Microsoft Entrához csatlakoztatott: Csak felhőalapú, nincs helyszíni Windows Server Active Directory\r\n        </li>\r\n        </ul>\r\n   ",
+                      "directoryServiceHintForSurfaceHub2":  " <p>\r\n        Az Autopilot csak a Surface Hub 2 eszközöknél támogatja a Microsoft Entrához csatlakoztatott beállítást. Adja meg, hogyan csatlakoztatják az eszközök Active Directory (AD) szolgáltatást a szervezetben.\r\n        </p>\r\n        <ul>\r\n        <li>\r\n            Microsoft Entrához csatlakoztatva: csak felhőalapú, helyszíni Windows Server Active Directory nélkül.\r\n        </li>\r\n        </ul>\r\n    ",
+                      "directoryServiceHintForWindowsPC":  "\r\n        <p>\r\n        Adja meg, hogyan csatlakotassák az eszközök Active Directory (AD) szolgáltatást a szervezetben:\r\n        </p>\r\n        <ul>\r\n        <li>\r\n            A Microsoft Entrához csatlakoztatva: Csak felhőalapú, helyszíni Windows Server Active Directory nélkül\r\n        </li>\r\n        </ul>\r\n   ",
                       "getAssignedDevicesCountError":  "Hiba történt a hozzárendelt eszközök számának beolvasása során.",
                       "getAssignmentsError":  "Hiba történt az AutoPilot-profilok hozzárendeléseinek beolvasása során.",
                       "harvestDeviceId":  "Minden megcélzott eszköz AutoPilot-eszközzé alakítása",
@@ -2879,20 +2914,20 @@
                            "devicesWithoutEnrollment":  "Felügyelt alkalmazások"
                        },
     "AppProtection":  {
-                          "allAppTypes":  "Célzás minden alkalmazástípusra",
+                          "allAppTypes":  "Cél az összes alkalmazástípushoz",
                           "androidPlatformLabel":  "Android",
-                          "appsInAndroidWorkProfile":  "Androidos munkahelyi profilban lévő alkalmazások",
+                          "appsInAndroidWorkProfile":  "Alkalmazások Androidos munkahelyi profilban",
                           "appsOnAndroidEnterpriseDedicatedDevicesWithAzureAdSharedMode":  "Alkalmazások a Microsoft Entra megosztott módot használó dedikált Android Enterprise-eszközökön",
                           "appsOnAndroidOpenSourceProjectUserAssociated":  "Androidos nyílt forráskódú projektben található alkalmazások társított felhasználóval",
                           "appsOnAndroidOpenSourceProjectUserless":  "Androidos nyílt forráskódú projektben található alkalmazások felhasználó nélkül",
-                          "appsOnIntuneManagedDevices":  "Az Intune által felügyelt eszközökön lévő alkalmazások",
-                          "appsOnUnmanagedDevices":  "A nem felügyelt eszközökön lévő alkalmazások",
+                          "appsOnIntuneManagedDevices":  "Alkalmazások Intune által felügyelt eszközökön",
+                          "appsOnUnmanagedDevices":  "Alkalmazások nem felügyelt eszközökön",
                           "iOSPlatformLabel":  "iOS/iPadOS",
                           "iosAndroidMacPlatformLabel":  "iOS, Android, Mac",
                           "iosAndroidPlatformLabel":  "iOS, Android",
                           "macPlatformLabel":  "Mac",
                           "notAvailable":  "Nem érhető el",
-                          "windows10PlatformLabel":  "Windows 10 és újabb rendszerek",
+                          "windows10PlatformLabel":  "Windows 10 és újabb verziók",
                           "withEnrollment":  "Regisztrációval",
                           "withoutEnrollment":  "Regisztráció nélkül"
                       },
@@ -4078,6 +4113,7 @@
                      "vPNProxy":  "Proxy",
                      "vPNSplitTunneling":  "Vegyes alagútkezelés",
                      "vPNTrustedNetwork":  "Megbízható hálózatok észlelése",
+                     "wSLCompliance":  "Linuxos Windows-alrendszer (WSL)",
                      "wakeSettings":  "Ébresztési beállítások",
                      "webContentFilter":  "Webes tartalomszűrés",
                      "wiFi":  "Wi-Fi",
@@ -4163,7 +4199,7 @@
                       "bs-latn":  "bosnyák (latin betűs)",
                       "zh-cN":  "kínai (kínai népköztársasági)",
                       "zh-hK":  "kínai (hongkongi k.k.t.)",
-                      "zh-mO":  "kínai (Makaó KKT)",
+                      "zh-mO":  "Kínai (Makaó KKT)",
                       "zh-sG":  "kínai (Szingapúr)",
                       "zh-tW":  "kínai (tajvani)",
                       "hr-bA":  "horvát (latin betűs)",
@@ -4222,7 +4258,7 @@
                       "smn":  "számi, inari (Finnország)",
                       "sms":  "számi, kolta (Finnország)",
                       "sr-Cyrl-bA":  "szerb (cirill betűs)",
-                      "sr-Cyrl-rS":  "szerb (cirill betűs, [a volt] Szerbia és Montenegró)",
+                      "sr-Cyrl-rS":  "Szerb (cirill betűs, Szerbia, Montenegró)",
                       "sr-Latn-bA":  "szerb (latin betűs)",
                       "sr-Latn-rS":  "szerb (latin, Szerbia)",
                       "dsb":  "alsó-szorb (Németország)",
@@ -4300,7 +4336,6 @@
                       "mk":  "Macedón (Észak-Macedónia)",
                       "ml":  "malajálam (India)",
                       "mt":  "máltai (Málta)",
-                      "mi":  "maori (Új-Zéland)",
                       "mr":  "maráthi (India)",
                       "moh":  "mohawk (Mohawk)",
                       "ne":  "nepáli (Nepál)",
@@ -4334,11 +4369,13 @@
                       "vi":  "vietnami (Vietnam)",
                       "cy":  "walesi (Egyesült Királyság)",
                       "wo":  "volof (Szenegál)",
+                      "sah":  "jakut (Oroszország)",
                       "ii":  "ji (kínai népköztársasági)",
                       "yo":  "joruba (Nigéria)"
                   },
     "DisplayRoleTypes":  {
                              "builtInRole":  "Beépített szerepkör",
+                             "customAutopatchRole":  "Egyéni Windows Automatikus javítási szerepkör",
                              "customCloudPCRole":  "Egyéni Windows 365-szerepkör",
                              "customIntuneRole":  "Egyéni Intune-szerepkör",
                              "customRole":  "Egyéni szerepkör"
@@ -4945,7 +4982,7 @@
                            "allAndroidCorpEnrollmentTypesHeaderDescription":  "Ezek a beállítások a teljes mértékben felügyelt, dedikált, vállalati tulajdonban lévő, munkahelyi profilú eszközökön működnek.",
                            "allAndroidCorpEnrollmentTypesHeaderName":  "Teljes mértékben felügyelt, dedikált, vállalati tulajdonban lévő, munkahelyi profilú eszközök",
                            "allAndroidVersionsPasswordHeader":  "Minden Android-eszköz",
-                           "allAndroidVersionsPasswordHeaderDescription":  "Ezek a beállítások az összes androidos operációsrendszer-verzióra és-gyártóra vonatkozóan működnek.",
+                           "allAndroidVersionsPasswordHeaderDescription":  "Ezek a beállítások az Android operációs rendszer minden verziójára és gyártójára érvényesek, hacsak másképp nincs jelezve",
                            "allDomainsOption":  "Minden tartomány",
                            "allEnrollmentTypesDescription":  "Ezek a beállítások az Intune eszközregisztrálási vagy felhasználói regisztrációs szolgáltatásával, valamint az Apple School Manager vagy az Apple Business Manager automatikus eszközregisztrálási szolgáltatásával (korábbi nevén DEP) regisztrált eszközökön működnek.",
                            "allEnrollmentTypesHeader":  "Minden regisztrációtípus",
@@ -5528,7 +5565,7 @@
                            "blockFaceUnlockName":  "Zárolás feloldása arcfelismeréssel",
                            "blockFacetimeName":  "FaceTime letiltása",
                            "blockFactoryResetDescription":  "Az eszköz gyári visszaállításának letiltása.",
-                           "blockFactoryResetName":  "Gyári beállítások visszaállítása (csak Samsung KNOX)",
+                           "blockFactoryResetName":  "Gyári visszaállítás (Samsung KNOX-on, csak az Android 15 és korábbi verziók esetén)",
                            "blockFilesNetworkDriveAccessDescription":  "Az SMB-protokoll használatával az eszközök hozzáférhetnek a fájlokhoz vagy más erőforrásokhoz egy hálózati kiszolgálón. Az iOS és az iPadOS 13.0-s vagy újabb verzióját futtató eszközökön érhető el.",
                            "blockFilesNetworkDriveAccessName":  "A hálózati meghajtóhoz való hozzáférés letiltása a Fájlok alkalmazásban",
                            "blockFilesUsbDriveAccessDescription":  "A hozzáféréssel rendelkező eszközök csatlakozhatnak, és megnyithatnak fájlokat az USB-meghajtón. Az iOS és az iPadOS 13.0-s vagy újabb verziót futtató eszközökön érhető el.",
@@ -5555,7 +5592,7 @@
                            "blockGoogleAccountAutoSyncDescription":  "Google-fiók automatikus szinkronizálásának letiltása az eszközön.",
                            "blockGoogleAccountAutoSyncName":  "Google-fiók automatikus szinkronizálása (csak Samsung KNOX)",
                            "blockGoogleBackupDescription":  "A Google biztonsági mentési szolgáltatásával való szinkronizálás letiltása.",
-                           "blockGoogleBackupName":  "Google biztonsági mentés (csak Samsung KNOX)",
+                           "blockGoogleBackupName":  "Google biztonsági mentés (Samsung KNOX-on, csak az Android 15 és korábbi verziók esetén)",
                            "blockGooglePlayStoreDescription":  "A Google Play Áruház letiltása (Samsung KNOX Standard 4.0+).",
                            "blockGooglePlayStoreName":  "Google Play Áruház (csak Samsung KNOX) ",
                            "blockHostPairingDescription":  "Az annak szabályozására szolgáló gazdapárosítás tiltása, hogy az iOS-készülék milyen eszközökkel legyen párosítható.",
@@ -5695,7 +5732,7 @@
                            "blockSIMCardErrorDialogDescription":  "A hibát jelző párbeszédpanel megjelenítésének letiltása, ha nincs észlelhető SIM-kártya",
                            "blockSIMCardErrorDialogName":  "SIM-kártya hibát jelző párbeszédpanele (csak mobil)",
                            "blockSMSAndMMSAndroidDescription":  "Az SMS- és MMS-funkciók letiltása (Samsung KNOX Standard 4.0+).",
-                           "blockSMSAndMMSName":  "SMS- és MMS-funkciók (csak Samsung KNOX)",
+                           "blockSMSAndMMSName":  "SMS-/MMS-üzenetek (Samsung KNOX-on, csak az Android 15 és korábbi verziók esetén)",
                            "blockSafariAutofillDescription":  "Megakadályozza, hogy a Safari megjegyezze, mit írnak be a felhasználók a webes űrlapokba.",
                            "blockSafariAutofillName":  "A Safari automatikus kitöltési funkciójának letöltése",
                            "blockSafariDescription":  "A Safari webböngésző letiltása.",
@@ -5759,7 +5796,7 @@
                            "blockVPNCreationDescription":  "A VPN-konfigurációk létrehozásának letiltása",
                            "blockVPNCreationName":  "VPN-létrehozás letiltása",
                            "blockVoiceAssistantAndroidDescription":  "A beszédfelismerési asszisztens letiltása (Samsung KNOX Standard 4.0+).",
-                           "blockVoiceAssistantName":  "Beszédfelismerési asszisztens (csak Samsung KNOX)",
+                           "blockVoiceAssistantName":  "Hangvezérelt asszisztens (Samsung KNOX-on, csak az Android 15 és korábbi verziók esetén)",
                            "blockVoiceDialingAndroidDescription":  "A hangtárcsázás letiltása (Samsung KNOX Standard 4.0+).",
                            "blockVoiceDialingDescription":  "A hangtárcsázás letiltása az eszközön.",
                            "blockVoiceDialingName":  "Hangtárcsázás",
@@ -6128,6 +6165,7 @@
                            "customAppConfigurationFileDescription":  "Az Intune-dokumentációban nézhet utána, milyen formátumúnak kell lennie a feltöltött fájlnak. <a href=\"https://aka.ms/AA6z0o4\">További információ</a>",
                            "customAppConfigurationFileName":  "Tulajdonságlista-fájl",
                            "customBoolError":  "Minden logikai típusú konfigurációs kulcsnak „igaz“ vagy „hamis“ értékűnek kell lennie.",
+                           "customComplianceToolTip":  "Ha engedélyezve van, az eszközöknek meg kell felelnie a JSON-fájlban meghatározott egyéni szabályoknak egy felderítési PowerShell-szkript által visszaadott egyéni adatok alapján.",
                            "customEapXmlOption":  "Egyéni EAP XML",
                            "customIntError":  "Az összes konfigurációs egész típusú kulcsnak egész számértéknek kell lennie.",
                            "customItemHideFromUserConfiguration":  "Elrejtés",
@@ -6180,7 +6218,7 @@
                            "dataSharingTypeName":  "Munkahelyi és személyes profilok közötti adatmegosztás",
                            "dataTypeName":  "Adattípus",
                            "dateAndTimeBlockChangesDescription":  "A dátum és idő módosításának letiltása a felhasználó számára (Samsung KNOX eszközön).",
-                           "dateAndTimeBlockChangesName":  "Dátum- és időmódosítás letiltása (Samsung KNOX)",
+                           "dateAndTimeBlockChangesName":  "Dátum- és időmódosítások letiltása (Samsung KNOX-on, csak az Android 15 és korábbi verziók esetén)",
                            "dateTimeConfigurationBlockedDescription":  "A dátum és az idő manuális beállításának letiltása a felhasználó számára.",
                            "dateTimeConfigurationBlockedName":  "Dátum- és időmódosítások",
                            "dateTimeName":  "Dátum és idő",
@@ -7541,7 +7579,7 @@
                            "kioskWifiSsidsName":  "Wi-Fi-engedélyezési lista",
                            "knoxBlockAutofillDescription":  "Az automatikus kitöltés letiltása.",
                            "knoxBlockAutofillName":  "Automatikus kitöltés (csak Samsung KNOX)",
-                           "knoxBlockBluetoothName":  "Bluetooth (csak Samsung KNOX)",
+                           "knoxBlockBluetoothName":  "Bluetooth (Samsung KNOX-on, csak az Android 13 és korábbi verziók esetén)",
                            "knoxBlockCookiesDescription":  "A böngésző által mentett cookie-k engedélyezése vagy letiltása",
                            "knoxBlockCookiesName":  "Cookie-k (csak Samsung KNOX)",
                            "knoxBlockCopyAndPasteDescription":  "A másolási és beillesztési funkció letiltása.",
@@ -7562,17 +7600,20 @@
                            "knoxBlockPopUpsName":  "Előugró ablakok (csak Samsung KNOX)",
                            "knoxBlockRemovableStorageName":  "Cserélhető tároló (csak Samsung KNOX)",
                            "knoxBlockScreenshotDescription":  "A képernyőtartalom képként való rögzítésének letiltása.",
-                           "knoxBlockScreenshotName":  "Képernyőfelvétel (csak Samsung KNOX)",
+                           "knoxBlockScreenshotName":  "Képernyőkép (Samsung KNOX-on, csak az Android 15 és korábbi verziók esetén)",
                            "knoxBlockVoiceDialingName":  "Hangtárcsázás (csak Samsung KNOX)",
                            "knoxBlockVoiceRoamingName":  "Hangbarangolás (csak Samsung KNOX)",
                            "knoxBlockWebBrowserDescription":  "A webböngésző letiltása az eszközön.",
                            "knoxBlockWebBrowserName":  "Webböngésző (csak Samsung KNOX)",
-                           "knoxBlockWiFiName":  "Wi-Fi (csak Samsung KNOX)",
-                           "knoxBlockWiFiTetheringName":  "Wi-Fi-alapú internetmegosztás (csak Samsung KNOX)",
+                           "knoxBlockWiFiName":  "WiFi (Samsung KNOX-on, csak az Android 12 és korábbi verziók esetén)",
+                           "knoxBlockWiFiTetheringName":  "WiFi-internetmegosztás (Samsung KNOX-on, csak az Android 12 és korábbi verziók esetén)",
                            "knoxCellularDataDescription":  "Az adatforgalom letiltása a mobilhálózatokban. Ha nincs konfigurálva, a felhasználók használhatják és módosíthatják az adatforgalmi funkciókat a mobilhálózatokban.",
                            "knoxCellularDataName":  "Mobilhálózati adatcsatorna (csak Samsung KNOX)",
+                           "knoxFifteenAndroidNineAndBelowPasswordHeader":  "Az Android 9-es és korábbi verziói és Samsung KNOX esetén az Android 15-ös és korábbi verziói",
+                           "knoxFifteenAndroidNineAndBelowPasswordHeaderDescription":  "Ezek a beállítások az Android 9-et és korábbi rendszereket futtató eszközökön, valamint bármely, Android operációs rendszert futtató Samsung Knox-eszközön fognak működni, az Android 15-ös és korábbi verzió esetén.",
+                           "knoxRequireEncryptionName":  "Titkosítás (az Android 11-es és korábbi verziói és Samsung KNOX esetén az Android 14-es és korábbi verziói)",
                            "knoxRequireEncryptionOnRemovableStorageDescription":  "A tárolókártyákat titkosítani kell. Nem minden tárolókártya támogatja a titkosítást. További információt az eszköz és a mobil operációs rendszer dokumentációjában talál.",
-                           "knoxRequireEncryptionOnRemovableStorageName":  "Tárolókártyák titkosítása (csak Samsung KNOX)",
+                           "knoxRequireEncryptionOnRemovableStorageName":  "Adattitkosítás tárolókártyákon (Samsung KNOX-on, csak az Android 15 és korábbi verziók esetén)",
                            "lEAPName":  "LEAP",
                            "lTPOptionNativeType":  "L2TP (natív típus)",
                            "lanManagerAuthenticationLevelDesc":  "Ezzel a beállítással a hálózati bejelentkezésekhez használandó kérdés/válasz típusú hitelesítési protokollt adhatja meg.",
@@ -7891,6 +7932,10 @@
                            "macOSAppleEventReceiverIdentifierTypeName":  "Azonosító típusa",
                            "macOSAppleEventReceiverTableDescription":  "Annak engedélyezése, hogy az alkalmazás vagy folyamat egy korlátozott Apple-eseményt küldjön egy másik alkalmazásnak vagy folyamatnak. Ismernie kell a fogadó alkalmazás vagy folyamat azonosítóját, azonosítótípusát és kódkövetelményét.",
                            "macOSAppleEventReceiverTableName":  "Apple-események",
+                           "macOSDeploymentChannelDeviceChannel":  "Eszközcsatorna",
+                           "macOSDeploymentChannelName":  "Központi telepítő csatorna",
+                           "macOSDeploymentChannelUserChannel":  "Felhasználói csatorna",
+                           "macOSDeploymentChannelWarningBanner":  "Erősen ajánlott, hogy csak biztonsági célból használja a felhasználói tanúsítvány típusát a Felhasználói csatornában.",
                            "macOSPrivacyAccessControlItemAccessibilityDescription":  "Az eszközön elérhető akadálymentességi alkalmazáshoz való hozzáférés szabályozása, amely olyan funkciókat tartalmaz, mint például a feliratok, a rámutatásnál megjelenő szöveg és a hangvezérlés.",
                            "macOSPrivacyAccessControlItemAccessibilityName":  "Kisegítő lehetőségek",
                            "macOSPrivacyAccessControlItemAddressBookName":  "Partnerek",
@@ -8418,6 +8463,7 @@
                            "opportunisticallyMatchAuthDescription":  "Annak beállítása, hogy a kulcskezelő modulok hagyják figyelmen kívül a teljes hitelesítési készletet, ha az adott készlet nem minden hitelesítési csomagját támogatják. Ha ez a beállítás engedélyezve van, a kulcskezelő modulok figyelmen kívül hagyják a nem támogatott hitelesítési csomagokat.",
                            "opportunisticallyMatchAuthName":  "Hitelesítési készlet alkalmazkodó jellegű, kulcskezelő modulonkénti egyeztetése",
                            "optional":  "Nem kötelező",
+                           "optionalValue":  "Nem kötelező érték",
                            "organizationalUnitDescription":  "Azon szervezeti egység (OU) teljes elérési útja, melyben létre kívánja hozni a számítógépfiókokat. Ha nincs megadva, a rendszer egy ismert számítógépobjektum-tárolót használ.",
                            "organizationalUnitName":  "Szervezeti egység",
                            "originalProfileTypeTitle":  "Eredeti profil típusa:",
@@ -8843,8 +8889,9 @@
                            "sCEPPolicyCertificateValidityPeriodName":  "Tanúsítvány érvényességi időtartama",
                            "sCEPPolicyCustomAADAttribute":  "Egyéni Microsoft Entra-attribútum",
                            "sCEPPolicyCustomKeys":  "Egyéni kulcsok",
-                           "sCEPPolicyCustomSubjectAlternativeNameForMachineDescription":  "Value can include allowed variables combined with static text. UPN and Email address should include an @, for example: “{{AAD_Device_ID}}@contoso.com”. DNS cannot end with a symbol or contain an @ sign, e.g. “{{DeviceName}}.contoso.com“ or “{{DeviceName}}”. See support variables here: http://go.microsoft.com/fwlink/?LinkId=2027630",
-                           "sCEPPolicyCustomSubjectAlternativeNameForUserDescription":  "Value can include allowed variables, for example: “{{UserPrincipalName}}” or “{{EmailAddress}}” . See support variables here: http://go.microsoft.com/fwlink/?LinkId=2027630",
+                           "sCEPPolicyCustomSubjectAlternativeNameForMachineDescription":  "Provide a value that can combine any supported variable with static text. For UPN and Email addresses, use the format {{AAD_Device_ID}}@contoso.com. DNS values must not include symbols or an @ sign, e.g., {{DeviceName}}.contoso.com or {{DeviceName}}. See support variables here: http://go.microsoft.com/fwlink/?LinkId=2027630",
+                           "sCEPPolicyCustomSubjectAlternativeNameForUserDescription":  "Adjon meg egy értéket, amely bármely támogatott változó lehet, például {{UserPrincipalName}}. A(z) {{OnPremisesSecurityIdentifier}} csak az URI attribútummal használható. További információ a támogatott változókról: http://go.microsoft.com/fwlink/?LinkId=2027630",
+                           "sCEPPolicyCustomSubjectAlternativeNameForWindowsMachineDescription":  "Adjon meg olyan értéket, amely bármely támogatott változót kombinálhat statikus szöveggel. Egyszerű felhasználónevek és e-mail-címek esetén használja a {{AAD_Device_ID}}@contoso.com formátumot. A DNS-értékek nem tartalmazhatnak szimbólumot vagy @ jelet, például {{DeviceName}}.contoso.com vagy {{DeviceName}}. Vegye figyelembe, hogy a(z) {{OnPremisesSecurityIdentifier}} érték csak a tulajdonos alternatív nevének URI attribútumával használható. A támogatott változókért lásd: http://go.microsoft.com/fwlink/?LinkId=2027630",
                            "sCEPPolicyCustomSubjectNameForMachine":  "CN={{AAD_Device_ID}}<br>or<br>CN={{Device_Serial}}<br>or<br>CN={{Device_IMEI}}",
                            "sCEPPolicyCustomSubjectNameForMachineDescription":  "CN={{AAD_Device_ID}},OU=Devices,O=Contoso,DC=com<br>or<br>CN={{Device_Serial}},OU=Devices,O=Contoso,DC=com<br>or<br>CN={{Device_IMEI}},OU=Devices,O=Contoso,DC=com",
                            "sCEPPolicyCustomSubjectNameForUser":  "CN={{UserName}}&lt;br&gt;or&lt;br&gt;CN={{EmailAddress}}&lt;br&gt;or&lt;br&gt;CN={{onPremisesSamAccountName}}",
@@ -9925,6 +9972,11 @@
                            "wPAEnterpriseOption":  "WPA-Enterprise",
                            "wPAPSKOption":  "Előmegosztott WPA-kulcs",
                            "wPAPersonalOption":  "WPA/WPA2-Personal",
+                           "wSLComplianceBody":  "A nem megfelelő Linux-disztribúciók a következők: ",
+                           "wSLComplianceTitle":  "Távolítsa el a nem megfelelő Linux-disztribúciókat vagy -verziókat a Linuxos Windows-alrendszer (WSL) szolgáltatásból.",
+                           "wSLPolicyDistributionName":  "Disztribúció típusa",
+                           "wSLPolicyMaxOSVersionName":  "Operációs rendszer maximális verziója",
+                           "wSLPolicyMinOSVersionName":  "Operációs rendszer minimális verziója",
                            "wakeOnLANName":  "Hálózati ébresztés",
                            "wakeOnPowerName":  "Felébresztés bekapcsoláskor",
                            "wakeScreenWhenSomeoneInRoomName":  "Képernyő felébresztése, ha valaki a helyiségben tartózkodik",
@@ -10303,6 +10355,10 @@
                            "windowsSpotlightOnLockScreenName":  "Windows Reflektorfény a zárolási képernyőn",
                            "windowsSpotlightPersonalizationDescription":  "A Windows Reflektorfény eszközhasználat alapján történő személyre szabásának letiltása.",
                            "windowsSpotlightPersonalizationName":  "Windows Reflektorfény személyre szabása",
+                           "windowsSubsystemLinuxComplianceDescription":  "Ezek a beállítások a felügyelt Windows-eszközökre telepített Linux-kiadásokra vonatkoznak, és hatással vannak az eszköz megfelelőségi állapotára. <a href=\"https://go.microsoft.com/fwlink/?linkid=2283513\" target=\"_blank\">További információ a beállítás használatáról</a>",
+                           "windowsSubsystemLinuxComplianceHeader":  "Engedélyezett Linux-disztribúciók és -verziók",
+                           "windowsSubsystemLinuxComplianceInfoBox":  "Ugyanabban a házirendben nem konfigurálhatja a WSL- és az egyéni megfelelőségi beállításokat.",
+                           "windowsSubsystemLinuxComplianceLearnMore":  "Adja meg az engedélyezett Linux disztribúciókat és opcionálisan a minimális verziót, a maximális verziót, vagy mindkettőt mindegyik disztribúcióhoz.",
                            "windowsTipsDescription":  "Lehetővé teszi a rendszergazdáknak, hogy kikapcsolják az előugró Windows-tippeket.",
                            "windowsTipsName":  "Windows-tippek",
                            "windowsWelcomeExperienceDescription":  "Az új vagy frissített funkciók Windows-üdvözlőképernyőn történő bemutatásának letiltása.",
@@ -10446,9 +10502,9 @@
                            "anyAppOptionText":  "Bármely alkalmazás",
                            "anyDestinationAnySourceOptionText":  "Bármely célhely és bármely forrás",
                            "anyDialerAppOptionText":  "Bármely tárcsázóalkalmazás",
-                           "anyMessagingAppOptionText":  "Bármely üzenetküldő alkalmazás",
+                           "anyMessagingAppOptionText":  "Bármely üzenetkezelő alkalmazás",
                            "anyPolicyManagedDialerAppOptionText":  "Bármely szabályzattal felügyelt tárcsázóalkalmazás",
-                           "anyPolicyManagedMessagingAppOptionText":  "Bármely szabályzattal felügyelt üzenetküldő alkalmazás",
+                           "anyPolicyManagedMessagingAppOptionText":  "Bármely szabályzattal felügyelt üzenetkezelő alkalmazás",
                            "appAdded":  "Alkalmazás hozzáadva",
                            "appBasedConditionalAccess":  "Alkalmazásalapú feltételes hozzáférés",
                            "appColumnLabel":  "Alkalmazás",
@@ -10520,7 +10576,7 @@
                            "clientAppPolicyDefault":  "Nem találhatók házirendek",
                            "clientAppPolicyPlural":  "{0} házirend",
                            "clientAppPolicySingular":  "{0} házirend",
-                           "clockInClockOutNotes":  "<p><b>Megjegyzések:</b></p>\r\n<ul type=\"disc\">\r\n    <li>Azzal kapcsolatban, hogy mely alkalmazásokra alkalmazható ez a beállítás, lásd: <b>hivatkozás a csendes időszak dokumentációjának blokkolással foglalkozó szakaszára</b>.</li>\r\n    <li>Ez a beállítás nem tudja elnémítani az értesítéseket. Az értesítések elnémítására szolgáló beállítások konfigurálásával kapcsolatban lásd: <b>hivatkozás a csendes időszak elnémítással kapcsolatos dokumentációjára</b>.</li>\r\n</ul>",
+                           "clockInClockOutNotes":  "<p><b>Megjegyzések:</b></p>\r\n<ul type=\"disc\">\r\n    <li>Ezt a beállítást csak akkor kell konfigurálni, ha a bérlő integrálva van a <b>Munkaidő API-jal</b>. A beállítás és a <b>Munkaidő API</b> integrálásával kapcsolatos további információkért lásd: <a href=\"https://review.learn.microsoft.com/en-us/microsoft-365/frontline/flw-working-time\">A Microsoft Teamshez való hozzáférés korlátozása műszakon kívüli élvonalbeli dolgozók esetén</a>\r\n. Ha ezt a beállítást a Munkaidő API-jal való integráció nélkül konfigurálja, a fiókok blokkolva lesznek az alkalmazáshoz társított felügyelt fiók munkaidő-állapotának hiánya miatt.</li>\r\n    <li>Tekintse meg a <a href=\"https://learn.microsoft.com/en-us/mem/intune/apps/apps-supported-intune-apps\">Támogatott Microsoft Intune-alkalmazások | Microsoft Learn</a> cikket\r\ntovábbi információ arról, hogy mely alkalmazások támogatják ezt a beállítást.</li> <li>Ez a beállítás nem tudja elnémítani az értesítéseket. Az értesítések elnémítási beállításainak konfigurálásához tekintse meg a <a href=\"https://learn.microsoft.com/en-us/mem/intune/apps/apps-quiet-time-policies\">Csendes időszak házirendjeinek létrehozása a Microsoft Intune-ban | Microsoft Learn</a> cikket</li>\r\n</ul>",
                            "clockedOutAccount":  "Szabadidő",
                            "closeText":  "Bezárás",
                            "columns":  "Oszlopok",
@@ -10596,7 +10652,7 @@
                            "deviceConditionsInfoParagraph2":  "Hasonló eszközalapú beállítások konfigurálhatók a regisztrált eszközök esetében.",
                            "deviceConditionsInfoParagraph2LinkText":  "További információ a regisztrált eszközök eszközmegfelelőségi beállításainak konfigurálásáról.",
                            "deviceId":  "Eszközazonosító",
-                           "deviceLockComplexityValidationFailureNotes":  "<p><b>Megjegyzések:</b></p>\r\n<ul type=\"disc\">\r\n    <li>Az eszköz zárolásához a következő jelszóbonyolultságra lehet szükség: ALACSONY, KÖZEPES vagy MAGAS, Android 12+ rendszerre célzottan. A 11-es vagy korábbi Android rendszert futtató eszközök esetében az alacsony/közepes/magas bonyolultság beállításakor az alacsony bonyolultság beállítás esetében várt viselkedés lesz az alapértelmezett.</li>\r\n    <li>A lenti jelszódefiníciók esetében fenntartjuk a változtatások jogát. A különböző jelszóbonyolultsági szintek legfrissebb definícióit itt találja: <a href='https://developer.android.com/reference/android/app/admin/DevicePolicyManager#getPasswordComplexity%28%29'>DevicePolicyManager|Android Developers</a>.</li>\r\n</ul>\r\n\r\n<p><b>Alacsony</b></p>\r\n<ul type=\"disc\">\r\n    <li>A jelszó lehet minta vagy PIN-kód, ismétlődő (4444) vagy rendezett (1234, 4321, 2468) szekvenciákkal.</li>\r\n</ul>\r\n\r\n<p><b>Közepes</b></p>\r\n<ul type=\"disc\">\r\n    <li>PIN-kód, amely nem rendelkezik ismétlődő (4444) vagy rendezett (1234, 4321, 2468) szekvenciákkal, és legalább 4 karakter hosszú</li>\r\n    <li>Alfabetikus, legalább 4 karakter hosszú jelszavak</li>\r\n    <li>Alfanumerikus, legalább 4 karakter hosszú jelszavak</li>\r\n</ul>\r\n\r\n<p><b>Magas</b></p>\r\n<ul type=\"disc\">\r\n    <li>PIN-kód, amely nem rendelkezik ismétlődő (4444) vagy rendezett (1234, 4321, 2468) szekvenciákkal, és legalább 8 karakter hosszú</li>\r\n    <li>Alfabetikus, legalább 6 karakter hosszú jelszavak</li>\r\n    <li>Alfanumerikus, legalább 6 karakter hosszú jelszavak</li>\r\n</ul>\r\n<p></p>",
+                           "deviceLockComplexityValidationFailureNotes":  "<p><b>Megjegyzések:</b></p>\r\n<ul type=\"disc\">\r\n    <li>Az eszköz zárolásához a következő jelszóbonyolultságra lehet szükség: ALACSONY, KÖZEPES vagy MAGAS, Android 12+ rendszerre célzottan. A 11-es vagy korábbi Android rendszert futtató eszközök esetében az alacsony/közepes/magas bonyolultság beállításakor az alacsony bonyolultság beállítás esetében várt viselkedés lesz az alapértelmezett.</li>\r\n    <li>A lenti jelszódefiníciók esetében fenntartjuk a változtatások jogát. A különböző jelszóbonyolultsági szintek legfrissebb definícióit itt találja: <a href='https://developer.android.com/reference/android/app/admin/DevicePolicyManager#getPasswordComplexity%28%29'>DevicePolicyManager|Android Developers</a>.</li>\r\n</ul>\r\n\r\n<p><b>Alacsony</b></p>\r\n<ul type=\"disc\">\r\n    <li>A jelszó lehet minta vagy PIN-kód, ismétlődő (4444) vagy rendezett (1234, 4321, 2468) szekvenciákkal.</li>\r\n</ul>\r\n\r\n<p><b>Közepes</b></p>\r\n<ul type=\"disc\">\r\n    <li>PIN-kód, amely nem rendelkezik ismétlődő (4444) vagy rendezett (1234, 4321, 2468) szekvenciákkal, és legalább 4 karakter hosszú</li>\r\n    <li>Alfabetikus, legalább 4 karakter hosszú jelszavak</li>\r\n    <li>Alfabetikus, legalább 4 karakter hosszú jelszavak</li>\r\n</ul>\r\n\r\n<p><b>Magas</b></p>\r\n<ul type=\"disc\">\r\n    <li>PIN-kód, amely nem rendelkezik ismétlődő (4444) vagy rendezett (1234, 4321, 2468) szekvenciákkal, és legalább 8 karakter hosszú</li>\r\n    <li>Alfabetikus, legalább 6 karakter hosszú jelszavak</li>\r\n    <li>Alfanumerikus, legalább 6 karakter hosszú jelszavak</li>\r\n</ul>\r\n<p></p>",
                            "deviceLockedOpenFilesOptionsText":  "Amikor az eszköz zárolva van és vannak megnyitott fájlok",
                            "deviceLockedOptionText":  "Amikor az eszköz zárolva van",
                            "deviceManufacturer":  "Eszköz gyártója",
@@ -10620,7 +10676,7 @@
                            "downloadingReport":  "Jelentés letöltése",
                            "edgeGSAssignment":  "Válassza ki azokat a felhasználói csoportokat, amelyeket fel szeretne venni az Edge mobilverziójának telepítésébe. Az Edge az ezen felhasználók által regisztrált összes iOS- és Android-eszközre telepítve lesz.",
                            "edgeGSIntroBenefitHTML":  "<p>Tegye elérhetővé a Microsoft Edge alkalmazást az iOS- vagy Android-felhasználók számára, hogy zökkenőmentesen böngészhessenek a céges eszközeiken! Az Edge használatával a felhasználók megszabadulhatnak a zsúfolt webes tartalmaktól azokkal a beépített funkciókkal, amelyek segítenek a munkacélú tartalom konszolidálásában, rendezésében és kezelésében. A vállalati Microsoft Entra-fiókjukkal az Edge alkalmazásban bejelentkező iOS- és Android-felhasználók a böngészőben megtalálhatják az Ön által előre meghatározott munkahelyi kedvenceket és webhelyszűrőket. </p><p>Ha letiltotta a felhasználóknak az iOS- vagy Android-eszközök regisztrációját, ez a forgatókönyv nem engedélyezi a regisztrációt, és a felhasználóknak maguknak kell telepíteniük az Edge alkalmazást.</p>",
-                           "edgeGSIntroPrereqHTML":  "<p>Megkérdezzük a felhasználók által igényelt munkahelyi kedvencekről, valamint a webes böngészéshez szükséges szűrőkről. A folytatás előtt hajtsa végre a következő feladatokat: </p>\r\n<li>Felhasználók hozzáadása a <a href='https://go.microsoft.com/fwlink/?linkid=2102458'>Microsoft Entra-csoportokhoz</a></li>\r\n<li>iOS- vagy Android-eszközök regisztrálása az Intune-ban – <a href='https://go.microsoft.com/fwlink/?linkid=2102547'>további információ</a></li>\r\n<li>Az Edge-hez hozzáadni kívánt munkahelyi kedvencek listájának összegyűjtése</li>\r\n<li>Az Edge-ben kényszeríteni kívánt webhelyszűrők listájának összegyűjtése</li>",
+                           "edgeGSIntroPrereqHTML":  "<p>Megkérdezzük a felhasználók által igényelt munkahelyi kedvencekről, valamint a webes böngészéshez szükséges szűrőkről. A folytatás előtt hajtsa végre a következő feladatokat:</p>\r\n<li>Felhasználók hozzáadása a <a href='https://go.microsoft.com/fwlink/?linkid=2102458'>Microsoft Entra-csoportokhoz</a></li>\r\n<li>iOS- vagy Android-eszközök regisztrálása az Intune-ban. <a href='https://go.microsoft.com/fwlink/?linkid=2102547'>További információ</a></li>\r\n<li>Az Edge-hez hozzáadni kívánt munkahelyi kedvencek listájának összegyűjtése.</li>\r\n<li>Az Edge-ben kényszeríteni kívánt webhelyszűrők listájának összegyűjtése.</li>",
                            "edgeGSName":  "iOS-es és androidos Edge",
                            "edgeGSSyncInfo":  "Az eszközök összekapcsolhatósági és szinkronizálási időpontjaitól függően akár 24 órát is igénybe vehet, hogy a központi telepítés elérje az eszközöket.",
                            "edit":  "Szerkesztés",
@@ -10736,6 +10792,7 @@
                            "isMamEnabled":  "Engedélyezve van a MAM?",
                            "itemsCount":  "{0} elem",
                            "jailbrokenRootedDevices":  "Jailbreakelt vagy rootolt eszközök",
+                           "knoxConditionalLaunchSettingBlockWhenSettingIsSupported":  "Hozzáférés letiltása a támogatott eszközökön",
                            "lastModifiedDate":  "Legutóbbi módosítás dátuma",
                            "lastReportedDate":  "Utolsó jelentett dátum",
                            "lastSync":  "Legutóbbi szinkronizálás",
@@ -10769,7 +10826,7 @@
                            "mdmWipInvalidVersionSettings":  "Egy vagy több alkalmazás minimális vagy maximális verziójának meghatározása érvénytelen.<br /> <br />A regisztrációs szabályzatokat használó Windows Information Protection csak a minimális és a maximális verzió egyikének megadását támogatja, kivéve ha a két verzió egyenlőként van megadva. Ha a minimális verzió van megadva, a szabály a minimális verziónál újabb vagy azzal egyező verziókra van beállítva. Ehhez hasonlóan ha a maximális verzió van megadva, a szabály a maximális verziónál korábbi vagy azzal egyező verziókra van beállítva.",
                            "mdmWipReport":  "MDM Windows Információvédelem-jelentés",
                            "messagingRedirectAppDisplayNameLabelAndroid":  "Üzenetkezelő alkalmazás neve (Android)",
-                           "messagingRedirectAppPackageIdLabelAndroid":  "Üzenetküldő alkalmazás csomagazonosítója (Android)",
+                           "messagingRedirectAppPackageIdLabelAndroid":  "Üzenetkezelő alkalmazás csomagazonosítója (Android)",
                            "messagingRedirectAppUrlSchemeIos":  "Üzenetkezelő alkalmazás URL-sémája (iOS)",
                            "microsoftDefenderForEndpoint":  "Microsoft Defender For Endpoint",
                            "microsoftEdgeOptionText":  "Microsoft Edge",
@@ -10839,7 +10896,6 @@
                            "pendingDeleteContentStateText":  "Törlés...",
                            "photoLibrary":  "Fotókönyvtár",
                            "pinCharSettingTooltip":  "A numerikus PIN-kód csak numerikus karaktereket tartalmazhat. \r\n \r\nA PIN-kódnak a következők mindegyikét tartalmaznia kell: alfanumerikus karakterek és engedélyezett szimbólumok.",
-                           "pinRotationWarning":  "<b>Fontos:</b> 2024. június 1-jén a 17.7.0-s verziónál régebbi SDK-val rendelkező alkalmazások nem kapnak többé alkalmazásvédelmi szabályzatfrissítéseket, és a felhasználók nem indíthatják el az alkalmazást. Győződjön meg arról, hogy a felhasználók frissítik az alkalmazásaikat, és az üzletági alkalmazások friss SDK-t vagy burkolót használnak. <a href = \"https://learn.microsoft.com/en-us/mem/intune/fundamentals/whats-new#update-to-the-latest-company-portal-for-android-intune-app-sdk-for-ios-and-intune-app-wrapper-for-ios\">További információ</a>",
                            "pinToDashboard":  "Dummy string, don't translate",
                            "platformColumnLabel":  "Platform",
                            "platformDropDownLabel":  "Platform",
@@ -11137,6 +11193,7 @@
                            "policySetsTitle":  "Szabályzatkészletek",
                            "applicabilityRules":  "Alkalmazhatósági szabályok",
                            "windowsEnrollmentTitle":  "Windows-alapú regisztráció",
+                           "DefaultESPCustomErrorMessage":  "A telepítő nem fejeződött be. Próbálkozzon újra, vagy forduljon segítségért az ügyfélszolgálat munkatársához.",
                            "appleEnrollmentTitle":  "Apple-regisztráció",
                            "targetedAppLabel":  "Célzott alkalmazás",
                            "configurationSettingsTitle":  "Konfigurációs beállítások",
@@ -11462,6 +11519,8 @@
                                                      "alertBannerV2":  "Microsoft-managed policies in report-only state will be automatically turned on with advance email and {0}M365 message center{1} notifications. We recommend that you review these policies and recommended actions.",
                                                      "learnMoreLinkAriaLabel":  "Learn more about Microsoft-managed policies.",
                                                      "m365MessageCenterLinkAriaLabel":  "M365 message center",
+                                                     "policySummaryBlockDCF":  "This policy unilaterally blocks device code flow usage across all resources and all users. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryBlockLegacyAuth":  "This policy blocks any sign-in attempt using legacy authentication and legacy authentication protocols from accessing applications. Legacy authentication refers to authentication requests made by: Clients that don't use modern authentication (e.g., Office 2010 clients). Clients that use older mail protocols such as IMAP, SMTP, or POP3.",
                                                      "policySummaryMfa":  "This policy requires some administrator roles to perform multifactor authentication when accessing Microsoft admin portals. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
@@ -11473,7 +11532,6 @@
                                                      "recActionsMfa2":  "To prevent users from being locked out, verify that all users covered by this policy have at least one enabled authentication methods.",
                                                      "recActionsPerUserMfaV2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
-                                                     "recActionsPerUserMfaViaGroup2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
                                                      "securityDefaultsBasedAdminMfaMMPolicySummary":  "Require multifactor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as security defaults.",
@@ -11481,7 +11539,6 @@
                                                      "securityDefaultsBasedAzureManagementMMPolicySummary":  "Require multifactor authentication to protect privileged access to Azure management.",
                                                      "securityDefaultsBasedLegacyBlockMMPolicySummary":  "Block legacy authentication endpoints that can be used to bypass multifactor authentication.",
                                                      "securityDefaultsBasedMMPolicyRecommendationOverview":  "Microsoft recommends leaving this policy enabled. If you need to make modifications beyond what is allowed in a Microsoft-managed policy, you can clone this policy and make those edits. Keep in mind that doing so will prevent Microsoft from improving the security posture for your organization through this policy.",
-                                                     "signInRiskActions1":  "Exclude one or more break glass accounts from the policy.",
                                                      "signInRiskActions2":  "While we have scoped this policy to include users who are already enabled for multifactor authentication, we recommend you verify this using the report below as an extra precaution to prevent users from being locked out.",
                                                      "signInRiskActionsViaGroup1":  "This policy relies on its corresponding security group to function. We recommend you keep the group even if you don't intend to use the policy now.",
                                                      "summary":  "Summary"
@@ -11671,10 +11728,10 @@
                                                                                                         "authenticationTransfer":  "Authentication transfer",
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
-                                                                                                        "label":  "Authentication flows (Preview)",
+                                                                                                        "label":  "Authentication flows",
                                                                                                         "multiple":  "\"{0}\" and \"{1}\""
                                                                                                     },
-                                                                                       "singular":  "Authentication flow (Preview)"
+                                                                                       "singular":  "Authentication flow"
                                                                                    },
                                                            "DeviceAttributes":  {
                                                                                     "AssignmentFilter":  {
@@ -11795,7 +11852,7 @@
                                                           "message":  "Control access based on Conditional Access policy to bring signals together, to make decisions, and enforce organizational policies."
                                                       },
                                         "Removed":  {
-                                                        "cloudApps":  "{0} cloud app(s) configured in this policy have been deleted from the directory, but this doesn't affect the other apps in the policy. When you save the policy the deleted app(s) will be automatically removed from it.",
+                                                        "cloudApps":  "{0} cloud app(s) configured in this policy are either unsupported or have been deleted from the directory. This does not affect the other apps in the policy. When you save the policy, the unsupported or deleted app(s) will be automatically removed from it.",
                                                         "deletedGroups":  "Deleted groups ({0})",
                                                         "deletedUsers":  "Deleted users ({0})",
                                                         "deletedUsersAndGroups":  "Deleted users and groups",
@@ -11811,7 +11868,7 @@
                                                      },
                                         "subtitle":  "Conditional Access policy",
                                         "tabLabel":  "Policy",
-                                        "viewPolicyImpact":  "View policy impact"
+                                        "viewPolicyImpact":  "View policy impact (Preview) "
                                     },
                     "PolicyCondition":  {
                                             "InsiderRisk":  {
@@ -12182,7 +12239,10 @@
                                          "Controls":  {
                                                           "AuthStrengthXtap":  {
                                                                                    "allUsers":  "To enable all authentication strengths, configure cross-tenant access settings to accept claims coming from Microsoft Entra tenants for external users. Authentication strengths will only configure second factor authentication for external users.",
-                                                                                   "externalUsers":  "To enable all built-in authentication strengths, configure cross-tenant access settings to accept claims coming from Microsoft Entra tenants for external users."
+                                                                                   "containsOnlyPasskeysAuthApp":  "Don't lock your users out. Additional steps might be required to ensure users can register passkeys in Authenticator.",
+                                                                                   "containsPasskeysAuthApp":  "Don't lock your users out. Additional steps might be required to ensure users can register passkeys in Microsoft Authenticator. To require authentication strengths for external users, configure cross-tenant access settings to accept claims from Microsoft Entra tenants.",
+                                                                                   "externalUsers":  "To enable all built-in authentication strengths, configure cross-tenant access settings to accept claims coming from Microsoft Entra tenants for external users.",
+                                                                                   "nonAuthPhishResistant":  "To require phishing-resistant authentication for external users, configure cross-tenant access settings to accept claims from Microsoft Entra tenants."
                                                                                },
                                                           "compliantDeviceEnabled":  "Don't lock yourself out! Make sure that your device is compliant.",
                                                           "domainJoinedDeviceEnabled":  "Don't lock yourself out! Make sure that your device is Microsoft Entra hybrid joined.",
@@ -12343,7 +12403,6 @@
                     "chooseApplicationsSelect":  "Select",
                     "chooseApplicationsSelected":  "Selected",
                     "chooseApplicationsSingular":  "{0} and 1 more",
-                    "chooseApplicationsTooMany":  "More results than can be shown. Please filter using the search box.",
                     "chooseLocationSelectedLocationsLabel":  "Selected locations",
                     "chooseLocationTrustedIpsItem":  "Multifactor authentication trusted IPs",
                     "chooseLocationsBladeSubtitle":  "",
@@ -12354,21 +12413,13 @@
                     "chooseLocationsExcludedSelectorTitle":  "Select",
                     "chooseLocationsIncludedSelectorTitle":  "Select",
                     "chooseLocationsNone":  "None",
-                    "chooseLocationsNoneFound":  "We didn't find \"{0}\". Try another name or ID.",
                     "chooseLocationsPlural":  "{0} and {1} more",
                     "chooseLocationsRemove":  "Remove",
-                    "chooseLocationsReturnedPlural":  "{0} locations found",
-                    "chooseLocationsReturnedSingular":  "1 location found",
-                    "chooseLocationsSearchBalloon":  "Search for a Location by entering its name.",
-                    "chooseLocationsSearchHint":  "Search Locations...",
-                    "chooseLocationsSearchLabel":  "Locations",
-                    "chooseLocationsSearching":  "Searching...",
                     "chooseLocationsSelect":  "Select",
                     "chooseLocationsSelected":  "Selected",
                     "chooseLocationsSelectionBladeExcludedSelectorTitle":  "Select",
                     "chooseLocationsSelectionBladeIncludedSelectorTitle":  "Select",
                     "chooseLocationsSingular":  "{0} and 1 more",
-                    "chooseLocationsTooMany":  "More results than can be shown. Please filter using the search box.",
                     "chooseNetworkLocationSelectedNetworksLocationsLabel":  "Selected networks and locations",
                     "claimProviderAddCommandText":  "New custom control",
                     "claimProviderAddNewBladeTitle":  "New custom control",
@@ -12493,7 +12544,6 @@
                     "clientTypeModernAuth":  "Modern authentication clients",
                     "clientTypeOtherClients":  "Other clients",
                     "clientTypeOtherClientsInfo":  "This includes older office clients and other mail protocols(POP, IMAP, SMTP, etc). [Learn more][1]\n[1]: https://aka.ms/caclientapps\n",
-                    "cloudAppCountDiffBannerText":  "{0} cloud apps configured in this policy have been deleted from the directory, but this doesn't affect the other apps in the policy. The next time you update the application section of the policy, the deleted apps will be automatically removed from it.",
                     "cloudAppsSelectionBladeAllMicrosoftApps":  "All Microsoft apps",
                     "cloudappsSelectionBladeAllCloudapps":  "All cloud apps",
                     "cloudappsSelectionBladeAllResources":  "All resources (formerly 'All cloud apps')",
@@ -12633,6 +12683,7 @@
                     "memberSelectionCommandRemove":  "Remove",
                     "menuItemClaimProviderControls":  "Custom controls (Preview)",
                     "menuItemClassicPolicies":  "Classic policies",
+                    "menuItemDeletedPolicies":  "Deleted Policies",
                     "menuItemInsightsAndReporting":  "Insights and reporting",
                     "menuItemManage":  "Manage",
                     "menuItemNamedLocationsPreview":  "Named locations (Preview)",
@@ -12666,24 +12717,14 @@
                     "namedNetworkNameInvalid":  "The supplied name is invalid.",
                     "namedNetworkNameRequired":  "You must supply a name for this location.",
                     "namedNetworkNoIpRanges":  "No IP ranges",
-                    "namedNetworkNotificationCreateDescription":  "Creating location named '{0}'",
                     "namedNetworkNotificationCreateFailedDescription":  "Creating location '{0}' failed. Please try again later.",
-                    "namedNetworkNotificationCreateFailedTitle":  "Failed to create location",
-                    "namedNetworkNotificationCreateSuccessDescription":  "Created location named '{0}'",
-                    "namedNetworkNotificationCreateSuccessTitle":  "Created '{0}'",
-                    "namedNetworkNotificationCreateTitle":  "Creating '{0}'",
                     "namedNetworkNotificationDeleteDescription":  "Deleting location named '{0}'",
                     "namedNetworkNotificationDeleteFailedDescription":  "Deleting location '{0}' failed. Please try again later.",
                     "namedNetworkNotificationDeleteFailedTitle":  "Failed to Delete location",
                     "namedNetworkNotificationDeleteSuccessDescription":  "Deleted location named '{0}'",
                     "namedNetworkNotificationDeleteSuccessTitle":  "Deleted '{0}'",
                     "namedNetworkNotificationDeleteTitle":  "Deleting '{0}'",
-                    "namedNetworkNotificationUpdateDescription":  "Updating location named '{0}'",
                     "namedNetworkNotificationUpdateFailedDescription":  "Updating location '{0}' failed. Please try again later.",
-                    "namedNetworkNotificationUpdateFailedTitle":  "Failed to Update location",
-                    "namedNetworkNotificationUpdateSuccessDescription":  "Updated location named '{0}'",
-                    "namedNetworkNotificationUpdateSuccessTitle":  "Updated '{0}'",
-                    "namedNetworkNotificationUpdateTitle":  "Updating '{0}'",
                     "namedNetworkSearchPlaceholder":  "Search locations.",
                     "namedNetworkUploadFailedDescription":  "There was an error parsing the supplied file. Please make sure to upload a plain-text file with each line in the CIDR format.",
                     "namedNetworkUploadFailedTitle":  "Failed to parse '{0}'",
@@ -12799,6 +12840,7 @@
                     "policyResourcesLabel":  "Resources",
                     "policyReviewSection":  "Review",
                     "policySaveButton":  "Save",
+                    "policySoftDeleteConfirmation":  "Once deleted, you will have 30 days to restore this policy.",
                     "policyStagedRollout":  "Staged rollout",
                     "policyStagedRolloutOptionsGroupItemAriaLabel":  "Enable Policy: Staged rollout.",
                     "policyStatusIconDescription":  "Policy is Enabled",
@@ -13031,7 +13073,7 @@
                     "SessionControlsLabel":  "Session controls"
                 },
     "Platform":  {
-                     "all":  "Az összes",
+                     "all":  "Mind",
                      "android":  "Android-eszközadminisztrátor",
                      "androidAOSP":  "Android (AOSP)",
                      "androidEnterprise":  "Android Enterprise",
@@ -13046,18 +13088,18 @@
                      "unknown":  "Ismeretlen",
                      "unsupported":  "Nem támogatott",
                      "windows":  "Windows",
-                     "windows10":  "Windows 10 és újabb rendszerek",
-                     "windows10CM":  "Windows 10 és újabb (ConfigMgr)",
+                     "windows10":  "Windows 10 és újabb verziók",
+                     "windows10CM":  "Windows 10 és újabb verziók (ConfigMgr)",
                      "windows10Holo":  "Windows 10 Holographic",
                      "windows10Mobile":  "Windows 10 Mobile",
                      "windows10Team":  "Windows 10 Team",
                      "windows10X":  "Windows 10X",
-                     "windows8":  "Windows 8.1 és újabb rendszerek",
+                     "windows8":  "Windows 8.1 és újabb verziók",
                      "windows8And10":  "Windows 8 és 10",
                      "windowsPhone":  "Windows Phone 8.1",
-                     "windows10AndLater":  "Windows 10 és újabb rendszerek",
+                     "windows10AndLater":  "Windows 10 és újabb verziók",
                      "windows10AndWindowsServer":  "Windows 10, Windows 11 és Windows Server (ConfigMgr)",
-                     "windows10andLaterCM":  "Windows 10 és újabb (ConfigMgr)",
+                     "windows10andLaterCM":  "Windows 10 és újabb verziók (ConfigMgr)",
                      "holoLens":  "HoloLens",
                      "surfaceHub2":  "Surface Hub 2",
                      "surfaceHub2S":  "Surface Hub 2S",
@@ -13085,7 +13127,7 @@
                                "androidDeviceOwnerTrustedCertificate":  "Megbízható tanúsítvány",
                                "androidDeviceOwnerVpn":  "VPN",
                                "androidDeviceOwnerWiFi":  "Wi-Fi",
-                               "androidEmailProfile":  "E-mail (csak Samsung KNOX)",
+                               "androidEmailProfile":  "E-mail-cím (csak Samsung KNOX esetén)",
                                "androidForWorkCustom":  "Egyéni",
                                "androidForWorkEmailProfile":  "E-mail",
                                "androidForWorkGeneral":  "Eszközkorlátozások",
@@ -13107,17 +13149,17 @@
                                "complianceAndroid":  "Androidos megfelelőségi szabályzat",
                                "complianceAndroidDeviceOwner":  "Teljes mértékben felügyelt, dedikált, vállalati tulajdonban lévő munkahelyi profil",
                                "complianceAndroidEnterprise":  "Személyesen birtokolt munkahelyi profil",
-                               "complianceAndroidForWork":  "Android for Work-megfelelőségi szabályzat",
-                               "complianceIos":  "iOS-es megfelelőségi szabályzat",
-                               "complianceMac":  "Mac-es megfelelőségi szabályzat",
+                               "complianceAndroidForWork":  "Android for Work megfelelőségi szabályzat",
+                               "complianceIos":  "iOS megfelelőségi házirend",
+                               "complianceMac":  "Mac megfelelőségi házirend",
                                "complianceWindows10":  "Windows 10-es és újabb megfelelőségi szabályzat",
-                               "complianceWindows10Mobile":  "Windows 10 Mobile-os megfelelőségi szabályzat",
+                               "complianceWindows10Mobile":  "Windows 10-es mobilmegfelelési szabályzat",
                                "complianceWindows8":  "Windows 8-as megfelelőségi szabályzat",
-                               "complianceWindowsPhone":  "Windows Phone-os megfelelőségi szabályzat",
+                               "complianceWindowsPhone":  "Windows Phone-telefon megfelelőségi szabályzat",
                                "exchangeActiveSync":  "Exchange Active Sync",
-                               "inventoryCatalog":  "Tulajdonságkatalógus (előzetes verzió)",
+                               "inventoryCatalog":  "Tulajdonságok katalógusa",
                                "iosCustom":  "Egyéni",
-                               "iosDerivedCredentialAuthenticationConfiguration":  "Származtatott PIV-hitelesítőadatok",
+                               "iosDerivedCredentialAuthenticationConfiguration":  "Személyes identitás-ellenőrzés származtatott hitelesítő adatai",
                                "iosDeviceFeatures":  "Eszközfunkciók",
                                "iosEDU":  "Oktatás",
                                "iosEducation":  "Oktatás",
@@ -13133,7 +13175,7 @@
                                "iosWiFi":  "Wi-Fi",
                                "macCustom":  "Egyéni",
                                "macDeviceFeatures":  "Eszközfunkciók",
-                               "macEndpointProtection":  "Endpoint Protection",
+                               "macEndpointProtection":  "Végpontvédelem",
                                "macExtensions":  "Bővítmények",
                                "macGeneral":  "Eszközkorlátozások",
                                "macImportedPFX":  "Importált PKCS-tanúsítvány",
@@ -13149,11 +13191,11 @@
                                "windows10DesktopSoftwareUpdate":  "Szoftverfrissítések",
                                "windows10DeviceFirmwareConfigurationInterface":  "Device Firmware Configuration Interface",
                                "windows10EmailProfile":  "E-mail",
-                               "windows10EndpointProtection":  "Endpoint Protection",
-                               "windows10EnterpriseDataProtection":  "Windows Information Protection",
+                               "windows10EndpointProtection":  "Végpontvédelem",
+                               "windows10EnterpriseDataProtection":  "Windows Információvédelem",
                                "windows10General":  "Eszközkorlátozások",
                                "windows10ImportedPFX":  "Importált PKCS-tanúsítvány",
-                               "windows10Kiosk":  "Kioszkmód",
+                               "windows10Kiosk":  "Kioszk",
                                "windows10NetworkBoundary":  "Hálózathatár",
                                "windows10PKCS":  "PKCS-tanúsítvány",
                                "windows10PolicyOverride":  "Csoportházirend felülbírálása",
@@ -13169,7 +13211,7 @@
                                "windows8SCEP":  "SCEP-tanúsítvány",
                                "windows8TrustedCertificate":  "Megbízható tanúsítvány",
                                "windows8VPN":  "VPN",
-                               "windows8WiFi":  "Wi-Fi importálás",
+                               "windows8WiFi":  "Wi-Fi-importálás",
                                "windowsDeliveryOptimization":  "Kézbesítésoptimalizálás",
                                "windowsDomainJoin":  "Csatlakozás tartományhoz",
                                "windowsEditionUpgrade":  "Kiadásfrissítés és módváltás",

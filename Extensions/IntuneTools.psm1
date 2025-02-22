@@ -1979,11 +1979,13 @@ function Add-ADMXRegClasses
     {
         return
     }
-   
-    $classDef = @"
-    using System.ComponentModel;
 
-    public class ADMXRegPolicyElement : INotifyPropertyChanged
+    $classDef = @"
+    using System;
+    using System.ComponentModel;
+    using System.Collections.ObjectModel;
+
+    public class ADMXRegPolicyElement : System.ComponentModel.INotifyPropertyChanged
     {
         public string DataType { get { return _dataType; } set { _dataType = value;  NotifyPropertyChanged("DataType"); NotifyPropertyChanged("DataTypeDisplayString");  } }
         private string _dataType = null;
@@ -2069,8 +2071,9 @@ function Add-ADMXRegClasses
         }
     }
 "@
+    [Reflection.Assembly]::LoadWithPartialName("mscorlib") | Out-Null
     [Reflection.Assembly]::LoadWithPartialName("System.ComponentModel") | Out-Null
-    Add-Type -TypeDefinition $classDef -IgnoreWarnings -ReferencedAssemblies @('System.ComponentModel')
+    Add-Type -TypeDefinition $classDef
 }
 
 #endregion

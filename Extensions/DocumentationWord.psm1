@@ -575,7 +575,7 @@ function Invoke-WordProcessItem
 
             foreach($customTable in ($documentedObj.CustomTables | Sort-Object -Property Order)) 
             {
-                Add-DocTableItems $obj $objectType $documentedObj $customTable.Values $customTable.Columns $customTable.LanguageId -AddCategories -AddSubcategories
+                Add-DocTableItems $obj $objectType $customTable.Values $customTable.Columns $customTable.LanguageId -AddCategories -AddSubcategories
             }
         }
 
@@ -678,6 +678,10 @@ function Set-DocTableSettingsItems
         $cellRow = $row
         foreach($settingProp in $properties)
         {
+            if([String]::IsNullOrEmpty($settingProp)) { 
+                continue
+            }
+
             $script:docTable.Cell($cellRow, $firstColumn).Range.Text = (Invoke-DocTranslateColumnHeader ($settingProp.Split('.')[-1]))
             
             $propArr = $settingProp.Split('.')
@@ -779,6 +783,9 @@ function Add-DocTableItems
     $i = 1
     foreach($prop in $properties)
     {
+        if([String]::IsNullOrEmpty($prop)) { 
+            continue
+        }
         $script:docTable.Cell(1, $i).Range.Text = (Invoke-DocTranslateColumnHeader ($prop.Split(".")[-1]))
         $i++
     }

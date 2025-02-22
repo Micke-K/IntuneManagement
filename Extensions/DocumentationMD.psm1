@@ -265,7 +265,7 @@ function Invoke-MDProcessItem
                 
                 foreach($prop in $global:txtMDCustomProperties.Text.Split(","))
                 {
-                    # This will add language support for custom columens (or replacing existing header)
+                    # This will add language support for custom columns (or replacing existing header)
                     $propInfo = $prop.Split('=')
                     if(($propInfo | measure).Count -gt 1)
                     {
@@ -312,7 +312,7 @@ function Invoke-MDProcessItem
 
         foreach($customTable in ($documentedObj.CustomTables | Sort-Object -Property Order)) 
         {
-            Add-MDTableItems $obj $objectType $documentedObj $customTable.Values $customTable.Columns $customTable.LanguageId -AddCategories -AddSubcategories
+            Add-MDTableItems $obj $objectType $customTable.Values $customTable.Columns $customTable.LanguageId -AddCategories -AddSubcategories
         }
 
         if(($documentedObj.Assignments | measure).Count -gt 0)

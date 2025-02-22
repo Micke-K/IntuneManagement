@@ -53,6 +53,33 @@ function Invoke-InitializeModule
         }
     )
 
+    $script:lstGraphPageSize = @(
+        [PSCustomObject]@{
+            Name = "Graph API Default"
+            Value = "0"
+        },
+        [PSCustomObject]@{
+            Name = "5"
+            Value = "5"
+        },
+        [PSCustomObject]@{
+            Name = "20"
+            Value = "20"
+        },
+        [PSCustomObject]@{
+            Name = "50"
+            Value = "50"
+        },
+        [PSCustomObject]@{
+            Name = "100"
+            Value = "100"
+        },
+        [PSCustomObject]@{
+            Name = "All"
+            Value = "All"
+        }
+    )
+
     # Make sure MS Graph settings are added before exiting before App Id and Tenant Id is missing
     Write-Log "Add settings and menu items"
 
@@ -239,6 +266,14 @@ function Invoke-InitializeModule
         Description = "This will use production verionof graph, v1.0. Note: Thot officially supported since this can have unpredicted results. Some parts will require Beta version of Graph."
     }) "GraphGeneral"
 
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "API Page Size"
+        Key = "GraphPageSize"
+        Type = "List"
+        ItemsSource = $script:lstGraphPageSize
+        DefaultValue = "20"
+        Description = "How many items load at a time"
+    }) "GraphGeneral"
 }
 
 function Get-GraphAppInfo
@@ -558,7 +593,9 @@ function Get-GraphObjects
     [switch]
     $SingleObject,
     [string]
-    $filter)
+    $filter,
+    [int]
+    $pageSize = -1)
         
     $params = @{}
     if($objectType.ODataMetadata)
@@ -593,6 +630,10 @@ function Get-GraphObjects
     {
         #Use default page size or use below for a specific page size for testing
         #$params.Add("pageSize",5) #!!!
+        if ($pageSize -gt 0)
+        {
+            $params.Add("pageSize", $pageSize)
+        }
     }
     elseif($SingleObject -ne $true -and $SinglePage -ne $true)
     {
@@ -780,7 +821,30 @@ function Show-GraphObjects
 
     $script:nextGraphPage = $null    
 
-    [array]$graphObjects = Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage -Filter $filter
+    $params = @{}
+    $pageSize = 0
+    $tmpPageSize = Get-SettingValue "GraphPageSize"
+    if ($tmpPageSize -eq "All")
+    {
+        $params.Add("AllPages", $true)        
+    }else
+    {
+        
+        if($tmpPageSize) {
+            try {
+                $pageSize = [int]$tmpPageSize
+            }
+            catch {}
+        }
+
+        if($pageSize -gt 0)
+        {
+            $params.Add("PageSize", $pageSize)
+        }        
+        $params.Add("SinglePage", $true)
+    }
+
+    [array]$graphObjects = Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -Filter $filter @params
 
     $dgObjects.AutoGenerateColumns = $false
     $dgObjects.Columns.Clear()
@@ -1050,6 +1114,34 @@ function Start-GraphPreImport
         }
     }
 }
+
+function Remove-GraphODataProperties
+{
+    param($obj)
+
+    # Remove OData properties
+    foreach($odataProp in ($obj.PSObject.Properties | Where { $_.Name -like "*@*" }))
+    {        
+        $removeProperties += $odataProp.Name
+    }
+
+    foreach($prop in $removeProperties)
+    {
+        Remove-Property $obj $prop
+    }
+
+    foreach($prop in ($obj.PSObject.Properties))
+    {
+        if($obj."$($prop.Name)"."@odata.type")
+        {
+            foreach($childObj in ($obj."$($prop.Name)"))
+            {
+                Remove-GraphODataProperties $childObj
+            }
+        }
+    }
+}
+
 
 function Get-GraphMetaData
 {
@@ -4148,9 +4240,10 @@ function local:Add-ObjectColumnInfoClass
     }
 
     $classDef = @"
+    using System;
     using System.ComponentModel;
 
-    public class ObjectColumnInfo : INotifyPropertyChanged
+    public class ObjectColumnInfo : System.ComponentModel.INotifyPropertyChanged
     {
         public string Property { get { return _property; } set { _property = value;  NotifyPropertyChanged("Property");  } }
         private string _property = null;
@@ -4176,8 +4269,14 @@ function local:Add-ObjectColumnInfoClass
     }
 
 "@
-    [Reflection.Assembly]::LoadWithPartialName("System.ComponentModel") | Out-Null
-    Add-Type -TypeDefinition $classDef -IgnoreWarnings -ReferencedAssemblies @('System.ComponentModel')
+    try {        
+        Add-Type -TypeDefinition $classDef -IgnoreWarnings #-ReferencedAssemblies @('System.ComponentModel')
+        }
+    catch
+    {
+        Write-LogError "Failed to add type ObjectColumnInfo" $_.Exception
+
+    }
 }
 
 function Local:Show-ObjectDefaultColumnsSettings

@@ -1,4 +1,59 @@
 # Release Notes
+## 3.10.0 - 2025-02-22 - Beta 1 (Development branch)
+
+<br />
+A huge thank you to:<br />
+- @Mykhailo-Roit for the help with the paging<br />
+- @Systems-Liam for Documentation updates<br />
+- @ee61r for Documentation updates - This was missed in the previous release notes. Sorry!<br /> 
+<br />
+
+**New features**
+
+- **PowerShell 7 Support**<br />
+  - PowerShell 7 is now supported. Tested with 7.5.0<br />
+  - Added CMD files for PowerShell 7<br />
+  - Not all features and polices are tested. Please report any issues<br />
+  PowerShell 7 handles dates differently in Json files etc which might cause some problems<br />
+
+- **Authentication**<br />
+  - Microsoft Authentication Library Updated to 4.67.2.0<br />
+  - Added support for automation for GCC<br />
+  Based on [Issue 307](https://github.com/Micke-K/IntuneManagement/issues/307)<br />
+  - Added support for WAM - This allows for secure login scenarios eg Windows Hello, FIDO2<br />  
+  WAM must be enabled in Settings. This will require a restart of the app<br />
+  **Note** WAM is only supported in PowerShell 7<br />
+  Based on [Issue 310](https://github.com/Micke-K/IntuneManagement/issues/310)<br />
+  Based on [Issue 167](https://github.com/Micke-K/IntuneManagement/issues/167)<br />  
+  <br />
+  The Authentication update has been a long battle but it's hopefully working now<br />
+
+**Fixes**
+
+- **Generic**<br />
+  - Added support for setting the page size<br />
+  This can help with Settings Catalog missing policies<br />
+  Default page size is 20. This can be changed in Settings<br />
+  Based on [Issue 300](https://github.com/Micke-K/IntuneManagement/issues/300)<br />
+  [PR 301](https://github.com/Micke-K/IntuneManagement/pull/301)<br />
+
+- **Compare**<br />
+  - Lots of Bulk Compare issues fixed<br />
+  - Compare can now export a Json file for futher analysing<br />
+  Based on [Issue 281](https://github.com/Micke-K/IntuneManagement/issues/281)<br />
+
+- **Import/Export**<br />
+  - Added for support for export/import Device Categories<br />
+  Based on [Discussion 305](https://github.com/Micke-K/IntuneManagement/discussions/305)<br />
+  - Added API for export/import Inventory Policies<br />
+  **Note** These are not working but following Microsoft documentation.<br />
+
+
+- **Documentation**<br />
+  - App Configuration (Device) documentation updated<br />
+- Fixed bug with sub tables for MD and Word<br />
+  Based on [Issue 246](https://github.com/Micke-K/IntuneManagement/issues/246)<br />
+
 ## 3.9.8 - 2024-10-12
 
 **New features**

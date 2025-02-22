@@ -381,7 +381,11 @@ function Get-DocumentedSettings
 
 function Invoke-ObjectDocumentation
 {
-    param($documentationObj)
+    param($documentationObj,
+        $ObjectSeparator,
+        $PropertySeparator,
+        $DocumentationLanguage
+        )
 
     $global:intentCategories = $null
     $global:catRecommendedSettings = $null
@@ -389,10 +393,11 @@ function Invoke-ObjectDocumentation
     $global:cfgCategories = $null
     $script:admxCategories = $null
     $script:migTable = $null
+    $script:offlineObjects = @{}
 
-    $script:DocumentationLanguage = "en"        
-    $script:objectSeparator = [System.Environment]::NewLine
-    $script:propertySeparator = ","
+    $script:DocumentationLanguage = ?? $DocumentationLanguage "en"
+    $script:objectSeparator = ?? $ObjectSeparator ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $PropertySeparator ","
 
     $loadExportedInfo = $false
 
@@ -691,6 +696,10 @@ function Add-BasicAdditionalValues
             if($obj.createdDateTime -is [DateTime])
             {
                 $tmpDate = $obj.createdDateTime
+                if($tmpDate.Kind -eq "UTC")
+                {
+                    $tmpDate = $tmpDate.ToLocalTime()
+                }
             }
             else
             {
@@ -714,6 +723,10 @@ function Add-BasicAdditionalValues
             if($obj.lastModifiedDateTime -is [DateTime])
             {
                 $tmpDate = $obj.lastModifiedDateTime
+                if($tmpDate.Kind -eq "UTC")
+                {
+                    $tmpDate = $tmpDate.ToLocalTime()
+                }
             }
             else
             {
@@ -735,6 +748,10 @@ function Add-BasicAdditionalValues
             if($obj.modifiedDateTime -is [DateTime])
             {
                 $tmpDate = $obj.modifiedDateTime
+                if($tmpDate.Kind -eq "UTC")
+                {
+                    $tmpDate = $tmpDate.ToLocalTime()
+                }
             }
             else
             {
@@ -1037,15 +1054,26 @@ function Invoke-TranslateADMXObject
             $rawValues += $rawValue
         }
         $status = (?: ($definitionValue.enabled -eq $true) $enabledStr $disabledStr)
+
+        $combinedValue = $status 
+        if($values) {
+            $combinedValue += $script:objectSeparator + ($values -join $script:objectSeparator)
+        }
+
+        $combinedValueWithLabel = $status 
+        if($valuesWithLabel) {
+            $combinedValueWithLabel += $script:objectSeparator + ($valuesWithLabel -join $script:objectSeparator)
+        }
+
         $script:objectSettingsData += New-Object PSObject -Property @{ 
             Name = $definitionValue.definition.displayName
             Description = $definitionValue.definition.explainText
             Status = $status
             Value = $values -join $script:objectSeparator
-            CombinedValue = ($status + $script:objectSeparator + ($values -join $script:objectSeparator))
+            CombinedValue = $combinedValue #($status + $script:objectSeparator + ($values -join $script:objectSeparator))
             ValueWithLabel = $valuesWithLabel -join $script:objectSeparator
             FullValueTable = $tableValue
-            CombinedValueWithLabel = ($status + $script:objectSeparator + ($valuesWithLabel -join $script:objectSeparator))
+            CombinedValueWithLabel = $combinedValueWithLabel #($status + $script:objectSeparator + ($valuesWithLabel -join $script:objectSeparator))
             RawValue = $rawValues -join $script:propertySeparator
             Class = $definitionValue.definition.classType
             DefinitionId = $definitionValue.definition.id
@@ -1208,14 +1236,24 @@ function Add-SettingsSetting
     {
         $subCategory = $null
         $objCategory = $categoryDef
-    }    
+    }
+    
+    $settingName = ""
+    $settingDescription = ""
+    if($settingsDef.displayName) {
+        $settingName = $settingsDef.displayName.Trim([Environment]::NewLine).Trim('`n')
+    }
+
+    if($settingsDef.description) {
+        $settingDescription = $settingsDef.description.Trim([Environment]::NewLine).Trim('`n')
+    }
 
     $settingInfo = [PSCustomObject]@{
         SettingId = $settingsDef.Id
         SettingKey = ""
         SettingName = $settingsDef.Name
-        Name = $settingsDef.displayName
-        Description=$settingsDef.description
+        Name = $settingName
+        Description = $settingDescription
         CategortyId = $objCategory.id
         Category=$objCategory.displayName
         CategoryDefinition=$objCategory

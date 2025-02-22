@@ -53,7 +53,7 @@
     "RoleAssignment":  {
                            "RoleAssignmentAdmin":  "Admin Groups",
                            "RoleAssignmentAdminDesc":  "Admin group users are the administrators assigned to this role",
-                           "rolesMenuTitle":  "Endpoint Manager roles",
+                           "rolesMenuTitle":  "Intune roles",
                            "RoleAssignmentScopeDesc":  "Administrators in this role assignment can target policies, applications and remote tasks",
                            "RoleAssignmentScope":  "Scope Groups"
                        },
@@ -71,7 +71,7 @@
                                            "appPackageFile":  "A file that contains your app in a format that can be sideloaded on a device. Valid package types include: Android (.apk), iOS (.ipa), macOS (.pkg), Windows (.msi, .appx, .appxbundle, .msix, and .msixbundle).​",
                                            "applicableDeviceType":  "Select the device types that can install this app.​",
                                            "category":  "Categorize the app to make it easier for users to sort and find in Company Portal. You can choose multiple categories.",
-                                           "categoryLink":  "https://docs.microsoft.com/intune/apps/apps-add#create-and-edit-categories-for-apps​",
+                                           "categoryLink":  "https://go.microsoft.com/fwlink/?linkid=2295954",
                                            "description":  "Help your device users understand what the app is and/or what they can do in the app. This description will be visible to them in Company Portal.",
                                            "developer":  "The name of the company or Individual that developed the app. This information will be visible to people signed into the admin center.",
                                            "displayVersion":  "The version of the app. This information will be visible to users in the Company Portal.",
@@ -100,9 +100,11 @@
                                            "winGetStoreSelectApp":  "Search the Microsoft Store app (new) for store apps that you want to deploy with Intune."
                                        },
                               "descriptionPreview":  "Preview",
+                              "descriptionPreviewLabel":  "Preview",
                               "descriptionRequired":  "Description is required.",
                               "editDescription":  "Edit Description",
                               "macOSMinOperatingSystemAdditionalInfo":  "The minimum operating system for uploading a .pkg file is macOS 10.14. Upload a .pkg file to select an older minimum operating system.​",
+                              "markdownHelpLink":  "Get help with markdown supported for descriptions.",
                               "name":  "App information",
                               "nameForOfficeSuitApp":  "App suite information"
                           },
@@ -194,6 +196,10 @@
                                    "Android":  {
                                                    "v10":  "Android 10.0",
                                                    "v11":  "Android 11.0",
+                                                   "v12":  "Android 12.0",
+                                                   "v13":  "Android 13.0",
+                                                   "v14":  "Android 14.0",
+                                                   "v15":  "Android 15.0",
                                                    "v4":  "Android 4.0 (Ice Cream Sandwich)",
                                                    "v403":  "Android 4.0.3 (Ice Cream Sandwich)",
                                                    "v41":  "Android 4.1 (Jelly Bean)",
@@ -966,12 +972,21 @@
                                                         "testIdentityProtectionSecurityTemplateName":  "Account protection (Test)",
                                                         "windowsSecurityExperience":  "Windows Security experience"
                                                     },
+                       "FileVault":  {
+                                         "macOS":  "MacOS Filevault"
+                                     },
                        "Firewall":  {
                                         "mDE":  "Windows Firewall"
                                     },
                        "FirewallRules":  {
                                              "mDE":  "Windows Firewall Rules"
                                          },
+                       "IOS":  {
+                                   "pSSO":  "Platform SSO"
+                               },
+                       "MacOS":  {
+                                     "pSSO":  "Platform SSO"
+                                 },
                        "OneDriveKnownFolderMove":  {
                                                        "description":  "OneDrive Known Folder Move settings: Windows 10 in cloud configuration template. https://aka.ms/CloudConfigGuide"
                                                    },
@@ -1034,6 +1049,7 @@
                        "unknown":  "Unknown",
                        "unsupported":  "Unsupported",
                        "vpn":  "VPN",
+                       "wallpaper":  "Wallpaper",
                        "wiFi":  "Wi-Fi",
                        "wiFiImport":  "Wi-Fi import",
                        "windows10CompliancePolicy":  "Windows 10/11 compliance policy",
@@ -1064,9 +1080,11 @@
                                                         "prompt":  "Prompt"
                                                     },
                                          "Permissions":  {
+                                                             "accessBackgroundLocation":  "Location access (background)",
                                                              "accessCoarseLocation":  "Location access (coarse)",
                                                              "accessFineLocation":  "Location access (fine)",
                                                              "addVoicemail":  "Add voicemail",
+                                                             "bluetoothConnect":  "Bluetooth connect",
                                                              "bodySensors":  "Allow body sensor data",
                                                              "bodySensorsBackground":  "Allow background body sensor data",
                                                              "callPhone":  "Make phone calls",
@@ -1970,6 +1988,7 @@
                                           "tenantManagement":  "Tenant management"
                                       },
                    "actions":  "Actions for Non-Compliance",
+                   "adminPermissions":  "Admin permissions",
                    "advancedExchangeSettings":  "Exchange online settings",
                    "advancedThreatProtection":  "Microsoft Defender for Endpoint",
                    "allApps":  "All apps",
@@ -2052,7 +2071,6 @@
                    "macOSSoftwareUpdateCategorySummaries":  "Software updates summary",
                    "macOSSoftwareUpdateStateSummaries":  "updates",
                    "managedGooglePlay":  "Managed Google Play",
-                   "msfb":  "Microsoft Store for Business",
                    "myPermissions":  "My permissions",
                    "notifications":  "Notifications",
                    "officeApps":  "Office apps",
@@ -2076,6 +2094,7 @@
                    "retireNoncompliantDevices":  "Retire noncompliant devices",
                    "retireNoncompliantDevicesPreview":  "Retire noncompliant devices (preview)",
                    "role":  "Role",
+                   "rolesByPermission":  "Roles by permission",
                    "scriptManagement":  "Scripts",
                    "securityBaselines":  "Security baselines",
                    "serviceToServiceConnector":  "Exchange online connector",
@@ -2179,7 +2198,7 @@
                                                    },
                         "EncryptData":  {
                                             "label":  "Encrypt org data",
-                                            "link":  "https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-android#data-relocation-settings",
+                                            "link":  "https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-android#data-relocation-settings",
                                             "tooltip":  "Select {0} to enforce encrypting org data with Intune app layer encryption.\n <br/>\nSelect {1} to not enforce encrypting org data with Intune app layer encryption.\n\n<br/>\nNote: For more information on Intune app layer encryption, see {2}."
                                         },
                         "EncryptDataAndroid":  {
@@ -2273,7 +2292,7 @@
                                                   "select":  "Select keyboards to approve",
                                                   "subtitle":  "Add all keyboards and input methods that users are allowed to use with targeted apps. Enter the keyboard name as you would like it to appear to the end user.",
                                                   "title":  "Add approved keyboards",
-                                                  "toolTip":  "Select Require and then specify a list of approved keyboards for this policy. <a href='https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-android#data-transfer'>Learn more.</a>"
+                                                  "toolTip":  "Select Require and then specify a list of approved keyboards for this policy. <a href='https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-android#data-transfer'>Learn more.</a>"
                                               },
                         "SaveData":  {
                                          "label":  "Save copies of org data",
@@ -2299,7 +2318,7 @@
                                              "label":  "Sync policy managed app data with native apps or add-ins"
                                          },
                         "ThirdPartyKeyboards":  {
-                                                    "infoBox":  "Keyboard restrictions will apply to all areas of an app. Personal accounts for apps that support multiple identities will be affected by this restriction. <a href='https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-ios#data-transfer' aria-label='Learn more about third party keyboards'>Learn more.</a>",
+                                                    "infoBox":  "Keyboard restrictions will apply to all areas of an app. Personal accounts for apps that support multiple identities will be affected by this restriction. <a href='https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-ios#data-transfer' aria-label='Learn more about third party keyboards'>Learn more.</a>",
                                                     "label":  "Third party keyboards"
                                                 },
                         "Timeout":  {
@@ -2421,19 +2440,35 @@
                          "availableUninstall":  "Allow available uninstall",
                          "availableUninstallTooltip":  "Select 'Yes' to provide the uninstall option for this app for users from the Company Portal. Select 'No' to prevent users from uninstalling the app from the Company Portal.",
                          "bladeTitle":  "Program",
+                         "commandLineDropdownText":  "Command line",
                          "deviceRestartBehavior":  "Device restart behavior",
                          "deviceRestartBehaviorTooltip":  "Select the device restart behavior after the app has successfully installed. Select 'Determine behavior based on return codes' to restart the device based on the return codes configuration settings. Select 'No specific action' to suppress device restarts during the app install for MSI-based apps. Select 'App install may force a device restart' to allow the app install to complete without suppressing restarts. Select 'Intune will force a mandatory device restart' to always restart the device after successful app installation.",
                          "header":  "Specify the commands to install and uninstall this app:",
                          "installCommand":  "Install command",
                          "installCommandMaxLengthErrorMessage":  "Install command cannot exceed the maximum allowed length of 1024 characters.",
                          "installCommandTooltip":  "The complete installation command line used to install this app.",
+                         "installScript":  "Install script",
+                         "installScriptErrorText":  "An install script is required.",
+                         "installScriptToolTip":  "The PowerShell script file with installation commands used to install this app.",
+                         "installScriptsHeader":  "Specify app Installation and Uninstallation settings, including whether to use a script or command line, time limits, restart behavior, and return codes.",
+                         "installerTypeText":  "Installer type",
                          "runAs32Bit":  "Run install and uninstall commands in a 32-bit process on 64-bit clients",
                          "runAs32BitTooltip":  "Select 'Yes' to install and uninstall the app in a 32-bit process on 64-bit clients. Select 'No' (default) to install and uninstall the app in a 64-bit process on 64-bit clients. 32-bit clients will always use a 32-bit process.",
                          "runAsAccount":  "Install behavior",
                          "runAsAccountTooltip":  "Select 'System' to install this app for all users if supported. Select 'User' to install this app for the logged-in user on the device. For dual-purpose MSI apps, changes will prevent updates and uninstalls from successfully completing until the value applied to the device at the time of the original install is restored.",
+                         "scriptDropdownText":  "PowerShell script",
+                         "scriptsErrorText":  "An install and an uninstall script are required.",
+                         "selectCustomScript":  "Select custom script",
+                         "selectScriptLinkAriaText":  "No script selected. Opens context pane to upload a script.",
+                         "selectScriptLinkText":  "Select a script",
+                         "selectedScriptLinkAriaText":  "Script {0} selected. Opens context pane to edit or upload a new script.",
                          "selectorLabel":  "Program",
                          "uninstallCommand":  "Uninstall command",
-                         "uninstallCommandTooltip":  "The complete uninstallation command line used to uninstall this app."
+                         "uninstallCommandTooltip":  "The complete uninstallation command line used to uninstall this app.",
+                         "uninstallScript":  "Uninstall script",
+                         "uninstallScriptErrorText":  "An uninstall script is required.",
+                         "uninstallScriptToolTip":  "The PowerShell script file with uninstallation commands used to uninstall this app.",
+                         "uninstallerTypeText":  "Uninstaller type"
                      },
     "TermsOfUse":  {
                        "Languages":  {
@@ -4078,6 +4113,7 @@
                      "vPNProxy":  "Proxy",
                      "vPNSplitTunneling":  "Split Tunneling",
                      "vPNTrustedNetwork":  "Trusted Network Detection",
+                     "wSLCompliance":  "Windows Subsystem for Linux (WSL)",
                      "wakeSettings":  "Wake settings",
                      "webContentFilter":  "Web Content Filter",
                      "wiFi":  "Wi-Fi",
@@ -4300,7 +4336,6 @@
                       "mk":  "Macedonian (North Macedonia)",
                       "ml":  "Malayalam (India)",
                       "mt":  "Maltese (Malta)",
-                      "mi":  "Maori (New Zealand)",
                       "mr":  "Marathi (India)",
                       "moh":  "Mohawk (Mohawk)",
                       "ne":  "Nepali (Nepal)",
@@ -4334,11 +4369,13 @@
                       "vi":  "Vietnamese (Vietnam)",
                       "cy":  "Welsh (United Kingdom)",
                       "wo":  "Wolof (Senegal)",
+                      "sah":  "Yakut (Russia)",
                       "ii":  "Yi (PRC)",
                       "yo":  "Yoruba (Nigeria)"
                   },
     "DisplayRoleTypes":  {
                              "builtInRole":  "Built-in Role",
+                             "customAutopatchRole":  "Custom Windows Autopatch role",
                              "customCloudPCRole":  "Custom Windows 365 role",
                              "customIntuneRole":  "Custom Intune role",
                              "customRole":  "Custom Role"
@@ -4564,7 +4601,7 @@
                                                  "noAssignmentShellScriptDisplayText":  "Assign shell script to at least one group. Go to Properties to edit assignments."
                                              },
                               "CustomAttributes":  {
-                                                       "customAttributeScriptDescription":  "Max file size 200 KB.",
+                                                       "customAttributeScriptDescription":  "Max file size 1 MB.",
                                                        "customAttributeScriptLabel":  "Script",
                                                        "customAttributeTypeDescription":  "Select the data type of the result.",
                                                        "customAttributeTypeLabel":  "Data type of attribute",
@@ -4606,7 +4643,7 @@
                                                                  "toolTip":  "By default, the script is run as the root user. The root user can make system changes that a standard user account can't."
                                                              },
                                           "uploadFileToolTip":  {
-                                                                    "toolTip":  "Max file size 200 KB."
+                                                                    "toolTip":  "Max file size 1 MB."
                                                                 }
                                       },
                               "PolicyFrequency":  {
@@ -4945,7 +4982,7 @@
                            "allAndroidCorpEnrollmentTypesHeaderDescription":  "These settings work for fully managed, dedicated, and corporate-owned work profile devices.",
                            "allAndroidCorpEnrollmentTypesHeaderName":  "Fully managed, dedicated, and corporate-owned work profile devices",
                            "allAndroidVersionsPasswordHeader":  "All Android devices",
-                           "allAndroidVersionsPasswordHeaderDescription":  "These settings work for all Android OS versions and manufacturers.",
+                           "allAndroidVersionsPasswordHeaderDescription":  "These settings work for all Android OS versions and manufacturers, except where specified",
                            "allDomainsOption":  "All domains",
                            "allEnrollmentTypesDescription":  "These settings work for devices that were enrolled in Intune through device enrollment or user enrollment, and for devices enrolled using Apple School Manager or Apple Business Manager with automated device enrollment (formerly DEP).",
                            "allEnrollmentTypesHeader":  "All enrollment types",
@@ -5528,7 +5565,7 @@
                            "blockFaceUnlockName":  "Face unlock",
                            "blockFacetimeName":  "Block FaceTime",
                            "blockFactoryResetDescription":  "Block factory reset on device.",
-                           "blockFactoryResetName":  "Factory reset (Samsung KNOX only)",
+                           "blockFactoryResetName":  "Factory reset (Samsung KNOX Android 15 and earlier only)",
                            "blockFilesNetworkDriveAccessDescription":  "Using the Server Message Block (SMB) protocol, devices can access files or other resources on a network server. Available for devices running iOS and iPadOS, versions 13.0 and later.",
                            "blockFilesNetworkDriveAccessName":  "Block access to network drive in Files app",
                            "blockFilesUsbDriveAccessDescription":  "Devices with access can connect to and open files on a USB drive. Available for devices running iOS and iPadOS, versions 13.0 or later.",
@@ -5555,7 +5592,7 @@
                            "blockGoogleAccountAutoSyncDescription":  "Block Google account auto sync functionality on device.",
                            "blockGoogleAccountAutoSyncName":  "Google account auto sync (Samsung KNOX only)",
                            "blockGoogleBackupDescription":  "Block sync with Google backup.",
-                           "blockGoogleBackupName":  "Google backup (Samsung KNOX only)",
+                           "blockGoogleBackupName":  "Google backup (Samsung KNOX Android 15 and earlier only)",
                            "blockGooglePlayStoreDescription":  "Block Google Play store (Samsung KNOX Standard 4.0+).",
                            "blockGooglePlayStoreName":  "Google Play store (Samsung KNOX only) ",
                            "blockHostPairingDescription":  "Block host pairing to control the devices an iOS device can pair with.",
@@ -5695,7 +5732,7 @@
                            "blockSIMCardErrorDialogDescription":  "Block the error dialog from displaying if no SIM card is detected",
                            "blockSIMCardErrorDialogName":  "SIM card error dialog (mobile only)",
                            "blockSMSAndMMSAndroidDescription":  "Block SMS/MMS messaging functionality (Samsung KNOX Standard 4.0+).",
-                           "blockSMSAndMMSName":  "SMS/MMS messaging (Samsung KNOX only)",
+                           "blockSMSAndMMSName":  "SMS/MMS messaging (Samsung KNOX Android 15 and earlier only)",
                            "blockSafariAutofillDescription":  "Blocks Safari from remembering what users enter in web forms.",
                            "blockSafariAutofillName":  "Block Safari AutoFill",
                            "blockSafariDescription":  "Block Safari web browser.",
@@ -5759,7 +5796,7 @@
                            "blockVPNCreationDescription":  "Blocks the creation of VPN configurations",
                            "blockVPNCreationName":  "Block VPN creation",
                            "blockVoiceAssistantAndroidDescription":  "Block voice assistant (Samsung KNOX Standard 4.0+).",
-                           "blockVoiceAssistantName":  "Voice assistant (Samsung KNOX only)",
+                           "blockVoiceAssistantName":  "Voice assistant (Samsung KNOX Android 15 and earlier only)",
                            "blockVoiceDialingAndroidDescription":  "Block voice dialing (Samsung KNOX Standard 4.0+).",
                            "blockVoiceDialingDescription":  "Block voice dialing on device.",
                            "blockVoiceDialingName":  "Voice dialing",
@@ -6128,6 +6165,7 @@
                            "customAppConfigurationFileDescription":  "For the correct format of the uploaded file, please view the Intune documentation. <a href=\"https://aka.ms/AA6z0o4\">Learn more</a>",
                            "customAppConfigurationFileName":  "Property list file",
                            "customBoolError":  "All configuration keys of type Boolean must have a value of either \"true\" or \"false\".",
+                           "customComplianceToolTip":  "When enabled, devices must be compliant according to custom rules defined in a JSON file based on custom data returned from a discovery PowerShell script.",
                            "customEapXmlOption":  "Custom EAP Xml",
                            "customIntError":  "All configuration keys of type integer must be a whole number value.",
                            "customItemHideFromUserConfiguration":  "Hide",
@@ -6180,7 +6218,7 @@
                            "dataSharingTypeName":  "Data sharing between work and personal profiles",
                            "dataTypeName":  "Data type",
                            "dateAndTimeBlockChangesDescription":  "Block user from changing date and time on device (Samsung KNOX).",
-                           "dateAndTimeBlockChangesName":  "Block date and time changes (Samsung KNOX)",
+                           "dateAndTimeBlockChangesName":  "Block date and time changes (Samsung Android 15 and earlier only)",
                            "dateTimeConfigurationBlockedDescription":  "Block user from manually setting the date and time.",
                            "dateTimeConfigurationBlockedName":  "Date and Time changes",
                            "dateTimeName":  "Date and time",
@@ -7541,7 +7579,7 @@
                            "kioskWifiSsidsName":  "Wi-Fi allow-list",
                            "knoxBlockAutofillDescription":  "Block autofill.",
                            "knoxBlockAutofillName":  "Autofill (Samsung KNOX only)",
-                           "knoxBlockBluetoothName":  "Bluetooth (Samsung KNOX only)",
+                           "knoxBlockBluetoothName":  "Bluetooth (Samsung KNOX Android 13 and earlier only)",
                            "knoxBlockCookiesDescription":  "Allow or block browser cookies",
                            "knoxBlockCookiesName":  "Cookies (Samsung KNOX only)",
                            "knoxBlockCopyAndPasteDescription":  "Block copy and paste functionality.",
@@ -7562,17 +7600,20 @@
                            "knoxBlockPopUpsName":  "Pop-ups (Samsung KNOX only)",
                            "knoxBlockRemovableStorageName":  "Removable storage (Samsung KNOX only)",
                            "knoxBlockScreenshotDescription":  "Block capturing contents of screen as an image.",
-                           "knoxBlockScreenshotName":  "Screen capture (Samsung KNOX only)",
+                           "knoxBlockScreenshotName":  "Screen capture (Samsung KNOX Android 15 and earlier only)",
                            "knoxBlockVoiceDialingName":  "Voice dialing (Samsung KNOX only)",
                            "knoxBlockVoiceRoamingName":  "Voice roaming (Samsung KNOX only)",
                            "knoxBlockWebBrowserDescription":  "Block web browser on device.",
                            "knoxBlockWebBrowserName":  "Web browser (Samsung KNOX only)",
-                           "knoxBlockWiFiName":  "Wi-Fi (Samsung KNOX only)",
-                           "knoxBlockWiFiTetheringName":  "Wi-Fi tethering (Samsung KNOX only)",
+                           "knoxBlockWiFiName":  "Wi-Fi (Samsung KNOX Android 12 and earlier only)",
+                           "knoxBlockWiFiTetheringName":  "Wi-Fi tethering (Samsung KNOX Android 12 and earlier only)",
                            "knoxCellularDataDescription":  "Block data usage over cellular networks. When not configured, data usage over cellular networks is allowed and editable by users.",
                            "knoxCellularDataName":  "Cellular data channel (Samsung KNOX only)",
+                           "knoxFifteenAndroidNineAndBelowPasswordHeader":  "Android 9 and earlier or Samsung Knox Android 15 and earlier",
+                           "knoxFifteenAndroidNineAndBelowPasswordHeaderDescription":  "These settings work for devices running Android 9 or earlier, and will also work on all Samsung Knox devices running any Android OS version Android 15 and earlier.",
+                           "knoxRequireEncryptionName":  "Encryption (Android 11 and earlier, or Samsung KNOX Android 14 and earlier)",
                            "knoxRequireEncryptionOnRemovableStorageDescription":  "Storage cards must be encrypted. Not all devices support storage card encryption. For more information, see the device and mobile operating system documentation.",
-                           "knoxRequireEncryptionOnRemovableStorageName":  "Encryption on storage cards (Samsung KNOX only)",
+                           "knoxRequireEncryptionOnRemovableStorageName":  "Encryption on storage cards (Samsung KNOX Android 15 and earlier only)",
                            "lEAPName":  "LEAP",
                            "lTPOptionNativeType":  "L2TP (Native type)",
                            "lanManagerAuthenticationLevelDesc":  "This security setting determines which challenge/response authentication protocol is used for network logons.",
@@ -7891,6 +7932,10 @@
                            "macOSAppleEventReceiverIdentifierTypeName":  "Identifier type",
                            "macOSAppleEventReceiverTableDescription":  "Allow the app or process to send a restricted Apple event to another app or process. You will need to know the identifier, identifier type, and code requirement of the receiving app or process.",
                            "macOSAppleEventReceiverTableName":  "Apple events",
+                           "macOSDeploymentChannelDeviceChannel":  "Device Channel",
+                           "macOSDeploymentChannelName":  "Deployment Channel",
+                           "macOSDeploymentChannelUserChannel":  "User Channel",
+                           "macOSDeploymentChannelWarningBanner":  "It is strongly recommended that you use User certificate type in User Channel only for security purpose.",
                            "macOSPrivacyAccessControlItemAccessibilityDescription":  "Control access to the accessibility app on the device, which houses features such as closed captions, hover text, and voice control.",
                            "macOSPrivacyAccessControlItemAccessibilityName":  "Accessibility",
                            "macOSPrivacyAccessControlItemAddressBookName":  "Contacts",
@@ -8418,6 +8463,7 @@
                            "opportunisticallyMatchAuthDescription":  "Set keying modules to ignore the entire authentication set if they do not support all authentication suites in that set. If enabled, keying modules will ignore unsupported authentication suites.",
                            "opportunisticallyMatchAuthName":  "Opportunistically match authentication set per keying module",
                            "optional":  "Optional",
+                           "optionalValue":  "Optional value",
                            "organizationalUnitDescription":  "Full path to Organizational Unit (OU) the computer accounts are to be created in. If not specified well known computer object container is used.",
                            "organizationalUnitName":  "Organizational unit",
                            "originalProfileTypeTitle":  "Original Profile Type:",
@@ -8843,8 +8889,9 @@
                            "sCEPPolicyCertificateValidityPeriodName":  "Certificate validity period",
                            "sCEPPolicyCustomAADAttribute":  "Custom Microsoft Entra Attribute",
                            "sCEPPolicyCustomKeys":  "Custom keys",
-                           "sCEPPolicyCustomSubjectAlternativeNameForMachineDescription":  "Value can include allowed variables combined with static text. UPN and Email address should include an @, for example: “{{AAD_Device_ID}}@contoso.com”. DNS cannot end with a symbol or contain an @ sign, e.g. “{{DeviceName}}.contoso.com“ or “{{DeviceName}}”. See support variables here: http://go.microsoft.com/fwlink/?LinkId=2027630",
-                           "sCEPPolicyCustomSubjectAlternativeNameForUserDescription":  "Value can include allowed variables, for example: “{{UserPrincipalName}}” or “{{EmailAddress}}” . See support variables here: http://go.microsoft.com/fwlink/?LinkId=2027630",
+                           "sCEPPolicyCustomSubjectAlternativeNameForMachineDescription":  "Provide a value that can combine any supported variable with static text. For UPN and Email addresses, use the format {{AAD_Device_ID}}@contoso.com. DNS values must not include symbols or an @ sign, e.g., {{DeviceName}}.contoso.com or {{DeviceName}}. See support variables here: http://go.microsoft.com/fwlink/?LinkId=2027630",
+                           "sCEPPolicyCustomSubjectAlternativeNameForUserDescription":  "Provide a value, which can be any supported variable, such as {{UserPrincipalName}}. You can only use {{OnPremisesSecurityIdentifier}} with the URI attribute. Learn more about supported variables: http://go.microsoft.com/fwlink/?LinkId=2027630",
+                           "sCEPPolicyCustomSubjectAlternativeNameForWindowsMachineDescription":  "Provide a value that can combine any supported variable with static text. For UPN and Email addresses, use the format {{AAD_Device_ID}}@contoso.com. DNS values must not include symbols or an @ sign, e.g., {{DeviceName}}.contoso.com or {{DeviceName}}. Note that the {{OnPremisesSecurityIdentifier}} value can only be used with the URI attribute for the subject alternative name. See support variables here: http://go.microsoft.com/fwlink/?LinkId=2027630",
                            "sCEPPolicyCustomSubjectNameForMachine":  "CN={{AAD_Device_ID}}<br>or<br>CN={{Device_Serial}}<br>or<br>CN={{Device_IMEI}}",
                            "sCEPPolicyCustomSubjectNameForMachineDescription":  "CN={{AAD_Device_ID}},OU=Devices,O=Contoso,DC=com<br>or<br>CN={{Device_Serial}},OU=Devices,O=Contoso,DC=com<br>or<br>CN={{Device_IMEI}},OU=Devices,O=Contoso,DC=com",
                            "sCEPPolicyCustomSubjectNameForUser":  "CN={{UserName}}&lt;br&gt;or&lt;br&gt;CN={{EmailAddress}}&lt;br&gt;or&lt;br&gt;CN={{onPremisesSamAccountName}}",
@@ -9925,6 +9972,11 @@
                            "wPAEnterpriseOption":  "WPA-Enterprise",
                            "wPAPSKOption":  "WPA-Pre-shared key",
                            "wPAPersonalOption":  "WPA/WPA2-Personal",
+                           "wSLComplianceBody":  "The noncompliant Linux distributions are: ",
+                           "wSLComplianceTitle":  "Uninstall noncompliant Linux distributions or versions from Windows Subsystem for Linux (WSL).",
+                           "wSLPolicyDistributionName":  "Distribution name",
+                           "wSLPolicyMaxOSVersionName":  "Maximum OS version",
+                           "wSLPolicyMinOSVersionName":  "Minimum OS version",
                            "wakeOnLANName":  "Wake on LAN",
                            "wakeOnPowerName":  "Wake on power",
                            "wakeScreenWhenSomeoneInRoomName":  "Wake screen when someone is in room",
@@ -10303,6 +10355,10 @@
                            "windowsSpotlightOnLockScreenName":  "Windows Spotlight on lock screen",
                            "windowsSpotlightPersonalizationDescription":  "Block Windows Spotlight personalization based on device usage",
                            "windowsSpotlightPersonalizationName":  "Windows Spotlight personalization",
+                           "windowsSubsystemLinuxComplianceDescription":  "These settings relate to Linux distributions installed on managed Windows devices and affect the compliance state of the device. <a href=\"https://go.microsoft.com/fwlink/?linkid=2283513\" target=\"_blank\">Learn more about using the setting</a>",
+                           "windowsSubsystemLinuxComplianceHeader":  "Allowed Linux distributions and versions",
+                           "windowsSubsystemLinuxComplianceInfoBox":  "You can't configure WSL and custom compliance settings in the same policy.",
+                           "windowsSubsystemLinuxComplianceLearnMore":  "Specify allowed Linux distributions and optionally, a minimum version, a maximum version, or both for each distribution.",
                            "windowsTipsDescription":  "Allows IT admins to turn off the popup of Windows Tips.",
                            "windowsTipsName":  "Windows Tips",
                            "windowsWelcomeExperienceDescription":  "Block Windows welcome experience that introduces new or updated features",
@@ -10520,7 +10576,7 @@
                            "clientAppPolicyDefault":  "No policies",
                            "clientAppPolicyPlural":  "{0} policies",
                            "clientAppPolicySingular":  "{0} policy",
-                           "clockInClockOutNotes":  "<p><b>Notes:</b></p>\n<ul type=\"disc\">\n    <li>Please refer to <b>link to quiet time docs – blocking section</b> for more information on which apps this setting can be applied to.</li>\n    <li>This setting does not have capability to mute notifications. To configure settings for muting notifications, please refer to <b>link to quiet time – muting docs</b>.</li>\n</ul>",
+                           "clockInClockOutNotes":  "<p><b>Notes:</b></p>\n<ul type=\"disc\">\n    <li>This setting must only be configured if the tenant has been integrated with the <b>Working Time API</b>. For more information about integrating this setting with the <b>Working Time API</b>, see <a href=\"https://review.learn.microsoft.com/en-us/microsoft-365/frontline/flw-working-time\">Limit access to Microsoft Teams when frontline workers are off shift</a>\n. Configuring this setting without integrating with the Working Time API could result in accounts getting blocked due to missing working time status for the managed account associated with the application.</li>\n    <li>Please refer to <a href=\"https://learn.microsoft.com/en-us/mem/intune/apps/apps-supported-intune-apps\">Supported Microsoft Intune apps | Microsoft Learn</a>\nfor more information on which apps support this setting.</li> <li>This setting does not have the capability to mute notifications. To configure settings for muting notifications, please refer to <a href=\"https://learn.microsoft.com/en-us/mem/intune/apps/apps-quiet-time-policies\">Create quiet time policies in Microsoft Intune | Microsoft Learn</a></li>\n</ul>",
                            "clockedOutAccount":  "Non-working time",
                            "closeText":  "Close",
                            "columns":  "Columns",
@@ -10736,6 +10792,7 @@
                            "isMamEnabled":  "Is MAM enabled?",
                            "itemsCount":  "{0} items",
                            "jailbrokenRootedDevices":  "Jailbroken/rooted devices",
+                           "knoxConditionalLaunchSettingBlockWhenSettingIsSupported":  "Block access on supported devices",
                            "lastModifiedDate":  "Last Modified Date",
                            "lastReportedDate":  "Last reported date",
                            "lastSync":  "Last sync",
@@ -10839,7 +10896,6 @@
                            "pendingDeleteContentStateText":  "Deleting...",
                            "photoLibrary":  "Photo Library",
                            "pinCharSettingTooltip":  "A numeric PIN only allows numeric characters.\n\nA passcode requires all of the following: Alphanumeric characters and allowed symbols.",
-                           "pinRotationWarning":  "<b>Important:</b> On June 1, 2024 Apps with an SDK older than 17.7.0 will no longer get App Protection Policy updates and users will be blocked from launching the app. Please ensure users are updating their apps and your line of business apps are using a recent SDK or wrapper. <a href = \"https://learn.microsoft.com/en-us/mem/intune/fundamentals/whats-new#update-to-the-latest-company-portal-for-android-intune-app-sdk-for-ios-and-intune-app-wrapper-for-ios\">Learn More</a>",
                            "pinToDashboard":  "Dummy string, don't translate",
                            "platformColumnLabel":  "Platform",
                            "platformDropDownLabel":  "Platform",
@@ -11137,6 +11193,7 @@
                            "policySetsTitle":  "Policy sets",
                            "applicabilityRules":  "Applicability Rules",
                            "windowsEnrollmentTitle":  "Windows enrollment",
+                           "DefaultESPCustomErrorMessage":  "Setup could not be completed. Please try again or contact your support person for help.",
                            "appleEnrollmentTitle":  "Apple enrollment",
                            "targetedAppLabel":  "Targeted app",
                            "configurationSettingsTitle":  "Configuration Settings",
@@ -11462,6 +11519,8 @@
                                                      "alertBannerV2":  "Microsoft-managed policies in report-only state will be automatically turned on with advance email and {0}M365 message center{1} notifications. We recommend that you review these policies and recommended actions.",
                                                      "learnMoreLinkAriaLabel":  "Learn more about Microsoft-managed policies.",
                                                      "m365MessageCenterLinkAriaLabel":  "M365 message center",
+                                                     "policySummaryBlockDCF":  "This policy unilaterally blocks device code flow usage across all resources and all users. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryBlockLegacyAuth":  "This policy blocks any sign-in attempt using legacy authentication and legacy authentication protocols from accessing applications. Legacy authentication refers to authentication requests made by: Clients that don't use modern authentication (e.g., Office 2010 clients). Clients that use older mail protocols such as IMAP, SMTP, or POP3.",
                                                      "policySummaryMfa":  "This policy requires some administrator roles to perform multifactor authentication when accessing Microsoft admin portals. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
@@ -11473,7 +11532,6 @@
                                                      "recActionsMfa2":  "To prevent users from being locked out, verify that all users covered by this policy have at least one enabled authentication methods.",
                                                      "recActionsPerUserMfaV2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
-                                                     "recActionsPerUserMfaViaGroup2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
                                                      "securityDefaultsBasedAdminMfaMMPolicySummary":  "Require multifactor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as security defaults.",
@@ -11481,7 +11539,6 @@
                                                      "securityDefaultsBasedAzureManagementMMPolicySummary":  "Require multifactor authentication to protect privileged access to Azure management.",
                                                      "securityDefaultsBasedLegacyBlockMMPolicySummary":  "Block legacy authentication endpoints that can be used to bypass multifactor authentication.",
                                                      "securityDefaultsBasedMMPolicyRecommendationOverview":  "Microsoft recommends leaving this policy enabled. If you need to make modifications beyond what is allowed in a Microsoft-managed policy, you can clone this policy and make those edits. Keep in mind that doing so will prevent Microsoft from improving the security posture for your organization through this policy.",
-                                                     "signInRiskActions1":  "Exclude one or more break glass accounts from the policy.",
                                                      "signInRiskActions2":  "While we have scoped this policy to include users who are already enabled for multifactor authentication, we recommend you verify this using the report below as an extra precaution to prevent users from being locked out.",
                                                      "signInRiskActionsViaGroup1":  "This policy relies on its corresponding security group to function. We recommend you keep the group even if you don't intend to use the policy now.",
                                                      "summary":  "Summary"
@@ -11671,10 +11728,10 @@
                                                                                                         "authenticationTransfer":  "Authentication transfer",
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
-                                                                                                        "label":  "Authentication flows (Preview)",
+                                                                                                        "label":  "Authentication flows",
                                                                                                         "multiple":  "\"{0}\" and \"{1}\""
                                                                                                     },
-                                                                                       "singular":  "Authentication flow (Preview)"
+                                                                                       "singular":  "Authentication flow"
                                                                                    },
                                                            "DeviceAttributes":  {
                                                                                     "AssignmentFilter":  {
@@ -11795,7 +11852,7 @@
                                                           "message":  "Control access based on Conditional Access policy to bring signals together, to make decisions, and enforce organizational policies."
                                                       },
                                         "Removed":  {
-                                                        "cloudApps":  "{0} cloud app(s) configured in this policy have been deleted from the directory, but this doesn't affect the other apps in the policy. When you save the policy the deleted app(s) will be automatically removed from it.",
+                                                        "cloudApps":  "{0} cloud app(s) configured in this policy are either unsupported or have been deleted from the directory. This does not affect the other apps in the policy. When you save the policy, the unsupported or deleted app(s) will be automatically removed from it.",
                                                         "deletedGroups":  "Deleted groups ({0})",
                                                         "deletedUsers":  "Deleted users ({0})",
                                                         "deletedUsersAndGroups":  "Deleted users and groups",
@@ -11811,7 +11868,7 @@
                                                      },
                                         "subtitle":  "Conditional Access policy",
                                         "tabLabel":  "Policy",
-                                        "viewPolicyImpact":  "View policy impact"
+                                        "viewPolicyImpact":  "View policy impact (Preview) "
                                     },
                     "PolicyCondition":  {
                                             "InsiderRisk":  {
@@ -12182,7 +12239,10 @@
                                          "Controls":  {
                                                           "AuthStrengthXtap":  {
                                                                                    "allUsers":  "To enable all authentication strengths, configure cross-tenant access settings to accept claims coming from Microsoft Entra tenants for external users. Authentication strengths will only configure second factor authentication for external users.",
-                                                                                   "externalUsers":  "To enable all built-in authentication strengths, configure cross-tenant access settings to accept claims coming from Microsoft Entra tenants for external users."
+                                                                                   "containsOnlyPasskeysAuthApp":  "Don't lock your users out. Additional steps might be required to ensure users can register passkeys in Authenticator.",
+                                                                                   "containsPasskeysAuthApp":  "Don't lock your users out. Additional steps might be required to ensure users can register passkeys in Microsoft Authenticator. To require authentication strengths for external users, configure cross-tenant access settings to accept claims from Microsoft Entra tenants.",
+                                                                                   "externalUsers":  "To enable all built-in authentication strengths, configure cross-tenant access settings to accept claims coming from Microsoft Entra tenants for external users.",
+                                                                                   "nonAuthPhishResistant":  "To require phishing-resistant authentication for external users, configure cross-tenant access settings to accept claims from Microsoft Entra tenants."
                                                                                },
                                                           "compliantDeviceEnabled":  "Don't lock yourself out! Make sure that your device is compliant.",
                                                           "domainJoinedDeviceEnabled":  "Don't lock yourself out! Make sure that your device is Microsoft Entra hybrid joined.",
@@ -12343,7 +12403,6 @@
                     "chooseApplicationsSelect":  "Select",
                     "chooseApplicationsSelected":  "Selected",
                     "chooseApplicationsSingular":  "{0} and 1 more",
-                    "chooseApplicationsTooMany":  "More results than can be shown. Please filter using the search box.",
                     "chooseLocationSelectedLocationsLabel":  "Selected locations",
                     "chooseLocationTrustedIpsItem":  "Multifactor authentication trusted IPs",
                     "chooseLocationsBladeSubtitle":  "",
@@ -12354,21 +12413,13 @@
                     "chooseLocationsExcludedSelectorTitle":  "Select",
                     "chooseLocationsIncludedSelectorTitle":  "Select",
                     "chooseLocationsNone":  "None",
-                    "chooseLocationsNoneFound":  "We didn't find \"{0}\". Try another name or ID.",
                     "chooseLocationsPlural":  "{0} and {1} more",
                     "chooseLocationsRemove":  "Remove",
-                    "chooseLocationsReturnedPlural":  "{0} locations found",
-                    "chooseLocationsReturnedSingular":  "1 location found",
-                    "chooseLocationsSearchBalloon":  "Search for a Location by entering its name.",
-                    "chooseLocationsSearchHint":  "Search Locations...",
-                    "chooseLocationsSearchLabel":  "Locations",
-                    "chooseLocationsSearching":  "Searching...",
                     "chooseLocationsSelect":  "Select",
                     "chooseLocationsSelected":  "Selected",
                     "chooseLocationsSelectionBladeExcludedSelectorTitle":  "Select",
                     "chooseLocationsSelectionBladeIncludedSelectorTitle":  "Select",
                     "chooseLocationsSingular":  "{0} and 1 more",
-                    "chooseLocationsTooMany":  "More results than can be shown. Please filter using the search box.",
                     "chooseNetworkLocationSelectedNetworksLocationsLabel":  "Selected networks and locations",
                     "claimProviderAddCommandText":  "New custom control",
                     "claimProviderAddNewBladeTitle":  "New custom control",
@@ -12493,7 +12544,6 @@
                     "clientTypeModernAuth":  "Modern authentication clients",
                     "clientTypeOtherClients":  "Other clients",
                     "clientTypeOtherClientsInfo":  "This includes older office clients and other mail protocols(POP, IMAP, SMTP, etc). [Learn more][1]\n[1]: https://aka.ms/caclientapps\n",
-                    "cloudAppCountDiffBannerText":  "{0} cloud apps configured in this policy have been deleted from the directory, but this doesn't affect the other apps in the policy. The next time you update the application section of the policy, the deleted apps will be automatically removed from it.",
                     "cloudAppsSelectionBladeAllMicrosoftApps":  "All Microsoft apps",
                     "cloudappsSelectionBladeAllCloudapps":  "All cloud apps",
                     "cloudappsSelectionBladeAllResources":  "All resources (formerly 'All cloud apps')",
@@ -12633,6 +12683,7 @@
                     "memberSelectionCommandRemove":  "Remove",
                     "menuItemClaimProviderControls":  "Custom controls (Preview)",
                     "menuItemClassicPolicies":  "Classic policies",
+                    "menuItemDeletedPolicies":  "Deleted Policies",
                     "menuItemInsightsAndReporting":  "Insights and reporting",
                     "menuItemManage":  "Manage",
                     "menuItemNamedLocationsPreview":  "Named locations (Preview)",
@@ -12666,24 +12717,14 @@
                     "namedNetworkNameInvalid":  "The supplied name is invalid.",
                     "namedNetworkNameRequired":  "You must supply a name for this location.",
                     "namedNetworkNoIpRanges":  "No IP ranges",
-                    "namedNetworkNotificationCreateDescription":  "Creating location named '{0}'",
                     "namedNetworkNotificationCreateFailedDescription":  "Creating location '{0}' failed. Please try again later.",
-                    "namedNetworkNotificationCreateFailedTitle":  "Failed to create location",
-                    "namedNetworkNotificationCreateSuccessDescription":  "Created location named '{0}'",
-                    "namedNetworkNotificationCreateSuccessTitle":  "Created '{0}'",
-                    "namedNetworkNotificationCreateTitle":  "Creating '{0}'",
                     "namedNetworkNotificationDeleteDescription":  "Deleting location named '{0}'",
                     "namedNetworkNotificationDeleteFailedDescription":  "Deleting location '{0}' failed. Please try again later.",
                     "namedNetworkNotificationDeleteFailedTitle":  "Failed to Delete location",
                     "namedNetworkNotificationDeleteSuccessDescription":  "Deleted location named '{0}'",
                     "namedNetworkNotificationDeleteSuccessTitle":  "Deleted '{0}'",
                     "namedNetworkNotificationDeleteTitle":  "Deleting '{0}'",
-                    "namedNetworkNotificationUpdateDescription":  "Updating location named '{0}'",
                     "namedNetworkNotificationUpdateFailedDescription":  "Updating location '{0}' failed. Please try again later.",
-                    "namedNetworkNotificationUpdateFailedTitle":  "Failed to Update location",
-                    "namedNetworkNotificationUpdateSuccessDescription":  "Updated location named '{0}'",
-                    "namedNetworkNotificationUpdateSuccessTitle":  "Updated '{0}'",
-                    "namedNetworkNotificationUpdateTitle":  "Updating '{0}'",
                     "namedNetworkSearchPlaceholder":  "Search locations.",
                     "namedNetworkUploadFailedDescription":  "There was an error parsing the supplied file. Please make sure to upload a plain-text file with each line in the CIDR format.",
                     "namedNetworkUploadFailedTitle":  "Failed to parse '{0}'",
@@ -12799,6 +12840,7 @@
                     "policyResourcesLabel":  "Resources",
                     "policyReviewSection":  "Review",
                     "policySaveButton":  "Save",
+                    "policySoftDeleteConfirmation":  "Once deleted, you will have 30 days to restore this policy.",
                     "policyStagedRollout":  "Staged rollout",
                     "policyStagedRolloutOptionsGroupItemAriaLabel":  "Enable Policy: Staged rollout.",
                     "policyStatusIconDescription":  "Policy is Enabled",
@@ -13115,7 +13157,7 @@
                                "complianceWindows8":  "Windows 8 compliance policy",
                                "complianceWindowsPhone":  "Windows Phone compliance policy",
                                "exchangeActiveSync":  "Exchange Active Sync",
-                               "inventoryCatalog":  "Properties catalog (preview)",
+                               "inventoryCatalog":  "Properties catalog",
                                "iosCustom":  "Custom",
                                "iosDerivedCredentialAuthenticationConfiguration":  "Derived PIV credential",
                                "iosDeviceFeatures":  "Device features",

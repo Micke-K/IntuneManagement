@@ -1180,6 +1180,12 @@ function Add-CDDocumentCustomProfileProperty
     } 
     elseif($obj.'@OData.Type' -eq "#microsoft.graph.windows10EnrollmentCompletionPageConfiguration")
     {
+        $installProgressTimeout = $obj.installProgressTimeoutInMinutes
+        if($installProgressTimeout -eq 0) {
+            $installProgressTimeout = 60
+        }
+        $obj | Add-Member Noteproperty -Name "InstallProgressTimeout" -Value $installProgressTimeout
+        
         if($obj.selectedMobileAppIds.Count -eq 0)
         {
             $apps = Get-LanguageString "EnrollmentStatusScreen.Apps.useSelectedAppsAll"
@@ -2299,6 +2305,10 @@ function Invoke-CDDocumentTermsOfUse
             if($obj.termsExpiration.startDateTime -is [DateTime])
             {
                 $tmpDate = $obj.termsExpiration.startDateTime
+                if($tmpDate.Kind -eq "UTC")
+                {
+                    $tmpDate = $tmpDate.ToLocalTime()
+                }
             }
             else
             {
@@ -4154,7 +4164,17 @@ function Invoke-CDDocumentWindowsKioskConfiguration
     {        
         try
         {
-            $startDateObj = Get-Date $obj.windowsKioskForceUpdateSchedule.startDateTime -ErrorAction Stop
+            if($obj.windowsKioskForceUpdateSchedule.startDateTime -is [DateTime]) {
+                $startDateObj = $obj.windowsKioskForceUpdateSchedule.startDateTime
+                if($startDateObj.Kind -eq "UTC")
+                {
+                    $startDateObj = $startDateObj.ToLocalTime()
+                }                
+            }
+            else
+            {
+                $startDateObj = Get-Date $obj.windowsKioskForceUpdateSchedule.startDateTime -ErrorAction Stop
+            }            
 
             Add-CustomSettingObject ([PSCustomObject]@{
                 Name = Get-LanguageString "SettingDetails.kioskStartDateTime"

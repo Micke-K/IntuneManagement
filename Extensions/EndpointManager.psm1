@@ -614,6 +614,24 @@ function Invoke-InitializeModule
         Dependencies = @("ReusableSettings")
         GroupId = "DeviceConfiguration"        
     })   
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Inventory Policies"
+        Id = "InventoryPolicies"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/inventoryPolicies"
+        PropertiesToRemove = @('settingCount')
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        NameProperty = "Name"
+        ViewProperties = @("name","description","Id")
+        Expand="Settings"
+        Icon="DeviceConfiguration"
+        PostExportCommand = { Start-PostExportSettingsCatalog  @args }
+        PreUpdateCommand = { Start-PreUpdateSettingsCatalog  @args }
+        PostGetCommand = { Start-PostGetSettingsCatalog  @args }
+        GroupId = "DeviceConfiguration"        
+    })   
+    
     
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Role Definitions"
@@ -831,7 +849,17 @@ function Invoke-InitializeModule
         Permissons = @("DeviceManagementConfiguration.ReadWrite.All")
         Icon = "UpdatePolicies"
         GroupId = "WinDriverUpdatePolicies"
-    })    
+    })
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Device Categories"
+        Id = "DeviceCategories"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/deviceCategories"
+        Permissons = @("DeviceManagementConfiguration.ReadWrite.All")
+        GroupId = "DeviceConfiguration"
+    })
+    
 }
 
 function Invoke-EMAuthenticateToMSAL
@@ -2512,7 +2540,7 @@ function Start-PostExportApplications
             }
             else
             {
-                Write-Log "Cound not file encryption file"
+                Write-Log "Cound not find encryption file"
             }
         }
     }

@@ -188,6 +188,12 @@ function Show-CompareBulkForm
     $global:chkSkipCompareAssignments.IsChecked = (Get-Setting "Compare" "SkipCompareAssignments") -eq "true"
     $global:chkSkipMissingSourcePolicies.IsChecked = (Get-Setting "Compare" "SkipMissingSourcePolicies") -eq "true"
     $global:chkSkipMissingDestinationPolicies.IsChecked = (Get-Setting "Compare" "SkipMissingDestinationPolicies") -eq "true"
+    $global:chkBulkCompareSaveJson.IsChecked = (Get-Setting "Compare" "SaveJson") -eq "true"
+    $global:chkBulkCompareRemoveOData.IsChecked = (Get-Setting "Compare" "RemoveOData") -eq "true"
+
+    $objectSeparator = "[ { Name: `"New line`",Value: `"$([System.Environment]::NewLine)`" }, {Name: `";`",Value: `";`" }, {Name: `"|`",Value: `"|`" }]" | ConvertFrom-Json
+    $global:cbCompareMultiValueDelimiter.ItemsSource = $objectSeparator
+    $global:cbCompareMultiValueDelimiter.SelectedValue = (Get-Setting "Compare" "ObjectSeparator" ([System.Environment]::NewLine))
     
     $script:compareObjects = @()
     foreach($objType in $global:lstMenuItems.ItemsSource)
@@ -239,6 +245,9 @@ function Show-CompareBulkForm
         Save-Setting "Compare" "SkipCompareAssignments" $global:chkSkipCompareAssignments.IsChecked
         Save-Setting "Compare" "SkipMissingSourcePolicies" $global:chkSkipMissingSourcePolicies.IsChecked
         Save-Setting "Compare" "SkipMissingDestinationPolicies" $global:chkSkipMissingDestinationPolicies.IsChecked
+        Save-Setting "Compare" "SaveJson" $global:chkBulkCompareSaveJson.IsChecked
+        Save-Setting "Compare" "RemoveOData" $global:chkBulkCompareRemoveOData.IsChecked
+        Save-Setting "Compare" "ObjectSeparator" $global:cbCompareMultiValueDelimiter.SelectedValue
 
         if($global:cbCompareProvider.SelectedItem.BulkCompare)
         {
@@ -534,6 +543,10 @@ function Invoke-BulkCompareNamedObjects
         {
             $fileName = Remove-InvalidFileNameChars (Expand-FileName "Compare-$($graphObj.ObjectType.Id)-$sourcePattern-$comparePattern-%DateTime%.csv")
             Save-BulkCompareResults $compResultValues (Join-Path $outputFolder $fileName) $compareProps
+            if($global:chkBulkCompareSaveJson.IsChecked) {
+                $fileName = Remove-InvalidFileNameChars (Expand-FileName "Compare-$($graphObj.ObjectType.Id)-$sourcePattern-$comparePattern-%DateTime%.json")
+                Save-BulkCompareJsonResults $compResultValues (Join-Path $rootFolder $fileName)
+            }
         }        
     }
     #$fileName = Expand-FileName $fileName
@@ -546,6 +559,10 @@ function Invoke-BulkCompareNamedObjects
     {
         $fileName = Remove-InvalidFileNameChars (Expand-FileName "Compare-$sourcePattern-$comparePattern-%DateTime%.csv")
         Save-BulkCompareResults $compResultValues (Join-Path $outputFolder $fileName) $compareProps
+        if($global:chkBulkCompareSaveJson.IsChecked) {
+            $fileName = Remove-InvalidFileNameChars (Expand-FileName "Compare-$($graphObj.ObjectType.Id)-$sourcePattern-$comparePattern-%DateTime%.json")
+            Save-BulkCompareJsonResults $compResultValues (Join-Path $rootFolder $fileName)
+        }
     }       
 }
 
@@ -689,7 +706,7 @@ function Start-BulkCompareExportObjects
                 $objName = Get-GraphObjectName (?? $compObj.Object1 $compObj.Object2) $item.ObjectType
                 foreach($compValue in $compObj.Result)
                 {
-                    $compResultValues += [PSCustomObject]@{
+                    $compValue += [PSCustomObject]@{
                         ObjectName = $objName
                         Id = $compObj.Id
                         Type = $compObj.ObjectType.Title
@@ -701,12 +718,34 @@ function Start-BulkCompareExportObjects
                         SubCategory = $compValue.SubCategory
                         Match = $compValue.Match
                     }
+
+                    if($global:chkBulkCompareRemoveOData.IsChecked -and ($compValue.Value1 -like "@odata*" -or $compValue.Value2 -like "@odata*")) {
+                        foreach($prop in $('Value1','Value2'))
+                        {
+                            $tmpValue1 = ""
+                            $tmpValue2 = ""
+                            $vauleString = $compValue.$prop
+                            if($vauleString -is [String]) {
+                                $vauleString = $vauleString -replace $compValue.Id, ""
+                                $tmpObj = $compValue.$prop | ConvertFrom-Json
+                                if($compValue.$prop -and $compValue.$prop -like "@odata*") {
+                                    Remove-GraphODataProperties $tmpObj.$prop | ConvertTo-Json -Depth 50  | Set-Variable -Name "tmp$prop"
+                                }
+                            }
+                        }
+                        $compValue.Match = $tmpValue1 -eq $tmpValue2
+                    }
+                    $compResultValues += $compValue
                 }
             }
 
             if($outputType -eq "objectType")
             {
-                Save-BulkCompareResults $compResultValues (Join-Path $folder "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).csv") $compareProps
+                Save-BulkCompareResults $compResultValues (Join-Path $folder "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).csv") $compareProps                
+
+                if($global:chkBulkCompareSaveJson.IsChecked) {
+                    Save-BulkCompareJsonResults $compResultValues (Join-Path $folder "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).json")
+                }
             }
         }
         else
@@ -717,7 +756,10 @@ function Start-BulkCompareExportObjects
 
     if($outputType -eq "all" -and $compResultValues.Count -gt 0)
     {
-        Save-BulkCompareResults $compResultValues (Join-Path $rootFolder "Compare_$(((Get-Date).ToString("yyyyMMDD-HHmm"))).csv") $compareProps
+        Save-BulkCompareResults $compResultValues (Join-Path $rootFolder "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).csv") $compareProps
+        if($global:chkBulkCompareSaveJson.IsChecked) {
+            Save-BulkCompareJsonResults $compResultValues (Join-Path $rootFolder "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).json")
+        }
     }    
 
     Write-Log "****************************************************************"
@@ -726,7 +768,7 @@ function Start-BulkCompareExportObjects
     Write-Status ""
     if($compareObjectsResult.Count -eq 0)
     {
-        [System.Windows.MessageBox]::Show("No objects were comparced. Verify folder and exported files", "Error", "OK", "Error")
+        [System.Windows.MessageBox]::Show("No objects were compared. Verify folder and exported files", "Error", "OK", "Error")
     }
 }
 
@@ -796,6 +838,7 @@ function Start-BulkCompareExportIntuneToNamedExportedObjects
 
                 if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
                 {
+                    Write-LogDebug "Excluded based on filter. Intune object name: '$($objName)'"
                     continue
                 }
                                 
@@ -803,7 +846,7 @@ function Start-BulkCompareExportIntuneToNamedExportedObjects
 
                 if(-not $fileObj)
                 {
-                    # Add objects that are exported but deleted
+                    # Add objects that are in Intune but no exported file found
                     if($global:chkSkipMissingDestinationPolicies.IsChecked -ne $true) {
                         Write-Log "Object '$($objName)' with id $($fileObj.Object.Id) not found in exported folder. New Object?" 2
                         $compareProperties = @([PSCustomObject]@{
@@ -815,7 +858,7 @@ function Start-BulkCompareExportIntuneToNamedExportedObjects
                 }
                 elseif(($fileObj | measure).Count -gt 1)
                 {
-                    # Add objects that are exported but deleted
+                    # Add objects where multiple files match based on name
                     Write-Log "Multiple exported objects found with name '$($objName)" 2
                     $compareProperties = @([PSCustomObject]@{
                             Object1Value = $objName
@@ -833,7 +876,7 @@ function Start-BulkCompareExportIntuneToNamedExportedObjects
 
                 $compareObjectsResult += [PSCustomObject]@{
                     Object1 = $graphObject.Object
-                    Object2 = $fileObj.Object
+                    Object2 = $fileObj.Object                    
                     ObjectType = $item.ObjectType
                     Id = $graphObject.Object.Id
                     Result = $compareProperties
@@ -843,12 +886,16 @@ function Start-BulkCompareExportIntuneToNamedExportedObjects
             if($global:chkSkipMissingSourcePolicies.IsChecked -ne $true) {
                 foreach ($fileObj in @($fileObjects))
                 {
-                    # Add objects that are exported but not in Intune
-                    if(($compareObjectsResult | Where { $_.FileInfo.FullName -eq $fileObj.FileInfo.FullName})) { continue }
+                    # Skip objects if they are already processed
+                    if(($compareObjectsResult | Where { $_.Object2 -eq $fileObj.Object})) { 
+                        Write-LogDebug "Skip already processed file '$($fileObj.FileInfo.FullName)'"
+                        continue
+                    }
 
                     $objName = Get-GraphObjectName $fileObj.Object $item.ObjectType
                     if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
                     {
+                        Write-LogDebug "Excluded based on filter. File: '$($fileObj.FileInfo.FullName)'"
                         continue
                     }                 
 
@@ -894,6 +941,9 @@ function Start-BulkCompareExportIntuneToNamedExportedObjects
             if($outputType -eq "objectType")
             {
                 Save-BulkCompareResults $compResultValues (Join-Path $folder "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).csv") $compareProps
+                if($global:chkBulkCompareSaveJson.IsChecked) {
+                    Save-BulkCompareJsonResults $compResultValues (Join-Path $rootFolder "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).json")
+                }                
             }
         }
         else
@@ -904,7 +954,10 @@ function Start-BulkCompareExportIntuneToNamedExportedObjects
 
     if($outputType -eq "all" -and $compResultValues.Count -gt 0)
     {
-        Save-BulkCompareResults $compResultValues (Join-Path $rootFolder "Compare_$(((Get-Date).ToString("yyyyMMDD-HHmm"))).csv") $compareProps
+        Save-BulkCompareResults $compResultValues (Join-Path $rootFolder "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).csv") $compareProps
+        if($global:chkBulkCompareSaveJson.IsChecked) {
+            Save-BulkCompareJsonResults $compResultValues (Join-Path $rootFolder "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).json")
+        }        
     }    
 
     Write-Log "****************************************************************"
@@ -1080,6 +1133,9 @@ function Start-BulkCompareExportFolders
             if($outputType -eq "objectType")
             {
                 Save-BulkCompareResults $compResultValues (Join-Path $folderSource "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).csv") $compareProps
+                if($global:chkBulkCompareSaveJson.IsChecked) {
+                    Save-BulkCompareJsonResults $compResultValues (Join-Path $rootFolder "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).json")
+                }                
             }
         }
         else
@@ -1090,7 +1146,10 @@ function Start-BulkCompareExportFolders
 
     if($outputType -eq "all" -and $compResultValues.Count -gt 0)
     {
-        Save-BulkCompareResults $compResultValues (Join-Path $rootFolderSource "Compare_$(((Get-Date).ToString("yyyyMMDD-HHmm"))).csv") $compareProps
+        Save-BulkCompareResults $compResultValues (Join-Path $rootFolderSource "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).csv") $compareProps
+        if($global:chkBulkCompareSaveJson.IsChecked) {
+            Save-BulkCompareJsonResults $compResultValues (Join-Path $rootFolder "Compare_$(((Get-Date).ToString("yyyyMMdd-HHmm"))).json")
+        }        
     }    
 
     Write-Log "****************************************************************"
@@ -1101,6 +1160,13 @@ function Start-BulkCompareExportFolders
     {
         [System.Windows.MessageBox]::Show("No objects were comparced. Verify folder and exported files", "Error", "OK", "Error")
     }
+}
+
+function Save-BulkCompareJsonResults
+{
+    param($CompareResults, $FileName)
+
+    $CompareResults | ConvertTo-Json -Depth 50 | Out-File $FileName -Force -Encoding UTF8
 }
 
 function Save-BulkCompareResults
@@ -1359,7 +1425,7 @@ function Add-CompareProperty
     $value1 = if($value1 -eq $null) { "" } else { $value1.ToString().Trim("`"") }
     $value2 = if($value2 -eq $null) { "" } else {  $value2.ToString().Trim("`"") }
 
-    $compare += [PSCustomObject]@{
+    $compare = [PSCustomObject]@{
         PropertyName = $name
         Object1Value = $value1 #if($value1 -ne $null) { $value1.ToString().Trim("`"") } else { "" }
         Object2Value = $value2 #if($value2 -ne $null) { $value2.ToString().Trim("`"") } else { "" }
@@ -1367,10 +1433,12 @@ function Add-CompareProperty
         SubCategory = $subCategory
         Match = ?? $match ($value1 -eq $value2)
     }
+
     if($skip -eq $true) {
         $compare.Match = $null
     }
 
+    Write-Host "Add property $($compare.PropertyName)"
     $script:compareProperties += $compare
 }
 
@@ -1474,16 +1542,18 @@ function Compare-ObjectsBasedonDocumentation
     # ToDo: set this based on configuration value
     $script:assignmentOutput = "simpleFullCompare"
 
-    $docObj1 = Invoke-ObjectDocumentation ([PSCustomObject]@{
+    $tmpObj1 = ([PSCustomObject]@{
         Object = $obj1
-        ObjectType = $objectType
-    })
-    
+        ObjectType = $objectType})
 
-    $docObj2 = Invoke-ObjectDocumentation ([PSCustomObject]@{
+    $docObj1 = Invoke-ObjectDocumentation $tmpObj1 -ObjectSeparator ($global:cbCompareMultiValueDelimiter.SelectedValue)    
+
+    $tmpObj2 = ([PSCustomObject]@{
         Object = $obj2
         ObjectType = $objectType
     })
+
+    $docObj2 = Invoke-ObjectDocumentation $tmpObj2 -ObjectSeparator ($global:cbCompareMultiValueDelimiter.SelectedValue)
 
     $settingsValue = ?? $objectType.CompareValue "Value"
 
@@ -1623,8 +1693,8 @@ function Compare-ObjectsBasedonDocumentation
     {
         $applicabilityRule2 = $docObj2.ApplicabilityRules | Where { $_.Id -eq $applicabilityRule.Id }
         $applicabilityRulesAdded += $applicabilityRule.Id
-        $val1 = ($applicabilityRule.Rule + [environment]::NewLine + $applicabilityRule.Value)
-        $val2 = ($applicabilityRule2.Rule + [environment]::NewLine + $applicabilityRule2.Value)
+        $val1 = ($applicabilityRule.Rule + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $applicabilityRule.Value)
+        $val2 = ($applicabilityRule2.Rule + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $applicabilityRule2.Value)
 
         Add-CompareProperty $applicabilityRule.Property $val1 $val2 $applicabilityRule.Category
     }
@@ -1634,8 +1704,8 @@ function Compare-ObjectsBasedonDocumentation
         if(($applicabilityRule.Id) -in $applicabilityRulesAdded) { continue }
         $applicabilityRule2 = $docObj1.ApplicabilityRules | Where { $_.Id -eq $applicabilityRule.Id }
         $script:applicabilityRulesAdded += $applicabilityRule.Id
-        $val2 = ($applicabilityRule.Rule + [environment]::NewLine + $applicabilityRule.Value)
-        $val1 = ($applicabilityRule2.Rule + [environment]::NewLine + $applicabilityRule2.Value)
+        $val2 = ($applicabilityRule.Rule + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $applicabilityRule.Value)
+        $val1 = ($applicabilityRule2.Rule + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $applicabilityRule2.Value)
 
         Add-CompareProperty $applicabilityRule.Property $val1 $val2 $applicabilityRule.Category
     }    
@@ -1645,8 +1715,8 @@ function Compare-ObjectsBasedonDocumentation
     {
         $complianceAction2 = $docObj2.ComplianceActions | Where { $_.IdStr -eq $complianceAction.IdStr }
         $complianceActionsAdded += $complianceAction.IdStr
-        $val1 = ($complianceAction.Action + [environment]::NewLine + $complianceAction.Schedule + [environment]::NewLine + $complianceAction.MessageTemplateId + [environment]::NewLine + $complianceAction.EmailCCIds)
-        $val2 = ($complianceAction2.Action + [environment]::NewLine + $complianceAction2.Schedule + [environment]::NewLine + $complianceAction2.MessageTemplateId + [environment]::NewLine + $complianceAction2.EmailCCIds)
+        $val1 = ($complianceAction.Action + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction.Schedule + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction.MessageTemplateId + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction.EmailCCIds)
+        $val2 = ($complianceAction2.Action + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction2.Schedule + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction2.MessageTemplateId + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction2.EmailCCIds)
 
         Add-CompareProperty $complianceAction.Category $val1 $val2 
     }
@@ -1656,8 +1726,8 @@ function Compare-ObjectsBasedonDocumentation
         if(($complianceAction.IdStr) -in $complianceActionsAdded) { continue }
         $complianceAction2 = $docObj1.ComplianceActions | Where { $_.IdStr -eq $complianceAction.IdStr }
         $complianceActionsAdded += $complianceAction.IdStr
-        $val2 = ($complianceAction.Action + [environment]::NewLine + $complianceAction.Schedule + [environment]::NewLine + $complianceAction.MessageTemplateId + [environment]::NewLine + $complianceAction.EmailCCIds)
-        $val1 = ($complianceAction2.Action + [environment]::NewLine + $complianceAction2.Schedule + [environment]::NewLine + $complianceAction2.MessageTemplateId + [environment]::NewLine + $complianceAction2.EmailCCIds)
+        $val2 = ($complianceAction.Action + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction.Schedule + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction.MessageTemplateId + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction.EmailCCIds)
+        $val1 = ($complianceAction2.Action + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction2.Schedule + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction2.MessageTemplateId + ($global:cbCompareMultiValueDelimiter.SelectedValue) + $complianceAction2.EmailCCIds)
 
         Add-CompareProperty $complianceAction.Category $val1 $val2 
     }
@@ -1782,7 +1852,11 @@ function Invoke-SilentBatchJob
     
         $global:cbCompareCSVDelimiter.ItemsSource = @("", ",",";","-","|")
         $global:cbCompareCSVDelimiter.SelectedValue = ($settingsObj.BulkCompare | Where Name -eq "cbCompareCSVDelimiter").Value
-        
+
+        $objectSeparator = "[ { Name: `"New line`",Value: `"$([System.Environment]::NewLine)`" }, {Name: `";`",Value: `";`" }, {Name: `"|`",Value: `"|`" }]" | ConvertFrom-Json
+        $global:cbCompareMultiValueDelimiter.ItemsSource = $objectSeparator
+        $global:cbCompareMultiValueDelimiter.SelectedValue = (Get-Setting "Compare" "ObjectSeparator" ([System.Environment]::NewLine))
+    
         Set-CompareProviderOptions $global:cbCompareProvider
 
         Set-BatchProperties $settingsObj.BulkCompare $script:cmpForm -SkipMissingControlWarning        

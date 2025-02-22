@@ -71,7 +71,7 @@
                                            "appPackageFile":  "디바이스에 사이드로드할 수 있는 형식의 앱을 포함하는 파일입니다. 유효한 패키지 형식은 Android(.apk), iOS(.ipa), macOS(.pkg), Windows(.msi, .appx, .appxbundle, .msix, .msixbundle)입니다.​",
                                            "applicableDeviceType":  "이 앱을 설치할 수 있는 디바이스 유형을 선택합니다.",
                                            "category":  "사용자가 회사 포털에서 보다 쉽게 정렬하고 찾을 수 있도록 앱을 분류합니다. 여러 범주를 선택할 수 있습니다.",
-                                           "categoryLink":  "https://docs.microsoft.com/intune/apps/apps-add#create-and-edit-categories-for-apps​",
+                                           "categoryLink":  "https://go.microsoft.com/fwlink/?linkid=2295954",
                                            "description":  "디바이스 사용자가 앱의 용도 및/또는 앱에서 수행할 수 있는 작업을 이해하는 데 도움이 됩니다. 이 설명은 회사 포털에서 볼 수 있습니다.",
                                            "developer":  "앱을 개발한 회사 또는 개인의 이름입니다. 이 정보는 관리 센터에 로그인한 사용자에게 표시됩니다.",
                                            "displayVersion":  "앱의 버전입니다. 이 정보는 회사 포털의 사용자에게 표시됩니다.",
@@ -100,9 +100,11 @@
                                            "winGetStoreSelectApp":  "Microsoft Store 앱(신규)에서 Intune을 사용하여 배포하려는 스토어 앱을 검색합니다."
                                        },
                               "descriptionPreview":  "미리 보기",
+                              "descriptionPreviewLabel":  "미리 보기",
                               "descriptionRequired":  "설명은 필수입니다.",
                               "editDescription":  "설명 편집",
                               "macOSMinOperatingSystemAdditionalInfo":  ".pkg 파일을 업로드하기 위한 최소 운영 체제는 macOS 10.14입니다. 이전 최소 운영 체제를 선택하려면 .pkg 파일을 업로드하세요.​",
+                              "markdownHelpLink":  "설명에 대해 지원되는 markdown에 대한 도움말을 확인하세요.",
                               "name":  "앱 정보",
                               "nameForOfficeSuitApp":  "앱 제품군 정보"
                           },
@@ -194,6 +196,10 @@
                                    "Android":  {
                                                    "v10":  "Android 10.0",
                                                    "v11":  "Android 11.0",
+                                                   "v12":  "Android 12.0",
+                                                   "v13":  "Android 13.0",
+                                                   "v14":  "Android 14.0",
+                                                   "v15":  "Android 15.0",
                                                    "v4":  "Android 4.0(Ice Cream Sandwich)",
                                                    "v403":  "Android 4.0.3(Ice Cream Sandwich)",
                                                    "v41":  "Android 4.1(Jelly Bean)",
@@ -900,7 +906,7 @@
     "PolicySelection":  {
                             "Grid":  {
                                          "Column":  {
-                                                        "author":  "작성자",
+                                                        "author":  "만든 이",
                                                         "template":  "템플릿 이름"
                                                     },
                                          "Row":  {
@@ -915,7 +921,7 @@
                                                     "title":  "설정 카탈로그"
                                                 },
                             "Templates":  {
-                                              "subtitle":  "템플릿에는 기능별로 구성된 설정 그룹이 포함되어 있습니다. 정책을 수동으로 빌드하지 않으려는 경우 또는 디바이스가 회사 네트워크에 액세스하도록 구성하려는 경우(예: WiFi 또는 VPN 구성) 템플릿을 사용합니다.",
+                                              "subtitle":  "템플릿에는 기능별로 구성된 설정 그룹이 포함되어 있습니다. 정책을 수동으로 빌드하지 않거나 WiFi 또는 VPN 구성과 같은 회사 네트워크에 액세스하도록 디바이스를 구성하려는 경우 템플릿을 사용합니다.",
                                               "title":  "템플릿"
                                           },
                             "noData":  "정책 템플릿을 찾을 수 없음"
@@ -966,12 +972,21 @@
                                                         "testIdentityProtectionSecurityTemplateName":  "계정 보호(테스트)",
                                                         "windowsSecurityExperience":  "Windows 보안 환경"
                                                     },
+                       "FileVault":  {
+                                         "macOS":  "MacOS Filevault"
+                                     },
                        "Firewall":  {
                                         "mDE":  "Windows 방화벽"
                                     },
                        "FirewallRules":  {
                                              "mDE":  "Windows 방화벽 규칙"
                                          },
+                       "IOS":  {
+                                   "pSSO":  "Platform SSO"
+                               },
+                       "MacOS":  {
+                                     "pSSO":  "Platform SSO"
+                                 },
                        "OneDriveKnownFolderMove":  {
                                                        "description":  "OneDrive 알려진 폴더 이동 설정: 클라우드 구성 템플릿의 Windows 10. https://aka.ms/CloudConfigGuide"
                                                    },
@@ -1034,6 +1049,7 @@
                        "unknown":  "알 수 없음",
                        "unsupported":  "지원되지 않음",
                        "vpn":  "VPN",
+                       "wallpaper":  "Wallpaper",
                        "wiFi":  "Wi-Fi",
                        "wiFiImport":  "Wi-Fi 가져오기",
                        "windows10CompliancePolicy":  "Windows 10/11 준수 정책",
@@ -1064,9 +1080,11 @@
                                                         "prompt":  "확인"
                                                     },
                                          "Permissions":  {
+                                                             "accessBackgroundLocation":  "위치 액세스(배경)",
                                                              "accessCoarseLocation":  "위치 액세스(거칠게)",
                                                              "accessFineLocation":  "위치 액세스(세밀하게)",
                                                              "addVoicemail":  "음성 사서함 추가",
+                                                             "bluetoothConnect":  "Bluetooth 연결",
                                                              "bodySensors":  "신체 센서 데이터 허용",
                                                              "bodySensorsBackground":  "배경 본문 센서 데이터 허용",
                                                              "callPhone":  "전화 걸기",
@@ -1529,7 +1547,7 @@
                                                    "customSubjectName":  "CN={{UserName}},E={{EmailAddress}},OU=EnterpriseUsers,O=Contoso Corporation,L=Redmond,ST=WA,C=US\r\nor\r\nCN={{AAD_Device_ID}},E={{EmailAddress}},OU=EnterpriseUsers,O=Contoso Corporation,L=Redmond,ST=WA,C=US",
                                                    "keySize":  "키에 포함된 비트 수를 선택합니다.",
                                                    "keyUsage":  "인증서의 공개 키를 교환하는 데 필요한 암호화 작업을 지정합니다.",
-                                                   "renewalThreshold":  "디바이스가 인증서의 갱신을 요청하기 전에 허용되는 남은 인증서 수명의 백분율(1~99%)을 입력합니다. Intune의 권장 값은 20%입니다(1~99%).",
+                                                   "renewalThreshold":  "디바이스가 인증서의 갱신을 요청하기 전에 허용되는 남은 인증서 수명의 백분율(1~007E;99%)을 입력합니다. Intune의 권장 값은 20%입니다(1~007E;99%).",
                                                    "rootCert":  "이전에 구성 및 할당된 루트 CA 인증서 프로필을 선택합니다. CA 인증서는 이 프로필(현재 구성 중인 프로필)에 대해 인증서를 발급 중인 CA의 루트 인증서와 일치해야 합니다.",
                                                    "scepServerUrl":  "SCEP를 통해 인증서를 발급하는 NDES 서버의 URL을 입력합니다(HTTPS여야 함). 예: https://contoso.com/certsrv/mscep/mscep.dll",
                                                    "scepServerUrls":  "SCEP를 통해 인증서를 발급하는 NDES 서버의 URL을 하나 이상 추가합니다(HTTPS여야 함). 예: https://contoso.com/certsrv/mscep/mscep.dll",
@@ -1677,13 +1695,13 @@
                              "antivirus":  "바이러스 백신",
                              "antivirusReporting":  "바이러스 백신 보고(미리 보기)",
                              "conditionalAccess":  "조건부 액세스",
-                             "deviceCompliance":  "디바이스 준수",
+                             "deviceCompliance":  "디바이스 규정 준수",
                              "diskEncryption":  "디스크 암호화",
                              "eDR":  "엔드포인트 검색 및 응답",
                              "ePM":  "엔드포인트 권한 관리",
                              "firewall":  "방화벽",
                              "helpSupport":  "도움말 및 지원",
-                             "setup":  "설치",
+                             "setup":  "설정",
                              "wdapt":  "엔드포인트용 Microsoft Defender"
                          },
     "OutlookAppConfig":  {
@@ -1970,6 +1988,7 @@
                                           "tenantManagement":  "테넌트 관리"
                                       },
                    "actions":  "비준수에 대한 작업",
+                   "adminPermissions":  "관리자 권한",
                    "advancedExchangeSettings":  "Exchange Online 설정",
                    "advancedThreatProtection":  "엔드포인트용 Microsoft Defender",
                    "allApps":  "모든 앱",
@@ -2052,7 +2071,6 @@
                    "macOSSoftwareUpdateCategorySummaries":  "소프트웨어 업데이트 요약",
                    "macOSSoftwareUpdateStateSummaries":  "업데이트",
                    "managedGooglePlay":  "관리되는 Google Play",
-                   "msfb":  "비즈니스용 Microsoft 스토어",
                    "myPermissions":  "내 권한",
                    "notifications":  "알림",
                    "officeApps":  "Office 앱",
@@ -2076,6 +2094,7 @@
                    "retireNoncompliantDevices":  "비규격 디바이스 사용 중지",
                    "retireNoncompliantDevicesPreview":  "비규격 디바이스 사용 중지(미리 보기)",
                    "role":  "역할",
+                   "rolesByPermission":  "권한별 역할",
                    "scriptManagement":  "스크립트",
                    "securityBaselines":  "보안 기준",
                    "serviceToServiceConnector":  "Exchange Online 커넥터",
@@ -2115,7 +2134,7 @@
                                                           },
                         "AndroidBackup":  {
                                               "label":  "Android 백업 서비스에 조직 데이터 백업",
-                                              "tooltip":  "Android 백업 서비스에 조직 데이터가 백업되지 않도록 하려면 {0}을(를) 선택합니다.\r\nAndroid 백업 서비스에 조직 데이터의 백업을 허용하려면 {1}을(를) 선택합니다.\r\n개인 데이터 또는 비관리형 데이터는 영향을 받지 않습니다."
+                                              "tooltip":  "Android 백업 서비스에 조직 데이터를 백업하지 않도록 하려면 {0}을(를)선택합니다.\r\nAndroid 백업 서비스에 조직 데이터의 백업을 허용하려면 {1}을(를) 선택합니다.\r\n개인 또는 관리되지 않는 데이터는 영향을 받지 않습니다."
                                           },
                         "AndroidBiometricAuthentication":  {
                                                                "label":  "액세스에 PIN 대신 생체 인식 사용",
@@ -2157,7 +2176,7 @@
                                                    },
                         "CustomBrowserProtocol":  {
                                                       "label":  "비관리형 브라우저 프로토콜",
-                                                      "tooltip":  "<p>비관리형 단일 브라우저의 프로토콜을 입력합니다. 정책 관리형 애플리케이션의 웹 콘텐츠(http/s)는 이 프로토콜을 지원하는 모든 앱에서 열립니다. </p>\r\n \r\n<p><b>참고: </b>프로토콜 접두사만 포함됩니다.  브라우저에 \"mybrowser://www.microsoft.com\" 형식의 링크가 필요한 경우, \"mybrowser\"를 입력하세요. </p>"
+                                                      "tooltip":  "<p>비관리형 단일 브라우저의 프로토콜을 입력합니다.  정책 관리 애플리케이션의 웹 콘텐츠(http/s)는 이 프로토콜을 지원하는 모든 앱에서 열립니다. </p>\r\n\r\n<p><b>참고: </b> 프로토콜 접두사만 포함합니다.  브라우저에 \"mybrowser://www.microsoft.com\" 형식의 링크가 필요한 경우, \"mybrowser\"를 입력하세요.</p>"
                                                   },
                         "CustomDialerAppDisplayName":  {
                                                            "label":  "전화 걸기 앱 이름"
@@ -2183,10 +2202,10 @@
                                             "tooltip":  "Intune 앱 계층 암호화로 조직 데이터 암호화를 적용하려면 {0}을(를) 선택합니다.\r\n <br/>\r\nIntune 앱 계층 암호화로 조직 데이터 암호화를 적용하지 않으려면 {1}을(를) 선택합니다.\r\n\r\n<br/>\r\n참고: Intune 앱 계층 암호화에 대한 자세한 내용은 {2}을(를) 참조하세요."
                                         },
                         "EncryptDataAndroid":  {
-                                                   "tooltip":  "<p>이 앱에서 회사 또는 학교 데이터를 암호화하려면 <b>필요</b>를 선택합니다. Intune은 Android Keystore 시스템과 함께 wolfSSL 256비트 AES 암호화 체계를 사용하여 앱 데이터를 안전하게 암호화합니다. 데이터는 파일 I/O 작업 중에 동기적으로 암호화됩니다. 디바이스 스토리지의 콘텐츠는 항상 암호화됩니다. 새 파일은 256비트 키로 암호화됩니다. 기존 128비트 암호화된 파일은 256비트 키로 마이그레이션을 시도하지만 프로세스가 보장되지는 않습니다. 128비트 키로 암호화된 파일은 계속 읽을 수 있습니다. </p>\r\n\r\n<p> 암호화 방법은 FIPS 140-2를 준수합니다.</p>"
+                                                   "tooltip":  "<p>이 앱에서 회사 또는 학교 데이터를 암호화하려면 <b>필요</b>를 선택합니다. Intune은 Android Keystore 시스템과 함께 wolfSSL 256비트 AES 암호화 체계를 사용하여 앱 데이터를 안전하게 암호화합니다. 데이터는 파일 I/O 작업 중에 동기적으로 암호화됩니다. 디바이스 스토리지의 콘텐츠는 항상 암호화됩니다. 새 파일은 256비트 키로 암호화됩니다. 기존 128비트 암호화된 파일은 256비트 키로 마이그레이션을 시도하지만 프로세스가 보장되지는 않습니다. 128비트 키로 암호화된 파일은 계속 읽을 수 있습니다. </p>\r\n\r\n<p>암호화 방법은 FIPS 140-2 규격입니다.</p>"
                                                },
                         "EncryptDataIos":  {
-                                               "tooltip1":  "이 앱에서 회사 또는 학교 데이터 암호화를 사용하도록 설정하려면 <b>필요</b>를 선택합니다. Intune은 디바이스가 잠겨 있는 동안 앱 데이터를 보호하기 위해 iOS/iPadOS 디바이스 암호화를 적용합니다. 애플리케이션은 Intune 앱 SDK 암호화를 사용하여 앱 데이터를 선택적으로 암호화할 수 있습니다. Intune 앱 SDK는 iOS/iPadOS 암호화 방법을 사용하여 128비트 AES 암호화를 앱 데이터에 적용합니다.",
+                                               "tooltip1":  "이 앱에서 회사 또는 학교 데이터 암호화를 사용하도록 설정하려면 <b>필요</b>를 선택합니다.  Intune은 디바이스가 잠겨 있는 동안 앱 데이터를 보호하기 위해 iOS/iPadOS 디바이스 암호화를 적용합니다.  애플리케이션은 Intune 앱 SDK 암호화를 사용하여 앱 데이터를 선택적으로 암호화할 수 있습니다.  Intune 앱 SDK는 iOS/iPadOS 암호화 방법을 사용하여 256비트 AES 암호화를 앱 데이터에 적용합니다.",
                                                "tooltip2":  "이 설정을 사용하도록 설정하면 사용자는 디바이스에 액세스하기 위해 PIN을 설정하고 사용해야 할 수 있습니다. 디바이스 PIN이 없고 암호화가 필요한 경우 사용자는 \"조직에서 이 앱에 액세스하려면 먼저 디바이스 PIN을 사용하도록 설정해야 합니다.\"라는 메시지와 함께 PIN을 설정하라는 메시지가 표시됩니다.",
                                                "tooltip3":  "FIPS 140-2 준수 또는 FIPS 140-2 준수 보류 중인 iOS 암호화 모듈을 보려면 <a href=\"{0}\" target=\"_blank\">공식 Apple 설명서</a>로 이동하세요."
                                            },
@@ -2220,11 +2239,11 @@
                                                           },
                         "NotificationRestriction":  {
                                                         "label":  "조직 데이터 알림",
-                                                        "tooltip":  "<p>이 앱 및 연결된 모든 디바이스(예: 착용식 컴퓨터)에서 조직 계정에 대한 알림이 표시되는 방식을 지정하려면 다음 옵션 중 하나를 선택하세요.</p>\r\n<p>{0}: 알림을 공유하지 않습니다.</p>\r\n<p>{1}: 알림의 조직 데이터를 공유하지 않습니다. 애플리케이션에서 지원되지 않는 경우 알림이 차단됩니다.</p>\r\n<p>{2}: 모든 알림을 공유합니다. </p>\r\n <p>Android에만 해당:\r\n 참고: 이 설정은 모든 애플리케이션에 적용되지는 않습니다. 자세한 내용은 {3}을(를) 참조하세요.</p> \r \n\r <p>iOS에만 해당:\n\r\n참고: 이 설정은 모든 애플리케이션에 적용되지는 않습니다. 자세한 내용은 {4}을(를) 참조하세요.</p>"
+                                                        "tooltip":  "<p>다음 옵션 중 하나를 선택하여 이 앱 및 연결된 디바이스(예: 착용식 장치)에서 조직 계정에 대한 알림이 표시되는 방법을 지정합니다.</p>\r\n<p>{0}: 알림을 공유하지 않습니다.</p>\r\n<p>{1}: 알림에서 조직 데이터를 공유하지 않습니다.  애플리케이션에서 지원되지 않는 경우 알림이 차단됩니다. </p>\r\n<p>{2}: 모든 알림을 공유합니다. </p>\r\n <p>Android 전용:\r\n 참고: 이 설정은 모든 애플리케이션에 적용되지 않습니다. 자세한 내용은 다음을 참조하세요.{3} </p>\r\n\r\n <p>iOS만 해당:\r\n참고: 이 설정은 모든 애플리케이션에 적용되지 않습니다. 자세한 내용은 다음을 참조하세요.{4}</p>"
                                                     },
                         "OpenLinksManagedBrowser":  {
                                                         "label":  "다른 앱을 사용한 웹 콘텐츠 전송 제한",
-                                                        "tooltip":  "<p>다음 옵션 중 하나를 선택하여 이 앱에서 웹 콘텐츠를 열 수 있는 앱을 지정합니다. </p>\r\n<p><b>Microsoft Edge:</b>웹 콘텐츠가 Microsoft Edge에서만 열리도록 허용합니다.<a href=\"{0}\" target=\"_blank\"> Microsoft Edge가 데이터를 보호하는 방법을 알아보세요.</a></p>\r\n<p><b>비관리형 브라우저:</b>  웹 콘텐츠를 \"비관리형 브라우저 프로토콜\" 설정에 정의된 비관리형 브라우저에서만 열 수 있습니다. </p>\r\n<p><b>모든 앱:</b> 모든 앱에서 웹 링크를 허용합니다.</p>"
+                                                        "tooltip":  "<p>다음 옵션 중 하나를 선택하여 이 앱이 웹 콘텐츠를 열 수 있는 앱을 지정합니다. </p>\r\n<p><b> Microsoft Edge:</b> 웹 콘텐츠를 Microsoft Edge에서 열기만 허용합니다.<a href=\"{0}\" target=\"_blank\"> Microsoft Edge가 데이터를 보호하는 방법을 알아봅니다.</a></p>\r\n<p><b>관리되지 않는 브라우저:</b> \"관리되지 않는 브라우저 프로토콜\" 설정으로 정의된 관리되지 않는 브라우저에서만 웹 콘텐츠를 열 수 있도록 허용</p>\r\n<p><b>앱:</b> 모든 앱에서 웹 링크 허용</p>"
                                                     },
                         "OverrideBiometric":  {
                                                   "tooltip":  "필요한 경우 시간 제한(비활성 시간(분))에 따라 PIN 프롬프트가 생체 인식 프롬프트를 재정의합니다. 이 시간 제한 값이 충족되지 않는 경우 생체 인식 프롬프트는 계속 표시됩니다. 이 시간 제한 값은 '다음 시간(비활성 시간(분)) 후에 액세스 요구 사항 다시 확인' 아래에 지정된 값보다 커야 합니다. "
@@ -2277,7 +2296,7 @@
                                               },
                         "SaveData":  {
                                          "label":  "조직 데이터의 복사본 저장",
-                                         "tooltip":  "\"다른 이름으로 저장\"을 사용하여 선택한 스토리지 서비스 외의 새 위치로 조직 데이터의 복사본이 저장되지 않도록 하려면 {0}을(를) 선택합니다.\r\n \"다른 이름으로 저장\"을 사용하여 새 위치로 조직 데이터의 복사본 저장을 허용하려면 {1}을(를) 선택합니다. <br/>\r\n\r\n\r\n참고: 이 설정은 일부 애플리케이션에 적용되지 않습니다. 자세한 내용은 {2}을(를) 참조하세요.\r\n"
+                                         "tooltip":  "\"다른 이름으로 저장\"을 사용하여 선택한 저장소 서비스 이외의 새 위치에 조직 데이터의 복사본을 저장하지 않도록 하려면 {0}을(를) 선택합니다.\r\n \"다른 이름으로 저장\"을 사용하여 조직 데이터의 복사본을 새 위치에 저장할 수 있도록 허용하려면 {1}을(를) 선택합니다. <br/>\r\n\r\n\r\n참고: 이 설정은 모든 애플리케이션에 적용되지 않습니다.  자세한 내용은 {2}을(를) 참조하세요.\r\n"
                                      },
                         "SaveDataToSelected":  {
                                                    "label":  "사용자가 선택한 서비스에 복사본을 저장하도록 허용",
@@ -2307,7 +2326,7 @@
                                     },
                         "WinCutCopyPaste":  {
                                                 "label":  "잘라내기, 복사 및 붙여넣기 허용",
-                                                "tooltip":  "조직 사용자가 조직 데이터를 잘라내거나 복사하거나 붙여넣을 수 있는 원본 및 대상을 지정하려면 다음 옵션 중 하나를 선택하세요. <br/>\r\n\r\n<b>모든 대상 및 원본</b>: 조직 사용자는 모든 계정, 문서, 위치 또는 애플리케이션에서 데이터를 붙여넣고 잘라내거나 복사할 수 있습니다.<br/>\r\n\r\n<b>대상 또는 원본 없음</b>: 조직 사용자는 조직 컨텍스트에서 외부 계정, 문서, 위치 또는 애플리케이션에서 데이터를 잘라내거나 복사하거나 붙여넣을 수 없습니다."
+                                                "tooltip":  "조직 사용자가 조직 데이터를 잘라내거나 복사하거나 붙여넣을 수 있는 원본 및 대상을 지정하려면 다음 옵션 중 하나를 선택합니다. <br/>\r\n\r\n<b>대상 및 모든 원본</b>: 조직 사용자는 데이터를 붙여넣고 모든 계정, 문서, 위치 또는 애플리케이션에 데이터를 잘라내거나 복사할 수 있습니다.<br/>\r\n\r\n<b>대상 또는 원본 없음</b>: 조직 사용자는 외부 계정, 문서, 위치 또는 응용 프로그램에서 조직 컨텍스트에서 또는 조직 컨텍스트로 데이터를 잘라내거나 복사하거나 붙여넣을 수 없습니다."
                                             },
                         "WinPrintData":  {
                                              "label":  "조직 데이터 인쇄",
@@ -2315,11 +2334,11 @@
                                          },
                         "WinReceiveData":  {
                                                "label":  "다음에서 데이터 수신",
-                                               "tooltip":  "조직 사용자가 데이터를 수신할 수 있는 원본을 지정하려면 다음 옵션 중 하나를 선택합니다. <br/>\r\n\r\n<b>모든 원본</b>: 조직 사용자는 모든 계정, 문서, 위치 또는 애플리케이션에서 조직 컨텍스트로 데이터를 열 수 있습니다.<br/>\r\n\r\n<b>원본 없음</b>: 조직 사용자는 외부 계정, 문서, 위치 또는 애플리케이션의 데이터를 조직 컨텍스트로 열 수 없습니다."
+                                               "tooltip":  "조직 사용자가 데이터를 받을 수 있는 원본을 지정하려면 다음 옵션 중 하나를 선택합니다. <br/>\r\n\r\n<b>모든 원본</b>: 조직 사용자는 모든 계정, 문서, 위치 또는 애플리케이션의 데이터를 조직 컨텍스트로 열 수 있습니다.<br/>\r\n\r\n<b>원인 없음</b>: 조직 사용자는 외부 계정, 문서, 위치 또는 애플리케이션의 데이터를 조직 컨텍스트로 열 수 없습니다."
                                            },
                         "WinSendData":  {
                                             "label":  "조직 데이터 보내기",
-                                            "tooltip":  "다음 옵션 중 하나를 선택하여 조직 사용자가 데이터를 보낼 수 있는 대상을 지정합니다. <br/>\r\n\r\n<b>모든 대상</b>: 조직 사용자는 조직 데이터를 모든 계정, 문서, 위치 또는 애플리케이션으로 보낼 수 있습니다.<br/>\r\n\r\n<b>대상 없음</b>: 조직 사용자는 조직 데이터를 조직 컨텍스트의 외부 계정, 문서, 위치 또는 애플리케이션으로 보낼 수 없습니다."
+                                            "tooltip":  "다음 옵션 중 하나를 선택하여 조직 사용자가 데이터를 보낼 수 있는 대상을 지정합니다. <br/>\r\n\r\n<b>모든 대상</b>: 조직 사용자는 모든 계정, 문서, 위치 또는 응용 프로그램에 조직 데이터를 보낼 수 있습니다.<br/>\r\n\r\n<b>대상 없음</b>: 조직 사용자는 조직 컨텍스트에서 외부 계정, 문서, 위치 또는 응용 프로그램에 조직 데이터를 보낼 수 없습니다."
                                         },
                         "Tap":  {
                                     "numberOfDays":  "일 수",
@@ -2389,13 +2408,13 @@
                       "assignments":  "할당",
                       "basics":  "기본",
                       "deviceEnrollment":  "디바이스 등록",
-                      "deviceManagement":  "디바이스 관리",
+                      "deviceManagement":  "장치 관리",
                       "scopeTags":  "범위 태그",
-                      "appConfigurationTitle":  "앱 구성 정책",
+                      "appConfigurationTitle":  "App Configuration 정책",
                       "appProtectionTitle":  "앱 보호 정책",
                       "appTitle":  "앱",
-                      "iOSAppProvisioningTitle":  "iOS 앱 프로비저닝 프로필",
-                      "deviceLimitRestrictionTitle":  "디바이스 개수 제한",
+                      "iOSAppProvisioningTitle":  "iOS 앱 프로비전 프로필",
+                      "deviceLimitRestrictionTitle":  "디바이스 제한 제한",
                       "deviceTypeRestrictionTitle":  "디바이스 유형 제한",
                       "enrollmentStatusSettingTitle":  "등록 상태 페이지",
                       "windowsAutopilotDeploymentProfileTitle":  "Windows Autopilot 배포 프로필",
@@ -2421,19 +2440,35 @@
                          "availableUninstall":  "사용 가능한 제거 허용",
                          "availableUninstallTooltip":  "회사 포털에서 사용자에게 이 앱에 대한 제거 옵션을 제공하려면 '예'를 선택하세요. 사용자가 회사 포털에서 앱을 제거하지 못하도록 하려면 '아니요'를 선택합니다.",
                          "bladeTitle":  "프로그램",
+                         "commandLineDropdownText":  "명령줄",
                          "deviceRestartBehavior":  "디바이스 다시 시작 동작",
                          "deviceRestartBehaviorTooltip":  "앱을 설치한 후 디바이스 다시 시작 동작을 선택합니다. 반환 코드 구성 설정을 기준으로 디바이스를 다시 시작하려면 '반환 코드에 따라 동작 결정'을 선택합니다. MSI 기반 앱에 대한 앱 설치 중에 디바이스 다시 시작 관련 메시지를 표시하지 않으려면 '특정 작업 없음'을 선택하세요. 다시 시작 관련 메시지 표시 여부와 관계없이 앱 설치를 완료할 수 있도록 하려면 '앱 설치 시 강제로 디바이스 다시 시작'을 선택하세요. 앱을 설치한 후에 항상 디바이스를 다시 시작하려면 'Intune에서 강제로 필수 디바이스를 다시 시작함'을 선택합니다.",
                          "header":  "이 앱을 설치 및 제거하기 위한 명령 지정:",
                          "installCommand":  "설치 명령",
                          "installCommandMaxLengthErrorMessage":  "설치 명령은 허용되는 최대 길이인 1024자를 초과할 수 없습니다.",
                          "installCommandTooltip":  "이 앱을 설치하는 데 사용되는 전체 설치 명령줄입니다.",
+                         "installScript":  "설치 스크립트",
+                         "installScriptErrorText":  "설치 스크립트가 필요합니다.",
+                         "installScriptToolTip":  "이 앱을 설치하는 데 사용되는 설치 명령이 포함된 PowerShell 스크립트 파일입니다.",
+                         "installScriptsHeader":  "스크립트 또는 명령줄 사용 여부, 시간 제한, 다시 시작 동작, 반환 코드 등 앱 설치와 제거 설정을 지정합니다.",
+                         "installerTypeText":  "설치 프로그램 유형",
                          "runAs32Bit":  "64비트 클라이언트에서 32비트 프로세스로 설치 및 제거 명령 실행",
                          "runAs32BitTooltip":  "64비트 클라이언트에서 32비트 프로세스로 앱을 설치 및 제거하려면 '예'를 선택합니다. 64비트 클라이언트에서 64비트 프로세스로 앱을 설치 및 제거하려면 '아니요'(기본값)를 선택합니다. 32비트 클라이언트에서는 항상 32비트 프로세스가 사용됩니다.",
                          "runAsAccount":  "설치 동작",
                          "runAsAccountTooltip":  "지원되는 경우 모든 사용자에 대해 이 앱을 설치하려면 '시스템'을 선택합니다. 디바이스에 로그인한 사용자에 대해 이 앱을 설치하려면 '사용자'를 선택합니다. 이중 목적 MSI 앱의 경우 원래 설치 시 디바이스에 적용된 값이 복원될 때까지 변경 내용으로 인해 업데이트 및 제거가 완료되지 않습니다.",
+                         "scriptDropdownText":  "PowerShell 스크립트",
+                         "scriptsErrorText":  "설치와 제거 스크립트가 필요합니다.",
+                         "selectCustomScript":  "사용자 지정 스크립트 선택",
+                         "selectScriptLinkAriaText":  "스크립트를 선택하지 않았습니다. 스크립트를 업로드할 컨텍스트 창을 엽니다.",
+                         "selectScriptLinkText":  "스크립트 선택",
+                         "selectedScriptLinkAriaText":  "스크립트를 {0}개 선택했습니다. 컨텍스트 창을 열어 새 스크립트를 편집하거나 업로드합니다.",
                          "selectorLabel":  "프로그램",
                          "uninstallCommand":  "제거 명령",
-                         "uninstallCommandTooltip":  "이 앱을 제거하는 데 사용되는 전체 제거 명령줄입니다."
+                         "uninstallCommandTooltip":  "이 앱을 제거하는 데 사용되는 전체 제거 명령줄입니다.",
+                         "uninstallScript":  "제거 스크립트",
+                         "uninstallScriptErrorText":  "제거 스크립트가 필요합니다.",
+                         "uninstallScriptToolTip":  "이 앱을 제거하는 데 사용되는 제거 명령이 포함된 PowerShell 스크립트 파일입니다.",
+                         "uninstallerTypeText":  "제거 프로그램 유형"
                      },
     "TermsOfUse":  {
                        "Languages":  {
@@ -2797,7 +2832,7 @@
                                    "syncSettingsTitle":  "AutoPilot 설정 동기화"
                                },
                       "Title":  {
-                                    "devices":  "Windows AutoPilot 디바이스"
+                                    "devices":  "Windows AutoPilot 장치"
                                 },
                       "Tooltips":  {
                                        "addressableUserName":  "디바이스를 설치하는 동안 표시되는 인사말 이름입니다.",
@@ -2832,7 +2867,7 @@
                       "assignSurfaceHub2ProfileToDeviceGroup":  "1. 하나 이상의 디바이스 그룹에 이 프로필을 할당합니다.",
                       "assignSurfaceHub2ProfileToResourceAccount":  "2. 이 프로필을 배포하는 각 Surface Hub 디바이스에 리소스 계정을 할당합니다.",
                       "assignedDevicesCount":  "할당된 디바이스",
-                      "assignedDevicesResourceAccountDescription":  "<p>이 프로필을 디바이스에 배포하려면 디바이스에 리소스 계정을 할당해야 합니다. 한 번에 디바이스 하나를 선택하여 기존 리소스 계정을 할당하거나 새 리소스 계정을 만듭니다.  <a target=\"_blank\" href=\"https://docs.microsoft.com/en-us/surface-hub/manage-surface-hub\">리소스 계정에 대한 자세한 정보</a></p>",
+                      "assignedDevicesResourceAccountDescription":  "<p>이 프로필을 디바이스에 배포하려면 디바이스에 리소스 계정을 할당해야 합니다. 한 번에 하나의 디바이스를 선택하여 기존 리소스 계정을 할당하거나 새 디바이스를 만듭니다.  <a target=\"_blank\" href=\"https://docs.microsoft.com/en-us/surface-hub/manage-surface-hub\">리소스 계정에 대한 자세한 정보</a></p>",
                       "assignedDevicesResourceAccountStatusBarMessage":  "이 테이블은 이 프로필에 할당된 Surface Hub 2 디바이스만 나열합니다.",
                       "assigningDescription":  "{0}에 대한 할당을 업데이트하는 중입니다.",
                       "assigningTitle":  "AutoPilot 프로필 할당을 업데이트하는 중입니다.",
@@ -2847,8 +2882,8 @@
                       "description":  "설명",
                       "deviceType":  "디바이스 유형",
                       "deviceUse":  "디바이스 사용",
-                      "directoryServiceHintForSurfaceHub2":  " <p>\r\n        Autopilot은 Surface Hub 2 디바이스에 조인된 Microsoft Entra만 지원합니다. 조직에서 디바이스의 AD(Active Directory) 조인 방법을 지정하세요.\r\n        </p>\r\n        <ul>\r\n        <li>\r\n            Microsoft Entra 조인됨: 온-프레미스 Windows Server Active Directory가 없는 클라우드만\r\n        </li>\r\n        </ul>\r\n    ",
-                      "directoryServiceHintForWindowsPC":  "\r\n        <p>\r\n        조직에서 디바이스를 AD(Active Directory)에 조인하는 방법을 지정합니다.\r\n        </p>\r\n        <ul>\r\n        <li>\r\n            Microsoft Entra 조인됨: 온-프레미스 Windows Server Active Directory를 사용하지 않는 클라우드 전용입니다.\r\n        </li>\r\n        </ul>\r\n   ",
+                      "directoryServiceHintForSurfaceHub2":  " <p>\r\n        Autopilot은 Surface Hub 2개 디바이스에 대해서만 Microsoft Entra Joined를 지원합니다. 디바이스가 조직에서 AD(Active Directory)에 가입하는 방법을 지정합니다.\r\n        </p>\r\n        <ul>\r\n        <li>\r\n            Microsoft Entra 조인: 온-프레미스 Windows Server Active Directory 없는 클라우드 전용입니다.\r\n        </li>\r\n        </ul>\r\n    ",
+                      "directoryServiceHintForWindowsPC":  "\r\n        <p>\r\n        디바이스가 조직에서 AD(Active Directory)에 가입하는 방법을 지정합니다.\r\n        </p>\r\n        <ul>\r\n        <li>\r\n            Microsoft Entra 조인: 온-프레미스 Windows Server Active Directory 없는 클라우드 전용\r\n        </li>\r\n        </ul>\r\n   ",
                       "getAssignedDevicesCountError":  "할당된 디바이스 수를 페치하는 동안 오류가 발생했습니다.",
                       "getAssignmentsError":  "Autopilot 프로필 할당을 페치하는 동안 오류가 발생했습니다.",
                       "harvestDeviceId":  "모든 대상 디바이스를 Autopilot으로 변환",
@@ -2879,7 +2914,7 @@
                            "devicesWithoutEnrollment":  "관리되는 앱"
                        },
     "AppProtection":  {
-                          "allAppTypes":  "모든 앱 유형을 대상으로 함",
+                          "allAppTypes":  "모든 앱 유형을 대상으로 지정",
                           "androidPlatformLabel":  "Android",
                           "appsInAndroidWorkProfile":  "Android 회사 프로필의 앱",
                           "appsOnAndroidEnterpriseDedicatedDevicesWithAzureAdSharedMode":  "Microsoft Entra 공유 모드가 있는 Android Enterprise 전용 디바이스의 앱​",
@@ -2890,7 +2925,7 @@
                           "iOSPlatformLabel":  "iOS/iPadOS",
                           "iosAndroidMacPlatformLabel":  "iOS, Android, Mac",
                           "iosAndroidPlatformLabel":  "iOS, Android",
-                          "macPlatformLabel":  "MAC",
+                          "macPlatformLabel":  "Mac",
                           "notAvailable":  "사용할 수 없음",
                           "windows10PlatformLabel":  "Windows 10 이상",
                           "withEnrollment":  "등록 있음",
@@ -4078,6 +4113,7 @@
                      "vPNProxy":  "프록시",
                      "vPNSplitTunneling":  "분할 터널링",
                      "vPNTrustedNetwork":  "신뢰할 수 있는 네트워크 검색",
+                     "wSLCompliance":  "Linux용 Windows 하위 시스템(WSL)",
                      "wakeSettings":  "절전 모드 해제 설정",
                      "webContentFilter":  "웹 콘텐츠 필터",
                      "wiFi":  "Wi-Fi",
@@ -4226,7 +4262,7 @@
                       "sr-Latn-bA":  "세르비아어(라틴 문자)",
                       "sr-Latn-rS":  "세르비아어(라틴 문자, 세르비아)",
                       "dsb":  "저지 소르비아어(독일)",
-                      "hsb":  "고지 소르비아어(독일)",
+                      "hsb":  "고지 소르브어(독일)",
                       "es-es-tradnl":  "스페인어(스페인, 전통 정렬)",
                       "es-aR":  "스페인어(아르헨티나)",
                       "es-bO":  "스페인어(볼리비아)",
@@ -4300,7 +4336,6 @@
                       "mk":  "마케도니아어(북마케도니아)",
                       "ml":  "몽골어(인도)",
                       "mt":  "몰타어(몰타)",
-                      "mi":  "마오리어(뉴질랜드)",
                       "mr":  "마라티어(인도)",
                       "moh":  "모호크어(모호크)",
                       "ne":  "네팔어(네팔)",
@@ -4334,11 +4369,13 @@
                       "vi":  "베트남어(베트남)",
                       "cy":  "웨일스어(영국)",
                       "wo":  "월로프어(세네갈)",
+                      "sah":  "야쿠츠크(러시아)",
                       "ii":  "이 문자(중국)",
                       "yo":  "요루바어(나이지리아)"
                   },
     "DisplayRoleTypes":  {
                              "builtInRole":  "기본 제공 역할",
+                             "customAutopatchRole":  "사용자 지정 Windows Autopatch 역할",
                              "customCloudPCRole":  "사용자 지정 Windows 365 역할",
                              "customIntuneRole":  "사용자 지정 Intune 역할",
                              "customRole":  "사용자 지정 역할"
@@ -4407,7 +4444,7 @@
                                                              "iOS":  "iOS/iPadOS 디바이스에서 PIN 대신 지문 ID를 사용하도록 할 수 있습니다. 사용자가 회사 계정을 사용하여 이 앱에 액세스하려고 하면 지문을 제공하라는 메시지가 표시됩니다.",
                                                              "mac":  "Mac 디바이스에서 PIN 대신 지문 ID를 사용하도록 할 수 있습니다. 사용자가 회사 계정을 사용하여 이 앱에 액세스하려고 하면 지문을 제공하라는 메시지가 표시됩니다."
                                                          },
-                                            "allowWidgetContentSync":  "[차단]을 선택하여 정책 관리 앱이 앱 위젯에 데이터를 저장하지 못하도록 합니다. [허용]을 선택하면 정책 관리 앱 내에서 해당 기능이 지원되고 사용하도록 설정된 경우 정책 관리 앱이 앱 위젯에 데이터를 저장할 수 있습니다. \r\n\r\n \r\n\r\n앱은 앱 구성 정책과 함께 추가 구성 기능을 제공할 수 있습니다. 자세한 내용은 앱 설명서를 참조하세요.",
+                                            "allowWidgetContentSync":  "정책 관리 앱이 앱 위젯에 데이터를 저장하지 못하도록 하려면 [차단]을 선택합니다. 정책 관리 앱 내에서 해당 기능이 지원되며 이를 사용하도록 설정한 경우, [허용]을 선택하면 정책 관리 앱이 앱 위젯에 데이터를 저장할 수 있습니다. \r\n\r\n \r\n\r\n앱은 앱 구성 정책과 함께 추가 구성 기능을 제공할 수 있습니다. 자세한 내용은 앱 설명서를 참조하세요.",
                                             "appSharingFromLevel1":  "다음 옵션 중 하나를 선택하여 이 앱이 데이터를 수신할 수 있는 앱을 지정하세요.",
                                             "appSharingFromLevel2":  "{0}: 다른 정책 관리 앱에서만 조직 문서 또는 계정의 데이터 받기 허용",
                                             "appSharingFromLevel3":  "{0}: 모든 앱에서 조직 문서 또는 계정의 데이터 받기 허용",
@@ -4469,7 +4506,7 @@
                                                "enterpriseIPv6Ranges":  "<p>회사 네트워크를 구성하는 IPv6 범위를 지정합니다. 이러한 범위는 회사 네트워크 경계를 정의하기 위해 지정하는 엔터프라이즈 네트워크 도메인 이름과 함께 사용됩니다.</p><p>쉼표로 개별 항목을 구분하여 범위를 여러 개 지정할 수 있습니다.</p><p>예: 2001:4898:dc05::-2001:4898:dc05:ffff:ffff:ffff:ffff:ffff,2a01:110::-2a01:110:7fff:ffff:ffff:ffff:ffff:ffff</p>",
                                                "enterpriseInternalProxyServers":  "<p>회사에 프록시가 구성되어 있는 경우 엔터프라이즈 클라우드 리소스 설정에 지정된 클라우드 리소스에 대한 트래픽을 어떤 프록시를 통해 라우트할지 지정할 수 있습니다.</p><p>세미콜론으로 개별 항목을 구분하여 값을 여러 개 지정할 수 있습니다.</p><p>예: contoso.internalproxy1.com;contoso.internalproxy2.com</p>",
                                                "enterpriseNetworkDomainNames":  "<p>회사 네트워크를 구성하는 DNS 이름을 지정합니다. 이러한 이름은 회사 네트워크 경계를 정의하기 위해 지정하는 IP 범위와 함께 사용됩니다. 쉼표로 개별 항목을 구분하여 값을 여러 개 지정할 수 있습니다.</p><p>이 설정을 사용하려면 Windows Information Protection을 사용하도록 설정해야 합니다.</p><p>예: corp.contoso.com,region.contoso.com</p>",
-                                               "enterpriseProtectedDomainNames":  "<p>기업 네트워크를 형성하는 DNS 이름을 지정합니다. 이 이름은 기업 네트워크 경계를 정의하는 IP 범위와 함께 사용됩니다. '|' 문자로 개별 항목을 구분하여 여러 개의 값을 지정할 수 있습니다.</p><p>이 설정을 사용하려면 Windows Information Protection을 활성화해야 합니다.</p><p>예: corp.contoso.com|region.contoso.com</p>",
+                                               "enterpriseProtectedDomainNames":  "<p>회사 네트워크를 구성하는 DNS 이름을 지정합니다. 이러한 이름은 회사 네트워크 경계를 정의하기 위해 지정하는 IP 범위와 함께 사용됩니다. '|'(으)로 개별 항목을 구분하여 값을 여러 개 지정할 수 있습니다.</p><p>이 설정을 사용하려면 Windows Information Protection을 사용하도록 설정해야 합니다.</p><p>예: corp.contoso.com|region.contoso.com</p>",
                                                "enterpriseProxyServers":  "<p>회사 네트워크에 외부 대상 프록시가 있는 경우 여기에서 지정합니다. 프록시 서버 주소를 지정하는 경우 트래픽을 허용하고 Windows Information Protection을 통해 보호할 포트도 지정해야 합니다.</p><p>참고: 이 목록은 [엔터프라이즈 내부 프록시 서버] 목록에 있는 서버를 포함해서는 안 됩니다. 세미콜론으로 개별 항목을 구분하여 값을 여러 개 지정할 수 있습니다.</p><p>예: proxy.contoso.com:80;proxy2.contoso.com:80</p>",
                                                "maxInactivityTime1":  "디바이스가 유휴 상태로 전환된 후 디바이스의 PIN 또는 암호가 잠기게 되는 최대 허용 시간(분)을 지정합니다. 사용자는 설정 앱에 지정된 최대 시간보다 적은 기존 시간 제한 값을 선택할 수 있습니다. Lumia 950 및 950XL의 경우, 이 정책으로 설정된 값에 상관없이 최대 시간 제한 값이 5분입니다.",
                                                "maxInactivityTime2":  "0(기본값) - 시간 제한이 정의되지 않았습니다. 기본값 '0'은 '시간 제한이 정의되지 않음'으로 해석됩니다.",
@@ -4725,7 +4762,7 @@
                       "gt":  "과테말라",
                       "gw":  "기니비사우",
                       "gy":  "가이아나",
-                      "hk":  "홍콩",
+                      "hk":  "홍콩 특별행정구",
                       "hn":  "온두라스",
                       "hr":  "크로아티아",
                       "hu":  "헝가리",
@@ -4759,7 +4796,7 @@
                       "mk":  "북마케도니아",
                       "ml":  "말리",
                       "mn":  "몽골",
-                      "mo":  "마카오",
+                      "mo":  "마카오 특별행정구",
                       "mr":  "모리타니",
                       "ms":  "몬트세라트",
                       "mt":  "몰타",
@@ -4945,7 +4982,7 @@
                            "allAndroidCorpEnrollmentTypesHeaderDescription":  "이러한 설정은 완전 관리형, 전용 및 회사 소유 회사 프로필 디바이스에서만 작동합니다.",
                            "allAndroidCorpEnrollmentTypesHeaderName":  "회사 소유의 완전 관리형 전용 회사 프로필 디바이스",
                            "allAndroidVersionsPasswordHeader":  "모든 Android 디바이스",
-                           "allAndroidVersionsPasswordHeaderDescription":  "이러한 설정은 모든 Android OS 버전 및 제조업체에서 작동합니다.",
+                           "allAndroidVersionsPasswordHeaderDescription":  "이러한 설정은 지정된 경우를 제외하고 모든 Android OS 버전 및 제조업체에서 작동합니다.",
                            "allDomainsOption":  "모든 도메인",
                            "allEnrollmentTypesDescription":  "이러한 설정은 디바이스 등록 또는 사용자 등록을 통해 Intune에 등록된 디바이스에는 물론, 자동화된 디바이스 등록(이전의 DEP)을 통해 Apple School Manager 또는 Apple Business Manager를 사용하여 등록된 디바이스에도 적용됩니다.",
                            "allEnrollmentTypesHeader":  "모든 등록 유형",
@@ -5065,7 +5102,7 @@
                            "androidTenDeprecationInfoBox":  "2020년 10월부터 Android 10 이상 버전을 실행하는 Android 디바이스와 삼성 Knox를 실행하지 않는 Android 디바이스에서는 일부 설정이 지원되지 않습니다. 이러한 설정은 Android 9 이하 또는 삼성 Knox로 레이블이 지정되어 있습니다. 자세히 알아보려면 클릭하세요.",
                            "androidTrustedServerCertificateNamesDescription":  "Wi-Fi 액세스 포인트에 대한 클라이언트 인증 중에 Radius 서버에서 제공하는 인증서에 사용되는 DNS 이름입니다. 정규화된 도메인 이름에 동일한 DNS 접미사가 있는 여러 Radius 서버가 있는 경우 접미사만 사용할 수도 있습니다. 이를 통해 장치는 제공된 서버 인증서를 신뢰할 수 있습니다. <a href=\"https://go.microsoft.com/fwlink/?linkid=2181354\" target=\"_blank\">자세히 알아보세요</a>.<br>",
                            "androidTrustedServerCertificateNamesName":  "Radius 서버 이름",
-                           "androidTwelveAndAbovePasswordHeader":  "Android 10 이상",
+                           "androidTwelveAndAbovePasswordHeader":  "Android 12 이상",
                            "androidTwelveAndAbovePasswordHeaderDescription":  "이러한 설정은 Android 10 이상 버전을 실행하는 장치에 적용됩니다.",
                            "androidTwelveDeprecationInfoBox":  "2022년 11월부터 Android 12 이상을 실행하는 Android 장치에서는 일부 설정이 지원되지 않습니다. 이러한 설정에는 Android 11 및 이전 버전으로 레이블이 지정되어 있습니다. 자세히 알아보려면 클릭하세요.",
                            "androidZebraMxConfigurationFileXmlName":  "유효한 Zebra MX XML 파일 선택",
@@ -5528,7 +5565,7 @@
                            "blockFaceUnlockName":  "얼굴 잠금 해제",
                            "blockFacetimeName":  "FaceTime 차단",
                            "blockFactoryResetDescription":  "디바이스에서 초기화를 차단합니다.",
-                           "blockFactoryResetName":  "공장 기본 설정으로 복원(삼성 KNOX 전용)",
+                           "blockFactoryResetName":  "공장 초기화(Samsung KNOX Android 15 및 이전 버전에만 해당)",
                            "blockFilesNetworkDriveAccessDescription":  "디바이스는 SMB(서버 메시지 블록) 프로토콜을 사용하여 네트워크 서버의 파일 또는 기타 리소스에 액세스할 수 있습니다. iOS 및 iPadOS, 버전 13.0 이상을 실행하는 디바이스에서 사용할 수 있습니다.",
                            "blockFilesNetworkDriveAccessName":  "파일 앱에서 네트워크 드라이브에 대한 액세스 차단",
                            "blockFilesUsbDriveAccessDescription":  "액세스 권한이 있는 디바이스는 USB 드라이브의 파일에 연결하고 파일을 열 수 있습니다. iOS 및 iPadOS, 버전 13.0 이상을 실행하는 디바이스에서 사용할 수 있습니다.",
@@ -5555,7 +5592,7 @@
                            "blockGoogleAccountAutoSyncDescription":  "디바이스에서 Google 계정 자동 동기화 기능을 차단합니다.",
                            "blockGoogleAccountAutoSyncName":  "Google 계정 자동 동기화(삼성 KNOX 전용)",
                            "blockGoogleBackupDescription":  "Google 백업과 동기화를 차단합니다.",
-                           "blockGoogleBackupName":  "Google 백업(삼성 KNOX 전용)",
+                           "blockGoogleBackupName":  "Google 백업(Samsung KNOX Android 15 및 이전 버전에만 해당)",
                            "blockGooglePlayStoreDescription":  "Google Play 스토어를 차단합니다(Samsung KNOX Standard 4.0 이상).",
                            "blockGooglePlayStoreName":  "Google Play 스토어(삼성 KNOX 전용) ",
                            "blockHostPairingDescription":  "호스트 페어링에서 iOS 디바이스와 페어링할 수 있는 디바이스 제어를 차단합니다.",
@@ -5695,7 +5732,7 @@
                            "blockSIMCardErrorDialogDescription":  "SIM 카드 오류 대화 상자(모바일 전용)",
                            "blockSIMCardErrorDialogName":  "SIM 카드 오류 대화 상자(모바일 전용)",
                            "blockSMSAndMMSAndroidDescription":  "SMS/MMS 메시징 기능을 차단합니다(Samsung KNOX Standard 4.0 이상).",
-                           "blockSMSAndMMSName":  "SMS/MMS 메시징(삼성 KNOX 전용)",
+                           "blockSMSAndMMSName":  "SMS/MMS 메시징(Samsung KNOX Android 15 및 이전 버전에만 해당)",
                            "blockSafariAutofillDescription":  "사용자가 웹 양식에 입력한 내용을 Safari에서 저장하지 못하도록 차단합니다.",
                            "blockSafariAutofillName":  "Safari 자동 완성 차단",
                            "blockSafariDescription":  "Safari 웹 브라우저를 차단합니다.",
@@ -5759,7 +5796,7 @@
                            "blockVPNCreationDescription":  "VPN 구성 생성 차단",
                            "blockVPNCreationName":  "VPN 생성 차단",
                            "blockVoiceAssistantAndroidDescription":  "음성 도우미를 차단합니다(Samsung KNOX Standard 4.0 이상).",
-                           "blockVoiceAssistantName":  "음성 도우미(삼성 KNOX 전용)",
+                           "blockVoiceAssistantName":  "음성 도우미(Samsung KNOX Android 15 및 이전 버전에만 해당)",
                            "blockVoiceDialingAndroidDescription":  "음성 전화 걸기를 차단합니다(Samsung KNOX Standard 4.0 이상).",
                            "blockVoiceDialingDescription":  "디바이스에서 음성 전화 걸기를 차단합니다.",
                            "blockVoiceDialingName":  "음성 전화 걸기",
@@ -6128,6 +6165,7 @@
                            "customAppConfigurationFileDescription":  "업로드된 파일의 올바른 형식에 대한 자세한 내용은 Intune 설명서를 참조하세요. <a href=\"https://aka.ms/AA6z0o4\">자세히 알아보기</a>",
                            "customAppConfigurationFileName":  "속성 목록 파일",
                            "customBoolError":  "부울 유형의 모든 구성 키의 값은 \"true\" 또는 \"false\"여야 합니다.",
+                           "customComplianceToolTip":  "활성화된 경우 디바이스는 검색 PowerShell 스크립트에서 반환된 사용자 지정 데이터를 기반으로 JSON 파일에 정의된 사용자 지정 규칙에 따라 준수해야 합니다.",
                            "customEapXmlOption":  "사용자 지정 EAP XML",
                            "customIntError":  "유형 정수의 모든 구성 키는 정수 값이어야 합니다.",
                            "customItemHideFromUserConfiguration":  "숨기기",
@@ -6180,7 +6218,7 @@
                            "dataSharingTypeName":  "회사 프로필과 개인 프로필 간 데이터 공유",
                            "dataTypeName":  "데이터 형식",
                            "dateAndTimeBlockChangesDescription":  "디바이스에서 사용자가 날짜 및 시간을 변경하지 못하도록 차단합니다(Samsung KNOX).",
-                           "dateAndTimeBlockChangesName":  "날짜 및 시간 변경 차단(Samsung KNOX)",
+                           "dateAndTimeBlockChangesName":  "날짜 및 시간 변경 차단(Samsung Android 15 및 이전 버전에만 해당)",
                            "dateTimeConfigurationBlockedDescription":  "사용자가 수동으로 날짜 및 시간을 설정하지 못하도록 합니다.",
                            "dateTimeConfigurationBlockedName":  "날짜 및 시간 변경",
                            "dateTimeName":  "날짜 및 시간",
@@ -7541,7 +7579,7 @@
                            "kioskWifiSsidsName":  "Wi-Fi 허용 목록",
                            "knoxBlockAutofillDescription":  "자동 채우기를 차단합니다.",
                            "knoxBlockAutofillName":  "자동 채우기(삼성 KNOX 전용)",
-                           "knoxBlockBluetoothName":  "Bluetooth(삼성 KNOX 전용)",
+                           "knoxBlockBluetoothName":  "Bluetooth(Samsung KNOX Android 13 및 이전 버전에만 해당)",
                            "knoxBlockCookiesDescription":  "브라우저 쿠키를 허용하거나 차단합니다.",
                            "knoxBlockCookiesName":  "쿠키(삼성 KNOX 전용)",
                            "knoxBlockCopyAndPasteDescription":  "복사 및 붙여넣기 기능을 차단합니다.",
@@ -7562,17 +7600,20 @@
                            "knoxBlockPopUpsName":  "팝업(삼성 KNOX 전용)",
                            "knoxBlockRemovableStorageName":  "이동식 스토리지(삼성 KNOX 전용)",
                            "knoxBlockScreenshotDescription":  "화면 내용을 이미지로 캡처할 수 없도록 차단합니다.",
-                           "knoxBlockScreenshotName":  "화면 캡처(삼성 KNOX 전용)",
+                           "knoxBlockScreenshotName":  "화면 캡처(Samsung KNOX Android 15 및 이전 버전에만 해당)",
                            "knoxBlockVoiceDialingName":  "음성 전화 걸기(삼성 KNOX 전용)",
                            "knoxBlockVoiceRoamingName":  "음성 로밍(삼성 KNOX 전용)",
                            "knoxBlockWebBrowserDescription":  "디바이스에서 웹 브라우저를 차단합니다.",
                            "knoxBlockWebBrowserName":  "웹 브라우저(삼성 KNOX 전용)",
-                           "knoxBlockWiFiName":  "Wi-Fi(삼성 KNOX 전용)",
-                           "knoxBlockWiFiTetheringName":  "Wi-Fi 테더링(삼성 KNOX 전용)",
+                           "knoxBlockWiFiName":  "Wi-Fi(Samsung KNOX Android 12 및 이전 버전에만 해당)",
+                           "knoxBlockWiFiTetheringName":  "Wi-Fi 테더링(Samsung KNOX Android 12 및 이전 버전에만 해당)",
                            "knoxCellularDataDescription":  "셀룰러 네트워크를 통한 데이터 사용을 차단합니다. 구성되지 않는 경우 셀룰러 네트워크를 통한 데이터 사용이 허용되고 사용자가 편집할 수 있습니다.",
                            "knoxCellularDataName":  "셀룰러 데이터 채널(삼성 KNOX 전용)",
+                           "knoxFifteenAndroidNineAndBelowPasswordHeader":  "Android 9 이하 또는 Samsung Knox Android 15 이하",
+                           "knoxFifteenAndroidNineAndBelowPasswordHeaderDescription":  "이러한 설정은 Android 9 이하를 실행하는 디바이스에서 작동하며, 모든 Android OS 버전 Android 15 이하를 실행하는 모든 Samsung Knox 디바이스에서도 작동합니다.",
+                           "knoxRequireEncryptionName":  "암호화(Android 11 이하 또는 Samsung KNOX Android 14 이하)",
                            "knoxRequireEncryptionOnRemovableStorageDescription":  "스토리지 카드를 암호화해야 합니다. 일부 디바이스는 스토리지 카드 암호화를 지원하지 않습니다. 자세한 내용은 디바이스 및 모바일 운영 체제 설명서를 참조하세요.",
-                           "knoxRequireEncryptionOnRemovableStorageName":  "스토리지 카드 암호화(삼성 KNOX 전용)",
+                           "knoxRequireEncryptionOnRemovableStorageName":  "스토리지 카드의 암호화(Samsung KNOX Android 15 및 이전 버전에만 해당)",
                            "lEAPName":  "LEAP",
                            "lTPOptionNativeType":  "L2TP(네이티브 형식)",
                            "lanManagerAuthenticationLevelDesc":  "이 보안 설정은 네트워크 로그온에 사용되는 시도/응답 인증 프로토콜을 결정합니다.",
@@ -7891,6 +7932,10 @@
                            "macOSAppleEventReceiverIdentifierTypeName":  "식별자 형식",
                            "macOSAppleEventReceiverTableDescription":  "앱 또는 프로세스가 제한된 Apple 이벤트를 다른 앱 또는 프로세스에 보낼 수 있도록 허용합니다. 수신하는 앱 또는 프로세스의 식별자, 식별자 형식 및 코드 요구 사항을 알고 있어야 합니다.",
                            "macOSAppleEventReceiverTableName":  "Apple 이벤트",
+                           "macOSDeploymentChannelDeviceChannel":  "장치 채널",
+                           "macOSDeploymentChannelName":  "배포 채널",
+                           "macOSDeploymentChannelUserChannel":  "사용자 채널",
+                           "macOSDeploymentChannelWarningBanner":  "보안 목적으로만 사용자 채널에서 사용자 인증서 유형을 사용하는 것이 좋습니다.",
                            "macOSPrivacyAccessControlItemAccessibilityDescription":  "선택 자막, 가리킨 항목 텍스트, 음성 컨트롤 같은 기능을 제공하는 디바이스의 접근성 앱에 대한 액세스를 제어합니다.",
                            "macOSPrivacyAccessControlItemAccessibilityName":  "접근성",
                            "macOSPrivacyAccessControlItemAddressBookName":  "연락처",
@@ -8418,6 +8463,7 @@
                            "opportunisticallyMatchAuthDescription":  "키 지정 모듈에서 전체 인증 집합의 모든 인증 모음을 지원하지 않는 경우 해당 집합을 무시하도록 키 지정 모듈을 설정합니다. 사용하도록 설정하면, 키 지정 모듈이 지원되지 않는 인증 모음을 무시합니다.",
                            "opportunisticallyMatchAuthName":  "키 지정 모듈에 대해 선택적으로 인증 집합 일치",
                            "optional":  "옵션",
+                           "optionalValue":  "선택적 값",
                            "organizationalUnitDescription":  "컴퓨터 계정이 만들어질 OU(조직 구성 단위) 전체 경로입니다. 지정하지 않으면 잘 알려진 컴퓨터 개체 컨테이너가 사용됩니다.",
                            "organizationalUnitName":  "조직 단위",
                            "originalProfileTypeTitle":  "원래 프로필 유형:",
@@ -8843,8 +8889,9 @@
                            "sCEPPolicyCertificateValidityPeriodName":  "인증서 유효 기간",
                            "sCEPPolicyCustomAADAttribute":  "사용자 지정 Microsoft Entra 특성",
                            "sCEPPolicyCustomKeys":  "사용자 지정 키",
-                           "sCEPPolicyCustomSubjectAlternativeNameForMachineDescription":  "Value can include allowed variables combined with static text. UPN and Email address should include an @, for example: “{{AAD_Device_ID}}@contoso.com”. DNS cannot end with a symbol or contain an @ sign, e.g. “{{DeviceName}}.contoso.com“ or “{{DeviceName}}”. See support variables here: http://go.microsoft.com/fwlink/?LinkId=2027630",
-                           "sCEPPolicyCustomSubjectAlternativeNameForUserDescription":  "Value can include allowed variables, for example: “{{UserPrincipalName}}” or “{{EmailAddress}}” . See support variables here: http://go.microsoft.com/fwlink/?LinkId=2027630",
+                           "sCEPPolicyCustomSubjectAlternativeNameForMachineDescription":  "Provide a value that can combine any supported variable with static text. For UPN and Email addresses, use the format {{AAD_Device_ID}}@contoso.com. DNS values must not include symbols or an @ sign, e.g., {{DeviceName}}.contoso.com or {{DeviceName}}. See support variables here: http://go.microsoft.com/fwlink/?LinkId=2027630",
+                           "sCEPPolicyCustomSubjectAlternativeNameForUserDescription":  "{{UserPrincipalName}}과(와) 같이 지원되는 변수일 수 있는 값을 제공합니다. URI 특성에는 {{OnPremisesSecurityIdentifier}} 만 사용할 수 있습니다. 지원되는 변수에 대한 자세한 정보: http://go.microsoft.com/fwlink/?LinkId=2027630",
+                           "sCEPPolicyCustomSubjectAlternativeNameForWindowsMachineDescription":  "지원되는 변수를 정적 텍스트와 결합할 수 있는 값을 제공합니다. UPN 및 전자 메일 주소의 경우 {{AAD_Device_ID}}@contoso.com 형식을 사용합니다. DNS 값에는 기호 또는 @ 기호(예: {{DeviceName}}.contoso.com 또는 {{DeviceName}})를 포함해서는 안 됩니다. {{OnPremisesSecurityIdentifier}} 값은 주체 대체 이름에 대한 URI 특성과 함께만 사용할 수 있습니다. 지원 변수는 다음을 참조: http://go.microsoft.com/fwlink/?LinkId=2027630",
                            "sCEPPolicyCustomSubjectNameForMachine":  "CN={{AAD_Device_ID}}<br>or<br>CN={{Device_Serial}}<br>or<br>CN={{Device_IMEI}}",
                            "sCEPPolicyCustomSubjectNameForMachineDescription":  "CN={{AAD_Device_ID}},OU=Devices,O=Contoso,DC=com<br>or<br>CN={{Device_Serial}},OU=Devices,O=Contoso,DC=com<br>or<br>CN={{Device_IMEI}},OU=Devices,O=Contoso,DC=com",
                            "sCEPPolicyCustomSubjectNameForUser":  "CN={{UserName}}&lt;br&gt;or&lt;br&gt;CN={{EmailAddress}}&lt;br&gt;or&lt;br&gt;CN={{onPremisesSamAccountName}}",
@@ -9925,6 +9972,11 @@
                            "wPAEnterpriseOption":  "WPA-Enterprise",
                            "wPAPSKOption":  "WPA 미리 공유한 키",
                            "wPAPersonalOption":  "WPA/WPA2-Personal",
+                           "wSLComplianceBody":  "비규격 Linux 배포판은 다음과 같습니다. ",
+                           "wSLComplianceTitle":  "WSL(Linux용 Windows 하위 시스템)에서 비규격 Linux 배포판 또는 버전을 제거합니다.",
+                           "wSLPolicyDistributionName":  "배포 이름",
+                           "wSLPolicyMaxOSVersionName":  "최대 OS 버전",
+                           "wSLPolicyMinOSVersionName":  "최소 OS 버전",
                            "wakeOnLANName":  "Wake on LAN",
                            "wakeOnPowerName":  "절전 모드 해제",
                            "wakeScreenWhenSomeoneInRoomName":  "방에 사람이 들어오면 화면 켜기",
@@ -10303,6 +10355,10 @@
                            "windowsSpotlightOnLockScreenName":  "잠금 화면에서 Windows 추천",
                            "windowsSpotlightPersonalizationDescription":  "디바이스 사용에 따른 Windows 추천 개인 설정을 차단합니다.",
                            "windowsSpotlightPersonalizationName":  "Windows 추천 개인 설정",
+                           "windowsSubsystemLinuxComplianceDescription":  "이러한 설정은 관리되는 Windows 디바이스에 설치된 Linux 배포와 관련이 있으며 디바이스의 준수 상태에 영향을 줍니다. <a href=\"https://go.microsoft.com/fwlink/?linkid=2283513\" target=\"_blank\">설정 사용에 대한 자세한 정보</a>",
+                           "windowsSubsystemLinuxComplianceHeader":  "허용되는 Linux 배포 및 버전",
+                           "windowsSubsystemLinuxComplianceInfoBox":  "동일한 정책에서 WSL 및 사용자 지정 준수 설정을 구성할 수 없습니다.",
+                           "windowsSubsystemLinuxComplianceLearnMore":  "허용되는 Linux 배포를 지정하고 필요에 따라 각 배포에 대해 최소 버전, 최대 버전 또는 둘 다를 지정합니다.",
                            "windowsTipsDescription":  "IT 관리자가 Windows 팁의 팝업을 끌 수 있도록 허용합니다.",
                            "windowsTipsName":  "Windows 팁",
                            "windowsWelcomeExperienceDescription":  "새 기능이나 업데이트된 기능을 소개하는 Windows 시작 환경을 차단합니다.",
@@ -10520,7 +10576,7 @@
                            "clientAppPolicyDefault":  "정책 없음",
                            "clientAppPolicyPlural":  "{0}개의 정책",
                            "clientAppPolicySingular":  "{0}개의 정책",
-                           "clockInClockOutNotes":  "<p><b>참고:</b></p>\r\n<ul type=\"disc\">\r\n    <li>이 설정을 적용할 수 있는 앱에 대한 자세한 내용은 <b>방해 금지 시간 문서 - 차단 섹션</b>을 참조하세요.</li>\r\n    <li>이 설정에는 알림을 소거할 수 있는 기능이 없습니다. 알림 소거를 위한 설정을 구성하려면 <b>방해 금지 시간 링크 – 문서 소거</b>를 참조하세요.</li>\r\n</ul>",
+                           "clockInClockOutNotes":  "<p><b>참고:</b></p>\r\n<ul type=\"disc\">\r\n    <li>이 설정은 테넌트가 <b>작업 시간 API</b>와 통합된 경우에만 구성해야 합니다. 이 설정을 <b>작업 시간 API</b>와 통합하는 방법에 대한 자세한 내용은 <a href=\"https://review.learn.microsoft.com/en-us/microsoft-365/frontline/flw-working-time\">일선 근무자가 근무를 마치고 있을 때 Microsoft Teams에 대한 액세스 제한</a>\r을 참조하세요.\n. 작업 시간 API와 통합하지 않고 이 설정을 구성하면 애플리케이션과 연결된 관리 계정의 작업 시간 상태가 누락되어 계정이 차단될 수 있습니다.</li>\r\n    이 설정을 지원하는 앱에 대한 자세한 내용을 보려면 <li><a href=\"https://learn.microsoft.com/en-us/mem/intune/apps/apps-supported-intune-apps\">지원되는 Microsoft Intune 앱 참조 | Microsoft Learn</a>\r\n을 참조하세요.</li> <li>이 설정에는 알림을 음소거할 수 있는 기능이 없습니다. 알림 음소거 설정을 구성하려면 <a href=\"https://learn.microsoft.com/en-us/mem/intune/apps/apps-quiet-time-policies\">Microsoft Intune에서 조용한 시간 정책 만들기 | Microsoft Learn</a></li>을 참조하세요.\r\n</ul>",
                            "clockedOutAccount":  "휴무 시간",
                            "closeText":  "닫기",
                            "columns":  "열",
@@ -10596,7 +10652,7 @@
                            "deviceConditionsInfoParagraph2":  "등록된 디바이스에 대해 비슷한 디바이스 기반 설정을 구성할 수 있습니다.",
                            "deviceConditionsInfoParagraph2LinkText":  "등록된 디바이스의 디바이스 준수 설정 구성에 대해 자세히 알아보세요.",
                            "deviceId":  "디바이스 ID",
-                           "deviceLockComplexityValidationFailureNotes":  "<p><b>참고:</b></p>\r\n<ul type=\"disc\">\r\n    <li>장치 잠금에는 Android 12 이상을 대상으로 하는 LOW, MEDIUM 또는 HIGH의 암호 복잡성이 필요할 수 있습니다. Android 11 및 이전 버전에서 작동하는 장치의 경우 복잡성 값을 낮음/중간/높게 설정하면 기본적으로 \"낮은 복잡성\"에 대한 예상 동작으로 설정됩니다.</li>\r\n    <li>아래의 암호 정의는 변경될 수 있습니다. 다양한 암호 복잡성 수준에 대한 최신 업데이트 정의는 <a href='https://developer.android.com/reference/android/app/admin/DevicePolicyManager#getPasswordComplexity%28%29'>DevicePolicyManager|Android 개발자</a>를 참조하세요.</li>\r\n</ul>\r\n\r\n<p><b>낮음</b></p>\r\n<ul type=\"disc\">\r\n    <li>암호는 반복(4444) 또는 순서(1234, 4321, 2468) 시퀀스가 있는 패턴 또는 PIN일 수 있습니다.</li>\r\n</ul>\r\n\r\n<p><b>중간</b></p>\r\n<ul type=\"disc\">\r\n    <li>최소 길이가 4자 이상인 반복(4444) 또는 순서(1234, 4321, 2468) 시퀀스가 없는 PIN</li>\r\n    <li>최소 길이가 4자 이상인 알파벳 암호</li>\r\n    <li>최소 길이가 4자 이상인 영숫자 암호</li>\r\n</ul>\r\n\r\n<p><b>높음</b></p>\r\n<ul type=\"disc\">\r\n    <li>최소 길이가 8자 이상인 반복(4444) 또는 순서(1234, 4321, 2468) 시퀀스가 없는 PIN</li>\r\n    <li>최소 길이가 6자 이상인 알파벳 암호</li>\r\n    <li>최소 길이가 6자 이상인 알파벳 암호</li>\r\n</ul>\r\n<p></p>",
+                           "deviceLockComplexityValidationFailureNotes":  "<p><b>참고:</b></p>\r\n<ul type=\"disc\">\r\n    <li>장치 잠금에는 Android 12 이상을 대상으로 하는 LOW, MEDIUM 또는 HIGH의 암호 복잡성이 필요할 수 있습니다. Android 11 및 이전 버전에서 작동하는 장치의 경우 복잡성 값을 낮음/중간/높게 설정하면 기본적으로 \"낮은 복잡성\"에 대한 예상 동작으로 설정됩니다.</li>\r\n    <li>아래 암호 정의는 변경될 수 있습니다. <a href='https://developer.android.com/reference/android/app/admin/DevicePolicyManager#getPasswordComplexity%28%29'>DevicePolicyManager|을(를) 참조하세요. 다양한 암호 복잡성 수준의 가장 업데이트된 정의에 대한 Android 개발자</a> 입니다.</li>\r\n</ul>\r\n\r\n<p><b> 낮음</b></p>\r\n<ul type=\"disc\">\r\n    <li>암호는 반복(4444) 또는 순서가 지정된(1234, 4321, 2468) 시퀀스가 있는 패턴 또는 PIN일 수 있습니다.</li>\r\n</ul>\r\n\r\n<p><b>중간</b></p>\r\n<ul type=\"disc\">\r\n    <li>최소 길이가 4자 이상인 반복(4444) 또는 순서가 지정된(1234, 4321, 2468) 시퀀스가 없는 PIN</li>\r\n    <li>최소 길이가 4자 이상인 영문자 암호</li>\r\n    <li>최소 길이가 4자 이상인 영숫자 암호</li>\r\n</ul>\r\n\r\n<p><b>높음</b></p>\r\n<ul type=\"disc\">\r\n    <li>최소 길이가 8자 이상인 반복(4444) 또는 순서가 지정된(1234, 4321, 2468) 시퀀스가 없는 PIN</li>\r\n    <li>최소 길이가 6자 이상인 영문자 암호</li>\r\n    <li>최소 길이가 6자 이상인 영숫자 암호</li>\r\n</ul>\r\n<p></p>",
                            "deviceLockedOpenFilesOptionsText":  "디바이스가 잠길 때 열린 파일이 있음",
                            "deviceLockedOptionText":  "디바이스가 잠길 때",
                            "deviceManufacturer":  "디바이스 제조업체",
@@ -10620,7 +10676,7 @@
                            "downloadingReport":  "보고서 다운로드 중",
                            "edgeGSAssignment":  "Edge 모바일 버전이 설치되도록 포함하려는 사용자 그룹을 선택합니다. Edge는 이러한 사용자가 등록한 모든 iOS 및 Android 디바이스에 설치됩니다.",
                            "edgeGSIntroBenefitHTML":  "<p>iOS 또는 Android 사용자를 위한 Microsoft Edge 앱을 다운로드하여 회사 디바이스에서 원활하게 검색하도록 지원하세요. Edge를 사용하면 작업 콘텐츠를 통합, 정렬 및 관리하는 데 도움이 되는 기본 제공 기능을 통해 웹을 깔끔한 환경에서 검색할 수 있습니다. Edge 애플리케이션에서 회사 Microsoft Entra 계정으로 로그인하는 iOS 및 Android 디바이스 사용자는 자신이 정의한 회사 즐겨찾기 및 웹 사이트 필터를 통해 미리 로드된 브라우저를 찾을 수 있습니다.</p><p>사용자가 iOS 또는 Android 디바이스를 등록하지 못하도록 차단한 경우 이 시나리오에서는 등록을 사용하도록 설정하지 않으며, 사용자는 Edge를 직접 설치해야 합니다.</p>",
-                           "edgeGSIntroPrereqHTML":  "<p>사용자에게 필요한 회사 즐겨찾기 및 웹 검색에 필요한 필터를 묻는 메시지가 표시됩니다. 계속하기 전에 다음 작업을 완료해야 합니다.</p>\r\n<li><a href='https://go.microsoft.com/fwlink/?linkid=2102458'>Microsoft Entra 그룹</a></li>에 사용자를 추가합니다.\r\n<li>iOS 또는 Android 디바이스를 Intune에 등록합니다. <a href='https://go.microsoft.com/fwlink/?linkid=2102547'>자세한 정보</a></li>\r\n<li>Edge에서 추가할 회사 즐겨찾기 목록을 수집합니다.</li>\r\n<li>Edge에서 적용할 웹 사이트 필터 목록을 수집합니다.</li>",
+                           "edgeGSIntroPrereqHTML":  "<p>사용자에게 필요한 회사 즐겨찾기 및 웹 검색에 필요한 필터를 묻는 메시지가 표시됩니다. 계속하기 전에 다음 작업을 완료해야 합니다.</p>\r\n<li><a href='https://go.microsoft.com/fwlink/?linkid=2102458'>Microsoft Entra 그룹에 사용자 추가</a></li>\r\n<li>Intune에서 iOS 또는 Android 디바이스를 등록합니다. <a href='https://go.microsoft.com/fwlink/?linkid=2102547'>자세히 알아보기</a></li>\r\n<li>Edge에 추가할 작업 공간 즐겨찾기 목록을 수집합니다.</li>\r\n<li>Edge에서 적용할 웹 사이트 필터 목록을 수집합니다.</li>",
                            "edgeGSName":  "iOS 및 Android용 Edge",
                            "edgeGSSyncInfo":  "디바이스 연결과 동기화 시간에 따라 이 배포가 디바이스에 도달하는 데 최대 24시간이 걸릴 수 있습니다.",
                            "edit":  "편집",
@@ -10736,6 +10792,7 @@
                            "isMamEnabled":  "MAM 사용 여부",
                            "itemsCount":  "{0}개의 항목",
                            "jailbrokenRootedDevices":  "탈옥/루팅된 디바이스",
+                           "knoxConditionalLaunchSettingBlockWhenSettingIsSupported":  "지원되는 디바이스에서 액세스 차단",
                            "lastModifiedDate":  "마지막으로 수정한 날짜",
                            "lastReportedDate":  "마지막으로 보고된 날짜",
                            "lastSync":  "마지막 동기화",
@@ -10839,7 +10896,6 @@
                            "pendingDeleteContentStateText":  "삭제하는 중...",
                            "photoLibrary":  "사진 라이브러리",
                            "pinCharSettingTooltip":  "숫자 PIN은 숫자만 허용합니다.\r\n\r\n암호에는 영숫자 문자와 허용된 기호가 모두 필요합니다.",
-                           "pinRotationWarning":  "<b>중요:</b> 2024년 6월 1일부터 17.7.0 이전 SDK를 사용하는 앱은 더 이상 앱 보호 정책 업데이트가 제공되지 않으며 사용자가 앱을 실행할 수 없게 됩니다. 사용자가 앱을 업데이트하고 있으며 LOB(기간 업무) 앱에서 최근 SDK 또는 래퍼를 사용하고 있는지 확인하세요. <a href = \"https://learn.microsoft.com/en-us/mem/intune/fundamentals/whats-new#update-to-the-latest-company-portal-for-android-intune-app-sdk-for-ios-and-intune-app-wrapper-for-ios\">자세한 정보</a>",
                            "pinToDashboard":  "Dummy string, don't translate",
                            "platformColumnLabel":  "플랫폼",
                            "platformDropDownLabel":  "플랫폼",
@@ -11137,6 +11193,7 @@
                            "policySetsTitle":  "정책 집합",
                            "applicabilityRules":  "적용 가능성 규칙",
                            "windowsEnrollmentTitle":  "Windows 등록",
+                           "DefaultESPCustomErrorMessage":  "설정을 완료할 수 없습니다. 다시 시도하거나 지원 담당자에게 도움을 요청하세요.",
                            "appleEnrollmentTitle":  "Apple 등록",
                            "targetedAppLabel":  "대상 앱",
                            "configurationSettingsTitle":  "구성 설정",
@@ -11462,6 +11519,8 @@
                                                      "alertBannerV2":  "Microsoft-managed policies in report-only state will be automatically turned on with advance email and {0}M365 message center{1} notifications. We recommend that you review these policies and recommended actions.",
                                                      "learnMoreLinkAriaLabel":  "Learn more about Microsoft-managed policies.",
                                                      "m365MessageCenterLinkAriaLabel":  "M365 message center",
+                                                     "policySummaryBlockDCF":  "This policy unilaterally blocks device code flow usage across all resources and all users. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryBlockLegacyAuth":  "This policy blocks any sign-in attempt using legacy authentication and legacy authentication protocols from accessing applications. Legacy authentication refers to authentication requests made by: Clients that don't use modern authentication (e.g., Office 2010 clients). Clients that use older mail protocols such as IMAP, SMTP, or POP3.",
                                                      "policySummaryMfa":  "This policy requires some administrator roles to perform multifactor authentication when accessing Microsoft admin portals. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
@@ -11473,7 +11532,6 @@
                                                      "recActionsMfa2":  "To prevent users from being locked out, verify that all users covered by this policy have at least one enabled authentication methods.",
                                                      "recActionsPerUserMfaV2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
-                                                     "recActionsPerUserMfaViaGroup2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
                                                      "securityDefaultsBasedAdminMfaMMPolicySummary":  "Require multifactor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as security defaults.",
@@ -11481,7 +11539,6 @@
                                                      "securityDefaultsBasedAzureManagementMMPolicySummary":  "Require multifactor authentication to protect privileged access to Azure management.",
                                                      "securityDefaultsBasedLegacyBlockMMPolicySummary":  "Block legacy authentication endpoints that can be used to bypass multifactor authentication.",
                                                      "securityDefaultsBasedMMPolicyRecommendationOverview":  "Microsoft recommends leaving this policy enabled. If you need to make modifications beyond what is allowed in a Microsoft-managed policy, you can clone this policy and make those edits. Keep in mind that doing so will prevent Microsoft from improving the security posture for your organization through this policy.",
-                                                     "signInRiskActions1":  "Exclude one or more break glass accounts from the policy.",
                                                      "signInRiskActions2":  "While we have scoped this policy to include users who are already enabled for multifactor authentication, we recommend you verify this using the report below as an extra precaution to prevent users from being locked out.",
                                                      "signInRiskActionsViaGroup1":  "This policy relies on its corresponding security group to function. We recommend you keep the group even if you don't intend to use the policy now.",
                                                      "summary":  "Summary"
@@ -11671,10 +11728,10 @@
                                                                                                         "authenticationTransfer":  "Authentication transfer",
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
-                                                                                                        "label":  "Authentication flows (Preview)",
+                                                                                                        "label":  "Authentication flows",
                                                                                                         "multiple":  "\"{0}\" and \"{1}\""
                                                                                                     },
-                                                                                       "singular":  "Authentication flow (Preview)"
+                                                                                       "singular":  "Authentication flow"
                                                                                    },
                                                            "DeviceAttributes":  {
                                                                                     "AssignmentFilter":  {
@@ -11795,7 +11852,7 @@
                                                           "message":  "Control access based on Conditional Access policy to bring signals together, to make decisions, and enforce organizational policies."
                                                       },
                                         "Removed":  {
-                                                        "cloudApps":  "{0} cloud app(s) configured in this policy have been deleted from the directory, but this doesn't affect the other apps in the policy. When you save the policy the deleted app(s) will be automatically removed from it.",
+                                                        "cloudApps":  "{0} cloud app(s) configured in this policy are either unsupported or have been deleted from the directory. This does not affect the other apps in the policy. When you save the policy, the unsupported or deleted app(s) will be automatically removed from it.",
                                                         "deletedGroups":  "Deleted groups ({0})",
                                                         "deletedUsers":  "Deleted users ({0})",
                                                         "deletedUsersAndGroups":  "Deleted users and groups",
@@ -11811,7 +11868,7 @@
                                                      },
                                         "subtitle":  "Conditional Access policy",
                                         "tabLabel":  "Policy",
-                                        "viewPolicyImpact":  "View policy impact"
+                                        "viewPolicyImpact":  "View policy impact (Preview) "
                                     },
                     "PolicyCondition":  {
                                             "InsiderRisk":  {
@@ -12182,7 +12239,10 @@
                                          "Controls":  {
                                                           "AuthStrengthXtap":  {
                                                                                    "allUsers":  "To enable all authentication strengths, configure cross-tenant access settings to accept claims coming from Microsoft Entra tenants for external users. Authentication strengths will only configure second factor authentication for external users.",
-                                                                                   "externalUsers":  "To enable all built-in authentication strengths, configure cross-tenant access settings to accept claims coming from Microsoft Entra tenants for external users."
+                                                                                   "containsOnlyPasskeysAuthApp":  "Don't lock your users out. Additional steps might be required to ensure users can register passkeys in Authenticator.",
+                                                                                   "containsPasskeysAuthApp":  "Don't lock your users out. Additional steps might be required to ensure users can register passkeys in Microsoft Authenticator. To require authentication strengths for external users, configure cross-tenant access settings to accept claims from Microsoft Entra tenants.",
+                                                                                   "externalUsers":  "To enable all built-in authentication strengths, configure cross-tenant access settings to accept claims coming from Microsoft Entra tenants for external users.",
+                                                                                   "nonAuthPhishResistant":  "To require phishing-resistant authentication for external users, configure cross-tenant access settings to accept claims from Microsoft Entra tenants."
                                                                                },
                                                           "compliantDeviceEnabled":  "Don't lock yourself out! Make sure that your device is compliant.",
                                                           "domainJoinedDeviceEnabled":  "Don't lock yourself out! Make sure that your device is Microsoft Entra hybrid joined.",
@@ -12343,7 +12403,6 @@
                     "chooseApplicationsSelect":  "Select",
                     "chooseApplicationsSelected":  "Selected",
                     "chooseApplicationsSingular":  "{0} and 1 more",
-                    "chooseApplicationsTooMany":  "More results than can be shown. Please filter using the search box.",
                     "chooseLocationSelectedLocationsLabel":  "Selected locations",
                     "chooseLocationTrustedIpsItem":  "Multifactor authentication trusted IPs",
                     "chooseLocationsBladeSubtitle":  "",
@@ -12354,21 +12413,13 @@
                     "chooseLocationsExcludedSelectorTitle":  "Select",
                     "chooseLocationsIncludedSelectorTitle":  "Select",
                     "chooseLocationsNone":  "None",
-                    "chooseLocationsNoneFound":  "We didn't find \"{0}\". Try another name or ID.",
                     "chooseLocationsPlural":  "{0} and {1} more",
                     "chooseLocationsRemove":  "Remove",
-                    "chooseLocationsReturnedPlural":  "{0} locations found",
-                    "chooseLocationsReturnedSingular":  "1 location found",
-                    "chooseLocationsSearchBalloon":  "Search for a Location by entering its name.",
-                    "chooseLocationsSearchHint":  "Search Locations...",
-                    "chooseLocationsSearchLabel":  "Locations",
-                    "chooseLocationsSearching":  "Searching...",
                     "chooseLocationsSelect":  "Select",
                     "chooseLocationsSelected":  "Selected",
                     "chooseLocationsSelectionBladeExcludedSelectorTitle":  "Select",
                     "chooseLocationsSelectionBladeIncludedSelectorTitle":  "Select",
                     "chooseLocationsSingular":  "{0} and 1 more",
-                    "chooseLocationsTooMany":  "More results than can be shown. Please filter using the search box.",
                     "chooseNetworkLocationSelectedNetworksLocationsLabel":  "Selected networks and locations",
                     "claimProviderAddCommandText":  "New custom control",
                     "claimProviderAddNewBladeTitle":  "New custom control",
@@ -12493,7 +12544,6 @@
                     "clientTypeModernAuth":  "Modern authentication clients",
                     "clientTypeOtherClients":  "Other clients",
                     "clientTypeOtherClientsInfo":  "This includes older office clients and other mail protocols(POP, IMAP, SMTP, etc). [Learn more][1]\n[1]: https://aka.ms/caclientapps\n",
-                    "cloudAppCountDiffBannerText":  "{0} cloud apps configured in this policy have been deleted from the directory, but this doesn't affect the other apps in the policy. The next time you update the application section of the policy, the deleted apps will be automatically removed from it.",
                     "cloudAppsSelectionBladeAllMicrosoftApps":  "All Microsoft apps",
                     "cloudappsSelectionBladeAllCloudapps":  "All cloud apps",
                     "cloudappsSelectionBladeAllResources":  "All resources (formerly 'All cloud apps')",
@@ -12633,6 +12683,7 @@
                     "memberSelectionCommandRemove":  "Remove",
                     "menuItemClaimProviderControls":  "Custom controls (Preview)",
                     "menuItemClassicPolicies":  "Classic policies",
+                    "menuItemDeletedPolicies":  "Deleted Policies",
                     "menuItemInsightsAndReporting":  "Insights and reporting",
                     "menuItemManage":  "Manage",
                     "menuItemNamedLocationsPreview":  "Named locations (Preview)",
@@ -12666,24 +12717,14 @@
                     "namedNetworkNameInvalid":  "The supplied name is invalid.",
                     "namedNetworkNameRequired":  "You must supply a name for this location.",
                     "namedNetworkNoIpRanges":  "No IP ranges",
-                    "namedNetworkNotificationCreateDescription":  "Creating location named '{0}'",
                     "namedNetworkNotificationCreateFailedDescription":  "Creating location '{0}' failed. Please try again later.",
-                    "namedNetworkNotificationCreateFailedTitle":  "Failed to create location",
-                    "namedNetworkNotificationCreateSuccessDescription":  "Created location named '{0}'",
-                    "namedNetworkNotificationCreateSuccessTitle":  "Created '{0}'",
-                    "namedNetworkNotificationCreateTitle":  "Creating '{0}'",
                     "namedNetworkNotificationDeleteDescription":  "Deleting location named '{0}'",
                     "namedNetworkNotificationDeleteFailedDescription":  "Deleting location '{0}' failed. Please try again later.",
                     "namedNetworkNotificationDeleteFailedTitle":  "Failed to Delete location",
                     "namedNetworkNotificationDeleteSuccessDescription":  "Deleted location named '{0}'",
                     "namedNetworkNotificationDeleteSuccessTitle":  "Deleted '{0}'",
                     "namedNetworkNotificationDeleteTitle":  "Deleting '{0}'",
-                    "namedNetworkNotificationUpdateDescription":  "Updating location named '{0}'",
                     "namedNetworkNotificationUpdateFailedDescription":  "Updating location '{0}' failed. Please try again later.",
-                    "namedNetworkNotificationUpdateFailedTitle":  "Failed to Update location",
-                    "namedNetworkNotificationUpdateSuccessDescription":  "Updated location named '{0}'",
-                    "namedNetworkNotificationUpdateSuccessTitle":  "Updated '{0}'",
-                    "namedNetworkNotificationUpdateTitle":  "Updating '{0}'",
                     "namedNetworkSearchPlaceholder":  "Search locations.",
                     "namedNetworkUploadFailedDescription":  "There was an error parsing the supplied file. Please make sure to upload a plain-text file with each line in the CIDR format.",
                     "namedNetworkUploadFailedTitle":  "Failed to parse '{0}'",
@@ -12799,6 +12840,7 @@
                     "policyResourcesLabel":  "Resources",
                     "policyReviewSection":  "Review",
                     "policySaveButton":  "Save",
+                    "policySoftDeleteConfirmation":  "Once deleted, you will have 30 days to restore this policy.",
                     "policyStagedRollout":  "Staged rollout",
                     "policyStagedRolloutOptionsGroupItemAriaLabel":  "Enable Policy: Staged rollout.",
                     "policyStatusIconDescription":  "Policy is Enabled",
@@ -13036,7 +13078,7 @@
                      "androidAOSP":  "Android(AOSP)",
                      "androidEnterprise":  "Android Enterprise",
                      "androidForWork":  "Android Enterprise",
-                     "androidWorkProfile":  "Android enterprise",
+                     "androidWorkProfile":  "Android Enterprise",
                      "common":  "일반",
                      "iOS":  "iOS/iPadOS",
                      "iosAndAndroidPlatformLabel":  "iOS 및 Android",
@@ -13079,16 +13121,16 @@
                                              "androidForWorkGeneral":  "디바이스 제한(회사 프로필)"
                                          },
                                "androidCustom":  "사용자 지정",
-                               "androidDeviceOwnerGeneral":  "디바이스 제한",
+                               "androidDeviceOwnerGeneral":  "디바이스 제한 사항",
                                "androidDeviceOwnerPkcs":  "PKCS 인증서",
                                "androidDeviceOwnerScep":  "SCEP 인증서",
                                "androidDeviceOwnerTrustedCertificate":  "신뢰할 수 있는 인증서",
                                "androidDeviceOwnerVpn":  "VPN",
                                "androidDeviceOwnerWiFi":  "Wi-Fi",
-                               "androidEmailProfile":  "메일(삼성 KNOX 전용)",
+                               "androidEmailProfile":  "이메일(Samsung KNOX만 해당)",
                                "androidForWorkCustom":  "사용자 지정",
-                               "androidForWorkEmailProfile":  "전자 메일",
-                               "androidForWorkGeneral":  "디바이스 제한",
+                               "androidForWorkEmailProfile":  "이메일",
+                               "androidForWorkGeneral":  "디바이스 제한 사항",
                                "androidForWorkImportedPFX":  "PKCS 가져온 인증서",
                                "androidForWorkOemConfig":  "OEMConfig",
                                "androidForWorkPKCS":  "PKCS 인증서",
@@ -13096,33 +13138,33 @@
                                "androidForWorkTrustedCertificate":  "신뢰할 수 있는 인증서",
                                "androidForWorkVpn":  "VPN",
                                "androidForWorkWiFi":  "Wi-Fi",
-                               "androidGeneral":  "디바이스 제한",
+                               "androidGeneral":  "디바이스 제한 사항",
                                "androidImportedPFX":  "PKCS 가져온 인증서",
                                "androidPKCS":  "PKCS 인증서",
                                "androidSCEP":  "SCEP 인증서",
                                "androidTrustedCertificate":  "신뢰할 수 있는 인증서",
                                "androidVPN":  "VPN",
                                "androidWiFi":  "Wi-Fi",
-                               "androidZebraMx":  "MX 프로필(Zebra만)",
+                               "androidZebraMx":  "MX 프로필(Zebra만 해당)",
                                "complianceAndroid":  "Android 준수 정책",
                                "complianceAndroidDeviceOwner":  "완전 관리형, 전용 및 회사 소유 회사 프로필",
                                "complianceAndroidEnterprise":  "개인 소유 회사 프로필",
                                "complianceAndroidForWork":  "Android for Work 준수 정책",
                                "complianceIos":  "iOS 준수 정책",
                                "complianceMac":  "Mac 준수 정책",
-                               "complianceWindows10":  "Windows 10 이상 규정 준수 정책",
+                               "complianceWindows10":  "Windows 10 이상 준수 정책",
                                "complianceWindows10Mobile":  "Windows 10 Mobile 준수 정책",
                                "complianceWindows8":  "Windows 8 준수 정책",
                                "complianceWindowsPhone":  "Windows Phone 준수 정책",
                                "exchangeActiveSync":  "Exchange Active Sync",
-                               "inventoryCatalog":  "속성 카탈로그(미리 보기)",
+                               "inventoryCatalog":  "속성 카탈로그",
                                "iosCustom":  "사용자 지정",
                                "iosDerivedCredentialAuthenticationConfiguration":  "파생된 PIV 자격 증명",
                                "iosDeviceFeatures":  "디바이스 기능",
                                "iosEDU":  "교육",
                                "iosEducation":  "교육",
-                               "iosEmailProfile":  "전자 메일",
-                               "iosGeneral":  "디바이스 제한",
+                               "iosEmailProfile":  "이메일",
+                               "iosGeneral":  "디바이스 제한 사항",
                                "iosImportedPFX":  "PKCS 가져온 인증서",
                                "iosPKCS":  "PKCS 인증서",
                                "iosPresets":  "미리 설정",
@@ -13133,9 +13175,9 @@
                                "iosWiFi":  "Wi-Fi",
                                "macCustom":  "사용자 지정",
                                "macDeviceFeatures":  "디바이스 기능",
-                               "macEndpointProtection":  "엔드포인트 보호",
+                               "macEndpointProtection":  "Endpoint Protection",
                                "macExtensions":  "확장",
-                               "macGeneral":  "디바이스 제한",
+                               "macGeneral":  "디바이스 제한 사항",
                                "macImportedPFX":  "PKCS 가져온 인증서",
                                "macSCEP":  "SCEP 인증서",
                                "macTrustedCertificate":  "신뢰할 수 있는 인증서",
@@ -13148,10 +13190,10 @@
                                "windows10Custom":  "사용자 지정",
                                "windows10DesktopSoftwareUpdate":  "소프트웨어 업데이트",
                                "windows10DeviceFirmwareConfigurationInterface":  "디바이스 펌웨어 구성 인터페이스",
-                               "windows10EmailProfile":  "전자 메일",
-                               "windows10EndpointProtection":  "엔드포인트 보호",
+                               "windows10EmailProfile":  "이메일",
+                               "windows10EndpointProtection":  "Endpoint Protection",
                                "windows10EnterpriseDataProtection":  "Windows Information Protection",
-                               "windows10General":  "디바이스 제한",
+                               "windows10General":  "디바이스 제한 사항",
                                "windows10ImportedPFX":  "PKCS 가져온 인증서",
                                "windows10Kiosk":  "키오스크",
                                "windows10NetworkBoundary":  "네트워크 경계",
@@ -13165,18 +13207,18 @@
                                "windows10VPN":  "VPN",
                                "windows10WiFi":  "Wi-Fi",
                                "windows10WiFiCustom":  "Wi-Fi 사용자 지정",
-                               "windows8General":  "디바이스 제한",
+                               "windows8General":  "디바이스 제한 사항",
                                "windows8SCEP":  "SCEP 인증서",
                                "windows8TrustedCertificate":  "신뢰할 수 있는 인증서",
                                "windows8VPN":  "VPN",
                                "windows8WiFi":  "Wi-Fi 가져오기",
-                               "windowsDeliveryOptimization":  "제공 최적화",
+                               "windowsDeliveryOptimization":  "전송 최적화",
                                "windowsDomainJoin":  "도메인 가입",
-                               "windowsEditionUpgrade":  "버전 업그레이드 및 모드 전환",
+                               "windowsEditionUpgrade":  "버전 업그레이드 및 모드 스위치",
                                "windowsIdentityProtection":  "ID 보호",
                                "windowsPhoneCustom":  "사용자 지정",
-                               "windowsPhoneEmailProfile":  "전자 메일",
-                               "windowsPhoneGeneral":  "디바이스 제한",
+                               "windowsPhoneEmailProfile":  "이메일",
+                               "windowsPhoneGeneral":  "디바이스 제한 사항",
                                "windowsPhoneImportedPFX":  "PKCS 가져온 인증서",
                                "windowsPhoneSCEP":  "SCEP 인증서",
                                "windowsPhoneTrustedCertificate":  "신뢰할 수 있는 인증서",

@@ -86,9 +86,13 @@ function Start-CoreApp
     Write-Log "#####################################################################################"
 
     Write-Log "PowerShell version: $($PSVersionTable.PSVersion.ToString())"
-    Write-Log "PowerShell build: $($PSVersionTable.BuildVersion.ToString())"
-    Write-Log "PowerShell CLR: $($PSVersionTable.CLRVersion.ToString())"
-    Write-Log "PowerShell edition: $($PSVersionTable.PSEdition)"
+    if($PSVersionTable.BuildVersion) {
+        Write-Log "PowerShell build: $($PSVersionTable.BuildVersion.ToString())"
+    }
+    if($PSVersionTable.CLRVersion) {
+        Write-Log "PowerShell CLR: $($PSVersionTable.CLRVersion.ToString())"
+    }
+        Write-Log "PowerShell edition: $($PSVersionTable.PSEdition)"
 
     try
     {
@@ -344,6 +348,14 @@ function Write-LogError
     }
 
     Write-Log $Text 3
+
+    if((Get-SettingValue "ShowStackTrace") -eq $true)
+    {
+        Write-Log "Stack trace:`n $($Exception.StackTrace)"
+
+        Write-Log "Script stack trace:`n $($Exception.ScriptStackTrace)"
+
+    }
 }
 
 function Write-Status
@@ -1069,7 +1081,7 @@ function Get-Folder
         {
             if($global:WindowsAPICodePackLoaded -eq $false)
             {
-                $apiCodec = Join-Path $global:AppRootFolder "Microsoft.WindowsAPICodePack.Shell.dll"
+                $apiCodec = Join-Path $global:AppRootFolder "Bin\Microsoft.WindowsAPICodePack.Shell.dll"
                 if([IO.File]::Exists($apiCodec))
                 {
                     Add-Type -Path $apiCodec | Out-Null                    
@@ -1988,6 +2000,14 @@ function Add-DefaultSettings
         Type = "Boolean"
         Description = "Write errors to the Error Output of the PS Host. If disabled, errors will be written as a Warning. Eg. disable this if automation should skip logging PowerShell errors."
         DefaultValue = $true
+    }) "General"
+    
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Show stack error"
+        Key = "ShowStackTrace"
+        Type = "Boolean"
+        Description = "Write exception stack trace info to the log."
+        DefaultValue = $false
     }) "General"    
 
     Add-SettingsObject (New-Object PSObject -Property @{

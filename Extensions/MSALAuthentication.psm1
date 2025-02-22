@@ -129,6 +129,20 @@ function Invoke-InitializeModule
         Description = "Sort the list of available tenants based on Tenant name. Updated at restart or account change"
     }) "MSAL"
 
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Use WAM for eahanced login methods"
+        Key = "UseWAM"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Use WAM for eahanced login methods"
+    }) "MSAL"
+
+    $script:MSALUseWAM = Get-SettingValue "UseWAM"
+    if($script:MSALUseWAM -and $PSVersionTable.PSVersion.Major -lt 7) {
+        Write-Log "WAM is only supported in PowerShell 7 and later. Disabling WAM" 2
+        $script:MSALUseWAM = $false
+    }
+
     Add-MSALPrereq
 }
 
@@ -200,6 +214,9 @@ function Set-MSALGraphEnvironment
     {
         $curAADEnv = $script:lstAADEnvironments | Where URL -eq $user.Environment
     }
+    elseif($global:UseGraphEnvironment) {
+        $curAADEnv = $script:lstAADEnvironments | Where value -eq $global:UseGraphEnvironment
+    }
     else
     {
         $curAADEnv = $script:lstAADEnvironments | Where value -eq (Get-Setting "" "MSALCloudType" "public")
@@ -207,7 +224,14 @@ function Set-MSALGraphEnvironment
 
     if($curAADEnv.Value -eq "usGov")
     {
-        $gccEnv = (Get-Setting "" "MSALGCCType" "gcc")
+        if($global:UseGCCType)
+        {
+            $gccEnv = $global:UseGCCType
+        }
+        else {
+            $gccEnv = (Get-Setting "" "MSALGCCType" "gcc")
+        }
+        
         if($gccEnv)
         {
             $GCCEnvObj = $script:lstGCCEnvironments | Where Value -eq $gccEnv
@@ -488,6 +512,129 @@ function Install-MSALDependencyModule
 
 function Add-MSALPrereq
 {
+    $ScriptRoot = $global:AppRootFolder    
+
+    $DLLFiles = @()
+    if($PSVersionTable.PSVersion.Major -ge 7) {
+        $DLLFiles += [IO.FileInfo]($ScriptRoot + "\Bin\Microsoft.IdentityModel.Abstractions.dll")
+    }
+    else {
+        $DLLFiles += [IO.FileInfo]($ScriptRoot + "\Bin\6.35.0\Microsoft.IdentityModel.Abstractions.dll")
+    }    
+    $DLLFiles += [IO.FileInfo]($ScriptRoot + "\Bin\Microsoft.Identity.Client.dll")    
+    if($script:MSALUseWAM) {
+        $DLLFiles += [IO.FileInfo]($ScriptRoot + "\BIN\$MSALDLLPath\Microsoft.Identity.Client.Extensions.Msal.dll")
+        $DLLFiles += [IO.FileInfo]($ScriptRoot + "\BIN\$MSALDLLPath\Microsoft.Identity.Client.Broker.dll")
+        $DLLFiles += [IO.FileInfo]($ScriptRoot + "\BIN\$MSALDLLPath\Microsoft.Identity.Client.Desktop.dll")
+        $DLLFiles += [IO.FileInfo]($ScriptRoot + "\BIN\$MSALDLLPath\Microsoft.Identity.Client.NativeInterop.dll")
+    }
+
+    $DLLFiles | ForEach-Object {
+        $dllFile = $_
+        # ToDo: Unblock files
+        if($_.Exists) {            
+            try {
+                [void][System.Reflection.Assembly]::LoadFrom($_.FullName)
+                Write-Log "Loaded $($_.Name) version $($_.VersionInfo.FileVersion)"
+            }
+            catch {
+                $loadedFile = [Appdomain]::CurrentDomain.GetAssemblies() | Where Location -like "*\$($dllFile.Name)"                
+                if($loadedFile) {
+                    $loadedFI = [IO.FileInfo]($loadedFile.Location)
+                    Write-Log "Failed to load $($dllFile.Name) version $($dllFile.VersionInfo.FileVersion). File already loaded: $($loadedFI.FullName) version $($loadedFI.VersionInfo.FileVersion)" 2
+                }                
+                else {
+                    Write-LogError "Failed to load $($dllFile.Name) version $($dllFile.VersionInfo.FileVersion)" $_.Exception
+                }
+            }
+        }
+        else {
+            Write-LogError "Microsoft.Identity file not found: $($_.FullName)"
+        }
+    }
+
+    if (-not ("TokenCacheHelperEx" -as [type])) 
+    {
+        [System.Collections.Generic.List[string]] $RequiredAssemblies = New-Object System.Collections.Generic.List[string]
+
+        foreach($file in $DLLFiles) {
+            $RequiredAssemblies.Add($file.FullName)    
+        }
+        $RequiredAssemblies.Add('System.Security.dll')
+        $RequiredAssemblies.Add('mscorlib.dll')
+        if($PSVersionTable.PSVersion.Major -ge 7) {
+            $RequiredAssemblies.Add('System.Security.Cryptography.ProtectedData.dll')
+        }
+        $RequiredAssemblies.Add('System.Threading.dll')
+    
+        try
+        {
+            Add-Type -Path ($ScriptRoot + "\CS\TokenCacheHelperEx.cs") -ReferencedAssemblies $RequiredAssemblies -IgnoreWarnings
+        }
+        catch
+        {
+            Write-LogError "Failed to compile TokenCacheHelperEx. The access token will not be cached. Check write access to the CS folder and ASR policies" $_.Exception
+        }
+    }    
+
+    if($script:MSALUseWAM) {
+        [System.Collections.Generic.List[string]] $RequiredAssemblies = New-Object System.Collections.Generic.List[string]
+
+        foreach($file in $DLLFiles) {
+            $RequiredAssemblies.Add($file.FullName)    
+        }
+        $RequiredAssemblies.Add('mscorlib.dll')
+        $RequiredAssemblies.Add('System.dll')
+        $RequiredAssemblies.Add('System.Windows.Forms')
+        # Import necessary methods from user32.dll and kernel32.dll
+        Add-Type @"
+            using System;
+            using System.Runtime.InteropServices;
+            using Microsoft.Identity.Client;
+            //using Microsoft.Identity.Client.Desktop;
+            using Microsoft.Identity.Client.Broker;
+            using System.Windows.Forms;
+
+            public class MSALMethods
+            {
+                enum GetAncestorFlags {
+                    GetParent = 1,
+                    GetRoot = 2,
+                    GetRootOwner = 3
+                }
+
+                [DllImport("user32.dll", ExactSpelling = true)]
+                public static extern IntPtr GetAncestor(IntPtr hwnd, int flags);
+
+                [DllImport("kernel32.dll")]
+                public static extern IntPtr GetConsoleWindow();
+
+                // This is your window handle!
+                public static  IntPtr GetConsoleOrTerminalWindow()
+                {
+                    IntPtr consoleHandle = GetConsoleWindow();
+                    IntPtr handle = GetAncestor(consoleHandle, (int)GetAncestorFlags.GetRootOwner );
+                    
+                    return handle;
+                }
+
+                public static void AddParentActivirtyOrWindow(PublicClientApplicationBuilder appBuilder)
+                {
+                    appBuilder.WithParentActivityOrWindow(GetConsoleOrTerminalWindow);
+                }
+
+                public static void AddWithBroker(PublicClientApplicationBuilder appBuilder, BrokerOptions options)
+                {
+                    appBuilder.WithBroker(options);
+                }
+            }
+
+"@ -ReferencedAssemblies $RequiredAssemblies -IgnoreWarnings
+    }
+}
+
+function Add-MSALPrereq_old
+{
     $msalPath = ""
     
     # Path stored in settings
@@ -565,7 +712,15 @@ function Add-MSALPrereq
         $RequiredAssemblies.Add($msalPath)
         $script:msalFile = $msalPath
     }
+
     $RequiredAssemblies.Add('System.Security.dll')
+    $RequiredAssemblies.Add('mscorlib.dll')
+    if($PSVersionTable.PSVersion.Major -ge 7)
+    {        
+        $RequiredAssemblies.Add('System.Security.Cryptography.ProtectedData.dll')
+    }
+    
+    $RequiredAssemblies.Add('System.Threading.dll')
 
     try
     {
@@ -586,6 +741,10 @@ function Connect-MSALClientApp
         
     if(-not $script:MSALApp)
     {
+        if($global:UseGraphEnvironment) { 
+            Set-MSALGraphEnvironment $null $null
+        }
+
         $authority = "https://login.microsoftonline.com/$tenantId"
         #$redirectUri = "http://localhost"
         
@@ -747,7 +906,7 @@ function Get-MSALApp
 {
     param($appInfo, $loginHint)
 
-    $msalApp = $script:MSALAllApps | Where { $_.ClientId -eq  $appInfo.ClientID  -and (-not $appInfo.RedirectUri -or $_.AppConfig.RedirectUri -eq $appInfo.RedirectUri)}
+    $msalApp = $script:MSALAllApps | Where { $_.AppConfig.ClientId -eq  $appInfo.ClientID  -and (-not $appInfo.RedirectUri -or $_.AppConfig.RedirectUri -eq $appInfo.RedirectUri)}
     
     $tenant = ?? $appInfo.TenantId "organizations"
     
@@ -770,13 +929,20 @@ function Get-MSALApp
         $appBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::Create($appInfo.ClientID)
 
         [void]$appBuilder.WithAuthority($authority)
-        #if($appInfo.TenantId) { [void]$appBuilder.WithAuthority("https://$((?? $loginHint.Environment (Get-MSALLoginEnvironment)))/$($appInfo.TenantId)/") }
-        #elseif ($appInfo.Authority) { [void]$appBuilder.WithAuthority($appInfo.Authority) }
 
         if($appInfo.RedirectUri) { [void]$appBuilder.WithRedirectUri($appInfo.RedirectUri) }
 
         [void] $appBuilder.WithClientName("CloudAPIPowerShellManagement") 
         [void] $appBuilder.WithClientVersion($PSVersionTable.PSVersion)
+
+        if($script:MSALUseWAM) {
+            [MSALMethods]::AddParentActivirtyOrWindow($appBuilder)
+
+            $options = [Microsoft.Identity.Client.BrokerOptions]::new([Microsoft.Identity.Client.BrokerOptions+OperatingSystems]::Windows)
+            $options.Title = "Intune Manager"
+            
+            [MSALMethods]::AddWithBroker($appBuilder, $options)
+        }
 
         Add-MSALProxy $appBuilder   
         
@@ -908,8 +1074,6 @@ function Connect-MSALUser
         Add-MSALPrereq
     }
 
-    $curTicks = $global:MSALToken.ExpiresOn.LocalDateTime.Ticks
-
     $currentLoggedInUserApp = ($global:MSALToken.Account.HomeAccountId.Identifier + $global:MSALToken.TenantId + $global:MSALApp.ClientId)
     $currentLoggedInUserId = $global:MSALToken.Account.HomeAccountId.Identifier
     if($Interactive -eq $true)
@@ -1014,15 +1178,6 @@ function Connect-MSALUser
                 Clear-MSALCurentUserVaiables
                 return
             }
-            
-            if($authResult -and $authResult.ExpiresOn.LocalDateTime.Ticks -ne $curTicks)
-            {        
-                Write-Log "$($authResult.Account.UserName) authenticated successfully (Silent). CorrelationId: $($global:MSALToken.CorrelationId)"
-            }
-            else
-            {        
-                Write-LogDebug "$($authResult.Account.UserName) authenticated successfully (Silent). CorrelationId: $($global:MSALToken.CorrelationId)"
-            }
 
             #AADSTS65001
             if($script:authenticationFailure.Classification -eq "ConsentRequired")
@@ -1113,6 +1268,10 @@ function Connect-MSALUser
         {
             Write-Log "Login hint: $loginHintName" 
             [void]$AquireTokenObj.WithLoginHint($loginHintName) 
+            [void]$AquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::NoPrompt)
+        }
+        else {
+            [void]$AquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::SelectAccount)
         }
         
         if($script:authenticationFailure.Claims) 
@@ -1133,16 +1292,36 @@ function Connect-MSALUser
             Write-Log "Interactive login with Consent prompt" 
             [void]$aquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::Consent) 
         }
-        elseif(-not $loginHintName)
-        {
-            Write-Log "Interactive login with Select account prompt" 
-            [void]$AquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::SelectAccount)
-        }
 
         $authResult = Get-MsalAuthenticationToken $aquireTokenObj
         if($authResult)
         {        
             Write-Log "$($authResult.Account.UserName) authenticated successfully (Interactively). CorrelationId: $($authResult.CorrelationId)"
+        }
+    }
+
+    if($authResult) {
+        $telemetry = $null
+        $wamTelemetry = $null
+        if($authResult.AuthenticationResultMetadata.Telemetry) {
+            try {
+                $telemetry = $authResult.AuthenticationResultMetadata.Telemetry | ConvertFrom-Json
+                if($telemetry.wam_telemetry) {
+                    $wamTelemetry = $telemetry.wam_telemetry | ConvertFrom-Json
+                }
+            }
+            catch {}
+        }
+
+        if($authResult.AuthenticationResultMetadata.TokenSource -eq "Broker" -and $telemetry.broker_app_used -eq "true") {
+            Write-Log "Token received from Broker. Time (ms): $($authResult.AuthenticationResultMetadata.DurationTotalInMs). CorrelationId: $($authResult.CorrelationId)"
+        }
+        elseif($authResult.AuthenticationResultMetadata.TokenSource -eq "IdentityProvider") {
+            Write-Log "Token received from IdentityProvider. Time (ms) $($authResult.AuthenticationResultMetadata.DurationTotalInMs)"
+        }
+        else {
+            # ToDo: Change to debug
+            Write-Log "Token received from Cache. Time (ms) $($authResult.AuthenticationResultMetadata.DurationTotalInMs)"
         }
     }
 
@@ -1218,22 +1397,13 @@ function Connect-MSALUser
     $global:MSALToken = $authResult
 
     if($currentLoggedInUserApp -ne ($global:MSALToken.Account.HomeAccountId.Identifier + $global:MSALToken.TenantId + $global:MSALApp.ClientId))
-    {
+    {        
         if($authResult) 
         {
             Save-Setting "" "LastLoggedOnUser" $authResult.Account.UserName
             Save-Setting "" "LastLoggedOnUserId" $authResult.Account.HomeAccountId.ObjectId
         }
         Invoke-MSALAuthenticationUpdated $authResult
-        <#
-        Write-LogDebug "User, tenant or app has changed"
-        Get-MSALUserInfo
-        if($authResult)
-        {
-            Invoke-MSALCheckObjectViewAccess $authResult
-        }        
-        Invoke-ModuleFunction "Invoke-GraphAuthenticationUpdated"
-        #>
     }
 }
 
@@ -2161,7 +2331,7 @@ function Show-MSALDecodedToken {
     {
         if($prop.Name -in @("exp","iat","nbf","xms_tcdt"))
         {
-            $value =[datetime]::new(1970, 1, 1, 0, 0, 0, 0, "UTC").AddSeconds(($tokenData.Payload."$($prop.Name)")).ToLocalTime()
+            $value = [datetime]::new(1970, 1, 1, 0, 0, 0, 0, [System.DateTimeKind]::Utc).AddSeconds(($tokenData.Payload."$($prop.Name)")).ToLocalTime()
         }
         elseif($prop.Name -in @("acrs","amr"))
         {

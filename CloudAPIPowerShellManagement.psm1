@@ -85,7 +85,12 @@ function Initialize-CloudAPIManagement
         [string]
         $secret,
         [string]
-        $certificate
+        $certificate,
+        [string]
+        $GraphEnvironment,
+        [string]
+        $GCCType
+
     )
 
     $PSModuleAutoloadingPreference = "none"
@@ -105,6 +110,8 @@ function Initialize-CloudAPIManagement
         $global:AzureAppId = $appId 
         $global:ClientSecret = $secret 
         $global:ClientCert = $certificate
+        $global:UseGraphEnvironment = $GraphEnvironment
+        $global:GCCType = $GCCType
     }
 
     if($global:hideUI -ne $true)
