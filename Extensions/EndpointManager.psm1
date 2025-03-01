@@ -856,6 +856,7 @@ function Invoke-InitializeModule
         Id = "DeviceCategories"
         ViewID = "IntuneGraphAPI"
         API = "/deviceManagement/deviceCategories"
+        QUERYLIST = "`$top=500"
         Permissons = @("DeviceManagementConfiguration.ReadWrite.All")
         GroupId = "DeviceConfiguration"
     })
@@ -1038,7 +1039,7 @@ function Set-EMViewPanel
     $global:btnLoadAllPages.add_click({
         Write-Status "Loading $($global:curObjectType.Title) objects"
         [array]$graphObjects = Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -AllPages
-        $graphObjects | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null }
+        $graphObjects | Where-Object { $_ -ne $null } | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null }        
         $global:dgObjects.ItemsSource.CommitNew()
         Set-GraphPagesButtonStatus
         Invoke-FilterBoxChanged $global:txtFilter -ForceUpdate
@@ -1048,7 +1049,7 @@ function Set-EMViewPanel
     $global:btnLoadNextPage.add_click({
         Write-Status "Loading $($global:curObjectType.Title) objects"
         [array]$graphObjects = Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage
-        $graphObjects | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null }
+        $graphObjects | Where-Object { $_ -ne $null } | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null  }        
         $global:dgObjects.ItemsSource.CommitNew()
         Set-GraphPagesButtonStatus
         Invoke-FilterBoxChanged $global:txtFilter
