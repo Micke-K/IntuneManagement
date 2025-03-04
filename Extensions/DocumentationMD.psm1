@@ -376,6 +376,7 @@ function Add-MDTableItems
 {
     param($obj, $objectType, $items, $properties, $lngId, [switch]$AddCategories, [switch]$AddSubcategories, $captionOverride)
 
+
     if($captionOverride)
     {
         $caption = $captionOverride
@@ -388,7 +389,9 @@ function Add-MDTableItems
     {
         $caption = "$((Get-GraphObjectName $obj $objectType)) ($($objectType.Title))"
     }
-
+    
+    Add-MDHeader $caption -Level 6 -TOT -AddParagraph
+    
     $tableText =  [System.Text.StringBuilder]::new()
     $tableText.AppendLine("<table class='table-settings'>")
     $tableText.AppendLine("<tr class='table-header1'>")
@@ -522,8 +525,7 @@ function Add-MDTableItems
 
     $tableText.AppendLine("</table>")
     Add-MDText $tableText.ToString()
-    
-    Add-MDHeader $caption -Level 6 -TOT -AddParagraph
+
 }
 
 function Add-MDText
