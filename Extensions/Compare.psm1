@@ -1575,8 +1575,10 @@ function Compare-ObjectsBasedonDocumentation
 
     $addedProperties = @()
 
-    if($docObj1.InputType -eq "Settings")
+    if($docObj1.InputType -eq "Intent")
     {
+        Set-ColumnVisibility $true ($null -ne ($docObj1.Settings | Where ParentSettingId -ne $null))
+
         foreach ($prop in $docObj1.Settings)
         {
             if(($prop.SettingId + $prop.ParentSettingId + $prop.RowIndex) -in $addedProperties) { continue }
@@ -1650,8 +1652,48 @@ function Compare-ObjectsBasedonDocumentation
             Add-CompareProperty $prop.Name $val1 $val2 $prop.Category
         }    
     }
+    elseif($docObj1.InputType -eq "Settings")
+    {
+        Set-ColumnVisibility $true ($null -ne ($docObj1.Settings | Where SubCategory -ne $null))
+
+        foreach ($prop in $docObj1.Settings)
+        {
+            if(($prop.SettingId + $prop.CategoryId + $prop.SubCategoryDefinition.Id) -in $addedProperties) { continue }
+
+            $addedProperties += ($prop.SettingId + $prop.CategoryId + $prop.SubCategoryDefinition.Id)
+            $val1 = $prop.$settingsValue 
+            $prop2 = $docObj2.Settings | Where { $_.SettingId -eq $prop.SettingId -and $_.CategoryId -eq $prop.CategoryId -and $_.SubCategoryDefinition.Id -eq $prop.SubCategoryDefinition.Id }
+            $val2 = $prop2.$settingsValue
+            if($val1 -isnot [array] -and $val2 -is [array] -and $val2.Count -gt 1) 
+            {
+                Write-Log "Multiple compare results returend for $($prop.Name). Using first result" 2
+                $val2 = $val2[0]
+            }
+            Add-CompareProperty $prop.Name $val1 $val2 $prop.Category $prop.SubCategory
+        }
+        
+        # These objects are defined only on Object 2. They will be last in the table
+        foreach ($prop in $docObj2.Settings)
+        {
+            if(($prop.SettingId + $prop.CategoryId + $prop.SubCategoryDefinition.Id) -in $addedProperties) { continue }
+
+            $addedProperties += ($prop.SettingId + $prop.CategoryId + $prop.SubCategoryDefinition.Id)
+            $val2 = $prop.$settingsValue
+            $prop2 = $docObj1.Settings | Where  { $_.SettingId -eq $prop.SettingId -and $_.CategoryId -eq $prop.CategoryId -and $_.SubCategoryDefinition.Id -eq $prop.SubCategoryDefinition.Id  }
+            $val1 = $prop2.$settingsValue
+            if($val2 -isnot [array] -and $val1 -is [array] -and $val1.Count -gt 1) 
+            {
+                Write-Log "Multiple compare results returend for $($prop.Name). Using first result" 2
+                $val1 = $val1[0]
+            }
+
+            Add-CompareProperty $prop.Name $val1 $val2 $prop.Category $prop.SubCategory
+        }           
+    }
     else
     {
+        Set-ColumnVisibility $true ($null -ne ($docObj1.Settings | Where SubCategory -ne $null))
+
         foreach ($prop in $docObj1.Settings)
         {
             if(($prop.EntityKey + $prop.Category + $prop.SubCategory) -in $addedProperties) { continue }

@@ -295,6 +295,7 @@ function Get-ObjectDocumentation
         Invoke-TranslateIntentObject $obj $objectType | Out-Null
         $properties = @("Name","Value","Category","FullValueTable","RawValue","RecommendedValue","SettingId","Description")
         $defaultDocumentationProperties = @("Name","Value","RecommendedValue")
+        $inputType = "Intent"
     }
     #endregion
     #region Administrative Templates
@@ -1254,7 +1255,7 @@ function Add-SettingsSetting
         SettingName = $settingsDef.Name
         Name = $settingName
         Description = $settingDescription
-        CategortyId = $objCategory.id
+        CategoryId = $objCategory.id
         Category=$objCategory.displayName
         CategoryDefinition=$objCategory
         SubCategory=$subCategory.displayName
