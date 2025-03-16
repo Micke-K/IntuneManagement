@@ -112,6 +112,41 @@ function Initialize-CloudAPIManagement
         $global:ClientCert = $certificate
         $global:UseGraphEnvironment = $GraphEnvironment
         $global:GCCType = $GCCType
+
+        if($global:AzureAppId)
+        {
+            Write-Log "Using Azure App Id: <AppID>"
+        }
+        else
+        {
+            Write-Log "Azure App Id is missing. Use -AppId <AppID> on the command line" 2
+        }
+
+        if($global:ClientSecret -or $global:ClientCert)
+        {
+            if($global:ClientSecret)
+            {
+                Write-Log "Using Azure App Secret"
+            }
+            else
+            {
+                Write-Log "Using Azure App Certificate"
+            }            
+        }
+        else
+        {
+            Write-Log "Azure App Secret or Certificate is missing. Use -Secret <Secret> or -Certificate <Certificate> on the command line" 2
+        }
+
+        if($global:UseGraphEnvironment)
+        {
+            Write-Log "Using Azure Graph Environment: $($global:UseGraphEnvironment)"
+        }
+
+        if($global:GCCType)
+        {
+            Write-Log "Using Graph Environment type: $($global:GCCType)"
+        }
     }
 
     if($global:hideUI -ne $true)
