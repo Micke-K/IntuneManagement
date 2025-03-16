@@ -1242,11 +1242,11 @@ function Add-SettingsSetting
     $settingName = ""
     $settingDescription = ""
     if($settingsDef.displayName) {
-        $settingName = $settingsDef.displayName.Trim([Environment]::NewLine).Trim('`n')
+        $settingName = $settingsDef.displayName.Trim([Environment]::NewLine).Trim("`n")
     }
 
     if($settingsDef.description) {
-        $settingDescription = $settingsDef.description.Trim([Environment]::NewLine).Trim('`n')
+        $settingDescription = $settingsDef.description.Trim([Environment]::NewLine).Trim("`n")
     }
 
     $settingInfo = [PSCustomObject]@{
