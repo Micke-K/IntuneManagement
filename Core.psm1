@@ -2910,6 +2910,19 @@ function Get-DataGridValues
     ($dataGrid.ItemsSource | Select -Property $properties)
 }
 
+function Get-GUIDs
+{
+    param($text)
+
+    $regExpGuid = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+    
+    $uniqueGuids = New-Object System.Collections.Generic.HashSet[String]
+    
+    # Use regular expressions to extract the GUIDs
+    [regex]::Matches($text, $regExpGuid) | ForEach-Object { $uniqueGuids.Add($_.Value) | Out-Null }
+        
+    $uniqueGuids
+}
 
 New-Alias -Name ?? -value Invoke-Coalesce
 New-Alias -Name ?: -value Invoke-IfTrue

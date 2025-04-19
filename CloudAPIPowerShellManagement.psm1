@@ -107,6 +107,7 @@ function Initialize-CloudAPIManagement
 
     if($tenantId)
     {
+        Write-Host "Using Tenant Id: $tenantId"
         $global:AzureAppId = $appId 
         $global:ClientSecret = $secret 
         $global:ClientCert = $certificate
@@ -115,37 +116,37 @@ function Initialize-CloudAPIManagement
 
         if($global:AzureAppId)
         {
-            Write-Log "Using Azure App Id: <AppID>"
+            Write-Host "Using Azure App Id: $($global:AzureAppId)"
         }
         else
         {
-            Write-Log "Azure App Id is missing. Use -AppId <AppID> on the command line" 2
+            Write-Warning "Azure App Id is missing. Use -AppId <AppID> on the command line"
         }
 
         if($global:ClientSecret -or $global:ClientCert)
         {
             if($global:ClientSecret)
             {
-                Write-Log "Using Azure App Secret"
+                Write-Host "Using Azure App Secret"
             }
             else
             {
-                Write-Log "Using Azure App Certificate"
+                Write-Host "Using Azure App Certificate"
             }            
         }
         else
         {
-            Write-Log "Azure App Secret or Certificate is missing. Use -Secret <Secret> or -Certificate <Certificate> on the command line" 2
+            Write-Warning "Azure App Secret or Certificate is missing. Use -Secret <Secret> or -Certificate <Certificate> on the command line"
         }
 
         if($global:UseGraphEnvironment)
         {
-            Write-Log "Using Azure Graph Environment: $($global:UseGraphEnvironment)"
+            Write-Host "Using Azure Graph Environment: $($global:UseGraphEnvironment)"
         }
 
         if($global:GCCType)
         {
-            Write-Log "Using Graph Environment type: $($global:GCCType)"
+            Write-Host "Using Graph Environment type: $($global:GCCType)"
         }
     }
 

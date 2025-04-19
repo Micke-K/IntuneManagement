@@ -3776,7 +3776,12 @@ function Import-GraphObject
             if($ret.ContainsKey("AdditionalHeaders") -and $ret["AdditionalHeaders"] -is [HashTable])
             {
                 $params.Add("AdditionalHeaders",$ret["AdditionalHeaders"])
-            }            
+            }
+
+            if($ret.ContainsKey("JSON")) 
+            {
+                $obj = $ret["JSON"] | ConvertFrom-Json
+            }
         }
     }
 

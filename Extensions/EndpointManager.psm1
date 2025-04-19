@@ -608,6 +608,7 @@ function Invoke-InitializeModule
         ViewProperties = @("name","description","Id")
         Expand="Settings"
         Icon="DeviceConfiguration"
+        PreImportCommand = { Start-PreImportSettingsCatalog @args }
         PostExportCommand = { Start-PostExportSettingsCatalog  @args }
         PreUpdateCommand = { Start-PreUpdateSettingsCatalog  @args }
         PostGetCommand = { Start-PostGetSettingsCatalog  @args }
@@ -626,9 +627,6 @@ function Invoke-InitializeModule
         ViewProperties = @("name","description","Id")
         Expand="Settings"
         Icon="DeviceConfiguration"
-        PostExportCommand = { Start-PostExportSettingsCatalog  @args }
-        PreUpdateCommand = { Start-PreUpdateSettingsCatalog  @args }
-        PostGetCommand = { Start-PostGetSettingsCatalog  @args }
         GroupId = "DeviceConfiguration"        
     })   
     
@@ -3294,6 +3292,75 @@ function Start-PostFileImportRoleDefinitions
 #endregion
 
 #region SettingsCatalog
+
+function Start-PreImportSettingsCatalog
+{
+    param($obj, $objectType)
+
+    $returnHT = @{}
+    $updated = $false
+
+    if($obj.templateReference.templateId) {
+        # I do not like this at all and it is a lazy but simple implementation...
+        # It turns out that settingInstanceTemplateId and settingValueTemplateId are case sensitive
+        # and there is ONE setting with a different casing in the Windows Baseline template. 
+        # The export saves it with lowercase which causes the import to fail.
+
+        Write-Log "Get template $($obj.templateReference.templateId)"
+        $templateObj = Invoke-GraphRequest -Url "/deviceManagement/configurationPolicyTemplates('$($obj.templateReference.templateId)')"
+        if($templateObj.lifecycleState -and $templateObj.lifecycleState -ne "active") {
+            Write-Log "Template '$($templateObj.displayName)' '$($templateObj.displayVersion)' is in '$($templateObj.lifecycleState)' state. Current state: $($templateObj.lifecycleState). Import might fail." 2
+        }
+        #Todo: Should probably check for the latest active version and use that instead of the one in the templateReference
+
+        if(-not $script:baseLineTemplate) {
+            $script:baseLineTemplate = @{}
+        }
+        if($script:baseLineTemplate.ContainsKey($obj.templateReference.templateId)) {
+            $templateReference = $script:baseLineTemplate[$obj.templateReference.templateId]
+        }
+        else {
+            Write-Log "Get template settings for '$($templateObj.displayName)' '$($templateObj.displayVersion)' ($($obj.templateReference.templateId))"
+            $templateReference = Invoke-GraphRequest -Url "/deviceManagement/configurationPolicyTemplates('$($obj.templateReference.templateId)')/settingTemplates?`$expand=settingDefinitions&top=1000"
+            $script:baseLineTemplate.Add($obj.templateReference.templateId, $templateReference)
+        }
+
+        if($templateReference) {
+            $newObjJson = $obj | ConvertTo-Json -Depth 50
+            $templateIDs = Get-GUIDs ($templateReference | ConvertTo-Json -Depth 50)
+            $objectIDs = Get-GUIDs ($obj.Settings | ConvertTo-Json -Depth 50)
+            $diff = Compare-Object $templateIDs $objectIDs -CaseSensitive
+            foreach($diffItem in ($diff | where SideIndicator -eq "=>")) {
+                $templateID = $templateIDs | Where { $_ -eq $diffItem.InputObject }
+                if($templateID) {
+                    # Found but with different casing
+                    $newObjJson = $newObjJson -replace $diffItem.InputObject, $templateID
+                    $updated = $true
+                }
+            }
+            if($updated) {
+                $returnHT.Add("JSON", $newObjJson)
+            }
+        }
+    }    
+    return $returnHT
+}
+
+function Invoke-CheckSettingsCatalogIds 
+{
+    param($obj, $templateReference)
+
+    foreach($settingTemplate in $obj.value) {
+        if($settingTemplate.settingDefinitions) {
+            foreach($settingDefinition in $settingTemplate.settingDefinitions) {
+                if($settingDefinition.id -and $settingDefinition.id -ne $obj.Id) {
+                    Write-Log "Setting definition ID $($settingDefinition.id) does not match the settings catalog ID $($obj.Id)" 2
+                }
+            }
+        }
+    }
+}
+
 function Start-PostExportSettingsCatalog
 {
     param($obj, $objectType, $path)
