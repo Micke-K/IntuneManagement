@@ -53,7 +53,7 @@
     "RoleAssignment":  {
                            "RoleAssignmentAdmin":  "Administratorgruppen",
                            "RoleAssignmentAdminDesc":  "Benutzer der Administratorgruppe sind die Administratoren, die dieser Rolle zugewiesen sind.",
-                           "rolesMenuTitle":  "Endpoint Manager-Rollen",
+                           "rolesMenuTitle":  "Intune-Rollen",
                            "RoleAssignmentScopeDesc":  "Administratoren mit dieser Rollenzuweisung können Richtlinien, Anwendungen und Remoteaufgaben bearbeiten.",
                            "RoleAssignmentScope":  "Bereichsgruppen"
                        },
@@ -95,7 +95,7 @@
                                            "selectApp":  "Suchen Sie im App Store nach iOS Store-Apps, die Sie mit Intune bereitstellen möchten.",
                                            "targetApplicationBundleIdentifier":  "Der Bezeichner für Anwendungspaket, der die Anwendung angibt, die die URL öffnet. Verfügbar in iOS 14 und höher.",
                                            "useManagedBrowser":  "Wenn ein Benutzer die Web-App öffnet, wird diese bei Bedarf in einem von Intune geschützten Browser wie Microsoft Edge oder Intune Managed Browser geöffnet. Diese Einstellung gilt sowohl für iOS- als auch für Android-Geräte.",
-                                           "useManagedBrowserLink":  "https://docs.microsoft.com/intune/apps/app-configuration-managed-browser",
+                                           "useManagedBrowserLink":  "https://go.microsoft.com/fwlink/?linkid=2299509",
                                            "win32AppPackageFile":  "Dies ist eine Datei, die Ihre App in einem Format enthält, das auf einem Gerät quergeladen werden kann. Gültige Pakettypen: INTUNEWIN.",
                                            "winGetStoreSelectApp":  "Durchsuchen Sie die Microsoft Store-App (neu) nach Store-Apps, die Sie mit Intune bereitstellen möchten."
                                        },
@@ -920,6 +920,9 @@
                                                     "subtitle":  "Starten Sie ganz neu, und wählen Sie die gewünschten Einstellungen aus der Bibliothek der verfügbaren Einstellungen aus.",
                                                     "title":  "Einstellungskatalog"
                                                 },
+                            "SettingsCatalogReact":  {
+                                                         "title":  "Einstellungskatalog (React, intern)"
+                                                     },
                             "Templates":  {
                                               "subtitle":  "Vorlagen enthalten Gruppen von Einstellungen, die nach Funktionalität organisiert sind. Verwenden Sie eine Vorlage, wenn Sie Richtlinien nicht manuell erstellen oder Geräte für den Zugriff auf Unternehmensnetzwerke konfigurieren möchten, z. B. WLAN- oder VPN-Konfiguration.",
                                               "title":  "Vorlagen"
@@ -966,7 +969,6 @@
                                                         "microsoftDefenderBaseline":  "Microsoft Defender für Endpunkt-Baseline",
                                                         "office365Baseline":  "Microsoft Office O365-Baseline",
                                                         "office365BaselinePreview":  "Vorschau: Microsoft Office O365-Baseline",
-                                                        "securityBaselines":  "Sicherheitsbaselines",
                                                         "test":  "Testvorlage",
                                                         "testFirewallRulesSecurityTemplateName":  "Windows-Firewallregeln (Test)",
                                                         "testIdentityProtectionSecurityTemplateName":  "Kontoschutz (Test)",
@@ -982,10 +984,10 @@
                                              "mDE":  "Windows-Firewallregeln"
                                          },
                        "IOS":  {
-                                   "pSSO":  "Platform SSO"
+                                   "pSSO":  "Plattform-SSO"
                                },
                        "MacOS":  {
-                                     "pSSO":  "Platform SSO"
+                                     "pSSO":  "Plattform-SSO"
                                  },
                        "OneDriveKnownFolderMove":  {
                                                        "description":  "OneDrive-Einstellungen für die Verschiebung bekannter Ordner: Windows 10 in der Cloudkonfigurationsvorlage. https://aka.ms/CloudConfigGuide"
@@ -993,6 +995,7 @@
                        "accountProtection":  "Kontoschutz",
                        "administrativeTemplates":  "Administrative Vorlagen",
                        "androidCompliancePolicy":  "Android-Kompatibilitätsrichtlinie",
+                       "androidForWorkMigrationPolicy":  "New Implementation",
                        "aospDeviceOwnerCompliancePolicy":  "Android-Konformitätsrichtlinie (AOSP)",
                        "applicationControl":  "App Control for Business",
                        "attackSurfaceReductionRules":  "Regeln zur Verringerung der Angriffsfläche",
@@ -1049,7 +1052,7 @@
                        "unknown":  "Unbekannt",
                        "unsupported":  "Nicht unterstützt",
                        "vpn":  "VPN",
-                       "wallpaper":  "Wallpaper",
+                       "wallpaper":  "Hintergrundbild",
                        "wiFi":  "WLAN",
                        "wiFiImport":  "WLAN (Import)",
                        "windows10CompliancePolicy":  "Windows 10/11-Konformitätsrichtlinie",
@@ -1211,6 +1214,10 @@
                                                              "requirementType":  "Anforderungstyp",
                                                              "requirementTypeTooltip":  "Wählen Sie den Typ der Erkennungsmethode aus, die festlegt, wie eine Anforderung überprüft wird."
                                                          },
+                              "allowedArchitectures":  "Check operating system architecture",
+                              "allowedArchitecturesNoRadioButton":  "No. Allow this app to be installed on all systems.",
+                              "allowedArchitecturesTooltip":  "Select 'Yes' to specify the systems the app can be installed on. Select 'No' (default) to allow this app to be installed on all systems.",
+                              "allowedArchitecturesYesRadioButton":  "Yes. Specify the systems the app can be installed on.",
                               "architectures":  "Betriebssystemarchitektur",
                               "architecturesTooltip":  "Wählen Sie die Architekturen aus, die zum Installieren der App benötigt werden.",
                               "bladeTitle":  "Anforderungen",
@@ -1496,7 +1503,7 @@
                                 "editMessage":  "Nachricht bearbeiten",
                                 "email":  "E-Mail",
                                 "emailFooterTitle":  "E-Mail-Fußzeile",
-                                "emailHeaderFooterInfo":  "Die Einstellungen für E-Mail-Kopf- und -Fußzeilen für E-Mail-Benachrichtigungen basieren auf Anpassungseinstellungen im Mandantenadministratorknoten im Endpoint Manager.",
+                                "emailHeaderFooterInfo":  "Die Einstellungen für E-Mail-Kopf- und -Fußzeilen für E-Mail-Benachrichtigungen basieren auf Anpassungseinstellungen im Mandantenadministratorknoten in Intune.",
                                 "emailHeaderTitle":  "E-Mail-Kopf",
                                 "emailInfoMoreLink":  "https://go.microsoft.com/fwlink/?linkid=2200912",
                                 "emailInfoMoreText":  "Konfigurieren von Anpassungseinstellungen",
@@ -2071,6 +2078,7 @@
                    "macOSSoftwareUpdateCategorySummaries":  "Zusammenfassung der Softwareupdates",
                    "macOSSoftwareUpdateStateSummaries":  "Updates",
                    "managedGooglePlay":  "Verwaltetes Google Play",
+                   "microsoft365AppsUpdates":  "Updates für Microsoft 365 Apps",
                    "myPermissions":  "Meine Berechtigungen",
                    "notifications":  "Benachrichtigungen",
                    "officeApps":  "Office-Apps",
@@ -2198,7 +2206,7 @@
                                                    },
                         "EncryptData":  {
                                             "label":  "Organisationsdaten verschlüsseln",
-                                            "link":  "https://docs.microsoft.com/de-de/intune/app-protection-policy-settings-android#data-relocation-settings",
+                                            "link":  "https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-android#data-relocation-settings",
                                             "tooltip":  "Wählen Sie \"{0}\" aus, um die Verschlüsselung von Organisationsdaten mit der Intune-Verschlüsselung auf App-Ebene zu erzwingen. \r\n <br/>\r\nWählen Sie \"{1}\" aus, um die Verschlüsselung von Organisationsdaten mit der Intune-Verschlüsselung auf App-Ebene nicht zu erzwingen.\r\n\r\n<br/>\r\nHinweis: Weitere Informationen zur Intune-Verschlüsselung auf App-Ebene finden Sie unter \"{2}\"."
                                         },
                         "EncryptDataAndroid":  {
@@ -2292,7 +2300,7 @@
                                                   "select":  "Zu genehmigende Tastaturen auswählen",
                                                   "subtitle":  "Fügen Sie alle Tastaturen und Eingabemethoden hinzu, die Benutzer mit den Ziel-Apps verwenden dürfen. Geben Sie den Tastaturnamen so ein, wie er dem Endbenutzer angezeigt werden soll.",
                                                   "title":  "Genehmigte Tastaturen hinzufügen",
-                                                  "toolTip":  "Wählen Sie „Erforderlich“ aus, und geben Sie dann eine Liste der genehmigten Tastaturen für diese Richtlinie an. <a href='https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-android#data-transfer'>Weitere Informationen.</a>"
+                                                  "toolTip":  "Wählen Sie „Erforderlich“ aus, und geben Sie dann eine Liste genehmigter Tastaturen für diese Richtlinie an. <a href='https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-android#data-transfer'>Weitere Informationen.</a>"
                                               },
                         "SaveData":  {
                                          "label":  "Kopien von Organisationsdaten speichern",
@@ -2318,7 +2326,7 @@
                                              "label":  "Daten von durch Richtlinien verwalteten Apps mit nativen Apps oder Add-Ins synchronisieren"
                                          },
                         "ThirdPartyKeyboards":  {
-                                                    "infoBox":  "Tastatureinschränkungen gelten für alle Bereiche einer App. Persönliche Konten für Apps, die mehrere Identitäten unterstützen, sind von dieser Einschränkung betroffen. <a href='https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-ios#data-transfer' aria-label='Weitere Informationen zu Tastaturen von Drittanbietern'>Weitere Informationen.</a>",
+                                                    "infoBox":  "Tastatureinschränkungen gelten für alle Bereiche einer App. Persönliche Konten für Apps, die mehrere Identitäten unterstützen, sind von dieser Einschränkung betroffen. <a href='https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-ios#data-transfer' aria-label='Learn more about third party keyboards'>Weitere Informationen.</a>",
                                                     "label":  "Tastaturen von Drittanbietern"
                                                 },
                         "Timeout":  {
@@ -4601,7 +4609,7 @@
                                                  "noAssignmentShellScriptDisplayText":  "Weisen Sie mindestens einer Gruppe ein Shellskript zu. Wechseln Sie zu \"Eigenschaften\", um Zuweisungen zu bearbeiten."
                                              },
                               "CustomAttributes":  {
-                                                       "customAttributeScriptDescription":  "Maximale Dateigröße: 200 KB.",
+                                                       "customAttributeScriptDescription":  "Maximale Dateigröße: 1 MB.",
                                                        "customAttributeScriptLabel":  "Skript",
                                                        "customAttributeTypeDescription":  "Wählen Sie den Datentyp des Ergebnisses aus.",
                                                        "customAttributeTypeLabel":  "Datentyp des Attributs",
@@ -4614,12 +4622,10 @@
                               "ExecutionStatus":  {
                                                       "Columns":  {
                                                                       "deviceName":  "Gerät",
-                                                                      "errorDeviceCount":  "Fehler",
                                                                       "lastStateUpdateDateTime":  "Letzte Aktualisierung",
                                                                       "osVersion":  "Betriebssystemversion",
                                                                       "result":  "Ergebnis",
                                                                       "runState":  "Status",
-                                                                      "successDeviceCount":  "Erfolgreich",
                                                                       "userPrincipalName":  "Benutzername"
                                                                   },
                                                       "fail":  "Fehler",
@@ -4643,7 +4649,7 @@
                                                                  "toolTip":  "Standardmäßig wird das Skript als Root-Benutzer ausgeführt. Der Root-Benutzer kann Systemänderungen vornehmen, die ein Standardbenutzerkonto nicht ausführen kann."
                                                              },
                                           "uploadFileToolTip":  {
-                                                                    "toolTip":  "Maximale Dateigröße: 200 KB."
+                                                                    "toolTip":  "Maximale Dateigröße: 1 MB."
                                                                 }
                                       },
                               "PolicyFrequency":  {
@@ -4702,8 +4708,12 @@
                               "successfullySavedPolicy":  "\"{0}\" wurde gespeichert."
                           },
     "ArchitectureOptions":  {
+                                "arm64InstructionSet":  "Install on ARM64 system",
+                                "checkBox":  "Please select at least one architecture setting",
                                 "sixtyFourBit":  "64 Bit",
-                                "thirtyTwoBit":  "32 Bit"
+                                "sixtyFourBitInstructionSet":  "Install on x64 system",
+                                "thirtyTwoBit":  "32 Bit",
+                                "thirtyTwoBitInstructionSet":  "Install on x86 system"
                             },
     "Countries":  {
                       "ae":  "Vereinigte Arabische Emirate",
@@ -5085,6 +5095,9 @@
                            "androidEnterpriseWorkProfileAlwaysOnVpnClientDescription":  "Der angegebene VPN-Client muss auf dem Gerät installiert sein und Pro-App-VPN in Arbeitsprofilen unterstützen; andernfalls tritt ein Fehler auf. Beachten Sie, dass Sie die App im verwalteten Google Play Store genehmigen, mit Intune synchronisieren und bereitstellen müssen, damit sie im Arbeitsprofil eines Benutzers installiert werden kann.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnEnabledDescription":  "Richten Sie einen VPN-Client im Arbeitsprofil so ein, dass die Verbindung mit dem VPN automatisch hergestellt und erneut hergestellt wird, sobald dies möglich ist. Wählen Sie \"Deaktiviert\" aus, um Always-On-VPN für alle VPN-Clients im Arbeitsprofil zu deaktivieren. Auf jedem Gerät darf nur ein VPN-Client für Always-On-VPN konfiguriert werden. Stellen Sie daher sicher, dass auf jedem Gerät nicht mehr als eine Always-On-VPN-Richtlinie bereitgestellt ist.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnLockdownModeEnabledDescription":  "Diese Einstellung erzwingt, dass der gesamte Netzwerkdatenverkehr für das Arbeitsprofil durch den VPN-Tunnel geleitet wird. Wenn keine Verbindung mit dem VPN hergestellt werden kann, ist im Arbeitsprofil des Geräts kein Netzwerkdatenverkehr zulässig.",
+                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Create and assign this profile to move devices to a newer, more efficient policy implementation. Devices set up with web-based enrollment automatically use the newer implementation.​",
+                           "androidForWorkMigrationPolicyDescriptionParagraph2":  "Devices will move when they have sufficient battery and are not connected to Wi-Fi managed by Intune policy. ​​",
+                           "androidForWorkMigrationPolicyLearnMoreText":  "Learn more about this improvement. ​​",
                            "androidGeneralKiosk":  "Diese Einstellungen gelten nur für Samsung KNOX Standard-Geräte.",
                            "androidHiddenApps":  "Für den Benutzer ausgeblendete Apps (nur Samsung KNOX Standard)",
                            "androidHiddenAppsHeaderName":  "Geben Sie die Apps an, die auf dem Gerät ausgeblendet werden. Benutzer können diese Apps nicht anzeigen oder ausführen.",
@@ -8175,6 +8188,7 @@
                            "microsoftTunnelSiteNotExist":  "Der Standort ist nicht vorhanden. Wählen Sie einen neuen Standort aus.",
                            "microsoftUpdatesDescription":  "Hiermit steuern Sie, ob von Microsoft Update aus nach Updates gesucht wird.",
                            "microsoftUpdatesName":  "Microsoft-Produktupdates",
+                           "migrationPolicyCannotBeUnassigned":  "Once you assign this policy, it can't be unassigned.",
                            "minimumNumberOfCharacterSetsDescription":  "Diese Einstellung gibt die Mindestanzahl von Gruppen an, aus denen das Kennwort Zeichen enthalten muss. Die vier Zeichengruppen sind:\r\n<br>\r\nKleinbuchstaben\r\n<br>\r\nGroßbuchstaben\r\n<br>\r\nSymbole\r\n<br>\r\nZiffern",
                            "minimumNumberOfCharacterSetsName":  "Anzahl von Gruppen, aus denen ein Kennwort Zeichen enthalten muss",
                            "minimumPasswordLengthDescription":  "Mindestanzahl von Ziffern oder Zeichen im Kennwort.",
@@ -9678,7 +9692,7 @@
                            "userRightsDelegationDesc":  "Mit diesem Benutzerrecht wird festgelegt, welche Benutzer die Einstellung \"Für Delegierungszwecke vertraut\" für ein Benutzer- oder Computerobjekt festlegen können.",
                            "userRightsDelegationName":  "Delegierung aktivieren",
                            "userRightsDenyLocalLogOnDesc":  "Mit dieser Sicherheitseinstellung wird festgelegt, welchen Dienstkonten untersagt wird, einen Prozess als Dienst zu registrieren.",
-                           "userRightsDenyLocalLogOnName":  "Anmeldung als Dienst verweigern",
+                           "userRightsDenyLocalLogOnName":  "Lokalen Anmeldenamen verweigern",
                            "userRightsDescriptionExample":  "(BUILTIN\\Ereignisprotokollleser)",
                            "userRightsGenerateSecurityAuditsDesc":  "Mit diesem Benutzerrecht wird festgelegt, welche Konten von einem Prozess zum Hinzufügen von Einträgen zum Sicherheitsprotokoll verwendet werden können. Das Sicherheitsprotokoll wird verwendet, um einen nicht autorisierten Systemzugriff nachzuverfolgen.",
                            "userRightsGenerateSecurityAuditsName":  "Sicherheitsüberwachungen generieren",
@@ -11184,6 +11198,7 @@
                            "installAsRemovable":  "Als entfernbare App installieren",
                            "channel":  null,
                            "languageLabel":  null,
+                           "uploadResult":  "Dateiinhalt",
                            "admin":  "Administrator",
                            "standard":  "Standard",
                            "latest":  "Neueste zuerst",
@@ -11522,6 +11537,7 @@
                                                      "policySummaryBlockDCF":  "This policy unilaterally blocks device code flow usage across all resources and all users. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryBlockLegacyAuth":  "This policy blocks any sign-in attempt using legacy authentication and legacy authentication protocols from accessing applications. Legacy authentication refers to authentication requests made by: Clients that don't use modern authentication (e.g., Office 2010 clients). Clients that use older mail protocols such as IMAP, SMTP, or POP3.",
                                                      "policySummaryMfa":  "This policy requires some administrator roles to perform multifactor authentication when accessing Microsoft admin portals. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryMfaForAllUsers":  "This policy requires all users to perform multifactor authentication when accessing any resources. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
@@ -11530,6 +11546,7 @@
                                                      "recActionsGlobal2":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you.",
                                                      "recActionsMfa1":  "Exclude one or more break glass accounts from the policy.",
                                                      "recActionsMfa2":  "To prevent users from being locked out, verify that all users covered by this policy have at least one enabled authentication methods.",
+                                                     "recActionsMfa3":  "Exclude your guest users if you're targeting them with a <a href=\"{0}\" data-linktype=\"external\">guest user specific policy</a>.",
                                                      "recActionsPerUserMfaV2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
                                                      "recommendedActions":  "Recommended actions",
@@ -11666,7 +11683,6 @@
                                                            "singular":  "1 network traffic profile selected"
                                                        },
                                           "internetOptionText":  "Internet traffic",
-                                          "label":  "Global Secure Access (Preview)",
                                           "m365OptionText":  "Microsoft 365 traffic",
                                           "privateOptionText":  "Private traffic",
                                           "selectTrafficProfilesLabel":  "Select the traffic profiles this policy applies to",
@@ -11868,7 +11884,7 @@
                                                      },
                                         "subtitle":  "Conditional Access policy",
                                         "tabLabel":  "Policy",
-                                        "viewPolicyImpact":  "View policy impact (Preview) "
+                                        "viewPolicyImpact":  "View policy impact"
                                     },
                     "PolicyCondition":  {
                                             "InsiderRisk":  {
@@ -12043,6 +12059,9 @@
                                                         "strictEnforcementText":  "This policy has strict enforcement for continuous access evaluation configured. Strict enforcement is currently not supported and has been rolled back. Saving this policy will automatically remove strict enforcement from the policy.",
                                                         "strictLocation":  "Strictly enforce location policies (Preview)"
                                                     },
+                                            "Gsa":  {
+                                                        "securityProfileWithNoGsaTargetSelection":  "\"Global Secure Access security profile\" only works correctly when \"All Internet resources with Global Secure Access\" or \"All resources\" are selected. Please change your target selection."
+                                                    },
                                             "NetworkAccessSecurity":  {
                                                                           "checkboxLabel":  "Use Global Secure Access security profile",
                                                                           "dropdownDefaultText":  "Select a policy",
@@ -12072,7 +12091,7 @@
                                                                     "actorInvalid":  "The \"sign-in frequency every time\" session control cannot be used with \"{0}\"",
                                                                     "appWarning":  "Some of the applications currently selected are not compatible with the \"Sign-in frequency\" option of \"Every time\"",
                                                                     "everytime":  "Every time",
-                                                                    "everytimeInfoBalloon":  "\"Every time\" option is evaluated on every sign-in attempt to an application in scope for this policy. Some policy configurations for the \"sign-in frequency every time\" session control are in preview.",
+                                                                    "everytimeInfoBalloon":  "\"Every time\" option is evaluated on every sign-in attempt to an application in scope for this policy.",
                                                                     "periodic":  "Periodic reauthentication",
                                                                     "reqMFAWarning":  "\"Require multifactor authentication\" must be selected when using \"Secondary authentication methods only\"",
                                                                     "selectorInvalid":  "When \"Require password change\" grant is selected, only \"sign-in frequency every time\" session control can be used",
@@ -12655,6 +12674,9 @@
                     "includeUnknownAreasCheckboxInfoBalloonContent":  "Unknown areas are IP addresses that can't be mapped to a country/region.",
                     "includeUnknownAreasCheckboxLabel":  "Include unknown areas",
                     "infoCommandLabel":  "Info",
+                    "injectedPoliciesBlockDCFWarningInfobox":  "This policy blocks device code flow unilaterally, which can be leveraged as part of a phishing attack.",
+                    "injectedPoliciesBlockLegacyWarningInfobox":  "This policy blocks legacy authentication protocols, which cannot enforce multi-factor authentication. Disabling legacy authentication reduces compromises by 67%.",
+                    "injectedPoliciesMFAWarningInfobox":  "This policy provides multi-factor authentication which can prevent 99.22% of account compromise.",
                     "injectedPoliciesWarningInfobox":  "99.22% of account compromise could be stopped by using multi-factor authentication, provided by this policy.",
                     "invalidCertDuration":  "Invalid cert duration",
                     "invalidIpAddress":  "Value must be a valid IP address",
@@ -12683,7 +12705,7 @@
                     "memberSelectionCommandRemove":  "Remove",
                     "menuItemClaimProviderControls":  "Custom controls (Preview)",
                     "menuItemClassicPolicies":  "Classic policies",
-                    "menuItemDeletedPolicies":  "Deleted Policies",
+                    "menuItemDeletedPolicies":  "Deleted Policies (Preview)",
                     "menuItemInsightsAndReporting":  "Insights and reporting",
                     "menuItemManage":  "Manage",
                     "menuItemNamedLocationsPreview":  "Named locations (Preview)",
@@ -12693,6 +12715,8 @@
                     "microsoftAdminPortals":  "Microsoft Admin Portals",
                     "microsoftAdminPortalsInfoBox":  "The admin portals include Microsoft 365 admin center, Exchange admin center, Azure portal, Microsoft Entra admin center, and others.",
                     "minorRisk":  "Minor",
+                    "mmpTurnOffAttackWarningWarningInfobox":  "If you turn off this policy, your accounts will be susceptible to this attack.",
+                    "mmpTurnOffRiskWarningWarningInfobox":  "If you turn off this policy, your accounts will be at risk for compromise.",
                     "moderateRisk":  "Moderate",
                     "monday":  "Monday",
                     "nameLabel":  "Name",
@@ -12841,6 +12865,7 @@
                     "policyReviewSection":  "Review",
                     "policySaveButton":  "Save",
                     "policySoftDeleteConfirmation":  "Once deleted, you will have 30 days to restore this policy.",
+                    "policySoftDeleteConfirmationTitle":  "Delete conditional access policy?",
                     "policyStagedRollout":  "Staged rollout",
                     "policyStagedRolloutOptionsGroupItemAriaLabel":  "Enable Policy: Staged rollout.",
                     "policyStatusIconDescription":  "Policy is Enabled",

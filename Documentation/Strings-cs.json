@@ -53,7 +53,7 @@
     "RoleAssignment":  {
                            "RoleAssignmentAdmin":  "Skupiny správců",
                            "RoleAssignmentAdminDesc":  "Uživatelé ze skupiny správců jsou správci přiřazení k této roli",
-                           "rolesMenuTitle":  "Role Endpoint Manager",
+                           "rolesMenuTitle":  "Role Intune",
                            "RoleAssignmentScopeDesc":  "Cílem správců v tomto přiřazení rolí můžou být zásady, aplikace a vzdálené úlohy",
                            "RoleAssignmentScope":  "Skupiny oborů"
                        },
@@ -95,7 +95,7 @@
                                            "selectApp":  "Vyhledejte v App Storu aplikace pro iOS, které chcete nasadit s Intune.",
                                            "targetApplicationBundleIdentifier":  "Identifikátor sady aplikace, který určuje aplikaci, která otevře adresu URL. K dispozici v iOSu 14 a novějších.",
                                            "useManagedBrowser":  "Pokud je to požadováno, tato webová aplikace se uživateli otevře v prohlížeči chráněném s Intune, jako je Microsoft Edge nebo Intune Managed Browser. Toto nastavení platí pro zařízení s iOS i Androidem.",
-                                           "useManagedBrowserLink":  "https://docs.microsoft.com/intune/apps/app-configuration-managed-browser",
+                                           "useManagedBrowserLink":  "https://go.microsoft.com/fwlink/?linkid=2299509",
                                            "win32AppPackageFile":  "Soubor, který obsahuje vaši aplikaci ve formátu, který se dá zkušebně načíst na zařízení. Platné typy balíčků: .intunewin.",
                                            "winGetStoreSelectApp":  "V aplikaci Microsoft Store (nová verze) vyhledejte aplikace, které chcete nasadit pomocí Intune."
                                        },
@@ -920,6 +920,9 @@
                                                     "subtitle":  "Začněte od začátku a vyberte požadovaná nastavení z knihovny dostupných nastavení",
                                                     "title":  "Katalog nastavení"
                                                 },
+                            "SettingsCatalogReact":  {
+                                                         "title":  "Katalog nastavení (React, interní)"
+                                                     },
                             "Templates":  {
                                               "subtitle":  "Šablony obsahují skupiny nastavení uspořádané podle funkcí. Šablonu použijte, pokud nechcete vytvářet zásady ručně nebo pokud chcete nakonfigurovat zařízení pro přístup k firemním sítím, například při konfiguraci WiFi nebo VPN.",
                                               "title":  "Šablony"
@@ -966,7 +969,6 @@
                                                         "microsoftDefenderBaseline":  "Standardní hodnoty pro Microsoft Defender pro koncový bod",
                                                         "office365Baseline":  "Standardní hodnoty Microsoft Office O365",
                                                         "office365BaselinePreview":  "Preview: Standardní hodnoty Microsoft Office O365",
-                                                        "securityBaselines":  "Základní úrovně zabezpečení",
                                                         "test":  "Testovací šablona",
                                                         "testFirewallRulesSecurityTemplateName":  "Pravidla firewallu systému Windows (test)",
                                                         "testIdentityProtectionSecurityTemplateName":  "Ochrana účtu (test)",
@@ -982,10 +984,10 @@
                                              "mDE":  "Pravidla firewallu systému Windows"
                                          },
                        "IOS":  {
-                                   "pSSO":  "Platform SSO"
+                                   "pSSO":  "Jednotné přihlašování k platformě"
                                },
                        "MacOS":  {
-                                     "pSSO":  "Platform SSO"
+                                     "pSSO":  "Jednotné přihlašování k platformě"
                                  },
                        "OneDriveKnownFolderMove":  {
                                                        "description":  "Nastavení přesunutí známých složek na OneDrivu: Windows 10 v šabloně konfigurace cloudu. https://aka.ms/CloudConfigGuide"
@@ -993,6 +995,7 @@
                        "accountProtection":  "Ochrana účtu",
                        "administrativeTemplates":  "Šablony pro správu",
                        "androidCompliancePolicy":  "Zásady dodržování předpisů v Androidu",
+                       "androidForWorkMigrationPolicy":  "New Implementation",
                        "aospDeviceOwnerCompliancePolicy":  "Zásady dodržování předpisů v Androidu (AOSP)",
                        "applicationControl":  "Řízení aplikací pro firmy",
                        "attackSurfaceReductionRules":  "Pravidla pro omezení možností útoku",
@@ -1049,7 +1052,7 @@
                        "unknown":  "Neznámé",
                        "unsupported":  "Nepodporovaný",
                        "vpn":  "VPN",
-                       "wallpaper":  "Wallpaper",
+                       "wallpaper":  "Tapeta",
                        "wiFi":  "Wi-Fi",
                        "wiFiImport":  "Import Wi-Fi",
                        "windows10CompliancePolicy":  "Zásady dodržování předpisů ve Windows 10/11",
@@ -1211,6 +1214,10 @@
                                                              "requirementType":  "Typ požadavku",
                                                              "requirementTypeTooltip":  "Zvolte typ metody zjišťování, pomocí které se určí, jak se požadavek bude ověřovat."
                                                          },
+                              "allowedArchitectures":  "Check operating system architecture",
+                              "allowedArchitecturesNoRadioButton":  "No. Allow this app to be installed on all systems.",
+                              "allowedArchitecturesTooltip":  "Select 'Yes' to specify the systems the app can be installed on. Select 'No' (default) to allow this app to be installed on all systems.",
+                              "allowedArchitecturesYesRadioButton":  "Yes. Specify the systems the app can be installed on.",
                               "architectures":  "Architektura operačního systému",
                               "architecturesTooltip":  "Zvolte architektury potřebné k nainstalování aplikace",
                               "bladeTitle":  "Požadavky",
@@ -1496,7 +1503,7 @@
                                 "editMessage":  "Upravit zprávu",
                                 "email":  "e-mail",
                                 "emailFooterTitle":  "Zápatí e-mailu",
-                                "emailHeaderFooterInfo":  "Nastavení záhlaví a zápatí e-mailu pro e-mailová oznámení závisí na nastavení přizpůsobení v uzlu správce tenanta ve Správci koncových bodů.",
+                                "emailHeaderFooterInfo":  "Nastavení záhlaví a zápatí e-mailu pro e-mailová oznámení závisí na nastavení přizpůsobení v uzlu správce tenanta v Intune.",
                                 "emailHeaderTitle":  "Záhlaví e-mailu",
                                 "emailInfoMoreLink":  "https://go.microsoft.com/fwlink/?linkid=2200912",
                                 "emailInfoMoreText":  "Konfigurovat nastavení přizpůsobení",
@@ -2071,6 +2078,7 @@
                    "macOSSoftwareUpdateCategorySummaries":  "Souhrn aktualizací softwaru",
                    "macOSSoftwareUpdateStateSummaries":  "aktualizace",
                    "managedGooglePlay":  "Spravovaný obchod Google Play",
+                   "microsoft365AppsUpdates":  "Aktualizace aplikací Microsoft 365",
                    "myPermissions":  "Moje oprávnění",
                    "notifications":  "Oznámení",
                    "officeApps":  "Aplikace Office",
@@ -2198,7 +2206,7 @@
                                                    },
                         "EncryptData":  {
                                             "label":  "Šifrovat data organizace",
-                                            "link":  "https://docs.microsoft.com/cs-cz/intune/app-protection-policy-settings-android#data-relocation-settings",
+                                            "link":  "https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-android#data-relocation-settings",
                                             "tooltip":  "Pokud chcete vynutit šifrování dat organizace pomocí šifrování na aplikační vrstvě Intune, vyberte {0}.\r\n <br/>\r\nPokud na zaregistrovaných zařízeních šifrování dat organizace pomocí šifrování na aplikační vrstvě Intune vynucovat nechcete, vyberte {1}.\r\n\r\n<br/>\r\nPoznámka: Další informace o šifrování na aplikační vrstvě Intune najdete tady: {2}"
                                         },
                         "EncryptDataAndroid":  {
@@ -2292,7 +2300,7 @@
                                                   "select":  "Vyberte klávesnice, které chcete schválit",
                                                   "subtitle":  "Přidejte všechny klávesnice a metody zadávání znaků, které uživatelům povolíte používat s cílovými aplikacemi. Název klávesnice zadejte tak, jak se má zobrazovat koncovému uživateli.",
                                                   "title":  "Přidat schválené klávesnice",
-                                                  "toolTip":  "Vyberte Vyžadovat a pak pro tyto zásady zadejte seznam schválených klávesnic. <a href='https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-android#data-transfer'>Další informace.</a>"
+                                                  "toolTip":  "Vyberte Vyžadovat a pak pro tyto zásady zadejte seznam schválených klávesnic. <a href='https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-android#data-transfer'>Přečtěte si další informace.</a>"
                                               },
                         "SaveData":  {
                                          "label":  "Ukládat kopie dat organizace",
@@ -2318,7 +2326,7 @@
                                              "label":  "Synchronizovat data aplikací spravovaných zásadami s nativními aplikacemi nebo doplňky"
                                          },
                         "ThirdPartyKeyboards":  {
-                                                    "infoBox":  "Omezení klávesnice platí ve všech oblastech aplikace. Omezení platí i pro osobní účty aplikací, které podporují více identit. <a href='https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-ios#data-transfer' aria-label='Další informace o klávesnicích jiných výrobců'>Další informace.</a>",
+                                                    "infoBox":  "Omezení klávesnice se uplatní ve všech oblastech aplikace. Omezení platí i pro osobní účty aplikací, které podporují více identit. <a href='https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-ios#data-transfer' aria-label='Learn more about third party keyboards'>Přečtěte si další informace.</a>",
                                                     "label":  "Klávesnice třetích stran"
                                                 },
                         "Timeout":  {
@@ -4601,7 +4609,7 @@
                                                  "noAssignmentShellScriptDisplayText":  "Přiřaďte skript prostředí k alespoň jedné skupině. Pokud chcete upravit přiřazení, přejděte na Vlastnosti."
                                              },
                               "CustomAttributes":  {
-                                                       "customAttributeScriptDescription":  "Maximální velikost souboru je 200 KB.",
+                                                       "customAttributeScriptDescription":  "Maximální velikost souboru 1 MB",
                                                        "customAttributeScriptLabel":  "Skript",
                                                        "customAttributeTypeDescription":  "Vyberte datový typ výsledku.",
                                                        "customAttributeTypeLabel":  "Datový typ atributu",
@@ -4614,12 +4622,10 @@
                               "ExecutionStatus":  {
                                                       "Columns":  {
                                                                       "deviceName":  "Zařízení",
-                                                                      "errorDeviceCount":  "Selhalo",
                                                                       "lastStateUpdateDateTime":  "Poslední aktualizace",
                                                                       "osVersion":  "Verze OS",
                                                                       "result":  "Výsledek",
                                                                       "runState":  "Stav",
-                                                                      "successDeviceCount":  "Úspěšné",
                                                                       "userPrincipalName":  "Uživatelské jméno"
                                                                   },
                                                       "fail":  "Selhalo",
@@ -4643,7 +4649,7 @@
                                                                  "toolTip":  "Ve výchozím nastavení se skript spustí jako uživatel root. Uživatel root může provádět systémové změny, které standardní uživatelský účet nemůže."
                                                              },
                                           "uploadFileToolTip":  {
-                                                                    "toolTip":  "Maximální velikost souboru je 200 KB."
+                                                                    "toolTip":  "Maximální velikost souboru 1 MB"
                                                                 }
                                       },
                               "PolicyFrequency":  {
@@ -4702,8 +4708,12 @@
                               "successfullySavedPolicy":  "Uložené: {0}"
                           },
     "ArchitectureOptions":  {
+                                "arm64InstructionSet":  "Install on ARM64 system",
+                                "checkBox":  "Please select at least one architecture setting",
                                 "sixtyFourBit":  "64 bitů",
-                                "thirtyTwoBit":  "32 bitů"
+                                "sixtyFourBitInstructionSet":  "Install on x64 system",
+                                "thirtyTwoBit":  "32 bitů",
+                                "thirtyTwoBitInstructionSet":  "Install on x86 system"
                             },
     "Countries":  {
                       "ae":  "Spojené arabské emiráty",
@@ -5085,6 +5095,9 @@
                            "androidEnterpriseWorkProfileAlwaysOnVpnClientDescription":  "Zadaný klient VPN musí být nainstalovaný na zařízení a v pracovních profilech musí podporovat VPN pro aplikaci. Jinak dojde k chybě. Poznámka: Abyste mohli aplikaci nainstalovat do pracovního profilu uživatele, bude nutné ji schválit ve spravovaném obchodě Google Play, synchronizovat ji s Intune a nasadit ji.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnEnabledDescription":  "Nastavte klienta VPN v pracovním profilu tak, aby se automaticky připojoval a opětovně navazoval spojení se sítí VPN vždy, kdy to bude možné. Pokud chcete pro všechny klienty VPN v pracovním profilu zakázat trvalé připojení VPN, zvolte Zakázáno. Na jednom zařízení je možné pro trvalé připojení VPN nakonfigurovat jen jednoho klienta VPN, takže mějte na paměti, že na jednom zařízení byste neměli mít nasazené více než jedny zásady trvalého připojení VPN.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnLockdownModeEnabledDescription":  "Když tuto možnost povolíte, všechen síťový provoz pro pracovní profil bude vynuceně probíhat přes tunel VPN. Pokud se připojení k síti VPN nedá navázat, v pracovním profilu zařízení se nepovolí žádný síťový provoz.",
+                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Create and assign this profile to move devices to a newer, more efficient policy implementation. Devices set up with web-based enrollment automatically use the newer implementation.​",
+                           "androidForWorkMigrationPolicyDescriptionParagraph2":  "Devices will move when they have sufficient battery and are not connected to Wi-Fi managed by Intune policy. ​​",
+                           "androidForWorkMigrationPolicyLearnMoreText":  "Learn more about this improvement. ​​",
                            "androidGeneralKiosk":  "Tato nastavení se vztahují jen na zařízení Samsung se standardem KNOX.",
                            "androidHiddenApps":  "Aplikace, které jsou před uživatelem skryty (pouze Samsung KNOX Standard)",
                            "androidHiddenAppsHeaderName":  "Zadejte aplikace, které budou na zařízení skryty. Uživatelé je nebudou moci objevit ani spouštět.",
@@ -8175,6 +8188,7 @@
                            "microsoftTunnelSiteNotExist":  "Web neexistuje. Vyberte nový web.",
                            "microsoftUpdatesDescription":  "Určete, jestli se mají vyhledávat aktualizace ze služby Microsoft Update.",
                            "microsoftUpdatesName":  "Aktualizace produktů Microsoftu",
+                           "migrationPolicyCannotBeUnassigned":  "Once you assign this policy, it can't be unassigned.",
                            "minimumNumberOfCharacterSetsDescription":  "Toto nastavení určuje minimální počet znakových sad, které musí heslo obsahovat. Jedná se o tyto čtyři znakové sady:\r\n<br>\r\nMalá písmena\r\n<br>\r\nVelká písmena\r\n<br>\r\nSymboly\r\n<br>\r\nČíslice",
                            "minimumNumberOfCharacterSetsName":  "Počet znakových sad, které musí heslo obsahovat",
                            "minimumPasswordLengthDescription":  "Minimální počet číslic nebo znaků v hesle",
@@ -9678,7 +9692,7 @@
                            "userRightsDelegationDesc":  "Toto uživatelské právo určuje, kteří uživatelé můžu nastavit nastavení Důvěryhodný k delegování pro uživatele nebo objekt počítače.",
                            "userRightsDelegationName":  "Zapnout delegování",
                            "userRightsDenyLocalLogOnDesc":  "Toto nastavení zabezpečení určuje, které účty služeb mají zablokovanou možnost registrovat proces jako službu.",
-                           "userRightsDenyLocalLogOnName":  "Zamítnout přihlášení jako službu",
+                           "userRightsDenyLocalLogOnName":  "Odepřít místní přihlašovací jméno",
                            "userRightsDescriptionExample":  "(BUILTIN\\Event Log Readers)",
                            "userRightsGenerateSecurityAuditsDesc":  "Toto uživatelské právo určuje, které účty může proces použít k přidání položek do protokolu zabezpečení. Protokol zabezpečení se používá ke sledování neautorizovaného přístupu k systému.",
                            "userRightsGenerateSecurityAuditsName":  "Generovat audity zabezpečení",
@@ -11184,6 +11198,7 @@
                            "installAsRemovable":  "Nainstalovat jako vyměnitelné",
                            "channel":  null,
                            "languageLabel":  null,
+                           "uploadResult":  "Obsah souboru",
                            "admin":  "Správce",
                            "standard":  "Standard",
                            "latest":  "Nejnovější",
@@ -11522,6 +11537,7 @@
                                                      "policySummaryBlockDCF":  "This policy unilaterally blocks device code flow usage across all resources and all users. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryBlockLegacyAuth":  "This policy blocks any sign-in attempt using legacy authentication and legacy authentication protocols from accessing applications. Legacy authentication refers to authentication requests made by: Clients that don't use modern authentication (e.g., Office 2010 clients). Clients that use older mail protocols such as IMAP, SMTP, or POP3.",
                                                      "policySummaryMfa":  "This policy requires some administrator roles to perform multifactor authentication when accessing Microsoft admin portals. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryMfaForAllUsers":  "This policy requires all users to perform multifactor authentication when accessing any resources. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
@@ -11530,6 +11546,7 @@
                                                      "recActionsGlobal2":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you.",
                                                      "recActionsMfa1":  "Exclude one or more break glass accounts from the policy.",
                                                      "recActionsMfa2":  "To prevent users from being locked out, verify that all users covered by this policy have at least one enabled authentication methods.",
+                                                     "recActionsMfa3":  "Exclude your guest users if you're targeting them with a <a href=\"{0}\" data-linktype=\"external\">guest user specific policy</a>.",
                                                      "recActionsPerUserMfaV2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
                                                      "recommendedActions":  "Recommended actions",
@@ -11666,7 +11683,6 @@
                                                            "singular":  "1 network traffic profile selected"
                                                        },
                                           "internetOptionText":  "Internet traffic",
-                                          "label":  "Global Secure Access (Preview)",
                                           "m365OptionText":  "Microsoft 365 traffic",
                                           "privateOptionText":  "Private traffic",
                                           "selectTrafficProfilesLabel":  "Select the traffic profiles this policy applies to",
@@ -11868,7 +11884,7 @@
                                                      },
                                         "subtitle":  "Conditional Access policy",
                                         "tabLabel":  "Policy",
-                                        "viewPolicyImpact":  "View policy impact (Preview) "
+                                        "viewPolicyImpact":  "View policy impact"
                                     },
                     "PolicyCondition":  {
                                             "InsiderRisk":  {
@@ -12043,6 +12059,9 @@
                                                         "strictEnforcementText":  "This policy has strict enforcement for continuous access evaluation configured. Strict enforcement is currently not supported and has been rolled back. Saving this policy will automatically remove strict enforcement from the policy.",
                                                         "strictLocation":  "Strictly enforce location policies (Preview)"
                                                     },
+                                            "Gsa":  {
+                                                        "securityProfileWithNoGsaTargetSelection":  "\"Global Secure Access security profile\" only works correctly when \"All Internet resources with Global Secure Access\" or \"All resources\" are selected. Please change your target selection."
+                                                    },
                                             "NetworkAccessSecurity":  {
                                                                           "checkboxLabel":  "Use Global Secure Access security profile",
                                                                           "dropdownDefaultText":  "Select a policy",
@@ -12072,7 +12091,7 @@
                                                                     "actorInvalid":  "The \"sign-in frequency every time\" session control cannot be used with \"{0}\"",
                                                                     "appWarning":  "Some of the applications currently selected are not compatible with the \"Sign-in frequency\" option of \"Every time\"",
                                                                     "everytime":  "Every time",
-                                                                    "everytimeInfoBalloon":  "\"Every time\" option is evaluated on every sign-in attempt to an application in scope for this policy. Some policy configurations for the \"sign-in frequency every time\" session control are in preview.",
+                                                                    "everytimeInfoBalloon":  "\"Every time\" option is evaluated on every sign-in attempt to an application in scope for this policy.",
                                                                     "periodic":  "Periodic reauthentication",
                                                                     "reqMFAWarning":  "\"Require multifactor authentication\" must be selected when using \"Secondary authentication methods only\"",
                                                                     "selectorInvalid":  "When \"Require password change\" grant is selected, only \"sign-in frequency every time\" session control can be used",
@@ -12655,6 +12674,9 @@
                     "includeUnknownAreasCheckboxInfoBalloonContent":  "Unknown areas are IP addresses that can't be mapped to a country/region.",
                     "includeUnknownAreasCheckboxLabel":  "Include unknown areas",
                     "infoCommandLabel":  "Info",
+                    "injectedPoliciesBlockDCFWarningInfobox":  "This policy blocks device code flow unilaterally, which can be leveraged as part of a phishing attack.",
+                    "injectedPoliciesBlockLegacyWarningInfobox":  "This policy blocks legacy authentication protocols, which cannot enforce multi-factor authentication. Disabling legacy authentication reduces compromises by 67%.",
+                    "injectedPoliciesMFAWarningInfobox":  "This policy provides multi-factor authentication which can prevent 99.22% of account compromise.",
                     "injectedPoliciesWarningInfobox":  "99.22% of account compromise could be stopped by using multi-factor authentication, provided by this policy.",
                     "invalidCertDuration":  "Invalid cert duration",
                     "invalidIpAddress":  "Value must be a valid IP address",
@@ -12683,7 +12705,7 @@
                     "memberSelectionCommandRemove":  "Remove",
                     "menuItemClaimProviderControls":  "Custom controls (Preview)",
                     "menuItemClassicPolicies":  "Classic policies",
-                    "menuItemDeletedPolicies":  "Deleted Policies",
+                    "menuItemDeletedPolicies":  "Deleted Policies (Preview)",
                     "menuItemInsightsAndReporting":  "Insights and reporting",
                     "menuItemManage":  "Manage",
                     "menuItemNamedLocationsPreview":  "Named locations (Preview)",
@@ -12693,6 +12715,8 @@
                     "microsoftAdminPortals":  "Microsoft Admin Portals",
                     "microsoftAdminPortalsInfoBox":  "The admin portals include Microsoft 365 admin center, Exchange admin center, Azure portal, Microsoft Entra admin center, and others.",
                     "minorRisk":  "Minor",
+                    "mmpTurnOffAttackWarningWarningInfobox":  "If you turn off this policy, your accounts will be susceptible to this attack.",
+                    "mmpTurnOffRiskWarningWarningInfobox":  "If you turn off this policy, your accounts will be at risk for compromise.",
                     "moderateRisk":  "Moderate",
                     "monday":  "Monday",
                     "nameLabel":  "Name",
@@ -12841,6 +12865,7 @@
                     "policyReviewSection":  "Review",
                     "policySaveButton":  "Save",
                     "policySoftDeleteConfirmation":  "Once deleted, you will have 30 days to restore this policy.",
+                    "policySoftDeleteConfirmationTitle":  "Delete conditional access policy?",
                     "policyStagedRollout":  "Staged rollout",
                     "policyStagedRolloutOptionsGroupItemAriaLabel":  "Enable Policy: Staged rollout.",
                     "policyStatusIconDescription":  "Policy is Enabled",

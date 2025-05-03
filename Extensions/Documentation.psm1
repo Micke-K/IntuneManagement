@@ -2205,6 +2205,7 @@ function Invoke-TranslateSection
         $value = $null
         $valueSet = $false
         $useParentProp = $false
+        $payloadFile = $false
         
         #if($prop.enabled -eq $false -and $objInfo.ShowDisabled -ne $true) { continue }
 
@@ -2436,6 +2437,7 @@ function Invoke-TranslateSection
                     if($prop.filenameEntityKey -and $obj."$($prop.filenameEntityKey)")
                     {
                         $value = $obj."$($prop.filenameEntityKey)"
+                        $payloadFile = $true
                     }
                     else
                     {
@@ -2589,6 +2591,23 @@ function Invoke-TranslateSection
             if($addPropertyInfo)
             {
                 Add-PropertyInfo (?: ($useParentProp -and $parent) $parent $prop) $value $rawValue 
+
+                if($payloadFile -eq $true -and $obj.payload)
+                {
+                    # Add payload file conetent as a property
+                    $tmpProp = [PSCustomObject]@{
+                        nameResourceKey = "uploadResult"
+                        descriptionResourceKey = ""
+                        entityKey = "payloadData"
+                        dataType = 20
+                        booleanActions = 0
+                        category = $prop.Category
+                    }
+                    
+                    $propValue = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.payload))
+        
+                    Add-PropertyInfo $tmpProp $propValue -originalValue $obj.payload
+                }
             }
         }
         else

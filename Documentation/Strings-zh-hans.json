@@ -53,7 +53,7 @@
     "RoleAssignment":  {
                            "RoleAssignmentAdmin":  "管理组",
                            "RoleAssignmentAdminDesc":  "管理组用户是分配到此角色的管理员",
-                           "rolesMenuTitle":  "Endpoint Manager 角色",
+                           "rolesMenuTitle":  "Intune 角色",
                            "RoleAssignmentScopeDesc":  "此角色分配中的管理员可以针对策略、应用程序和远程任务",
                            "RoleAssignmentScope":  "范围组"
                        },
@@ -95,7 +95,7 @@
                                            "selectApp":  "在 App Store 中搜索要使用 Intune 部署的 iOS 应用商店应用。",
                                            "targetApplicationBundleIdentifier":  "指定打开 URL 的应用程序的应用程序捆绑标识符。在 iOS 14 及更高版本中可用。",
                                            "useManagedBrowser":  "如果需要，用户打开 web 应用时，它将在受 Intune 保护的浏览器(如 Microsoft Edge 或 Intune Managed Browser)中打开。此设置适用于 iOS 和 Android 设备。",
-                                           "useManagedBrowserLink":  "https://docs.microsoft.com/intune/apps/app-configuration-managed-browser",
+                                           "useManagedBrowserLink":  "https://go.microsoft.com/fwlink/?linkid=2299509",
                                            "win32AppPackageFile":  "包含你的应用的文件，其格式可在设备上旁加载。有效的包类型为: .intunewin。",
                                            "winGetStoreSelectApp":  "在 Microsoft Store 应用(新)中搜索要使用 Intune 部署的应用商店应用。"
                                        },
@@ -920,6 +920,9 @@
                                                     "subtitle":  "从头开始，从可用设置库中选择所需设置",
                                                     "title":  "设置目录"
                                                 },
+                            "SettingsCatalogReact":  {
+                                                         "title":  "设置目录 (React，内部)"
+                                                     },
                             "Templates":  {
                                               "subtitle":  "模板包含按功能分类的设置组。如果不想手动生成策略或希望将设备配置为访问公司网络（例如配置 WiFi 或 VPN），请使用模板。",
                                               "title":  "模板"
@@ -966,7 +969,6 @@
                                                         "microsoftDefenderBaseline":  "Microsoft Defender for Endpoint 基线",
                                                         "office365Baseline":  "Microsoft Office O365 基线",
                                                         "office365BaselinePreview":  "预览: Microsoft Office O365 基线",
-                                                        "securityBaselines":  "安全基线",
                                                         "test":  "测试模板",
                                                         "testFirewallRulesSecurityTemplateName":  "Windows 防火墙规则(测试)",
                                                         "testIdentityProtectionSecurityTemplateName":  "帐户保护(测试)",
@@ -982,10 +984,10 @@
                                              "mDE":  "Windows 防火墙规则"
                                          },
                        "IOS":  {
-                                   "pSSO":  "Platform SSO"
+                                   "pSSO":  "平台 SSO"
                                },
                        "MacOS":  {
-                                     "pSSO":  "Platform SSO"
+                                     "pSSO":  "平台 SSO"
                                  },
                        "OneDriveKnownFolderMove":  {
                                                        "description":  "OneDrive 已知文件夹移动设置: 云配置模板中的 Windows 10。https://aka.ms/CloudConfigGuide"
@@ -993,6 +995,7 @@
                        "accountProtection":  "帐户保护",
                        "administrativeTemplates":  "管理模板",
                        "androidCompliancePolicy":  "Android 合规性策略",
+                       "androidForWorkMigrationPolicy":  "新实现",
                        "aospDeviceOwnerCompliancePolicy":  "Android (AOSP)合规性策略",
                        "applicationControl":  "适用于企业的应用控制",
                        "attackSurfaceReductionRules":  "攻击面减少规则",
@@ -1049,7 +1052,7 @@
                        "unknown":  "未知",
                        "unsupported":  "不支持",
                        "vpn":  "VPN",
-                       "wallpaper":  "Wallpaper",
+                       "wallpaper":  "壁纸",
                        "wiFi":  "Wi-Fi",
                        "wiFiImport":  "Wi-Fi 导入",
                        "windows10CompliancePolicy":  "Windows 10/11 合规性策略",
@@ -1211,6 +1214,10 @@
                                                              "requirementType":  "要求类型",
                                                              "requirementTypeTooltip":  "选择用于确定如何验证要求的检测方法的类型。"
                                                          },
+                              "allowedArchitectures":  "Check operating system architecture",
+                              "allowedArchitecturesNoRadioButton":  "No. Allow this app to be installed on all systems.",
+                              "allowedArchitecturesTooltip":  "Select 'Yes' to specify the systems the app can be installed on. Select 'No' (default) to allow this app to be installed on all systems.",
+                              "allowedArchitecturesYesRadioButton":  "Yes. Specify the systems the app can be installed on.",
                               "architectures":  "操作系统体系结构",
                               "architecturesTooltip":  "选择安装应用所需的体系结构。",
                               "bladeTitle":  "要求",
@@ -1496,7 +1503,7 @@
                                 "editMessage":  "编辑消息",
                                 "email":  "电子邮件",
                                 "emailFooterTitle":  "电子邮件页脚",
-                                "emailHeaderFooterInfo":  "电子邮件通知的电子邮件页眉和页脚设置依赖于终结点管理器中租户管理节点中的自定义设置。",
+                                "emailHeaderFooterInfo":  "电子邮件通知的邮件头和邮件尾设置依赖于 Intune 的租户管理员节点中的自定义设置。",
                                 "emailHeaderTitle":  "电子邮件页眉",
                                 "emailInfoMoreLink":  "https://go.microsoft.com/fwlink/?linkid=2200912",
                                 "emailInfoMoreText":  "配置自定义设置",
@@ -2071,6 +2078,7 @@
                    "macOSSoftwareUpdateCategorySummaries":  "软件更新摘要",
                    "macOSSoftwareUpdateStateSummaries":  "更新",
                    "managedGooglePlay":  "托管的 Google Play",
+                   "microsoft365AppsUpdates":  "Microsoft 365 应用更新",
                    "myPermissions":  "我的权限",
                    "notifications":  "通知",
                    "officeApps":  "Office 应用",
@@ -2198,7 +2206,7 @@
                                                    },
                         "EncryptData":  {
                                             "label":  "对组织数据进行加密",
-                                            "link":  "https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-android#data-relocation-settings",
+                                            "link":  "https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-android#data-relocation-settings",
                                             "tooltip":  "选择 {0} 会使用 Intune 应用层加密功能强制加密组织数据。<br/>\r\n\r\n选择 {1} 则不使用 Intune 应用层加密功能强制加密组织数据。\r\n\r\n<br/>\r\n注意: 有关 Intune 应用层加密功能的详细信息，请参阅 {2}。"
                                         },
                         "EncryptDataAndroid":  {
@@ -2292,7 +2300,7 @@
                                                   "select":  "选择要审批的键盘",
                                                   "subtitle":  "添加使用户可与目标应用一起使用的所有键盘和输入法。由于你希望向最终用户显示键盘，因此请输入键盘名称。",
                                                   "title":  "添加已批准的键盘",
-                                                  "toolTip":  "选择“需要”，然后指定此策略批准的键盘的列表。<a href='https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-android#data-transfer'>了解详细信息。</a>"
+                                                  "toolTip":  "选择“需要”，然后指定此策略批准的键盘的列表。<a href='https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-android#data-transfer'>了解详细信息。</a>"
                                               },
                         "SaveData":  {
                                          "label":  "保存组织数据的副本",
@@ -2318,7 +2326,7 @@
                                              "label":  "将策略托管应用数据与本机应用或加载项同步"
                                          },
                         "ThirdPartyKeyboards":  {
-                                                    "infoBox":  "键盘限制将应用于应用的所有区域。此限制将影响针对支持多个标识的应用的个人帐户。<a href='https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-ios#data-transfer' aria-label='Learn more about third party keyboards'>了解详细信息。</a>",
+                                                    "infoBox":  "键盘限制将应用于应用的所有区域。此限制将影响针对支持多个标识的应用的个人帐户。<a href='https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-ios#data-transfer' aria-label='Learn more about third party keyboards'>了解详细信息。</a>",
                                                     "label":  "第三方键盘"
                                                 },
                         "Timeout":  {
@@ -4601,7 +4609,7 @@
                                                  "noAssignmentShellScriptDisplayText":  "至少向一个组分配 Shell 脚本。请转到“属性”以编辑分配。"
                                              },
                               "CustomAttributes":  {
-                                                       "customAttributeScriptDescription":  "最大文件大小为 200 KB。",
+                                                       "customAttributeScriptDescription":  "最大文件大小为 1 MB。",
                                                        "customAttributeScriptLabel":  "脚本",
                                                        "customAttributeTypeDescription":  "选择结果的数据类型。",
                                                        "customAttributeTypeLabel":  "属性的数据类型",
@@ -4614,12 +4622,10 @@
                               "ExecutionStatus":  {
                                                       "Columns":  {
                                                                       "deviceName":  "设备",
-                                                                      "errorDeviceCount":  "失败",
                                                                       "lastStateUpdateDateTime":  "上次更新时间",
                                                                       "osVersion":  "操作系统版本",
                                                                       "result":  "结果",
                                                                       "runState":  "状态",
-                                                                      "successDeviceCount":  "成功",
                                                                       "userPrincipalName":  "用户名"
                                                                   },
                                                       "fail":  "失败",
@@ -4643,7 +4649,7 @@
                                                                  "toolTip":  "默认情况下，该脚本以根用户的身份运行。根用户可进行标准用户帐户无法执行的系统更改。"
                                                              },
                                           "uploadFileToolTip":  {
-                                                                    "toolTip":  "最大文件大小为 200 KB。"
+                                                                    "toolTip":  "最大文件大小为 1 MB。"
                                                                 }
                                       },
                               "PolicyFrequency":  {
@@ -4702,8 +4708,12 @@
                               "successfullySavedPolicy":  "已保存 {0}"
                           },
     "ArchitectureOptions":  {
+                                "arm64InstructionSet":  "Install on ARM64 system",
+                                "checkBox":  "Please select at least one architecture setting",
                                 "sixtyFourBit":  "64 位",
-                                "thirtyTwoBit":  "32 位"
+                                "sixtyFourBitInstructionSet":  "Install on x64 system",
+                                "thirtyTwoBit":  "32 位",
+                                "thirtyTwoBitInstructionSet":  "Install on x86 system"
                             },
     "Countries":  {
                       "ae":  "阿拉伯联合酋长国",
@@ -5085,6 +5095,9 @@
                            "androidEnterpriseWorkProfileAlwaysOnVpnClientDescription":  "指定的 VPN 客户端必须安装在设备上，并且它必须支持工作配置文件中的每应用 VPN；否则，将发生错误。请注意，需要在托管 Google Play 商店中批准该应用，将应用同步到 Intune，然后对其进行部署，以便将其安装在用户的工作配置文件中。",
                            "androidEnterpriseWorkProfileAlwaysOnVpnEnabledDescription":  "在工作配置文件中设置一个 VPN 客户端，以便尽可能自动连接和重新连接到 VPN。选择“禁用”，为工作配置文件中的所有 VPN 客户端禁用始终可用 VPN。在给定的设备上，只可为始终可用 VPN 配置一个 VPN 客户端，因此请确保在单个设备上部署不超过一个始终可用 VPN 策略。",
                            "androidEnterpriseWorkProfileAlwaysOnVpnLockdownModeEnabledDescription":  "启用此选项会强制通过 VPN 隧道传输工作配置文件的所有网络流量。如果无法建立到 VPN 的连接，设备的工作配置文件中将不允许网络流量。",
+                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "创建并分配此配置文件，以将设备移动到更新、更高效的策略实现。使用基于 Web 的注册设置的设备会自动使用较新的实现。",
+                           "androidForWorkMigrationPolicyDescriptionParagraph2":  "​设备将在电量充足且未连接到由 Intune 策略管理的 Wi-Fi 时移动。 ​​",
+                           "androidForWorkMigrationPolicyLearnMoreText":  "详细了解此改进。​​",
                            "androidGeneralKiosk":  "这些设置仅应用于 Samsung KNOX 标准版设备。",
                            "androidHiddenApps":  "对用户隐藏的应用(仅限 Samsung KNOX 标准版)",
                            "androidHiddenAppsHeaderName":  "指定设备上将隐藏的应用。用户无法发现或运行这些应用。",
@@ -8175,6 +8188,7 @@
                            "microsoftTunnelSiteNotExist":  "此站点不存在。请选择一个新站点。",
                            "microsoftUpdatesDescription":  "控制是否从 Microsoft 更新扫描更新。",
                            "microsoftUpdatesName":  "Microsoft 产品更新",
+                           "migrationPolicyCannotBeUnassigned":  "分配此策略后，将无法取消分配。",
                            "minimumNumberOfCharacterSetsDescription":  "此设置指定密码必须包含的字符集的最小数量。四种字符集为:\r\n<br>\r\n小写字母\r\n<br>\r\n大写字母\r\n<br>\r\n符号\r\n<br>\r\n数字",
                            "minimumNumberOfCharacterSetsName":  "密码必须包含的字符集数",
                            "minimumPasswordLengthDescription":  "密码中数字或字符的最小数目。",
@@ -9678,7 +9692,7 @@
                            "userRightsDelegationDesc":  "此用户权限决定哪些用户可以在用户或计算机对象上设置“信任委托”设置。",
                            "userRightsDelegationName":  "启用委派",
                            "userRightsDenyLocalLogOnDesc":  "此安全设置确定阻止哪些服务帐户将某个进程注册为服务。",
-                           "userRightsDenyLocalLogOnName":  "拒绝作为服务登录",
+                           "userRightsDenyLocalLogOnName":  "拒绝本地登录名称",
                            "userRightsDescriptionExample":  "(BUILTIN\\Event Log Readers)",
                            "userRightsGenerateSecurityAuditsDesc":  "此用户权限决定进程可以使用哪些帐户向安全日志添加条目。安全日志用于跟踪未经授权的系统访问。",
                            "userRightsGenerateSecurityAuditsName":  "生成安全审核",
@@ -11184,6 +11198,7 @@
                            "installAsRemovable":  "安装为可移动项",
                            "channel":  null,
                            "languageLabel":  null,
+                           "uploadResult":  "文件内容",
                            "admin":  "管理员",
                            "standard":  "标准",
                            "latest":  "最新",
@@ -11522,6 +11537,7 @@
                                                      "policySummaryBlockDCF":  "This policy unilaterally blocks device code flow usage across all resources and all users. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryBlockLegacyAuth":  "This policy blocks any sign-in attempt using legacy authentication and legacy authentication protocols from accessing applications. Legacy authentication refers to authentication requests made by: Clients that don't use modern authentication (e.g., Office 2010 clients). Clients that use older mail protocols such as IMAP, SMTP, or POP3.",
                                                      "policySummaryMfa":  "This policy requires some administrator roles to perform multifactor authentication when accessing Microsoft admin portals. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryMfaForAllUsers":  "This policy requires all users to perform multifactor authentication when accessing any resources. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
@@ -11530,6 +11546,7 @@
                                                      "recActionsGlobal2":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you.",
                                                      "recActionsMfa1":  "Exclude one or more break glass accounts from the policy.",
                                                      "recActionsMfa2":  "To prevent users from being locked out, verify that all users covered by this policy have at least one enabled authentication methods.",
+                                                     "recActionsMfa3":  "Exclude your guest users if you're targeting them with a <a href=\"{0}\" data-linktype=\"external\">guest user specific policy</a>.",
                                                      "recActionsPerUserMfaV2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
                                                      "recommendedActions":  "Recommended actions",
@@ -11666,7 +11683,6 @@
                                                            "singular":  "1 network traffic profile selected"
                                                        },
                                           "internetOptionText":  "Internet traffic",
-                                          "label":  "Global Secure Access (Preview)",
                                           "m365OptionText":  "Microsoft 365 traffic",
                                           "privateOptionText":  "Private traffic",
                                           "selectTrafficProfilesLabel":  "Select the traffic profiles this policy applies to",
@@ -11868,7 +11884,7 @@
                                                      },
                                         "subtitle":  "Conditional Access policy",
                                         "tabLabel":  "Policy",
-                                        "viewPolicyImpact":  "View policy impact (Preview) "
+                                        "viewPolicyImpact":  "View policy impact"
                                     },
                     "PolicyCondition":  {
                                             "InsiderRisk":  {
@@ -12043,6 +12059,9 @@
                                                         "strictEnforcementText":  "This policy has strict enforcement for continuous access evaluation configured. Strict enforcement is currently not supported and has been rolled back. Saving this policy will automatically remove strict enforcement from the policy.",
                                                         "strictLocation":  "Strictly enforce location policies (Preview)"
                                                     },
+                                            "Gsa":  {
+                                                        "securityProfileWithNoGsaTargetSelection":  "\"Global Secure Access security profile\" only works correctly when \"All Internet resources with Global Secure Access\" or \"All resources\" are selected. Please change your target selection."
+                                                    },
                                             "NetworkAccessSecurity":  {
                                                                           "checkboxLabel":  "Use Global Secure Access security profile",
                                                                           "dropdownDefaultText":  "Select a policy",
@@ -12072,7 +12091,7 @@
                                                                     "actorInvalid":  "The \"sign-in frequency every time\" session control cannot be used with \"{0}\"",
                                                                     "appWarning":  "Some of the applications currently selected are not compatible with the \"Sign-in frequency\" option of \"Every time\"",
                                                                     "everytime":  "Every time",
-                                                                    "everytimeInfoBalloon":  "\"Every time\" option is evaluated on every sign-in attempt to an application in scope for this policy. Some policy configurations for the \"sign-in frequency every time\" session control are in preview.",
+                                                                    "everytimeInfoBalloon":  "\"Every time\" option is evaluated on every sign-in attempt to an application in scope for this policy.",
                                                                     "periodic":  "Periodic reauthentication",
                                                                     "reqMFAWarning":  "\"Require multifactor authentication\" must be selected when using \"Secondary authentication methods only\"",
                                                                     "selectorInvalid":  "When \"Require password change\" grant is selected, only \"sign-in frequency every time\" session control can be used",
@@ -12655,6 +12674,9 @@
                     "includeUnknownAreasCheckboxInfoBalloonContent":  "Unknown areas are IP addresses that can't be mapped to a country/region.",
                     "includeUnknownAreasCheckboxLabel":  "Include unknown areas",
                     "infoCommandLabel":  "Info",
+                    "injectedPoliciesBlockDCFWarningInfobox":  "This policy blocks device code flow unilaterally, which can be leveraged as part of a phishing attack.",
+                    "injectedPoliciesBlockLegacyWarningInfobox":  "This policy blocks legacy authentication protocols, which cannot enforce multi-factor authentication. Disabling legacy authentication reduces compromises by 67%.",
+                    "injectedPoliciesMFAWarningInfobox":  "This policy provides multi-factor authentication which can prevent 99.22% of account compromise.",
                     "injectedPoliciesWarningInfobox":  "99.22% of account compromise could be stopped by using multi-factor authentication, provided by this policy.",
                     "invalidCertDuration":  "Invalid cert duration",
                     "invalidIpAddress":  "Value must be a valid IP address",
@@ -12683,7 +12705,7 @@
                     "memberSelectionCommandRemove":  "Remove",
                     "menuItemClaimProviderControls":  "Custom controls (Preview)",
                     "menuItemClassicPolicies":  "Classic policies",
-                    "menuItemDeletedPolicies":  "Deleted Policies",
+                    "menuItemDeletedPolicies":  "Deleted Policies (Preview)",
                     "menuItemInsightsAndReporting":  "Insights and reporting",
                     "menuItemManage":  "Manage",
                     "menuItemNamedLocationsPreview":  "Named locations (Preview)",
@@ -12693,6 +12715,8 @@
                     "microsoftAdminPortals":  "Microsoft Admin Portals",
                     "microsoftAdminPortalsInfoBox":  "The admin portals include Microsoft 365 admin center, Exchange admin center, Azure portal, Microsoft Entra admin center, and others.",
                     "minorRisk":  "Minor",
+                    "mmpTurnOffAttackWarningWarningInfobox":  "If you turn off this policy, your accounts will be susceptible to this attack.",
+                    "mmpTurnOffRiskWarningWarningInfobox":  "If you turn off this policy, your accounts will be at risk for compromise.",
                     "moderateRisk":  "Moderate",
                     "monday":  "Monday",
                     "nameLabel":  "Name",
@@ -12841,6 +12865,7 @@
                     "policyReviewSection":  "Review",
                     "policySaveButton":  "Save",
                     "policySoftDeleteConfirmation":  "Once deleted, you will have 30 days to restore this policy.",
+                    "policySoftDeleteConfirmationTitle":  "Delete conditional access policy?",
                     "policyStagedRollout":  "Staged rollout",
                     "policyStagedRolloutOptionsGroupItemAriaLabel":  "Enable Policy: Staged rollout.",
                     "policyStatusIconDescription":  "Policy is Enabled",

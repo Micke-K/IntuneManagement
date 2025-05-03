@@ -53,7 +53,7 @@
     "RoleAssignment":  {
                            "RoleAssignmentAdmin":  "Administrationsgrupper",
                            "RoleAssignmentAdminDesc":  "Administrationsgruppanvändare är de administratörer som har tilldelats den här rollen",
-                           "rolesMenuTitle":  "Endpoint Manager-roller",
+                           "rolesMenuTitle":  "Intune-roller",
                            "RoleAssignmentScopeDesc":  "Administratörer i den här rolltilldelningen kan tillämpa principer, program och fjärraktiviteter",
                            "RoleAssignmentScope":  "Omfångsgrupper"
                        },
@@ -95,7 +95,7 @@
                                            "selectApp":  "Sök i App Store efter iOS-appar som du vill distribuera med Intune.",
                                            "targetApplicationBundleIdentifier":  "Identifiering av programpaketet som anger det program som öppnar URL:en. Tillgängligt i iOS 14 och senare.",
                                            "useManagedBrowser":  "När en användare öppnar webbappen öppnas den i en Intune-skyddad webbläsare, till exempel Microsoft Edge eller Intune Managed Browser. Den här inställningen gäller både iOS- och Android-enheter.",
-                                           "useManagedBrowserLink":  "https://docs.microsoft.com/intune/apps/app-configuration-managed-browser",
+                                           "useManagedBrowserLink":  "https://go.microsoft.com/fwlink/?linkid=2299509",
                                            "win32AppPackageFile":  "En fil som innehåller din app i ett format som kan läsas in separat på en enhet. Giltig pakettyp: .intunewin.",
                                            "winGetStoreSelectApp":  "Sök i Microsoft Store app (ny) efter store-appar som du vill distribuera med Intune."
                                        },
@@ -920,6 +920,9 @@
                                                     "subtitle":  "Börja från början och välj önskade inställningar från biblioteket med tillgängliga inställningar",
                                                     "title":  "Inställningskatalog"
                                                 },
+                            "SettingsCatalogReact":  {
+                                                         "title":  "Inställningskatalog (React, internt)"
+                                                     },
                             "Templates":  {
                                               "subtitle":  "Mallar innehåller grupper med inställningar, ordnade efter funktion. Använd en mall när du inte vill skapa principer manuellt eller vill konfigurera enheter för åtkomst till företagsnätverk, till exempel konfigurera WiFi eller VPN.",
                                               "title":  "Mallar"
@@ -966,7 +969,6 @@
                                                         "microsoftDefenderBaseline":  "Baslinjeinställning för Microsoft Defender för Endpoint",
                                                         "office365Baseline":  "Microsoft Office O365-baslinje",
                                                         "office365BaselinePreview":  "Förhandsversion: Microsoft Office O365-baslinje",
-                                                        "securityBaselines":  "Säkerhetsbaslinjer",
                                                         "test":  "Testmall",
                                                         "testFirewallRulesSecurityTemplateName":  "Windows-brandväggsregler (test)",
                                                         "testIdentityProtectionSecurityTemplateName":  "Kontoskydd (test)",
@@ -993,6 +995,7 @@
                        "accountProtection":  "Kontoskydd",
                        "administrativeTemplates":  "Administrativa mallar",
                        "androidCompliancePolicy":  "Kompatibilitetsprincip för Android",
+                       "androidForWorkMigrationPolicy":  "Ny implementering",
                        "aospDeviceOwnerCompliancePolicy":  "Kompatibilitetsprincip för Android (AOSP)",
                        "applicationControl":  "Appkontroll för företag",
                        "attackSurfaceReductionRules":  "Regler för att minska attackytan",
@@ -1049,7 +1052,7 @@
                        "unknown":  "Okänd",
                        "unsupported":  "Stöds inte",
                        "vpn":  "VPN",
-                       "wallpaper":  "Wallpaper",
+                       "wallpaper":  "Bakgrund",
                        "wiFi":  "Trådlöst",
                        "wiFiImport":  "Trådlöst (import)",
                        "windows10CompliancePolicy":  "Kompatibilitetsprincip för Windows 10/11",
@@ -1211,6 +1214,10 @@
                                                              "requirementType":  "Kravtyp",
                                                              "requirementTypeTooltip":  "Välj typ av identifieringsmetod som ska användas för att fastställa hur ett krav ska utvärderas."
                                                          },
+                              "allowedArchitectures":  "Check operating system architecture",
+                              "allowedArchitecturesNoRadioButton":  "No. Allow this app to be installed on all systems.",
+                              "allowedArchitecturesTooltip":  "Select 'Yes' to specify the systems the app can be installed on. Select 'No' (default) to allow this app to be installed on all systems.",
+                              "allowedArchitecturesYesRadioButton":  "Yes. Specify the systems the app can be installed on.",
                               "architectures":  "Operativsystemarkitektur",
                               "architecturesTooltip":  "Välj de arkitekturer som behövs för att installera appen.",
                               "bladeTitle":  "Krav",
@@ -1496,7 +1503,7 @@
                                 "editMessage":  "Redigera meddelande",
                                 "email":  "e-post",
                                 "emailFooterTitle":  "E-postsidfot",
-                                "emailHeaderFooterInfo":  "Inställningarna för e-posthuvud och sidfot för e-postmeddelanden beror på de anpassade inställningarna för klientadministratörsnoden i Endpoint Manager.",
+                                "emailHeaderFooterInfo":  "Inställningarna för e-posthuvud och sidfot för e-postmeddelanden beror på de anpassade inställningarna för klientadministratörsnoden i Intune.",
                                 "emailHeaderTitle":  "E-postsidhuvud",
                                 "emailInfoMoreLink":  "https://go.microsoft.com/fwlink/?linkid=2200912",
                                 "emailInfoMoreText":  "Ställ in anpassningsinställningar",
@@ -2071,6 +2078,7 @@
                    "macOSSoftwareUpdateCategorySummaries":  "Sammanfattning av programuppdateringar",
                    "macOSSoftwareUpdateStateSummaries":  "uppdateringar",
                    "managedGooglePlay":  "Hanterat Google Play-konto",
+                   "microsoft365AppsUpdates":  "Microsoft 365-appuppdateringar",
                    "myPermissions":  "Mina behörigheter",
                    "notifications":  "Aviseringar",
                    "officeApps":  "Office-appar",
@@ -2198,7 +2206,7 @@
                                                    },
                         "EncryptData":  {
                                             "label":  "Kryptera organisationsdata",
-                                            "link":  "https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-android#data-relocation-settings",
+                                            "link":  "https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-android#data-relocation-settings",
                                             "tooltip":  "Välj {0} om du vill framtvinga kryptering av organisationsdata med applagerkryptering från Intune.\r\n <br/>\r\nVälj {1} om du inte vill framtvinga kryptering av organisationsdata med applagerkryptering från Intune.\r\n\r\n<br/>\r\nObs! Mer information om applagerkryptering från Intune finns i {2}."
                                         },
                         "EncryptDataAndroid":  {
@@ -2292,7 +2300,7 @@
                                                   "select":  "Välj tangentbord som ska godkännas",
                                                   "subtitle":  "Lägg till alla tangentbord och indatametoder som användarna kan använda med riktade appar. Ange det tangentbordsnamn som du vill ska visas för slutanvändaren.",
                                                   "title":  "Lägg till godkända tangentbord",
-                                                  "toolTip":  "Välj Kräv och ange sedan en lista med godkända tangentbord för den här principen. <a href='https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-android#data-transfer'>Läs mer.</a>"
+                                                  "toolTip":  "Välj Kräv och ange sedan en lista med godkända tangentbord för den här principen. <a href='https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-android#data-transfer'>Mer information.</a>"
                                               },
                         "SaveData":  {
                                          "label":  "Spara kopior av organisationsdata",
@@ -2318,7 +2326,7 @@
                                              "label":  "Synkronisera data i principhanterade appar med inbyggda appar eller tillägg"
                                          },
                         "ThirdPartyKeyboards":  {
-                                                    "infoBox":  "Tangentbordsbegränsningar gäller för alla områden i en app. Privata konton för appar som har stöd för flera identiteter påverkas av den här begränsningen. <a href='https://docs.microsoft.com/en-us/intune/app-protection-policy-settings-ios#data-transfer' aria-label='Learn more about third party keyboards'>Läs mer.</a>",
+                                                    "infoBox":  "Tangentbordsbegränsningar gäller för alla områden i en app. Privata konton för appar som har stöd för flera identiteter påverkas av den här begränsningen. <a href='https://docs.microsoft.com/en-us/mem/intune/apps/app-protection-policy-settings-ios#data-transfer' aria-label='Learn more about third party keyboards'>Mer information.</a>",
                                                     "label":  "Tangentbord från tredje part"
                                                 },
                         "Timeout":  {
@@ -4601,7 +4609,7 @@
                                                  "noAssignmentShellScriptDisplayText":  "Tilldela minst en grupp ett Shell-skript. Gå till Egenskaper för att redigera tilldelningar."
                                              },
                               "CustomAttributes":  {
-                                                       "customAttributeScriptDescription":  "Maxstorlek för fil 200 kB.",
+                                                       "customAttributeScriptDescription":  "Max filstorlek 1 MB.",
                                                        "customAttributeScriptLabel":  "Skript",
                                                        "customAttributeTypeDescription":  "Välj datatyp för resultatet.",
                                                        "customAttributeTypeLabel":  "Attributets datatyp",
@@ -4614,12 +4622,10 @@
                               "ExecutionStatus":  {
                                                       "Columns":  {
                                                                       "deviceName":  "Enhet",
-                                                                      "errorDeviceCount":  "Misslyckades",
                                                                       "lastStateUpdateDateTime":  "Senast uppdaterad",
                                                                       "osVersion":  "Operativsystemsversion",
                                                                       "result":  "Resultat",
                                                                       "runState":  "Status",
-                                                                      "successDeviceCount":  "Lyckades",
                                                                       "userPrincipalName":  "Användarnamn"
                                                                   },
                                                       "fail":  "Misslyckades",
@@ -4643,7 +4649,7 @@
                                                                  "toolTip":  "Skriptet körs som standard av rotanvändaren. Rotanvändaren kan göra systemändringar som ett standardanvändarkonto inte kan."
                                                              },
                                           "uploadFileToolTip":  {
-                                                                    "toolTip":  "Maxstorlek för fil 200 kB."
+                                                                    "toolTip":  "Max filstorlek 1 MB."
                                                                 }
                                       },
                               "PolicyFrequency":  {
@@ -4702,8 +4708,12 @@
                               "successfullySavedPolicy":  "Sparade {0}"
                           },
     "ArchitectureOptions":  {
+                                "arm64InstructionSet":  "Install on ARM64 system",
+                                "checkBox":  "Please select at least one architecture setting",
                                 "sixtyFourBit":  "64-bitars",
-                                "thirtyTwoBit":  "32-bitars"
+                                "sixtyFourBitInstructionSet":  "Install on x64 system",
+                                "thirtyTwoBit":  "32-bitars",
+                                "thirtyTwoBitInstructionSet":  "Install on x86 system"
                             },
     "Countries":  {
                       "ae":  "Förenade Arabemiraten",
@@ -5085,6 +5095,9 @@
                            "androidEnterpriseWorkProfileAlwaysOnVpnClientDescription":  "Den angivna VPN-klienten måste vara installerad på enheten och den måste ha stöd för per app-VPN i arbetsprofiler. I annat fall uppstår fel. Tänk på att du måste godkänna appen i den hanterade Google Play-butiken, synkronisera appen med Intune och distribuera den för att den ska kunna installeras i användarens arbetsprofil.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnEnabledDescription":  "Ställ in att en VPN-klient i arbetsprofilen ska ansluta och återansluta automatiskt till VPN när det är möjligt. Välj Inaktivera om du vill inaktivera alltid på-VPN för alla VPN-klienter i arbetsprofilen. Det går bara att ställa in en VPN-klient för alltid på-VPN på en angiven enhet, så se till att det inga andra principer för alltid på-VPN är distribuerade till en och samma enhet.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnLockdownModeEnabledDescription":  "När det här är aktiverat måste all nätverkstrafik för arbetsprofilen gå via VPN-tunneln- Om det inte går att upprätta en anslutning till VPN tillåts ingen nätverkstrafik i enhetens arbetsprofil.",
+                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Skapa och tilldela den här profilen för att flytta enheter till en nyare och effektivare principimplementering. Enheter som konfigurerats med webbaserad registrering använder automatiskt den nyare implementeringen.",
+                           "androidForWorkMigrationPolicyDescriptionParagraph2":  "Enheter flyttas när de har tillräckligt med batteri och inte är anslutna till Wi-Fi som hanteras av Intune-principen.",
+                           "androidForWorkMigrationPolicyLearnMoreText":  "Läs mer om den här förbättringen.",
                            "androidGeneralKiosk":  "De här inställningarna gäller enbart Samsung KNOX-standardenheter.",
                            "androidHiddenApps":  "Appar som är dolda för användare (Samsung KNOX Standard endast)",
                            "androidHiddenAppsHeaderName":  "Ange appar som kommer att döljas på enheten. Användare kan inte upptäcka eller köra dessa appar.",
@@ -8175,6 +8188,7 @@
                            "microsoftTunnelSiteNotExist":  "Webbplatsen finns inte. Välj en ny webbplats.",
                            "microsoftUpdatesDescription":  "Bestäm om du ska söka efter uppdateringar från Microsoft Update.",
                            "microsoftUpdatesName":  "Microsoft-produktuppdateringar",
+                           "migrationPolicyCannotBeUnassigned":  "När du har tilldelat den här principen kan den inte tas bort.",
                            "minimumNumberOfCharacterSetsDescription":  "Med den här inställningen anges minsta antal teckenuppsättningar lösenordet måste innehålla. De fyra teckenuppsättningarna är:\r\n<br>\r\nGemener\r\n<br>\r\nVersaler\r\n<br>\r\nSymboler\r\n<br>\r\nSiffror",
                            "minimumNumberOfCharacterSetsName":  "Antal teckenuppsättningar ett lösenord måste innehålla",
                            "minimumPasswordLengthDescription":  "Lägsta antal siffror eller tecken i lösenordet.",
@@ -9678,7 +9692,7 @@
                            "userRightsDelegationDesc":  "Med den här användarrättigheten bestäms vilka användare som kan ange om ett användar- eller datorobjekt är betrott för delegering.",
                            "userRightsDelegationName":  "Aktivera delegering",
                            "userRightsDenyLocalLogOnDesc":  "Med den här säkerhetsinställningen bestäms vilka tjänstkonton som inte får registrera en process som en tjänst.",
-                           "userRightsDenyLocalLogOnName":  "Neka inloggning som tjänst",
+                           "userRightsDenyLocalLogOnName":  "Neka namn på lokal inloggning",
                            "userRightsDescriptionExample":  "(BUILTIN\\Händelseloggläsare)",
                            "userRightsGenerateSecurityAuditsDesc":  "Med den här användarrättigheten fastställs vilka konton som kan användas av en process för att lägga till poster i säkerhetsloggen. Säkerhetsloggen används för att spåra obehörig systemåtkomst.",
                            "userRightsGenerateSecurityAuditsName":  "Skapa säkerhetsgranskningar",
@@ -11184,6 +11198,7 @@
                            "installAsRemovable":  "Installera som flyttbart",
                            "channel":  null,
                            "languageLabel":  null,
+                           "uploadResult":  "Filinnehåll",
                            "admin":  "Administratör",
                            "standard":  "Standard",
                            "latest":  "Senaste",
@@ -11522,6 +11537,7 @@
                                                      "policySummaryBlockDCF":  "This policy unilaterally blocks device code flow usage across all resources and all users. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryBlockLegacyAuth":  "This policy blocks any sign-in attempt using legacy authentication and legacy authentication protocols from accessing applications. Legacy authentication refers to authentication requests made by: Clients that don't use modern authentication (e.g., Office 2010 clients). Clients that use older mail protocols such as IMAP, SMTP, or POP3.",
                                                      "policySummaryMfa":  "This policy requires some administrator roles to perform multifactor authentication when accessing Microsoft admin portals. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryMfaForAllUsers":  "This policy requires all users to perform multifactor authentication when accessing any resources. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
@@ -11530,6 +11546,7 @@
                                                      "recActionsGlobal2":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you.",
                                                      "recActionsMfa1":  "Exclude one or more break glass accounts from the policy.",
                                                      "recActionsMfa2":  "To prevent users from being locked out, verify that all users covered by this policy have at least one enabled authentication methods.",
+                                                     "recActionsMfa3":  "Exclude your guest users if you're targeting them with a <a href=\"{0}\" data-linktype=\"external\">guest user specific policy</a>.",
                                                      "recActionsPerUserMfaV2":  "After enabling this Conditional Access policy, it's recommended to disable per-user multifactor authentication for in-scope users.",
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
                                                      "recommendedActions":  "Recommended actions",
@@ -11666,7 +11683,6 @@
                                                            "singular":  "1 network traffic profile selected"
                                                        },
                                           "internetOptionText":  "Internet traffic",
-                                          "label":  "Global Secure Access (Preview)",
                                           "m365OptionText":  "Microsoft 365 traffic",
                                           "privateOptionText":  "Private traffic",
                                           "selectTrafficProfilesLabel":  "Select the traffic profiles this policy applies to",
@@ -11868,7 +11884,7 @@
                                                      },
                                         "subtitle":  "Conditional Access policy",
                                         "tabLabel":  "Policy",
-                                        "viewPolicyImpact":  "View policy impact (Preview) "
+                                        "viewPolicyImpact":  "View policy impact"
                                     },
                     "PolicyCondition":  {
                                             "InsiderRisk":  {
@@ -12043,6 +12059,9 @@
                                                         "strictEnforcementText":  "This policy has strict enforcement for continuous access evaluation configured. Strict enforcement is currently not supported and has been rolled back. Saving this policy will automatically remove strict enforcement from the policy.",
                                                         "strictLocation":  "Strictly enforce location policies (Preview)"
                                                     },
+                                            "Gsa":  {
+                                                        "securityProfileWithNoGsaTargetSelection":  "\"Global Secure Access security profile\" only works correctly when \"All Internet resources with Global Secure Access\" or \"All resources\" are selected. Please change your target selection."
+                                                    },
                                             "NetworkAccessSecurity":  {
                                                                           "checkboxLabel":  "Use Global Secure Access security profile",
                                                                           "dropdownDefaultText":  "Select a policy",
@@ -12072,7 +12091,7 @@
                                                                     "actorInvalid":  "The \"sign-in frequency every time\" session control cannot be used with \"{0}\"",
                                                                     "appWarning":  "Some of the applications currently selected are not compatible with the \"Sign-in frequency\" option of \"Every time\"",
                                                                     "everytime":  "Every time",
-                                                                    "everytimeInfoBalloon":  "\"Every time\" option is evaluated on every sign-in attempt to an application in scope for this policy. Some policy configurations for the \"sign-in frequency every time\" session control are in preview.",
+                                                                    "everytimeInfoBalloon":  "\"Every time\" option is evaluated on every sign-in attempt to an application in scope for this policy.",
                                                                     "periodic":  "Periodic reauthentication",
                                                                     "reqMFAWarning":  "\"Require multifactor authentication\" must be selected when using \"Secondary authentication methods only\"",
                                                                     "selectorInvalid":  "When \"Require password change\" grant is selected, only \"sign-in frequency every time\" session control can be used",
@@ -12655,6 +12674,9 @@
                     "includeUnknownAreasCheckboxInfoBalloonContent":  "Unknown areas are IP addresses that can't be mapped to a country/region.",
                     "includeUnknownAreasCheckboxLabel":  "Include unknown areas",
                     "infoCommandLabel":  "Info",
+                    "injectedPoliciesBlockDCFWarningInfobox":  "This policy blocks device code flow unilaterally, which can be leveraged as part of a phishing attack.",
+                    "injectedPoliciesBlockLegacyWarningInfobox":  "This policy blocks legacy authentication protocols, which cannot enforce multi-factor authentication. Disabling legacy authentication reduces compromises by 67%.",
+                    "injectedPoliciesMFAWarningInfobox":  "This policy provides multi-factor authentication which can prevent 99.22% of account compromise.",
                     "injectedPoliciesWarningInfobox":  "99.22% of account compromise could be stopped by using multi-factor authentication, provided by this policy.",
                     "invalidCertDuration":  "Invalid cert duration",
                     "invalidIpAddress":  "Value must be a valid IP address",
@@ -12683,7 +12705,7 @@
                     "memberSelectionCommandRemove":  "Remove",
                     "menuItemClaimProviderControls":  "Custom controls (Preview)",
                     "menuItemClassicPolicies":  "Classic policies",
-                    "menuItemDeletedPolicies":  "Deleted Policies",
+                    "menuItemDeletedPolicies":  "Deleted Policies (Preview)",
                     "menuItemInsightsAndReporting":  "Insights and reporting",
                     "menuItemManage":  "Manage",
                     "menuItemNamedLocationsPreview":  "Named locations (Preview)",
@@ -12693,6 +12715,8 @@
                     "microsoftAdminPortals":  "Microsoft Admin Portals",
                     "microsoftAdminPortalsInfoBox":  "The admin portals include Microsoft 365 admin center, Exchange admin center, Azure portal, Microsoft Entra admin center, and others.",
                     "minorRisk":  "Minor",
+                    "mmpTurnOffAttackWarningWarningInfobox":  "If you turn off this policy, your accounts will be susceptible to this attack.",
+                    "mmpTurnOffRiskWarningWarningInfobox":  "If you turn off this policy, your accounts will be at risk for compromise.",
                     "moderateRisk":  "Moderate",
                     "monday":  "Monday",
                     "nameLabel":  "Name",
@@ -12841,6 +12865,7 @@
                     "policyReviewSection":  "Review",
                     "policySaveButton":  "Save",
                     "policySoftDeleteConfirmation":  "Once deleted, you will have 30 days to restore this policy.",
+                    "policySoftDeleteConfirmationTitle":  "Delete conditional access policy?",
                     "policyStagedRollout":  "Staged rollout",
                     "policyStagedRolloutOptionsGroupItemAriaLabel":  "Enable Policy: Staged rollout.",
                     "policyStatusIconDescription":  "Policy is Enabled",
