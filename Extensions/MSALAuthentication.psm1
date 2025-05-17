@@ -832,6 +832,16 @@ function Connect-MSALUser
         $Tenant
     )
 
+    # If we already have a valid token from RawAccessToken, no need to authenticate again
+    if ($global:MSALToken -and 
+        $global:MSALToken.ExpiresOn -gt (Get-Date) -and
+        $global:RawAccessToken -and
+        $global:MSALToken.AccessToken -eq $global:RawAccessToken) 
+    {
+        Write-LogDebug "Using existing token from RawAccessToken that is still valid"
+        return $true
+    }
+
     if($global:hideUI -eq $true)
     {
         if($global:AzureAppId -and $global:ClientSecret -and $global:TenantId)

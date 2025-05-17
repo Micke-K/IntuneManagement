@@ -17,7 +17,9 @@ param(
     [string]
     $Secret,
     [string]
-    $Certificate
+    $Certificate,
+    [string]
+    $AccessToken
 )
 Import-Module ($PSScriptRoot + "\CloudAPIPowerShellManagement.psd1") -Force
 $param = $PSBoundParameters

@@ -85,7 +85,9 @@ function Initialize-CloudAPIManagement
         [string]
         $secret,
         [string]
-        $certificate
+        $certificate,
+        [string]
+        $AccessToken
     )
 
     $PSModuleAutoloadingPreference = "none"
@@ -96,6 +98,12 @@ function Initialize-CloudAPIManagement
     Add-Type -AssemblyName PresentationFramework
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+    if (-not [string]::IsNullOrEmpty($AccessToken))
+    {
+        $global:RawAccessToken = $AccessToken
+        Write-Verbose "Using provided AccessToken for authentication."
+    }
 
     $global:hideUI = ($Silent -eq $true)
     $global:SilentBatchFile = $SilentBatchFile

@@ -44,10 +44,6 @@ function Invoke-InitializeModule
             Value = "replace"
         },
         [PSCustomObject]@{
-            Name = "Replace with assignments (Preview)"
-            Value = "replace_with_assignments"
-        },        
-        [PSCustomObject]@{
             Name = "Update (Preview)"
             Value = "update"
         }
@@ -340,7 +336,1309 @@ function Invoke-GraphRequest
 
     if($SkipAuthentication -ne $true)
     {
-        Connect-MSALUser
+        # Only call Connect-MSALUser if we don't have a valid token
+        if($null -eq $global:MSALToken -or 
+          (Get-Date) -ge $global:MSALToken.ExpiresOn)
+        {
+            Connect-MSALUser
+        }
+    }
+
+    if(-not $GraphVersion) 
+    {
+        if(-not $script:defaultVersion)
+        {
+            if((Get-SettingValue "UseGraphV1") -eq $true)
+            {
+                $script:defaultVersion = "v1.0"
+            }
+            else
+            {
+                $script:defaultVersion = "beta"
+            }
+        }
+        $GraphVersion = $script:defaultVersion 
+    }
+
+    $params = @{}
+
+    $requestId = [Guid]::NewGuid().guid
+
+    if(-not $Headers)
+    {
+        $Headers = @{
+        'Content-Type' = 'application/json; charset=utf-8'
+        'Authorization' = "Bearer " + $global:MSALToken.AccessToken
+        'ExpiresOn' = $global:MSALToken.ExpiresOn
+        'x-ms-client-request-id' = $requestId
+        }
+    }
+
+    if($HttpMethod -eq "GET" -and $ODataMetadata -ne "Skip")
+    {
+        # Note: odata.metadata=full in Accept 
+        # @odata.type is not always included with default (minimum). 
+        # That is required to identify the object type in some functions
+        # It does include a lot of info we don't need... 
+        $Headers.Add("Accept","application/json;odata.metadata=$ODataMetadata")
+    }
+    #elseif($Content)
+    #{
+    #    # Upload content as UTF8 to support international and extended characters
+    #    $Content = [System.Text.Encoding]::UTF8.GetBytes($Content)
+    #}
+
+    if($AdditionalHeaders -is [HashTable])
+    {
+        foreach($key in $AdditionalHeaders.Keys)
+        {
+            if($Headers.ContainsKey($key)) { continue }
+
+            $Headers.Add($key, $AdditionalHeaders[$key])
+        }
+    }
+
+    if($Content) { $params.Add("Body", [System.Text.Encoding]::UTF8.GetBytes($Content)) }
+    if($Headers) { $params.Add("Headers", $Headers) }
+    if($Outfile)
+    {
+        $dirName = [IO.Path]::GetDirectoryName($Outfile)
+        try {
+            [IO.Directory]::CreateDirectory($dirName) | Out-Null
+        }
+        catch {
+            
+        }
+        if([IO.Directory]::Exists($dirName))
+        {
+            $params.Add("OutFile", $OutFile)
+        }
+        else {
+            Write-Log "Failed to create directory for OutFile $Outfile" 3
+        }
+    }
+
+    if(($Url -notmatch "^http://|^https://"))
+    {        
+        $Url =  "https://$((?? $global:MSALGraphEnvironment "graph.microsoft.com"))/$GraphVersion/" + $Url.TrimStart('/')
+        $Url = $Url -replace "%OrganizationId%", $global:Organization.Id
+    }
+
+    if($PageSize -gt 0 -and $url.IndexOf("`$top=") -eq -1)
+    {
+        if(($url.IndexOf('?')) -eq -1) 
+        {
+            $url = "$($url.Trim())?"
+        }
+        else
+        {
+            $url = "$($url.Trim())&"
+        }
+        $url = "$($url.Trim())`$top=$($PageSize)"
+    }
+
+    $proxyURI = Get-ProxyURI
+    if($proxyURI)
+    {
+        $params.Add("proxy", $proxyURI)
+        $params.Add("UseBasicParsing", $true)
+    }
+
+    $ret = $null
+    
+    $retryCount = 0
+    $retryMax = 10
+    do
+    {
+        $retryRequest = $false
+        try
+        {
+            Write-LogDebug "Invoke graph API: $Url (Request ID: $requestId)"
+            $allValues = @()
+            do 
+            {
+                $ret = Invoke-RestMethod -Uri $Url -Method $HttpMethod @params 
+                if($? -eq $false) 
+                {
+                    throw $global:error[0]
+                }
+        
+                if($HttpMethod -eq "PATCH" -and [String]::IsNullOrempty($ret))
+                {
+                    $ret = $true;
+                    break; 
+                }
+                elseif($AllPages -eq $true -and $HttpMethod -eq "GET" -and $ret.value -is [Array])
+                {
+                    $allValues += $ret.value
+                    if($ret.'@odata.nextLink')
+                    {
+                        $Url = $ret.'@odata.nextLink'
+                    }
+                }
+                else
+                {
+                    break    
+                }
+            } while($ret.'@odata.nextLink')
+            
+            if($allValues.Count -gt 0 -and $ret.value -is [Array])
+            {
+                $ret.value = $allValues
+            }
+        }
+        catch
+        {
+            $retryCount++
+            if($NoError -eq $true) { return }
+            if($_.Exception.Response.StatusCode -eq 429 -and $retryCount -le $retryMax)
+            {
+                # NOT OK - Should use the date property but could not replicate the issue
+                $retryCount++
+                $retryRequest = $true
+                Write-Log "429 - Too many requests received. Wait 5 s before retry" 2
+                Start-Sleep -Seconds 5
+            }
+            else
+            {
+                $extMessage = $null
+                try
+                {
+                    $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
+                    $reader.BaseStream.Position = 0
+                    $reader.DiscardBufferedData()
+                    $response = $reader.ReadToEnd() | ConvertFrom-Json
+                    if($response.Error.Message)
+                    {
+                        $extMessage = $response.Error.Message
+                        try
+                        {
+                            if($response.Error.Message.StartsWith("{") -and $response.Error.Message.EndsWith("}"))
+                            {
+                                $message = $response.Error.Message | ConvertFrom-Json
+                                if($message.Message)
+                                {
+                                    $extMessage = ". Response message: $($message.Message)"
+                                }
+                            }
+                        }
+                        catch {}
+
+                        $extMessage = ". Response message: $($extMessage)"
+                    }
+                }
+                catch{}
+
+                Write-LogError "Failed to invoke MS Graph with URL $Url (Request ID: $requestId). Status code: $($_.Exception.Response.StatusCode)$extMessage" $_.Exception
+            }            
+        }
+    } while($retryRequest -eq $true)
+    
+    Write-Debug "$(($ret | Select *))"
+    
+    $ret
+}
+
+function Get-GraphObjects 
+{
+    param(
+    [String]
+    $Url,
+    [Array]
+    $property = $null,
+    [Array]
+    $exclude,
+    $SortProperty = "displayName",
+    $objectType,
+    [string]
+    $select,
+    [switch]
+    $SinglePage,
+    [switch]
+    $AllPages,
+    [switch]
+    $SingleObject,
+    [string]
+    $filter)
+        
+    $params = @{}
+    if($objectType.ODataMetadata)
+    {
+        $params.Add('ODataMetadata',$objectType.ODataMetadata)
+    }
+
+    if(-not $url)
+    {
+        $url = $objectType.API
+    }
+
+    if($SingleObject -ne $true -and $objectType.QUERYLIST)
+    {
+        if(($url.IndexOf('?')) -eq -1) 
+        {
+            $url = "$($url.Trim())?$($objectType.QUERYLIST.Trim())"
+        }
+        else
+        {
+            $url = "$($url.Trim())&$($objectType.QUERYLIST.Trim())" # Risky...does not check that the parameter is already in use
+        }
+    }
+
+    if(($url.IndexOf("`$select=")) -eq -1 -and $select)
+    {
+        $url += (?: (($url.IndexOf('?')) -eq -1) "?" "&")
+        $url += "`$select=$select"
+    }    
+    
+    if($SinglePage -eq $true)
+    {
+        #Use default page size or use below for a specific page size for testing
+        #$params.Add("pageSize",5) #!!!
+    }
+    elseif($SingleObject -ne $true -and $SinglePage -ne $true)
+    {
+        $params.Add('AllPages',$true)
+    }
+
+    if($script:nextGraphPage -and ($SinglePage -eq $true -or $AllPages -eq $true))
+    {
+        $url = $script:nextGraphPage
+    }
+
+    if($SingleObject -ne $true -and (Get-SettingValue "ExpandAssignments") -eq $true -and $objectType.ExpandAssignmentsList -ne $false)
+    {
+        # Expand assignments so they can be used in custom columns
+        if(($url.IndexOf('expand',[System.StringComparison]::InvariantCultureIgnoreCase)) -eq -1)
+        {
+            $url += (?: (($url.IndexOf('?')) -eq -1) "?" "&")
+            $url = "$($url)`$expand=assignments"
+        }
+    }
+
+    if($script:multipleGraphPages -eq $true -and $SingleObject -ne $true -and $filter -and $objectType.QuerySearch -eq $true)
+    {
+        # QuerySearch is only reqired when there are more pages to load
+        if(($url.IndexOf('search',[System.StringComparison]::InvariantCultureIgnoreCase)) -eq -1)
+        {
+            $url += (?: (($url.IndexOf('?')) -eq -1) "?" "&")
+            $url = "$($url)`$search=`"$($filter)`""
+        }
+    }     
+    
+    $graphObjects = Invoke-GraphRequest -Url $url @params
+    if($SinglePage -eq $true -or $AllPages -eq $true)
+    {
+        $script:nextGraphPage = $graphObjects.'@odata.nextLink'
+        if($null -eq $script:multipleGraphPages)
+        {
+            $script:multipleGraphPages = $null -ne $script:nextGraphPage
+        }
+    }
+
+    if($graphObjects -and ($graphObjects | GM -Name Value -MemberType NoteProperty))
+    {
+        $retObjects = $graphObjects.Value
+    }
+    else
+    {
+        $retObjects = $graphObjects
+    }
+
+    if($retObjects)
+    {
+        $graphObjects = Add-GraphObjectProperties $retObjects $objectType $property $exclude $SortProperty
+
+        if($SingleObject -ne $true -and $objectType.PostListCommand)
+        {
+            $graphObjects = & $objectType.PostListCommand $graphObjects $objectType
+        }
+    }
+    else
+    {
+        $graphObjects = $null    
+    }
+    
+    if(($graphObjects | measure).Count -gt 0)
+    {
+        $graphObjects
+    }
+}
+
+function Add-GraphObjectProperties
+{
+    param($graphObjects, 
+            $objectType, 
+            [Array]
+            $property = $null,
+            [Array]
+            $exclude = $null,
+            $SortProperty = "displayName")
+
+    if($property -isnot [Object[]]) { $property = @('displayName', 'description', 'id')}
+    
+    $objects = @()
+    
+    if($graphObjects -and ($graphObjects | GM -Name Value -MemberType NoteProperty))
+    {
+        $retObjects = $graphObjects.Value            
+    }
+    else
+    {
+        $retObjects = $graphObjects
+    }
+
+    $getAssignmentInfo = ((Get-SettingValue "ExpandAssignments") -eq $true -and $objectType.ExpandAssignmentsList -ne $false)
+
+    foreach($graphObject in $retObjects)
+    {
+        $params = @{}
+        if($property) { $params.Add("Property", $property) }
+        if($exclude) { $params.Add("ExcludeProperty", $exclude) }
+        foreach($objTmp in ($graphObject | Select-Object @params))
+        {
+            $objTmp | Add-Member -NotePropertyName "IsSelected" -NotePropertyValue $false
+            $objTmp | Add-Member -NotePropertyName "Object" -NotePropertyValue $graphObject
+            $objTmp | Add-Member -NotePropertyName "ObjectType" -NotePropertyValue $objectType
+            $objects += $objTmp
+        }
+        
+        if($null -ne $graphObject.isAssigned)
+        {
+            $objTmp | Add-Member -NotePropertyName "IsAssigned" -NotePropertyValue $graphObject.isAssigned
+        }
+        elseif($getAssignmentInfo)
+        {
+            $objTmp | Add-Member -NotePropertyName "IsAssigned" -NotePropertyValue (($graphObject.assignments | measure).Count -gt 0)
+        }        
+    }    
+
+    if($objects.Count -gt 0 -and $SortProperty -and ($objects[0] | GM -MemberType NoteProperty -Name $SortProperty))
+    {
+        $objects = $objects | sort -Property $SortProperty
+    }
+
+    $objects
+}
+
+function Show-GraphObjects
+{
+    param($filter, [switch]$ObjectTypeChanged)
+
+    $global:curObjectType = $global:lstMenuItems.SelectedItem
+
+    if($ObjectTypeChanged -eq $true)
+    {
+        $script:multipleGraphPages = $null
+    }
+
+    Clear-GraphObjects
+
+    if(-not $global:MSALToken)
+    {
+        $global:txtNotLoggedIn.Content = "Not logged in. Please login to view objects" 
+        $global:grdNotLoggedIn.Visibility = "Visible"
+        $global:grdData.Visibility = "Collapsed"
+        return
+    }
+    elseif($global:curObjectType.'@AccessType' -eq "None")
+    {
+        $requiredPermissions = ($global:curObjectType.Permissons -join ",")
+        $missingScopes = ?? $global:curObjectType.'@MissingScopes' $requiredPermissions
+        if($requiredPermissions -ne $missingScopes)
+        {
+            $requiredPermissions = "`nRequired permissions: $requiredPermissions"
+        }
+        else
+        {
+            $requiredPermissions = ""
+        }
+        $global:txtNotLoggedIn.Content = "You don't have the required permissons to access $($global:curObjectType.Title).$($requiredPermissions)`n`Missing perimssons: $missingScopes`n`nRequest consent from the 'Request Consent' link in the user login info`nor`nDisable the 'Use Default Permissions' setting to trigger consent prompt.`nNote: Changing the 'Use Default Permissions' setting will require a restart of the app`nand a 'manual' login" 
+        $global:grdNotLoggedIn.Visibility = "Visible"
+        $global:grdData.Visibility = "Collapsed"
+        return
+    }    
+    $global:grdNotLoggedIn.Visibility = "Collapsed"
+    $global:grdData.Visibility = "Visible"
+
+    # Always show Import if an item is selected
+    $global:btnImport.IsEnabled = $global:lstMenuItems.SelectedItem -ne $null
+
+    if(-not $global:lstMenuItems.SelectedItem) { return }
+
+    Write-Status "Loading $($global:curObjectType.Title) objects" 
+
+    if($global:lstMenuItems.SelectedItem.ShowForm -ne $false)
+    {
+        $viewItem = $global:lstMenuItems.SelectedItem
+        if($viewItem.Icon -or [IO.File]::Exists(($global:AppRootFolder + "\Xaml\Icons\$($viewItem.Id).xaml")))
+        {
+            $global:ccIcon.Content = Get-XamlObject ($global:AppRootFolder + "\Xaml\Icons\$((?? $viewItem.Icon $viewItem.Id)).xaml")
+        }
+    
+        $global:txtFormTitle.Text = $global:lstMenuItems.SelectedItem.Title        
+        $global:grdTitle.Visibility = "Visible"
+    }
+
+    $script:nextGraphPage = $null    
+
+    [array]$graphObjects = Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage -Filter $filter
+
+    $dgObjects.AutoGenerateColumns = $false
+    $dgObjects.Columns.Clear()
+
+    if($graphObjects)
+    {
+        $tmpObj = $graphObjects | Select -First 1
+
+        $prop = $tmpObj.PSObject.Properties | Where Name -eq "IsSelected"
+        if($prop)
+        {        
+            $column = Get-GridCheckboxColumn "IsSelected"
+            $dgObjects.Columns.Add($column)
+
+            $column.Header.add_Click({
+                foreach($item in $global:dgObjects.ItemsSource)
+                { 
+                    $item.IsSelected = $this.IsChecked
+                }
+                $global:dgObjects.Items.Refresh()
+                Invoke-ModuleFunction "Invoke-EMSelectedItemsChanged"
+            })           
+        }
+
+        $tableColumns = @()
+
+        $additionalColumns = @()
+        $additionalColsStr = ?? (Get-Setting "EndpointManager\ObjectColumns" "$($global:curObjectType.Id)") $global:curObjectType.DefaultColumns
+        if($additionalColsStr)
+        {
+            $additionalColumns += $additionalColsStr.Split(',')
+        }
+
+        if($additionalColumns.Count -eq 0 -or $additionalColumns[0] -ne "0")
+        {
+            # Add default columns
+            foreach($prop in ($tmpObj.PSObject.Properties | Where {$_.Name -notin @("IsSelected","Object","ObjectType")}))
+            {
+                $binding = [System.Windows.Data.Binding]::new($prop.Name)
+                $column = [System.Windows.Controls.DataGridTextColumn]::new()
+                $column.Header = $prop.Name
+                $column.IsReadOnly = $true
+                $column.Binding = $binding
+
+                $tableColumns += $prop.Name
+
+                $dgObjects.Columns.Add($column)
+            }
+        }
+
+        # Add custom columns
+        foreach($additionalCol in $additionalColumns)
+        {
+            if($additionalCol -eq "0" -or $additionalCol -eq "1") { continue }
+
+            $bindingProp,$colHeader = $additionalCol.Split('=')
+
+            if(-not $colHeader)
+            {
+                $colHeader = $bindingProp
+            }
+
+            $binding = [System.Windows.Data.Binding]::new("Object.$($bindingProp)")
+            $column = [System.Windows.Controls.DataGridTextColumn]::new()
+            $column.Header = $colHeader
+            $column.IsReadOnly = $true
+            $column.Binding = $binding
+
+            $tableColumns += $colHeader
+            $dgObjects.Columns.Add($column)
+        }
+
+        $ocList = [System.Collections.ObjectModel.ObservableCollection[object]]::new($graphObjects)
+        $dgObjects.ItemsSource = [System.Windows.Data.CollectionViewSource]::GetDefaultView($ocList)
+    }
+    else
+    {
+        $dgObjects.ItemsSource = $null
+    }
+
+    
+    # Show/Hide buttons based on object type
+    foreach($ctrl in $spSubMenu.Children)
+    {
+        if($ctrl.Name -eq "btnDelete")
+        {
+            $allowDelete = Get-SettingValue "EMAllowDelete"
+            if($global:currentViewObject.ViewInfo.AllowDelete -eq $false) { $allowDelete = $false }
+            $ctrl.Visibility = (?: ($allowDelete -eq $true) "Visible" "Collapsed")
+        }
+        elseif(-not $global:curObjectType.ShowButtons -or ($global:curObjectType.ShowButtons | Where-Object { $ctrl.Name -like "*$($_)" } ))
+        {
+            Write-LogDebug "Show $($ctrl.Name)"
+            $ctrl.Visibility = "Visible"
+        }
+        else
+        {
+            Write-LogDebug "Hide $($ctrl.Name)"
+            $ctrl.Visibility = "Collapsed"
+        }
+    }
+
+    Set-GraphPagesButtonStatus
+}
+
+function Set-GraphPagesButtonStatus
+{
+    $global:btnLoadAllPages.Visibility = (?: ($script:nextGraphPage) "Visible" "Collapsed")
+    $global:btnLoadNextPage.Visibility = (?: ($script:nextGraphPage) "Visible" "Collapsed")
+    $global:btnLoadAllPages.Tag = $script:nextGraphPage
+    $global:btnLoadNextPage.Tag = $script:nextGraphPage
+}
+
+function Clear-GraphObjects
+{        
+    $global:txtFormTitle.Text = ""
+    $global:txtEMObjects.Text = ""
+    $global:grdTitle.Visibility = "Collapsed"
+    $global:grdObject.Children.Clear()
+    $global:dgObjects.ItemsSource = $null
+    Set-ObjectGrid
+    
+    [System.Windows.Forms.Application]::DoEvents()
+}
+
+function Get-GraphObject
+{
+    param($obj, $objectType, [switch]$SkipAssignments, [switch]$GetAPI)
+
+    Write-Status "Loading $((Get-GraphObjectName $obj $objectType))" 
+
+    if($objectType.PreGetCommand)
+    {
+        $preConfig  = & $objectType.PreGetCommand $obj $objectType
+    }
+
+    if($preConfig -isnot [Hashtable]) { $preConfig = @{} }
+
+    if($preConfig.ContainsKey("API") -and $preConfig["API"])
+    {
+        $api = $preConfig["API"]
+    }
+    elseif(-not $objectType.APIGET)
+    {
+        $api = ("$($objectType.API)/$($obj.Id)")
+    }
+    else
+    {
+        $api = $graphObject.APIGET -replace "%id%", (Get-GraphObjectId $obj $objectType)
+    }
+
+    $expand = @()
+    if($obj.'assignments@odata.navigationLink' -and $SkipAssignments -ne $true -and $objectType.ExpandAssignments -ne $false)
+    {
+        $expand += "assignments"
+    }
+
+    if($obj.'apps@odata.navigationLink')
+    {
+        $expand += "apps"
+    }
+
+    if($obj.'settings@odata.navigationLink')
+    {
+        $expand += "settings"
+    }
+
+    if($obj.'roleAssignments@odata.navigationLink')
+    {
+        $expand += "roleAssignments"
+    }
+    
+    if($obj.'privacyAccessControls@odata.associationLink')
+    {
+        $expand += "microsoft.graph.windows10GeneralConfiguration/privacyAccessControls"
+    }    
+    
+    if($objectType.Expand)
+    {
+        foreach($objExpand in $objectType.Expand.Split(","))
+        {
+            if($objExpand -notin $expand) { $expand += $objExpand}
+        }
+    }
+
+    if($expand.Count -gt 0)
+    {
+        if($api.IndexOf('?') -eq -1) 
+        {
+            $api = ($api + "?`$expand=")
+        }
+        elseif($api.IndexOf("`$expand") -gt 1)
+        {
+            $api = ($api + ",") # A bit risky...assumes that expand is last in the existing query 
+        }
+        else
+        {
+            $api = ($api + "&`$expand=")
+        }
+
+        $api = ($api + ($expand -join ","))
+    }
+
+    if($global:Organization.Id)
+    {
+        $api = $api -replace "%OrganizationId%", $global:Organization.Id
+    }
+
+    if($GetAPI -eq $true)
+    {
+        return $api
+    }
+
+    $objInfo = Get-GraphObjects -Url $api -property $objectType.ViewProperties -objectType $objectType -SingleObject
+
+    if($objInfo -and $objectType.PostGetCommand)
+    {
+        & $objectType.PostGetCommand $objInfo $objectType
+    }
+    $objInfo 
+}
+
+# Generic Pre-Import function for all imports
+function Start-GraphPreImport
+{
+    param($obj, $objectType)
+
+    if($objectType.SkipRemovingProperties -eq $true) { return }
+
+    $removeProperties = $objectType.PropertiesToRemove
+
+    if($removeProperties -isnot [Object[]])
+    {
+        $removeProperties = @()        
+    }
+
+    if($removeProperties.Count -eq 0 -or $objectType.SkipRemoveDefaultProperties -ne $true)
+    {
+        # Default properties to delete
+        $removeProperties += @('lastModifiedDateTime','createdDateTime','supportsScopeTags','id','modifiedDateTime')
+    }
+
+    # Remove OData properties
+    foreach($odataProp in ($obj.PSObject.Properties | Where { $_.Name -like "*@Odata*Link" -or $_.Name -like "*@odata.context" -or $_.Name -like "*@odata.id" -or ($_.Name -like "*@odata.type" -and $_.Name -ne "@odata.type")})) # -or $_.Name -like "#CustomRef*"
+    {        
+        $removeProperties += $odataProp.Name
+    }
+
+    foreach($prop in $removeProperties)
+    {
+        # Allow override deleting default propeties e.g. some object types requires the Id property
+        if($objectType.SkipRemoveProperties -is [Object[]] -and $prop -in $objectType.SkipRemoveProperties) { continue }
+        Remove-Property $obj $prop
+    }
+
+    if($objectType.SkipRemovingChildProperties -ne $true)
+    {
+        foreach($prop in ($obj.PSObject.Properties))
+        {
+            if($obj."$($prop.Name)"."@odata.type")
+            {
+                foreach($childObj in ($obj."$($prop.Name)"))
+                {
+                    Start-GraphPreImport  $childObj $objectType         
+                }
+            }
+        }
+    }
+}
+
+function Get-GraphMetaData
+{
+    if(-not $global:metaDataXML)
+    {
+        # Graph metadata does not support Content-Length in response so size can not be used to check if it is updated
+        # There also no other version information in response headers. Use file date to update every week
+        Write-Log "Load Graph MetaData file"
+        $url = "https://graph.microsoft.com/beta/`$metadata"
+        $fileFullPath = [Environment]::ExpandEnvironmentVariables("%LOCALAPPDATA%\CloudAPIPowerShellManagement\GraphMetaData.xml")
+        $fi = [IO.FileInfo]$fileFullPath
+        $maxAge = (Get-Date).AddDays(-14)
+        if($fi.Exists -and ($fi.LastWriteTime -gt $maxAge -or $fi.CreationTime -gt $maxAge))
+        {
+            try 
+            {
+                [xml]$global:metaDataXML = Get-Content $fi.FullName              
+            }
+            catch { }
+        }
+
+        if(-not $global:metaDataXML)
+        {
+            Write-Log "Download Graph MetaData file"
+            [void][System.Reflection.Assembly]::LoadWithPartialName("System.Web.Extensions")
+            $wc = New-Object System.Net.WebClient
+            $wc.Encoding = [System.Text.Encoding]::UTF8
+            $proxyURI = Get-ProxyURI
+            
+            try 
+            {
+                if($proxyURI)
+                {
+                    $wc.Proxy = [System.Net.WebProxy]::new($proxyURI)
+                }
+
+                [xml]$global:metaDataXML = $wc.DownloadString($url)
+                # Download to string and then use Save to format the XML output
+                $global:metaDataXML.Save($fi.FullName)
+            }
+            catch
+            {
+                Write-LogError "Failed to download Graph MetaData file" $_.Exception
+            }
+            finally
+            {
+                $wc.Dispose()
+            }
+        }
+
+        if(-not $global:metaDataXML -and $fi.Exists)
+        {
+            Write-Log "Using old version of Graph MetaData file" 2
+            try 
+            {
+                [xml]$global:metaDataXML = Get-Content $fi.FullName              
+            }
+            catch { }
+        }
+    }
+}
+
+function Get-GraphObjectClassName
+{
+    param($type)
+
+    Get-GraphMetaData
+
+    $objectClassName = $null
+    
+    $nodes = $global:metaDataXML.SelectNodes("//*[@Type='Collection(graph.$($type))']")
+    if($nodes -ne $null -and $nodes.Count -gt 0)
+    {
+        foreach($node in $nodes)
+        {
+            if($node.ParentNode.Name -eq "deviceAppManagement")
+            {
+                $objectClassName = $node.Name
+                break
+            }
+        }
+    }
+
+    $objectClassName
+}
+
+#region Export/Import dialogs
+
+function Show-GraphExportForm
+{
+    $script:exportForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\ExportForm.xaml") -AddVariables
+    if(-not $script:exportForm) { return }
+
+    Set-XamlProperty $script:exportForm "txtExportPath" "Text" (?? (Get-Setting "" "LastUsedRoot") (Get-SettingValue "RootFolder"))
+    Set-XamlProperty $script:exportForm "chkAddObjectType" "IsChecked" (Get-SettingValue "AddObjectType")
+    Set-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked" (Get-SettingValue "AddCompanyName")
+    Set-XamlProperty $script:exportForm "chkExportAssignments" "IsChecked" (Get-SettingValue "ExportAssignments")    
+
+    Set-XamlProperty $script:exportForm "btnExportSelected" "IsEnabled" ($global:dgObjects.SelectedItem -ne $null)
+    if(($global:dgObjects.ItemsSource | Where IsSelected -eq $true).Count -gt 0)
+    {
+        Set-XamlProperty $script:exportForm "lblSelectedObject" "Content" "$(($global:dgObjects.ItemsSource | Where IsSelected -eq $true).Count) selected object(s)" 
+    }
+    elseif($global:dgObjects.SelectedItem)
+    {
+        Set-XamlProperty $script:exportForm "lblSelectedObject" "Content" "Selected object: $((Get-GraphObjectName $global:dgObjects.SelectedItem $global:curObjectType))" 
+    }
+    Add-XamlEvent $script:exportForm "btnCancel" "add_click" {
+        $script:exportForm = $null
+        Show-ModalObject
+    }
+
+    Add-XamlEvent $script:exportForm "btnExportAll" "add_click" {
+        
+        Export-GraphObjects
+        
+        $script:exportForm = $null
+        Show-ModalObject
+    }
+
+    Add-XamlEvent $script:exportForm "btnExportSelected" "add_click" {
+        Export-GraphObjects -Selected
+        
+        $script:exportForm = $null
+        Show-ModalObject
+    }
+
+    Add-XamlEvent $script:exportForm "browseExportPath" "add_click" {
+        $folder = Get-Folder (Get-XamlProperty $script:exportForm "txtExportPath" "Text") "Select root folder for export"
+        if($folder)
+        {
+            Set-XamlProperty $script:exportForm "txtExportPath" "Text" $folder
+        }
+    }
+
+    Add-GraphExportExtensions $script:exportForm 1 $global:curObjectType
+    
+    Show-ModalForm "Export $($global:curObjectType.Title) objects" $script:exportForm -HideButtons
+}
+
+function Invoke-InitSilentBatchJob
+{
+    $global:MSALToken = $null
+
+    if(-not $global:TenantId)
+    {
+        Write-Log "Tenant Id is missing. Use -TenantId <Tenant-guid> on the command line to run silent batch jobs" 3
+        return
+    }
+
+    if(-not $global:AzureAppId -or (-not $global:ClientSecret -and -not $global:ClientCert))
+    {
+        # Get login info for silent job from settings
+        $global:AzureAppId = Get-SettingValue "GraphAzureAppId" -TenantID $global:TenantId
+        $global:ClientSecret = Get-SettingValue "GraphAzureAppSecret" -TenantID $global:TenantId
+        $global:ClientCert = Get-SettingValue "GraphAzureAppCert" -TenantID $global:TenantId
+    }
+
+    if(-not $global:AzureAppId)
+    {
+        Write-Log "App Id is missing. Cannot run silent job without App Id. Either specify the AppId in Settings or Command Line (-AppId <AppId>)" 3
+        return
+    }    
+
+    if(-not $global:ClientSecret -and -not $global:ClientCert)
+    {
+        Write-Log "Secret or Certificate must be specified. Either specify Secret/Certificate in Settings or Command Line" 3
+        return
+    }    
+    Connect-MSALUser | Out-Null
+    if(-not $global:MSALToken)
+    {
+        Write-Log "Not authenticated. Batch job will be skipped" 3
+    }
+    else
+    {        
+        $accessToken = Get-JWTtoken $global:MSALToken.AccessToken
+        if($accessToken)
+        {
+            $global:Organization = (MSGraph\Invoke-GraphRequest -Url "Organization" -SkipAuthentication -ODataMetadata "Skip" -NoError).Value 
+            if($global:Organization)
+            {
+                if($global:Organization -is [array]) { $global:Organization = $global:Organization[0]}
+            }
+            else
+            {
+                Write-Log "Could not get Organization info. Verify that the app has permission to read Organization info (at least Organization.Read.All). Organization name wil not be set" 2
+                $global:Organization = [PSCustomObject]@{
+                    Id = $accessToken.Payload.tid
+                    displayName = ""
+                }
+            }
+            if($global:Organization.displayName)
+            {
+                $tenantInfo = "$($global:Organization.displayName) ($($global:Organization.id))"
+            }
+            else
+            {
+                $tenantInfo = $accessToken.Payload.tid
+            }
+
+            Write-Log "Successfully authenticated to tenant: $tenantInfo"
+            Write-Log "Azure App (for authentication): $($accessToken.Payload.app_displayname) ($($accessToken.Payload.appid))"
+            Write-Log "Permissions: $(($accessToken.Payload.roles -join ","))"
+        }
+    }
+}
+
+function Invoke-SilentBatchJob
+{
+    param($settingsObj)
+
+    if(-not $global:MSALToken) { return } # Skip if not authenticated
+
+    if(-not $settingsObj -or (-not $settingsObj.BulkExport -and -not $settingsObj.BulkImport))
+    {
+        return 
+    }
+
+    if($settingsObj.BulkExport)
+    {
+        Start-GraphSilentBulkExport $settingsObj
+    }
+
+    if($settingsObj.BulkImport)
+    {
+        Start-GraphSilentBulkImport $settingsObj
+    }
+}
+
+function Start-GraphSilentBulkExport
+{
+    param($settingsObj)
+
+    $script:exportForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\BulkExportForm.xaml") -AddVariables
+    if(-not $script:exportForm) { return }
+
+    $script:exportObjects = Get-GraphBatchObjectTypes $settingsObj.BulkExport
+
+    foreach($viewObj in $script:exportObjects)
+    {
+        if(-not $viewObj.Title) { continue }
+
+        if($viewObj.ObjectType.ShowButtons -is [Object[]] -and $viewObj.ObjectType.ShowButtons -notcontains "Export") { continue }
+
+        Add-GraphExportExtensions $script:exportForm 0 $viewObj.ObjectType
+    }    
+
+    Set-BatchProperties $settingsObj.BulkExport $script:exportForm
+
+    $global:dgObjectsToExport.ItemsSource = @($script:exportObjects)
+
+    <#
+    # Select ObjectTypes based on batch config
+    $objTypes = $settingsObj.BulkExport | Where Name -eq ObjectTypes
+    if($objTypes)
+    {        
+        foreach($objTypeId in $objTypes.ObjectTypes)
+        {
+            $obj = $global:dgObjectsToExport.ItemsSource | Where { $_.ObjectType.Id -eq $objTypeId}
+            if($obj)
+            {
+                $obj.Selected = $true
+            }
+            else
+            {
+                Write-Log "No Object Type with id $objTypeId found" 2                    
+            }
+        }
+    }
+    #>
+
+    Start-GraphObjectExport
+}
+
+function Start-GraphSilentBulkImport
+{
+    param($settingsObj)
+
+    $script:importForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\BulkImportForm.xaml") -AddVariables
+    if(-not $script:importForm) { return }
+
+    # Get all objects but not selected
+    # This will allow dependencies
+    $script:importObjects = Get-GraphBatchObjectTypes $settingsObj.BulkImport -NotSelected -All
+    
+    $objTypes = $settingsObj.BulkImport | Where Name -eq ObjectTypes
+    if($objTypes)
+    {        
+        # Select object types from the batch file        
+        foreach($objTypeId in $objTypes.ObjectTypes)
+        {
+            $obj = $script:importObjects | Where { $_.ObjectType.Id -eq $objTypeId}
+            if($obj)
+            {
+                $obj.Selected = $true
+            }
+            else
+            {
+                Write-Log "No Object Type with id $objTypeId found" 2                    
+            }
+        }
+    }
+    
+    foreach($viewObj in $script:importObjects)
+    {
+        if(-not $viewObj.Title) { continue }
+
+        if($viewObj.ObjectType.ShowButtons -is [Object[]] -and $viewObj.ObjectType.ShowButtons -notcontains "Import") { continue }
+
+        Add-GraphImportExtensions $script:importForm 0 $viewObj.ObjectType
+    }    
+    
+    Set-BatchProperties $settingsObj.BulkImport $script:importForm
+
+    $global:dgObjectsToImport.ItemsSource = @($script:importObjects)
+
+    $importedObjects = Start-GraphObjectImport
+
+    if($importedObjects -eq 0)
+    {
+        Write-Log "No objects were imported. Verify import batch file settings" 2
+    }
+}
+
+function Get-GraphBatchObjectTypes
+{
+    param($settingsObj, [switch]$NotSelected, [switch]$All)
+
+    $silentViewObjects = @()
+
+    $intuneView = $global:viewObjects | Where { $_.ViewInfo.Id -eq "IntuneGraphAPI" }
+    if($All -ne $true)
+    {
+        $arrObjectTypes = ($settingsObj | Where Name -eq ObjectTypes).ObjectTypes
+    }
+    else
+    {
+        $arrObjectTypes = $intuneView.ViewItems.Id
+    }
+
+    foreach($objTypeId in $arrObjectTypes)
+    {
+        $objType = $intuneView.ViewItems | Where Id -eq $objTypeId
+        if(-not $objType) 
+        {
+            Write-Log "ViewObject with id $objTypeId not found" 2
+            continue
+        }
+
+        $silentViewObjects += New-Object PSObject -Property @{
+            Title = $objType.Title
+            Selected = ($NotSelected.IsPresent -ne $true)
+            ObjectType = $objType
+        }
+    } 
+    
+    $silentViewObjects
+}
+
+function Get-GraphObjectType
+{
+    param($objTypeId)
+
+    $intuneView = $global:viewObjects | Where { $_.ViewInfo.Id -eq "IntuneGraphAPI" }
+
+    if($intuneView)
+    {
+        ($intuneView.ViewItems | Where Id -eq $objTypeId)
+    }
+}
+
+function Start-GraphObjectExport
+{
+    Write-Status "Export objects" -Block
+    Write-Log "****************************************************************"
+    Write-Log "Start bulk export"
+    Write-Log "****************************************************************"
+
+    $script:exportRoot = Expand-FileName (Get-XamlProperty $script:exportForm "txtExportPath" "Text")
+    Write-Log "Export root folder: $script:exportRoot"
+
+    $global:AADObjectCache = $null
+
+    foreach($item in $script:exportObjects)
+    { 
+        if($item.Selected -ne $true) { continue }
+
+        Write-Log "----------------------------------------------------------------"
+        Write-Log "Export $($item.ObjectType.Title) objects"
+        Write-Log "----------------------------------------------------------------"
+        
+        $txtNameFilter = $global:txtExportNameFilter.Text.Trim()
+        Save-Setting "" "ExportNameFilter" $txtNameFilter
+
+        if($txtNameFilter) { Write-Log "Name filter: $txtNameFilter" }
+        try 
+        {
+            $folder = Get-GraphObjectFolder $item.ObjectType $script:exportRoot (Get-XamlProperty $script:exportForm "chkAddObjectType" "IsChecked") (Get-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked")
+
+            $folder = Expand-FileName $folder
+
+            Write-Status "Get a list of all $($item.ObjectType.Title) objects" -SkipLog -Force
+            [array]$objects = Get-GraphObjects -property $item.ObjectType.ViewProperties -objectType $item.ObjectType
+
+            if((Get-SettingValue "UseBatchAPI") -eq $true)
+            {
+                # Use batch to get details of each object
+                $batchObjects = Get-GraphBatchObjects $objects $txtNameFilter
+                $i = 1
+                $total = ($batchObjects | measure).Count
+                foreach($batchResult in $batchObjects)
+                {
+                    if(-not $batchResult.Object) { continue }
+                    $objName = Get-GraphObjectName $batchResult.Object $batchResult.ObjectType
+                    Write-Status "Export $($item.Title): $objName ($($i)/$($total))" -Force
+                    Export-GraphObject $batchResult.Object $batchResult.ObjectType $folder -IsFullObject
+                    $i++
+                }                
+            }
+            else        
+            {
+                foreach($obj in $objects)
+                {
+                    # Export objects one by one
+                    $objName = Get-GraphObjectName $obj.Object $obj.ObjectType
+
+                    if($txtNameFilter -and $objName -notmatch [RegEx]::Escape($txtNameFilter))
+                    {
+                        continue
+                    }
+
+                    Write-Status "Export $($item.Title): $objName" -Force
+                    Export-GraphObject $obj.Object $item.ObjectType $folder
+                }
+            }
+            Save-Setting "" "LastUsedFullPath" $folder
+        }
+        catch 
+        {
+            Write-LogError "Failed when exporting $($item.Title) objects" $_.Exception
+        }
+    }
+    Save-Setting "" "LastUsedRoot" (Get-XamlProperty $script:exportForm "txtExportPath" "Text")
+
+    Write-Log "****************************************************************"
+    Write-Log "Bulk export finished"
+    Write-Log "****************************************************************"
+    Write-Status ""
+}
+
+function Show-GraphBulkExportForm
+{
+    $script:exportForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\BulkExportForm.xaml") -AddVariables
+    if(-not $script:exportForm) { return }
+
+    Set-XamlProperty $script:exportForm "txtExportPath" "Text" (?? (Get-Setting "" "LastUsedRoot") (Get-SettingValue "RootFolder"))
+    Set-XamlProperty $script:exportForm "chkAddCompanyName" "IsChecked" (Get-SettingValue "AddCompanyName")
+    Set-XamlProperty $script:exportForm "chkExportAssignments" "IsChecked" (Get-SettingValue "ExportAssignments")
+    #Set-XamlProperty $script:exportForm "txtExportNameFilter" "Text" (Get-Setting "" "ExportNameFilter")
+
+    Add-XamlEvent $script:exportForm "browseExportPath" "add_click" ({
+        $folder = Get-Folder (Get-XamlProperty $script:exportForm "txtExportPath" "Text") "Select root folder for export"
+        if($folder)
+        {
+            Set-XamlProperty $script:exportForm "txtExportPath" "Text" $folder
+        }
+    })
+
+    $script:exportObjects = @()
+    foreach($objType in $global:lstMenuItems.ItemsSource)
+    {
+        if(-not $objType.Title) { continue }
+
+        if($objType.ShowButtons -is [Object[]] -and $objType.ShowButtons -notcontains "Export") { continue }
+
+        $script:exportObjects += New-Object PSObject -Property @{
+            Title = $objType.Title
+            Selected = (?? $objType.BulkExport $true)
+            ObjectType = $objType
+        }
+
+        Add-GraphExportExtensions $script:exportForm 0 $objType
+    }    
+
+    $column = Get-GridCheckboxColumn "Selected"
+    $global:dgObjectsToExport.Columns.Add($column)
+
+    $column.Header.IsChecked = $true # All items are checked by default
+    $column.Header.add_Click({
+            foreach($item in $global:dgObjectsToExport.ItemsSource)
+            {
+                $item.Selected = $this.IsChecked
+            }
+            $global:dgObjectsToExport.Items.Refresh()
+        }
+    ) 
+
+    # Add Object type column
+    $binding = [System.Windows.Data.Binding]::new("Title")
+    $column = [System.Windows.Controls.DataGridTextColumn]::new()
+    $column.Header = "Object type"
+    $column.IsReadOnly = $true
+    $column.Binding = $binding    
+    $global:dgObjectsToExport.Columns.Add($column)
+
+    $global:dgObjectsToExport.ItemsSource = $script:exportObjects
+
+    Add-XamlEvent $script:exportForm "btnClose" "add_click" ({
+        $script:exportForm = $null
+        Show-ModalObject
+    })
+    
+    Add-XamlEvent $script:exportForm "btnExport" "add_click" ({
+
+        Start-GraphObjectExport        
+    })
+
+    Add-XamlEvent $script:exportForm "btnExportSettingsForSilentExport" "add_click" ({
+        $sf = [System.Windows.Forms.SaveFileDialog]::new()
+        $sf.FileName = "BulkExport.json"
+        $sf.DefaultExt = "*.json"
+        $sf.Filter = "Json (*.json)|*.json|All files (*.*)|*.*"
+        if($sf.ShowDialog() -eq "OK")
+        {
+            $tmp = [PSCustomObject]@{
+                Name = "ObjectTypes"
+                Type = "Custom"
+                ObjectTypes = @()
+            }
+            foreach($ot in ($script:exportObjects | Where Selected -eq $true))
+            {
+                $tmp.ObjectTypes += $ot.ObjectType.Id
+            }
+            Export-GraphBatchSettings $sf.FileName $script:exportForm "BulkExport" @($tmp)
+        }  
+    })
+
+    Show-ModalForm "Bulk Export" $script:exportForm -HideButtons
+}
+
+function Invoke-GraphRequest
+{
+    param (
+            [Parameter(Mandatory)]
+            $Url,
+
+            [Alias("Body")]
+            $Content,
+
+            $Headers,
+
+            [ValidateSet("GET","POST","OPTIONS","DELETE", "PATCH","PUT")]
+            [Alias("Method")]
+            $HttpMethod = "GET",
+
+            $AdditionalHeaders,
+
+            [string]$Outfile = "",
+
+            [Switch]$SkipAuthentication,
+
+            $ODataMetadata = "full", # full, minimal, none or skip
+
+            [ValidateSet("beta","v1.0")]
+            $GraphVersion = "",
+
+            [switch]
+            $AllPages,
+
+            [int]
+            $PageSize = -1,
+
+            [switch]
+            $Batch,
+
+            [switch]
+            $NoError
+        )
+
+    if($SkipAuthentication -ne $true)
+    {
+        # Only call Connect-MSALUser if we don't have a valid token
+        if($null -eq $global:MSALToken -or 
+          (Get-Date) -ge $global:MSALToken.ExpiresOn)
+        {
+            Connect-MSALUser
+        }
     }
 
     if(-not $GraphVersion) 
@@ -2357,10 +3655,7 @@ function Reset-GraphObject
         # Clone the object before removing properties
         $obj = $fileObj.Object | ConvertTo-Json -Depth 50 | ConvertFrom-Json
         Start-GraphPreImport $obj $objectType
-        if ($global:cbImportType.SelectedValue -ne "replace_with_assignments"){  
-            # will use the assignments from the file for "replace_with_assignments" type
-            Remove-Property $obj "Assignments"
-        }
+        Remove-Property $obj "Assignments"
         Remove-Property $obj "isAssigned"
     
         if($global:cbImportType.SelectedValue -eq "update")
@@ -2424,7 +3719,7 @@ function Reset-GraphObject
             }
             return $true
         }
-        elseif($global:cbImportType.SelectedValue -in @("replace","replace_with_assignments"))
+        elseif($global:cbImportType.SelectedValue -eq "replace")
         {           
             $replace = $true
             $import = $true
@@ -2473,13 +3768,8 @@ function Reset-GraphObject
                         }
                     }
                 }
-                if ($global:cbImportType.SelectedValue -eq "replace")
-                {
-                    Import-GraphObjectAssignment $newObj $objectType $curObject.Object.Assignments $fileObj.FileInfo.FullName -CopyAssignments | Out-Null
-                }
-                else {
-                    Import-GraphObjectAssignment $newObj $objectType $obj.Assignments $file.FileInfo.FullName | Out-Null
-                }
+    
+                Import-GraphObjectAssignment $newObj $objectType $curObject.Object.Assignments $fileObj.FileInfo.FullName -CopyAssignments | Out-Null
 
                 if($delete)
                 {
