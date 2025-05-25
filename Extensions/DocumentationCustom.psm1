@@ -422,7 +422,7 @@ function Add-CDDocumentCustomProfileValue
             $value = $obj.startMenuAppListVisibility
             if($value.IndexOf(", ") -eq -1)
             {
-                $value = $value -replace ",",", " # Option values in json file has space afte , but value in object don't
+                $value = $value -replace ",",", " # Option values in json file has space after , but value in object don't
             }
             Invoke-TranslateOption $obj $prop -PropValue $value
             return $false
