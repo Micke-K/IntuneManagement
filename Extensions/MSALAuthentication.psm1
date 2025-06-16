@@ -130,11 +130,11 @@ function Invoke-InitializeModule
     }) "MSAL"
 
     Add-SettingsObject (New-Object PSObject -Property @{
-        Title = "Use WAM for eahanced login methods"
+        Title = "Use WAM for enhanced login methods"
         Key = "UseWAM"
         Type = "Boolean"
         DefaultValue = $false
-        Description = "Use WAM for eahanced login methods"
+        Description = "Use WAM for enhanced login methods"
     }) "MSAL"
 
     $script:MSALUseWAM = Get-SettingValue "UseWAM"

@@ -3951,6 +3951,12 @@ function Start-PreImportConditionalAccess
     {
         $obj.sessionControls.disableResilienceDefaults = $null
     }
+
+    # DeviceStates property is depricated
+    if(($obj.conditions.PSObject.Properties | Where Name -eq "DeviceStates"))
+    {
+        $obj.conditions.PSObject.Properties.Remove('DeviceStates')
+    }    
 }
 
 function Start-PostExportConditionalAccess
