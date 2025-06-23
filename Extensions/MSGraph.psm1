@@ -2708,7 +2708,7 @@ function Get-GraphMigrationTableFile
 
     if($global:chkAddCompanyName.IsChecked)
     {
-        $path = Join-Path $path $global:organization.displayName.Trim()
+        $path = Join-Path $path ($global:organization.displayName).Trim()
     }
     $path
 }
