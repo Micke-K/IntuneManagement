@@ -2708,7 +2708,7 @@ function Get-GraphMigrationTableFile
 
     if($global:chkAddCompanyName.IsChecked)
     {
-        $path = Join-Path $path $global:organization.displayName
+        $path = Join-Path $path $global:organization.displayName.Trim()
     }
     $path
 }
@@ -4263,7 +4263,7 @@ function Get-GraphObjectFolder
 
     $path = $rootFolder
 
-    if($addOrganization) { $path = Join-Path $path $global:organization.displayName }
+    if($addOrganization) { $path = Join-Path $path ($global:organization.displayName).Trim() }
 
     if($addObjectType -and $objectType.Id) { $path = Join-Path $path $objectType.Id }
 
