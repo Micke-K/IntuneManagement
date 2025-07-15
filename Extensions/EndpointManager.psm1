@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.9.8'
+    '3.10.0.6'
 }
 
 function Invoke-InitializeModule
@@ -236,9 +236,11 @@ function Invoke-InitializeModule
         Id = "ComplianceScripts"
         ViewID = "IntuneGraphAPI"
         API = "/deviceManagement/deviceComplianceScripts"
+        PostImportCommand = { Start-PostImportComplianceScripts @args }
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         GroupId = "CompliancePolicies"
         Icon = "Scripts"
+        ImportOrder = 80
     })        
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -1418,6 +1420,30 @@ function Start-PreUpdateCompliancePolicies
 
 #endregion
 
+function Start-PostImportComplianceScripts
+{
+    param($obj, $objectType, $file)
+
+    $endTime = (Get-Date).AddMinutes(2)
+
+    $found = $false
+    while($endTime -gt (Get-Date))
+    {
+        $tmpObj = Invoke-GraphRequest -Url "$($objectType.API)/$($obj.Id)" -ErrorAction SilentlyContinue
+        if($tmpObj) { 
+            $found = $true
+            break 
+        }
+        Start-Sleep -Seconds 10
+    }
+
+    if(-not $found)
+    {
+        Write-LogError "Compliance script $($obj.Id) not found after import. Please check the import file."
+        return
+    }
+}
+
 #region Intune Branding functions
 function Start-PreImportIntuneBranding
 {
@@ -1467,7 +1493,7 @@ function Start-PreImportIntuneBranding
 
 function Start-PostImportIntuneBranding
 {
-    param($obj, $objectType)
+    param($obj, $objectType, $file)
 
     if($obj.isDefaultProfile -or -not $global:brandingClone) { return }
 
