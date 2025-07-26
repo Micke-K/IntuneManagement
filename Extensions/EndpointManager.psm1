@@ -838,9 +838,86 @@ function Invoke-EMAuthenticateToMSAL
 {
     param($params = @{})
 
-    $global:EMViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" $global:DefaultAzureApp "EM"
-    Set-MSALCurrentApp $global:EMViewObject.AppInfo
-    & $global:msalAuthenticator.Login -Account (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser")) @params
+    if ($global:RawAccessToken) {
+        Write-Log "Invoke-EMAuthenticateToMSAL: Attempting to use pre-provided RawAccessToken."
+        try {
+            $jwtTokenPayload = (Get-JWTtoken -token $global:RawAccessToken).Payload
+            if (-not $jwtTokenPayload) {
+                Write-LogError "Invoke-EMAuthenticateToMSAL: Failed to parse RawAccessToken."
+                $global:MSALToken = $null
+                $global:EMViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" $global:DefaultAzureApp "EM"
+                if ($global:EMViewObject.AppInfo) { Set-MSALCurrentApp $global:EMViewObject.AppInfo }
+                Invoke-ModuleFunction "Invoke-GraphAuthenticationUpdated"
+                return $false # Exit function, token processing failed
+            }
+
+            $tokenExpiresOn = [datetime]::new(1970, 1, 1, 0, 0, 0, [System.DateTimeKind]::Utc).AddSeconds($jwtTokenPayload.exp)
+            $userNameFromToken = $jwtTokenPayload.upn
+            if (-not $userNameFromToken) { $userNameFromToken = $jwtTokenPayload.unique_name }
+            if (-not $userNameFromToken) { $userNameFromToken = "UserFromToken" }
+
+            $tenantIdFromToken = $jwtTokenPayload.tid
+            $accountEnvironment = "login.microsoftonline.com"
+
+            $global:MSALToken = [PSCustomObject]@{
+                AccessToken = $global:RawAccessToken
+                ExpiresOn   = $tokenExpiresOn
+                TenantId    = $tenantIdFromToken
+                Account     = [PSCustomObject]@{
+                    UserName      = $userNameFromToken
+                    HomeAccountId = "$($jwtTokenPayload.oid).$($tenantIdFromToken)"
+                    Environment   = $accountEnvironment
+                }
+                Scopes      = if ($jwtTokenPayload.scp) { $jwtTokenPayload.scp -split " " } else { @(".default") }
+                TokenType   = "Bearer"
+            }
+            
+            $global:Organization = [PSCustomObject]@{
+                Id = $tenantIdFromToken
+                displayName = "Tenant ($($tenantIdFromToken)) (Token Auth)"
+            }
+
+            $appInfoAuthority = "https://login.microsoftonline.com/$($tenantIdFromToken)"
+
+            $global:EMViewObject.AppInfo = [PSCustomObject]@{
+                ClientId        = "00000000-0000-0000-0000-000000000000" # Placeholder for token auth
+                ClientSecret    = $null
+                TenantId        = $tenantIdFromToken
+                Authority       = $appInfoAuthority
+                RedirectUri     = "urn:ietf:wg:oauth:2.0:oob"
+                Name            = "Token Authentication Mode"
+                Type            = "Custom"
+                Scopes          = $global:MSALToken.Scopes
+            }
+            Set-MSALCurrentApp $global:EMViewObject.AppInfo
+
+            Write-Log "Invoke-EMAuthenticateToMSAL: Successfully configured session with RawAccessToken for user $($global:MSALToken.Account.UserName). AppInfo Authority set to $($appInfoAuthority)"
+            
+            Show-AuthenticationInfo
+            Set-EnvironmentInfo $global:Organization.displayName
+            Invoke-ModuleFunction "Invoke-GraphAuthenticationUpdated"
+
+            return $true # Token processing successful, exit function
+        }
+        catch {
+            Write-LogError "Invoke-EMAuthenticateToMSAL: Error processing RawAccessToken. $($_.Exception.Message)"
+            $global:MSALToken = $null
+            $global:EMViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" $global:DefaultAzureApp "EM"
+            if ($global:EMViewObject.AppInfo) { Set-MSALCurrentApp $global:EMViewObject.AppInfo }
+            Invoke-ModuleFunction "Invoke-GraphAuthenticationUpdated"
+            return $false # Token processing failed, exit function
+        }
+    } # End of RawAccessToken processing
+    else {
+        # Original logic if $global:RawAccessToken is NOT set
+        Write-LogDebug "Invoke-EMAuthenticateToMSAL: No RawAccessToken provided, proceeding with standard MSAL authentication."
+        $global:EMViewObject.AppInfo = Get-GraphAppInfo "EMAzureApp" $global:DefaultAzureApp "EM"
+        Set-MSALCurrentApp $global:EMViewObject.AppInfo
+        
+        # This is the standard MSAL login call
+        # It should only be reached if no AccessToken was provided to Start-IntuneManagement.ps1
+        return (& $global:msalAuthenticator.Login -Account (?? $global:MSALToken.Account.UserName (Get-Setting "" "LastLoggedOnUser")) @params)
+    }
 }
 
 function Invoke-EMDeactivateView
