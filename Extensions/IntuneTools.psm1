@@ -1037,11 +1037,11 @@ function Set-ADMXElementsPanel
                         }
                         elseif($valItem.value.longDecimal)
                         {
-                            $value = $valItem.value.longDecimal.'#text'
+                            $value = ?? $valItem.value.longDecimal.'#text' $valItem.value.longDecimal
                         }                        
                         elseif($valItem.value.string)
                         {
-                            $value = $valItem.value.string.'#text'
+                            $value = ?? $valItem.value.string.'#text' $valItem.value.string
                         }
                         else
                         {
@@ -1151,7 +1151,7 @@ function Set-ADMXElementsPanel
                             }
                             elseif($valItem.value.string)
                             {
-                                $value = $valItem.value.string.'#text'
+                                $value = ?? $valItem.value.string.'#text' $valItem.value.string
                             }
                             else
                             {

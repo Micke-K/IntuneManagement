@@ -289,6 +289,13 @@ function Get-ObjectDocumentation
         $properties = @("Name","Value","RootCategory","Category","RawValue","RawJsonValue","DefaultValue","Description")
     }
     #endregion
+    #region Compliance Policies V2
+    elseif($type -eq "#microsoft.graph.deviceManagementCompliancePolicy")
+    {  
+        Invoke-TranslateComplianceV2Object $obj $objectType | Out-Null
+        $properties = @("Name","Value","RootCategory","Category","RawValue","RawJsonValue","DefaultValue","Description")
+    }
+    #endregion
     #region Endpoint Security
     elseif($type -eq "#microsoft.graph.deviceManagementIntent")
     {
@@ -1138,9 +1145,9 @@ function Invoke-TranslateSettingsObject
         $cfgSettings = $obj.Settings
     }
 
-    if(-not $global:cfgCategories)
+    if(-not $global:cfgCategories -or -not ($global:cfgCategories | where { $_.settingUsage -eq "configuration" }))
     {
-        $global:cfgCategories = (Invoke-GraphRequest "/deviceManagement/configurationCategories?`$filter=platforms has 'windows10' and technologies has 'mdm'" -ODataMetadata "minimal" @params).Value
+        $global:cfgCategories += (Invoke-GraphRequest "/deviceManagement/configurationCategories?`$filter=platforms has 'windows10' and technologies has 'mdm'" -ODataMetadata "minimal" @params).Value
     }
 
     if(-not $global:cachedCfgSettings) 
@@ -1427,6 +1434,85 @@ function Add-SettingsSetting
     $settingInfo.DefaultValue = $defaultValue
 
     $settingInfo
+}
+
+#endregion
+
+#region Compliance V2 Policies - Based on Settings Catalog
+
+function Invoke-TranslateComplianceV2Object
+{
+    param($obj, $objectType)
+
+    $platformType = Get-LanguageString "Platform.$($obj.platforms)"
+
+    Add-BasicDefaultValues $obj $objectType
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "ConfigurationTypes.settingsCatalog")
+    Add-BasicPropertyValue (Get-LanguageString "SettingDetails.platformSupported") $platformType
+    Add-BasicAdditionalValues $obj $objectType
+    
+    $params = @{}
+    ## Set language
+    if($script:DocumentationLanguage)
+    {
+        $params.Add("AdditionalHeaders", @{"Accept-Language"=$script:DocumentationLanguage})
+    }
+
+    $cfgSettings = (Invoke-GraphRequest "/deviceManagement/compliancePolicies('$($obj.Id)')/settings?`$expand=settingDefinitions&top=1000" -ODataMetadata "minimal" @params).Value
+
+    if($obj.'@ObjectFromFile')
+    {
+        $cfgSettings = $obj.Settings
+    }
+
+    if(-not $global:cfgCategories -or -not ($global:cfgCategories | where { $_.settingUsage -eq "compliance" }))
+    {
+        $global:cfgCategories += (Invoke-GraphRequest "/deviceManagement/complianceCategories?`$templateCategory=True&`$filter=platforms has 'linux' and technologies has 'linuxMdm'" -ODataMetadata "minimal" @params).Value
+    }
+
+    if(-not $global:cachedCfgSettings) 
+    {
+        $global:cachedCfgSettings = @{}
+    }
+
+    $script:settingCatalogasCategories = @{}
+    foreach($cfgSetting in $cfgSettings)
+    {
+        if($obj.'@ObjectFromFile' -and -not $cfgSetting.settingDefinitions) 
+        {
+            if($global:cachedCfgSettings.ContainsKey($cfgSetting.settingInstance.settingDefinitionId) -eq $false) 
+            {
+                $defObj = Invoke-GraphRequest "/deviceManagement/configurationSettings/$($cfgSetting.settingInstance.settingDefinitionId)"
+                $global:cachedCfgSettings.Add($defObj.Id, $defObj)
+            }
+        }
+        else
+        {
+            $defObj = $cfgSetting.settingDefinitions | Where id -eq $cfgSetting.settingInstance.settingDefinitionId
+            if($global:cachedCfgSettings.ContainsKey($cfgSetting.settingInstance.settingDefinitionId) -eq $false) 
+            {                
+                $global:cachedCfgSettings.Add($defObj.Id, $defObj)
+            }
+        }
+        if(-not $defObj -or $script:settingCatalogasCategories.ContainsKey($defObj.categoryId)) { continue }
+
+        $catObj = $global:cfgCategories | Where Id -eq $defObj.categoryId 
+        $rootCatObj = $global:cfgCategories | Where Id -eq $catObj.rootCategoryId
+
+        $script:settingCatalogasCategories.Add($defObj.categoryId, (New-Object PSObject -Property @{ 
+            Category=$catObj
+            RootCategory=$rootCatObj
+        }))
+    }
+
+    $script:curSettingsCatologPolicy = @()
+
+    $cfgSettings | % { Add-SettingsSetting $_.settingInstance $_.settingDefinitions } | Out-Null
+
+    foreach($item in ($script:curSettingsCatologPolicy | Select @{l="CategoryID";e={$_.CategoryDefinition.Id}}, @{l="SubCategoryID";e={$_.SubCategoryDefinition.Id}} -Unique))
+    {
+        $script:objectSettingsData += ($script:curSettingsCatologPolicy | Where { $_.CategoryDefinition.Id -eq $item.CategoryID -and $_.SubCategoryDefinition.Id -eq $item.SubCategoryID })   
+    }
 }
 
 #endregion
@@ -4652,13 +4738,21 @@ function local:Invoke-StartDocumentatiom
                     {
                         Write-Status "Process $((Get-GraphObjectName $tmpObj.Object $tmpObj.ObjectType)) ($($obj.ObjectType.Title)) - $($global:cbDocumentationType.SelectedItem.Name)"
     
+                        $hasRawValue = $false
+                        $documentedObj.Settings | % { if(($_.PSObject.Properties | Where Name -eq "RawValue")) { $hasRawValue=$true } }
+                        $hasRawValue
+                        
                         $filteredSettings = @()
                         foreach($item in $documentedObj.Settings)
                         {
                             if(-not ($item.PSObject.Properties | Where Name -eq "RawValue") -or $documentedObj.UpdateFilteredObject -eq $false)
                             {
-                                $filteredSettings = $documentedObj.Settings
-                                break
+                                if($hasRawValue -eq $false) { 
+                                    $filteredSettings = $documentedObj.Settings 
+                                    break
+                                }
+                                $filteredSettings += $item
+                                continue
                             }
                             
                             if($item.AlwaysAddValue -eq $true)
