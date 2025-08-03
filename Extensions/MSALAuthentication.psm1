@@ -283,6 +283,7 @@ function Get-MSALUserInfo
         if($global:Organization)
         {
             if($global:Organization -is [array]) { $global:Organization = $global:Organization[0]}
+            $global:Organization.displayName = ($global:Organization.displayName).Trim()
             Save-Setting $global:Organization.Id "_Name" $global:Organization.displayName
         }
         Set-EnvironmentInfo $global:Organization.displayName
