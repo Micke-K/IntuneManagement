@@ -521,6 +521,13 @@ function Write-AzureStorageChunk
         "Content-Type" = "application/octet-stream"
 	}
 
+    # In PowerShell (Core) 7 v7.4+, the web cmdlets (Invoke-WebRequest, Invoke-RestMethod)
+    # consistently encode text-based request bodies as UTF-8, unless explicitly specified otherwise.
+    if ($PSVersionTable.PSVersion -ge [Version]"7.4")
+    {
+        $headers["Content-Type"] += "; charset=iso-8859-1"
+    }
+
     $curProgressPreference = $ProgressPreference
     $ProgressPreference = 'SilentlyContinue'
     
