@@ -4624,19 +4624,22 @@ function Invoke-CDDocumentTranslateSectionFile
     if($obj.'@OData.Type' -eq "#microsoft.graph.windows10CompliancePolicy" -and $fileInfo.BaseName -eq "customcompliance_compliancewindows10")
     {
         $category = Get-Category $categoryObj."$($fileInfo.BaseName)".category
-               
+
         if($null -eq $obj.deviceCompliancePolicyScript)
         {
             $propValue = Get-LanguageString "BooleanActions.notConfigured"
+            $rawValue  = "notConfigured"
         }
         else
         {
             $propValue = Get-LanguageString "BooleanActions.require"
+            $rawValue  = "require"
         }        
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = Get-LanguageString "SettingDetails.adminConfiguredComplianceSettingName"
             Value = $propValue 
             EntityKey = "deviceCompliancePolicyScript"
+            RawValue = $rawValue
             Category = $category
             SubCategory = $null
         })
