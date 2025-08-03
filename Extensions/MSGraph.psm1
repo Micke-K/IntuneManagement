@@ -4082,8 +4082,8 @@ function Show-GraphObjectInfo
             return
         }
         # Save settings here...
-        $nameProp = (?? $global:dgObjects.SelectedItem.Object.NameProperty "displayName")
-        $idProp = (?? $global:dgObjects.SelectedItem.Object.IDProperty "id")
+        $nameProp = (?? $global:dgObjects.SelectedItem.ObjectType.NameProperty "displayName")
+        $idProp = (?? $global:dgObjects.SelectedItem.ObjectType.IDProperty "id")
 
         $updateObj = [PSCustomObject]@{
             $idProp = $global:dgObjects.SelectedItem.Object."$idProp"

@@ -221,7 +221,7 @@ function Invoke-InitializeModule
         Id = "CompliancePoliciesV2"
         ViewID = "IntuneGraphAPI"
         API = "/deviceManagement/compliancePolicies"
-        NameProperty = "Name"
+        NameProperty = "name"
         PropertiesToRemove = @('settingCount')
         ViewProperties = @("name","description","Id")
         Expand="settings"
@@ -606,7 +606,7 @@ function Invoke-InitializeModule
         API = "/deviceManagement/configurationPolicies"
         PropertiesToRemove = @('settingCount')
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
-        NameProperty = "Name"
+        NameProperty = "name"
         ViewProperties = @("name","description","Id")
         Expand="Settings"
         Icon="DeviceConfiguration"
@@ -625,7 +625,7 @@ function Invoke-InitializeModule
         API = "/deviceManagement/inventoryPolicies"
         PropertiesToRemove = @('settingCount')
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
-        NameProperty = "Name"
+        NameProperty = "name"
         ViewProperties = @("name","description","Id")
         Expand="Settings"
         Icon="DeviceConfiguration"
