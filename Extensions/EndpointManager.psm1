@@ -632,7 +632,16 @@ function Invoke-InitializeModule
         GroupId = "DeviceConfiguration"        
     })   
     
-    
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "BIOS Configurations"
+        Id = "hardwareConfigurations"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/hardwareConfigurations"
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        Icon="DeviceConfiguration"
+        GroupId = "DeviceConfiguration"        
+    })   
+
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Role Definitions"
         Id = "RoleDefinitions"
