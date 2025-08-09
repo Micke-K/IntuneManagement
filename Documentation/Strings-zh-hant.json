@@ -70,8 +70,10 @@
                                                            },
                                            "appPackageFile":  "包含應用程式的檔案格式可在裝置上側載。有效的套件類型包括: Android (.apk)、iOS (.ipa)、macOS (.pkg)、Windows (.msi、.appx、.appxbundle、.msix 和 .msixbundle)。​",
                                            "applicableDeviceType":  "選取可安裝此應用程式的裝置類型。",
-                                           "category":  "將應用程式分類，讓使用者更方便在公司入口網站中排序及尋找。您可以選擇多個類別。",
+                                           "category":  "您可以選擇一或多個類別，以便讓使用者更輕鬆地在公司入口網站中找到應用程式。",
+                                           "categoryLearnMore":  "深入了解應用程式類別",
                                            "categoryLink":  "https://go.microsoft.com/fwlink/?linkid=2295954",
+                                           "categoryWhenApprovalRequired":  "您可以選擇一或多個類別，以便讓使用者更輕鬆地在公司入口網站中找到應用程式。雖然已建立變更要求，但變更應用程式類別不需要核准。這項變更會立即生效。",
                                            "description":  "協助您的裝置使用者了解應用程式的內容及 (或) 應用程式的功能。使用者會在公司入口網站看見此描述。",
                                            "developer":  "開發應用程式的公司或個人名稱。此資訊將會顯示給登入系統管理中心的人員看。",
                                            "displayVersion":  "應用程式的版本。使用者可在公司入口網站看見此資訊。",
@@ -79,7 +81,6 @@
                                            "ignoreManifestScope":  "如果設定為是，則全螢幕網頁剪輯可在不顯示 Safari UI 的情況下瀏覽至外部網站。否則，Safari UI 會在從網頁剪輯的 URL 離開時顯示。當全螢幕為 false，此機碼沒有作用。",
                                            "infoUrl":  "將人員連結至具有應用程式詳細資訊的網站或文件。此資訊 URL 將會顯示給公司入口網站中的使用者看。",
                                            "isFeatured":  "精選應用程式會放在公司入口網站的醒目處，以便使用者快速取得。",
-                                           "learnMore":  "深入了解",
                                            "logo":  "上傳與應用程式建立關聯的標誌。此標誌在整個公司入口網站中都會顯示在應用程式旁邊。",
                                            "macOSDmgAppPackageFile":  "包含您應用程式的檔案，其格式可在裝置上側載。有效的套件類型: .dmg.​",
                                            "macOSPkgAppPackageFile":  "包含您應用程式的檔案，其格式可在裝置上側載。有效的套件類型: .pkg。",
@@ -95,6 +96,7 @@
                                            "selectApp":  "在 App Store 中搜尋要使用 Intune 部署的 iOS 市集應用程式。",
                                            "targetApplicationBundleIdentifier":  "應用程式套件組合識別碼，指定開啟 URL 的應用程式。可在 iOS 14 和更新版本中使用。",
                                            "useManagedBrowser":  "如有必要，當使用者開啟 Web 應用程式時，其會在受 Intune 保護的瀏覽器中開啟，例如 Microsoft Edge 或 Intune Managed Browser。此設定同時適用於 iOS 和 Android 裝置。",
+                                           "useManagedBrowserLearnMore":  "深入了解受控瀏覽器",
                                            "useManagedBrowserLink":  "https://go.microsoft.com/fwlink/?linkid=2299509",
                                            "win32AppPackageFile":  "包含您應用程式的檔案，其格式可在裝置上側載。有效的套件類型: .intunewin。",
                                            "winGetStoreSelectApp":  "搜尋 Microsoft Store 應用程式 (新版)，以尋找您想要使用 Intune 部署的 Microsoft Store 應用程式。"
@@ -224,6 +226,7 @@
                                                "v15":  "iOS 15.0",
                                                "v16":  "iOS 16.0",
                                                "v17":  "iOS 17.0",
+                                               "v18":  "iOS 18.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -250,6 +253,9 @@
                                                          },
                                                  "V14":  {
                                                              "0":  "macOS Sonoma 14.0"
+                                                         },
+                                                 "V15":  {
+                                                             "0":  "macOS Sequoia 15.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -451,6 +457,7 @@
                    "calendar":  "月曆",
                    "categoryLabel":  "分類",
                    "categoryNameLabel":  "預設名稱",
+                   "categorySubLabelWhenApprovalRequired":  "不支援多系統管理員核准",
                    "certProfileType":  "憑證設定檔類型",
                    "certificate":  "憑證",
                    "certificates":  "憑證",
@@ -995,7 +1002,7 @@
                        "accountProtection":  "帳戶防護",
                        "administrativeTemplates":  "系統管理範本",
                        "androidCompliancePolicy":  "Android 合規性原則",
-                       "androidForWorkMigrationPolicy":  "新的實作",
+                       "androidForWorkMigrationPolicy":  "移至 Android Management API",
                        "aospDeviceOwnerCompliancePolicy":  "Android (AOSP) 合規性政策",
                        "applicationControl":  "商務用應用程式控制",
                        "attackSurfaceReductionRules":  "攻擊表面縮減規則",
@@ -1214,10 +1221,10 @@
                                                              "requirementType":  "需求類型",
                                                              "requirementTypeTooltip":  "選擇用來判斷如何驗證需求的偵測方法類型。"
                                                          },
-                              "allowedArchitectures":  "Check operating system architecture",
-                              "allowedArchitecturesNoRadioButton":  "No. Allow this app to be installed on all systems.",
-                              "allowedArchitecturesTooltip":  "Select 'Yes' to specify the systems the app can be installed on. Select 'No' (default) to allow this app to be installed on all systems.",
-                              "allowedArchitecturesYesRadioButton":  "Yes. Specify the systems the app can be installed on.",
+                              "allowedArchitectures":  "檢查作系統架構",
+                              "allowedArchitecturesNoRadioButton":  "不，允許此應用程式在所有系統上安裝。",
+                              "allowedArchitecturesTooltip":  "選取 [是] 以指定應用程式可以安裝的系統。選取 [否] (預設)，以允許此應用程式在所有系統上安裝。",
+                              "allowedArchitecturesYesRadioButton":  "是。請指定應用程式可以安裝的系統。",
                               "architectures":  "作業系統架構",
                               "architecturesTooltip":  "請選擇安裝應用程式所需的架構。",
                               "bladeTitle":  "需求",
@@ -2221,6 +2228,10 @@
                                                              "label":  "在註冊的裝置上為組織資料加密",
                                                              "tooltip":  "選取 {0} 會在所有裝置上，利用 Intune 應用程式層加密，進行組織資料的加密。<br/>\r\n\r\n選取 {1} 則不會在註冊的裝置上，利用 Intune 應用程式層加密，進行組織資料的加密。"
                                                          },
+                        "GenmojiConfigurationState":  {
+                                                          "label":  "Genmoji",
+                                                          "tooltip":  "  若遭到封鎖，使用受原則管理的應用程式時，系統將停用 Genmoji。如需詳細資訊，請參閱<a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">這裡。</a>"
+                                                      },
                         "IOSBackup":  {
                                           "label":  "將組織資料備份到 iTunes 與 iCloud 備份",
                                           "tooltip":  "選取 {0} 會讓組織資料無法備份到 iTunes 或 iCloud。\r\n選取 {1} 則允許將組織資料備份到 iTunes 或 iCloud。\r\n個人或非受控資料不會受到影響。"
@@ -2314,6 +2325,10 @@
                                                                  "label":  "螢幕擷取與 Google Assistant\r\n",
                                                                  "tooltip":  "若封鎖，則在使用受原則管理的應用程式時，將會停用螢幕擷取及 Google Assistant 的應用程式掃描功能。此功能支援一般的 Google Assistant 應用程式，但不支援使用 Google 助理 API 的協力廠商助理程式。選擇 [停用] 也會在以公司或學校帳戶使用此應用程式時，讓 App 切換的預覽影像變得模糊。"
                                                              },
+                        "ScreenCaptureConfigurationState":  {
+                                                                "label":  "螢幕擷取",
+                                                                "tooltip":  " 若遭到封鎖，使用受原則管理的應用程式時，系統將停用螢幕擷取畫面。如需詳細資訊，請參閱<a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">這裡。</a>"
+                                                            },
                         "SendData":  {
                                          "label":  "將組織資料傳送到其他應用程式",
                                          "tooltip":  "選取下列其中一個選項，指定此應用程式可對其傳送組織資料的應用程式: <br/>\r\n\r\n\r\n<b>無</b>: 不允許將組織資料傳送到任何應用程式<br/>\r\n\r\n\r\n<b>受原則管理的應用程式</b>: 只允許將組織資料傳送到其他受原則管理的應用程式<br/>\r\n\r\n\r\n<b>共用 OS 且受原則管理的應用程式</b>: 只允許將組織資料傳送到其他受原則管理的應用程式，並將組織文件傳送到註冊裝置上其他受 MDM 管理的應用程式<br/>\r\n\r\n<b>\r\n具 Open-In/Share 篩選且受原則管理的應用程式</b>: 只允許將組織資料傳送到其他受原則管理的應用程式，並篩選 [Open-In/Share] 對話方塊，使其只顯示受原則管理的應用程式\r\n <br/>\r\n\r\n<b>所有應用程式</b>: 允許將組織資料傳送到任何應用程式"
@@ -2348,6 +2363,10 @@
                                             "label":  "傳送組織資料至",
                                             "tooltip":  "選取下列其中一個選項，以指定組織使用者可以傳送資料的目的地: <br/>\r\n\r\n<b>所有目的地</b>: 組織使用者可以將組織資料傳送至任何帳戶、文件、位置或應用程式。<br/>\r\n\r\n<b>沒有目的地</b>: 組織使用者無法在組織內容中將組織資料傳送至外部帳戶、文件、位置或應用程式。"
                                         },
+                        "WritingToolsConfigurationState":  {
+                                                               "label":  "撰寫工具",
+                                                               "tooltip":  "若遭到封鎖，使用受原則管理的應用程式時，系統將停用撰寫工具。如需詳細資訊，請參閱<a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">這裡。</a>"
+                                                           },
                         "Tap":  {
                                     "numberOfDays":  "天數",
                                     "pinResetAfterNumberOfDays":  "重設 PIN 前經過的天數",
@@ -3934,9 +3953,106 @@
                           "other":  "其他",
                           "webApplication":  "Web 應用程式"
                       },
+    "HardwareConfig":  {
+                           "Barchart":  {
+                                            "Device":  {
+                                                           "title":  "裝置狀態"
+                                                       },
+                                            "ReportGrid":  {
+                                                               "Columns":  {
+                                                                               "deviceStatus":  "裝置狀態",
+                                                                               "error":  "錯誤",
+                                                                               "failedCount":  "失敗的裝置計數",
+                                                                               "notApplicableCount":  "不適用的裝置計數",
+                                                                               "pendingCount":  "擱置的裝置計數",
+                                                                               "successCount":  "成功的裝置計數",
+                                                                               "unknownCount":  "不明的裝置計數"
+                                                                           },
+                                                               "Device":  {
+                                                                              "searchBoxPlaceholder":  "依裝置名稱和使用者名稱搜尋"
+                                                                          },
+                                                               "Export":  {
+                                                                              "Device":  {
+                                                                                             "reportName":  "DeviceRunSummary",
+                                                                                             "title":  "匯出 BIOS 設定和其他設定裝置執行摘要"
+                                                                                         },
+                                                                              "User":  {
+                                                                                           "reportName":  "UserRunSummary",
+                                                                                           "title":  "匯出 BIOS 設定和其他設定使用者執行摘要"
+                                                                                       }
+                                                                          },
+                                                               "User":  {
+                                                                            "searchBoxPlaceholder":  "依使用者名稱搜尋"
+                                                                        }
+                                                           },
+                                            "User":  {
+                                                         "title":  "使用者狀態"
+                                                     },
+                                            "failure":  "失敗",
+                                            "notApplicable":  "不適用",
+                                            "pending":  "暫止",
+                                            "succeeded":  "成功",
+                                            "unknown":  "未知",
+                                            "viewReportButtonText":  "檢視報告"
+                                        },
+                           "DCList":  {
+                                          "name":  "BIOS 設定和其他設定"
+                                      },
+                           "Policy":  {
+                                          "Create":  {
+                                                         "createButtonText":  "建立",
+                                                         "reviewButtontext":  "檢閱"
+                                                     },
+                                          "Edit":  {
+                                                       "title":  "編輯 BIOS 設定和其他設定設定檔"
+                                                   },
+                                          "createProfile":  "建立 BIOS 設定和其他設定設定檔"
+                                      },
+                           "Settings":  {
+                                            "Tab":  {
+                                                        "Configurations":  {
+                                                                               "file":  "設定檔",
+                                                                               "fileInfoBox":  "設定檔類型應為「.cctk」",
+                                                                               "hardware":  "硬體",
+                                                                               "infoBox":  "在這裡進行設定之前，請確定會安裝硬體製造商代理程式的 win32 應用程式存在於這些裝置上。",
+                                                                               "learnMore":  "深入了解 BIOS 設定和其他設定",
+                                                                               "perDevicePassword":  "停用每個裝置 BIOS 密碼保護"
+                                                                           },
+                                                        "DisablePassword":  {
+                                                                                "Options":  {
+                                                                                                "no":  "否",
+                                                                                                "yes":  "是"
+                                                                                            }
+                                                                            },
+                                                        "HardwareDropDown":  {
+                                                                                 "dell":  "Dell",
+                                                                                 "surface":  "介面",
+                                                                                 "surfaceDock":  "Surface Dock"
+                                                                             }
+                                                    }
+                                        },
+                           "Summary":  {
+                                           "Buttons":  {
+                                                           "delete":  "刪除"
+                                                       },
+                                           "Tab":  {
+                                                       "monitor":  "監視",
+                                                       "properties":  "屬性"
+                                                   },
+                                           "subtitle":  "BIOS 設定和其他設定設定檔"
+                                       },
+                           "Wizard":  {
+                                          "Basics":  {
+                                                         "title":  "基本"
+                                                     },
+                                          "Configurations":  {
+                                                                 "title":  "設定"
+                                                             }
+                                      }
+                       },
     "Filters":  {
                     "ruleSyntax":  "規則語法",
-                    "filters":  "篩選"
+                    "filters":  "指派篩選"
                 },
     "CustomCompliance":  {
                              "FilePicker":  {
@@ -4708,12 +4824,12 @@
                               "successfullySavedPolicy":  "已儲存 {0}"
                           },
     "ArchitectureOptions":  {
-                                "arm64InstructionSet":  "Install on ARM64 system",
-                                "checkBox":  "Please select at least one architecture setting",
+                                "arm64InstructionSet":  "在 ARM64 系統上安裝",
+                                "checkBox":  "請選取至少一個架構設定",
                                 "sixtyFourBit":  "64 位元",
-                                "sixtyFourBitInstructionSet":  "Install on x64 system",
+                                "sixtyFourBitInstructionSet":  "在 x64 系統上安裝",
                                 "thirtyTwoBit":  "32 位元",
-                                "thirtyTwoBitInstructionSet":  "Install on x86 system"
+                                "thirtyTwoBitInstructionSet":  "在 x86 系統上安裝"
                             },
     "Countries":  {
                       "ae":  "阿拉伯聯合大公國",
@@ -5072,6 +5188,8 @@
                            "androidEnterpriseAlwaysOnVpnLinkDescription":  "深入了解如何為 Android Enterprise 設定 Always-On VPN。",
                            "androidEnterpriseAlwaysOnVpnLinkName":  "您可以在裝置限制中設定 Always-on VPN。",
                            "androidEnterpriseAlwaysOnVpnLockdownModeEnabledName":  "鎖定模式",
+                           "androidEnterpriseComplianceRequiredPasswordTypeDescription":  "設定密碼的複雜性需求。其他密碼需求會根據您的選取項目而變得可用。<a href=\"https://go.microsoft.com/fwlink/?linkid=2323793\">深入了解密碼需求。</a>",
+                           "androidEnterpriseConfigurationRequiredPasswordTypeDescription":  "設定密碼的複雜性需求。其他密碼需求會根據您的選取項目而變得可用。<a href=\"https://go.microsoft.com/fwlink/?linkid=2297352\">深入了解密碼需求。</a>",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnEnabledDescription":  "設定 VPN 用戶端，使其可在情況允許時，自動連線及重新連線到 VPN。若選擇 [已停用]，可以停用裝置上所有 VPN 用戶端的 Always-On VPN。每部指定的裝置上，都只能設定一個 VPN 用戶端使用 Always-On VPN。因此，請務必只為每部裝置部署一項 Always-On VPN 原則。",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnLockdownModeEnabledDescription":  "啟用此選項會強制所有網路流量皆必須通過 VPN Tunnel。若無法連線到 VPN，將不會允許任何網路流量。",
                            "androidEnterpriseDeviceSettingsBlockedDescription":  "根據預設，使用者可以在 Kiosk 模式中存取 [設定] 應用程式。",
@@ -5095,7 +5213,7 @@
                            "androidEnterpriseWorkProfileAlwaysOnVpnClientDescription":  "裝置上必須安裝指定的 VPN 用戶端，且其必須支援工作設定檔中每個應用程式的 VPN，否則將會發生錯誤。請注意，您必須核准受控 Google Play Store 中的此應用程式，並將此應用程式同步到 Intune，然後加以部署，以安裝在使用者的工作設定檔中。",
                            "androidEnterpriseWorkProfileAlwaysOnVpnEnabledDescription":  "在工作設定檔中設定 VPN 用戶端，可以在情況允許時，自動連線及重新連線到 VPN。若選擇 [已停用]，可以停用工作設定檔中所有 VPN 用戶端的 Always-On VPN。每部指定的裝置上，都只能設定一個 VPN 用戶端使用 Always-On VPN。因此，請務必只為每部裝置部署一項 Always-On VPN 原則。",
                            "androidEnterpriseWorkProfileAlwaysOnVpnLockdownModeEnabledDescription":  "啟用此選項會強制工作設定檔的所有網路流量皆必須通過 VPN Tunnel。若無法連線到 VPN，將不會允許裝置工作設定檔中的任何網路流量。",
-                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "建立並指派此設定檔，以將裝置移至更新、更有效率的原則實作。使用網頁型註冊所設定的裝置會自動使用較新的實作。",
+                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "建立並指派此設定檔以將裝置移至 Android Management API，其會以更有效率的方式套用原則。使用網頁型註冊設定的裝置會自動使用 Android Management API。",
                            "androidForWorkMigrationPolicyDescriptionParagraph2":  "裝置將在電池電力充足且未連線到受 Intune 原則管理的 Wi-Fi 時移動。",
                            "androidForWorkMigrationPolicyLearnMoreText":  "深入了解此改進功能的資訊。",
                            "androidGeneralKiosk":  "這些設定僅適用於 Samsung KNOX Standard 裝置。",
@@ -5127,6 +5245,8 @@
                            "anyDayOption":  "任一天",
                            "anyEthernet":  "任何乙太網路",
                            "anywhereOption":  "任何位置",
+                           "aospComplianceRequiredPasswordTypeDescription":  "設定密碼的複雜性需求。其他密碼需求會根據您的選取項目而變得可用。<a href=\"https://go.microsoft.com/fwlink/?linkid=2323729\">深入了解密碼需求。</a>",
+                           "aospConfigurationRequiredPasswordTypeDescription":  "設定密碼的複雜性需求。其他密碼需求會根據您的選取項目而變得可用。<a href=\"https://go.microsoft.com/fwlink/?linkid=847987\">深入了解密碼需求。</a>",
                            "appBundleIdColumn":  "應用程式套件組合識別碼",
                            "appColumnExamples":  "範例: Filename.exe 或 %ProgramFiles%\\Path\\Filename.exe",
                            "appComplianceListName":  "要在裝置上允許或限制的應用程式",
@@ -6457,7 +6577,7 @@
                            "directGlobalProxyOption":  "直接",
                            "disableAllNotificationsOption":  "關閉包括重新啟動警告的所有通知",
                            "disableBitLockerRecoveryPasswordRotationOption":  "已停用金鑰輪替",
-                           "disableDeviceLocationDescription":  "封鎖也會防止系統管理員找到裝置。",
+                           "disableDeviceLocationDescription":  "封鎖也會防止系統管理員找到裝置。對於公司擁有的工作設定檔裝置，此設定只會套用至執行 Android 10 或更舊版本的裝置。",
                            "disableDeviceLocationName":  "位置",
                            "disableDeviceLocationSharingName":  "位置分享",
                            "disableMacAddressRandomization":  "停用 MAC 位址隨機化",
@@ -7538,7 +7658,7 @@
                            "kioskRecurrence":  "維護時段週期",
                            "kioskRecurrenceDescription":  "設定應用程式更新的維護時段發生頻率。建議設為每日，以避免發生未排程的應用程式重新啟動。",
                            "kioskScreenOrientationAutoRotate":  "自動旋轉",
-                           "kioskScreenOrientationDescription":  "受控主畫面在裝置上顯示的方向。",
+                           "kioskScreenOrientationDescription":  "受控主畫面在裝置上顯示的方向。注意： 在 Android 16 及更新版本上，平台不支援具有較大外形尺寸 (例如平板電腦) 且最小寬度為 600 dp 或更大的裝置螢幕方向設定。",
                            "kioskScreenOrientationLandscape":  "橫向",
                            "kioskScreenOrientationName":  "螢幕方向",
                            "kioskScreenOrientationNotConfigured":  "未設定",
@@ -8188,7 +8308,7 @@
                            "microsoftTunnelSiteNotExist":  "網站不存在。請選取新的網站。",
                            "microsoftUpdatesDescription":  "控制是否從 Microsoft Update 掃描有無更新。",
                            "microsoftUpdatesName":  "Microsoft 產品更新",
-                           "migrationPolicyCannotBeUnassigned":  "一旦指派此原則，就無法取消指派。",
+                           "migrationPolicyCannotBeUnassigned":  "指派此原則之後，裝置就會開始移至 Android Management API。如果您取消指派或刪除此原則，已移動的裝置將會持續使用此新方法，且尚未移動的目標裝置將不會移動。",
                            "minimumNumberOfCharacterSetsDescription":  "此設定指定密碼必須包含的字元集數目下限。四個字元集為:\r\n<br>\r\n小寫字母\r\n<br>\r\n大寫字母\r\n<br>\r\n符號\r\n<br>\r\n數字",
                            "minimumNumberOfCharacterSetsName":  "密碼必須包含的字元集數目",
                            "minimumPasswordLengthDescription":  "密碼中的數字或字元數目下限。",
@@ -11465,6 +11585,12 @@
                                                  "title":  "Cloud apps or actions"
                                              },
                     "CloudappsSelectionBlade":  {
+                                                    "AgenticResources":  {
+                                                                             "allAgenticResources":  "All agent resources (Preview)",
+                                                                             "allAgenticResourcesExcLower":  "all agent resources excluded",
+                                                                             "allAgenticResourcesExcluded":  "All agent resources excluded",
+                                                                             "allAgenticResourcesIncluded":  "All agent resources"
+                                                                         },
                                                     "AllInternetResources":  {
                                                                                  "excludedWithGSA":  "All internet resources with Global Secure Access excluded",
                                                                                  "excludedWithGSALower":  "all internet resources with Global Secure Access excluded",
@@ -11540,6 +11666,7 @@
                                                      "policySummaryMfaForAllUsers":  "This policy requires all users to perform multifactor authentication when accessing any resources. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryPhishingResistantMfa":  "Accounts that are assigned privileged administrative roles are frequent targets of attackers. Requiring phishing-resistant multifactor authentication (MFA) on those accounts is an easy way to reduce the risk of those accounts being compromised.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRiskViaGroup":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. We'll assign eligible users into a new security group named 'Conditional Access: Risky sign-in multifactor authentication (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e98)'. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "recActionsGlobal1":  "Review the policy and its benefits.",
@@ -11551,6 +11678,7 @@
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
+                                                     "recommendedActionsIntroShort":  "Before enabling this policy",
                                                      "securityDefaultsBasedAdminMfaMMPolicySummary":  "Require multifactor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as security defaults.",
                                                      "securityDefaultsBasedAllUserMfaMMPolicySummary":  "Require multifactor authentication for all user accounts to reduce risk of compromise.",
                                                      "securityDefaultsBasedAzureManagementMMPolicySummary":  "Require multifactor authentication to protect privileged access to Azure management.",
@@ -11728,7 +11856,7 @@
                                                                                   "description":  "Configure service principal risk levels needed for policy to be enforced",
                                                                                   "infoBalloonContent":  "Configure service principal risk to apply the policy to selected risk level(s)",
                                                                                   "title":  "Service principal risk",
-                                                                                  "titlePreview":  "Service principal risk (Preview)"
+                                                                                  "titlePreview":  "Service principal risk"
                                                                               }
                                                  }
                                },
@@ -11745,7 +11873,8 @@
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
                                                                                                         "label":  "Authentication flows",
-                                                                                                        "multiple":  "\"{0}\" and \"{1}\""
+                                                                                                        "multiple":  "\"{0}\" and \"{1}\"",
+                                                                                                        "protocolFlows":  "Protocol and flows"
                                                                                                     },
                                                                                        "singular":  "Authentication flow"
                                                                                    },
@@ -11966,6 +12095,10 @@
                                                                     "description":  "Select the resources to exempt from the policy"
                                                                 }
                                                 },
+                    "RiskRemediationValidation":  {
+                                                      "mustSelect":  "To enable Require Risk Remediation, you must select {0}.",
+                                                      "xOrY":  "{0} or {1}"
+                                                  },
                     "SSM":  {
                                 "MemberSelector":  {
                                                        "description":  "Users and groups"
@@ -12082,7 +12215,7 @@
                                                               "checkboxLabel":  "Require token protection for app sessions (Preview)"
                                                           },
                                             "SecureSignIn":  {
-                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Preview)",
+                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Generally available for Windows. Preview for MacOS, iOS)",
                                                                  "error":  "Policies enforcing Token Protection for Sign In Sessions must be scoped to supported platforms. {0}Learn more about token protection.{1}",
                                                                  "infoBallonText":  "A secure sign-in session requires all long-lived tokens (the Microsoft Entra session cookie and refresh token) to be bound to the device using software key binding or hardware security module binding where available.",
                                                                  "warningInfoBoxText":  "The control \"Require token protection for sign-in sessions\" only works with supported devices and applications. Unsupported devices and client applications will be blocked."
@@ -12269,7 +12402,9 @@
                                                           "requireApprovedClientAppEnabled":  "You should no longer use \"Require approved client app\", as we will soon stop updating it.",
                                                           "requireAuthOrMfa":  "\"{0}\" cannot be used with \"{1}\".",
                                                           "requireMfa":  "Consider testing the new \"{0}\".",
-                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\"."
+                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\".",
+                                                          "requirePasswordChangeEnabledResource":  "\"Require password change\" can only be used when policy is assigned to \"All resources\".",
+                                                          "requireRiskRemediation":  "\"{0}\" can only be used when policy is assigned to \"{1}.\" This option requires multifactor authentication or authentication strengths controls. Other controls cannot be used. This option also requires the Session control \"Sign-in Frequency\" to be set to \"Every time.\""
                                                       },
                                          "Policies":  {
                                                           "Linux":  {
@@ -12613,6 +12748,8 @@
                     "daysOfWeekTypeLabel":  "Days of the week",
                     "deletePolicyNoLicenseText":  "You can delete this policy now. Once deleted you will not be able to recreate it until you have the required licenses.",
                     "descriptionContentForControlsAndOr":  "For multiple controls",
+                    "deviceFilterInformationalLearnMore":  "Learn more",
+                    "deviceFilterInformationalResponse":  "Microsoft recommends using at least one system-defined or admin-configured device attribute when creating filter rules.",
                     "devicePlatform":  "Device platform",
                     "devicePlatformInclude":  "{0} included",
                     "devicePlatformIncludeExclude":  "{0} and {1} excluded",
@@ -12806,13 +12943,9 @@
                     "policyConditionNetwork":  "Network",
                     "policyConditionNetworkLocationDescription":  "Network and locations (determined by IP address range or GPS coordinates) the user is signing in from",
                     "policyConditionSigninRisk":  "Sign-in risk",
-                    "policyConditionSigninRiskCiamDescription":  "Sign-in risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionSigninRiskDescription":  "Likelihood that the sign-in is coming from someone other than the user. Risk level can be high, medium or low. Requires Microsoft Entra ID P2 license.",
-                    "policyConditionSigninRiskPreview":  "Sign-in risk (preview)",
                     "policyConditionUserRisk":  "User risk",
-                    "policyConditionUserRiskCiamDescription":  "User risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionUserRiskDescription":  "Configure user risk levels needed for policy to be enforced",
-                    "policyConditionUserRiskPreview":  "User risk (preview)",
                     "policyConditioniClientApp":  "Client apps",
                     "policyControlAllowAccessDisplayedName":  "Grant access",
                     "policyControlAuthenticationStrengthDisplayedName":  "Require authentication strength",
@@ -12826,8 +12959,10 @@
                     "policyControlRequireCompliantAppDisplayedName":  "Require app protection policy",
                     "policyControlRequireDomainJoinedDisplayedName":  "Require Microsoft Entra hybrid joined device",
                     "policyControlRequireMamDisplayedName":  "Require approved client app",
+                    "policyControlRequireRiskRemediationDisplayedName":  "Require risk remediation",
                     "policyControlRequiredPasswordChangeDisplayedName":  "Require password change",
                     "policyControlSelectAuthStrength":  "Require authentication strength",
+                    "policyControlSelectRiskRemediation":  "Require risk remediation",
                     "policyControlsNoControlsSelected":  "0 controls selected",
                     "policyControlsSection":  "Access controls",
                     "policyCreatBladeTitle":  "New",
@@ -12886,6 +13021,7 @@
                     "privateLinkLabel":  "Microsoft Entra Private Link",
                     "reportOnlyInfoBox":  "Report-only mode: Policies are evaluated and logged at sign-in but do not impact users.",
                     "requireAllControlsText":  "Require all the selected controls",
+                    "requireAuthStrength":  "Require authentication strength",
                     "requireCompliantDevice":  "Require compliant device",
                     "requireDomainJoined":  "Require domain-joined device",
                     "requireGrantReauth":  "The \"sign-in frequency every time\" session control requires a \"require multifactor authentication\" or \"require password change\" grant control when \"All cloud apps\" is selected",
@@ -12971,10 +13107,12 @@
                     "trustedLocationStatusIconEnabled":  "Trusted status icon",
                     "tuesday":  "Tuesday",
                     "uploadInBadState":  "Unable to upload the specified file.",
+                    "userAgentOrSPSelectionBladeTitle":  "Users, agent identities or workload identities",
                     "userAppNoneOption":  "None",
                     "userNamePlaceholderText":  "Enter User Name",
                     "userNotSetSeletorLabel":  "0 users and groups selected",
                     "userOnlySelectionBladeExcludeDescription":  "Select the users to exempt from the policy",
+                    "userOrAgentSelectionBladeTitle":  "Users or agent identities",
                     "userOrGroupSelectionCountDiffBannerText":  "{0} configured in this policy have been deleted from the directory, but this doesn't affect the other users and groups in the policy. The next time you update the policy, the deleted users and/or groups will be automatically removed.",
                     "userOrSPNotSetSelectorLabel":  "0 users or workload identities selected",
                     "userOrSPSelectionBladeTitle":  "Users or workload identities",
@@ -13110,8 +13248,10 @@
                      "iosCommaAndroidPlatformLabel":  "iOS、Android",
                      "linux":  "Linux",
                      "macOS":  "macOS",
+                     "tvOS":  "tvOS",
                      "unknown":  "未知",
                      "unsupported":  "不支援",
+                     "visionOS":  "visionOS",
                      "windows":  "Windows",
                      "windows10":  "Windows 10 和更新版本",
                      "windows10CM":  "Windows 10 和更新版本 (ConfigMgr)",

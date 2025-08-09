@@ -70,8 +70,10 @@
                                                            },
                                            "appPackageFile":  "Eine Datei, die Ihre App in einem Format enthält, das auf einem Gerät quergeladen werden kann. Gültige Pakettypen umfassen: Android (.apk), iOS (.ipa), macOS (.pkg), Windows (.msi, .appx, .appxbundle, .msix, und .msixbundle).​",
                                            "applicableDeviceType":  "Wählen Sie die Gerätetypen aus, auf denen diese App installiert werden kann.",
-                                           "category":  "Kategorisieren Sie die App, um Benutzern das Sortieren und Suchen im Unternehmensportal zu erleichtern. Sie können mehrere Kategorien auswählen.",
+                                           "category":  "Sie können eine oder mehrere Kategorien auswählen, um es Benutzern zu erleichtern, die App im Unternehmensportal zu finden.",
+                                           "categoryLearnMore":  "Weitere Informationen zu App-Kategorien",
                                            "categoryLink":  "https://go.microsoft.com/fwlink/?linkid=2295954",
+                                           "categoryWhenApprovalRequired":  "Sie können eine oder mehrere Kategorien auswählen, um es Benutzern zu erleichtern, die App im Unternehmensportal zu finden. Obwohl eine Änderungsanforderung erstellt wird, ist für das Ändern von App-Kategorien keine Genehmigung erforderlich. Eine solche Änderung erfolgt sofort.",
                                            "description":  "Stellen Sie Informationen bereit, damit die Benutzer besser verstehen, worum es sich bei Ihrer App handelt und welche Möglichkeit die App ihnen bietet. Diese Beschreibung wird im Unternehmensportal angezeigt.",
                                            "developer":  "Der Name des Unternehmens oder der Person, von der die App entwickelt wurde. Diese Informationen sind für Personen sichtbar, die beim Admin Center angemeldet sind.",
                                            "displayVersion":  "Die Version der App. Diese Informationen sind für Benutzer im Unternehmensportal sichtbar.",
@@ -79,7 +81,6 @@
                                            "ignoreManifestScope":  "Wenn diese Einstellung auf \"Ja\" festgelegt ist, kann ein Vollbildwebclip zu einer externen Website navigieren, ohne die Safari-Benutzeroberfläche anzuzeigen. Andernfalls wird die Safari-Benutzeroberfläche angezeigt, wenn Sie die URL des Webclips verlassen. Dieser Schlüssel hat keine Auswirkungen, wenn FullScreen auf \"false\" festgelegt ist.",
                                            "infoUrl":  "Stellen Sie einen Link zu einer Website oder Dokumentation bereit, die weitere Informationen zur App enthält. Die Informations-URL ist für Benutzer im Unternehmensportal sichtbar.",
                                            "isFeatured":  "Ausgewählte Apps werden prominent im Unternehmensportal platziert, sodass Benutzer sie schnell aufrufen können.",
-                                           "learnMore":  "Weitere Informationen",
                                            "logo":  "Laden Sie ein Logo hoch, das der App zugeordnet ist. Dieses Logo wird im Unternehmensportal neben der App angezeigt.",
                                            "macOSDmgAppPackageFile":  "Eine Datei, die Ihre App in einem Format enthält, das auf einem Gerät quergeladen werden kann. Gültiger Pakettyp: .dmg. ​",
                                            "macOSPkgAppPackageFile":  "Eine Datei, die Ihre App in einem Format enthält, das auf einem Gerät quergeladen werden kann. Gültiger Pakettyp: .pkg.",
@@ -95,6 +96,7 @@
                                            "selectApp":  "Suchen Sie im App Store nach iOS Store-Apps, die Sie mit Intune bereitstellen möchten.",
                                            "targetApplicationBundleIdentifier":  "Der Bezeichner für Anwendungspaket, der die Anwendung angibt, die die URL öffnet. Verfügbar in iOS 14 und höher.",
                                            "useManagedBrowser":  "Wenn ein Benutzer die Web-App öffnet, wird diese bei Bedarf in einem von Intune geschützten Browser wie Microsoft Edge oder Intune Managed Browser geöffnet. Diese Einstellung gilt sowohl für iOS- als auch für Android-Geräte.",
+                                           "useManagedBrowserLearnMore":  "Weitere Informationen zu verwalteten Browsern",
                                            "useManagedBrowserLink":  "https://go.microsoft.com/fwlink/?linkid=2299509",
                                            "win32AppPackageFile":  "Dies ist eine Datei, die Ihre App in einem Format enthält, das auf einem Gerät quergeladen werden kann. Gültige Pakettypen: INTUNEWIN.",
                                            "winGetStoreSelectApp":  "Durchsuchen Sie die Microsoft Store-App (neu) nach Store-Apps, die Sie mit Intune bereitstellen möchten."
@@ -224,6 +226,7 @@
                                                "v15":  "iOS 15.0",
                                                "v16":  "iOS 16.0",
                                                "v17":  "iOS 17.0",
+                                               "v18":  "iOS 18.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -250,6 +253,9 @@
                                                          },
                                                  "V14":  {
                                                              "0":  "macOS Sonoma 14.0"
+                                                         },
+                                                 "V15":  {
+                                                             "0":  "macOS Sequoia 15.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -451,6 +457,7 @@
                    "calendar":  "Kalender",
                    "categoryLabel":  "Kategorie",
                    "categoryNameLabel":  "Standardname",
+                   "categorySubLabelWhenApprovalRequired":  "Die Genehmigung durch mehrere Administratoren wird nicht unterstützt.",
                    "certProfileType":  "Zertifikatprofiltyp",
                    "certificate":  "Zertifikat",
                    "certificates":  "Zertifikate",
@@ -995,7 +1002,7 @@
                        "accountProtection":  "Kontoschutz",
                        "administrativeTemplates":  "Administrative Vorlagen",
                        "androidCompliancePolicy":  "Android-Kompatibilitätsrichtlinie",
-                       "androidForWorkMigrationPolicy":  "New Implementation",
+                       "androidForWorkMigrationPolicy":  "Zur Android-Verwaltungs-API wechseln",
                        "aospDeviceOwnerCompliancePolicy":  "Android-Konformitätsrichtlinie (AOSP)",
                        "applicationControl":  "App Control for Business",
                        "attackSurfaceReductionRules":  "Regeln zur Verringerung der Angriffsfläche",
@@ -1214,10 +1221,10 @@
                                                              "requirementType":  "Anforderungstyp",
                                                              "requirementTypeTooltip":  "Wählen Sie den Typ der Erkennungsmethode aus, die festlegt, wie eine Anforderung überprüft wird."
                                                          },
-                              "allowedArchitectures":  "Check operating system architecture",
-                              "allowedArchitecturesNoRadioButton":  "No. Allow this app to be installed on all systems.",
-                              "allowedArchitecturesTooltip":  "Select 'Yes' to specify the systems the app can be installed on. Select 'No' (default) to allow this app to be installed on all systems.",
-                              "allowedArchitecturesYesRadioButton":  "Yes. Specify the systems the app can be installed on.",
+                              "allowedArchitectures":  "Betriebssystemarchitektur überprüfen",
+                              "allowedArchitecturesNoRadioButton":  "Nein. Diese App darf auf allen Systemen installiert werden.",
+                              "allowedArchitecturesTooltip":  "Wählen Sie „Ja“ aus, um die Systeme anzugeben, auf denen die App installiert werden kann. Wählen Sie „Nein“ (Standard) aus, damit diese App auf allen Systemen installiert werden kann.",
+                              "allowedArchitecturesYesRadioButton":  "Ja. Geben Sie die Systeme an, auf denen die App installiert werden kann.",
                               "architectures":  "Betriebssystemarchitektur",
                               "architecturesTooltip":  "Wählen Sie die Architekturen aus, die zum Installieren der App benötigt werden.",
                               "bladeTitle":  "Anforderungen",
@@ -2221,6 +2228,10 @@
                                                              "label":  "Organisationsdaten auf registrierten Geräten verschlüsseln",
                                                              "tooltip":  "Wählen Sie \"{0}\" aus, um auf allen Geräten die Verschlüsselung von Organisationsdaten mit Intune-Verschlüsselung auf App-Ebene zu erzwingen. <br/>\r\n\r\nWählen Sie \"{1}\" aus, um auf registrierten Geräten die Verschlüsselung von Organisationsdaten mit Intune-Verschlüsselung auf App-Ebene nicht zu erzwingen."
                                                          },
+                        "GenmojiConfigurationState":  {
+                                                          "label":  "Genmoji",
+                                                          "tooltip":  "  Wenn Genmoji blockiert ist, wird es bei Verwendung der richtlinienverwalteten App deaktiviert. Weitere Informationen finden Sie <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">hier. </a>"
+                                                      },
                         "IOSBackup":  {
                                           "label":  "Organisationsdaten in iTunes und iCloud sichern",
                                           "tooltip":  "Wählen Sie \"{0}\" aus, um zu verhindern, dass Organisationsdaten in iTunes oder iCloud gesichert werden. \r\nWählen Sie \"{1}\" aus, um die Sicherung von Organisationsdaten in iTunes oder iCloud zuzulassen. \r\nPersonenbezogene Daten oder nicht verwaltete Daten sind hiervon nicht betroffen."
@@ -2314,6 +2325,10 @@
                                                                  "label":  "Bildschirmaufnahme und Google Assistant\r\n",
                                                                  "tooltip":  "Sofern blockiert, werden sowohl die Funktionen für Bildschirmaufnahmen als auch die Scanfunktionen der Google Assistant-App deaktiviert, wenn die per Richtlinie verwaltete App verwendet wird. Diese Funktion unterstützt die übliche Google Assistant-App. Drittanbieter-Assistenten, die die Google Assistant-API verwenden, werden nicht unterstützt. Wenn Sie „Blockieren“ auswählen, wird auch das Vorschaubild im App-Schnellzugriff verschwommen angezeigt, wenn Sie die App mit einem Geschäfts-, Schul- oder Unikonto verwenden."
                                                              },
+                        "ScreenCaptureConfigurationState":  {
+                                                                "label":  "Bildschirmaufnahme",
+                                                                "tooltip":  " Wenn die Bildschirmaufnahme blockiert ist, wird sie bei Verwendung der richtlinienverwalteten App deaktiviert. Weitere Informationen finden Sie <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">hier. </a>"
+                                                            },
                         "SendData":  {
                                          "label":  "Organisationsdaten an andere Apps senden",
                                          "tooltip":  "Wählen Sie eine der folgenden Optionen aus, um die Apps festzulegen, an die diese App Organisationsdaten senden kann: <br/>\r\n\r\n\r\n<b>Keine</b>: Hiermit wird das Senden von Organisationsdaten an alle Apps untersagt.<br/>\r\n\r\n\r\n<b>Per Richtlinie verwaltete Apps</b>: Hiermit wird nur das Senden von Organisationsdaten an andere per Richtlinie verwaltete Apps zugelassen.<br/>\r\n\r\n\r\n<b>Per Richtlinie verwaltete Apps mit Betriebssystemfreigabe</b>: Hiermit wird nur das Senden von Organisationsdaten an andere per Richtlinie verwaltete Anwendungen und das Senden von Organisationsdokumenten an andere MDM-verwaltete Anwendungen auf registrierten Geräten zugelassen.<br/>\r\n\r\n<b>\r\nPer Richtlinie verwaltete App mit Filterung für \"Öffnen in\"/\"Freigeben\"</b>: Hiermit wird nur das Senden von Organisationsdaten an andere per Richtlinie verwaltete Apps mit Filterung für \"Öffnen in\"/\"Freigeben\" zugelassen.\r\n <br/>\r\n\r\n<b>Alle Apps</b>: Hiermit wird das Senden von Organisationsdaten an eine beliebige App zugelassen."
@@ -2348,6 +2363,10 @@
                                             "label":  "Organisationsdaten senden an",
                                             "tooltip":  "Wählen Sie eine der folgenden Optionen aus, um anzugeben, an welche Ziele Organisationsbenutzer Daten senden können: <br/>\r\n\r\n<b>Alle Ziele</b>: Organisationsbenutzer können Organisationsdaten an jedes Konto, Dokument, jeden Standort oder jede Anwendung senden.<br/>\r\n\r\n<b>Keine Ziele</b>: Organisationsbenutzer können keine Organisationsdaten an externe Konten, Dokumente, Speicherorte oder Anwendungen aus dem Organisationskontext senden."
                                         },
+                        "WritingToolsConfigurationState":  {
+                                                               "label":  "Schreibwerkzeuge",
+                                                               "tooltip":  "Wenn die Schreibtools blockiert sind, werden sie bei Verwendung der richtlinienverwalteten App deaktiviert. Weitere Informationen finden Sie <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">hier. </a>"
+                                                           },
                         "Tap":  {
                                     "numberOfDays":  "Anzahl Tage",
                                     "pinResetAfterNumberOfDays":  "Anzahl von Tagen für PIN-Zurücksetzung",
@@ -3934,9 +3953,106 @@
                           "other":  "Sonstige",
                           "webApplication":  "Webanwendung"
                       },
+    "HardwareConfig":  {
+                           "Barchart":  {
+                                            "Device":  {
+                                                           "title":  "Gerätestatus"
+                                                       },
+                                            "ReportGrid":  {
+                                                               "Columns":  {
+                                                                               "deviceStatus":  "Gerätestatus",
+                                                                               "error":  "Fehler",
+                                                                               "failedCount":  "Anzahl fehlerhafter Geräte",
+                                                                               "notApplicableCount":  "Anzahl nicht zutreffender Geräte",
+                                                                               "pendingCount":  "Anzahl ausstehender Geräte",
+                                                                               "successCount":  "Anzahl erfolgreicher Geräte",
+                                                                               "unknownCount":  "Anzahl unbekannte Geräte"
+                                                                           },
+                                                               "Device":  {
+                                                                              "searchBoxPlaceholder":  "Nach Gerätename und Benutzername suchen"
+                                                                          },
+                                                               "Export":  {
+                                                                              "Device":  {
+                                                                                             "reportName":  "DeviceRunSummary",
+                                                                                             "title":  "BIOS-Konfigurationen und andere Einstellungen exportieren – Zusammenfassung der Geräteausführung"
+                                                                                         },
+                                                                              "User":  {
+                                                                                           "reportName":  "UserRunSummary",
+                                                                                           "title":  "BIOS-Konfigurationen und andere Einstellungen exportieren – Zusammenfassung der Benutzerausführung"
+                                                                                       }
+                                                                          },
+                                                               "User":  {
+                                                                            "searchBoxPlaceholder":  "Nach Benutzername suchen"
+                                                                        }
+                                                           },
+                                            "User":  {
+                                                         "title":  "Benutzerstatus"
+                                                     },
+                                            "failure":  "Fehler",
+                                            "notApplicable":  "Nicht anwendbar",
+                                            "pending":  "Ausstehend",
+                                            "succeeded":  "Erfolgreich",
+                                            "unknown":  "Unbekannt",
+                                            "viewReportButtonText":  "Bericht anzeigen"
+                                        },
+                           "DCList":  {
+                                          "name":  "BIOS-Konfigurationen und andere Einstellungen"
+                                      },
+                           "Policy":  {
+                                          "Create":  {
+                                                         "createButtonText":  "Erstellen",
+                                                         "reviewButtontext":  "Überprüfen"
+                                                     },
+                                          "Edit":  {
+                                                       "title":  "Bearbeiten von BIOS-Konfigurationen und anderen Einstellungsprofilen"
+                                                   },
+                                          "createProfile":  "BIOS-Konfigurationen und andere Einstellungsprofile erstellen"
+                                      },
+                           "Settings":  {
+                                            "Tab":  {
+                                                        "Configurations":  {
+                                                                               "file":  "Konfigurationsdatei",
+                                                                               "fileInfoBox":  "Der Konfigurationsdateityp muss „.cctk“ sein",
+                                                                               "hardware":  "Hardware",
+                                                                               "infoBox":  "Stellen Sie vor dem Einrichten von Konfigurationen hier sicher, dass auf diesen Geräten eine win32-App vorhanden ist, die den Agent des Hardwareherstellers installiert.",
+                                                                               "learnMore":  "Weitere Informationen zu BIOS-Konfigurationen und anderen Einstellungen",
+                                                                               "perDevicePassword":  "BIOS-Kennwortschutz pro Gerät deaktivieren"
+                                                                           },
+                                                        "DisablePassword":  {
+                                                                                "Options":  {
+                                                                                                "no":  "Nein",
+                                                                                                "yes":  "Ja"
+                                                                                            }
+                                                                            },
+                                                        "HardwareDropDown":  {
+                                                                                 "dell":  "Dell",
+                                                                                 "surface":  "Surface",
+                                                                                 "surfaceDock":  "Surface-Dock"
+                                                                             }
+                                                    }
+                                        },
+                           "Summary":  {
+                                           "Buttons":  {
+                                                           "delete":  "Löschen"
+                                                       },
+                                           "Tab":  {
+                                                       "monitor":  "Monitor",
+                                                       "properties":  "Eigenschaften"
+                                                   },
+                                           "subtitle":  "BIOS-Konfigurationen und anderes Einstellungsprofil"
+                                       },
+                           "Wizard":  {
+                                          "Basics":  {
+                                                         "title":  "Grundlagen"
+                                                     },
+                                          "Configurations":  {
+                                                                 "title":  "Konfigurationen"
+                                                             }
+                                      }
+                       },
     "Filters":  {
                     "ruleSyntax":  "Regelsyntax",
-                    "filters":  "Filter"
+                    "filters":  "Zuweisungsfilter"
                 },
     "CustomCompliance":  {
                              "FilePicker":  {
@@ -4708,12 +4824,12 @@
                               "successfullySavedPolicy":  "\"{0}\" wurde gespeichert."
                           },
     "ArchitectureOptions":  {
-                                "arm64InstructionSet":  "Install on ARM64 system",
-                                "checkBox":  "Please select at least one architecture setting",
+                                "arm64InstructionSet":  "Auf ARM64-System installieren",
+                                "checkBox":  "Wählen Sie mindestens eine Architektureinstellung aus.",
                                 "sixtyFourBit":  "64 Bit",
-                                "sixtyFourBitInstructionSet":  "Install on x64 system",
+                                "sixtyFourBitInstructionSet":  "Auf x64-System installieren",
                                 "thirtyTwoBit":  "32 Bit",
-                                "thirtyTwoBitInstructionSet":  "Install on x86 system"
+                                "thirtyTwoBitInstructionSet":  "Auf x86-System installieren"
                             },
     "Countries":  {
                       "ae":  "Vereinigte Arabische Emirate",
@@ -5072,6 +5188,8 @@
                            "androidEnterpriseAlwaysOnVpnLinkDescription":  "Erfahren Sie mehr über das Konfigurieren von Always-On-VPN für Android Enterprise.",
                            "androidEnterpriseAlwaysOnVpnLinkName":  "Always-On-VPN kann in den Geräteeinschränkungen konfiguriert werden.",
                            "androidEnterpriseAlwaysOnVpnLockdownModeEnabledName":  "Sperrmodus",
+                           "androidEnterpriseComplianceRequiredPasswordTypeDescription":  "Legen Sie die Komplexitätsanforderungen für das Kennwort fest. Zusätzliche Kennwortanforderungen werden basierend auf Ihrer Auswahl verfügbar. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323793\">Weitere Informationen zu den Kennwortanforderungen.</a>",
+                           "androidEnterpriseConfigurationRequiredPasswordTypeDescription":  "Legen Sie die Komplexitätsanforderungen für das Kennwort fest. Zusätzliche Kennwortanforderungen werden basierend auf Ihrer Auswahl verfügbar. <a href=\"https://go.microsoft.com/fwlink/?linkid=2297352\">Weitere Informationen zu den Kennwortanforderungen.</a>",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnEnabledDescription":  "Richten Sie einen VPN-Client so ein, dass die Verbindung mit dem VPN automatisch hergestellt und erneut hergestellt wird, sobald dies möglich ist. Wählen Sie \"Deaktiviert\" aus, um Always-On-VPN für alle VPN-Clients auf dem Gerät zu deaktivieren. Auf jedem Gerät darf nur ein VPN-Client für Always-On-VPN konfiguriert werden. Stellen Sie daher sicher, dass auf jedem Gerät nicht mehr als eine Always-On-VPN-Richtlinie bereitgestellt ist.",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnLockdownModeEnabledDescription":  "Diese Einstellung erzwingt, dass der gesamte Netzwerkdatenverkehr durch den VPN-Tunnel geleitet wird. Wenn keine Verbindung mit dem VPN hergestellt werden kann, ist kein Netzwerkdatenverkehr zulässig.",
                            "androidEnterpriseDeviceSettingsBlockedDescription":  "Standardmäßig können Benutzer im Kioskmodus auf die App \"Einstellungen\" zugreifen.",
@@ -5095,9 +5213,9 @@
                            "androidEnterpriseWorkProfileAlwaysOnVpnClientDescription":  "Der angegebene VPN-Client muss auf dem Gerät installiert sein und Pro-App-VPN in Arbeitsprofilen unterstützen; andernfalls tritt ein Fehler auf. Beachten Sie, dass Sie die App im verwalteten Google Play Store genehmigen, mit Intune synchronisieren und bereitstellen müssen, damit sie im Arbeitsprofil eines Benutzers installiert werden kann.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnEnabledDescription":  "Richten Sie einen VPN-Client im Arbeitsprofil so ein, dass die Verbindung mit dem VPN automatisch hergestellt und erneut hergestellt wird, sobald dies möglich ist. Wählen Sie \"Deaktiviert\" aus, um Always-On-VPN für alle VPN-Clients im Arbeitsprofil zu deaktivieren. Auf jedem Gerät darf nur ein VPN-Client für Always-On-VPN konfiguriert werden. Stellen Sie daher sicher, dass auf jedem Gerät nicht mehr als eine Always-On-VPN-Richtlinie bereitgestellt ist.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnLockdownModeEnabledDescription":  "Diese Einstellung erzwingt, dass der gesamte Netzwerkdatenverkehr für das Arbeitsprofil durch den VPN-Tunnel geleitet wird. Wenn keine Verbindung mit dem VPN hergestellt werden kann, ist im Arbeitsprofil des Geräts kein Netzwerkdatenverkehr zulässig.",
-                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Create and assign this profile to move devices to a newer, more efficient policy implementation. Devices set up with web-based enrollment automatically use the newer implementation.​",
-                           "androidForWorkMigrationPolicyDescriptionParagraph2":  "Devices will move when they have sufficient battery and are not connected to Wi-Fi managed by Intune policy. ​​",
-                           "androidForWorkMigrationPolicyLearnMoreText":  "Learn more about this improvement. ​​",
+                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Erstellen Sie dieses Profil, und weisen Sie es zu, um Geräte zur Android-Verwaltungs-API zu verschieben, wodurch die Richtlinie effizienter angewendet wird. Geräte, die mit webbasierter Registrierung eingerichtet sind, verwenden automatisch die Android-Verwaltungs-API.",
+                           "androidForWorkMigrationPolicyDescriptionParagraph2":  "Geräte werden verschoben, wenn sie über ausreichend Akkuladung verfügen und nicht mit einem WLAN verbunden sind, das von einer Intune-Richtlinie verwaltet wird.",
+                           "androidForWorkMigrationPolicyLearnMoreText":  "Erfahren Sie mehr über diese Verbesserung.",
                            "androidGeneralKiosk":  "Diese Einstellungen gelten nur für Samsung KNOX Standard-Geräte.",
                            "androidHiddenApps":  "Für den Benutzer ausgeblendete Apps (nur Samsung KNOX Standard)",
                            "androidHiddenAppsHeaderName":  "Geben Sie die Apps an, die auf dem Gerät ausgeblendet werden. Benutzer können diese Apps nicht anzeigen oder ausführen.",
@@ -5127,6 +5245,8 @@
                            "anyDayOption":  "Beliebiger Tag",
                            "anyEthernet":  "Jedes Ethernet",
                            "anywhereOption":  "Anywhere",
+                           "aospComplianceRequiredPasswordTypeDescription":  "Legen Sie die Komplexitätsanforderungen für das Kennwort fest. Zusätzliche Kennwortanforderungen werden basierend auf Ihrer Auswahl verfügbar. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323729\">Weitere Informationen zu den Kennwortanforderungen.</a>",
+                           "aospConfigurationRequiredPasswordTypeDescription":  "Legen Sie die Komplexitätsanforderungen für das Kennwort fest. Zusätzliche Kennwortanforderungen werden basierend auf Ihrer Auswahl verfügbar. <a href=\"https://go.microsoft.com/fwlink/?linkid=847987\">Weitere Informationen zu den Kennwortanforderungen.</a>",
                            "appBundleIdColumn":  "App-Bundle-ID",
                            "appColumnExamples":  "Beispiele: \"Dateiame.exe\" oder \"%ProgramFiles%\\Pfad\\Dateiname.exe\"",
                            "appComplianceListName":  "Auf dem Gerät zuzulassende oder zu beschränkende Apps",
@@ -6457,7 +6577,7 @@
                            "directGlobalProxyOption":  "Direkt",
                            "disableAllNotificationsOption":  "Alle Benachrichtigungen einschließlich Neustartwarnungen deaktivieren",
                            "disableBitLockerRecoveryPasswordRotationOption":  "Schlüsselrotation deaktiviert",
-                           "disableDeviceLocationDescription":  "Durch das Blockieren wird außerdem verhindert, dass Administratoren Geräte finden.",
+                           "disableDeviceLocationDescription":  "Durch das Blockieren wird außerdem verhindert, dass Administratoren Geräte finden. Für unternehmenseigene Arbeitsprofilgeräte gilt diese Einstellung nur für Geräte mit Android 10 oder früher.",
                            "disableDeviceLocationName":  "Standort",
                            "disableDeviceLocationSharingName":  "Standortfreigabe",
                            "disableMacAddressRandomization":  "Randomisierung von MAC-Adressen deaktivieren",
@@ -7538,7 +7658,7 @@
                            "kioskRecurrence":  "Wiederholung des Wartungsfensters",
                            "kioskRecurrenceDescription":  "Legen Sie fest, wie oft Wartungsfenster für App-Updates stattfinden sollen. Um ungeplante App-Neustarts zu vermeiden, wird ein tägliches Wartungsfenster empfohlen.",
                            "kioskScreenOrientationAutoRotate":  "Automatisch drehen",
-                           "kioskScreenOrientationDescription":  "Die Ausrichtung von Managed Home Screens auf dem Gerät.",
+                           "kioskScreenOrientationDescription":  "Die Ausrichtung von Managed Home Screen auf dem Gerät. Hinweis: Unter Android 16 und höher unterstützt die Plattform die Bildschirmausrichtungseinstellung nicht für Geräte mit größeren Formfaktoren, wie z. B. Tablets mit einer Mindestbreite von 600 dp.",
                            "kioskScreenOrientationLandscape":  "Querformat",
                            "kioskScreenOrientationName":  "Bildschirmausrichtung",
                            "kioskScreenOrientationNotConfigured":  "Nicht konfiguriert",
@@ -8188,7 +8308,7 @@
                            "microsoftTunnelSiteNotExist":  "Der Standort ist nicht vorhanden. Wählen Sie einen neuen Standort aus.",
                            "microsoftUpdatesDescription":  "Hiermit steuern Sie, ob von Microsoft Update aus nach Updates gesucht wird.",
                            "microsoftUpdatesName":  "Microsoft-Produktupdates",
-                           "migrationPolicyCannotBeUnassigned":  "Once you assign this policy, it can't be unassigned.",
+                           "migrationPolicyCannotBeUnassigned":  "Sobald Sie diese Richtlinie zuweisen, werden Geräte zur Android-Verwaltungs-API verschoben. Wenn Sie die Zuweisung aufheben oder diese Richtlinie löschen, verwenden die Geräte, die bereits verschoben wurden, weiterhin diese neue Methode, während die Zielgeräte, die noch nicht verschoben wurden, nicht verschoben werden.",
                            "minimumNumberOfCharacterSetsDescription":  "Diese Einstellung gibt die Mindestanzahl von Gruppen an, aus denen das Kennwort Zeichen enthalten muss. Die vier Zeichengruppen sind:\r\n<br>\r\nKleinbuchstaben\r\n<br>\r\nGroßbuchstaben\r\n<br>\r\nSymbole\r\n<br>\r\nZiffern",
                            "minimumNumberOfCharacterSetsName":  "Anzahl von Gruppen, aus denen ein Kennwort Zeichen enthalten muss",
                            "minimumPasswordLengthDescription":  "Mindestanzahl von Ziffern oder Zeichen im Kennwort.",
@@ -11465,6 +11585,12 @@
                                                  "title":  "Cloud apps or actions"
                                              },
                     "CloudappsSelectionBlade":  {
+                                                    "AgenticResources":  {
+                                                                             "allAgenticResources":  "All agent resources (Preview)",
+                                                                             "allAgenticResourcesExcLower":  "all agent resources excluded",
+                                                                             "allAgenticResourcesExcluded":  "All agent resources excluded",
+                                                                             "allAgenticResourcesIncluded":  "All agent resources"
+                                                                         },
                                                     "AllInternetResources":  {
                                                                                  "excludedWithGSA":  "All internet resources with Global Secure Access excluded",
                                                                                  "excludedWithGSALower":  "all internet resources with Global Secure Access excluded",
@@ -11540,6 +11666,7 @@
                                                      "policySummaryMfaForAllUsers":  "This policy requires all users to perform multifactor authentication when accessing any resources. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryPhishingResistantMfa":  "Accounts that are assigned privileged administrative roles are frequent targets of attackers. Requiring phishing-resistant multifactor authentication (MFA) on those accounts is an easy way to reduce the risk of those accounts being compromised.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRiskViaGroup":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. We'll assign eligible users into a new security group named 'Conditional Access: Risky sign-in multifactor authentication (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e98)'. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "recActionsGlobal1":  "Review the policy and its benefits.",
@@ -11551,6 +11678,7 @@
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
+                                                     "recommendedActionsIntroShort":  "Before enabling this policy",
                                                      "securityDefaultsBasedAdminMfaMMPolicySummary":  "Require multifactor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as security defaults.",
                                                      "securityDefaultsBasedAllUserMfaMMPolicySummary":  "Require multifactor authentication for all user accounts to reduce risk of compromise.",
                                                      "securityDefaultsBasedAzureManagementMMPolicySummary":  "Require multifactor authentication to protect privileged access to Azure management.",
@@ -11728,7 +11856,7 @@
                                                                                   "description":  "Configure service principal risk levels needed for policy to be enforced",
                                                                                   "infoBalloonContent":  "Configure service principal risk to apply the policy to selected risk level(s)",
                                                                                   "title":  "Service principal risk",
-                                                                                  "titlePreview":  "Service principal risk (Preview)"
+                                                                                  "titlePreview":  "Service principal risk"
                                                                               }
                                                  }
                                },
@@ -11745,7 +11873,8 @@
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
                                                                                                         "label":  "Authentication flows",
-                                                                                                        "multiple":  "\"{0}\" and \"{1}\""
+                                                                                                        "multiple":  "\"{0}\" and \"{1}\"",
+                                                                                                        "protocolFlows":  "Protocol and flows"
                                                                                                     },
                                                                                        "singular":  "Authentication flow"
                                                                                    },
@@ -11966,6 +12095,10 @@
                                                                     "description":  "Select the resources to exempt from the policy"
                                                                 }
                                                 },
+                    "RiskRemediationValidation":  {
+                                                      "mustSelect":  "To enable Require Risk Remediation, you must select {0}.",
+                                                      "xOrY":  "{0} or {1}"
+                                                  },
                     "SSM":  {
                                 "MemberSelector":  {
                                                        "description":  "Users and groups"
@@ -12082,7 +12215,7 @@
                                                               "checkboxLabel":  "Require token protection for app sessions (Preview)"
                                                           },
                                             "SecureSignIn":  {
-                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Preview)",
+                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Generally available for Windows. Preview for MacOS, iOS)",
                                                                  "error":  "Policies enforcing Token Protection for Sign In Sessions must be scoped to supported platforms. {0}Learn more about token protection.{1}",
                                                                  "infoBallonText":  "A secure sign-in session requires all long-lived tokens (the Microsoft Entra session cookie and refresh token) to be bound to the device using software key binding or hardware security module binding where available.",
                                                                  "warningInfoBoxText":  "The control \"Require token protection for sign-in sessions\" only works with supported devices and applications. Unsupported devices and client applications will be blocked."
@@ -12269,7 +12402,9 @@
                                                           "requireApprovedClientAppEnabled":  "You should no longer use \"Require approved client app\", as we will soon stop updating it.",
                                                           "requireAuthOrMfa":  "\"{0}\" cannot be used with \"{1}\".",
                                                           "requireMfa":  "Consider testing the new \"{0}\".",
-                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\"."
+                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\".",
+                                                          "requirePasswordChangeEnabledResource":  "\"Require password change\" can only be used when policy is assigned to \"All resources\".",
+                                                          "requireRiskRemediation":  "\"{0}\" can only be used when policy is assigned to \"{1}.\" This option requires multifactor authentication or authentication strengths controls. Other controls cannot be used. This option also requires the Session control \"Sign-in Frequency\" to be set to \"Every time.\""
                                                       },
                                          "Policies":  {
                                                           "Linux":  {
@@ -12613,6 +12748,8 @@
                     "daysOfWeekTypeLabel":  "Days of the week",
                     "deletePolicyNoLicenseText":  "You can delete this policy now. Once deleted you will not be able to recreate it until you have the required licenses.",
                     "descriptionContentForControlsAndOr":  "For multiple controls",
+                    "deviceFilterInformationalLearnMore":  "Learn more",
+                    "deviceFilterInformationalResponse":  "Microsoft recommends using at least one system-defined or admin-configured device attribute when creating filter rules.",
                     "devicePlatform":  "Device platform",
                     "devicePlatformInclude":  "{0} included",
                     "devicePlatformIncludeExclude":  "{0} and {1} excluded",
@@ -12806,13 +12943,9 @@
                     "policyConditionNetwork":  "Network",
                     "policyConditionNetworkLocationDescription":  "Network and locations (determined by IP address range or GPS coordinates) the user is signing in from",
                     "policyConditionSigninRisk":  "Sign-in risk",
-                    "policyConditionSigninRiskCiamDescription":  "Sign-in risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionSigninRiskDescription":  "Likelihood that the sign-in is coming from someone other than the user. Risk level can be high, medium or low. Requires Microsoft Entra ID P2 license.",
-                    "policyConditionSigninRiskPreview":  "Sign-in risk (preview)",
                     "policyConditionUserRisk":  "User risk",
-                    "policyConditionUserRiskCiamDescription":  "User risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionUserRiskDescription":  "Configure user risk levels needed for policy to be enforced",
-                    "policyConditionUserRiskPreview":  "User risk (preview)",
                     "policyConditioniClientApp":  "Client apps",
                     "policyControlAllowAccessDisplayedName":  "Grant access",
                     "policyControlAuthenticationStrengthDisplayedName":  "Require authentication strength",
@@ -12826,8 +12959,10 @@
                     "policyControlRequireCompliantAppDisplayedName":  "Require app protection policy",
                     "policyControlRequireDomainJoinedDisplayedName":  "Require Microsoft Entra hybrid joined device",
                     "policyControlRequireMamDisplayedName":  "Require approved client app",
+                    "policyControlRequireRiskRemediationDisplayedName":  "Require risk remediation",
                     "policyControlRequiredPasswordChangeDisplayedName":  "Require password change",
                     "policyControlSelectAuthStrength":  "Require authentication strength",
+                    "policyControlSelectRiskRemediation":  "Require risk remediation",
                     "policyControlsNoControlsSelected":  "0 controls selected",
                     "policyControlsSection":  "Access controls",
                     "policyCreatBladeTitle":  "New",
@@ -12886,6 +13021,7 @@
                     "privateLinkLabel":  "Microsoft Entra Private Link",
                     "reportOnlyInfoBox":  "Report-only mode: Policies are evaluated and logged at sign-in but do not impact users.",
                     "requireAllControlsText":  "Require all the selected controls",
+                    "requireAuthStrength":  "Require authentication strength",
                     "requireCompliantDevice":  "Require compliant device",
                     "requireDomainJoined":  "Require domain-joined device",
                     "requireGrantReauth":  "The \"sign-in frequency every time\" session control requires a \"require multifactor authentication\" or \"require password change\" grant control when \"All cloud apps\" is selected",
@@ -12971,10 +13107,12 @@
                     "trustedLocationStatusIconEnabled":  "Trusted status icon",
                     "tuesday":  "Tuesday",
                     "uploadInBadState":  "Unable to upload the specified file.",
+                    "userAgentOrSPSelectionBladeTitle":  "Users, agent identities or workload identities",
                     "userAppNoneOption":  "None",
                     "userNamePlaceholderText":  "Enter User Name",
                     "userNotSetSeletorLabel":  "0 users and groups selected",
                     "userOnlySelectionBladeExcludeDescription":  "Select the users to exempt from the policy",
+                    "userOrAgentSelectionBladeTitle":  "Users or agent identities",
                     "userOrGroupSelectionCountDiffBannerText":  "{0} configured in this policy have been deleted from the directory, but this doesn't affect the other users and groups in the policy. The next time you update the policy, the deleted users and/or groups will be automatically removed.",
                     "userOrSPNotSetSelectorLabel":  "0 users or workload identities selected",
                     "userOrSPSelectionBladeTitle":  "Users or workload identities",
@@ -13110,8 +13248,10 @@
                      "iosCommaAndroidPlatformLabel":  "iOS, Android",
                      "linux":  "Linux",
                      "macOS":  "macOS",
+                     "tvOS":  "tvOS",
                      "unknown":  "Unbekannt",
                      "unsupported":  "Nicht unterstützt",
+                     "visionOS":  "visionOS",
                      "windows":  "Windows",
                      "windows10":  "Windows 10 und höher",
                      "windows10CM":  "Windows 10 und höher (ConfigMgr)",

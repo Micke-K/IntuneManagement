@@ -378,7 +378,7 @@ function Invoke-InitializeModule
         DetailExtension = { Add-ScriptExtensions @args }
         ExportExtension = { Add-ScriptExportExtensions @args }
         PostExportCommand = { Start-PostExportScripts @args }
-        Permissons=@("DeviceManagementManagedDevices.ReadWrite.All")
+        Permissons=@("DeviceManagementManagedDevices.ReadWrite.All") # !!! DeviceManagementScripts.ReadWrite.All
         AssignmentsType = "deviceManagementScriptAssignments"
         Icon="Scripts"
         GroupId = "Scripts"
@@ -634,8 +634,13 @@ function Invoke-InitializeModule
     
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "BIOS Configurations"
-        Id = "hardwareConfigurations"
+        Id = "HardwareConfigurations"
         ViewID = "IntuneGraphAPI"
+        DetailExtension = { Add-PolicyFileExtensions @args }
+        ExportExtension = { Add-PolicyFileExportExtensions @args }
+        PostExportCommand = { Start-PostExportPolicyFile @args }
+        PropertiesToRemoveForUpdate = @('version')
+        PolicyFileAttribute = "configurationFileContent"
         API = "/deviceManagement/hardwareConfigurations"
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
         Icon="DeviceConfiguration"
@@ -1775,6 +1780,194 @@ function Invoke-EditScript
                 {
                     Write-Log "Failed to update script" 3
                     [System.Windows.MessageBox]::Show("Failed to save the script object. See log for more information","Update failed!", "OK", "Error")
+                }
+                Write-Status ""
+            }
+        }
+        
+        $global:grdModal.Children.Clear()
+        if($script:currentModal)
+        {
+            $global:grdModal.Children.Add($script:currentModal)
+        }
+        [System.Windows.Forms.Application]::DoEvents()
+    })    
+    
+    Add-XamlEvent $script:editForm "btnCancelScriptEdit" "add_click" ({
+        $global:grdModal.Children.Clear()
+        if($script:currentModal)
+        {
+            $global:grdModal.Children.Add($script:currentModal)
+        }
+        [System.Windows.Forms.Application]::DoEvents()
+    })
+    
+    $global:grdModal.Children.Clear()
+    $script:editForm.SetValue([System.Windows.Controls.Grid]::RowProperty,1)
+    $script:editForm.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
+    $global:grdModal.Children.Add($script:editForm) | Out-Null
+    [System.Windows.Forms.Application]::DoEvents()
+}
+
+#endregion
+
+#region Policy File functions
+function Add-PolicyFileExtensions
+{
+    param($form, $buttonPanel, $index = 0)
+
+    $btnDownload = New-Object System.Windows.Controls.Button    
+    $btnDownload.Content = 'Download'
+    $btnDownload.Name = 'btnDownload'
+    $btnDownload.Margin = "0,0,5,0"  
+    $btnDownload.Width = "100"
+    
+    $btnDownload.Add_Click({
+        Invoke-DownloadPolicyFile
+    })
+
+    $tmp = $form.FindName($buttonPanel)
+    if($tmp) 
+    { 
+        $tmp.Children.Insert($index, $btnDownload)
+    }
+
+    $btnDownload = New-Object System.Windows.Controls.Button    
+    $btnDownload.Content = 'Edit'
+    $btnDownload.Name = 'btnEdit'
+    $btnDownload.Margin = "0,0,5,0"  
+    $btnDownload.Width = "100"
+    
+    $btnDownload.Add_Click({
+        Invoke-EditPolicyFile
+    })
+
+    $tmp = $form.FindName($buttonPanel)
+    if($tmp) 
+    { 
+        $tmp.Children.Insert($index, $btnDownload)
+    }    
+}
+
+function Add-PolicyFileExportExtensions
+{
+    param($form, $buttonPanel, $index = 0)
+
+    $ctrl = $form.FindName("chkExportPolicyFile")
+    if(-not $ctrl)
+    {
+        $xaml =  @"
+<StackPanel $($global:wpfNS) Orientation="Horizontal" Margin="0,0,5,0">
+<Label Content="Export Policy File" />
+<Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Export the file associated with policies eg BIOS Configuration" />
+</StackPanel>
+"@
+        $label = [Windows.Markup.XamlReader]::Parse($xaml)
+
+        $global:chkExportPolicyFile = [System.Windows.Controls.CheckBox]::new()
+        $global:chkExportPolicyFile.IsChecked = $true
+        $global:chkExportPolicyFile.VerticalAlignment = "Center" 
+        $global:chkExportPolicyFile.Name = "chkExportPolicyFile" 
+
+        @($label, $global:chkExportPolicyFile)
+    }
+}
+
+function Start-PostExportPolicyFile
+{
+    param($obj, $objectType, $exportPath)
+
+    if($objectType.PolicyFileAttribute -and $obj.$($objectType.PolicyFileAttribute) -and $global:chkExportPolicyFile.IsChecked)
+    {
+        Write-Log "Export policy file from attribute $($obj.PolicyFileAttribute)"
+        $fileNameOut = ?? $obj.FileName "$($obj.PolicyFileAttribute).json"
+        $fileName = [IO.Path]::Combine($exportPath, $fileNameOut)
+        [IO.File]::WriteAllBytes($fileName, ([System.Convert]::FromBase64String($obj.$($objectType.PolicyFileAttribute))))
+    }
+}
+
+function Invoke-DownloadPolicyFile
+{
+    if(-not $global:dgObjects.SelectedItem.Object.id) { return }
+
+    $obj = (Get-GraphObject $global:dgObjects.SelectedItem $global:curObjectType).Object
+    Write-Status ""
+
+    if($global:curObjectType.PolicyFileAttribute -and $obj.$($global:curObjectType.PolicyFileAttribute))
+    {   
+        $fileNameOut = ?? $obj.FileName "$($obj.PolicyFileAttribute).json"         
+        Write-Log "Download policy file '$($fileNameOut)' from $($obj.displayName)"
+        
+        $dlgSave = New-Object -Typename System.Windows.Forms.SaveFileDialog
+        $dlgSave.InitialDirectory = Get-SettingValue "IntuneRootFolder" $env:Temp
+        $dlgSave.FileName = $fileNameOut    
+        if($dlgSave.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK -and $dlgSave.Filename)
+        {
+            # Changed to WriteAllBytes to get rid of BOM characters from Custom Attribute file 
+            [IO.File]::WriteAllBytes($dlgSave.FileName, ([System.Convert]::FromBase64String($obj.$($global:curObjectType.PolicyFileAttribute))))
+        }
+    }    
+}
+
+function Invoke-EditPolicyFile
+{
+    if(-not $global:dgObjects.SelectedItem.Object.id) { return }
+
+    $obj = (Get-GraphObject $global:dgObjects.SelectedItem $global:curObjectType)
+    Write-Status ""
+    if(-not $global:curObjectType.PolicyFileAttribute -or -not $obj.Object.$($global:curObjectType.PolicyFileAttribute)) { return }
+    $script:currentScriptObject = $obj
+
+    $script:editForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\EditScriptDialog.xaml")
+    
+    if(-not $script:editForm) { return }
+
+    Set-XamlProperty $script:editForm "txtEditScriptTitle" "Text" "Edit: $($obj.Object.displayName)"
+    
+    $scriptText = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.Object.$($global:curObjectType.PolicyFileAttribute)))
+    Set-XamlProperty $script:editForm "txtScriptText" "Text" $scriptText
+
+    $script:currentModal = $null
+    if($global:grdModal.Children.Count -gt 0)
+    {
+        $script:currentModal = $global:grdModal.Children[0]
+    }
+
+    Add-XamlEvent $script:editForm "btnSaveScriptEdit" "add_click" ({
+        $scriptText = Get-XamlProperty $script:editForm "txtScriptText" "Text"
+        $pre = [System.Text.Encoding]::UTF8.GetPreamble()
+        $utfBOM = [System.Text.Encoding]::UTF8.GetString($pre)
+        if($scriptText.startsWith($utfBOM))
+        {
+            # Remove UTF8 BOM bytes
+            $scriptText = $scriptText.Remove(0, $utfBOM.Length)
+        }
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes($scriptText)
+        $encodedText = [Convert]::ToBase64String($bytes)
+
+        if($script:currentScriptObject.Object.scriptContent -ne $encodedText)
+        {
+            # Save script
+            if(([System.Windows.MessageBox]::Show("Are you sure you want to update the $($global:curObjectType.PolicyFileAttribute) attribute?`n`nObject:`n$($script:currentScriptObject.displayName)", "Update script?", "YesNo", "Warning")) -eq "Yes")
+            {
+                Write-Status "Update $($script:currentScriptObject.displayName)"
+                $obj =  $script:currentScriptObject.Object | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+                $obj.$($global:curObjectType.PolicyFileAttribute) = $encodedText
+                Start-GraphPreImport $obj $script:currentScriptObject.ObjectType
+                foreach($prop in $script:currentScriptObject.ObjectType.PropertiesToRemoveForUpdate)
+                {
+                    Remove-Property $obj $prop
+                }                
+                Remove-Property $obj "Assignments"
+                Remove-Property $obj "isAssigned"
+
+                $json = ConvertTo-Json $obj -Depth 15
+
+                $objectUpdated = (Invoke-GraphRequest -Url "$($script:currentScriptObject.ObjectType.API)/$($script:currentScriptObject.Object.Id)" -Content $json -HttpMethod "PATCH")
+                if(-not $objectUpdated)
+                {
+                    Write-Log "Failed to update script" 3
+                    [System.Windows.MessageBox]::Show("Failed to save the policy. See log for more information","Update failed!", "OK", "Error")
                 }
                 Write-Status ""
             }

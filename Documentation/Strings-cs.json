@@ -70,8 +70,10 @@
                                                            },
                                            "appPackageFile":  "Soubor, který obsahuje vaši aplikaci ve formátu, jenž se dá na zařízení zkušebně načíst. Mezi platné typy balíčků patří: Android (.apk), iOS (.ipa), macOS (.pkg), Windows (.msi, .appx, .appxbundle, .msix a .msixbundle).​",
                                            "applicableDeviceType":  "Vyberte typy zařízení, které můžou tuto aplikaci nainstalovat.",
-                                           "category":  "Kategorizujte aplikaci, abyste uživatelům usnadnili zatřídit ji a najít v aplikaci Portál společnosti. Pro aplikaci můžete zvolit několik kategorií.",
+                                           "category":  "Pokud chcete uživatelům usnadnit hledání aplikace v aplikaci Portál společnosti, můžete zvolit jednu nebo více kategorií.",
+                                           "categoryLearnMore":  "Další informace o kategoriích aplikací",
                                            "categoryLink":  "https://go.microsoft.com/fwlink/?linkid=2295954",
+                                           "categoryWhenApprovalRequired":  "Pokud chcete uživatelům usnadnit hledání aplikace v aplikaci Portál společnosti, můžete zvolit jednu nebo více kategorií. I když se vytvoří žádost o změnu, změna kategorií aplikací nevyžaduje schválení. Taková změna se provede okamžitě.",
                                            "description":  "Pomozte uživatelům zařízení pochopit, co aplikace umí nebo co v ní můžou dělat. Tento popis se bude zobrazovat na Portálu společnosti.",
                                            "developer":  "Název společnosti nebo jméno vývojáře, který aplikaci vyvinul. Tyto informace budou viditelné pro uživatele přihlášené do centra pro správu.",
                                            "displayVersion":  "Verze aplikace. Tyto informace se budou uživatelům zobrazovat na Portálu společnosti.",
@@ -79,7 +81,6 @@
                                            "ignoreManifestScope":  "Pokud je tato možnost nakonfigurovaná na ano, webový klip na celou obrazovku může přejít na externí web bez zobrazení uživatelského rozhraní Safari. Jinak se při přechodu mimo adresu URL webového klipu zobrazí uživatelské rozhraní Safari. Tento klíč nemá žádný vliv, pokud má celá obrazovka hodnotu false.",
                                            "infoUrl":  "Odkažte uživatele na web nebo dokumentaci s dalšími informacemi o této aplikaci. Adresu URL informací uvidí uživatelé v aplikaci Portál společnosti.",
                                            "isFeatured":  "Vybrané aplikace jsou umístěny prominentně v aplikaci Portál společnosti, aby se k nim uživatelé mohli rychle dostat.",
-                                           "learnMore":  "Další informace",
                                            "logo":  "Nahrajte logo, které je přidružené k této aplikaci. Toto logo se bude zobrazovat vedle aplikace všude v aplikaci Portál společnosti.",
                                            "macOSDmgAppPackageFile":  "Soubor, který obsahuje vaši aplikaci ve formátu, který se dá na zařízení zkušebně načíst. Platný typ balíčku: .dmg.​",
                                            "macOSPkgAppPackageFile":  "Soubor, který obsahuje vaši aplikaci ve formátu, který se dá na zařízení zkušebně načíst. Platný typ balíčku: .pkg.​",
@@ -95,6 +96,7 @@
                                            "selectApp":  "Vyhledejte v App Storu aplikace pro iOS, které chcete nasadit s Intune.",
                                            "targetApplicationBundleIdentifier":  "Identifikátor sady aplikace, který určuje aplikaci, která otevře adresu URL. K dispozici v iOSu 14 a novějších.",
                                            "useManagedBrowser":  "Pokud je to požadováno, tato webová aplikace se uživateli otevře v prohlížeči chráněném s Intune, jako je Microsoft Edge nebo Intune Managed Browser. Toto nastavení platí pro zařízení s iOS i Androidem.",
+                                           "useManagedBrowserLearnMore":  "Další informace o spravovaných prohlížečích",
                                            "useManagedBrowserLink":  "https://go.microsoft.com/fwlink/?linkid=2299509",
                                            "win32AppPackageFile":  "Soubor, který obsahuje vaši aplikaci ve formátu, který se dá zkušebně načíst na zařízení. Platné typy balíčků: .intunewin.",
                                            "winGetStoreSelectApp":  "V aplikaci Microsoft Store (nová verze) vyhledejte aplikace, které chcete nasadit pomocí Intune."
@@ -224,6 +226,7 @@
                                                "v15":  "iOS 15.0",
                                                "v16":  "iOS 16.0",
                                                "v17":  "iOS 17.0",
+                                               "v18":  "iOS 18.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -250,6 +253,9 @@
                                                          },
                                                  "V14":  {
                                                              "0":  "MacOS Sonoma 14.0"
+                                                         },
+                                                 "V15":  {
+                                                             "0":  "macOS Sequoia 15.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -451,6 +457,7 @@
                    "calendar":  "Kalendář",
                    "categoryLabel":  "Kategorie",
                    "categoryNameLabel":  "Výchozí název",
+                   "categorySubLabelWhenApprovalRequired":  "Nepodporuje schválení více správců.",
                    "certProfileType":  "Typ profilu certifikátu",
                    "certificate":  "Certifikát",
                    "certificates":  "Certifikáty",
@@ -995,7 +1002,7 @@
                        "accountProtection":  "Ochrana účtu",
                        "administrativeTemplates":  "Šablony pro správu",
                        "androidCompliancePolicy":  "Zásady dodržování předpisů v Androidu",
-                       "androidForWorkMigrationPolicy":  "New Implementation",
+                       "androidForWorkMigrationPolicy":  "Přesunout do rozhraní AMAPI (Android Management API)",
                        "aospDeviceOwnerCompliancePolicy":  "Zásady dodržování předpisů v Androidu (AOSP)",
                        "applicationControl":  "Řízení aplikací pro firmy",
                        "attackSurfaceReductionRules":  "Pravidla pro omezení možností útoku",
@@ -1214,10 +1221,10 @@
                                                              "requirementType":  "Typ požadavku",
                                                              "requirementTypeTooltip":  "Zvolte typ metody zjišťování, pomocí které se určí, jak se požadavek bude ověřovat."
                                                          },
-                              "allowedArchitectures":  "Check operating system architecture",
-                              "allowedArchitecturesNoRadioButton":  "No. Allow this app to be installed on all systems.",
-                              "allowedArchitecturesTooltip":  "Select 'Yes' to specify the systems the app can be installed on. Select 'No' (default) to allow this app to be installed on all systems.",
-                              "allowedArchitecturesYesRadioButton":  "Yes. Specify the systems the app can be installed on.",
+                              "allowedArchitectures":  "Zkontrolovat architekturu operačního systému",
+                              "allowedArchitecturesNoRadioButton":  "Ne. Povolit instalaci této aplikace na všechny systémy.",
+                              "allowedArchitecturesTooltip":  "Pokud chcete specifikovat systémy, na které lze aplikaci nainstalovat, vyberte Ano. Pokud chcete povolit instalaci této aplikace na všechny systémy, vyberte Ne (výchozí).",
+                              "allowedArchitecturesYesRadioButton":  "Ano. Uveďte systémy, na které je možné aplikaci nainstalovat.",
                               "architectures":  "Architektura operačního systému",
                               "architecturesTooltip":  "Zvolte architektury potřebné k nainstalování aplikace",
                               "bladeTitle":  "Požadavky",
@@ -2221,6 +2228,10 @@
                                                              "label":  "Šifrovat data organizace na zaregistrovaných zařízeních",
                                                              "tooltip":  "Pokud chcete na všech zařízeních vynutit šifrování dat organizace pomocí šifrování na aplikační vrstvě Intune, vyberte {0}. <br/>\r\n\r\nPokud na zaregistrovaných zařízeních šifrování dat organizace pomocí šifrování na aplikační vrstvě Intune vynucovat nechcete, vyberte {1}."
                                                          },
+                        "GenmojiConfigurationState":  {
+                                                          "label":  "Genmoji",
+                                                          "tooltip":  "  Pokud bude tato možnost zablokována, genmoji budou při používání aplikace spravované zásadami zakázána. Další informace najdete <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">tady. </a>"
+                                                      },
                         "IOSBackup":  {
                                           "label":  "Zálohovat data organizace do iTunes a iCloudu",
                                           "tooltip":  "Pokud chcete zabránit tomu, aby se data organizace zálohovala do iTunes nebo iCloudu, vyberte {0}.  \r\nPokud chcete zálohování dat organizace do iTunes nebo iCloudu povolit, vyberte {1}.  \r\nNa osobní nebo nespravovaná data to nemá žádný vliv."
@@ -2314,6 +2325,10 @@
                                                                  "label":  "Zachytávání obrazovky a Asistent Google\r\n",
                                                                  "tooltip":  "Když se tato možnost blokuje, funkce skenování zachytáváním obrazovky a aplikací Asistent Google se při používání aplikace spravované zásadami zakáží. Tato funkce podporuje obvyklou aplikaci Asistent Google. Asistenti třetích stran, kteří používají rozhraní Assist API od Googlu, se nepodporují. Když vyberete Blokovat a aplikaci budete používat spolu s pracovním nebo školním účtem, obrázek náhledu přepínače aplikace bude rozmazaný."
                                                              },
+                        "ScreenCaptureConfigurationState":  {
+                                                                "label":  "Snímek obrazovky",
+                                                                "tooltip":  " Pokud bude tato možnost zablokována, zachytávání obrazovky bude při používání aplikace spravované zásadami zakázáno. Další informace najdete <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">tady. </a>"
+                                                            },
                         "SendData":  {
                                          "label":  "Posílat data organizace do jiných aplikací",
                                          "tooltip":  "Pokud chcete určit aplikace, kterým tato aplikace může posílat data organizace, vyberte jednu z následujících možností: <br/>\r\n\r\n\r\n<b>Žádné</b>: Nepovolí posílat data organizace do žádné aplikace. <br/>\r\n\r\n\r\n<b>Aplikace spravované zásadami</b>: Povolí posílat data organizace jen do jiných aplikací spravovaných zásadami. <br/>\r\n\r\n\r\n<b>Aplikace spravované zásadami se sdílením operačního systému</b>: Povolí posílat data organizace jen do jiných aplikací spravovaných zásadami a dokumenty organizace do jiných aplikací spravovaných pomocí MDM na zaregistrovaných zařízeních. <br/>\r\n\r\n<b>\r\nAplikace spravované zásadami s filtrováním sdílení a otevírání v určité aplikaci</b>: Povolí posílat data organizace jen do jiných aplikací spravovaných zásadami a filtruje dialogy operačního systému pro sdílení a otevírání v určité aplikaci tak, aby se zobrazovaly jen aplikace spravované zásadami.\r\n <br/>\r\n\r\n<b>Všechny aplikace</b>: Povolí posílat data organizace do jakékoli aplikace."
@@ -2348,6 +2363,10 @@
                                             "label":  "Odeslat data organizace do",
                                             "tooltip":  "Pokud chcete zadat cíle organizace, do kterých můžou uživatelé posílat data, vyberte jednu z následujících možností: <br/>\r\n\r\n<b>Všechny cíle</b>: Uživatelé organizace můžou odesílat data organizace do libovolného účtu, dokumentu, umístění nebo aplikace.<br/>\r\n\r\n<b>Žádné cíle</b>: Uživatelé organizace nemůžou posílat data organizace externím účtům, dokumentům, umístěním nebo aplikacím z kontextu organizace."
                                         },
+                        "WritingToolsConfigurationState":  {
+                                                               "label":  "Nástroje pro psaní",
+                                                               "tooltip":  "Pokud bude tato možnost zablokována, nástroje pro psaní budou při používání aplikace spravované zásadami zakázány. Další informace najdete <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">tady. </a>"
+                                                           },
                         "Tap":  {
                                     "numberOfDays":  "Počet dnů",
                                     "pinResetAfterNumberOfDays":  "Resetování PIN kódu po určitém počtu dní",
@@ -3934,9 +3953,106 @@
                           "other":  "Ostatní",
                           "webApplication":  "Webová aplikace"
                       },
+    "HardwareConfig":  {
+                           "Barchart":  {
+                                            "Device":  {
+                                                           "title":  "Stav zařízení"
+                                                       },
+                                            "ReportGrid":  {
+                                                               "Columns":  {
+                                                                               "deviceStatus":  "Stav zařízení",
+                                                                               "error":  "Chyba",
+                                                                               "failedCount":  "Počet neúspěšných zařízení",
+                                                                               "notApplicableCount":  "Počet nepoužitelných zařízení",
+                                                                               "pendingCount":  "Počet čekajících zařízení",
+                                                                               "successCount":  "Počet úspěšných zařízení",
+                                                                               "unknownCount":  "Počet neznámých zařízení"
+                                                                           },
+                                                               "Device":  {
+                                                                              "searchBoxPlaceholder":  "Hledat podle názvu zařízení a uživatelského jména"
+                                                                          },
+                                                               "Export":  {
+                                                                              "Device":  {
+                                                                                             "reportName":  "DeviceRunSummary",
+                                                                                             "title":  "Souhrn spuštění exportu konfigurace systému BIOS a další nastavení zařízení"
+                                                                                         },
+                                                                              "User":  {
+                                                                                           "reportName":  "UserRunSummary",
+                                                                                           "title":  "Souhrn spuštění exportu konfigurace systému BIOS a další nastavení uživatele"
+                                                                                       }
+                                                                          },
+                                                               "User":  {
+                                                                            "searchBoxPlaceholder":  "Hledat podle uživatelského jména"
+                                                                        }
+                                                           },
+                                            "User":  {
+                                                         "title":  "Stav uživatele"
+                                                     },
+                                            "failure":  "Selhání",
+                                            "notApplicable":  "Nepoužitelné",
+                                            "pending":  "Čekající",
+                                            "succeeded":  "Úspěšné",
+                                            "unknown":  "Neznámý",
+                                            "viewReportButtonText":  "Zobrazit sestavu"
+                                        },
+                           "DCList":  {
+                                          "name":  "Konfigurace systému BIOS a další nastavení"
+                                      },
+                           "Policy":  {
+                                          "Create":  {
+                                                         "createButtonText":  "Vytvořit",
+                                                         "reviewButtontext":  "Kontrola"
+                                                     },
+                                          "Edit":  {
+                                                       "title":  "Úprava konfigurace systému BIOS a další profil nastavení"
+                                                   },
+                                          "createProfile":  "Vytvoření konfigurace systému BIOS a dalšího profilu nastavení"
+                                      },
+                           "Settings":  {
+                                            "Tab":  {
+                                                        "Configurations":  {
+                                                                               "file":  "Konfigurační soubor",
+                                                                               "fileInfoBox":  "Typ konfiguračního souboru by měl být .cctk.",
+                                                                               "hardware":  "Hardware",
+                                                                               "infoBox":  "Než tady nastavíte konfigurace, ujistěte se, že na těchto zařízeních je aplikace win32, která instaluje agenta výrobce hardwaru.",
+                                                                               "learnMore":  "Další informace o konfiguracích systému BIOS a dalších nastaveních",
+                                                                               "perDevicePassword":  "Zakázat ochranu heslem systému BIOS pro zařízení"
+                                                                           },
+                                                        "DisablePassword":  {
+                                                                                "Options":  {
+                                                                                                "no":  "Ne",
+                                                                                                "yes":  "Ano"
+                                                                                            }
+                                                                            },
+                                                        "HardwareDropDown":  {
+                                                                                 "dell":  "Dell",
+                                                                                 "surface":  "Surface",
+                                                                                 "surfaceDock":  "Surface Dock"
+                                                                             }
+                                                    }
+                                        },
+                           "Summary":  {
+                                           "Buttons":  {
+                                                           "delete":  "Odstranit"
+                                                       },
+                                           "Tab":  {
+                                                       "monitor":  "Monitor",
+                                                       "properties":  "Vlastnosti"
+                                                   },
+                                           "subtitle":  "Konfigurace systému BIOS a další profil nastavení"
+                                       },
+                           "Wizard":  {
+                                          "Basics":  {
+                                                         "title":  "Základní informace"
+                                                     },
+                                          "Configurations":  {
+                                                                 "title":  "Konfigurace"
+                                                             }
+                                      }
+                       },
     "Filters":  {
                     "ruleSyntax":  "Syntaxe pravidel",
-                    "filters":  "Filtry"
+                    "filters":  "Filtry přiřazení"
                 },
     "CustomCompliance":  {
                              "FilePicker":  {
@@ -4708,12 +4824,12 @@
                               "successfullySavedPolicy":  "Uložené: {0}"
                           },
     "ArchitectureOptions":  {
-                                "arm64InstructionSet":  "Install on ARM64 system",
-                                "checkBox":  "Please select at least one architecture setting",
+                                "arm64InstructionSet":  "Instalovat na systém ARM64",
+                                "checkBox":  "Vyberte prosím aspoň jedno nastavení architektury.",
                                 "sixtyFourBit":  "64 bitů",
-                                "sixtyFourBitInstructionSet":  "Install on x64 system",
+                                "sixtyFourBitInstructionSet":  "Instalovat na systém x64",
                                 "thirtyTwoBit":  "32 bitů",
-                                "thirtyTwoBitInstructionSet":  "Install on x86 system"
+                                "thirtyTwoBitInstructionSet":  "Instalovat na systém x86"
                             },
     "Countries":  {
                       "ae":  "Spojené arabské emiráty",
@@ -5007,7 +5123,7 @@
                            "allowActivationLockWhenSupervisedDescription":  "Zámek aktivace ztíží reaktivaci ztraceného nebo ukradeného zařízení.",
                            "allowActivationLockWhenSupervisedName":  "Povolit zámek aktivace",
                            "allowAllAccounts":  "Povolit všechny typy účtů",
-                           "allowAllAccountsExceptGoogle":  "Povolit všechny typy účtů kromě účtů Google (výchozí)",
+                           "allowAllAccountsExceptGoogle":  "Povolit všechny typy účtů, kromě účtů Google (výchozí)",
                            "allowAllCaptiveNetworkPluginsName":  "Povolit předávání provozu z nenativních přihlašovacích síťových aplikací mimo síť VPN",
                            "allowAllTrustedAppsSideloading":  "Instalace důvěryhodné aplikace",
                            "allowAllTrustedAppsSideloadingDescription":  "Určuje, jestli je možné instalovat bokem aplikace z balíčků Appx podepsané důvěryhodným certifikátem.",
@@ -5072,6 +5188,8 @@
                            "androidEnterpriseAlwaysOnVpnLinkDescription":  "Další informace o konfiguraci trvalého připojení VPN pro Android Enterprise",
                            "androidEnterpriseAlwaysOnVpnLinkName":  "Trvalé připojení VPN se dá nakonfigurovat v omezeních zařízení.",
                            "androidEnterpriseAlwaysOnVpnLockdownModeEnabledName":  "Režim uzamčení",
+                           "androidEnterpriseComplianceRequiredPasswordTypeDescription":  "Nastavte požadavky na složitost hesla. Podle výběru se budou zpřístupňovat další požadavky. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323793\">Další informace o požadavcích na hesla</a>",
+                           "androidEnterpriseConfigurationRequiredPasswordTypeDescription":  "Nastavte požadavky na složitost hesla. Podle výběru se budou zpřístupňovat další požadavky. <a href=\"https://go.microsoft.com/fwlink/?linkid=2297352\">Další informace o požadavcích na hesla</a>",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnEnabledDescription":  "Nastavte klienta VPN tak, aby se automaticky připojoval a opětovně navazoval spojení se sítí VPN vždy, kdy to bude možné. Pokud chcete pro všechny klienty VPN na zařízení zakázat trvalé připojení VPN, zvolte Zakázáno. Na jednom zařízení je možné pro trvalé připojení VPN nakonfigurovat jen jednoho klienta VPN, takže mějte na paměti, že na jednom zařízení byste neměli mít nasazené více než jedny zásady trvalého připojení VPN.",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnLockdownModeEnabledDescription":  "Když tuto možnost povolíte, všechen síťový provoz bude nuceně probíhat přes tunel VPN. Pokud se připojení k síti VPN nedá navázat, nepovolí se žádný síťový provoz.",
                            "androidEnterpriseDeviceSettingsBlockedDescription":  "V beznabídkovém režimu mají uživatelé ve výchozím nastavení přístup k aplikaci Nastavení.",
@@ -5095,9 +5213,9 @@
                            "androidEnterpriseWorkProfileAlwaysOnVpnClientDescription":  "Zadaný klient VPN musí být nainstalovaný na zařízení a v pracovních profilech musí podporovat VPN pro aplikaci. Jinak dojde k chybě. Poznámka: Abyste mohli aplikaci nainstalovat do pracovního profilu uživatele, bude nutné ji schválit ve spravovaném obchodě Google Play, synchronizovat ji s Intune a nasadit ji.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnEnabledDescription":  "Nastavte klienta VPN v pracovním profilu tak, aby se automaticky připojoval a opětovně navazoval spojení se sítí VPN vždy, kdy to bude možné. Pokud chcete pro všechny klienty VPN v pracovním profilu zakázat trvalé připojení VPN, zvolte Zakázáno. Na jednom zařízení je možné pro trvalé připojení VPN nakonfigurovat jen jednoho klienta VPN, takže mějte na paměti, že na jednom zařízení byste neměli mít nasazené více než jedny zásady trvalého připojení VPN.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnLockdownModeEnabledDescription":  "Když tuto možnost povolíte, všechen síťový provoz pro pracovní profil bude vynuceně probíhat přes tunel VPN. Pokud se připojení k síti VPN nedá navázat, v pracovním profilu zařízení se nepovolí žádný síťový provoz.",
-                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Create and assign this profile to move devices to a newer, more efficient policy implementation. Devices set up with web-based enrollment automatically use the newer implementation.​",
-                           "androidForWorkMigrationPolicyDescriptionParagraph2":  "Devices will move when they have sufficient battery and are not connected to Wi-Fi managed by Intune policy. ​​",
-                           "androidForWorkMigrationPolicyLearnMoreText":  "Learn more about this improvement. ​​",
+                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Vytvořte a přiřaďte tento profil k přesunu zařízení do rozhraní AMAPI (Android Management API), které zásady aplikují efektivněji. Zařízení nastavená s webovou registrací používají rozhraní AMAPI (Android Management API) automaticky.",
+                           "androidForWorkMigrationPolicyDescriptionParagraph2":  "Zařízení se přesunou, když mají dostatečně nabitou baterii a nejsou připojena k síti Wi-Fi spravované zásadami Intune.",
+                           "androidForWorkMigrationPolicyLearnMoreText":  "Přečtěte si další informace o tomto vylepšení.",
                            "androidGeneralKiosk":  "Tato nastavení se vztahují jen na zařízení Samsung se standardem KNOX.",
                            "androidHiddenApps":  "Aplikace, které jsou před uživatelem skryty (pouze Samsung KNOX Standard)",
                            "androidHiddenAppsHeaderName":  "Zadejte aplikace, které budou na zařízení skryty. Uživatelé je nebudou moci objevit ani spouštět.",
@@ -5127,6 +5245,8 @@
                            "anyDayOption":  "Libovolný den",
                            "anyEthernet":  "Libovolná síť Ethernet",
                            "anywhereOption":  "Kdekoliv",
+                           "aospComplianceRequiredPasswordTypeDescription":  "Nastavte požadavky na složitost hesla. Podle výběru se budou zpřístupňovat další požadavky. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323729\">Další informace o požadavcích na hesla</a>",
+                           "aospConfigurationRequiredPasswordTypeDescription":  "Nastavte požadavky na složitost hesla. Podle výběru se budou zpřístupňovat další požadavky. <a href=\"https://go.microsoft.com/fwlink/?linkid=847987\">Další informace o požadavcích na hesla</a>",
                            "appBundleIdColumn":  "ID sady prostředků aplikace",
                            "appColumnExamples":  "Příklady: soubor.exe nebo %ProgramFiles%\\Cesta\\soubor.exe",
                            "appComplianceListName":  "Aplikace, které se mají povolit nebo omezit na zařízení",
@@ -6457,7 +6577,7 @@
                            "directGlobalProxyOption":  "Přímé",
                            "disableAllNotificationsOption":  "Vypnout všechna oznámení, včetně upozornění na restartování",
                            "disableBitLockerRecoveryPasswordRotationOption":  "Rotace klíčů je zakázaná",
-                           "disableDeviceLocationDescription":  "Blokování také brání správcům v vyhledání zařízení.",
+                           "disableDeviceLocationDescription":  "Blokování také brání správcům v vyhledání zařízení. U zařízení s pracovním profilem vlastněných společností se toto nastavení použije pouze na zařízení se systémem Android 10 nebo starším.",
                            "disableDeviceLocationName":  "Poloha",
                            "disableDeviceLocationSharingName":  "Sdílení polohy",
                            "disableMacAddressRandomization":  "Zakázat náhodné MAC adresy",
@@ -7538,7 +7658,7 @@
                            "kioskRecurrence":  "Opakování časového období údržby",
                            "kioskRecurrenceDescription":  "Umožňuje nastavit, jak častá budou časová období údržby pro aktualizace aplikací. Doporučuje se nastavit je každý den, aby se aplikace nerestartovala neplánovaně.",
                            "kioskScreenOrientationAutoRotate":  "Automatické otáčení",
-                           "kioskScreenOrientationDescription":  "Směr, ve kterém se Spravovaná domovská obrazovka na zařízení zobrazí.",
+                           "kioskScreenOrientationDescription":  "Směr, ve kterém se Spravovaná domovská obrazovka na zařízení zobrazí. Poznámka: V systému Android 16 a vyšších platforma nepodporuje nastavení orientace obrazovky pro zařízení s většími formáty, jako jsou tablety, s nejmenší šířkou 600 dp nebo větší.",
                            "kioskScreenOrientationLandscape":  "Orientace na šířku",
                            "kioskScreenOrientationName":  "Orientace obrazovky",
                            "kioskScreenOrientationNotConfigured":  "Není nakonfigurované",
@@ -8188,7 +8308,7 @@
                            "microsoftTunnelSiteNotExist":  "Web neexistuje. Vyberte nový web.",
                            "microsoftUpdatesDescription":  "Určete, jestli se mají vyhledávat aktualizace ze služby Microsoft Update.",
                            "microsoftUpdatesName":  "Aktualizace produktů Microsoftu",
-                           "migrationPolicyCannotBeUnassigned":  "Once you assign this policy, it can't be unassigned.",
+                           "migrationPolicyCannotBeUnassigned":  "Jakmile tuto zásadu přiřadíte, zařízení se začnou přesouvat do rozhraní AMAPI (Android Management API). Pokud zrušíte přiřazení nebo odstraníte tuto zásadu, zařízení, která se už přesunula, budou tuto novou metodu dál používat a cílová zařízení, která se ještě nepřesunula, se nepřesunou.",
                            "minimumNumberOfCharacterSetsDescription":  "Toto nastavení určuje minimální počet znakových sad, které musí heslo obsahovat. Jedná se o tyto čtyři znakové sady:\r\n<br>\r\nMalá písmena\r\n<br>\r\nVelká písmena\r\n<br>\r\nSymboly\r\n<br>\r\nČíslice",
                            "minimumNumberOfCharacterSetsName":  "Počet znakových sad, které musí heslo obsahovat",
                            "minimumPasswordLengthDescription":  "Minimální počet číslic nebo znaků v hesle",
@@ -11465,6 +11585,12 @@
                                                  "title":  "Cloud apps or actions"
                                              },
                     "CloudappsSelectionBlade":  {
+                                                    "AgenticResources":  {
+                                                                             "allAgenticResources":  "All agent resources (Preview)",
+                                                                             "allAgenticResourcesExcLower":  "all agent resources excluded",
+                                                                             "allAgenticResourcesExcluded":  "All agent resources excluded",
+                                                                             "allAgenticResourcesIncluded":  "All agent resources"
+                                                                         },
                                                     "AllInternetResources":  {
                                                                                  "excludedWithGSA":  "All internet resources with Global Secure Access excluded",
                                                                                  "excludedWithGSALower":  "all internet resources with Global Secure Access excluded",
@@ -11540,6 +11666,7 @@
                                                      "policySummaryMfaForAllUsers":  "This policy requires all users to perform multifactor authentication when accessing any resources. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryPhishingResistantMfa":  "Accounts that are assigned privileged administrative roles are frequent targets of attackers. Requiring phishing-resistant multifactor authentication (MFA) on those accounts is an easy way to reduce the risk of those accounts being compromised.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRiskViaGroup":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. We'll assign eligible users into a new security group named 'Conditional Access: Risky sign-in multifactor authentication (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e98)'. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "recActionsGlobal1":  "Review the policy and its benefits.",
@@ -11551,6 +11678,7 @@
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
+                                                     "recommendedActionsIntroShort":  "Before enabling this policy",
                                                      "securityDefaultsBasedAdminMfaMMPolicySummary":  "Require multifactor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as security defaults.",
                                                      "securityDefaultsBasedAllUserMfaMMPolicySummary":  "Require multifactor authentication for all user accounts to reduce risk of compromise.",
                                                      "securityDefaultsBasedAzureManagementMMPolicySummary":  "Require multifactor authentication to protect privileged access to Azure management.",
@@ -11728,7 +11856,7 @@
                                                                                   "description":  "Configure service principal risk levels needed for policy to be enforced",
                                                                                   "infoBalloonContent":  "Configure service principal risk to apply the policy to selected risk level(s)",
                                                                                   "title":  "Service principal risk",
-                                                                                  "titlePreview":  "Service principal risk (Preview)"
+                                                                                  "titlePreview":  "Service principal risk"
                                                                               }
                                                  }
                                },
@@ -11745,7 +11873,8 @@
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
                                                                                                         "label":  "Authentication flows",
-                                                                                                        "multiple":  "\"{0}\" and \"{1}\""
+                                                                                                        "multiple":  "\"{0}\" and \"{1}\"",
+                                                                                                        "protocolFlows":  "Protocol and flows"
                                                                                                     },
                                                                                        "singular":  "Authentication flow"
                                                                                    },
@@ -11966,6 +12095,10 @@
                                                                     "description":  "Select the resources to exempt from the policy"
                                                                 }
                                                 },
+                    "RiskRemediationValidation":  {
+                                                      "mustSelect":  "To enable Require Risk Remediation, you must select {0}.",
+                                                      "xOrY":  "{0} or {1}"
+                                                  },
                     "SSM":  {
                                 "MemberSelector":  {
                                                        "description":  "Users and groups"
@@ -12082,7 +12215,7 @@
                                                               "checkboxLabel":  "Require token protection for app sessions (Preview)"
                                                           },
                                             "SecureSignIn":  {
-                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Preview)",
+                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Generally available for Windows. Preview for MacOS, iOS)",
                                                                  "error":  "Policies enforcing Token Protection for Sign In Sessions must be scoped to supported platforms. {0}Learn more about token protection.{1}",
                                                                  "infoBallonText":  "A secure sign-in session requires all long-lived tokens (the Microsoft Entra session cookie and refresh token) to be bound to the device using software key binding or hardware security module binding where available.",
                                                                  "warningInfoBoxText":  "The control \"Require token protection for sign-in sessions\" only works with supported devices and applications. Unsupported devices and client applications will be blocked."
@@ -12269,7 +12402,9 @@
                                                           "requireApprovedClientAppEnabled":  "You should no longer use \"Require approved client app\", as we will soon stop updating it.",
                                                           "requireAuthOrMfa":  "\"{0}\" cannot be used with \"{1}\".",
                                                           "requireMfa":  "Consider testing the new \"{0}\".",
-                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\"."
+                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\".",
+                                                          "requirePasswordChangeEnabledResource":  "\"Require password change\" can only be used when policy is assigned to \"All resources\".",
+                                                          "requireRiskRemediation":  "\"{0}\" can only be used when policy is assigned to \"{1}.\" This option requires multifactor authentication or authentication strengths controls. Other controls cannot be used. This option also requires the Session control \"Sign-in Frequency\" to be set to \"Every time.\""
                                                       },
                                          "Policies":  {
                                                           "Linux":  {
@@ -12613,6 +12748,8 @@
                     "daysOfWeekTypeLabel":  "Days of the week",
                     "deletePolicyNoLicenseText":  "You can delete this policy now. Once deleted you will not be able to recreate it until you have the required licenses.",
                     "descriptionContentForControlsAndOr":  "For multiple controls",
+                    "deviceFilterInformationalLearnMore":  "Learn more",
+                    "deviceFilterInformationalResponse":  "Microsoft recommends using at least one system-defined or admin-configured device attribute when creating filter rules.",
                     "devicePlatform":  "Device platform",
                     "devicePlatformInclude":  "{0} included",
                     "devicePlatformIncludeExclude":  "{0} and {1} excluded",
@@ -12806,13 +12943,9 @@
                     "policyConditionNetwork":  "Network",
                     "policyConditionNetworkLocationDescription":  "Network and locations (determined by IP address range or GPS coordinates) the user is signing in from",
                     "policyConditionSigninRisk":  "Sign-in risk",
-                    "policyConditionSigninRiskCiamDescription":  "Sign-in risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionSigninRiskDescription":  "Likelihood that the sign-in is coming from someone other than the user. Risk level can be high, medium or low. Requires Microsoft Entra ID P2 license.",
-                    "policyConditionSigninRiskPreview":  "Sign-in risk (preview)",
                     "policyConditionUserRisk":  "User risk",
-                    "policyConditionUserRiskCiamDescription":  "User risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionUserRiskDescription":  "Configure user risk levels needed for policy to be enforced",
-                    "policyConditionUserRiskPreview":  "User risk (preview)",
                     "policyConditioniClientApp":  "Client apps",
                     "policyControlAllowAccessDisplayedName":  "Grant access",
                     "policyControlAuthenticationStrengthDisplayedName":  "Require authentication strength",
@@ -12826,8 +12959,10 @@
                     "policyControlRequireCompliantAppDisplayedName":  "Require app protection policy",
                     "policyControlRequireDomainJoinedDisplayedName":  "Require Microsoft Entra hybrid joined device",
                     "policyControlRequireMamDisplayedName":  "Require approved client app",
+                    "policyControlRequireRiskRemediationDisplayedName":  "Require risk remediation",
                     "policyControlRequiredPasswordChangeDisplayedName":  "Require password change",
                     "policyControlSelectAuthStrength":  "Require authentication strength",
+                    "policyControlSelectRiskRemediation":  "Require risk remediation",
                     "policyControlsNoControlsSelected":  "0 controls selected",
                     "policyControlsSection":  "Access controls",
                     "policyCreatBladeTitle":  "New",
@@ -12886,6 +13021,7 @@
                     "privateLinkLabel":  "Microsoft Entra Private Link",
                     "reportOnlyInfoBox":  "Report-only mode: Policies are evaluated and logged at sign-in but do not impact users.",
                     "requireAllControlsText":  "Require all the selected controls",
+                    "requireAuthStrength":  "Require authentication strength",
                     "requireCompliantDevice":  "Require compliant device",
                     "requireDomainJoined":  "Require domain-joined device",
                     "requireGrantReauth":  "The \"sign-in frequency every time\" session control requires a \"require multifactor authentication\" or \"require password change\" grant control when \"All cloud apps\" is selected",
@@ -12971,10 +13107,12 @@
                     "trustedLocationStatusIconEnabled":  "Trusted status icon",
                     "tuesday":  "Tuesday",
                     "uploadInBadState":  "Unable to upload the specified file.",
+                    "userAgentOrSPSelectionBladeTitle":  "Users, agent identities or workload identities",
                     "userAppNoneOption":  "None",
                     "userNamePlaceholderText":  "Enter User Name",
                     "userNotSetSeletorLabel":  "0 users and groups selected",
                     "userOnlySelectionBladeExcludeDescription":  "Select the users to exempt from the policy",
+                    "userOrAgentSelectionBladeTitle":  "Users or agent identities",
                     "userOrGroupSelectionCountDiffBannerText":  "{0} configured in this policy have been deleted from the directory, but this doesn't affect the other users and groups in the policy. The next time you update the policy, the deleted users and/or groups will be automatically removed.",
                     "userOrSPNotSetSelectorLabel":  "0 users or workload identities selected",
                     "userOrSPSelectionBladeTitle":  "Users or workload identities",
@@ -13110,8 +13248,10 @@
                      "iosCommaAndroidPlatformLabel":  "iOS, Android",
                      "linux":  "Linux",
                      "macOS":  "macOS",
+                     "tvOS":  "tvOS",
                      "unknown":  "Neznámé",
                      "unsupported":  "Nepodporováno",
+                     "visionOS":  "visionOS",
                      "windows":  "Windows",
                      "windows10":  "Windows 10 a novější",
                      "windows10CM":  "Windows 10 a novější (ConfigMgr)",

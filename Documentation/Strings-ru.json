@@ -70,8 +70,10 @@
                                                            },
                                            "appPackageFile":  "Файл, содержащий ваше приложение в формате, который можно загрузить без публикации на устройство. Допустимые типы пакетов: Android (APK), iOS (IPA), macOS (PKG), Windows (MSI, APPX, APPXBUNDLE, MSIX и MSIXBUNDLE).​",
                                            "applicableDeviceType":  "Выберите типы устройств, на которых можно установить это приложение.​",
-                                           "category":  "Категоризация приложения позволит пользователям легче отсортировать и найти его в Корпоративном портале. Вы можете выбрать множество категорий.",
+                                           "category":  "Вы можете выбрать одну или несколько категорий, чтобы пользователям было проще найти приложение в Корпоративном портале.",
+                                           "categoryLearnMore":  "Подробнее о категориях приложений",
                                            "categoryLink":  "https://go.microsoft.com/fwlink/?linkid=2295954",
+                                           "categoryWhenApprovalRequired":  "Вы можете выбрать одну или несколько категорий, чтобы пользователям было проще найти приложение в Корпоративном портале. Хотя запрос на изменение создан, изменение категорий приложений не требует утверждения. Такое изменение происходит немедленно.",
                                            "description":  "Помогите пользователям устройств понять назначение приложения. Они увидят это описание на корпоративном портале.",
                                            "developer":  "Имя компании или лица, разработавших приложение. Эти сведения будут отображаться пользователям, вошедшим в центр администрирования.",
                                            "displayVersion":  "Версия приложения. Пользователи увидят эти сведения на корпоративном портале.",
@@ -79,7 +81,6 @@
                                            "ignoreManifestScope":  "Если настроено значение \"Да\", полноэкранный веб-клип может перейти на внешний веб-сайт без отображения пользовательского интерфейса Safari. В противном случае пользовательский интерфейс Safari отображается при переходе с URL-адреса веб-клипа. Этот ключ не действует, если для полноэкранного режима установлено значение false.",
                                            "infoUrl":  "Предоставьте пользователям ссылку на веб-сайт или документацию с дополнительными сведениями о приложении. Пользователи увидят этот URL-адрес в Корпоративном портале.",
                                            "isFeatured":  "Приложения из подборки размещаются на видном месте в Корпоративном портале, чтобы пользователи могли быстро получать к ним доступ.",
-                                           "learnMore":  "Дополнительные сведения",
                                            "logo":  "Отправьте логотип, связанный с приложением. Он будет отображаться рядом с приложением в Корпоративном портале.​",
                                            "macOSDmgAppPackageFile":  "Файл, содержащий приложение в формате, который можно загрузить неопубликованным на устройстве. Допустимый тип пакета: DMG.​",
                                            "macOSPkgAppPackageFile":  "Файл, содержащий приложение в формате для загрузки неопубликованных приложений на устройство. Допустимый тип пакета: .pkg.​",
@@ -95,6 +96,7 @@
                                            "selectApp":  "Найдите в App Store приложения iOS, которые хотите развернуть в Intune.",
                                            "targetApplicationBundleIdentifier":  "Идентификатор набора приложений, указывающий приложение, которое открывает URL-адрес. Доступно в iOS 14 и более поздних версиях.",
                                            "useManagedBrowser":  "При необходимости открываемое пользователем веб-приложение будет открываться в браузере, защищенном Intune, например в Microsoft Edge или Intune Managed Browser. Этот параметр применяется к устройствам с iOS и Android.",
+                                           "useManagedBrowserLearnMore":  "Подробнее об управляемых браузерах",
                                            "useManagedBrowserLink":  "https://go.microsoft.com/fwlink/?linkid=2299509",
                                            "win32AppPackageFile":  "Файл, содержащий приложение в формате для загрузки неопубликованных приложений на устройство. Допустимый тип пакета: .intunewin.​",
                                            "winGetStoreSelectApp":  "Найдите в приложении Microsoft Store (новое) приложения, которые необходимо развернуть с помощью Intune."
@@ -224,6 +226,7 @@
                                                "v15":  "iOS 15.0",
                                                "v16":  "iOS 16.0",
                                                "v17":  "iOS 17.0",
+                                               "v18":  "iOS 18.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -250,6 +253,9 @@
                                                          },
                                                  "V14":  {
                                                              "0":  "macOS Sonoma 14.0"
+                                                         },
+                                                 "V15":  {
+                                                             "0":  "macOS Sequoia 15.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -451,6 +457,7 @@
                    "calendar":  "Календарь",
                    "categoryLabel":  "Категория",
                    "categoryNameLabel":  "Имя по умолчанию",
+                   "categorySubLabelWhenApprovalRequired":  "Не поддерживает утверждение несколькими администраторами",
                    "certProfileType":  "Тип профиля сертификата",
                    "certificate":  "Сертификат",
                    "certificates":  "Сертификаты",
@@ -995,7 +1002,7 @@
                        "accountProtection":  "Защита учетной записи",
                        "administrativeTemplates":  "Административные шаблоны",
                        "androidCompliancePolicy":  "Политика соответствия для Android",
-                       "androidForWorkMigrationPolicy":  "Новая реализация",
+                       "androidForWorkMigrationPolicy":  "Перейти к API управления Android",
                        "aospDeviceOwnerCompliancePolicy":  "Политика соответствия для Android (AOSP)",
                        "applicationControl":  "Управление приложениями для бизнеса",
                        "attackSurfaceReductionRules":  "Правила уменьшения уязвимой зоны",
@@ -1214,10 +1221,10 @@
                                                              "requirementType":  "Тип требования",
                                                              "requirementTypeTooltip":  "Выберите тип метода обнаружения, используемого для определения того, как будет проверяться требование."
                                                          },
-                              "allowedArchitectures":  "Check operating system architecture",
-                              "allowedArchitecturesNoRadioButton":  "No. Allow this app to be installed on all systems.",
-                              "allowedArchitecturesTooltip":  "Select 'Yes' to specify the systems the app can be installed on. Select 'No' (default) to allow this app to be installed on all systems.",
-                              "allowedArchitecturesYesRadioButton":  "Yes. Specify the systems the app can be installed on.",
+                              "allowedArchitectures":  "Проверить архитектуру операционной системы",
+                              "allowedArchitecturesNoRadioButton":  "Нет. Разрешить установку этого приложения во всех системах.",
+                              "allowedArchitecturesTooltip":  "Выберите «Да», чтобы указать системы, в которых можно установить приложение. Выберите «Нет» (по умолчанию), чтобы разрешить установку этого приложения во всех системах.",
+                              "allowedArchitecturesYesRadioButton":  "Да. Укажите системы, в которых можно установить приложение.",
                               "architectures":  "Архитектура операционной системы",
                               "architecturesTooltip":  "Выберите архитектуры, необходимые для установки приложения.",
                               "bladeTitle":  "Требования",
@@ -2221,6 +2228,10 @@
                                                              "label":  "Шифрование корпоративных данных на зарегистрированных устройствах",
                                                              "tooltip":  "Выберите {0}, чтобы принудительно использовать шифрование уровня приложений Intune для корпоративных данных на всех устройствах. <br/>\r\n\r\nВыберите {1}, чтобы не использовать шифрование уровня приложений Intune для корпоративных данных на всех устройствах."
                                                          },
+                        "GenmojiConfigurationState":  {
+                                                          "label":  "Генмодзи",
+                                                          "tooltip":  "  Если включена блокировка, генмодзи (пользовательские эмодзи) будут отключены при использовании приложений, находящихся под управлением политики. Подробнее см. <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">здесь. </a>"
+                                                      },
                         "IOSBackup":  {
                                           "label":  "Резервное копирование корпоративных данных в iTunes и iCloud",
                                           "tooltip":  "Выберите {0}, чтобы заблокировать резервное копирование корпоративных данных в iTunes или iCloud.  \r\nВыберите {1}, чтобы разрешить резервное копирование корпоративных данных в iTunes или iCloud.  \r\nЛичные и неуправляемые данные затронуты не будут."
@@ -2314,6 +2325,10 @@
                                                                  "label":  "Снимок экрана и Google Ассистент\r\n",
                                                                  "tooltip":  "Если этот параметр заблокирован, снимки экрана и возможности сканирования приложения Google Ассистент будут отключены при использовании приложения, управляемого политикой. Эта функция поддерживает обычное приложение Google Ассистента. Сторонние помощники, использующие API Google Ассистента, не поддерживаются. Выберите \\\"Заблокировать\\\", чтобы размыть изображение для предварительного просмотра переключателя приложений при использовании приложения с рабочей или учебной учетной записью."
                                                              },
+                        "ScreenCaptureConfigurationState":  {
+                                                                "label":  "Снимок экрана",
+                                                                "tooltip":  " Если блокировка включена, функция создания снимков экрана будет отключена при использовании приложений, находящихся под управлением политики. Подробнее см. <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">здесь. </a>"
+                                                            },
                         "SendData":  {
                                          "label":  "Отправка корпоративных данных другим приложениям",
                                          "tooltip":  "Выберите, в какие приложения это приложение сможет отправлять корпоративные данные. <br/>\r\n\r\n\r\n<b>Нет</b>: заблокировать отправку корпоративных данных в любые приложения. <br/>\r\n\r\n\r\n<b>Приложения, управляемые политикой</b>: разрешить отправку корпоративных данных только в другие управляемые политикой приложения. <br/>\r\n\r\n\r\n<b>Приложения, управляемые политикой, с общим доступом к ОС</b>: разрешить отправку корпоративных данных только в другие управляемые политикой приложения, а также отправку корпоративных документов в другие приложения, управляемые MDM на зарегистрированных устройствах. <br/>\r\n\r\n<b>\r\nПриложения, управляемые политикой, с фильтрацией в \"Открыть в\"/\"Поделиться\"</b>: разрешить отправку корпоративных данных только в другие управляемые политикой приложения и фильтровать в диалоговых окнах ОС \"Открыть в\"/\"Поделиться\" отображение только управляемых политикой приложений.\r\n <br/>\r\n\r\n<b>Все приложения</b>: разрешить отправку корпоративных данных в любые приложения."
@@ -2348,6 +2363,10 @@
                                             "label":  "Отправить данные организации в",
                                             "tooltip":  "Выберите один из следующих вариантов, чтобы указать пункты назначения, в которые пользователи организации могут отправлять данные: <br/>\r\n\r\n<b>Все пункты назначения</b>: пользователи организации могут отправлять данные организации в любую учетную запись, документ, расположение или приложение.<br/>\r\n\r\n<b>Нет пунктов назначения</b>: пользователи организации не могут отправлять данные организации внешним учетным записям, документам, расположениям или приложениям из контекста организации."
                                         },
+                        "WritingToolsConfigurationState":  {
+                                                               "label":  "Инструменты для написания",
+                                                               "tooltip":  "Если блокировка включена, инструменты для написания будут отключены при использовании приложений, находящихся под управлением политики. Подробнее см. <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">здесь. </a>"
+                                                           },
                         "Tap":  {
                                     "numberOfDays":  "Дней",
                                     "pinResetAfterNumberOfDays":  "Сброс ПИН-кода через указанное количество дней",
@@ -3934,9 +3953,106 @@
                           "other":  "Другие",
                           "webApplication":  "Веб-приложение"
                       },
+    "HardwareConfig":  {
+                           "Barchart":  {
+                                            "Device":  {
+                                                           "title":  "Состояние устройства"
+                                                       },
+                                            "ReportGrid":  {
+                                                               "Columns":  {
+                                                                               "deviceStatus":  "Состояние устройства",
+                                                                               "error":  "Ошибка",
+                                                                               "failedCount":  "Количество устройств в состоянии \"Ошибка\"",
+                                                                               "notApplicableCount":  "Количество устройств в состоянии \"Неприменимо\"",
+                                                                               "pendingCount":  "Количество устройств в состоянии \"Ожидание\"",
+                                                                               "successCount":  "Количество устройств в состоянии \"Выполнено\"",
+                                                                               "unknownCount":  "Количество устройств в состоянии \"Неизвестно\""
+                                                                           },
+                                                               "Device":  {
+                                                                              "searchBoxPlaceholder":  "Поиск по имени устройства и имени пользователя"
+                                                                          },
+                                                               "Export":  {
+                                                                              "Device":  {
+                                                                                             "reportName":  "DeviceRunSummary",
+                                                                                             "title":  "Экспорт конфигураций BIOS и других параметров, выполненных устройством в виде сводки"
+                                                                                         },
+                                                                              "User":  {
+                                                                                           "reportName":  "UserRunSummary",
+                                                                                           "title":  "Экспорт конфигураций BIOS и других параметров, выполненных пользователем, в виде сводки"
+                                                                                       }
+                                                                          },
+                                                               "User":  {
+                                                                            "searchBoxPlaceholder":  "Поиск по имени пользователя"
+                                                                        }
+                                                           },
+                                            "User":  {
+                                                         "title":  "Состояние пользователя"
+                                                     },
+                                            "failure":  "Сбой",
+                                            "notApplicable":  "Неприменимо",
+                                            "pending":  "Ожидание",
+                                            "succeeded":  "Успешно",
+                                            "unknown":  "Неизвестно",
+                                            "viewReportButtonText":  "Просмотреть отчет"
+                                        },
+                           "DCList":  {
+                                          "name":  "Конфигурации BIOS и другие параметры"
+                                      },
+                           "Policy":  {
+                                          "Create":  {
+                                                         "createButtonText":  "Создать",
+                                                         "reviewButtontext":  "Проверка"
+                                                     },
+                                          "Edit":  {
+                                                       "title":  "Изменение профиля конфигураций BIOS и других параметров"
+                                                   },
+                                          "createProfile":  "Создание профиля конфигураций BIOS и других параметров"
+                                      },
+                           "Settings":  {
+                                            "Tab":  {
+                                                        "Configurations":  {
+                                                                               "file":  "Файл конфигурации",
+                                                                               "fileInfoBox":  "Файл конфигурации должен быть типа \".CCTK\"",
+                                                                               "hardware":  "Оборудование",
+                                                                               "infoBox":  "Перед настройкой конфигураций убедитесь, установите на этих устройствах приложение win32, которое устанавливает агент изготовителя оборудования.",
+                                                                               "learnMore":  "Подробнее о конфигурациях BIOS и других параметрах",
+                                                                               "perDevicePassword":  "Отключить защиту паролем BIOS для устройства"
+                                                                           },
+                                                        "DisablePassword":  {
+                                                                                "Options":  {
+                                                                                                "no":  "Нет",
+                                                                                                "yes":  "Да"
+                                                                                            }
+                                                                            },
+                                                        "HardwareDropDown":  {
+                                                                                 "dell":  "Dell",
+                                                                                 "surface":  "Surface",
+                                                                                 "surfaceDock":  "Surface Dock"
+                                                                             }
+                                                    }
+                                        },
+                           "Summary":  {
+                                           "Buttons":  {
+                                                           "delete":  "Удалить"
+                                                       },
+                                           "Tab":  {
+                                                       "monitor":  "Мониторинг",
+                                                       "properties":  "Свойства"
+                                                   },
+                                           "subtitle":  "Профиль конфигураций BIOS и других параметров"
+                                       },
+                           "Wizard":  {
+                                          "Basics":  {
+                                                         "title":  "Основные сведения"
+                                                     },
+                                          "Configurations":  {
+                                                                 "title":  "Конфигурации"
+                                                             }
+                                      }
+                       },
     "Filters":  {
                     "ruleSyntax":  "Синтаксис правила",
-                    "filters":  "Фильтры"
+                    "filters":  "Фильтры назначений"
                 },
     "CustomCompliance":  {
                              "FilePicker":  {
@@ -4708,12 +4824,12 @@
                               "successfullySavedPolicy":  "Сохранено {0}"
                           },
     "ArchitectureOptions":  {
-                                "arm64InstructionSet":  "Install on ARM64 system",
-                                "checkBox":  "Please select at least one architecture setting",
+                                "arm64InstructionSet":  "Установить в системе ARM64",
+                                "checkBox":  "Выберите не менее одного параметра архитектуры",
                                 "sixtyFourBit":  "64-разрядный",
-                                "sixtyFourBitInstructionSet":  "Install on x64 system",
+                                "sixtyFourBitInstructionSet":  "Установить в системе x64",
                                 "thirtyTwoBit":  "32-разрядный",
-                                "thirtyTwoBitInstructionSet":  "Install on x86 system"
+                                "thirtyTwoBitInstructionSet":  "Установить в системе x86"
                             },
     "Countries":  {
                       "ae":  "ОАЭ",
@@ -5072,6 +5188,8 @@
                            "androidEnterpriseAlwaysOnVpnLinkDescription":  "Дополнительные сведения о настройке постоянного VPN-подключения для Android Enterprise.",
                            "androidEnterpriseAlwaysOnVpnLinkName":  "Постоянное VPN-подключение можно настроить в ограничениях устройства.",
                            "androidEnterpriseAlwaysOnVpnLockdownModeEnabledName":  "Режим блокировки",
+                           "androidEnterpriseComplianceRequiredPasswordTypeDescription":  "Задайте требования к сложности пароля. В зависимости от выбранных параметров будут доступны дополнительные требования к паролю. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323793\">Дополнительные требования к паролям.</a>",
+                           "androidEnterpriseConfigurationRequiredPasswordTypeDescription":  "Задайте требования к сложности пароля. В зависимости от выбранных параметров будут доступны дополнительные требования к паролю. <a href=\"https://go.microsoft.com/fwlink/?linkid=2297352\">Дополнительные требования к паролям.</a>",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnEnabledDescription":  "Задание VPN-клиента для автоматического соединения или восстановления связи с VPN при любой возможности. Выберите \"Отключено\", если хотите отключить постоянное подключение для всех VPN-клиентов на устройстве. На одном устройстве можно настроить только один VPN-клиент для постоянного подключения, так что и политика постоянного подключения для устройства должна быть только одна.",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnLockdownModeEnabledDescription":  "При включении весь сетевой трафик будет идти через туннель VPN. Если подключение к VPN невозможно, сетевой трафик будет блокироваться.",
                            "androidEnterpriseDeviceSettingsBlockedDescription":  "По умолчанию пользователи могут получить доступ к приложению \"Параметры\" в режиме киоска.",
@@ -5095,7 +5213,7 @@
                            "androidEnterpriseWorkProfileAlwaysOnVpnClientDescription":  "На устройстве должен быть установлен указанный VPN-клиент, поддерживающий VPN в рабочих профилях для каждого приложения, иначе произойдет ошибка. Обратите внимание, что приложение потребуется подтвердить в управляемом Google Play Маркете, синхронизировать его с Intune и развернуть, чтобы установить в рабочем профиле пользователя.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnEnabledDescription":  "Задание в рабочем профиле VPN-клиента для автоматического соединения или восстановления связи с VPN при любой возможности. Выберите \"Отключено\", если хотите отключить постоянное подключение для всех VPN-клиентов рабочего профиля. На одном устройстве можно настроить только один VPN-клиент для постоянного подключения, так что и политика постоянного подключения для устройства должна быть только одна.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnLockdownModeEnabledDescription":  "При включении этого параметра сетевой трафик для рабочего профиля перенаправляется через туннель VPN. Если подключение к VPN не удается установить, сетевой трафик будет запрещен в рабочем профиле устройства.",
-                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Создайте и назначьте этот профиль, чтобы переместить устройства в новую, более эффективную реализацию политики. Устройства, настроенные с помощью веб-регистрации, будут автоматически использовать новую реализацию.",
+                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Создайте и назначьте этот профиль для перемещения устройств в API управления Android, где применение политики более эффективно. Устройства, настроенные с помощью веб-регистрации, автоматически используют API управления Android.",
                            "androidForWorkMigrationPolicyDescriptionParagraph2":  "Устройства будут перемещены, когда у них будет достаточный уровень заряда батареи, и когда устройства не будут подключены к сети Wi-Fi, находящейся под управлением политики Intune.",
                            "androidForWorkMigrationPolicyLearnMoreText":  "Узнайте об этом улучшении.",
                            "androidGeneralKiosk":  "Эти параметры применяются только к устройствам Samsung KNOX Standard.",
@@ -5127,6 +5245,8 @@
                            "anyDayOption":  "Любой день",
                            "anyEthernet":  "Любое подключение Ethernet",
                            "anywhereOption":  "Везде",
+                           "aospComplianceRequiredPasswordTypeDescription":  "Задайте требования к сложности пароля. В зависимости от выбранных параметров будут доступны дополнительные требования к паролю. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323729\">Дополнительные требования к паролям.</a>",
+                           "aospConfigurationRequiredPasswordTypeDescription":  "Задайте требования к сложности пароля. В зависимости от выбранных параметров будут доступны дополнительные требования к паролю. <a href=\"https://go.microsoft.com/fwlink/?linkid=847987\">Дополнительные требования к паролям.</a>",
                            "appBundleIdColumn":  "Идентификатор пакета приложений",
                            "appColumnExamples":  "Примеры: Filename.exe или %ProgramFiles%\\Path\\Filename.exe",
                            "appComplianceListName":  "Разрешение или запрет приложений на устройстве",
@@ -6457,7 +6577,7 @@
                            "directGlobalProxyOption":  "Прямой",
                            "disableAllNotificationsOption":  "Отключить все уведомления, включая предупреждения о перезагрузке",
                            "disableBitLockerRecoveryPasswordRotationOption":  "Смена ключа отключена",
-                           "disableDeviceLocationDescription":  "Блокировка также не позволяет администраторам находить местоположение устройств.",
+                           "disableDeviceLocationDescription":  "Блокировка также не позволяет администраторам находить местоположение устройств. Для корпоративных устройств с рабочим профилем этот параметр будет применяться только к устройствам под управлением Android 10 или более ранней версии.",
                            "disableDeviceLocationName":  "Местонахождение",
                            "disableDeviceLocationSharingName":  "Показ местоположения",
                            "disableMacAddressRandomization":  "Отключить случайное назначение MAC-адреса",
@@ -7538,7 +7658,7 @@
                            "kioskRecurrence":  "Повторение периода обслуживания",
                            "kioskRecurrenceDescription":  "Задайте частоту периодов обслуживания для обновления приложений. Рекомендуется задать ежедневное повторение, чтобы не допустить незапланированных перезапусков.",
                            "kioskScreenOrientationAutoRotate":  "Автоповорот",
-                           "kioskScreenOrientationDescription":  "Ориентация \"Управляемый главный экран\" на устройстве.",
+                           "kioskScreenOrientationDescription":  "Ориентация \"Управляемый главный экран\" на устройстве. Примечание: в Android 16 и более поздних версиях платформа не поддерживает настройку ориентации экрана для устройств с большими форм-факторами, таких как планшеты, с минимальной шириной 600 dpi и больше.",
                            "kioskScreenOrientationLandscape":  "Альбомная ориентация",
                            "kioskScreenOrientationName":  "Ориентация экрана",
                            "kioskScreenOrientationNotConfigured":  "Не настроено",
@@ -8188,7 +8308,7 @@
                            "microsoftTunnelSiteNotExist":  "Этот сайт не существует. Выберите новый сайт.",
                            "microsoftUpdatesDescription":  "Управление проверкой на наличие обновлений в Центре обновления Майкрософт.",
                            "microsoftUpdatesName":  "Обновления продуктов Майкрософт",
-                           "migrationPolicyCannotBeUnassigned":  "После назначения этой политики ее невозможно отменить.",
+                           "migrationPolicyCannotBeUnassigned":  "Как только вы назначите эту политику, устройства начнут переходить на API управления Android. Если вы отмените назначение этой политики или удалите ее, уже перешедшие устройства продолжат использовать этот новый метод, а устройства, для которых переход был намечен, но не выполнен, не будут выполнять переход.",
                            "minimumNumberOfCharacterSetsDescription":  "Этот параметр указывает минимальное количество наборов символов, которые должен содержать пароль. Четыре набора символов:\r\n<br>\r\nстрочные буквы;\r\n<br>\r\nпрописные буквы;\r\n<br>\r\nсимволы;\r\n<br>\r\nцифры.",
                            "minimumNumberOfCharacterSetsName":  "Число наборов символов, которые должен содержать пароль",
                            "minimumPasswordLengthDescription":  "Минимальное число цифр и символов в пароле.",
@@ -11465,6 +11585,12 @@
                                                  "title":  "Cloud apps or actions"
                                              },
                     "CloudappsSelectionBlade":  {
+                                                    "AgenticResources":  {
+                                                                             "allAgenticResources":  "All agent resources (Preview)",
+                                                                             "allAgenticResourcesExcLower":  "all agent resources excluded",
+                                                                             "allAgenticResourcesExcluded":  "All agent resources excluded",
+                                                                             "allAgenticResourcesIncluded":  "All agent resources"
+                                                                         },
                                                     "AllInternetResources":  {
                                                                                  "excludedWithGSA":  "All internet resources with Global Secure Access excluded",
                                                                                  "excludedWithGSALower":  "all internet resources with Global Secure Access excluded",
@@ -11540,6 +11666,7 @@
                                                      "policySummaryMfaForAllUsers":  "This policy requires all users to perform multifactor authentication when accessing any resources. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryPhishingResistantMfa":  "Accounts that are assigned privileged administrative roles are frequent targets of attackers. Requiring phishing-resistant multifactor authentication (MFA) on those accounts is an easy way to reduce the risk of those accounts being compromised.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRiskViaGroup":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. We'll assign eligible users into a new security group named 'Conditional Access: Risky sign-in multifactor authentication (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e98)'. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "recActionsGlobal1":  "Review the policy and its benefits.",
@@ -11551,6 +11678,7 @@
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
+                                                     "recommendedActionsIntroShort":  "Before enabling this policy",
                                                      "securityDefaultsBasedAdminMfaMMPolicySummary":  "Require multifactor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as security defaults.",
                                                      "securityDefaultsBasedAllUserMfaMMPolicySummary":  "Require multifactor authentication for all user accounts to reduce risk of compromise.",
                                                      "securityDefaultsBasedAzureManagementMMPolicySummary":  "Require multifactor authentication to protect privileged access to Azure management.",
@@ -11728,7 +11856,7 @@
                                                                                   "description":  "Configure service principal risk levels needed for policy to be enforced",
                                                                                   "infoBalloonContent":  "Configure service principal risk to apply the policy to selected risk level(s)",
                                                                                   "title":  "Service principal risk",
-                                                                                  "titlePreview":  "Service principal risk (Preview)"
+                                                                                  "titlePreview":  "Service principal risk"
                                                                               }
                                                  }
                                },
@@ -11745,7 +11873,8 @@
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
                                                                                                         "label":  "Authentication flows",
-                                                                                                        "multiple":  "\"{0}\" and \"{1}\""
+                                                                                                        "multiple":  "\"{0}\" and \"{1}\"",
+                                                                                                        "protocolFlows":  "Protocol and flows"
                                                                                                     },
                                                                                        "singular":  "Authentication flow"
                                                                                    },
@@ -11966,6 +12095,10 @@
                                                                     "description":  "Select the resources to exempt from the policy"
                                                                 }
                                                 },
+                    "RiskRemediationValidation":  {
+                                                      "mustSelect":  "To enable Require Risk Remediation, you must select {0}.",
+                                                      "xOrY":  "{0} or {1}"
+                                                  },
                     "SSM":  {
                                 "MemberSelector":  {
                                                        "description":  "Users and groups"
@@ -12082,7 +12215,7 @@
                                                               "checkboxLabel":  "Require token protection for app sessions (Preview)"
                                                           },
                                             "SecureSignIn":  {
-                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Preview)",
+                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Generally available for Windows. Preview for MacOS, iOS)",
                                                                  "error":  "Policies enforcing Token Protection for Sign In Sessions must be scoped to supported platforms. {0}Learn more about token protection.{1}",
                                                                  "infoBallonText":  "A secure sign-in session requires all long-lived tokens (the Microsoft Entra session cookie and refresh token) to be bound to the device using software key binding or hardware security module binding where available.",
                                                                  "warningInfoBoxText":  "The control \"Require token protection for sign-in sessions\" only works with supported devices and applications. Unsupported devices and client applications will be blocked."
@@ -12269,7 +12402,9 @@
                                                           "requireApprovedClientAppEnabled":  "You should no longer use \"Require approved client app\", as we will soon stop updating it.",
                                                           "requireAuthOrMfa":  "\"{0}\" cannot be used with \"{1}\".",
                                                           "requireMfa":  "Consider testing the new \"{0}\".",
-                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\"."
+                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\".",
+                                                          "requirePasswordChangeEnabledResource":  "\"Require password change\" can only be used when policy is assigned to \"All resources\".",
+                                                          "requireRiskRemediation":  "\"{0}\" can only be used when policy is assigned to \"{1}.\" This option requires multifactor authentication or authentication strengths controls. Other controls cannot be used. This option also requires the Session control \"Sign-in Frequency\" to be set to \"Every time.\""
                                                       },
                                          "Policies":  {
                                                           "Linux":  {
@@ -12613,6 +12748,8 @@
                     "daysOfWeekTypeLabel":  "Days of the week",
                     "deletePolicyNoLicenseText":  "You can delete this policy now. Once deleted you will not be able to recreate it until you have the required licenses.",
                     "descriptionContentForControlsAndOr":  "For multiple controls",
+                    "deviceFilterInformationalLearnMore":  "Learn more",
+                    "deviceFilterInformationalResponse":  "Microsoft recommends using at least one system-defined or admin-configured device attribute when creating filter rules.",
                     "devicePlatform":  "Device platform",
                     "devicePlatformInclude":  "{0} included",
                     "devicePlatformIncludeExclude":  "{0} and {1} excluded",
@@ -12806,13 +12943,9 @@
                     "policyConditionNetwork":  "Network",
                     "policyConditionNetworkLocationDescription":  "Network and locations (determined by IP address range or GPS coordinates) the user is signing in from",
                     "policyConditionSigninRisk":  "Sign-in risk",
-                    "policyConditionSigninRiskCiamDescription":  "Sign-in risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionSigninRiskDescription":  "Likelihood that the sign-in is coming from someone other than the user. Risk level can be high, medium or low. Requires Microsoft Entra ID P2 license.",
-                    "policyConditionSigninRiskPreview":  "Sign-in risk (preview)",
                     "policyConditionUserRisk":  "User risk",
-                    "policyConditionUserRiskCiamDescription":  "User risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionUserRiskDescription":  "Configure user risk levels needed for policy to be enforced",
-                    "policyConditionUserRiskPreview":  "User risk (preview)",
                     "policyConditioniClientApp":  "Client apps",
                     "policyControlAllowAccessDisplayedName":  "Grant access",
                     "policyControlAuthenticationStrengthDisplayedName":  "Require authentication strength",
@@ -12826,8 +12959,10 @@
                     "policyControlRequireCompliantAppDisplayedName":  "Require app protection policy",
                     "policyControlRequireDomainJoinedDisplayedName":  "Require Microsoft Entra hybrid joined device",
                     "policyControlRequireMamDisplayedName":  "Require approved client app",
+                    "policyControlRequireRiskRemediationDisplayedName":  "Require risk remediation",
                     "policyControlRequiredPasswordChangeDisplayedName":  "Require password change",
                     "policyControlSelectAuthStrength":  "Require authentication strength",
+                    "policyControlSelectRiskRemediation":  "Require risk remediation",
                     "policyControlsNoControlsSelected":  "0 controls selected",
                     "policyControlsSection":  "Access controls",
                     "policyCreatBladeTitle":  "New",
@@ -12886,6 +13021,7 @@
                     "privateLinkLabel":  "Microsoft Entra Private Link",
                     "reportOnlyInfoBox":  "Report-only mode: Policies are evaluated and logged at sign-in but do not impact users.",
                     "requireAllControlsText":  "Require all the selected controls",
+                    "requireAuthStrength":  "Require authentication strength",
                     "requireCompliantDevice":  "Require compliant device",
                     "requireDomainJoined":  "Require domain-joined device",
                     "requireGrantReauth":  "The \"sign-in frequency every time\" session control requires a \"require multifactor authentication\" or \"require password change\" grant control when \"All cloud apps\" is selected",
@@ -12971,10 +13107,12 @@
                     "trustedLocationStatusIconEnabled":  "Trusted status icon",
                     "tuesday":  "Tuesday",
                     "uploadInBadState":  "Unable to upload the specified file.",
+                    "userAgentOrSPSelectionBladeTitle":  "Users, agent identities or workload identities",
                     "userAppNoneOption":  "None",
                     "userNamePlaceholderText":  "Enter User Name",
                     "userNotSetSeletorLabel":  "0 users and groups selected",
                     "userOnlySelectionBladeExcludeDescription":  "Select the users to exempt from the policy",
+                    "userOrAgentSelectionBladeTitle":  "Users or agent identities",
                     "userOrGroupSelectionCountDiffBannerText":  "{0} configured in this policy have been deleted from the directory, but this doesn't affect the other users and groups in the policy. The next time you update the policy, the deleted users and/or groups will be automatically removed.",
                     "userOrSPNotSetSelectorLabel":  "0 users or workload identities selected",
                     "userOrSPSelectionBladeTitle":  "Users or workload identities",
@@ -13110,8 +13248,10 @@
                      "iosCommaAndroidPlatformLabel":  "iOS, Android",
                      "linux":  "Linux",
                      "macOS":  "macOS",
+                     "tvOS":  "tvOS",
                      "unknown":  "Неизвестно",
                      "unsupported":  "Не поддерживается",
+                     "visionOS":  "visionOS",
                      "windows":  "Windows",
                      "windows10":  "Windows 10 и более поздние версии",
                      "windows10CM":  "Windows 10 и более поздние версии (ConfigMgr)",

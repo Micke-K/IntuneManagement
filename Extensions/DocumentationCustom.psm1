@@ -1335,6 +1335,17 @@ function Add-CDDocumentCustomProfileProperty
             Add-ObjectScript $header ("{1} - {0}" -f $obj.displayName,$header) $obj.remediationScriptContent
         }
     }
+    elseif($obj.'@OData.Type' -eq "#microsoft.graph.hardwareConfiguration")
+    {
+        $vendor = ?? (Get-LanguageString "HardwareConfig.Settings.Tab.HardwareDropDown.$($obj.hardwareConfigurationFormat)" -IgnoreMissing) $obj.hardwareConfigurationFormat
+        $obj | Add-Member Noteproperty -Name "vendor" -Value $vendor
+        if($obj.configurationFileContent)
+        {
+            $obj | Add-Member Noteproperty -Name "configurationFileContentString" -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(($obj.configurationFileContent))))
+            $header = Get-LanguageString "HardwareConfig.Settings.Tab.Configurations.perDevicePassword"
+            Add-ObjectScript $header ("{1} - {0}" -f $obj.displayName,$header) $obj.configurationFileContent
+        }
+    }
     elseif($obj.'@OData.Type' -eq "#microsoft.graph.deviceManagementScript")
     {
         if($obj.ScriptContent)

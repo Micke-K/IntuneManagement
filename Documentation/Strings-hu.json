@@ -70,8 +70,10 @@
                                                            },
                                            "appPackageFile":  "Az alkalmazást egy eszközön közvetlenül telepíthető formátumban tartalmazó fájl. Az érvényes csomagtípusok a következők: Android (.apk), iOS (.ipa), macOS (.pkg), Windows (.msi, .appx, .appxbundle, .msix és .msixbundle).​",
                                            "applicableDeviceType":  "Válassza ki, hogy milyen eszköztípusok telepíthetik az alkalmazást.",
-                                           "category":  "Az alkalmazás kategorizálásával megkönnyítheti a felhasználók számára a rendezést és a keresést a Céges portálon. Több kategóriát is kiválaszthat.",
+                                           "category":  "Kiválaszthat egy vagy több kategóriát, hogy a felhasználók könnyebben megtalálják az alkalmazást a céges portálon.",
+                                           "categoryLearnMore":  "További információk az alkalmazáskategóriákról",
                                            "categoryLink":  "https://go.microsoft.com/fwlink/?linkid=2295954",
+                                           "categoryWhenApprovalRequired":  "Kiválaszthat egy vagy több kategóriát, hogy a felhasználók könnyebben megtalálják az alkalmazást a céges portálon. Bár módosítási kérelem jött létre, az alkalmazáskategóriák módosítása nem igényel jóváhagyást. Az ilyen módosítások azonnal életbe lépnek.",
                                            "description":  "Segítse az eszköz felhasználóit az alkalmazás jellegének és használati lehetőségeinek megadásával. Ez a leírás a Céges portálon lesz látható.",
                                            "developer":  "Az alkalmazást fejlesztő cég vagy személy neve. Ez az információ a felügyeleti központba bejelentkezett felhasználók számára lesz látható.",
                                            "displayVersion":  "Az alkalmazás verziója. Ez az információ a Céges portálon lesz látható a felhasználók számára.",
@@ -79,7 +81,6 @@
                                            "ignoreManifestScope":  "Igaz érték beállítása esetén a teljes képernyős webklipek a Safari felhasználói felületének megjelenítése nélkül navigálhatnak egy külső webhelyre. Ellenkező esetben megjelenik a Safari felhasználói felülete, ha a webklip az URL-címéről más helyre lép. Ennek a kulcsnak nincs hatása, ha a Teljes képernyő értéke hamis.",
                                            "infoUrl":  "Egy olyan webhelyre vagy dokumentációra mutató hivatkozást biztosíthat a felhasználóknak, amely további információt tartalmaz az alkalmazással kapcsolatban. Az információs URL-cím a Céges portálon lesz látható a felhasználók számára.",
                                            "isFeatured":  "A kiemelt alkalmazások feltűnő módon vannak elhelyezve a Céges portálon, hogy a felhasználók gyorsan megtalálják őket.",
-                                           "learnMore":  "További információk",
                                            "logo":  "Töltse fel az alkalmazáshoz társított emblémát. Ez az embléma a Céges portálon mindenhol megjelenik az alkalmazás mellett.",
                                            "macOSDmgAppPackageFile":  "Az alkalmazást olyan formátumban tartalmazó fájl, amely közvetlenül telepíthető az eszközökön. Érvényes csomagtípus: .dmg.​",
                                            "macOSPkgAppPackageFile":  "Az alkalmazást olyan formátumban tartalmazó fájl, amely közvetlenül telepíthető az eszközökön. Érvényes csomagtípus: .pkg.",
@@ -95,6 +96,7 @@
                                            "selectApp":  "Keressen az App Store-ban olyan iOS rendszerhez készült áruházbeli alkalmazásokat, amelyeket üzembe szeretne helyezni az Intune-nal.",
                                            "targetApplicationBundleIdentifier":  "Az URL-címet megnyitó alkalmazást meghatározó alkalmazáscsomag-azonosító. Az iOS 14 és újabb verziókban érhető el.",
                                            "useManagedBrowser":  "Amikor a felhasználó megnyitja a webalkalmazást, akkor az szükség esetén egy Intune által védett böngészőben, például a Microsoft Edge-ben vagy az Intune Managed Browserben nyílik meg. Ez a beállítás az iOS- és az Android-eszközökre is vonatkozik.",
+                                           "useManagedBrowserLearnMore":  "További információ a felügyelt böngészőkről",
                                            "useManagedBrowserLink":  "https://go.microsoft.com/fwlink/?linkid=2299509",
                                            "win32AppPackageFile":  "Egy fájl, amely az alkalmazást olyan formátumban tartalmazza, amelyet közvetlenül telepíteni lehet az eszközökre. Az érvényes csomagtípus: .intunewin.​",
                                            "winGetStoreSelectApp":  "Az Intune-nal üzembe helyezni kívánt áruházbeli alkalmazásokat a Microsoft Store-alkalmazásban (új) keresheti meg."
@@ -224,6 +226,7 @@
                                                "v15":  "iOS 15.0",
                                                "v16":  "iOS 16.0",
                                                "v17":  "iOS 17.0",
+                                               "v18":  "iOS 18.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -250,6 +253,9 @@
                                                          },
                                                  "V14":  {
                                                              "0":  "macOS Sonoma 14.0"
+                                                         },
+                                                 "V15":  {
+                                                             "0":  "macOS Sequoia 15.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -451,6 +457,7 @@
                    "calendar":  "Naptár",
                    "categoryLabel":  "Kategória",
                    "categoryNameLabel":  "Alapértelmezett név",
+                   "categorySubLabelWhenApprovalRequired":  "Nem támogatja a több rendszergazdai jóváhagyást",
                    "certProfileType":  "Tanúsítványprofil típusa",
                    "certificate":  "Tanúsítvány",
                    "certificates":  "Tanúsítványok",
@@ -995,7 +1002,7 @@
                        "accountProtection":  "Fiókvédelem",
                        "administrativeTemplates":  "Felügyeleti sablonok",
                        "androidCompliancePolicy":  "Androidos megfelelőségi szabályzat",
-                       "androidForWorkMigrationPolicy":  "New Implementation",
+                       "androidForWorkMigrationPolicy":  "Áthelyezés az Android Alkalmazáskezelés API-ra",
                        "aospDeviceOwnerCompliancePolicy":  "Androidos (AOSP) megfelelőségi szabályzat",
                        "applicationControl":  "App Control for Business",
                        "attackSurfaceReductionRules":  "Támadási felület csökkentésére szolgáló szabályok",
@@ -1214,10 +1221,10 @@
                                                              "requirementType":  "Követelmény típusa",
                                                              "requirementTypeTooltip":  "Válassza ki a követelmény érvényesítésének meghatározásához használt észlelési módszert."
                                                          },
-                              "allowedArchitectures":  "Check operating system architecture",
-                              "allowedArchitecturesNoRadioButton":  "No. Allow this app to be installed on all systems.",
-                              "allowedArchitecturesTooltip":  "Select 'Yes' to specify the systems the app can be installed on. Select 'No' (default) to allow this app to be installed on all systems.",
-                              "allowedArchitecturesYesRadioButton":  "Yes. Specify the systems the app can be installed on.",
+                              "allowedArchitectures":  "Operációs rendszer architektúrájának ellenőrzése",
+                              "allowedArchitecturesNoRadioButton":  "Nem. Az alkalmazás telepítésének engedélyezése az összes rendszeren.",
+                              "allowedArchitecturesTooltip":  "Válassza az Igen lehetőséget azoknak a rendszereknek a meghatározásához, amelyeken az alkalmazás telepíthető. Válassza a Nem (alapértelmezett) lehetőséget az alkalmazás telepítésének engedélyezése az összes rendszeren.",
+                              "allowedArchitecturesYesRadioButton":  "Igen. Határozza meg azokat a rendszereket, amelyeken az alkalmazás telepíthető.",
                               "architectures":  "Operációs rendszer architektúrája",
                               "architecturesTooltip":  "Válassza ki az alkalmazás telepítéséhez szükséges architektúrákat.",
                               "bladeTitle":  "Követelmények",
@@ -2221,6 +2228,10 @@
                                                              "label":  "Szervezeti adatok titkosítása a regisztrált eszközökön",
                                                              "tooltip":  "Válassza a(z) {0} lehetőséget, ha minden eszközön kényszeríteni szeretné a szervezeti adatok Intune-beli alkalmazásréteg-titkosítással történő titkosítását. <br/>\r\n\r\nVálassza a(z) {1} lehetőséget, ha a regisztrált eszközökön nem kívánja kötelezővé tenni a szervezeti adatok Intune-beli alkalmazásréteg-titkosítással történő titkosítását."
                                                          },
+                        "GenmojiConfigurationState":  {
+                                                          "label":  "Genmoji",
+                                                          "tooltip":  "  Ha le van tiltva, a Genmoji funkció le lesz tiltva a szabályzattal felügyelt alkalmazás használatakor. További információt <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">itt</a> talál."
+                                                      },
                         "IOSBackup":  {
                                           "label":  "Szervezeti adatok mentése biztonsági másolatokba az iTunes és az iCloud szolgáltatásban",
                                           "tooltip":  "Válassza a(z) {0} lehetőséget a szervezeti adatok iTunes vagy iCloud szolgáltatásba történő biztonsági mentésének megakadályozásához.  \r\nVálassza a(z) {1} lehetőséget a szervezeti adatok iTunes vagy iCloud szolgáltatásba történő biztonsági mentésének engedélyezéséhez.  \r\nA személyes vagy a nem felügyelt adatokat ez nem érinti."
@@ -2314,6 +2325,10 @@
                                                                  "label":  "Képernyőfelvétel és Google Segéd\r\n",
                                                                  "tooltip":  "Ha blokkolva van, a szabályzat által felügyelt alkalmazás használatakor a képernyőfelvétel és a Google Segéd alkalmazás beolvasási funkciói le lesznek tiltva. Ez a funkció támogatja a szokásos Google Segéd alkalmazást. A Google Segéd API-t használó külső segédek nem támogatottak. A Blokkolás választásával az Alkalmazásváltó előnézeti képe is elmosódik, ha az alkalmazást munkahelyi vagy iskolai fiókkal használja."
                                                              },
+                        "ScreenCaptureConfigurationState":  {
+                                                                "label":  "Képernyőfelvétel",
+                                                                "tooltip":  " Ha le van tiltva, a képernyőfelvétel le lesz tiltva a szabályzattal felügyelt alkalmazás használatakor. További információt <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">itt</a> talál."
+                                                            },
                         "SendData":  {
                                          "label":  "Szervezeti adatok küldése egyéb alkalmazásokba",
                                          "tooltip":  "Válasszon az alábbi lehetőségek közül azoknak az alkalmazásoknak a meghatározásához, amelyekbe ez az alkalmazás adatokat küldhet: <br/>\r\n\r\n\r\n<b>Nincs</b>: Nem engedélyezett szervezeti adatok küldése semmilyen alkalmazásba <br/>\r\n\r\n\r\n<b>Szabályzattal felügyelt alkalmazások</b>: Szervezeti adatok küldésének engedélyezése kizárólag más, szabályzat által felügyelt alkalmazásokba <br/>\r\n\r\n\r\n<b>Szabályzattal felügyelt alkalmazások operációsrendszer-megosztással</b>: Szervezeti adatok küldésének engedélyezése kizárólag más, szabályzattal felügyelt alkalmazásokba és szervezeti dokumentumok küldése kizárólag más, MDM által felügyelt alkalmazásokba a regisztrált eszközökön <br/>\r\n\r\n<b>\r\nSzabályzattal felügyelt alkalmazások megnyitás- és megosztásszűréssel</b>: Szervezeti adatok küldésének engedélyezése kizárólag más, szabályzattal felügyelt alkalmazásokba és az operációs rendszer Megnyitás és Megosztás párbeszédpaneljének szűrése, hogy csak a szabályzattal felügyelt alkalmazások jelenjenek meg\r\n <br/>\r\n\r\n<b>Minden alkalmazás</b>: Szervezeti adatok küldésének engedélyezése bármely alkalmazásba"
@@ -2348,6 +2363,10 @@
                                             "label":  "Szervezeti adatok küldése ide:",
                                             "tooltip":  "Válassza ki az alábbi lehetőségek egyikét annak megadásához, hogy a szervezet felhasználói milyen forrásokból fogadhatnak adatokat: <br/>\r\n\r\n<b>Minden célhely</b>: A szervezeti felhasználók bármilyen fiókba, dokumentumba, helyre vagy alkalmazásba küldhetnek szervezeti adatokat.<br/>\r\n\r\n<b>Semmilyen célhely</b>: A szervezeti felhasználók nem küldhetnek szervezeti adatokat külső fiókokba, dokumentumokba, helyekre vagy alkalmazásokba a szervezeti környezetből."
                                         },
+                        "WritingToolsConfigurationState":  {
+                                                               "label":  "Írási eszközök",
+                                                               "tooltip":  "Ha le van tiltva, az írási eszközök le lesznek tiltva a szabályzattal felügyelt alkalmazás használatakor. További információt <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">itt</a> talál."
+                                                           },
                         "Tap":  {
                                     "numberOfDays":  "Napok száma",
                                     "pinResetAfterNumberOfDays":  "PIN-kód megváltoztatása ennyi nap után",
@@ -3934,9 +3953,106 @@
                           "other":  "Egyéb",
                           "webApplication":  "Webalkalmazás"
                       },
+    "HardwareConfig":  {
+                           "Barchart":  {
+                                            "Device":  {
+                                                           "title":  "Eszköz állapota"
+                                                       },
+                                            "ReportGrid":  {
+                                                               "Columns":  {
+                                                                               "deviceStatus":  "Eszköz állapota",
+                                                                               "error":  "Hiba",
+                                                                               "failedCount":  "Nem működő eszközök száma",
+                                                                               "notApplicableCount":  "Nem alkalmazandó eszközszám",
+                                                                               "pendingCount":  "Függőben lévő eszközök száma",
+                                                                               "successCount":  "Sikeres eszközök száma",
+                                                                               "unknownCount":  "Ismeretlen eszközök száma"
+                                                                           },
+                                                               "Device":  {
+                                                                              "searchBoxPlaceholder":  "Keresés az eszköz neve és felhasználóneve alapján"
+                                                                          },
+                                                               "Export":  {
+                                                                              "Device":  {
+                                                                                             "reportName":  "DeviceRunSummary",
+                                                                                             "title":  "BIOS-konfigurációk és egyéb beállítások exportálása – eszközfuttatás összegzése"
+                                                                                         },
+                                                                              "User":  {
+                                                                                           "reportName":  "UserRunSummary",
+                                                                                           "title":  "BIOS-konfigurációk és egyéb beállítások exportálása – felhasználói futtatás összegzése"
+                                                                                       }
+                                                                          },
+                                                               "User":  {
+                                                                            "searchBoxPlaceholder":  "Keresés felhasználónév alapján"
+                                                                        }
+                                                           },
+                                            "User":  {
+                                                         "title":  "Felhasználó állapota"
+                                                     },
+                                            "failure":  "Hiba",
+                                            "notApplicable":  "Nem alkalmazható",
+                                            "pending":  "Függőben",
+                                            "succeeded":  "Sikeres",
+                                            "unknown":  "Ismeretlen",
+                                            "viewReportButtonText":  "Jelentés megtekintése"
+                                        },
+                           "DCList":  {
+                                          "name":  "BIOS-konfigurációk és egyéb beállítások"
+                                      },
+                           "Policy":  {
+                                          "Create":  {
+                                                         "createButtonText":  "Létrehozás",
+                                                         "reviewButtontext":  "Áttekintés"
+                                                     },
+                                          "Edit":  {
+                                                       "title":  "BIOS-konfigurációk és egyéb beállításprofilok szerkesztése"
+                                                   },
+                                          "createProfile":  "BIOS-konfigurációk és egyéb beállításprofilok létrehozása"
+                                      },
+                           "Settings":  {
+                                            "Tab":  {
+                                                        "Configurations":  {
+                                                                               "file":  "Konfigurációs fájl",
+                                                                               "fileInfoBox":  "A konfigurációs fájlnak .cctk típusúnak kell lennie",
+                                                                               "hardware":  "Hardver",
+                                                                               "infoBox":  "Mielőtt itt beállítja a konfigurációkat, győződjön meg arról, hogy a hardvergyártó ügynökét telepítő Win32-alkalmazás telepítve van ezeken az eszközökön.",
+                                                                               "learnMore":  "További információ a BIOS-konfigurációkról és egyéb beállításokról",
+                                                                               "perDevicePassword":  "Eszközönkénti BIOS-jelszavas védelem letiltása"
+                                                                           },
+                                                        "DisablePassword":  {
+                                                                                "Options":  {
+                                                                                                "no":  "Nem",
+                                                                                                "yes":  "Igen"
+                                                                                            }
+                                                                            },
+                                                        "HardwareDropDown":  {
+                                                                                 "dell":  "Dell",
+                                                                                 "surface":  "Surface",
+                                                                                 "surfaceDock":  "Surface dokkoló"
+                                                                             }
+                                                    }
+                                        },
+                           "Summary":  {
+                                           "Buttons":  {
+                                                           "delete":  "Törlés"
+                                                       },
+                                           "Tab":  {
+                                                       "monitor":  "Monitor",
+                                                       "properties":  "Tulajdonságok"
+                                                   },
+                                           "subtitle":  "BIOS-konfigurációk és egyéb beállításprofilok"
+                                       },
+                           "Wizard":  {
+                                          "Basics":  {
+                                                         "title":  "Alapadatok"
+                                                     },
+                                          "Configurations":  {
+                                                                 "title":  "Konfigurációk"
+                                                             }
+                                      }
+                       },
     "Filters":  {
                     "ruleSyntax":  "Szabály szintaxisa",
-                    "filters":  "Szűrők"
+                    "filters":  "Hozzárendelési szűrők"
                 },
     "CustomCompliance":  {
                              "FilePicker":  {
@@ -4708,12 +4824,12 @@
                               "successfullySavedPolicy":  "Mentett {0}"
                           },
     "ArchitectureOptions":  {
-                                "arm64InstructionSet":  "Install on ARM64 system",
-                                "checkBox":  "Please select at least one architecture setting",
+                                "arm64InstructionSet":  "Telepítés ARM64 rendszeren",
+                                "checkBox":  "Válasszon ki legalább egy architektúra-beállítást",
                                 "sixtyFourBit":  "64 bites",
-                                "sixtyFourBitInstructionSet":  "Install on x64 system",
+                                "sixtyFourBitInstructionSet":  "Telepítés x64 rendszerre",
                                 "thirtyTwoBit":  "32 bites",
-                                "thirtyTwoBitInstructionSet":  "Install on x86 system"
+                                "thirtyTwoBitInstructionSet":  "Telepítés x86 rendszerre"
                             },
     "Countries":  {
                       "ae":  "Egyesült Arab Emírségek",
@@ -5072,6 +5188,8 @@
                            "androidEnterpriseAlwaysOnVpnLinkDescription":  "További információ az állandó VPN-kapcsolat konfigurálásáról Android Enterprise esetén.",
                            "androidEnterpriseAlwaysOnVpnLinkName":  "Az állandó VPN-kapcsolat az eszközkorlátozásoknál konfigurálható.",
                            "androidEnterpriseAlwaysOnVpnLockdownModeEnabledName":  "Lezárás mód",
+                           "androidEnterpriseComplianceRequiredPasswordTypeDescription":  "Adja meg a jelszó összetettségére vonatkozó követelményeket. A további jelszókövetelmények az Ön választása alapján válnak elérhetővé. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323793\">További információ a jelszóra vonatkozó követelményekről.</a>",
+                           "androidEnterpriseConfigurationRequiredPasswordTypeDescription":  "Adja meg a jelszó összetettségére vonatkozó követelményeket. A további jelszókövetelmények az Ön választása alapján válnak elérhetővé. <a href=\"https://go.microsoft.com/fwlink/?linkid=2297352\">További információ a jelszóra vonatkozó követelményekről.</a>",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnEnabledDescription":  "Állítson be egy VPN-ügyfelet, ha azt szeretné, hogy az eszköz minden alkalommal automatikusan csatlakozzon a virtuális magánhálózathoz, ha az elérhető. Ha a Letiltva lehetőséget választja, az eszközön beállított összes VPN-ügyfél esetében letiltja az állandó VPN-kapcsolatot. Az állandó VPN-kapcsolat csak egy VPN-ügyfél számára állítható be egy adott eszközön, ezért ügyeljen arra, hogy legfeljebb egy állandó VPN-kapcsolatra vonatkozó szabályzat legyen érvénybe léptetve egy adott eszközön.",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnLockdownModeEnabledDescription":  "Ha engedélyezi ezt a beállítást, minden adatforgalom a VPN-alagúton keresztül fog bonyolódni. Ha nem hozható létre VPN-kapcsolat, az semmilyen hálózati adatforgalom nem lesz engedélyezve.",
                            "androidEnterpriseDeviceSettingsBlockedDescription":  "Alapértelmezés szerint a felhasználók a teljes képernyős módban érhetik el a Beállítások alkalmazást.",
@@ -5095,9 +5213,9 @@
                            "androidEnterpriseWorkProfileAlwaysOnVpnClientDescription":  "A megadott VPN-ügyfélnek telepítve kell lennie az eszközön, és az ügyfélnek támogatnia kell az alkalmazásonkénti VPN-t a munkahelyi profilokban; ellenkező esetben hiba lép fel. Ha azt szeretné, hogy az alkalmazás telepítve legyen a felhasználó munkahelyi profiljában, az alkalmazást jóvá kell hagynia a felügyelt Google Play Áruházban, szinkronizálni kell az Intune-nal, és telepíteni kell.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnEnabledDescription":  "Állítson be egy VPN-ügyfelet a munkahelyi profilban, ha azt szeretné, hogy az eszköz minden alkalommal automatikusan csatlakozzon a virtuális magánhálózathoz, ha az elérhető. Ha a Letiltva lehetőséget választja, a munkahelyi profilban beállított összes VPN-ügyfél esetében letiltja az állandó VPN-kapcsolatot. Az állandó VPN-kapcsolat csak egy VPN-ügyfél számára állítható be egy adott eszközön, ezért ügyeljen arra, hogy legfeljebb egy állandó VPN-kapcsolatra vonatkozó szabályzat legyen érvénybe léptetve egy adott eszközön.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnLockdownModeEnabledDescription":  "Ha ezt engedélyezi, a munkahelyi profil adatforgalma a VPN-alagúton keresztül fog bonyolódni. Ha nem hozható létre VPN-kapcsolat, az eszköz munkahelyi profiljának hálózati adatforgalma le lesz tiltva.",
-                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Create and assign this profile to move devices to a newer, more efficient policy implementation. Devices set up with web-based enrollment automatically use the newer implementation.​",
-                           "androidForWorkMigrationPolicyDescriptionParagraph2":  "Devices will move when they have sufficient battery and are not connected to Wi-Fi managed by Intune policy. ​​",
-                           "androidForWorkMigrationPolicyLearnMoreText":  "Learn more about this improvement. ​​",
+                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Hozza létre és rendelje hozzá ezt a profilt az eszközök Android Alkalmazáskezelés API-ra történő áthelyezéséhez, amely hatékonyabb módon alkalmazza a házirendet. A webes regisztrációval beállított eszközök automatikusan az Android Alkalmazáskezelés API-t használják.",
+                           "androidForWorkMigrationPolicyDescriptionParagraph2":  "Az eszközök akkor kerülnek áthelyezésre, ha elegendő akkumulátortöltéssel rendelkeznek, és nem csatlakoznak az Intune-szabályzat által kezelt Wi-Fi-hez.",
+                           "androidForWorkMigrationPolicyLearnMoreText":  "Tudjon meg többet erről a fejlesztésről.",
                            "androidGeneralKiosk":  "Ezek a beállítások csak a Samsung KNOX Standard-eszközökre vonatkoznak.",
                            "androidHiddenApps":  "Felhasználó elől elrejtett alkalmazások (csak Samsung KNOX Standard esetén)",
                            "androidHiddenAppsHeaderName":  "Adja meg az eszközön elrejteni kívánt alkalmazásokat. Ezek az alkalmazások nem jelennek meg és nem futtathatók a felhasználók eszközén.",
@@ -5127,6 +5245,8 @@
                            "anyDayOption":  "Bármelyik nap",
                            "anyEthernet":  "Bármely Ethernet",
                            "anywhereOption":  "Bárhol",
+                           "aospComplianceRequiredPasswordTypeDescription":  "Adja meg a jelszó összetettségére vonatkozó követelményeket. A további jelszókövetelmények az Ön választása alapján válnak elérhetővé. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323729\">További információ a jelszóra vonatkozó követelményekről.</a>",
+                           "aospConfigurationRequiredPasswordTypeDescription":  "Adja meg a jelszó összetettségére vonatkozó követelményeket. A további jelszókövetelmények az Ön választása alapján válnak elérhetővé. <a href=\"https://go.microsoft.com/fwlink/?linkid=847987\">További információ a jelszóra vonatkozó követelményekről.</a>",
                            "appBundleIdColumn":  "Alkalmazáscsomag-azonosító",
                            "appColumnExamples":  "Példák: Fájlnév.exe vagy %ProgramFiles%\\Path\\Fájlnév.exe",
                            "appComplianceListName":  "Engedélyezett vagy korlátozott alkalmazások az eszközön",
@@ -5447,7 +5567,7 @@
                            "blockAirPrintiBeaconDiscoveryDescriptionMacOS":  "A letiltással megakadályozható a rosszindulatú AirPrint-eszközök Bluetooth-jeladóinak adathalászata a hálózati forgalomban",
                            "blockAirPrintiBeaconDiscoveryNameIOS":  "AirPrint-nyomtatók iBeacon-alapú észlelésének letiltása",
                            "blockAirPrintiBeaconDiscoveryNameMacOS":  "AirPrint-nyomtatók iBeacon-alapú felderítésének letiltása",
-                           "blockAllAccounts":  "Az összes fióktípus letiltása",
+                           "blockAllAccounts":  "Az összes fióktípus blokkolása",
                            "blockAllCookiesOption":  "Az összes cookie letiltása",
                            "blockAllDataSharingBetweenWorkAndPersonalProfilesOption":  "A profilok közötti összes megosztás letiltása",
                            "blockAndroidBluetoothDescription":  "Bluetooth letiltása",
@@ -6457,7 +6577,7 @@
                            "directGlobalProxyOption":  "Közvetlen",
                            "disableAllNotificationsOption":  "Az összes értesítés kikapcsolása, beleértve az újraindítási figyelmeztetéseket",
                            "disableBitLockerRecoveryPasswordRotationOption":  "A kulcsrotálás le van tiltva",
-                           "disableDeviceLocationDescription":  "A letiltás azt is megakadályozza, hogy a rendszergazdák megtalálják az eszközöket.",
+                           "disableDeviceLocationDescription":  "A letiltás azt is megakadályozza, hogy a rendszergazdák megtalálják az eszközöket. A céges tulajdonú munkahelyi profilú eszközök esetében ez a beállítás csak az Android 10-es vagy korábbi verziót futtató eszközökre vonatkozik.",
                            "disableDeviceLocationName":  "Hely",
                            "disableDeviceLocationSharingName":  "Tartózkodási hely megosztása",
                            "disableMacAddressRandomization":  "MAC-címek véletlenszerűsítésének letiltása",
@@ -7538,7 +7658,7 @@
                            "kioskRecurrence":  "Karbantartási időszak ismétlődése",
                            "kioskRecurrenceDescription":  "Adja meg, hogy milyen gyakran történjen az alkalmazás frissítéseihez a karbantartási ablakok megjelenítése. Az ajánlott érték a naponta a nem ütemezett alkalmazás-újraindítások elkerüléséhez.",
                            "kioskScreenOrientationAutoRotate":  "Automatikus elforgatás",
-                           "kioskScreenOrientationDescription":  "A Managed Home Screen megjelenésének tájolása az eszközön.",
+                           "kioskScreenOrientationDescription":  "A Managed Home Screen megjelenésének tájolása az eszközön. Megjegyzés: Az Android 16-os és újabb verzióin a platform nem támogatja a képernyő tájolásának beállítását nagyobb méretekkel, például táblagépek esetében a legkisebb szélesség 600 dp vagy nagyobb.",
                            "kioskScreenOrientationLandscape":  "Fekvő",
                            "kioskScreenOrientationName":  "Képernyő tájolása",
                            "kioskScreenOrientationNotConfigured":  "Nincs beállítva",
@@ -8188,7 +8308,7 @@
                            "microsoftTunnelSiteNotExist":  "A hely nem létezik. Válasszon egy új helyet.",
                            "microsoftUpdatesDescription":  "Adja meg, hogy a rendszer keressen-e frissítéseket a Microsoft Update-en.",
                            "microsoftUpdatesName":  "Microsoft-termékfrissítések",
-                           "migrationPolicyCannotBeUnassigned":  "Once you assign this policy, it can't be unassigned.",
+                           "migrationPolicyCannotBeUnassigned":  "Miután hozzárendelte ezt a házirendet, az eszközök elkezdenek átállni az Android Alkalmazáskezelés API-ra. Ha eltávolítja vagy törli ezt a házirendet, a már áthelyezett eszközök továbbra is ezt az új metódust fogják használni, a még nem áthelyezett célzott eszközök pedig nem lesznek áthelyezve.",
                            "minimumNumberOfCharacterSetsDescription":  "Ezzel a beállítással adható meg a jelszó által tartalmazandó karakterkészletek minimális száma. A négy karakterkészlet a következő:\r\n<br>\r\nkisbetűk\r\n<br>\r\nnagybetűk\r\n<br>\r\nszimbólumok\r\n<br>\r\nszámok",
                            "minimumNumberOfCharacterSetsName":  "A jelszó által tartalmazandó karakterkészletek száma",
                            "minimumPasswordLengthDescription":  "A számjegyek vagy karakterek minimális száma a jelszóban.",
@@ -11465,6 +11585,12 @@
                                                  "title":  "Cloud apps or actions"
                                              },
                     "CloudappsSelectionBlade":  {
+                                                    "AgenticResources":  {
+                                                                             "allAgenticResources":  "All agent resources (Preview)",
+                                                                             "allAgenticResourcesExcLower":  "all agent resources excluded",
+                                                                             "allAgenticResourcesExcluded":  "All agent resources excluded",
+                                                                             "allAgenticResourcesIncluded":  "All agent resources"
+                                                                         },
                                                     "AllInternetResources":  {
                                                                                  "excludedWithGSA":  "All internet resources with Global Secure Access excluded",
                                                                                  "excludedWithGSALower":  "all internet resources with Global Secure Access excluded",
@@ -11540,6 +11666,7 @@
                                                      "policySummaryMfaForAllUsers":  "This policy requires all users to perform multifactor authentication when accessing any resources. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryPhishingResistantMfa":  "Accounts that are assigned privileged administrative roles are frequent targets of attackers. Requiring phishing-resistant multifactor authentication (MFA) on those accounts is an easy way to reduce the risk of those accounts being compromised.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRiskViaGroup":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. We'll assign eligible users into a new security group named 'Conditional Access: Risky sign-in multifactor authentication (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e98)'. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "recActionsGlobal1":  "Review the policy and its benefits.",
@@ -11551,6 +11678,7 @@
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
+                                                     "recommendedActionsIntroShort":  "Before enabling this policy",
                                                      "securityDefaultsBasedAdminMfaMMPolicySummary":  "Require multifactor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as security defaults.",
                                                      "securityDefaultsBasedAllUserMfaMMPolicySummary":  "Require multifactor authentication for all user accounts to reduce risk of compromise.",
                                                      "securityDefaultsBasedAzureManagementMMPolicySummary":  "Require multifactor authentication to protect privileged access to Azure management.",
@@ -11728,7 +11856,7 @@
                                                                                   "description":  "Configure service principal risk levels needed for policy to be enforced",
                                                                                   "infoBalloonContent":  "Configure service principal risk to apply the policy to selected risk level(s)",
                                                                                   "title":  "Service principal risk",
-                                                                                  "titlePreview":  "Service principal risk (Preview)"
+                                                                                  "titlePreview":  "Service principal risk"
                                                                               }
                                                  }
                                },
@@ -11745,7 +11873,8 @@
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
                                                                                                         "label":  "Authentication flows",
-                                                                                                        "multiple":  "\"{0}\" and \"{1}\""
+                                                                                                        "multiple":  "\"{0}\" and \"{1}\"",
+                                                                                                        "protocolFlows":  "Protocol and flows"
                                                                                                     },
                                                                                        "singular":  "Authentication flow"
                                                                                    },
@@ -11966,6 +12095,10 @@
                                                                     "description":  "Select the resources to exempt from the policy"
                                                                 }
                                                 },
+                    "RiskRemediationValidation":  {
+                                                      "mustSelect":  "To enable Require Risk Remediation, you must select {0}.",
+                                                      "xOrY":  "{0} or {1}"
+                                                  },
                     "SSM":  {
                                 "MemberSelector":  {
                                                        "description":  "Users and groups"
@@ -12082,7 +12215,7 @@
                                                               "checkboxLabel":  "Require token protection for app sessions (Preview)"
                                                           },
                                             "SecureSignIn":  {
-                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Preview)",
+                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Generally available for Windows. Preview for MacOS, iOS)",
                                                                  "error":  "Policies enforcing Token Protection for Sign In Sessions must be scoped to supported platforms. {0}Learn more about token protection.{1}",
                                                                  "infoBallonText":  "A secure sign-in session requires all long-lived tokens (the Microsoft Entra session cookie and refresh token) to be bound to the device using software key binding or hardware security module binding where available.",
                                                                  "warningInfoBoxText":  "The control \"Require token protection for sign-in sessions\" only works with supported devices and applications. Unsupported devices and client applications will be blocked."
@@ -12269,7 +12402,9 @@
                                                           "requireApprovedClientAppEnabled":  "You should no longer use \"Require approved client app\", as we will soon stop updating it.",
                                                           "requireAuthOrMfa":  "\"{0}\" cannot be used with \"{1}\".",
                                                           "requireMfa":  "Consider testing the new \"{0}\".",
-                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\"."
+                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\".",
+                                                          "requirePasswordChangeEnabledResource":  "\"Require password change\" can only be used when policy is assigned to \"All resources\".",
+                                                          "requireRiskRemediation":  "\"{0}\" can only be used when policy is assigned to \"{1}.\" This option requires multifactor authentication or authentication strengths controls. Other controls cannot be used. This option also requires the Session control \"Sign-in Frequency\" to be set to \"Every time.\""
                                                       },
                                          "Policies":  {
                                                           "Linux":  {
@@ -12613,6 +12748,8 @@
                     "daysOfWeekTypeLabel":  "Days of the week",
                     "deletePolicyNoLicenseText":  "You can delete this policy now. Once deleted you will not be able to recreate it until you have the required licenses.",
                     "descriptionContentForControlsAndOr":  "For multiple controls",
+                    "deviceFilterInformationalLearnMore":  "Learn more",
+                    "deviceFilterInformationalResponse":  "Microsoft recommends using at least one system-defined or admin-configured device attribute when creating filter rules.",
                     "devicePlatform":  "Device platform",
                     "devicePlatformInclude":  "{0} included",
                     "devicePlatformIncludeExclude":  "{0} and {1} excluded",
@@ -12806,13 +12943,9 @@
                     "policyConditionNetwork":  "Network",
                     "policyConditionNetworkLocationDescription":  "Network and locations (determined by IP address range or GPS coordinates) the user is signing in from",
                     "policyConditionSigninRisk":  "Sign-in risk",
-                    "policyConditionSigninRiskCiamDescription":  "Sign-in risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionSigninRiskDescription":  "Likelihood that the sign-in is coming from someone other than the user. Risk level can be high, medium or low. Requires Microsoft Entra ID P2 license.",
-                    "policyConditionSigninRiskPreview":  "Sign-in risk (preview)",
                     "policyConditionUserRisk":  "User risk",
-                    "policyConditionUserRiskCiamDescription":  "User risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionUserRiskDescription":  "Configure user risk levels needed for policy to be enforced",
-                    "policyConditionUserRiskPreview":  "User risk (preview)",
                     "policyConditioniClientApp":  "Client apps",
                     "policyControlAllowAccessDisplayedName":  "Grant access",
                     "policyControlAuthenticationStrengthDisplayedName":  "Require authentication strength",
@@ -12826,8 +12959,10 @@
                     "policyControlRequireCompliantAppDisplayedName":  "Require app protection policy",
                     "policyControlRequireDomainJoinedDisplayedName":  "Require Microsoft Entra hybrid joined device",
                     "policyControlRequireMamDisplayedName":  "Require approved client app",
+                    "policyControlRequireRiskRemediationDisplayedName":  "Require risk remediation",
                     "policyControlRequiredPasswordChangeDisplayedName":  "Require password change",
                     "policyControlSelectAuthStrength":  "Require authentication strength",
+                    "policyControlSelectRiskRemediation":  "Require risk remediation",
                     "policyControlsNoControlsSelected":  "0 controls selected",
                     "policyControlsSection":  "Access controls",
                     "policyCreatBladeTitle":  "New",
@@ -12886,6 +13021,7 @@
                     "privateLinkLabel":  "Microsoft Entra Private Link",
                     "reportOnlyInfoBox":  "Report-only mode: Policies are evaluated and logged at sign-in but do not impact users.",
                     "requireAllControlsText":  "Require all the selected controls",
+                    "requireAuthStrength":  "Require authentication strength",
                     "requireCompliantDevice":  "Require compliant device",
                     "requireDomainJoined":  "Require domain-joined device",
                     "requireGrantReauth":  "The \"sign-in frequency every time\" session control requires a \"require multifactor authentication\" or \"require password change\" grant control when \"All cloud apps\" is selected",
@@ -12971,10 +13107,12 @@
                     "trustedLocationStatusIconEnabled":  "Trusted status icon",
                     "tuesday":  "Tuesday",
                     "uploadInBadState":  "Unable to upload the specified file.",
+                    "userAgentOrSPSelectionBladeTitle":  "Users, agent identities or workload identities",
                     "userAppNoneOption":  "None",
                     "userNamePlaceholderText":  "Enter User Name",
                     "userNotSetSeletorLabel":  "0 users and groups selected",
                     "userOnlySelectionBladeExcludeDescription":  "Select the users to exempt from the policy",
+                    "userOrAgentSelectionBladeTitle":  "Users or agent identities",
                     "userOrGroupSelectionCountDiffBannerText":  "{0} configured in this policy have been deleted from the directory, but this doesn't affect the other users and groups in the policy. The next time you update the policy, the deleted users and/or groups will be automatically removed.",
                     "userOrSPNotSetSelectorLabel":  "0 users or workload identities selected",
                     "userOrSPSelectionBladeTitle":  "Users or workload identities",
@@ -13110,8 +13248,10 @@
                      "iosCommaAndroidPlatformLabel":  "iOS, Android",
                      "linux":  "Linux",
                      "macOS":  "macOS",
+                     "tvOS":  "tvOS",
                      "unknown":  "Ismeretlen",
                      "unsupported":  "Nem támogatott",
+                     "visionOS":  "visionOS",
                      "windows":  "Windows",
                      "windows10":  "Windows 10 és újabb verziók",
                      "windows10CM":  "Windows 10 és újabb verziók (ConfigMgr)",

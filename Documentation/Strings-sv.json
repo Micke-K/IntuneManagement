@@ -70,8 +70,10 @@
                                                            },
                                            "appPackageFile":  "En fil som innehåller din app i ett format som kan läsas in separat på en enhet. Giltiga pakettyper är: Android (.apk), iOS (.ipa), macOS (.pkg), Windows (.msi, .appx, .appxbundle, .msix och .msixbundle).​",
                                            "applicableDeviceType":  "Välj vilka typer av enheter som appen kan installeras på.",
-                                           "category":  "Kategorisera appen för att göra det lättare för användarna att sortera och hitta den på företagsportalen. Du kan välja flera kategorier.",
+                                           "category":  "Du kan välja en eller flera kategorier för att göra det enklare för användare att hitta appen i Företagsportal.",
+                                           "categoryLearnMore":  "Läs mer om app-kategorier",
                                            "categoryLink":  "https://go.microsoft.com/fwlink/?linkid=2295954",
+                                           "categoryWhenApprovalRequired":  "Du kan välja en eller flera kategorier för att göra det enklare för användare att hitta appen i Företagsportal. Även om en ändringsbegäran skapas, kräver ändring av appkategorier inte godkännande. En sådan ändring sker omedelbart.",
                                            "description":  "Hjälp enhetsanvändarna att förstå vilken typ av app det är och/eller vad de kan göra med appen. Den här beskrivningen visas för dem på företagsportalen.",
                                            "developer":  "Namnet på företaget eller den privatperson som har utvecklat appen. Informationen visas för alla som loggar in på administrationscentret.",
                                            "displayVersion":  "Appens version. Den här informationen visas för användarna på företagsportalen.",
@@ -79,7 +81,6 @@
                                            "ignoreManifestScope":  "Om värdet är ja kan ett webbklipp i helskärmsläge navigera till en extern webbplats utan att Safaris användargränssnitt visas. I annat fall visas Safari-användargränssnittet när du navigerar bort från webbklippets URL. Denna tangent har ingen effekt när Fullskärm har värdet falskt.",
                                            "infoUrl":  "Länka personer till en webbplats eller till dokumentation som innehåller mer information om appen. Webbadressen till informationen visas för användarna på företagsportalen.",
                                            "isFeatured":  "Aktuella appar får en framträdande plats på företagportalen så att användarna snabbt hittar dem.",
-                                           "learnMore":  "Läs mer",
                                            "logo":  "Ladda upp en logotyp som hör till appen. Logotypen visas bredvid appen i hela företagsportalen.",
                                            "macOSDmgAppPackageFile":  "En fil som innehåller appen i ett format som kan läsas in separat på en enhet. Giltig pakettyp: .dmg.​",
                                            "macOSPkgAppPackageFile":  "En fil som innehåller appen i ett format som kan läsas in separat på en enhet. Giltig pakettyp: .pkg.​",
@@ -95,6 +96,7 @@
                                            "selectApp":  "Sök i App Store efter iOS-appar som du vill distribuera med Intune.",
                                            "targetApplicationBundleIdentifier":  "Identifiering av programpaketet som anger det program som öppnar URL:en. Tillgängligt i iOS 14 och senare.",
                                            "useManagedBrowser":  "När en användare öppnar webbappen öppnas den i en Intune-skyddad webbläsare, till exempel Microsoft Edge eller Intune Managed Browser. Den här inställningen gäller både iOS- och Android-enheter.",
+                                           "useManagedBrowserLearnMore":  "Läs mer om hanterade webbläsare",
                                            "useManagedBrowserLink":  "https://go.microsoft.com/fwlink/?linkid=2299509",
                                            "win32AppPackageFile":  "En fil som innehåller din app i ett format som kan läsas in separat på en enhet. Giltig pakettyp: .intunewin.",
                                            "winGetStoreSelectApp":  "Sök i Microsoft Store app (ny) efter store-appar som du vill distribuera med Intune."
@@ -224,6 +226,7 @@
                                                "v15":  "iOS 15.0",
                                                "v16":  "iOS 16.0",
                                                "v17":  "iOS 17.0",
+                                               "v18":  "iOS 18.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -250,6 +253,9 @@
                                                          },
                                                  "V14":  {
                                                              "0":  "macOS Sonoma 14.0"
+                                                         },
+                                                 "V15":  {
+                                                             "0":  "macOS Sequoia 15.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -451,6 +457,7 @@
                    "calendar":  "Kalender",
                    "categoryLabel":  "Kategori",
                    "categoryNameLabel":  "Standardnamn",
+                   "categorySubLabelWhenApprovalRequired":  "Stöder inte godkännande av flera administratörer",
                    "certProfileType":  "Typ av certifikatprofil",
                    "certificate":  "Certifikat",
                    "certificates":  "Certifikat",
@@ -995,7 +1002,7 @@
                        "accountProtection":  "Kontoskydd",
                        "administrativeTemplates":  "Administrativa mallar",
                        "androidCompliancePolicy":  "Kompatibilitetsprincip för Android",
-                       "androidForWorkMigrationPolicy":  "Ny implementering",
+                       "androidForWorkMigrationPolicy":  "Flytta till Android-API för hantering",
                        "aospDeviceOwnerCompliancePolicy":  "Kompatibilitetsprincip för Android (AOSP)",
                        "applicationControl":  "Appkontroll för företag",
                        "attackSurfaceReductionRules":  "Regler för att minska attackytan",
@@ -1214,10 +1221,10 @@
                                                              "requirementType":  "Kravtyp",
                                                              "requirementTypeTooltip":  "Välj typ av identifieringsmetod som ska användas för att fastställa hur ett krav ska utvärderas."
                                                          },
-                              "allowedArchitectures":  "Check operating system architecture",
-                              "allowedArchitecturesNoRadioButton":  "No. Allow this app to be installed on all systems.",
-                              "allowedArchitecturesTooltip":  "Select 'Yes' to specify the systems the app can be installed on. Select 'No' (default) to allow this app to be installed on all systems.",
-                              "allowedArchitecturesYesRadioButton":  "Yes. Specify the systems the app can be installed on.",
+                              "allowedArchitectures":  "Kontrollera operativsystemarkitekturen",
+                              "allowedArchitecturesNoRadioButton":  "Nej. Tillåt att den här appen installeras på alla system.",
+                              "allowedArchitecturesTooltip":  "Välj Ja om du vill ange de system som appen kan installeras på. Välj Nej (standard) för att tillåta att den här appen installeras på alla system.",
+                              "allowedArchitecturesYesRadioButton":  "Ja. Ange de system som appen kan installeras på.",
                               "architectures":  "Operativsystemarkitektur",
                               "architecturesTooltip":  "Välj de arkitekturer som behövs för att installera appen.",
                               "bladeTitle":  "Krav",
@@ -2221,6 +2228,10 @@
                                                              "label":  "Kryptera organisationsdata på registrerade enheter",
                                                              "tooltip":  "Välj {0} om du vill framtvinga kryptering av organisationsdata med applagerkryptering från Intune på alla enheter. <br/>\r\n\r\nVälj {1} om du inte vill framtvinga kryptering av organisationsdata med applagerkryptering från Intune på registrerade enheter."
                                                          },
+                        "GenmojiConfigurationState":  {
+                                                          "label":  "Genmoji",
+                                                          "tooltip":  "  Om den blockeras inaktiveras genmoji när den principhanterade appen används. Mer information finns <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">här. </a>"
+                                                      },
                         "IOSBackup":  {
                                           "label":  "Säkerhetskopiera organisationsdata till iTunes- och iCloud-säkerhetskopieringar",
                                           "tooltip":  "Välj {0} om du vill förhindra säkerhetskopiering av organisationsdata till iTunes eller iCloud.  \r\nVälj {1} om du vill tillåta säkerhetskopiering av organisationsdata till iTunes eller iCloud.  \r\nPersonliga eller ohanterade data påverkas inte."
@@ -2314,6 +2325,10 @@
                                                                  "label":  "Skärmbild och Google Assistent\r\n",
                                                                  "tooltip":  "Om det är blockerat inaktiveras både skanningsfunktioner för skärmbild och Google Assistent-appen när den principhanterade appen används. Funktionen kan användas med den vanliga Google Assistent-appen. Det finns inte stöd för assistenter från tredje part som använder Google Assistent-API. Om du väljer Blockera blir förhandsgranskningsbilden av Appväxlaren suddig när appen används med ett arbets- eller skolkonto."
                                                              },
+                        "ScreenCaptureConfigurationState":  {
+                                                                "label":  "Skärmdump",
+                                                                "tooltip":  " Om det blockeras inaktiveras skärmbilden när du använder den principhanterade appen. Mer information finns <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">här. </a>"
+                                                            },
                         "SendData":  {
                                          "label":  "Skicka organisationsdata till andra appar",
                                          "tooltip":  "Välj ett av följande alternativ för att ange de appar som den här appen kan skicka organisationsdata till: <br/>\r\n\r\n\r\n<b>Ingen</b>: Skicka inte organisationsdata till någon app <br/>\r\n\r\n\r\n<b>Principhanterade appar</b>: Tillåt bara sändning av organisationsdata till andra principhanterade appar <br/>\r\n\r\n\r\n<b>Principhanterade appar med operativsystemdelning</b>: Tillåt endast sändning av organisationsdata till andra principhanterade appar och sändning av organisationsdokument till andra mobilenhetshanterade appar på registrerade enheter <br/>\r\n\r\n<b>\r\nPrinciphanterade appar med Öppna i/Dela-filtrering</b>: Tillåt endast sändning av organisationsdata till andra principhanterade appar och filtrera Öppna i/Dela-dialogrutor så att bara principhanterade appar visas\r\n <br/>\r\n\r\n<b>Alla appar</b>: Tillåt sändning av organisationsdata till valfri app"
@@ -2348,6 +2363,10 @@
                                             "label":  "Skicka organisationsdata till",
                                             "tooltip":  "Välj något av följande alternativ för att ange vilka mål organisationens användare kan skicka data till: <br/>\r\n\r\n<b>Alla mål</b>: Organisationsanvändare kan skicka organisationsdata till valfritt konto, dokument, plats eller program.<br/>\r\n\r\n<b>Inga mål</b>: Organisationsanvändare kan inte skicka organisationsdata till externa konton, dokument, platser eller program från organisationskontexten."
                                         },
+                        "WritingToolsConfigurationState":  {
+                                                               "label":  "Skriva verktyg",
+                                                               "tooltip":  "Om det blockeras inaktiveras skrivverktygen när du använder den principhanterade appen. Mer information finns <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">här. </a>"
+                                                           },
                         "Tap":  {
                                     "numberOfDays":  "Antal dagar",
                                     "pinResetAfterNumberOfDays":  "Återställ PIN-kod efter antal dagar",
@@ -3934,9 +3953,106 @@
                           "other":  "Övrigt",
                           "webApplication":  "Webbprogram"
                       },
+    "HardwareConfig":  {
+                           "Barchart":  {
+                                            "Device":  {
+                                                           "title":  "Enhetsstatus"
+                                                       },
+                                            "ReportGrid":  {
+                                                               "Columns":  {
+                                                                               "deviceStatus":  "Enhetsstatus",
+                                                                               "error":  "Fel",
+                                                                               "failedCount":  "Det gick inte att räkna antal enheter",
+                                                                               "notApplicableCount":  "Antal enheter som inte används",
+                                                                               "pendingCount":  "Antal väntande enheter",
+                                                                               "successCount":  "Antal räknade enheter",
+                                                                               "unknownCount":  "Okänt antal enheter"
+                                                                           },
+                                                               "Device":  {
+                                                                              "searchBoxPlaceholder":  "Sök efter enhetsnamn och användarnamn"
+                                                                          },
+                                                               "Export":  {
+                                                                              "Device":  {
+                                                                                             "reportName":  "DeviceRunSummary",
+                                                                                             "title":  "Exportera en sammanfattning av en enhetskörning av BIOS-konfigurationer och andra inställningar"
+                                                                                         },
+                                                                              "User":  {
+                                                                                           "reportName":  "UserRunSummary",
+                                                                                           "title":  "Exportera en sammanfattning av en användarkörning av BIOS-konfigurationer och andra inställningar"
+                                                                                       }
+                                                                          },
+                                                               "User":  {
+                                                                            "searchBoxPlaceholder":  "Sök efter användarnamn"
+                                                                        }
+                                                           },
+                                            "User":  {
+                                                         "title":  "Användarstatus"
+                                                     },
+                                            "failure":  "Fel",
+                                            "notApplicable":  "Saknas",
+                                            "pending":  "Väntar",
+                                            "succeeded":  "Lyckades",
+                                            "unknown":  "Okänd",
+                                            "viewReportButtonText":  "Visa rapport"
+                                        },
+                           "DCList":  {
+                                          "name":  "BIOS-konfigurationer och andra inställningar"
+                                      },
+                           "Policy":  {
+                                          "Create":  {
+                                                         "createButtonText":  "Skapa",
+                                                         "reviewButtontext":  "Granska"
+                                                     },
+                                          "Edit":  {
+                                                       "title":  "Redigera profilen för BIOS-konfigurationer och andra inställningar"
+                                                   },
+                                          "createProfile":  "Skapa profilen för BIOS-konfigurationer och andra inställningar"
+                                      },
+                           "Settings":  {
+                                            "Tab":  {
+                                                        "Configurations":  {
+                                                                               "file":  "Konfigurationsfil",
+                                                                               "fileInfoBox":  "Konfigurationsfiltypen ska vara \".cctk\"",
+                                                                               "hardware":  "Maskinvara",
+                                                                               "infoBox":  "Innan du konfigurerar konfigurationer här bör du kontrollera att det finns en win32-app som installerar maskinvarutillverkarens agent på dessa enheter.",
+                                                                               "learnMore":  "Läs mer om BIOS-konfigurationer och andra inställningar",
+                                                                               "perDevicePassword":  "Inaktivera BIOS-lösenordskyddet per enhet"
+                                                                           },
+                                                        "DisablePassword":  {
+                                                                                "Options":  {
+                                                                                                "no":  "Nej",
+                                                                                                "yes":  "Ja"
+                                                                                            }
+                                                                            },
+                                                        "HardwareDropDown":  {
+                                                                                 "dell":  "Dell",
+                                                                                 "surface":  "Surface",
+                                                                                 "surfaceDock":  "Surface-docka"
+                                                                             }
+                                                    }
+                                        },
+                           "Summary":  {
+                                           "Buttons":  {
+                                                           "delete":  "Radera"
+                                                       },
+                                           "Tab":  {
+                                                       "monitor":  "Övervaka",
+                                                       "properties":  "Egenskaper"
+                                                   },
+                                           "subtitle":  "Profil för BIOS-konfigurationer och andra inställningar"
+                                       },
+                           "Wizard":  {
+                                          "Basics":  {
+                                                         "title":  "Grundläggande inställningar"
+                                                     },
+                                          "Configurations":  {
+                                                                 "title":  "Konfigurationer"
+                                                             }
+                                      }
+                       },
     "Filters":  {
                     "ruleSyntax":  "Regelsyntax",
-                    "filters":  "Filter"
+                    "filters":  "Tilldelningsfilter"
                 },
     "CustomCompliance":  {
                              "FilePicker":  {
@@ -4708,12 +4824,12 @@
                               "successfullySavedPolicy":  "Sparade {0}"
                           },
     "ArchitectureOptions":  {
-                                "arm64InstructionSet":  "Install on ARM64 system",
-                                "checkBox":  "Please select at least one architecture setting",
+                                "arm64InstructionSet":  "Installera på ARM64-system",
+                                "checkBox":  "Välj minst en arkitekturinställning",
                                 "sixtyFourBit":  "64-bitars",
-                                "sixtyFourBitInstructionSet":  "Install on x64 system",
+                                "sixtyFourBitInstructionSet":  "Installera på x64-system",
                                 "thirtyTwoBit":  "32-bitars",
-                                "thirtyTwoBitInstructionSet":  "Install on x86 system"
+                                "thirtyTwoBitInstructionSet":  "Installera på x86-system"
                             },
     "Countries":  {
                       "ae":  "Förenade Arabemiraten",
@@ -5072,6 +5188,8 @@
                            "androidEnterpriseAlwaysOnVpnLinkDescription":  "Läs mer om att ställa in alltid på-VPN för Android Enterprise.",
                            "androidEnterpriseAlwaysOnVpnLinkName":  "Alltid på-VPN kan ställas in i enhetsbegränsningarna.",
                            "androidEnterpriseAlwaysOnVpnLockdownModeEnabledName":  "Låsningsläge",
+                           "androidEnterpriseComplianceRequiredPasswordTypeDescription":  "Ställ in krav på lösenordskomplexitet. Ytterligare lösenordskrav blir tillgängliga baserat på ditt val. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323793\">Läs mer om lösenordskrav.</a>",
+                           "androidEnterpriseConfigurationRequiredPasswordTypeDescription":  "Ställ in krav på lösenordskomplexitet. Ytterligare lösenordskrav blir tillgängliga baserat på ditt val. <a href=\"https://go.microsoft.com/fwlink/?linkid=2297352\">Läs mer om lösenordskrav.</a>",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnEnabledDescription":  "Ställ in att en VPN-klient ska ansluta och återansluta automatiskt till VPN när det är möjligt. Välj Inaktiverat om du vill inaktivera alltid på-VPN-anslutning för alla VPN-klienter på enheten. Det går bara att ställa in en VPN-klient för alltid på-VPN-anslutning på en angiven enhet, så se till att endast en princip för alltid på-VPN-anslutning har distribuerats till en och samma enhet.",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnLockdownModeEnabledDescription":  "När det här är aktiverat måste all nätverkstrafik gå via VPN-tunneln. Om ingen VPN-anslutning kan upprättas tillåts ingen nätverkstrafik.",
                            "androidEnterpriseDeviceSettingsBlockedDescription":  "Användarna kan som standard öppna appen Inställningar i helskärmsläge.",
@@ -5095,7 +5213,7 @@
                            "androidEnterpriseWorkProfileAlwaysOnVpnClientDescription":  "Den angivna VPN-klienten måste vara installerad på enheten och den måste ha stöd för per app-VPN i arbetsprofiler. I annat fall uppstår fel. Tänk på att du måste godkänna appen i den hanterade Google Play-butiken, synkronisera appen med Intune och distribuera den för att den ska kunna installeras i användarens arbetsprofil.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnEnabledDescription":  "Ställ in att en VPN-klient i arbetsprofilen ska ansluta och återansluta automatiskt till VPN när det är möjligt. Välj Inaktivera om du vill inaktivera alltid på-VPN för alla VPN-klienter i arbetsprofilen. Det går bara att ställa in en VPN-klient för alltid på-VPN på en angiven enhet, så se till att det inga andra principer för alltid på-VPN är distribuerade till en och samma enhet.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnLockdownModeEnabledDescription":  "När det här är aktiverat måste all nätverkstrafik för arbetsprofilen gå via VPN-tunneln- Om det inte går att upprätta en anslutning till VPN tillåts ingen nätverkstrafik i enhetens arbetsprofil.",
-                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Skapa och tilldela den här profilen för att flytta enheter till en nyare och effektivare principimplementering. Enheter som konfigurerats med webbaserad registrering använder automatiskt den nyare implementeringen.",
+                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Skapa och tilldela den här profilen för att flytta enheter till Android-API för hantering, vilket tillämpar principen på ett effektivare sätt. Enheter som konfigurerats med webbaserad registrering använder automatiskt Android-API för hantering.",
                            "androidForWorkMigrationPolicyDescriptionParagraph2":  "Enheter flyttas när de har tillräckligt med batteri och inte är anslutna till Wi-Fi som hanteras av Intune-principen.",
                            "androidForWorkMigrationPolicyLearnMoreText":  "Läs mer om den här förbättringen.",
                            "androidGeneralKiosk":  "De här inställningarna gäller enbart Samsung KNOX-standardenheter.",
@@ -5127,6 +5245,8 @@
                            "anyDayOption":  "Valfri dag",
                            "anyEthernet":  "Valfritt Ethernet",
                            "anywhereOption":  "Överallt",
+                           "aospComplianceRequiredPasswordTypeDescription":  "Ställ in krav på lösenordskomplexitet. Ytterligare lösenordskrav blir tillgängliga baserat på ditt val. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323729\">Läs mer om lösenordskrav.</a>",
+                           "aospConfigurationRequiredPasswordTypeDescription":  "Ställ in krav på lösenordskomplexitet. Ytterligare lösenordskrav blir tillgängliga baserat på ditt val. <a href=\"https://go.microsoft.com/fwlink/?linkid=847987\">Läs mer om lösenordskrav.</a>",
                            "appBundleIdColumn":  "Appaket-id",
                            "appColumnExamples":  "Exempel: Filename.exe eller %ProgramFiles%\\Path\\Filename.exe",
                            "appComplianceListName":  "Appar som ska tillåtas eller begränsas på enheten",
@@ -6457,7 +6577,7 @@
                            "directGlobalProxyOption":  "Direkt",
                            "disableAllNotificationsOption":  "Stäng av alla meddelanden, inklusive omstartsvarningar",
                            "disableBitLockerRecoveryPasswordRotationOption":  "Nyckelrotering har inaktiverats",
-                           "disableDeviceLocationDescription":  "Blockering hindrar även administratörer från att hitta enheter.",
+                           "disableDeviceLocationDescription":  "Blockering hindrar även administratörer från att hitta enheter. För företagsägda arbetsprofilenheter gäller den här inställningen endast för enheter som kör Android 10 eller tidigare.",
                            "disableDeviceLocationName":  "Plats",
                            "disableDeviceLocationSharingName":  "Platsdelning",
                            "disableMacAddressRandomization":  "Inaktivera slumpgenerering av MAC-adress",
@@ -7538,7 +7658,7 @@
                            "kioskRecurrence":  "Upprepning av underhållsperiod",
                            "kioskRecurrenceDescription":  "Ställ in hur ofta underhållsperioder för appuppdateringar ska äga rum. Rekommendationen är dagligen, för att undvika oplanerad omstart av appar.",
                            "kioskScreenOrientationAutoRotate":  "Rotera automatiskt",
-                           "kioskScreenOrientationDescription":  "Riktningen i vilken Hanterad hemskärm visas på enheten.",
+                           "kioskScreenOrientationDescription":  "Riktningen i vilken Hanterad hemskärm visas på enheten. Obs! På Android 16 och senare stöder plattformen inte skärmorienteringsinställningen för enheter med större formfaktorer, till exempel surfplattor, med minsta bredden 600 dp eller större.",
                            "kioskScreenOrientationLandscape":  "Liggande",
                            "kioskScreenOrientationName":  "Skärmorientering",
                            "kioskScreenOrientationNotConfigured":  "Inte konfigurerat",
@@ -8188,7 +8308,7 @@
                            "microsoftTunnelSiteNotExist":  "Webbplatsen finns inte. Välj en ny webbplats.",
                            "microsoftUpdatesDescription":  "Bestäm om du ska söka efter uppdateringar från Microsoft Update.",
                            "microsoftUpdatesName":  "Microsoft-produktuppdateringar",
-                           "migrationPolicyCannotBeUnassigned":  "När du har tilldelat den här principen kan den inte tas bort.",
+                           "migrationPolicyCannotBeUnassigned":  "När du har tilldelat den här principen börjar enheterna flytta till Android-API för hantering. Om du tar bort eller tar bort den här principen fortsätter enheter som redan har flyttat att använda den nya metoden och målenheter som inte redan har flyttats flyttas inte.",
                            "minimumNumberOfCharacterSetsDescription":  "Med den här inställningen anges minsta antal teckenuppsättningar lösenordet måste innehålla. De fyra teckenuppsättningarna är:\r\n<br>\r\nGemener\r\n<br>\r\nVersaler\r\n<br>\r\nSymboler\r\n<br>\r\nSiffror",
                            "minimumNumberOfCharacterSetsName":  "Antal teckenuppsättningar ett lösenord måste innehålla",
                            "minimumPasswordLengthDescription":  "Lägsta antal siffror eller tecken i lösenordet.",
@@ -11465,6 +11585,12 @@
                                                  "title":  "Cloud apps or actions"
                                              },
                     "CloudappsSelectionBlade":  {
+                                                    "AgenticResources":  {
+                                                                             "allAgenticResources":  "All agent resources (Preview)",
+                                                                             "allAgenticResourcesExcLower":  "all agent resources excluded",
+                                                                             "allAgenticResourcesExcluded":  "All agent resources excluded",
+                                                                             "allAgenticResourcesIncluded":  "All agent resources"
+                                                                         },
                                                     "AllInternetResources":  {
                                                                                  "excludedWithGSA":  "All internet resources with Global Secure Access excluded",
                                                                                  "excludedWithGSALower":  "all internet resources with Global Secure Access excluded",
@@ -11540,6 +11666,7 @@
                                                      "policySummaryMfaForAllUsers":  "This policy requires all users to perform multifactor authentication when accessing any resources. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryPhishingResistantMfa":  "Accounts that are assigned privileged administrative roles are frequent targets of attackers. Requiring phishing-resistant multifactor authentication (MFA) on those accounts is an easy way to reduce the risk of those accounts being compromised.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRiskViaGroup":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. We'll assign eligible users into a new security group named 'Conditional Access: Risky sign-in multifactor authentication (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e98)'. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "recActionsGlobal1":  "Review the policy and its benefits.",
@@ -11551,6 +11678,7 @@
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
+                                                     "recommendedActionsIntroShort":  "Before enabling this policy",
                                                      "securityDefaultsBasedAdminMfaMMPolicySummary":  "Require multifactor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as security defaults.",
                                                      "securityDefaultsBasedAllUserMfaMMPolicySummary":  "Require multifactor authentication for all user accounts to reduce risk of compromise.",
                                                      "securityDefaultsBasedAzureManagementMMPolicySummary":  "Require multifactor authentication to protect privileged access to Azure management.",
@@ -11728,7 +11856,7 @@
                                                                                   "description":  "Configure service principal risk levels needed for policy to be enforced",
                                                                                   "infoBalloonContent":  "Configure service principal risk to apply the policy to selected risk level(s)",
                                                                                   "title":  "Service principal risk",
-                                                                                  "titlePreview":  "Service principal risk (Preview)"
+                                                                                  "titlePreview":  "Service principal risk"
                                                                               }
                                                  }
                                },
@@ -11745,7 +11873,8 @@
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
                                                                                                         "label":  "Authentication flows",
-                                                                                                        "multiple":  "\"{0}\" and \"{1}\""
+                                                                                                        "multiple":  "\"{0}\" and \"{1}\"",
+                                                                                                        "protocolFlows":  "Protocol and flows"
                                                                                                     },
                                                                                        "singular":  "Authentication flow"
                                                                                    },
@@ -11966,6 +12095,10 @@
                                                                     "description":  "Select the resources to exempt from the policy"
                                                                 }
                                                 },
+                    "RiskRemediationValidation":  {
+                                                      "mustSelect":  "To enable Require Risk Remediation, you must select {0}.",
+                                                      "xOrY":  "{0} or {1}"
+                                                  },
                     "SSM":  {
                                 "MemberSelector":  {
                                                        "description":  "Users and groups"
@@ -12082,7 +12215,7 @@
                                                               "checkboxLabel":  "Require token protection for app sessions (Preview)"
                                                           },
                                             "SecureSignIn":  {
-                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Preview)",
+                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Generally available for Windows. Preview for MacOS, iOS)",
                                                                  "error":  "Policies enforcing Token Protection for Sign In Sessions must be scoped to supported platforms. {0}Learn more about token protection.{1}",
                                                                  "infoBallonText":  "A secure sign-in session requires all long-lived tokens (the Microsoft Entra session cookie and refresh token) to be bound to the device using software key binding or hardware security module binding where available.",
                                                                  "warningInfoBoxText":  "The control \"Require token protection for sign-in sessions\" only works with supported devices and applications. Unsupported devices and client applications will be blocked."
@@ -12269,7 +12402,9 @@
                                                           "requireApprovedClientAppEnabled":  "You should no longer use \"Require approved client app\", as we will soon stop updating it.",
                                                           "requireAuthOrMfa":  "\"{0}\" cannot be used with \"{1}\".",
                                                           "requireMfa":  "Consider testing the new \"{0}\".",
-                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\"."
+                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\".",
+                                                          "requirePasswordChangeEnabledResource":  "\"Require password change\" can only be used when policy is assigned to \"All resources\".",
+                                                          "requireRiskRemediation":  "\"{0}\" can only be used when policy is assigned to \"{1}.\" This option requires multifactor authentication or authentication strengths controls. Other controls cannot be used. This option also requires the Session control \"Sign-in Frequency\" to be set to \"Every time.\""
                                                       },
                                          "Policies":  {
                                                           "Linux":  {
@@ -12613,6 +12748,8 @@
                     "daysOfWeekTypeLabel":  "Days of the week",
                     "deletePolicyNoLicenseText":  "You can delete this policy now. Once deleted you will not be able to recreate it until you have the required licenses.",
                     "descriptionContentForControlsAndOr":  "For multiple controls",
+                    "deviceFilterInformationalLearnMore":  "Learn more",
+                    "deviceFilterInformationalResponse":  "Microsoft recommends using at least one system-defined or admin-configured device attribute when creating filter rules.",
                     "devicePlatform":  "Device platform",
                     "devicePlatformInclude":  "{0} included",
                     "devicePlatformIncludeExclude":  "{0} and {1} excluded",
@@ -12806,13 +12943,9 @@
                     "policyConditionNetwork":  "Network",
                     "policyConditionNetworkLocationDescription":  "Network and locations (determined by IP address range or GPS coordinates) the user is signing in from",
                     "policyConditionSigninRisk":  "Sign-in risk",
-                    "policyConditionSigninRiskCiamDescription":  "Sign-in risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionSigninRiskDescription":  "Likelihood that the sign-in is coming from someone other than the user. Risk level can be high, medium or low. Requires Microsoft Entra ID P2 license.",
-                    "policyConditionSigninRiskPreview":  "Sign-in risk (preview)",
                     "policyConditionUserRisk":  "User risk",
-                    "policyConditionUserRiskCiamDescription":  "User risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionUserRiskDescription":  "Configure user risk levels needed for policy to be enforced",
-                    "policyConditionUserRiskPreview":  "User risk (preview)",
                     "policyConditioniClientApp":  "Client apps",
                     "policyControlAllowAccessDisplayedName":  "Grant access",
                     "policyControlAuthenticationStrengthDisplayedName":  "Require authentication strength",
@@ -12826,8 +12959,10 @@
                     "policyControlRequireCompliantAppDisplayedName":  "Require app protection policy",
                     "policyControlRequireDomainJoinedDisplayedName":  "Require Microsoft Entra hybrid joined device",
                     "policyControlRequireMamDisplayedName":  "Require approved client app",
+                    "policyControlRequireRiskRemediationDisplayedName":  "Require risk remediation",
                     "policyControlRequiredPasswordChangeDisplayedName":  "Require password change",
                     "policyControlSelectAuthStrength":  "Require authentication strength",
+                    "policyControlSelectRiskRemediation":  "Require risk remediation",
                     "policyControlsNoControlsSelected":  "0 controls selected",
                     "policyControlsSection":  "Access controls",
                     "policyCreatBladeTitle":  "New",
@@ -12886,6 +13021,7 @@
                     "privateLinkLabel":  "Microsoft Entra Private Link",
                     "reportOnlyInfoBox":  "Report-only mode: Policies are evaluated and logged at sign-in but do not impact users.",
                     "requireAllControlsText":  "Require all the selected controls",
+                    "requireAuthStrength":  "Require authentication strength",
                     "requireCompliantDevice":  "Require compliant device",
                     "requireDomainJoined":  "Require domain-joined device",
                     "requireGrantReauth":  "The \"sign-in frequency every time\" session control requires a \"require multifactor authentication\" or \"require password change\" grant control when \"All cloud apps\" is selected",
@@ -12971,10 +13107,12 @@
                     "trustedLocationStatusIconEnabled":  "Trusted status icon",
                     "tuesday":  "Tuesday",
                     "uploadInBadState":  "Unable to upload the specified file.",
+                    "userAgentOrSPSelectionBladeTitle":  "Users, agent identities or workload identities",
                     "userAppNoneOption":  "None",
                     "userNamePlaceholderText":  "Enter User Name",
                     "userNotSetSeletorLabel":  "0 users and groups selected",
                     "userOnlySelectionBladeExcludeDescription":  "Select the users to exempt from the policy",
+                    "userOrAgentSelectionBladeTitle":  "Users or agent identities",
                     "userOrGroupSelectionCountDiffBannerText":  "{0} configured in this policy have been deleted from the directory, but this doesn't affect the other users and groups in the policy. The next time you update the policy, the deleted users and/or groups will be automatically removed.",
                     "userOrSPNotSetSelectorLabel":  "0 users or workload identities selected",
                     "userOrSPSelectionBladeTitle":  "Users or workload identities",
@@ -13110,8 +13248,10 @@
                      "iosCommaAndroidPlatformLabel":  "iOS, Android",
                      "linux":  "Linux",
                      "macOS":  "macOS",
+                     "tvOS":  "tvOS",
                      "unknown":  "Okänt",
                      "unsupported":  "Stöds inte",
+                     "visionOS":  "visionOS",
                      "windows":  "Windows",
                      "windows10":  "Windows 10 och senare",
                      "windows10CM":  "Windows 10 och senare (ConfigMgr)",

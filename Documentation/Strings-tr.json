@@ -70,8 +70,10 @@
                                                            },
                                            "appPackageFile":  "Uygulamanızı bir cihaza dışarıdan yüklenebilecek biçimde içeren dosya. Geçerli paket türleri şunlardır: Android (.apk), iOS (.ipa), macOS (.pkg), Windows (.msi, .appx, .appxbundle, .msix ve .msixbundle).​",
                                            "applicableDeviceType":  "Bu uygulamayı yükleyebilecek cihaz türlerini seçin.​",
-                                           "category":  "Kullanıcıların Şirket Portalı'nda sıralama ve arama yapmasını kolaylaştırmak için uygulamayı kategorilere ayırın. Birden çok kategori seçebilirsiniz.",
+                                           "category":  "Kullanıcıların uygulamayı Şirket Portalı'nda daha kolay bulmalarını sağlamak için bir veya daha fazla kategori seçebilirsiniz.",
+                                           "categoryLearnMore":  "Uygulama kategorileri hakkında daha fazla bilgi edinin",
                                            "categoryLink":  "https://go.microsoft.com/fwlink/?linkid=2295954",
+                                           "categoryWhenApprovalRequired":  "Kullanıcıların uygulamayı Şirket Portalı'nda daha kolay bulmalarını sağlamak için bir veya daha fazla kategori seçebilirsiniz. Bir değişiklik isteği oluşturulmuş olsa da, uygulama kategorilerini değiştirmek için onay gerekmez. Böyle bir değişiklik hemen gerçekleşir.",
                                            "description":  "Kullanıcıların uygulamanın ne olduğunu ve/veya uygulamada neler yapabileceklerini anlamalarına yardımcı olun. Bu açıklama Şirket Portalı'nda kullanıcılar tarafından görülebilir.",
                                            "developer":  "Uygulamayı geliştiren şirket veya kişinin adı. Bu bilgiler, yönetim merkezinde oturum açan kişiler tarafından görülebilir.",
                                            "displayVersion":  "Uygulamanın sürümü. Bu bilgiler, Şirket Portalı'nda kullanıcılar tarafından görülebilir.",
@@ -79,7 +81,6 @@
                                            "ignoreManifestScope":  "Evet olarak yapılandırılırsa, tam ekran bir web klibi, Safari kullanıcı arabirimi gösterilmeden harici bir web sitesine gidebilir. Aksi takdirde, web klibinin URL'sinden ayrılırken Safari kullanıcı arabirimi görünür. Tam ekran false olduğunda bu anahtarın hiçbir etkisi yoktur.",
                                            "infoUrl":  "Kişileri uygulama hakkında daha fazla bilgi verilen bir web sitesi veya belge bağlantısına yönlendirin. Bilgi URL'si Şirket Portalı'nda kullanıcılar tarafından görülebilir.",
                                            "isFeatured":  "Öne çıkan uygulamalar, kullanıcıların hızlıca erişebilmesi için Şirket Portalı'nda dikkat çekici bir şekilde sunulur.",
-                                           "learnMore":  "Daha fazla bilgi",
                                            "logo":  "Uygulama ile ilişkili logoyu karşıya yükleyin. Bu logo, Şirket Portalı'nda uygulamanın yanında görüntülenir.​",
                                            "macOSDmgAppPackageFile":  "Uygulamanızın bir cihaza dışarıdan yüklenebilen bir formatta bulunduğu bir dosya. Geçerli paket türü: .dmg.​",
                                            "macOSPkgAppPackageFile":  "Uygulamanızın bir cihaza dışarıdan yüklenebilen bir formatta bulunduğu bir dosya. Geçerli paket türü: .pkg.",
@@ -95,6 +96,7 @@
                                            "selectApp":  "Intune ile dağıtmak istediğiniz iOS için App Store mağaza uygulamalarını arayın.",
                                            "targetApplicationBundleIdentifier":  "URL'yi açan uygulamayı belirten uygulama paketi tanımlayıcısı. iOS 14 ve üzeri sürümlerde kullanılabilir.",
                                            "useManagedBrowser":  "Gerekirse, kullanıcı web uygulamasını açtığında uygulama, Microsoft Edge veya Intune Managed Browser gibi Intune korumalı bir tarayıcıda açılır. Bu ayar hem iOS hem de Android cihazlar için geçerlidir.",
+                                           "useManagedBrowserLearnMore":  "Yönetilen tarayıcılar hakkında daha fazla bilgi edinin",
                                            "useManagedBrowserLink":  "https://go.microsoft.com/fwlink/?linkid=2299509",
                                            "win32AppPackageFile":  "Cihaza dışarıdan yüklenebilecek biçimdeki uygulamanızı içeren dosya. Geçerli paket türü: .intunewin.​",
                                            "winGetStoreSelectApp":  "Intune ile dağıtmak istediğiniz mağaza uygulamaları için Microsoft Store uygulamasında (yeni) arama yapın."
@@ -224,6 +226,7 @@
                                                "v15":  "iOS 15.0",
                                                "v16":  "iOS 16.0",
                                                "v17":  "iOS 17.0",
+                                               "v18":  "iOS 18.0",
                                                "v8":  "iOS 8.0",
                                                "v9":  "iOS 9.0"
                                            },
@@ -250,6 +253,9 @@
                                                          },
                                                  "V14":  {
                                                              "0":  "macOS Sonoma 14.0"
+                                                         },
+                                                 "V15":  {
+                                                             "0":  "macOS Sequoia 15.0"
                                                          }
                                              },
                                    "Windows":  {
@@ -451,6 +457,7 @@
                    "calendar":  "Takvim",
                    "categoryLabel":  "Kategori",
                    "categoryNameLabel":  "Varsayılan ad",
+                   "categorySubLabelWhenApprovalRequired":  "Çoklu yönetici onayını desteklemiyor",
                    "certProfileType":  "Sertifika profili türü",
                    "certificate":  "Sertifika",
                    "certificates":  "Sertifikalar",
@@ -995,7 +1002,7 @@
                        "accountProtection":  "Hesap Koruması",
                        "administrativeTemplates":  "Yönetim Şablonları",
                        "androidCompliancePolicy":  "Android uyumluluk ilkesi",
-                       "androidForWorkMigrationPolicy":  "Yeni Uygulama",
+                       "androidForWorkMigrationPolicy":  "Android Yönetim API'sine taşıyın",
                        "aospDeviceOwnerCompliancePolicy":  "Android (AOSP) uyumluluk ilkesi",
                        "applicationControl":  "İş için Uygulama Denetimi",
                        "attackSurfaceReductionRules":  "Saldırı Yüzeyi Azaltma Kuralları",
@@ -1214,10 +1221,10 @@
                                                              "requirementType":  "Gereksinim türü",
                                                              "requirementTypeTooltip":  "Bir gereksiniminin nasıl doğrulanacağının belirlenmesi için kullanılacak algılama yöntemini seçin."
                                                          },
-                              "allowedArchitectures":  "Check operating system architecture",
-                              "allowedArchitecturesNoRadioButton":  "No. Allow this app to be installed on all systems.",
-                              "allowedArchitecturesTooltip":  "Select 'Yes' to specify the systems the app can be installed on. Select 'No' (default) to allow this app to be installed on all systems.",
-                              "allowedArchitecturesYesRadioButton":  "Yes. Specify the systems the app can be installed on.",
+                              "allowedArchitectures":  "İşletim sistemi mimarisini kontrol edin",
+                              "allowedArchitecturesNoRadioButton":  "Hayır. Bu uygulamanın tüm sistemlere yüklenmesine izin ver.",
+                              "allowedArchitecturesTooltip":  "Uygulamanın yüklenebileceği sistemleri belirtmek için 'Evet'i seçin. Bu uygulamanın tüm sistemlere yüklenmesine izin vermek için 'Hayır'ı (varsayılan) seçin.",
+                              "allowedArchitecturesYesRadioButton":  "Evet. Uygulamanın yüklenebileceği sistemleri belirtin.",
                               "architectures":  "İşletim sistemi mimarisi",
                               "architecturesTooltip":  "Uygulamayı yüklemek için gereken mimarileri seçin.",
                               "bladeTitle":  "Gereksinimler",
@@ -2221,6 +2228,10 @@
                                                              "label":  "Kuruluş verilerini kayıtlı cihazlarda şifrele",
                                                              "tooltip":  "Tüm cihazlarda kuruluş verilerini Intune uygulama katmanı şifrelemesi ile şifrelemeyi zorunlu kılmak için {0} seçeneğini belirleyin. <br/>\r\n\r\nKayıtlı cihazlarda kuruluş verilerini Intune uygulama katmanı şifrelemesi ile şifrelemeyi zorunlu kılmamak için {1} seçeneğini belirleyin."
                                                          },
+                        "GenmojiConfigurationState":  {
+                                                          "label":  "Genmoji",
+                                                          "tooltip":  "  Engellendiyse, ilke tarafından yönetilen uygulama kullanılırken genmoji özelliği devre dışı bırakılır. Daha fazla bilgi için <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">buraya bakın. </a>"
+                                                      },
                         "IOSBackup":  {
                                           "label":  "Kuruluş verilerini iTunes ve iCloud yedeklerine yedekle",
                                           "tooltip":  "Kuruluş verilerinin iTunes veya iCloud'a yedeklenmesini engellemek için {0} seçeneğini belirleyin.  \r\nKuruluş verilerinin iTunes veya iCloud'a yedeklenmesine izin vermek için {1} seçeneğini belirleyin.  \r\nKişisel veya yönetilmeyen veriler etkilenmez."
@@ -2314,6 +2325,10 @@
                                                                  "label":  "Ekran yakalama ve Google Assistant\r\n",
                                                                  "tooltip":  "Engellenirse ilkeyle yönetilen bir uygulama kullanılırken, ekran yakalama ve Google Assistant uygulama tarama özellikleri devre dışı bırakılır. Bu özellik bilinen Google Assistant uygulamasını destekler. Google'ın Assist API'sini kullanan üçüncü taraf yardımcılar desteklenmez. Engelle'yi seçmek ayrıca, uygulama bir iş veya okul hesabıyla kullanılırken Uygulama Geçişi önizleme görüntüsünü bulanıklaştırır."
                                                              },
+                        "ScreenCaptureConfigurationState":  {
+                                                                "label":  "Ekran görüntüsü",
+                                                                "tooltip":  " Engellendiyse, ilke tarafından yönetilen uygulama kullanılırken ekran görüntüsü özelliği devre dışı bırakılır. Daha fazla bilgi için <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">buraya bakın. </a>"
+                                                            },
                         "SendData":  {
                                          "label":  "Kuruluş verilerini diğer uygulamalara gönder",
                                          "tooltip":  "Bu uygulamanın kuruluş verileri gönderebileceği uygulamaları belirtmek için aşağıdaki seçeneklerden birini belirleyin: <br/>\r\n\r\n\r\n<b>Hiçbiri</b>: Hiçbir uygulamaya kuruluş verilerinin gönderilmesine izin vermeyin<br/>\r\n\r\n\r\n<b>İlkeyle yönetilen uygulamalar</b>: Yalnızca ilkeyle yönetilen diğer uygulamalara kuruluş verilerinin gönderilmesine izin verin<br/>\r\n\r\n\r\n<b>İşletim sistemi paylaşımlı, ilkeyle yönetilen uygulamalar</b>: Yalnızca ilkeyle yönetilen diğer uygulamalara ve kayıtlı cihazlarda MDM yönetimli diğer uygulamalara kuruluş verilerinin gönderilmesine izin verin<br/>\r\n\r\n<b>\r\nBirlikte Aç/Paylaş filtrelemeli, ilkeyle yönetilen uygulamalar</b>: Yalnızca ilkeyle yönetilen diğer uygulamalara kuruluş verilerinin gönderilmesine izin verin ve yalnızca ilkeyle yönetilen uygulamaları görüntülemek için işletim sistemi Birlikte Aç/Paylaş iletişim kutularını filtreleyin\r\n <br/>\r\n\r\n<b>Tüm uygulamalar</b>: Tüm uygulamalara kuruluş verilerinin gönderilmesine izin verin"
@@ -2348,6 +2363,10 @@
                                             "label":  "Kuruluş verilerini şu hedeflere gönder:",
                                             "tooltip":  "Kuruluş kullanıcılarının veri gönderebileceği hedefleri belirtmek için aşağıdaki seçeneklerden birini belirleyin: <br/>\r\n\r\n<b>Tüm hedefler</b>: Kuruluş kullanıcıları kuruluş verilerini herhangi bir hesap, belge, konum veya uygulamaya gönderebilir.<br/>\r\n\r\n<b>Hedef yok</b>: Kuruluş kullanıcıları kuruluş verilerini uygulama bağlamından dış hesaplara, belgelere, konumlara veya uygulamalara gönderemez."
                                         },
+                        "WritingToolsConfigurationState":  {
+                                                               "label":  "Yazma araçları",
+                                                               "tooltip":  "Engellendiyse, ilke tarafından yönetilen uygulama kullanılırken yazma araçları devre dışı bırakılır. Daha fazla bilgi için <a href = \"https://support.apple.com/guide/iphone/get-started-with-apple-intelligence-iphc28624b81/18.0/ios/18.0 \">buraya bakın. </a>"
+                                                           },
                         "Tap":  {
                                     "numberOfDays":  "Gün Sayısı",
                                     "pinResetAfterNumberOfDays":  "Belirtilen sayıda gün sonra PIN sıfırlama",
@@ -3934,9 +3953,106 @@
                           "other":  "Diğer",
                           "webApplication":  "Web Uygulaması"
                       },
+    "HardwareConfig":  {
+                           "Barchart":  {
+                                            "Device":  {
+                                                           "title":  "Cihaz durumu"
+                                                       },
+                                            "ReportGrid":  {
+                                                               "Columns":  {
+                                                                               "deviceStatus":  "Cihaz durumu",
+                                                                               "error":  "Hata",
+                                                                               "failedCount":  "Cihaz sayımı başarısız",
+                                                                               "notApplicableCount":  "Geçerli olmayan cihaz sayısı",
+                                                                               "pendingCount":  "Bekleyen cihaz sayısı",
+                                                                               "successCount":  "Başarılı cihaz sayısı",
+                                                                               "unknownCount":  "Bilinmeyen cihaz sayısı"
+                                                                           },
+                                                               "Device":  {
+                                                                              "searchBoxPlaceholder":  "Cihaz adına ve kullanıcı adına göre arayın"
+                                                                          },
+                                                               "Export":  {
+                                                                              "Device":  {
+                                                                                             "reportName":  "DeviceRunSummary",
+                                                                                             "title":  "BIOS yapılandırmaları ve diğer ayarların cihaz çalıştırma özetini dışarı aktarın"
+                                                                                         },
+                                                                              "User":  {
+                                                                                           "reportName":  "UserRunSummary",
+                                                                                           "title":  "BIOS yapılandırmaları ve diğer ayarların kullanıcı çalıştırma özetini dışarı aktarın"
+                                                                                       }
+                                                                          },
+                                                               "User":  {
+                                                                            "searchBoxPlaceholder":  "Kullanıcı adına göre arayın"
+                                                                        }
+                                                           },
+                                            "User":  {
+                                                         "title":  "Kullanıcı durumu"
+                                                     },
+                                            "failure":  "Hata",
+                                            "notApplicable":  "Uygulanamaz",
+                                            "pending":  "Bekliyor",
+                                            "succeeded":  "Başarılı",
+                                            "unknown":  "Bilinmiyor",
+                                            "viewReportButtonText":  "Raporu görüntüle"
+                                        },
+                           "DCList":  {
+                                          "name":  "BIOS Yapılandırmaları ve diğer ayarlar profili"
+                                      },
+                           "Policy":  {
+                                          "Create":  {
+                                                         "createButtonText":  "Oluştur",
+                                                         "reviewButtontext":  "Gözden geçir"
+                                                     },
+                                          "Edit":  {
+                                                       "title":  "BIOS Yapılandırmalarını ve diğer ayarlar profilini düzenleyin"
+                                                   },
+                                          "createProfile":  "BIOS Yapılandırmalarını ve diğer ayarlar profilini oluşturun"
+                                      },
+                           "Settings":  {
+                                            "Tab":  {
+                                                        "Configurations":  {
+                                                                               "file":  "Yapılandırma dosyası",
+                                                                               "fileInfoBox":  "Yapılandırma dosyası türü \".cctk\" olmalıdır",
+                                                                               "hardware":  "Donanım",
+                                                                               "infoBox":  "Yapılandırmaları burada ayarlamadan önce, bu cihazlarda donanım üreticisinin aracısını yükleyen bir win32 uygulamasının mevcut olduğundan emin olun.",
+                                                                               "learnMore":  "BIOS yapılandırmaları ve diğer ayarlar hakkında daha fazla bilgi edinin",
+                                                                               "perDevicePassword":  "Cihaz başına BIOS parola korumasını devre dışı bırak"
+                                                                           },
+                                                        "DisablePassword":  {
+                                                                                "Options":  {
+                                                                                                "no":  "Hayır",
+                                                                                                "yes":  "Evet"
+                                                                                            }
+                                                                            },
+                                                        "HardwareDropDown":  {
+                                                                                 "dell":  "Dell",
+                                                                                 "surface":  "Yüzey",
+                                                                                 "surfaceDock":  "Surface dock"
+                                                                             }
+                                                    }
+                                        },
+                           "Summary":  {
+                                           "Buttons":  {
+                                                           "delete":  "Sil"
+                                                       },
+                                           "Tab":  {
+                                                       "monitor":  "İzleyici",
+                                                       "properties":  "Özellikler"
+                                                   },
+                                           "subtitle":  "BIOS Yapılandırmaları ve diğer ayarlar profili"
+                                       },
+                           "Wizard":  {
+                                          "Basics":  {
+                                                         "title":  "Temel bilgiler"
+                                                     },
+                                          "Configurations":  {
+                                                                 "title":  "Yapılandırmalar"
+                                                             }
+                                      }
+                       },
     "Filters":  {
                     "ruleSyntax":  "Kural söz dizimi",
-                    "filters":  "Filtreler"
+                    "filters":  "Atama filtreleri"
                 },
     "CustomCompliance":  {
                              "FilePicker":  {
@@ -4708,12 +4824,12 @@
                               "successfullySavedPolicy":  "{0} kaydedildi"
                           },
     "ArchitectureOptions":  {
-                                "arm64InstructionSet":  "Install on ARM64 system",
-                                "checkBox":  "Please select at least one architecture setting",
+                                "arm64InstructionSet":  "ARM64 sistemine yükle",
+                                "checkBox":  "Lütfen en az bir mimari ayarı seçin",
                                 "sixtyFourBit":  "64 bit",
-                                "sixtyFourBitInstructionSet":  "Install on x64 system",
+                                "sixtyFourBitInstructionSet":  "x64 sistemine yükle",
                                 "thirtyTwoBit":  "32 bit",
-                                "thirtyTwoBitInstructionSet":  "Install on x86 system"
+                                "thirtyTwoBitInstructionSet":  "x86 sistemine yükle"
                             },
     "Countries":  {
                       "ae":  "Birleşik Arap Emirlikleri",
@@ -5072,6 +5188,8 @@
                            "androidEnterpriseAlwaysOnVpnLinkDescription":  "Android Enterprise için her zaman açık VPN'i yapılandırma hakkında daha fazla bilgi edinin.",
                            "androidEnterpriseAlwaysOnVpnLinkName":  "Her zaman açık VPN, cihaz kısıtlamalarında yapılandırılabilir.",
                            "androidEnterpriseAlwaysOnVpnLockdownModeEnabledName":  "Kilitleme modu",
+                           "androidEnterpriseComplianceRequiredPasswordTypeDescription":  "Parolanın karmaşıklık gereksinimlerini ayarlayın. Seçiminize bağlı olarak ek parola gereksinimleri kullanılabilir hale gelir. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323793\">Parola gereksinimleri hakkında daha fazla bilgi edinin.</a>",
+                           "androidEnterpriseConfigurationRequiredPasswordTypeDescription":  "Parolanın karmaşıklık gereksinimlerini ayarlayın. Seçiminize bağlı olarak ek parola gereksinimleri kullanılabilir hale gelir. <a href=\"https://go.microsoft.com/fwlink/?linkid=2297352\">Parola gereksinimleri hakkında daha fazla bilgi edinin.</a>",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnEnabledDescription":  "Mümkün olduğunda VPN'e otomatik olarak bağlanmak ve yeniden bağlanmak için bir VPN istemcisi ayarlayın. Cihazda tüm VPN istemcileri için her zaman açık VPN'i devre dışı bırakmak istiyorsanız Devre Dışı seçeneğini belirleyin. Belirli bir cihazda her zaman açık VPN için yalnızca bir VPN istemcisi yapılandırılabilir, bu yüzden tek bir cihaza birden fazla her zaman açık VPN ilkesi dağıtılmadığından emin olun.",
                            "androidEnterpriseDeviceOwnerAlwaysOnVpnLockdownModeEnabledDescription":  "Bunu etkinleştirmek, tüm ağ trafiğini VPN tüneli üzerinden zorlar. Bir VPN bağlantısı kurulamıyorsa ağ trafiğine izin verilmez.",
                            "androidEnterpriseDeviceSettingsBlockedDescription":  "Kullanıcılar varsayılan olarak kiosk modundayken Ayarlar uygulamasına erişebilir.",
@@ -5095,7 +5213,7 @@
                            "androidEnterpriseWorkProfileAlwaysOnVpnClientDescription":  "Belirtilen VPN istemcisi cihazda yüklü olmalıdır ve uygulama başına VPN iş profillerini desteklemelidir, aksi takdirde bir hata oluşacaktır. Uygulamayı Yönetilen Google Play mağazasında onaylamanız, uygulamayı Intune ile eşitlemeniz ve kullanıcının iş profiline yüklenmesi için dağıtmanız gerekeceğini unutmayın.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnEnabledDescription":  "Mümkün olduğunda VPN'e otomatik olarak bağlanmak ve yeniden bağlanmak için iş profilinde bir VPN istemcisi ayarlayın. İş profilinde tüm VPN istemcileri için her zaman açık VPN'i devre dışı bırakmak için Devre Dışı seçeneğini belirleyin. Belirli bir cihazda her zaman açık VPN için yalnızca bir VPN istemcisi yapılandırılabilir, bu yüzden tek bir cihaza birden fazla her zaman açık VPN ilkesi dağıtılmadığından emin olun.",
                            "androidEnterpriseWorkProfileAlwaysOnVpnLockdownModeEnabledDescription":  "Bu etkinleştirildiğinde, tüm ağ trafiğini VPN tüneli üzerinden iş profili için zorlar. Bir VPN bağlantısı kurulamıyorsa cihazın iş profilinde ağ trafiğine izin verilmeyecek.",
-                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Cihazları daha yeni, daha verimli bir ilke uygulamasına taşımak için bu profili oluşturun ve atayın. Web tabanlı kayıtla kurulmuş cihazlar otomatik olarak daha yeni uygulamayı kullanır.​",
+                           "androidForWorkMigrationPolicyDescriptionParagraph1":  "Cihazları, ilkeyi daha verimli bir şekilde uygulayan Android Yönetim API'sine taşımak için bu profili oluşturun ve atayın. Web tabanlı kayıtla ayarlanan cihazlar otomatik olarak Android Yönetim API'sini kullanır.",
                            "androidForWorkMigrationPolicyDescriptionParagraph2":  "Cihazlar Intune ilkesi tarafından yönetilen Wi-Fi'ye bağlı olmadıklarında ve yeterli pile sahip olduklarında taşınacaklardır. ​​",
                            "androidForWorkMigrationPolicyLearnMoreText":  "Bu geliştirme hakkında daha fazla bilgi edinin. ​​",
                            "androidGeneralKiosk":  "Bu ayarlar yalnızca Samsung KNOX Standart cihazlar için geçerlidir.",
@@ -5127,6 +5245,8 @@
                            "anyDayOption":  "Herhangi Bir Gün",
                            "anyEthernet":  "Herhangi bir Ethernet",
                            "anywhereOption":  "Her yer",
+                           "aospComplianceRequiredPasswordTypeDescription":  "Parolanın karmaşıklık gereksinimlerini ayarlayın. Seçiminize bağlı olarak ek parola gereksinimleri kullanılabilir hale gelir. <a href=\"https://go.microsoft.com/fwlink/?linkid=2323729\">Parola gereksinimleri hakkında daha fazla bilgi edinin.</a>",
+                           "aospConfigurationRequiredPasswordTypeDescription":  "Parolanın karmaşıklık gereksinimlerini ayarlayın. Seçiminize bağlı olarak ek parola gereksinimleri kullanılabilir hale gelir. <a href=\"https://go.microsoft.com/fwlink/?linkid=847987\">Parola gereksinimleri hakkında daha fazla bilgi edinin.</a>",
                            "appBundleIdColumn":  "Uygulama paketi grubu kimliği",
                            "appColumnExamples":  "Örnekler: Dosyaadı.exe veya %ProgramFiles%\\Yol\\Dosyaadı.exe",
                            "appComplianceListName":  "Cihazda izin verilecek veya kısıtlanacak uygulamalar",
@@ -6457,7 +6577,7 @@
                            "directGlobalProxyOption":  "Doğrudan",
                            "disableAllNotificationsOption":  "Yeniden başlatma uyarıları dahil tüm bildirimleri kapat",
                            "disableBitLockerRecoveryPasswordRotationOption":  "Anahtar döndürme devre dışı",
-                           "disableDeviceLocationDescription":  "Engelleme aynı zamanda yöneticilerin cihazları bulmasını da engeller.",
+                           "disableDeviceLocationDescription":  "Engelleme aynı zamanda yöneticilerin cihazları bulmasını da engeller. Şirkete ait iş profili cihazları için bu ayar yalnızca Android 10 veya daha önceki sürümleri çalıştıran cihazlar için geçerli olacaktır.",
                            "disableDeviceLocationName":  "Konum",
                            "disableDeviceLocationSharingName":  "Konum Paylaşımı",
                            "disableMacAddressRandomization":  "MAC adresini rastgele seçme özelliğini devre dışı bırak",
@@ -7538,7 +7658,7 @@
                            "kioskRecurrence":  "Bakım Penceresi Yinelenmesi",
                            "kioskRecurrenceDescription":  "Uygulama güncelleştirmelerine yönelik Bakım penceresinin hangi sıklıkta yapılacağını ayarlayın. Zamanlanmamış uygulama yeniden başlatmalarını önlemek için \"her gün\" olarak ayarlamanız önerilir.",
                            "kioskScreenOrientationAutoRotate":  "Otomatik döndür",
-                           "kioskScreenOrientationDescription":  "Managed Home Screen'in cihazda göründüğü yön.",
+                           "kioskScreenOrientationDescription":  "Managed Home Screen'in cihazda göründüğü yön. Not: Android 16 ve üstü cihazlarda, platform en küçük genişliği 600 DPI veya daha büyük olan tabletler gibi büyük form faktörlerine sahip cihazlar için ekran yönü ayarını desteklemiyor.",
                            "kioskScreenOrientationLandscape":  "Yatay",
                            "kioskScreenOrientationName":  "Ekran yönü",
                            "kioskScreenOrientationNotConfigured":  "Yapılandırılmadı",
@@ -8188,7 +8308,7 @@
                            "microsoftTunnelSiteNotExist":  "Site mevcut değil. Yeni bir site seçin.",
                            "microsoftUpdatesDescription":  "Microsoft Update sitesindeki güncelleştirmelerin taranıp taranmayacağını denetleyin.",
                            "microsoftUpdatesName":  "Microsoft ürün güncelleştirmeleri",
-                           "migrationPolicyCannotBeUnassigned":  "Bu ilke atandıktan sonra, ataması kaldırılamaz.",
+                           "migrationPolicyCannotBeUnassigned":  "Bu ilkeyi atadıktan sonra, cihazlar Android Yönetim API'sine geçmeye başlayacaklardır. Eğer bu ilkenin atamasını kaldırır veya silerseniz, zaten geçmiş olan cihazlar bu yeni yöntemi kullanmaya devam edecek ve henüz geçmemiş olan hedeflenen cihazlar taşınmayacaktır.",
                            "minimumNumberOfCharacterSetsDescription":  "Bu ayar, parolanın içermesi gereken minimum karakter kümesi sayısını belirtir. Dört karakter kümesi şunlardır:\r\n<br>\r\nKüçük harfler\r\n<br>\r\nBüyük harfler\r\n<br>\r\nSemboller\r\n<br>\r\nSayılar",
                            "minimumNumberOfCharacterSetsName":  "Parolanın içermesi gereken karakter kümesi sayısı",
                            "minimumPasswordLengthDescription":  "Paroladaki minimum rakam veya karakter sayısı.",
@@ -11465,6 +11585,12 @@
                                                  "title":  "Cloud apps or actions"
                                              },
                     "CloudappsSelectionBlade":  {
+                                                    "AgenticResources":  {
+                                                                             "allAgenticResources":  "All agent resources (Preview)",
+                                                                             "allAgenticResourcesExcLower":  "all agent resources excluded",
+                                                                             "allAgenticResourcesExcluded":  "All agent resources excluded",
+                                                                             "allAgenticResourcesIncluded":  "All agent resources"
+                                                                         },
                                                     "AllInternetResources":  {
                                                                                  "excludedWithGSA":  "All internet resources with Global Secure Access excluded",
                                                                                  "excludedWithGSALower":  "all internet resources with Global Secure Access excluded",
@@ -11540,6 +11666,7 @@
                                                      "policySummaryMfaForAllUsers":  "This policy requires all users to perform multifactor authentication when accessing any resources. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaV2":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummaryPerUserMfaViaGroup":  "This policy covers per-user multifactor authentication enforced users with recent sign-ins and requires them to perform MFA while accessing cloud applications. There will be no change to the end user experience as a result of this policy and your organization is sufficiently licensed to use this policy. We'll assign eligible users into a new security group named 'Conditional Access: Per-user multifactor authentication users (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e97)'. Currently, the policy is in '{0}' mode. As a Microsoft-managed policy, only certain properties are editable.",
+                                                     "policySummaryPhishingResistantMfa":  "Accounts that are assigned privileged administrative roles are frequent targets of attackers. Requiring phishing-resistant multifactor authentication (MFA) on those accounts is an easy way to reduce the risk of those accounts being compromised.",
                                                      "policySummarySignInRisk":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. If users aren't registered for MFA, this policy will block their risky sign-ins to prevent MFA registration by an unauthorized actor. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "policySummarySignInRiskViaGroup":  "High sign-in risk represents a high probability that the given authentication request isn't authorized by the identity owner. This policy incorporates high sign-in risk detections from Entra ID Protection in real-time to trigger multifactor authentication and reauthentication to prevent identity compromise. We'll assign eligible users into a new security group named 'Conditional Access: Risky sign-in multifactor authentication (a4ea6c0f-b8fb-4d29-91f1-9f8cf0601e98)'. As a Microsoft-managed policy, only certain properties are editable.",
                                                      "recActionsGlobal1":  "Review the policy and its benefits.",
@@ -11551,6 +11678,7 @@
                                                      "recActionsPerUserMfaViaGroup1":  "When you are ready to enable, switch its state to 'on'. If you do not want to enforce this policy for your organization, switch its state to 'off'. If you leave the policy in report-only mode, we will enable it for you. Don't remove the user group for this policy to function.",
                                                      "recommendedActions":  "Recommended actions",
                                                      "recommendedActionsIntro":  "Before enabling this policy, or before Microsoft enables it automatically no sooner than {0} days after policy creation",
+                                                     "recommendedActionsIntroShort":  "Before enabling this policy",
                                                      "securityDefaultsBasedAdminMfaMMPolicySummary":  "Require multifactor authentication for privileged administrative accounts to reduce risk of compromise. This policy will target the same roles as security defaults.",
                                                      "securityDefaultsBasedAllUserMfaMMPolicySummary":  "Require multifactor authentication for all user accounts to reduce risk of compromise.",
                                                      "securityDefaultsBasedAzureManagementMMPolicySummary":  "Require multifactor authentication to protect privileged access to Azure management.",
@@ -11728,7 +11856,7 @@
                                                                                   "description":  "Configure service principal risk levels needed for policy to be enforced",
                                                                                   "infoBalloonContent":  "Configure service principal risk to apply the policy to selected risk level(s)",
                                                                                   "title":  "Service principal risk",
-                                                                                  "titlePreview":  "Service principal risk (Preview)"
+                                                                                  "titlePreview":  "Service principal risk"
                                                                               }
                                                  }
                                },
@@ -11745,7 +11873,8 @@
                                                                                                         "deviceCodeFlow":  "Device code flow",
                                                                                                         "infoBalloon":  "How your organization uses certain authentication and authorization protocols and grants",
                                                                                                         "label":  "Authentication flows",
-                                                                                                        "multiple":  "\"{0}\" and \"{1}\""
+                                                                                                        "multiple":  "\"{0}\" and \"{1}\"",
+                                                                                                        "protocolFlows":  "Protocol and flows"
                                                                                                     },
                                                                                        "singular":  "Authentication flow"
                                                                                    },
@@ -11966,6 +12095,10 @@
                                                                     "description":  "Select the resources to exempt from the policy"
                                                                 }
                                                 },
+                    "RiskRemediationValidation":  {
+                                                      "mustSelect":  "To enable Require Risk Remediation, you must select {0}.",
+                                                      "xOrY":  "{0} or {1}"
+                                                  },
                     "SSM":  {
                                 "MemberSelector":  {
                                                        "description":  "Users and groups"
@@ -12082,7 +12215,7 @@
                                                               "checkboxLabel":  "Require token protection for app sessions (Preview)"
                                                           },
                                             "SecureSignIn":  {
-                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Preview)",
+                                                                 "checkboxLabel":  "Require token protection for sign-in sessions (Generally available for Windows. Preview for MacOS, iOS)",
                                                                  "error":  "Policies enforcing Token Protection for Sign In Sessions must be scoped to supported platforms. {0}Learn more about token protection.{1}",
                                                                  "infoBallonText":  "A secure sign-in session requires all long-lived tokens (the Microsoft Entra session cookie and refresh token) to be bound to the device using software key binding or hardware security module binding where available.",
                                                                  "warningInfoBoxText":  "The control \"Require token protection for sign-in sessions\" only works with supported devices and applications. Unsupported devices and client applications will be blocked."
@@ -12269,7 +12402,9 @@
                                                           "requireApprovedClientAppEnabled":  "You should no longer use \"Require approved client app\", as we will soon stop updating it.",
                                                           "requireAuthOrMfa":  "\"{0}\" cannot be used with \"{1}\".",
                                                           "requireMfa":  "Consider testing the new \"{0}\".",
-                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\"."
+                                                          "requirePasswordChangeEnabled":  "\"Require password change\" can only be used when policy is assigned to \"All cloud apps\".",
+                                                          "requirePasswordChangeEnabledResource":  "\"Require password change\" can only be used when policy is assigned to \"All resources\".",
+                                                          "requireRiskRemediation":  "\"{0}\" can only be used when policy is assigned to \"{1}.\" This option requires multifactor authentication or authentication strengths controls. Other controls cannot be used. This option also requires the Session control \"Sign-in Frequency\" to be set to \"Every time.\""
                                                       },
                                          "Policies":  {
                                                           "Linux":  {
@@ -12613,6 +12748,8 @@
                     "daysOfWeekTypeLabel":  "Days of the week",
                     "deletePolicyNoLicenseText":  "You can delete this policy now. Once deleted you will not be able to recreate it until you have the required licenses.",
                     "descriptionContentForControlsAndOr":  "For multiple controls",
+                    "deviceFilterInformationalLearnMore":  "Learn more",
+                    "deviceFilterInformationalResponse":  "Microsoft recommends using at least one system-defined or admin-configured device attribute when creating filter rules.",
                     "devicePlatform":  "Device platform",
                     "devicePlatformInclude":  "{0} included",
                     "devicePlatformIncludeExclude":  "{0} and {1} excluded",
@@ -12806,13 +12943,9 @@
                     "policyConditionNetwork":  "Network",
                     "policyConditionNetworkLocationDescription":  "Network and locations (determined by IP address range or GPS coordinates) the user is signing in from",
                     "policyConditionSigninRisk":  "Sign-in risk",
-                    "policyConditionSigninRiskCiamDescription":  "Sign-in risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionSigninRiskDescription":  "Likelihood that the sign-in is coming from someone other than the user. Risk level can be high, medium or low. Requires Microsoft Entra ID P2 license.",
-                    "policyConditionSigninRiskPreview":  "Sign-in risk (preview)",
                     "policyConditionUserRisk":  "User risk",
-                    "policyConditionUserRiskCiamDescription":  "User risk condition is currently in preview. Pricing information will be available at a later date",
                     "policyConditionUserRiskDescription":  "Configure user risk levels needed for policy to be enforced",
-                    "policyConditionUserRiskPreview":  "User risk (preview)",
                     "policyConditioniClientApp":  "Client apps",
                     "policyControlAllowAccessDisplayedName":  "Grant access",
                     "policyControlAuthenticationStrengthDisplayedName":  "Require authentication strength",
@@ -12826,8 +12959,10 @@
                     "policyControlRequireCompliantAppDisplayedName":  "Require app protection policy",
                     "policyControlRequireDomainJoinedDisplayedName":  "Require Microsoft Entra hybrid joined device",
                     "policyControlRequireMamDisplayedName":  "Require approved client app",
+                    "policyControlRequireRiskRemediationDisplayedName":  "Require risk remediation",
                     "policyControlRequiredPasswordChangeDisplayedName":  "Require password change",
                     "policyControlSelectAuthStrength":  "Require authentication strength",
+                    "policyControlSelectRiskRemediation":  "Require risk remediation",
                     "policyControlsNoControlsSelected":  "0 controls selected",
                     "policyControlsSection":  "Access controls",
                     "policyCreatBladeTitle":  "New",
@@ -12886,6 +13021,7 @@
                     "privateLinkLabel":  "Microsoft Entra Private Link",
                     "reportOnlyInfoBox":  "Report-only mode: Policies are evaluated and logged at sign-in but do not impact users.",
                     "requireAllControlsText":  "Require all the selected controls",
+                    "requireAuthStrength":  "Require authentication strength",
                     "requireCompliantDevice":  "Require compliant device",
                     "requireDomainJoined":  "Require domain-joined device",
                     "requireGrantReauth":  "The \"sign-in frequency every time\" session control requires a \"require multifactor authentication\" or \"require password change\" grant control when \"All cloud apps\" is selected",
@@ -12971,10 +13107,12 @@
                     "trustedLocationStatusIconEnabled":  "Trusted status icon",
                     "tuesday":  "Tuesday",
                     "uploadInBadState":  "Unable to upload the specified file.",
+                    "userAgentOrSPSelectionBladeTitle":  "Users, agent identities or workload identities",
                     "userAppNoneOption":  "None",
                     "userNamePlaceholderText":  "Enter User Name",
                     "userNotSetSeletorLabel":  "0 users and groups selected",
                     "userOnlySelectionBladeExcludeDescription":  "Select the users to exempt from the policy",
+                    "userOrAgentSelectionBladeTitle":  "Users or agent identities",
                     "userOrGroupSelectionCountDiffBannerText":  "{0} configured in this policy have been deleted from the directory, but this doesn't affect the other users and groups in the policy. The next time you update the policy, the deleted users and/or groups will be automatically removed.",
                     "userOrSPNotSetSelectorLabel":  "0 users or workload identities selected",
                     "userOrSPSelectionBladeTitle":  "Users or workload identities",
@@ -13110,8 +13248,10 @@
                      "iosCommaAndroidPlatformLabel":  "iOS, Android",
                      "linux":  "Linux",
                      "macOS":  "macOS",
+                     "tvOS":  "tvOS",
                      "unknown":  "Bilinmiyor",
                      "unsupported":  "Desteklenmiyor",
+                     "visionOS":  "visionOS",
                      "windows":  "Windows",
                      "windows10":  "Windows 10 ve üzeri",
                      "windows10CM":  "Windows 10 ve üzeri (ConfigMgr)",
