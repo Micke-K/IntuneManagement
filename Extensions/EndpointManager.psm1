@@ -157,6 +157,7 @@ function Invoke-InitializeModule
         PreImportCommand = { Start-PreImportConditionalAccess @args }
         PostExportCommand = { Start-PostExportConditionalAccess  @args }
         ExpandAssignmentsList = $false
+        PageSize = "Skip"
     })
 
     Add-ViewItem (New-Object PSObject -Property @{

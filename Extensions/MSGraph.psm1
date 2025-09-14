@@ -851,8 +851,18 @@ function Show-GraphObjects
 
     $params = @{}
     $pageSize = 0
-    $tmpPageSize = Get-SettingValue "GraphPageSize"
-    if ($tmpPageSize -eq "All")
+    if($global:curObjectType.PageSize)
+    {
+        $tmpPageSize = $global:curObjectType.PageSize
+    }
+    else {        
+        $tmpPageSize = Get-SettingValue "GraphPageSize"
+    }
+
+    if($tmpPageSize -eq "Skip") {
+        # Do nothing - use default page size from API
+    }
+    elseif ($tmpPageSize -eq "All")
     {
         $params.Add("AllPages", $true)        
     }else
