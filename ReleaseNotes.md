@@ -1,4 +1,72 @@
 # Release Notes
+## 3.10.1 - 2025-09-14
+
+<br />
+A huge thank you to:<br />
+- @befra for fixing uploads with PowerShell 7.5<br />
+- @MrR0bert for fixing issues with Organization name with spaces<br />
+<br />
+
+**BREAKING CHANGE**<br />
+Permission requirements has changed on script policies. **DeviceManagementScripts.ReadWrite.All** is now required and Consent Request might be required to add the permissions<br />
+
+**New features**
+
+- **Official PowerShell 7 Support**<br />
+  - PowerShell 7 is now supported<br />
+  This is now the recommended way of using the tool.<br />
+  PowerShell 7 has full support for WAM authentication which is required for strong authentication like FIDO2 etc.<br />
+
+- **Authentication**<br />
+  - Added documentation on how to create a custom Entra app in [MSAL Info](MSALInfo.md)
+  - Changed permission requiremnt to **DeviceManagementScripts.ReadWrite.All** for
+    - Compliance Scripts
+    - Custom Attributes
+    - Health Scripts
+    - Scripts (PowerShell)
+    - Scripts (Shell)
+
+**Fixes**
+
+- **Generic**<br />
+  - Cannot rename Settings Catalog<br />
+  Based on [Issue 344](https://github.com/Micke-K/IntuneManagement/issues/344)<br />
+
+- **Compare**<br />
+  - Compare added letter N to the string output<br />
+  Based on [Issue 320](https://github.com/Micke-K/IntuneManagement/issues/320)<br />
+  - Wrong Category when comparing Settings Catalog objects<br />
+  Based on [Issue 317](https://github.com/Micke-K/IntuneManagement/issues/317)<br />
+
+- **Import/Export**<br />
+  - Basline Security Policy not imported<br />
+  Based on [Issue 241](https://github.com/Micke-K/IntuneManagement/issues/241)<br />
+  - Fixed import of old exported Compliance Policies<br />
+  DeviceSettings property support removed and cause import failure<br />
+  - Custom Compliance Scripts were not imported befor the Compliance Policy<br />
+  Based on [Issue 353](https://github.com/Micke-K/IntuneManagement/issues/353)<br />
+  - Added support for BIOS Configurations<br />
+  Based on [Issue 350](https://github.com/Micke-K/IntuneManagement/issues/350)<br />
+  - Set default Conditional Access state in Settings<br />
+  Based on [Issue 298](https://github.com/Micke-K/IntuneManagement/issues/298)<br />
+
+- **Documentation**<br />
+  - "Not configured" valued added when Uncofigured settings was selected<br />
+  Based on [Issue 342](https://github.com/Micke-K/IntuneManagement/issues/342)<br />
+  - Add file content to documentation e.g. Custom Configuration profiles for MacOS<br />
+  Based on [Issue 329](https://github.com/Micke-K/IntuneManagement/issues/329)<br />
+  - Output type for Word export - PDF is now supported<br />
+  Based on [Discussion 329](https://github.com/Micke-K/IntuneManagement/discussions/331)<br />
+  - Skip date in documentation output<br />
+  Based on [Issue 336](https://github.com/Micke-K/IntuneManagement/issues/336)<br />
+  - Added support for Compliance Policies for Linux<br />
+  - Language files re-generated<br />
+  - AppTypes file re-generated<br />
+
+- **ADMX Tool**<br />
+  - Failed to import  settings for some ADMX files<br />
+  Based on [Issue 338](https://github.com/Micke-K/IntuneManagement/issues/338)<br />
+
 ## 3.10.0 - 2025-02-22 - Beta 1 (Development branch)
 
 <br />

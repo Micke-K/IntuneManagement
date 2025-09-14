@@ -53,6 +53,25 @@ function Invoke-InitializeModule
         }
     )
 
+    $script:lstConditionalAccessState = @(
+        [PSCustomObject]@{
+            Name  = "As Exported - Change On to Report-only"
+            Value = "AsExportedReportOnly"
+        },
+        [PSCustomObject]@{
+            Name = "As Exported"
+            Value = "AsExported"
+        },
+        [PSCustomObject]@{
+            Name = "Report-only"
+            Value = "enabledForReportingButNotEnforced"
+        },
+        [PSCustomObject]@{
+            Name = "Off"
+            Value = "disabled"
+        }
+    )
+
     $script:lstGraphPageSize = @(
         [PSCustomObject]@{
             Name = "Graph API Default"
@@ -274,6 +293,15 @@ function Invoke-InitializeModule
         DefaultValue = "20"
         Description = "How many items load at a time"
     }) "GraphGeneral"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Default Conditional Access Policy State"
+        Key = "ConditionalAccessState"
+        Type = "List" 
+        ItemsSource = $script:lstConditionalAccessState
+        DefaultValue = "disabled"
+        Description = "Define the default option of the Conditional Access policy state. It is recommended to have this to disabled to avoid accidental tenant lock out"
+    }) "ImportExport"
 }
 
 function Get-GraphAppInfo

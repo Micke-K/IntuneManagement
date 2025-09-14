@@ -218,7 +218,7 @@ This will replace the default columns and add new columns with specific header.
 See [Change Log](ReleaseNotes.md) for more information
 
 ## Authentication
-See [MSAL Info](MSALInfo.md) for more information about authentication
+See [MSAL Info](MSALInfo.md) for more information about authentication and how to create a custom application in Entra.
 
 ## Settings
 
@@ -250,6 +250,7 @@ Start-WithJson.cmd is included as an example on how to start the script with jso
 * Apple Enrolment Types - NOT fully tested
 * Autopilot profiles
 * Baseline Security profiles
+* BIOS Configuration
 * Compliance policies
 * Compliance policies v2
 * Compliance scripts

@@ -237,7 +237,7 @@ function Invoke-InitializeModule
         ViewID = "IntuneGraphAPI"
         API = "/deviceManagement/deviceComplianceScripts"
         PostImportCommand = { Start-PostImportComplianceScripts @args }
-        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        Permissons=@("DeviceManagementScripts.ReadWrite.All")
         GroupId = "CompliancePolicies"
         Icon = "Scripts"
         ImportOrder = 80
@@ -378,7 +378,7 @@ function Invoke-InitializeModule
         DetailExtension = { Add-ScriptExtensions @args }
         ExportExtension = { Add-ScriptExportExtensions @args }
         PostExportCommand = { Start-PostExportScripts @args }
-        Permissons=@("DeviceManagementManagedDevices.ReadWrite.All") # !!! DeviceManagementScripts.ReadWrite.All
+        Permissons=@("DeviceManagementScripts.ReadWrite.All")
         AssignmentsType = "deviceManagementScriptAssignments"
         Icon="Scripts"
         GroupId = "Scripts"
@@ -392,7 +392,7 @@ function Invoke-InitializeModule
         DetailExtension = { Add-ScriptExtensions @args }
         ExportExtension = { Add-ScriptExportExtensions @args }
         PostExportCommand = { Start-PostExportScripts @args }
-        Permissons=@("DeviceManagementManagedDevices.ReadWrite.All")
+        Permissons=@("DeviceManagementScripts.ReadWrite.All")
         AssignmentsType = "deviceManagementScriptAssignments"
         Icon="Scripts"
         GroupId = "Scripts"
@@ -403,7 +403,7 @@ function Invoke-InitializeModule
         Id = "MacCustomAttributes"
         API = "/deviceManagement/deviceCustomAttributeShellScripts"
         ViewID = "IntuneGraphAPI"
-        Permissons=@("DeviceManagementManagedDevices.ReadWrite.All")
+        Permissons=@("DeviceManagementScripts.ReadWrite.All")
         AssignmentsType = "deviceManagementScriptAssignments"
         Icon="CustomAttributes"
         GroupId = "CustomAttributes" # MacOS Settings
@@ -750,7 +750,7 @@ function Invoke-InitializeModule
         PreUpdateCommand = { Start-PreUpdateDeviceHealthScripts @args }
         PostExportCommand = { Start-PostExportDeviceHealthScripts  @args }
         ExportExtension = { Add-ScriptExportExtensions @args }
-        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        Permissons=@("DeviceManagementScripts.ReadWrite.All")
         GroupId = "EndpointAnalytics"
         Icon = "Report"
         AssignmentsType = "deviceHealthScriptAssignments"
@@ -4135,13 +4135,15 @@ function Add-ConditionalAccessImportExtensions
     $CAStates += [PSCustomObject]@{
         Name = "Off"
         Value = "disabled"
-    }    
+    }
+    
+    $defaultCAState = Get-SettingValue "ConditionalAccessState"
 
     $global:cbImportCAState = [System.Windows.Controls.ComboBox]::new()
     $global:cbImportCAState.DisplayMemberPath = "Name"
     $global:cbImportCAState.SelectedValuePath = "Value"
     $global:cbImportCAState.ItemsSource = $CAStates
-    $global:cbImportCAState.SelectedValue = "disabled"
+    $global:cbImportCAState.SelectedValue = $defaultCAState
     $global:cbImportCAState.Margin="0,5,0,0"
     $global:cbImportCAState.HorizontalAlignment="Left"
     $global:cbImportCAState.Width=250

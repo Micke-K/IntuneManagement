@@ -704,7 +704,10 @@ function Invoke-LoadADMXSettings
         $tvItem | Add-Member -MemberType NoteProperty -Name "AllPolicies" -Value $true
     }
 
-    $global:tvADMXCategories.Items[1].Items.Add($tvItem) | Out-Null        
+    try {
+        $global:tvADMXCategories.Items[1].Items.Add($tvItem) | Out-Null        
+    }
+    catch{}
 }
 
 function Set-ADMXSettingStatusText
@@ -854,6 +857,7 @@ function Get-ADMXCategoryNamePath
     }
 
     $catObj = $script:admxXML.policyDefinitions.categories.selectSingleNode("$($script:xmlNSPrefix)category[@name='$($categoryId)']",$script:xmlNS)
+    #$catObj = $script:admxXML.policyDefinitions.categories.category | Where Name -eq "$categoryId"
     
     $categories = @()
     while($catObj)
@@ -862,6 +866,7 @@ function Get-ADMXCategoryNamePath
         if($catObj.parentCategory.ref)
         {
             $catObj = $script:admxXML.policyDefinitions.categories.selectSingleNode("$($script:xmlNSPrefix)category[@name='$($catObj.parentCategory.ref)']", $script:xmlNS)
+            #$catObj = $script:admxXML.policyDefinitions.categories.category | where name -eq $catObj.parentCategory.ref
         }
         else 
         {

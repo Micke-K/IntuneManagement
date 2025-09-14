@@ -10,7 +10,6 @@ See GitHub repository [MSAL for .Net](https://github.com/AzureAD/microsoft-authe
 
 MSAL uses OAuth2 to authenticate to an Application in Azure. This script has two applications pre-defined in Settings:
 
-- Microsoft Intune PowerShell (d1ddf0e4-d672-4dae-b554-9d5bdfd93547)
 - Microsoft Graph PowerShell (14d82eec-204b-4c2f-b7e8-296a70dab67e)
 
 Microsoft Intune PowerShell is the same application as the Intune PowerShell module uses and this is the default application for the script. 
@@ -20,6 +19,59 @@ The script will detect if the selected app is missing permissions and prompt for
 **Note:** Permissions in an app is just a filter and decides what can be done via the app. If a user only has Read permission but the app has ReadWrite, the user will not be able to update anything. 
 
 A Custom application can be specified in Settings. This could theoretically be a custom created app in Azure. However, if an App is registered in Azure, it will be single tenant only. This can be used to backup an existing environment but the Azure App cannot be used to import data in another  tenant.  Use Enterprise Apps and Common/Organizations authority to allow access to multiple tenants.
+
+## Create Custom Application ##
+
+Documentation by Microsoft: [Quickstart: Register an application with the Microsoft identity platform](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app)
+
+Steps:
+* Go to the Entra Portal
+
+  * Register a new App registration in Entra
+  Note Application Id
+
+  * Add Delegated permissions
+
+  * Microsoft Graph
+    For full support of the app requires:<br />
+    Application.Read.All<br />
+    Agreement.ReadWrite.All<br />
+    CloudPC.ReadWrite.All<br />
+    DeviceManagementApps.ReadWrite.All<br />
+    DeviceManagementConfiguration.ReadWrite.All<br />
+    DeviceManagementManagedDevices.ReadWrite.All<br />
+    DeviceManagementRBAC.ReadWrite.All<br />
+    DeviceManagementScripts.ReadWrite.All<br />
+    DeviceManagementServiceConfig.ReadWrite.All<br />
+    Organization.ReadWrite.All<br />
+    Policy.ReadWrite.ConditionalAccess<br /><br />
+
+    It will also need User.ReadWrite.All,Group.ReadWrite.All but you could set these to read only unless you will let the app create Groups.<br /><br />
+
+    **Note:** Change all **ReadWrite** to **Read** in the permissions above to create an Entra App with Read Only access.
+
+  * Grant permissions for the environment
+
+  * Go to Authentication
+    * Click **+ Add platform**
+    * Click on **Mobile and desktop applications**
+    * Check **https://login.microsoftonline.com/common/oauth2/nativeclient**<br />
+    msal value can also be used
+    
+* Start the Tool
+
+  * Go to Settings
+
+  * Change Application in Endpoint Manager/Intune section
+
+    * Set drop down to Empty. It will only use custom app if drop down is empty
+    * Specify App Id from the Entra App created earlier
+    * Specify Redirect URL to https://login.microsoftonline.com/common/oauth2/nativeclient<br />
+    This must match the setting in the Entra App.
+
+  * Save Settings
+
+  * Restart app
 
 ## Token 
 

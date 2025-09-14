@@ -112,7 +112,7 @@ function Initialize-CloudAPIManagement
         $global:ClientSecret = $secret 
         $global:ClientCert = $certificate
         $global:UseGraphEnvironment = $GraphEnvironment
-        $global:GCCType = $GCCType
+        $global:UseGCCType = $GCCType
 
         if($global:AzureAppId)
         {
@@ -144,9 +144,9 @@ function Initialize-CloudAPIManagement
             Write-Host "Using Azure Graph Environment: $($global:UseGraphEnvironment)"
         }
 
-        if($global:GCCType)
+        if($global:UseGCCType)
         {
-            Write-Host "Using Graph Environment type: $($global:GCCType)"
+            Write-Host "Using Graph Environment type: $($global:UseGCCType)"
         }
     }
 
