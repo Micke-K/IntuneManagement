@@ -10,7 +10,7 @@ This module is for the Endpoint Manager/Intune View. It manages Export/Import/Co
 #>
 function Get-ModuleVersion
 {
-    '3.9.8'
+    '3.10.0.6'
 }
 
 function Invoke-InitializeModule
@@ -221,7 +221,7 @@ function Invoke-InitializeModule
         Id = "CompliancePoliciesV2"
         ViewID = "IntuneGraphAPI"
         API = "/deviceManagement/compliancePolicies"
-        NameProperty = "Name"
+        NameProperty = "name"
         PropertiesToRemove = @('settingCount')
         ViewProperties = @("name","description","Id")
         Expand="settings"
@@ -236,9 +236,11 @@ function Invoke-InitializeModule
         Id = "ComplianceScripts"
         ViewID = "IntuneGraphAPI"
         API = "/deviceManagement/deviceComplianceScripts"
-        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        PostImportCommand = { Start-PostImportComplianceScripts @args }
+        Permissons=@("DeviceManagementScripts.ReadWrite.All")
         GroupId = "CompliancePolicies"
         Icon = "Scripts"
+        ImportOrder = 80
     })        
 
     Add-ViewItem (New-Object PSObject -Property @{
@@ -376,7 +378,7 @@ function Invoke-InitializeModule
         DetailExtension = { Add-ScriptExtensions @args }
         ExportExtension = { Add-ScriptExportExtensions @args }
         PostExportCommand = { Start-PostExportScripts @args }
-        Permissons=@("DeviceManagementManagedDevices.ReadWrite.All")
+        Permissons=@("DeviceManagementScripts.ReadWrite.All")
         AssignmentsType = "deviceManagementScriptAssignments"
         Icon="Scripts"
         GroupId = "Scripts"
@@ -390,7 +392,7 @@ function Invoke-InitializeModule
         DetailExtension = { Add-ScriptExtensions @args }
         ExportExtension = { Add-ScriptExportExtensions @args }
         PostExportCommand = { Start-PostExportScripts @args }
-        Permissons=@("DeviceManagementManagedDevices.ReadWrite.All")
+        Permissons=@("DeviceManagementScripts.ReadWrite.All")
         AssignmentsType = "deviceManagementScriptAssignments"
         Icon="Scripts"
         GroupId = "Scripts"
@@ -401,7 +403,7 @@ function Invoke-InitializeModule
         Id = "MacCustomAttributes"
         API = "/deviceManagement/deviceCustomAttributeShellScripts"
         ViewID = "IntuneGraphAPI"
-        Permissons=@("DeviceManagementManagedDevices.ReadWrite.All")
+        Permissons=@("DeviceManagementScripts.ReadWrite.All")
         AssignmentsType = "deviceManagementScriptAssignments"
         Icon="CustomAttributes"
         GroupId = "CustomAttributes" # MacOS Settings
@@ -604,17 +606,47 @@ function Invoke-InitializeModule
         API = "/deviceManagement/configurationPolicies"
         PropertiesToRemove = @('settingCount')
         Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
-        NameProperty = "Name"
+        NameProperty = "name"
         ViewProperties = @("name","description","Id")
         Expand="Settings"
         Icon="DeviceConfiguration"
+        PreImportCommand = { Start-PreImportSettingsCatalog @args }
         PostExportCommand = { Start-PostExportSettingsCatalog  @args }
         PreUpdateCommand = { Start-PreUpdateSettingsCatalog  @args }
         PostGetCommand = { Start-PostGetSettingsCatalog  @args }
         Dependencies = @("ReusableSettings")
         GroupId = "DeviceConfiguration"        
     })   
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Inventory Policies"
+        Id = "InventoryPolicies"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/inventoryPolicies"
+        PropertiesToRemove = @('settingCount')
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        NameProperty = "name"
+        ViewProperties = @("name","description","Id")
+        Expand="Settings"
+        Icon="DeviceConfiguration"
+        GroupId = "DeviceConfiguration"        
+    })   
     
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "BIOS Configurations"
+        Id = "HardwareConfigurations"
+        ViewID = "IntuneGraphAPI"
+        DetailExtension = { Add-PolicyFileExtensions @args }
+        ExportExtension = { Add-PolicyFileExportExtensions @args }
+        PostExportCommand = { Start-PostExportPolicyFile @args }
+        PropertiesToRemoveForUpdate = @('version')
+        PolicyFileAttribute = "configurationFileContent"
+        API = "/deviceManagement/hardwareConfigurations"
+        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        Icon="DeviceConfiguration"
+        GroupId = "DeviceConfiguration"        
+    })   
+
     Add-ViewItem (New-Object PSObject -Property @{
         Title = "Role Definitions"
         Id = "RoleDefinitions"
@@ -718,7 +750,7 @@ function Invoke-InitializeModule
         PreUpdateCommand = { Start-PreUpdateDeviceHealthScripts @args }
         PostExportCommand = { Start-PostExportDeviceHealthScripts  @args }
         ExportExtension = { Add-ScriptExportExtensions @args }
-        Permissons=@("DeviceManagementConfiguration.ReadWrite.All")
+        Permissons=@("DeviceManagementScripts.ReadWrite.All")
         GroupId = "EndpointAnalytics"
         Icon = "Report"
         AssignmentsType = "deviceHealthScriptAssignments"
@@ -831,7 +863,18 @@ function Invoke-InitializeModule
         Permissons = @("DeviceManagementConfiguration.ReadWrite.All")
         Icon = "UpdatePolicies"
         GroupId = "WinDriverUpdatePolicies"
-    })    
+    })
+
+    Add-ViewItem (New-Object PSObject -Property @{
+        Title = "Device Categories"
+        Id = "DeviceCategories"
+        ViewID = "IntuneGraphAPI"
+        API = "/deviceManagement/deviceCategories"
+        QUERYLIST = "`$top=500"
+        Permissons = @("DeviceManagementConfiguration.ReadWrite.All")
+        GroupId = "DeviceConfiguration"
+    })
+    
 }
 
 function Invoke-EMAuthenticateToMSAL
@@ -1010,7 +1053,7 @@ function Set-EMViewPanel
     $global:btnLoadAllPages.add_click({
         Write-Status "Loading $($global:curObjectType.Title) objects"
         [array]$graphObjects = Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -AllPages
-        $graphObjects | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null }
+        $graphObjects | Where-Object { $_ -ne $null } | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null }        
         $global:dgObjects.ItemsSource.CommitNew()
         Set-GraphPagesButtonStatus
         Invoke-FilterBoxChanged $global:txtFilter -ForceUpdate
@@ -1020,7 +1063,7 @@ function Set-EMViewPanel
     $global:btnLoadNextPage.add_click({
         Write-Status "Loading $($global:curObjectType.Title) objects"
         [array]$graphObjects = Get-GraphObjects -property $global:curObjectType.ViewProperties -objectType $global:curObjectType -SinglePage
-        $graphObjects | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null }
+        $graphObjects | Where-Object { $_ -ne $null } | ForEach-Object { $global:dgObjects.ItemsSource.AddNewItem($_) | Out-Null  }        
         $global:dgObjects.ItemsSource.CommitNew()
         Set-GraphPagesButtonStatus
         Invoke-FilterBoxChanged $global:txtFilter
@@ -1391,6 +1434,30 @@ function Start-PreUpdateCompliancePolicies
 
 #endregion
 
+function Start-PostImportComplianceScripts
+{
+    param($obj, $objectType, $file)
+
+    $endTime = (Get-Date).AddMinutes(2)
+
+    $found = $false
+    while($endTime -gt (Get-Date))
+    {
+        $tmpObj = Invoke-GraphRequest -Url "$($objectType.API)/$($obj.Id)" -ErrorAction SilentlyContinue
+        if($tmpObj) { 
+            $found = $true
+            break 
+        }
+        Start-Sleep -Seconds 10
+    }
+
+    if(-not $found)
+    {
+        Write-LogError "Compliance script $($obj.Id) not found after import. Please check the import file."
+        return
+    }
+}
+
 #region Intune Branding functions
 function Start-PreImportIntuneBranding
 {
@@ -1440,7 +1507,7 @@ function Start-PreImportIntuneBranding
 
 function Start-PostImportIntuneBranding
 {
-    param($obj, $objectType)
+    param($obj, $objectType, $file)
 
     if($obj.isDefaultProfile -or -not $global:brandingClone) { return }
 
@@ -1713,6 +1780,194 @@ function Invoke-EditScript
                 {
                     Write-Log "Failed to update script" 3
                     [System.Windows.MessageBox]::Show("Failed to save the script object. See log for more information","Update failed!", "OK", "Error")
+                }
+                Write-Status ""
+            }
+        }
+        
+        $global:grdModal.Children.Clear()
+        if($script:currentModal)
+        {
+            $global:grdModal.Children.Add($script:currentModal)
+        }
+        [System.Windows.Forms.Application]::DoEvents()
+    })    
+    
+    Add-XamlEvent $script:editForm "btnCancelScriptEdit" "add_click" ({
+        $global:grdModal.Children.Clear()
+        if($script:currentModal)
+        {
+            $global:grdModal.Children.Add($script:currentModal)
+        }
+        [System.Windows.Forms.Application]::DoEvents()
+    })
+    
+    $global:grdModal.Children.Clear()
+    $script:editForm.SetValue([System.Windows.Controls.Grid]::RowProperty,1)
+    $script:editForm.SetValue([System.Windows.Controls.Grid]::ColumnProperty,1)
+    $global:grdModal.Children.Add($script:editForm) | Out-Null
+    [System.Windows.Forms.Application]::DoEvents()
+}
+
+#endregion
+
+#region Policy File functions
+function Add-PolicyFileExtensions
+{
+    param($form, $buttonPanel, $index = 0)
+
+    $btnDownload = New-Object System.Windows.Controls.Button    
+    $btnDownload.Content = 'Download'
+    $btnDownload.Name = 'btnDownload'
+    $btnDownload.Margin = "0,0,5,0"  
+    $btnDownload.Width = "100"
+    
+    $btnDownload.Add_Click({
+        Invoke-DownloadPolicyFile
+    })
+
+    $tmp = $form.FindName($buttonPanel)
+    if($tmp) 
+    { 
+        $tmp.Children.Insert($index, $btnDownload)
+    }
+
+    $btnDownload = New-Object System.Windows.Controls.Button    
+    $btnDownload.Content = 'Edit'
+    $btnDownload.Name = 'btnEdit'
+    $btnDownload.Margin = "0,0,5,0"  
+    $btnDownload.Width = "100"
+    
+    $btnDownload.Add_Click({
+        Invoke-EditPolicyFile
+    })
+
+    $tmp = $form.FindName($buttonPanel)
+    if($tmp) 
+    { 
+        $tmp.Children.Insert($index, $btnDownload)
+    }    
+}
+
+function Add-PolicyFileExportExtensions
+{
+    param($form, $buttonPanel, $index = 0)
+
+    $ctrl = $form.FindName("chkExportPolicyFile")
+    if(-not $ctrl)
+    {
+        $xaml =  @"
+<StackPanel $($global:wpfNS) Orientation="Horizontal" Margin="0,0,5,0">
+<Label Content="Export Policy File" />
+<Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Export the file associated with policies eg BIOS Configuration" />
+</StackPanel>
+"@
+        $label = [Windows.Markup.XamlReader]::Parse($xaml)
+
+        $global:chkExportPolicyFile = [System.Windows.Controls.CheckBox]::new()
+        $global:chkExportPolicyFile.IsChecked = $true
+        $global:chkExportPolicyFile.VerticalAlignment = "Center" 
+        $global:chkExportPolicyFile.Name = "chkExportPolicyFile" 
+
+        @($label, $global:chkExportPolicyFile)
+    }
+}
+
+function Start-PostExportPolicyFile
+{
+    param($obj, $objectType, $exportPath)
+
+    if($objectType.PolicyFileAttribute -and $obj.$($objectType.PolicyFileAttribute) -and $global:chkExportPolicyFile.IsChecked)
+    {
+        Write-Log "Export policy file from attribute $($obj.PolicyFileAttribute)"
+        $fileNameOut = ?? $obj.FileName "$($obj.PolicyFileAttribute).json"
+        $fileName = [IO.Path]::Combine($exportPath, $fileNameOut)
+        [IO.File]::WriteAllBytes($fileName, ([System.Convert]::FromBase64String($obj.$($objectType.PolicyFileAttribute))))
+    }
+}
+
+function Invoke-DownloadPolicyFile
+{
+    if(-not $global:dgObjects.SelectedItem.Object.id) { return }
+
+    $obj = (Get-GraphObject $global:dgObjects.SelectedItem $global:curObjectType).Object
+    Write-Status ""
+
+    if($global:curObjectType.PolicyFileAttribute -and $obj.$($global:curObjectType.PolicyFileAttribute))
+    {   
+        $fileNameOut = ?? $obj.FileName "$($obj.PolicyFileAttribute).json"         
+        Write-Log "Download policy file '$($fileNameOut)' from $($obj.displayName)"
+        
+        $dlgSave = New-Object -Typename System.Windows.Forms.SaveFileDialog
+        $dlgSave.InitialDirectory = Get-SettingValue "IntuneRootFolder" $env:Temp
+        $dlgSave.FileName = $fileNameOut    
+        if($dlgSave.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK -and $dlgSave.Filename)
+        {
+            # Changed to WriteAllBytes to get rid of BOM characters from Custom Attribute file 
+            [IO.File]::WriteAllBytes($dlgSave.FileName, ([System.Convert]::FromBase64String($obj.$($global:curObjectType.PolicyFileAttribute))))
+        }
+    }    
+}
+
+function Invoke-EditPolicyFile
+{
+    if(-not $global:dgObjects.SelectedItem.Object.id) { return }
+
+    $obj = (Get-GraphObject $global:dgObjects.SelectedItem $global:curObjectType)
+    Write-Status ""
+    if(-not $global:curObjectType.PolicyFileAttribute -or -not $obj.Object.$($global:curObjectType.PolicyFileAttribute)) { return }
+    $script:currentScriptObject = $obj
+
+    $script:editForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\EditScriptDialog.xaml")
+    
+    if(-not $script:editForm) { return }
+
+    Set-XamlProperty $script:editForm "txtEditScriptTitle" "Text" "Edit: $($obj.Object.displayName)"
+    
+    $scriptText = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.Object.$($global:curObjectType.PolicyFileAttribute)))
+    Set-XamlProperty $script:editForm "txtScriptText" "Text" $scriptText
+
+    $script:currentModal = $null
+    if($global:grdModal.Children.Count -gt 0)
+    {
+        $script:currentModal = $global:grdModal.Children[0]
+    }
+
+    Add-XamlEvent $script:editForm "btnSaveScriptEdit" "add_click" ({
+        $scriptText = Get-XamlProperty $script:editForm "txtScriptText" "Text"
+        $pre = [System.Text.Encoding]::UTF8.GetPreamble()
+        $utfBOM = [System.Text.Encoding]::UTF8.GetString($pre)
+        if($scriptText.startsWith($utfBOM))
+        {
+            # Remove UTF8 BOM bytes
+            $scriptText = $scriptText.Remove(0, $utfBOM.Length)
+        }
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes($scriptText)
+        $encodedText = [Convert]::ToBase64String($bytes)
+
+        if($script:currentScriptObject.Object.scriptContent -ne $encodedText)
+        {
+            # Save script
+            if(([System.Windows.MessageBox]::Show("Are you sure you want to update the $($global:curObjectType.PolicyFileAttribute) attribute?`n`nObject:`n$($script:currentScriptObject.displayName)", "Update script?", "YesNo", "Warning")) -eq "Yes")
+            {
+                Write-Status "Update $($script:currentScriptObject.displayName)"
+                $obj =  $script:currentScriptObject.Object | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+                $obj.$($global:curObjectType.PolicyFileAttribute) = $encodedText
+                Start-GraphPreImport $obj $script:currentScriptObject.ObjectType
+                foreach($prop in $script:currentScriptObject.ObjectType.PropertiesToRemoveForUpdate)
+                {
+                    Remove-Property $obj $prop
+                }                
+                Remove-Property $obj "Assignments"
+                Remove-Property $obj "isAssigned"
+
+                $json = ConvertTo-Json $obj -Depth 15
+
+                $objectUpdated = (Invoke-GraphRequest -Url "$($script:currentScriptObject.ObjectType.API)/$($script:currentScriptObject.Object.Id)" -Content $json -HttpMethod "PATCH")
+                if(-not $objectUpdated)
+                {
+                    Write-Log "Failed to update script" 3
+                    [System.Windows.MessageBox]::Show("Failed to save the policy. See log for more information","Update failed!", "OK", "Error")
                 }
                 Write-Status ""
             }
@@ -2512,7 +2767,7 @@ function Start-PostExportApplications
             }
             else
             {
-                Write-Log "Cound not file encryption file"
+                Write-Log "Cound not find encryption file"
             }
         }
     }
@@ -3265,6 +3520,75 @@ function Start-PostFileImportRoleDefinitions
 #endregion
 
 #region SettingsCatalog
+
+function Start-PreImportSettingsCatalog
+{
+    param($obj, $objectType)
+
+    $returnHT = @{}
+    $updated = $false
+
+    if($obj.templateReference.templateId) {
+        # I do not like this at all and it is a lazy but simple implementation...
+        # It turns out that settingInstanceTemplateId and settingValueTemplateId are case sensitive
+        # and there is ONE setting with a different casing in the Windows Baseline template. 
+        # The export saves it with lowercase which causes the import to fail.
+
+        Write-Log "Get template $($obj.templateReference.templateId)"
+        $templateObj = Invoke-GraphRequest -Url "/deviceManagement/configurationPolicyTemplates('$($obj.templateReference.templateId)')"
+        if($templateObj.lifecycleState -and $templateObj.lifecycleState -ne "active") {
+            Write-Log "Template '$($templateObj.displayName)' '$($templateObj.displayVersion)' is in '$($templateObj.lifecycleState)' state. Current state: $($templateObj.lifecycleState). Import might fail." 2
+        }
+        #Todo: Should probably check for the latest active version and use that instead of the one in the templateReference
+
+        if(-not $script:baseLineTemplate) {
+            $script:baseLineTemplate = @{}
+        }
+        if($script:baseLineTemplate.ContainsKey($obj.templateReference.templateId)) {
+            $templateReference = $script:baseLineTemplate[$obj.templateReference.templateId]
+        }
+        else {
+            Write-Log "Get template settings for '$($templateObj.displayName)' '$($templateObj.displayVersion)' ($($obj.templateReference.templateId))"
+            $templateReference = Invoke-GraphRequest -Url "/deviceManagement/configurationPolicyTemplates('$($obj.templateReference.templateId)')/settingTemplates?`$expand=settingDefinitions&top=1000"
+            $script:baseLineTemplate.Add($obj.templateReference.templateId, $templateReference)
+        }
+
+        if($templateReference) {
+            $newObjJson = $obj | ConvertTo-Json -Depth 50
+            $templateIDs = Get-GUIDs ($templateReference | ConvertTo-Json -Depth 50)
+            $objectIDs = Get-GUIDs ($obj.Settings | ConvertTo-Json -Depth 50)
+            $diff = Compare-Object $templateIDs $objectIDs -CaseSensitive
+            foreach($diffItem in ($diff | where SideIndicator -eq "=>")) {
+                $templateID = $templateIDs | Where { $_ -eq $diffItem.InputObject }
+                if($templateID) {
+                    # Found but with different casing
+                    $newObjJson = $newObjJson -replace $diffItem.InputObject, $templateID
+                    $updated = $true
+                }
+            }
+            if($updated) {
+                $returnHT.Add("JSON", $newObjJson)
+            }
+        }
+    }    
+    return $returnHT
+}
+
+function Invoke-CheckSettingsCatalogIds 
+{
+    param($obj, $templateReference)
+
+    foreach($settingTemplate in $obj.value) {
+        if($settingTemplate.settingDefinitions) {
+            foreach($settingDefinition in $settingTemplate.settingDefinitions) {
+                if($settingDefinition.id -and $settingDefinition.id -ne $obj.Id) {
+                    Write-Log "Setting definition ID $($settingDefinition.id) does not match the settings catalog ID $($obj.Id)" 2
+                }
+            }
+        }
+    }
+}
+
 function Start-PostExportSettingsCatalog
 {
     param($obj, $objectType, $path)
@@ -3811,13 +4135,15 @@ function Add-ConditionalAccessImportExtensions
     $CAStates += [PSCustomObject]@{
         Name = "Off"
         Value = "disabled"
-    }    
+    }
+    
+    $defaultCAState = Get-SettingValue "ConditionalAccessState"
 
     $global:cbImportCAState = [System.Windows.Controls.ComboBox]::new()
     $global:cbImportCAState.DisplayMemberPath = "Name"
     $global:cbImportCAState.SelectedValuePath = "Value"
     $global:cbImportCAState.ItemsSource = $CAStates
-    $global:cbImportCAState.SelectedValue = "disabled"
+    $global:cbImportCAState.SelectedValue = $defaultCAState
     $global:cbImportCAState.Margin="0,5,0,0"
     $global:cbImportCAState.HorizontalAlignment="Left"
     $global:cbImportCAState.Width=250
@@ -3855,6 +4181,12 @@ function Start-PreImportConditionalAccess
     {
         $obj.sessionControls.disableResilienceDefaults = $null
     }
+
+    # DeviceStates property is depricated
+    if(($obj.conditions.PSObject.Properties | Where Name -eq "DeviceStates"))
+    {
+        $obj.conditions.PSObject.Properties.Remove('DeviceStates')
+    }    
 }
 
 function Start-PostExportConditionalAccess

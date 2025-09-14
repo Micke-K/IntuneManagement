@@ -422,7 +422,7 @@ function Add-CDDocumentCustomProfileValue
             $value = $obj.startMenuAppListVisibility
             if($value.IndexOf(", ") -eq -1)
             {
-                $value = $value -replace ",",", " # Option values in json file has space afte , but value in object don't
+                $value = $value -replace ",",", " # Option values in json file has space after , but value in object don't
             }
             Invoke-TranslateOption $obj $prop -PropValue $value
             return $false
@@ -1180,6 +1180,12 @@ function Add-CDDocumentCustomProfileProperty
     } 
     elseif($obj.'@OData.Type' -eq "#microsoft.graph.windows10EnrollmentCompletionPageConfiguration")
     {
+        $installProgressTimeout = $obj.installProgressTimeoutInMinutes
+        if($installProgressTimeout -eq 0) {
+            $installProgressTimeout = 60
+        }
+        $obj | Add-Member Noteproperty -Name "InstallProgressTimeout" -Value $installProgressTimeout
+        
         if($obj.selectedMobileAppIds.Count -eq 0)
         {
             $apps = Get-LanguageString "EnrollmentStatusScreen.Apps.useSelectedAppsAll"
@@ -1327,6 +1333,17 @@ function Add-CDDocumentCustomProfileProperty
             $obj | Add-Member Noteproperty -Name "remediationScriptContentString" -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(($obj.remediationScriptContent))))
             $header = Get-LanguageString "ProactiveRemediations.Create.Settings.RemediationScriptMultiLineTextBox.label"
             Add-ObjectScript $header ("{1} - {0}" -f $obj.displayName,$header) $obj.remediationScriptContent
+        }
+    }
+    elseif($obj.'@OData.Type' -eq "#microsoft.graph.hardwareConfiguration")
+    {
+        $vendor = ?? (Get-LanguageString "HardwareConfig.Settings.Tab.HardwareDropDown.$($obj.hardwareConfigurationFormat)" -IgnoreMissing) $obj.hardwareConfigurationFormat
+        $obj | Add-Member Noteproperty -Name "vendor" -Value $vendor
+        if($obj.configurationFileContent)
+        {
+            $obj | Add-Member Noteproperty -Name "configurationFileContentString" -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(($obj.configurationFileContent))))
+            $header = Get-LanguageString "HardwareConfig.Settings.Tab.Configurations.perDevicePassword"
+            Add-ObjectScript $header ("{1} - {0}" -f $obj.displayName,$header) $obj.configurationFileContent
         }
     }
     elseif($obj.'@OData.Type' -eq "#microsoft.graph.deviceManagementScript")
@@ -2299,6 +2316,10 @@ function Invoke-CDDocumentTermsOfUse
             if($obj.termsExpiration.startDateTime -is [DateTime])
             {
                 $tmpDate = $obj.termsExpiration.startDateTime
+                if($tmpDate.Kind -eq "UTC")
+                {
+                    $tmpDate = $tmpDate.ToLocalTime()
+                }
             }
             else
             {
@@ -4154,7 +4175,17 @@ function Invoke-CDDocumentWindowsKioskConfiguration
     {        
         try
         {
-            $startDateObj = Get-Date $obj.windowsKioskForceUpdateSchedule.startDateTime -ErrorAction Stop
+            if($obj.windowsKioskForceUpdateSchedule.startDateTime -is [DateTime]) {
+                $startDateObj = $obj.windowsKioskForceUpdateSchedule.startDateTime
+                if($startDateObj.Kind -eq "UTC")
+                {
+                    $startDateObj = $startDateObj.ToLocalTime()
+                }                
+            }
+            else
+            {
+                $startDateObj = Get-Date $obj.windowsKioskForceUpdateSchedule.startDateTime -ErrorAction Stop
+            }            
 
             Add-CustomSettingObject ([PSCustomObject]@{
                 Name = Get-LanguageString "SettingDetails.kioskStartDateTime"
@@ -4604,19 +4635,22 @@ function Invoke-CDDocumentTranslateSectionFile
     if($obj.'@OData.Type' -eq "#microsoft.graph.windows10CompliancePolicy" -and $fileInfo.BaseName -eq "customcompliance_compliancewindows10")
     {
         $category = Get-Category $categoryObj."$($fileInfo.BaseName)".category
-               
+
         if($null -eq $obj.deviceCompliancePolicyScript)
         {
             $propValue = Get-LanguageString "BooleanActions.notConfigured"
+            $rawValue  = "notConfigured"
         }
         else
         {
             $propValue = Get-LanguageString "BooleanActions.require"
+            $rawValue  = "require"
         }        
         Add-CustomSettingObject ([PSCustomObject]@{
             Name = Get-LanguageString "SettingDetails.adminConfiguredComplianceSettingName"
             Value = $propValue 
             EntityKey = "deviceCompliancePolicyScript"
+            RawValue = $rawValue
             Category = $category
             SubCategory = $null
         })

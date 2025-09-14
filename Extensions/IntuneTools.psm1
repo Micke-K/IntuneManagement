@@ -704,7 +704,10 @@ function Invoke-LoadADMXSettings
         $tvItem | Add-Member -MemberType NoteProperty -Name "AllPolicies" -Value $true
     }
 
-    $global:tvADMXCategories.Items[1].Items.Add($tvItem) | Out-Null        
+    try {
+        $global:tvADMXCategories.Items[1].Items.Add($tvItem) | Out-Null        
+    }
+    catch{}
 }
 
 function Set-ADMXSettingStatusText
@@ -854,6 +857,7 @@ function Get-ADMXCategoryNamePath
     }
 
     $catObj = $script:admxXML.policyDefinitions.categories.selectSingleNode("$($script:xmlNSPrefix)category[@name='$($categoryId)']",$script:xmlNS)
+    #$catObj = $script:admxXML.policyDefinitions.categories.category | Where Name -eq "$categoryId"
     
     $categories = @()
     while($catObj)
@@ -862,6 +866,7 @@ function Get-ADMXCategoryNamePath
         if($catObj.parentCategory.ref)
         {
             $catObj = $script:admxXML.policyDefinitions.categories.selectSingleNode("$($script:xmlNSPrefix)category[@name='$($catObj.parentCategory.ref)']", $script:xmlNS)
+            #$catObj = $script:admxXML.policyDefinitions.categories.category | where name -eq $catObj.parentCategory.ref
         }
         else 
         {
@@ -1037,11 +1042,11 @@ function Set-ADMXElementsPanel
                         }
                         elseif($valItem.value.longDecimal)
                         {
-                            $value = $valItem.value.longDecimal.'#text'
+                            $value = ?? $valItem.value.longDecimal.'#text' $valItem.value.longDecimal
                         }                        
                         elseif($valItem.value.string)
                         {
-                            $value = $valItem.value.string.'#text'
+                            $value = ?? $valItem.value.string.'#text' $valItem.value.string
                         }
                         else
                         {
@@ -1151,7 +1156,7 @@ function Set-ADMXElementsPanel
                             }
                             elseif($valItem.value.string)
                             {
-                                $value = $valItem.value.string.'#text'
+                                $value = ?? $valItem.value.string.'#text' $valItem.value.string
                             }
                             else
                             {
@@ -1979,11 +1984,13 @@ function Add-ADMXRegClasses
     {
         return
     }
-   
-    $classDef = @"
-    using System.ComponentModel;
 
-    public class ADMXRegPolicyElement : INotifyPropertyChanged
+    $classDef = @"
+    using System;
+    using System.ComponentModel;
+    using System.Collections.ObjectModel;
+
+    public class ADMXRegPolicyElement : System.ComponentModel.INotifyPropertyChanged
     {
         public string DataType { get { return _dataType; } set { _dataType = value;  NotifyPropertyChanged("DataType"); NotifyPropertyChanged("DataTypeDisplayString");  } }
         private string _dataType = null;
@@ -2069,8 +2076,9 @@ function Add-ADMXRegClasses
         }
     }
 "@
+    [Reflection.Assembly]::LoadWithPartialName("mscorlib") | Out-Null
     [Reflection.Assembly]::LoadWithPartialName("System.ComponentModel") | Out-Null
-    Add-Type -TypeDefinition $classDef -IgnoreWarnings -ReferencedAssemblies @('System.ComponentModel')
+    Add-Type -TypeDefinition $classDef
 }
 
 #endregion

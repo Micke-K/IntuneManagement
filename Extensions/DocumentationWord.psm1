@@ -10,13 +10,30 @@ function Invoke-InitializeModule
 {
     if(!("Microsoft.Office.Interop.Word.Application" -as [Type]))
     {
+        $loaded = $false
         try
         {
             Add-Type -AssemblyName Microsoft.Office.Interop.Word
+            $loaded = $true
+        }
+        catch { }
+        try
+        {
+            $wordFile = Get-ChildItem -path "$($env:windir)\assembly\GAC_MSIL" -Filter "Microsoft.Office.Interop.Word.dll" -Recurse
+            if($wordFile -and $wordFile.Exists)
+            {
+                Add-Type -Path $wordFile.FullName
+                $loaded = $true
+            }
         }
         catch
         {
             Write-LogError "Failed to add Word Interop type. Cannot create word documents. Verify that Word is installed properly." $_.Exception
+            return
+        }
+
+        if(-not $loaded) {
+            Write-LogError "Word Interop type not found. Cannot create word documents. Verify that Word is installed properly." $_.Exception
             return
         }
     }
@@ -45,6 +62,9 @@ function Add-WordOptionsControl
 
     $global:spWordCustomProperties.Visibility = (?: ($global:cbWordDocumentationProperties.SelectedValue -ne "custom") "Collapsed" "Visible")
     $global:txtWordCustomProperties.Visibility = (?: ($global:cbWordDocumentationProperties.SelectedValue -ne "custom") "Collapsed" "Visible")
+
+    $global:cbWordDocumentationFormat.ItemsSource = ("[ { Name: `"Docx`",Value: `"docx`" }, { Name: `"PDF`",Value: `"pdf`" }]" | ConvertFrom-Json)
+    $global:cbWordDocumentationFormat.SelectedValue = (Get-Setting "Documentation" "WordDocumentFormat" "docx")
 
     $global:cbWordDocumentationLevel.ItemsSource = ("[ { Name: `"Full`",Value: `"full`" }, { Name: `"Limited`",Value: `"limited`" }, { Name: `"Basic`",Value: `"basic`" }]" | ConvertFrom-Json)
     $global:cbWordDocumentationLevel.SelectedValue = (Get-Setting "Documentation" "WordDocumentationLevel" "full")
@@ -112,8 +132,9 @@ function Invoke-WordActivate
 
 function Invoke-WordPreProcessItems
 {
-    Save-Setting "Documentation" "WordExportProperties" $global:cbWordDocumentationProperties.SelectedValue
+    Save-Setting "Documentation" "WordExportProperties" $global:cbWordDocumentationProperties.SelectedValue    
     Save-Setting "Documentation" "WordCustomDisplayProperties" $global:txtWordCustomProperties.Text
+    Save-Setting "Documentation" "WordDocumentFormat" $global:cbWordDocumentationFormat.SelectedValue
     Save-Setting "Documentation" "WordDocumentTemplate" $global:txtWordDocumentTemplate.Text
     Save-Setting "Documentation" "WordDocumentName" $global:txtWordDocumentName.Text
 
@@ -384,6 +405,14 @@ function Invoke-WordPostProcessItems
     $script:doc.TablesOfFigures | ForEach-Object -Process { $_.Update() | Out-Null }
     $script:doc.TablesOfAuthorities | ForEach-Object -Process { $_.Update() | Out-Null }
 
+    if($global:cbWordDocumentationFormat.SelectedValue -eq "pdf")
+    {
+        $format = [Microsoft.Office.Interop.Word.WdSaveFormat]::wdFormatPDF
+    }
+    else {
+        $format = [Microsoft.Office.Interop.Word.WdSaveFormat]::wdFormatDocumentDefault
+    }
+
     $fileName = $global:txtWordDocumentName.Text
     if(-not $fileName)
     {
@@ -392,7 +421,10 @@ function Invoke-WordPostProcessItems
 
     $fileName = Expand-FileName $fileName
 
-    $format = [Microsoft.Office.Interop.Word.WdSaveFormat]::wdFormatDocumentDefault
+    if($format -eq [Microsoft.Office.Interop.Word.WdSaveFormat]::wdFormatPDF -and $fileName -notlike "*.pdf")
+    {
+        $fileName = [IO.Path]::ChangeExtension($fileName, ".pdf")
+    }
 
     try
     {
@@ -575,7 +607,7 @@ function Invoke-WordProcessItem
 
             foreach($customTable in ($documentedObj.CustomTables | Sort-Object -Property Order)) 
             {
-                Add-DocTableItems $obj $objectType $documentedObj $customTable.Values $customTable.Columns $customTable.LanguageId -AddCategories -AddSubcategories
+                Add-DocTableItems $obj $objectType $customTable.Values $customTable.Columns $customTable.LanguageId -AddCategories -AddSubcategories
             }
         }
 
@@ -678,6 +710,10 @@ function Set-DocTableSettingsItems
         $cellRow = $row
         foreach($settingProp in $properties)
         {
+            if([String]::IsNullOrEmpty($settingProp)) { 
+                continue
+            }
+
             $script:docTable.Cell($cellRow, $firstColumn).Range.Text = (Invoke-DocTranslateColumnHeader ($settingProp.Split('.')[-1]))
             
             $propArr = $settingProp.Split('.')
@@ -779,6 +815,9 @@ function Add-DocTableItems
     $i = 1
     foreach($prop in $properties)
     {
+        if([String]::IsNullOrEmpty($prop)) { 
+            continue
+        }
         $script:docTable.Cell(1, $i).Range.Text = (Invoke-DocTranslateColumnHeader ($prop.Split(".")[-1]))
         $i++
     }

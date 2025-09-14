@@ -289,12 +289,20 @@ function Get-ObjectDocumentation
         $properties = @("Name","Value","RootCategory","Category","RawValue","RawJsonValue","DefaultValue","Description")
     }
     #endregion
+    #region Compliance Policies V2
+    elseif($type -eq "#microsoft.graph.deviceManagementCompliancePolicy")
+    {  
+        Invoke-TranslateComplianceV2Object $obj $objectType | Out-Null
+        $properties = @("Name","Value","RootCategory","Category","RawValue","RawJsonValue","DefaultValue","Description")
+    }
+    #endregion
     #region Endpoint Security
     elseif($type -eq "#microsoft.graph.deviceManagementIntent")
     {
         Invoke-TranslateIntentObject $obj $objectType | Out-Null
         $properties = @("Name","Value","Category","FullValueTable","RawValue","RecommendedValue","SettingId","Description")
         $defaultDocumentationProperties = @("Name","Value","RecommendedValue")
+        $inputType = "Intent"
     }
     #endregion
     #region Administrative Templates
@@ -381,7 +389,11 @@ function Get-DocumentedSettings
 
 function Invoke-ObjectDocumentation
 {
-    param($documentationObj)
+    param($documentationObj,
+        $ObjectSeparator,
+        $PropertySeparator,
+        $DocumentationLanguage
+        )
 
     $global:intentCategories = $null
     $global:catRecommendedSettings = $null
@@ -389,10 +401,11 @@ function Invoke-ObjectDocumentation
     $global:cfgCategories = $null
     $script:admxCategories = $null
     $script:migTable = $null
+    $script:offlineObjects = @{}
 
-    $script:DocumentationLanguage = "en"        
-    $script:objectSeparator = [System.Environment]::NewLine
-    $script:propertySeparator = ","
+    $script:DocumentationLanguage = ?? $DocumentationLanguage "en"
+    $script:objectSeparator = ?? $ObjectSeparator ([System.Environment]::NewLine)
+    $script:propertySeparator = ?? $PropertySeparator ","
 
     $loadExportedInfo = $false
 
@@ -691,6 +704,10 @@ function Add-BasicAdditionalValues
             if($obj.createdDateTime -is [DateTime])
             {
                 $tmpDate = $obj.createdDateTime
+                if($tmpDate.Kind -eq "UTC")
+                {
+                    $tmpDate = $tmpDate.ToLocalTime()
+                }
             }
             else
             {
@@ -714,6 +731,10 @@ function Add-BasicAdditionalValues
             if($obj.lastModifiedDateTime -is [DateTime])
             {
                 $tmpDate = $obj.lastModifiedDateTime
+                if($tmpDate.Kind -eq "UTC")
+                {
+                    $tmpDate = $tmpDate.ToLocalTime()
+                }
             }
             else
             {
@@ -735,6 +756,10 @@ function Add-BasicAdditionalValues
             if($obj.modifiedDateTime -is [DateTime])
             {
                 $tmpDate = $obj.modifiedDateTime
+                if($tmpDate.Kind -eq "UTC")
+                {
+                    $tmpDate = $tmpDate.ToLocalTime()
+                }
             }
             else
             {
@@ -1037,15 +1062,26 @@ function Invoke-TranslateADMXObject
             $rawValues += $rawValue
         }
         $status = (?: ($definitionValue.enabled -eq $true) $enabledStr $disabledStr)
+
+        $combinedValue = $status 
+        if($values) {
+            $combinedValue += $script:objectSeparator + ($values -join $script:objectSeparator)
+        }
+
+        $combinedValueWithLabel = $status 
+        if($valuesWithLabel) {
+            $combinedValueWithLabel += $script:objectSeparator + ($valuesWithLabel -join $script:objectSeparator)
+        }
+
         $script:objectSettingsData += New-Object PSObject -Property @{ 
             Name = $definitionValue.definition.displayName
             Description = $definitionValue.definition.explainText
             Status = $status
             Value = $values -join $script:objectSeparator
-            CombinedValue = ($status + $script:objectSeparator + ($values -join $script:objectSeparator))
+            CombinedValue = $combinedValue #($status + $script:objectSeparator + ($values -join $script:objectSeparator))
             ValueWithLabel = $valuesWithLabel -join $script:objectSeparator
             FullValueTable = $tableValue
-            CombinedValueWithLabel = ($status + $script:objectSeparator + ($valuesWithLabel -join $script:objectSeparator))
+            CombinedValueWithLabel = $combinedValueWithLabel #($status + $script:objectSeparator + ($valuesWithLabel -join $script:objectSeparator))
             RawValue = $rawValues -join $script:propertySeparator
             Class = $definitionValue.definition.classType
             DefinitionId = $definitionValue.definition.id
@@ -1109,9 +1145,9 @@ function Invoke-TranslateSettingsObject
         $cfgSettings = $obj.Settings
     }
 
-    if(-not $global:cfgCategories)
+    if(-not $global:cfgCategories -or -not ($global:cfgCategories | where { $_.settingUsage -eq "configuration" }))
     {
-        $global:cfgCategories = (Invoke-GraphRequest "/deviceManagement/configurationCategories?`$filter=platforms has 'windows10' and technologies has 'mdm'" -ODataMetadata "minimal" @params).Value
+        $global:cfgCategories += (Invoke-GraphRequest "/deviceManagement/configurationCategories?`$filter=platforms has 'windows10' and technologies has 'mdm'" -ODataMetadata "minimal" @params).Value
     }
 
     if(-not $global:cachedCfgSettings) 
@@ -1208,15 +1244,25 @@ function Add-SettingsSetting
     {
         $subCategory = $null
         $objCategory = $categoryDef
-    }    
+    }
+    
+    $settingName = ""
+    $settingDescription = ""
+    if($settingsDef.displayName) {
+        $settingName = $settingsDef.displayName.Trim([Environment]::NewLine).Trim("`n")
+    }
+
+    if($settingsDef.description) {
+        $settingDescription = $settingsDef.description.Trim([Environment]::NewLine).Trim("`n")
+    }
 
     $settingInfo = [PSCustomObject]@{
         SettingId = $settingsDef.Id
         SettingKey = ""
         SettingName = $settingsDef.Name
-        Name = $settingsDef.displayName
-        Description=$settingsDef.description
-        CategortyId = $objCategory.id
+        Name = $settingName
+        Description = $settingDescription
+        CategoryId = $objCategory.id
         Category=$objCategory.displayName
         CategoryDefinition=$objCategory
         SubCategory=$subCategory.displayName
@@ -1388,6 +1434,85 @@ function Add-SettingsSetting
     $settingInfo.DefaultValue = $defaultValue
 
     $settingInfo
+}
+
+#endregion
+
+#region Compliance V2 Policies - Based on Settings Catalog
+
+function Invoke-TranslateComplianceV2Object
+{
+    param($obj, $objectType)
+
+    $platformType = Get-LanguageString "Platform.$($obj.platforms)"
+
+    Add-BasicDefaultValues $obj $objectType
+    Add-BasicPropertyValue (Get-LanguageString "TableHeaders.configurationType") (Get-LanguageString "ConfigurationTypes.settingsCatalog")
+    Add-BasicPropertyValue (Get-LanguageString "SettingDetails.platformSupported") $platformType
+    Add-BasicAdditionalValues $obj $objectType
+    
+    $params = @{}
+    ## Set language
+    if($script:DocumentationLanguage)
+    {
+        $params.Add("AdditionalHeaders", @{"Accept-Language"=$script:DocumentationLanguage})
+    }
+
+    $cfgSettings = (Invoke-GraphRequest "/deviceManagement/compliancePolicies('$($obj.Id)')/settings?`$expand=settingDefinitions&top=1000" -ODataMetadata "minimal" @params).Value
+
+    if($obj.'@ObjectFromFile')
+    {
+        $cfgSettings = $obj.Settings
+    }
+
+    if(-not $global:cfgCategories -or -not ($global:cfgCategories | where { $_.settingUsage -eq "compliance" }))
+    {
+        $global:cfgCategories += (Invoke-GraphRequest "/deviceManagement/complianceCategories?`$templateCategory=True&`$filter=platforms has 'linux' and technologies has 'linuxMdm'" -ODataMetadata "minimal" @params).Value
+    }
+
+    if(-not $global:cachedCfgSettings) 
+    {
+        $global:cachedCfgSettings = @{}
+    }
+
+    $script:settingCatalogasCategories = @{}
+    foreach($cfgSetting in $cfgSettings)
+    {
+        if($obj.'@ObjectFromFile' -and -not $cfgSetting.settingDefinitions) 
+        {
+            if($global:cachedCfgSettings.ContainsKey($cfgSetting.settingInstance.settingDefinitionId) -eq $false) 
+            {
+                $defObj = Invoke-GraphRequest "/deviceManagement/configurationSettings/$($cfgSetting.settingInstance.settingDefinitionId)"
+                $global:cachedCfgSettings.Add($defObj.Id, $defObj)
+            }
+        }
+        else
+        {
+            $defObj = $cfgSetting.settingDefinitions | Where id -eq $cfgSetting.settingInstance.settingDefinitionId
+            if($global:cachedCfgSettings.ContainsKey($cfgSetting.settingInstance.settingDefinitionId) -eq $false) 
+            {                
+                $global:cachedCfgSettings.Add($defObj.Id, $defObj)
+            }
+        }
+        if(-not $defObj -or $script:settingCatalogasCategories.ContainsKey($defObj.categoryId)) { continue }
+
+        $catObj = $global:cfgCategories | Where Id -eq $defObj.categoryId 
+        $rootCatObj = $global:cfgCategories | Where Id -eq $catObj.rootCategoryId
+
+        $script:settingCatalogasCategories.Add($defObj.categoryId, (New-Object PSObject -Property @{ 
+            Category=$catObj
+            RootCategory=$rootCatObj
+        }))
+    }
+
+    $script:curSettingsCatologPolicy = @()
+
+    $cfgSettings | % { Add-SettingsSetting $_.settingInstance $_.settingDefinitions } | Out-Null
+
+    foreach($item in ($script:curSettingsCatologPolicy | Select @{l="CategoryID";e={$_.CategoryDefinition.Id}}, @{l="SubCategoryID";e={$_.SubCategoryDefinition.Id}} -Unique))
+    {
+        $script:objectSettingsData += ($script:curSettingsCatologPolicy | Where { $_.CategoryDefinition.Id -eq $item.CategoryID -and $_.SubCategoryDefinition.Id -eq $item.SubCategoryID })   
+    }
 }
 
 #endregion
@@ -2166,6 +2291,7 @@ function Invoke-TranslateSection
         $value = $null
         $valueSet = $false
         $useParentProp = $false
+        $payloadFile = $false
         
         #if($prop.enabled -eq $false -and $objInfo.ShowDisabled -ne $true) { continue }
 
@@ -2397,6 +2523,7 @@ function Invoke-TranslateSection
                     if($prop.filenameEntityKey -and $obj."$($prop.filenameEntityKey)")
                     {
                         $value = $obj."$($prop.filenameEntityKey)"
+                        $payloadFile = $true
                     }
                     else
                     {
@@ -2550,6 +2677,23 @@ function Invoke-TranslateSection
             if($addPropertyInfo)
             {
                 Add-PropertyInfo (?: ($useParentProp -and $parent) $parent $prop) $value $rawValue 
+
+                if($payloadFile -eq $true -and $obj.payload)
+                {
+                    # Add payload file conetent as a property
+                    $tmpProp = [PSCustomObject]@{
+                        nameResourceKey = "uploadResult"
+                        descriptionResourceKey = ""
+                        entityKey = "payloadData"
+                        dataType = 20
+                        booleanActions = 0
+                        category = $prop.Category
+                    }
+                    
+                    $propValue = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj.payload))
+        
+                    Add-PropertyInfo $tmpProp $propValue -originalValue $obj.payload
+                }
             }
         }
         else
@@ -4594,13 +4738,21 @@ function local:Invoke-StartDocumentatiom
                     {
                         Write-Status "Process $((Get-GraphObjectName $tmpObj.Object $tmpObj.ObjectType)) ($($obj.ObjectType.Title)) - $($global:cbDocumentationType.SelectedItem.Name)"
     
+                        $hasRawValue = $false
+                        $documentedObj.Settings | % { if(($_.PSObject.Properties | Where Name -eq "RawValue")) { $hasRawValue=$true } }
+                        $hasRawValue
+                        
                         $filteredSettings = @()
                         foreach($item in $documentedObj.Settings)
                         {
                             if(-not ($item.PSObject.Properties | Where Name -eq "RawValue") -or $documentedObj.UpdateFilteredObject -eq $false)
                             {
-                                $filteredSettings = $documentedObj.Settings
-                                break
+                                if($hasRawValue -eq $false) { 
+                                    $filteredSettings = $documentedObj.Settings 
+                                    break
+                                }
+                                $filteredSettings += $item
+                                continue
                             }
                             
                             if($item.AlwaysAddValue -eq $true)

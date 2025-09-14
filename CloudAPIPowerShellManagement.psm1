@@ -85,7 +85,12 @@ function Initialize-CloudAPIManagement
         [string]
         $secret,
         [string]
-        $certificate
+        $certificate,
+        [string]
+        $GraphEnvironment,
+        [string]
+        $GCCType
+
     )
 
     $PSModuleAutoloadingPreference = "none"
@@ -102,9 +107,47 @@ function Initialize-CloudAPIManagement
 
     if($tenantId)
     {
+        Write-Host "Using Tenant Id: $tenantId"
         $global:AzureAppId = $appId 
         $global:ClientSecret = $secret 
         $global:ClientCert = $certificate
+        $global:UseGraphEnvironment = $GraphEnvironment
+        $global:UseGCCType = $GCCType
+
+        if($global:AzureAppId)
+        {
+            Write-Host "Using Azure App Id: $($global:AzureAppId)"
+        }
+        else
+        {
+            Write-Warning "Azure App Id is missing. Use -AppId <AppID> on the command line"
+        }
+
+        if($global:ClientSecret -or $global:ClientCert)
+        {
+            if($global:ClientSecret)
+            {
+                Write-Host "Using Azure App Secret"
+            }
+            else
+            {
+                Write-Host "Using Azure App Certificate"
+            }            
+        }
+        else
+        {
+            Write-Warning "Azure App Secret or Certificate is missing. Use -Secret <Secret> or -Certificate <Certificate> on the command line"
+        }
+
+        if($global:UseGraphEnvironment)
+        {
+            Write-Host "Using Azure Graph Environment: $($global:UseGraphEnvironment)"
+        }
+
+        if($global:UseGCCType)
+        {
+            Write-Host "Using Graph Environment type: $($global:UseGCCType)"
+        }
     }
 
     if($global:hideUI -ne $true)

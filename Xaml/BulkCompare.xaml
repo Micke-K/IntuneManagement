@@ -41,6 +41,9 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -72,27 +75,47 @@
         </StackPanel>
         <CheckBox Grid.Column='1' Grid.Row='3' Name='chkSkipMissingDestinationPolicies' VerticalAlignment="Center" />
 
-        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='4'>
+        <StackPanel Orientation="Horizontal" Grid.Row='4' Margin="0,5,5,0" >
+            <Label Content="Save json" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Save a json version of the compare for post-compare scripting." />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='4' Name='chkBulkCompareSaveJson' VerticalAlignment="Center" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row='5' Margin="0,5,5,0" >
+            <Label Content="Remove OData From Compare" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Skipps ID string and removes OData properties of Json strings when comparing properties." />
+        </StackPanel>
+        <CheckBox Grid.Column='1' Grid.Row='5' Name='chkBulkCompareRemoveOData' VerticalAlignment="Center" />
+
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='6'>
             <Label Content="Save as" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specifies how the export csv should be saved. One file per ObjectType or one file for all objects." />
         </StackPanel>
-        <ComboBox Name="cbCompareSave" Margin="0,5,0,0" MinWidth="250" Grid.Row='4' Grid.Column="1" HorizontalAlignment="Left" 
+        <ComboBox Name="cbCompareSave" Margin="0,5,0,0" MinWidth="250" Grid.Row='6' Grid.Column="1" HorizontalAlignment="Left" 
                     DisplayMemberPath="Name" SelectedValuePath="Value"  />    
 
-        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='5' >
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='7' >
             <Label Content="Comparison Type" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify how objects should be compared" />
         </StackPanel>
-        <ComboBox Name="cbCompareType" Margin="0,5,0,0" MinWidth="250" Grid.Row='5'  Grid.Column="1" HorizontalAlignment="Left" 
+        <ComboBox Name="cbCompareType" Margin="0,5,0,0" MinWidth="250" Grid.Row='7'  Grid.Column="1" HorizontalAlignment="Left" 
                                 DisplayMemberPath="Name" SelectedValuePath="Value"  />
 
-        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='6' >
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='8' >
             <Label Content="CSV Delimiter" />
             <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the character to use for separating properties in the CSV file" />
         </StackPanel>
-        <ComboBox Name="cbCompareCSVDelimiter" Margin="0,5,0,0" MinWidth="250" Grid.Row='6'  Grid.Column="1" HorizontalAlignment="Left"  />                                
+        <ComboBox Name="cbCompareCSVDelimiter" Margin="0,5,0,0" MinWidth="250" Grid.Row='8'  Grid.Column="1" HorizontalAlignment="Left"  />
 
-        <Grid Margin="0,0,5,0" Grid.Row='7' >
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,0" Grid.Row='9' >
+            <Label Content="Multi-Value Delimiter" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the character to use for separating values for properties with more than one value. New line will cause a new line in the exported CSV" />
+        </StackPanel>
+        <ComboBox Name="cbCompareMultiValueDelimiter" Margin="0,5,0,0" MinWidth="250" Grid.Row='9'  Grid.Column="1" HorizontalAlignment="Left"  
+            DisplayMemberPath="Name" SelectedValuePath="Value" />
+
+        <Grid Margin="0,0,5,0" Grid.Row='10' >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>                
             </Grid.RowDefinitions>
@@ -102,7 +125,7 @@
             </StackPanel>
         </Grid>
     
-        <DataGrid Name="dgObjectsToCompare" Margin="0,5,0,5" Grid.Row='7' Grid.Column='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" />
+        <DataGrid Name="dgObjectsToCompare" Margin="0,5,0,5" Grid.Row='9' Grid.Column='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" />
 
     </Grid>
 
