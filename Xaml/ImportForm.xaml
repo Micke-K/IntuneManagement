@@ -88,6 +88,7 @@
 
     <Grid Grid.Row='1' VerticalAlignment="Stretch" Margin="0,5,0,0">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -96,7 +97,11 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         
-        <Grid Margin="0,0,5,0" Name="grdFilesHeader">
+        <Label Content="Filter" Margin="0,0,5,0" VerticalAlignment="Center" />
+        <TextBox Name="txtFilter" Grid.Column='1' Grid.Row='0' Margin="0,0,0,5"
+                 ToolTip="Filter files by name" />
+
+        <Grid Margin="0,0,5,0" Name="grdFilesHeader" Grid.Row='1'>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>                
             </Grid.RowDefinitions>
@@ -106,7 +111,7 @@
             </StackPanel>
         </Grid>
         
-        <DataGrid Name="dgObjectsToImport" Grid.Column='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" Margin="0,0,0,5" />
+        <DataGrid Name="dgObjectsToImport" Grid.Column='1' Grid.Row='1' CanUserAddRows="False" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" Margin="0,0,0,5" />
         <!-- 
         <ListBox Name="lstFiles" Grid.Column='1' 
                     SelectionMode="Single"
@@ -137,5 +142,3 @@
         <Button Name="btnCancel" Content="Cancel" Width='100' Margin="5,0,0,0" />
     </StackPanel> 
 </Grid>
-
-
