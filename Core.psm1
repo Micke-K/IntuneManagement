@@ -660,7 +660,7 @@ function Show-AboutDialog
 
     Set-XamlProperty $script:dlgAbout "lstModules" "ItemsSource" $loadedItems
 
-    Add-XamlEvent $script:dlgAbout "linkSource" "Add_RequestNavigate" ({ [System.Diagnostics.Process]::Start($_.Uri.AbsoluteUri); $_.Handled = $true })
+    Add-XamlEvent $script:dlgAbout "linkSource" "Add_RequestNavigate" ({ Start-Process $_.Uri.AbsoluteUri; $_.Handled = $true })
 
     Show-ModalForm "About" $script:dlgAbout 
 }
@@ -674,8 +674,10 @@ function Show-UpdatesDialog
 
     Add-XamlEvent $script:dlgUpdates "btnClose" "add_click" {
         $script:dlgUpdates = $null
-        Show-ModalObject 
-    }    
+        Show-ModalObject
+    }
+
+    Add-XamlEvent $script:dlgUpdates "linkSource" "Add_RequestNavigate" ({ Start-Process $_.Uri.AbsoluteUri; $_.Handled = $true })
 
     $fileContent = Get-Content -Raw -Path ($global:AppRootFolder + "\ReleaseNotes.md")
     try
@@ -2485,9 +2487,9 @@ function Get-MainWindow
         {
             $script:welcomeForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\Welcome.xaml") -AddVariables
             
-            Add-XamlEvent $script:welcomeForm "gitHubLink" "Add_RequestNavigate" ({ [System.Diagnostics.Process]::Start($_.Uri.AbsoluteUri); $_.Handled = $true })
-            Add-XamlEvent $script:welcomeForm "licenseLink" "Add_RequestNavigate" ({ [System.Diagnostics.Process]::Start($_.Uri.AbsoluteUri); $_.Handled = $true })
-            Add-XamlEvent $script:welcomeForm "addCustomApp" "Add_RequestNavigate" ({ [System.Diagnostics.Process]::Start($_.Uri.AbsoluteUri); $_.Handled = $true })
+            Add-XamlEvent $script:welcomeForm "gitHubLink" "Add_RequestNavigate" ({ Start-Process $_.Uri.AbsoluteUri; $_.Handled = $true })
+            Add-XamlEvent $script:welcomeForm "licenseLink" "Add_RequestNavigate" ({ Start-Process $_.Uri.AbsoluteUri; $_.Handled = $true })
+            Add-XamlEvent $script:welcomeForm "addCustomApp" "Add_RequestNavigate" ({ Start-Process $_.Uri.AbsoluteUri; $_.Handled = $true })
             
             Add-XamlEvent $script:welcomeForm "chkAcceptConditions" "add_click" {
                 $global:btnAcceptConditions.IsEnabled = ($this.IsChecked -eq $true)
@@ -2522,7 +2524,7 @@ function Get-MainWindow
                 if($appIdChangeInformed -ne "true") {
                     $script:oldAzureAppForm = Get-XamlObject ($global:AppRootFolder + "\Xaml\OldAzureApp.xaml")
 
-                    Add-XamlEvent $script:oldAzureAppForm "addCustomApp" "Add_RequestNavigate" ({ [System.Diagnostics.Process]::Start($_.Uri.AbsoluteUri); $_.Handled = $true })
+                    Add-XamlEvent $script:oldAzureAppForm "addCustomApp" "Add_RequestNavigate" ({ Start-Process $_.Uri.AbsoluteUri; $_.Handled = $true })
 
                     Add-XamlEvent $script:oldAzureAppForm "btnOK" "add_click" {
                         if((Get-XamlProperty $script:oldAzureAppForm "chkChangeApp" "IsChecked") -eq $true) {

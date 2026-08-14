@@ -2906,7 +2906,7 @@ function Start-PostExportApplications
             }
             else
             {
-                Write-Log "Cound not find encryption file"
+                Write-Log "Could not find encryption file"
             }
         }
     }
@@ -2966,7 +2966,7 @@ function Add-ScriptExportApplications
 function Start-PostGetApplications {
     param($obj, $objectType)
 
-    if($obj.Object.dependentAppCount -is [Int] -and ($obj.Object.dependentAppCount -gt 0 -or $obj.Object.supersededAppCount -gt 0)) {
+    if(($obj.Object.dependentAppCount   -as [int]) -gt 0 -or ($obj.Object.supersededAppCount -as [int]) -gt 0) {
         $relationships = (Invoke-GraphRequest -Url "/deviceAppManagement/mobileApps/$($obj.Id)/relationships?`$filter=targetType%20eq%20microsoft.graph.mobileAppRelationshipType%27child%27").value
         $dependencyApps = @()
         $supersededApps = @()
