@@ -1,0 +1,71 @@
+name: Feature request
+description: Something the application should do and does not.
+title: "[Request] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If the idea is still taking shape, [Ideas in
+        Discussions](https://github.com/Micke-K/IntuneManagement/discussions/categories/ideas)
+        is the better room. Use this form when you can describe the outcome you
+        want.
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: Which version is this for?
+      description: >
+        This one is read by a human, not by automation, so say what you mean.
+        A request that 4.0 already covers is worth checking against the release
+        notes first.
+      options:
+        - Version 4.0
+        - Version 3.x
+        - Either
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: >
+        The situation, not the solution. "I move policies between two tenants
+        every month and have to redo the assignments by hand" tells more than
+        "add a button".
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like it to do?
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: How do you handle it today?
+      description: Including "not at all", which is useful to know.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part of the application?
+      options:
+        - Export
+        - Import
+        - Copy
+        - Compare
+        - Documentation output
+        - Assignments, groups or filters
+        - Bulk operations
+        - ADMX or tools
+        - The user interface
+        - Automation through the PowerShell commands
+        - A policy type that is not supported yet
+        - Something else
+    validations:
+      required: true

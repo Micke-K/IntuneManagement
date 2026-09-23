@@ -1,5 +1,11 @@
 # IntuneManagement with PowerShell and WPF UI
 
+> **Version 4.0 is in beta.** A full rewrite that also runs on macOS and Linux,
+> with every operation available as a PowerShell command for automation.
+> Try it from the [`v4` branch](../../tree/v4) or the [4.0.0-beta1 pre-release](../../releases/tag/4.0.0-beta1).
+> Version 3 stays here and stays supported until 4.0 is final.
+> Report version 4 problems with the *Bug report (version 4.0 beta)* form.
+
 <p align="center">
   <a href="https://twitter.com/Micke_K_72">
     <img src="https://img.shields.io/twitter/follow/Micke_K_72.svg?style=social" target="_blank" />

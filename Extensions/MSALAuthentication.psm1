@@ -10,7 +10,7 @@ This module manages Authentication for the application with MSAL. It is also res
 #>
 function Get-ModuleVersion
 {
-    '3.9.8a'
+    '3.9.9'
 }
 
 $global:msalAuthenticator = $null
@@ -137,9 +137,25 @@ function Invoke-InitializeModule
         Description = "Use WAM for enhanced login methods"
     }) "MSAL"
 
+    Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Use System Browser for login"
+        Key = "UseSystemBrowser"
+        Type = "Boolean"
+        DefaultValue = $false
+        Description = "Use the default system browser (Edge/Chrome/Firefox) for interactive login instead of the embedded WebView. Required for passkey / FIDO2 sign-in. Redirect URI is forced to http://localhost when enabled. Takes precedence over WAM. Note: Requires restart"
+    }) "MSAL"
+
     $script:MSALUseWAM = Get-SettingValue "UseWAM"
     if($script:MSALUseWAM -and $PSVersionTable.PSVersion.Major -lt 7) {
         Write-Log "WAM is only supported in PowerShell 7 and later. Disabling WAM" 2
+        $script:MSALUseWAM = $false
+    }
+
+    # System Browser takes precedence over WAM: passkey/FIDO2 login works in the real browser
+    # but not in the WAM pane or the embedded WebView. If both are enabled, disable WAM.
+    $script:MSALUseSystemBrowser = Get-SettingValue "UseSystemBrowser"
+    if($script:MSALUseSystemBrowser -and $script:MSALUseWAM) {
+        Write-Log "Both UseWAM and UseSystemBrowser are enabled - the system browser takes precedence for interactive login" 2
         $script:MSALUseWAM = $false
     }
 
@@ -931,9 +947,21 @@ function Get-MSALApp
 
         [void]$appBuilder.WithAuthority($authority)
 
-        if($appInfo.RedirectUri) { [void]$appBuilder.WithRedirectUri($appInfo.RedirectUri) }
+        # System Browser mode: MSAL's system-browser flow only accepts loopback redirects,
+        # so any custom redirect URI (nativeclient, ms-appx-web://, etc.) is replaced with
+        # http://localhost. The app registration in Entra must have this loopback URI added
+        # under the "Mobile and desktop applications" platform for the login to succeed.
+        $redirectUri = $appInfo.RedirectUri
+        if($script:MSALUseSystemBrowser -and $redirectUri -and ($redirectUri -notmatch '^http://localhost')) {
+            Write-LogDebug "UseSystemBrowser: overriding redirect URI '$redirectUri' with http://localhost"
+            $redirectUri = "http://localhost"
+        }
+        elseif($script:MSALUseSystemBrowser -and -not $redirectUri) {
+            $redirectUri = "http://localhost"
+        }
+        if($redirectUri) { [void]$appBuilder.WithRedirectUri($redirectUri) }
 
-        [void] $appBuilder.WithClientName("CloudAPIPowerShellManagement") 
+        [void] $appBuilder.WithClientName("CloudAPIPowerShellManagement")
         [void] $appBuilder.WithClientVersion($PSVersionTable.PSVersion)
 
         if($script:MSALUseWAM) {
@@ -1288,14 +1316,23 @@ function Connect-MSALUser
         [IntPtr]$ParentWindow = [System.Diagnostics.Process]::GetCurrentProcess().MainWindowHandle
         if ($ParentWindow)
         {
-            [void]$aquireTokenObj.WithParentActivityOrWindow($ParentWindow)            
+            [void]$aquireTokenObj.WithParentActivityOrWindow($ParentWindow)
+        }
+
+        # UseSystemBrowser: force MSAL to launch the default system browser instead of
+        # any embedded WebView. Required for passkey / FIDO2 sign-in which the embedded
+        # WebView cannot service.
+        if($script:MSALUseSystemBrowser)
+        {
+            try { [void]$aquireTokenObj.WithUseEmbeddedWebView($false) }
+            catch { Write-LogDebug "WithUseEmbeddedWebView unavailable: $($_.Exception.Message)" }
         }
 
         # If we need a consent (e.g. App is not approved in the environment)
-        if ($script:authenticationFailure.Classification -eq "ConsentRequired") 
+        if ($script:authenticationFailure.Classification -eq "ConsentRequired")
         {
-            Write-Log "Interactive login with Consent prompt" 
-            [void]$aquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::Consent) 
+            Write-Log "Interactive login with Consent prompt"
+            [void]$aquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::Consent)
         }
 
         $authResult = Get-MsalAuthenticationToken $aquireTokenObj
@@ -1346,8 +1383,18 @@ function Connect-MSALUser
                 $appBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::Create($global:appObj.ClientID)
                 if($tenantId) { [void]$appBuilder.WithAuthority("https://$((Get-MSALAppAuthority))/$($tenantId)") }
                 else { [void]$appBuilder.WithAuthority($global:MSALApp.Authority) }
-                if($global:appObj.RedirectUri) { [void]$appBuilder.WithRedirectUri($global:appObj.RedirectUri) }     
-                
+
+                # Match the redirect URI substitution done in Get-MSALApp - keeps this
+                # secondary MSAL app consistent with System Browser mode.
+                $tenantRedirectUri = $global:appObj.RedirectUri
+                if($script:MSALUseSystemBrowser -and $tenantRedirectUri -and ($tenantRedirectUri -notmatch '^http://localhost')) {
+                    $tenantRedirectUri = "http://localhost"
+                }
+                elseif($script:MSALUseSystemBrowser -and -not $tenantRedirectUri) {
+                    $tenantRedirectUri = "http://localhost"
+                }
+                if($tenantRedirectUri) { [void]$appBuilder.WithRedirectUri($tenantRedirectUri) }
+
                 Add-MSALProxy $appBuilder
 
                 $app = $appBuilder.Build()
@@ -1366,7 +1413,12 @@ function Connect-MSALUser
                     $AquireTokenObj = $app.AcquireTokenInteractive($tmpScope)
                     #[void]$AquireTokenObj.WithAccount($authResult.Account)
                     [void]$AquireTokenObj.WithLoginHint($authResult.Account.Username)
-                    [void]$AquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::NoPrompt) 
+                    [void]$AquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::NoPrompt)
+                    if($script:MSALUseSystemBrowser)
+                    {
+                        try { [void]$AquireTokenObj.WithUseEmbeddedWebView($false) }
+                        catch { Write-LogDebug "WithUseEmbeddedWebView unavailable: $($_.Exception.Message)" }
+                    }
                     $tmpResults = Get-MsalAuthenticationToken $AquireTokenObj
                 }
 
