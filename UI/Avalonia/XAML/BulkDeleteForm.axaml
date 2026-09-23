@@ -1,0 +1,70 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5">
+    <!--
+        Avalonia port of UI/WPF/XAML/BulkDeleteForm.xaml. Hosted via Show-ModalForm
+        — Delete / Close live in this Grid and call back into
+        Show-GraphBulkDeleteForm.
+
+        WPF -> Avalonia translations applied (same set as BulkExport/BulkImport):
+          - Window/UserControl host -> Grid (modal-form host owns the chrome).
+          - SharedSizeGroup dropped — explicit ColumnDefinition Width="Auto"/"*".
+          - InfoIcon Rectangles are rendered as the info-icon glyph (Themes/Styles.axaml);
+            the description sits on the wrapping StackPanel so hovering the label shows it too.
+          - Inline DataGrid columns (no Get-GridCheckboxColumn header trick —
+            chkSelectAll toolbar checkbox replaces it, default unchecked
+            because bulk-delete rows are unselected by default).
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify name filter for the objects to delete">
+        <Label Content="Name filter"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <TextBox Name="txtDeleteNameFilter" Grid.Row="0" Grid.Column="1"
+             Margin="0,5,0,0"/>
+
+    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Top" ToolTip.Tip="All objects of the selected types will be deleted">
+        <Label Content="Objects to delete"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+
+    <DataGrid CanUserResizeColumns="True" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Name="dgBulkDeleteObjects"
+              AutoGenerateColumns="False"
+              CanUserReorderColumns="True"
+              CanUserSortColumns="True"
+              Margin="0,0,0,5">
+        <DataGrid.Columns>
+            <DataGridTemplateColumn Width="Auto" CanUserSort="False">
+                <DataGridTemplateColumn.Header>
+                    <CheckBox IsChecked="False"
+                              HorizontalAlignment="Left" VerticalAlignment="Center"
+                              ToolTip.Tip="Select/deselect all listed items"/>
+                </DataGridTemplateColumn.Header>
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}"
+                                  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTextColumn     Header="Object type" Binding="{Binding Title}"   IsReadOnly="True" Width="*"/>
+        </DataGrid.Columns>
+    </DataGrid>
+
+    <StackPanel Name="spDeleteSubMenu" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button Name="btnDelete" Content="Delete" Width="100" Margin="5,0,0,0"/>
+        <Button Name="btnClose"  Content="Close"  Width="100" Margin="5,0,0,0"/>
+    </StackPanel>
+</Grid>

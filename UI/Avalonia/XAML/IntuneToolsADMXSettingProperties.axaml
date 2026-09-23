@@ -1,0 +1,147 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/IntuneToolsADMXSettingProperties.xaml.
+        Translation notes:
+        - InfoIcon Rectangles dropped (no Avalonia DynamicResource for the WPF
+          InfoIcon style). Tooltips on the controls cover the same info.
+        - WPF Label ContentStringFormat="Setting: {0}" has no Avalonia analogue;
+          lblADMXSettingName is named and gets its text set imperatively in
+          Set-ADMXSettingProperties.
+        - {Binding SupportedOn}, {Binding Description}, {Binding PolicyDefinition}
+          replaced with named TextBoxes — Avalonia's binder can't read PSCustomObject
+          NoteProperties (see [[avalonia-binding-needs-clr-types]]).
+        - The Policy-tab elements grid was bound to a ScrollContentPresenter
+          ActualWidth via FindAncestor RelativeSource. Avalonia handles that
+          differently; the ScrollViewer's natural sizing is good enough here.
+        - ScrollViewer.HorizontalScrollBarVisibility / VerticalScrollBarVisibility
+          attached props on TextBox dropped — Avalonia TextBox has built-in
+          scroll behaviour via TextWrapping + AcceptsReturn.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <Grid Margin="0,5,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Label x:Name="lblADMXSettingName"/>
+
+        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="btnADMXPreviousSetting" Content="Previous" MinWidth="100" Margin="0,0,5,0"/>
+            <Button x:Name="btnADMXNextSetting"     Content="Next"     MinWidth="100"/>
+        </StackPanel>
+    </Grid>
+
+    <Grid Grid.Row="1" Margin="0,5,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Vertical" Margin="5,5,0,0">
+            <RadioButton GroupName="ADMXSettingStatus" x:Name="rbADMXSettingNotConfigured"
+                         Content="Not Configured"/>
+            <RadioButton GroupName="ADMXSettingStatus" x:Name="rbADMXSettingEnabled"
+                         Content="Enabled" Margin="0,5,0,0"/>
+            <RadioButton GroupName="ADMXSettingStatus" x:Name="rbADMXSettingDisabled"
+                         Content="Disabled" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Intune OMA-URI name"
+                       ToolTip.Tip="Specify the name of the OMA-URI item. Policy name will be used if not specified"/>
+            <TextBox Grid.Column="2" x:Name="txtADMXSettingName"/>
+
+            <TextBlock Text="Intune comment:" Grid.Row="2" VerticalAlignment="Top"
+                       ToolTip.Tip="Specify the name comment of the OMA-URI item. Policy help will be used if not specified"/>
+            <TextBox Grid.Row="2" Grid.Column="2" x:Name="txtADMXSettingComment"
+                     IsReadOnly="True" Height="75" AcceptsReturn="True" TextWrapping="Wrap"/>
+
+            <TextBlock Text="Supported on:" Grid.Row="4"/>
+            <TextBox Grid.Row="4" Grid.Column="2" x:Name="txtADMXSupportedOn"
+                     IsReadOnly="True" Height="40" AcceptsReturn="True" TextWrapping="Wrap"/>
+        </Grid>
+    </Grid>
+
+    <TabControl Margin="5,5,0,0" Grid.Row="2" x:Name="tcADMXPolicyConfig">
+        <TabItem Header="Policy">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" MinWidth="100"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="1*" MinWidth="100"/>
+                </Grid.ColumnDefinitions>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <Grid x:Name="grdADMXElements" HorizontalAlignment="Stretch"/>
+                </ScrollViewer>
+
+                <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+
+                <TextBox Grid.Column="2" x:Name="txtADMXSettingDescription"
+                         IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"/>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="OMA-URI Settings" x:Name="tabADMXSettings">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="String:" Grid.Row="0"/>
+                <TextBox  Grid.Row="1" x:Name="txtADMXSettings" AcceptsReturn="True" TextWrapping="Wrap"/>
+                <CheckBox Grid.Row="3" x:Name="chkADMXManualConfig" Content="Manual configuration"/>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="XML Definition">
+            <TextBox x:Name="txtADMXPolicyDefinition" IsReadOnly="True" AcceptsReturn="True" TextWrapping="NoWrap"/>
+        </TabItem>
+    </TabControl>
+
+    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+        <Button x:Name="btnADMXSettingsOK"     Content="OK"     MinWidth="100" Margin="0,0,5,0"/>
+        <Button x:Name="btnADMXSettingsCancel" Content="Cancel" MinWidth="100"/>
+    </StackPanel>
+</Grid>

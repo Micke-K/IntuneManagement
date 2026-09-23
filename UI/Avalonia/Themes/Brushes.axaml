@@ -1,0 +1,166 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Theme brushes — a single file, two variants, automatic selection.
+
+        Avalonia walks ResourceDictionary.ThemeDictionaries based on the active
+        Application.RequestedThemeVariant (set by AvaloniaHost.Initialize via
+        the ThemeVariant setting / IM_THEME_VARIANT env var). This is the
+        idiomatic replacement for the WPF "load Default.xaml or Dark.xaml"
+        pattern: same key, different value per variant, no per-load swap.
+    -->
+
+    <ResourceDictionary.ThemeDictionaries>
+
+        <!--
+            Light palette, refreshed 2026-08-23 to sit closer to Windows 11.
+            Keep in step with UI/WPF/Themes/Light.xaml - the two backends are meant
+            to look the same, and that file carries the same reasoning.
+
+            Headline change is TitleBackgroundColor: it was #FF9B9B9B, a heavy
+            mid-grey that read as a Windows 7 toolbar. It cannot simply go white,
+            though - it backs the title strips, which must stay distinct from the
+            window - so it becomes a light grey rather than disappearing.
+        -->
+        <ResourceDictionary x:Key="Light">
+            <!-- Title strips. Dark text sits on this, so it stays well above mid-grey. -->
+            <SolidColorBrush x:Key="TitleBackgroundColor"        Color="#FFECECEC"/>
+            <SolidColorBrush x:Key="TitleForegroundColor"        Color="#FF1A1A1A"/>
+            <!-- One step darker than the title strip so a header still reads as a
+                 header when the two are adjacent; both were #FF9B9B9B before, which
+                 stopped working once the title strip lightened. -->
+            <SolidColorBrush x:Key="SettingsSectionBackgroundColor" Color="#FFE0E0E0"/>
+            <!-- Near-black, matching Windows 11 text; pure black is harsh on white. -->
+            <SolidColorBrush x:Key="TextColor"                   Color="#FF1A1A1A"/>
+            <!-- Reads as selected rather than merely grey. Long-standing Explorer
+                 selection tint, so it stays recognisable whatever the accent colour. -->
+            <SolidColorBrush x:Key="SelectedRowBackgroundColor"  Color="#FFE5F1FB"/>
+            <SolidColorBrush x:Key="MismatchColor"               Color="#FFC42B1C"/>
+            <!-- Left-nav permission marking. WPF hardcodes the literals Red and
+                 Orange in MainWindow.xaml; these are theme keys instead so the
+                 dark variant is not an unreadable dark-on-dark. Both clear 4.5:1
+                 against their variant's window background. -->
+            <SolidColorBrush x:Key="AccessNoneColor"             Color="#FFC42B1C"/>
+            <SolidColorBrush x:Key="AccessLimitedColor"          Color="#FFB25000"/>
+
+            <SolidColorBrush x:Key="WindowBackgroundColor"       Color="#FFFFFFFF"/>
+            <!-- A light layer over the white window, not a distinct grey slab. -->
+            <SolidColorBrush x:Key="PanelBackgroundColor"        Color="#FFF3F3F3"/>
+            <SolidColorBrush x:Key="ControlBackgroundColor"      Color="#FFFFFFFF"/>
+            <!-- Hairline separators; #FFCCCCCC read as a drawn box. -->
+            <SolidColorBrush x:Key="BorderColor"                 Color="#FFE1E1E1"/>
+            <SolidColorBrush x:Key="DisabledForegroundColor"     Color="#FF9A9A9A"/>
+
+            <!-- Hyperlink colour, matching UI/WPF/Themes/Light.xaml's Hyperlink style. -->
+            <SolidColorBrush x:Key="LinkColor"                   Color="#FF0066CC"/>
+            <SolidColorBrush x:Key="ButtonHoverBackground"       Color="#FFEAEAEA"/>
+            <SolidColorBrush x:Key="ButtonPressedBackground"     Color="#FFDCDCDC"/>
+
+            <!-- DataGrid package resources: align row selection with the app
+                 palette (SelectedRowBackgroundColor) instead of the Fluent
+                 accent-with-opacity default. -->
+            <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="#FFE5F1FB"/>
+            <SolidColorBrush x:Key="DataGridRowSelectedHoveredBackgroundBrush" Color="#FFE5F1FB"/>
+            <SolidColorBrush x:Key="DataGridRowSelectedUnfocusedBackgroundBrush" Color="#FFE5F1FB"/>
+            <SolidColorBrush x:Key="DataGridRowSelectedHoveredUnfocusedBackgroundBrush" Color="#FFE5F1FB"/>
+            <x:Double x:Key="DataGridRowSelectedBackgroundOpacity">1</x:Double>
+            <x:Double x:Key="DataGridRowSelectedHoveredBackgroundOpacity">1</x:Double>
+            <x:Double x:Key="DataGridRowSelectedUnfocusedBackgroundOpacity">1</x:Double>
+            <x:Double x:Key="DataGridRowSelectedHoveredUnfocusedBackgroundOpacity">1</x:Double>
+
+            <!-- CheckBox checked state: the WPF reference theme draws a neutral
+                 box (ControlBackground fill, Border stroke, TextColor glyph) -
+                 no accent blue. Mirror it by overriding the Fluent resources. -->
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked"               Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver"    Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPressed"        Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked"             Color="#FFE1E1E1"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver"  Color="#FF1A1A1A"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed"      Color="#FF1A1A1A"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked"              Color="#FF1A1A1A"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver"   Color="#FF1A1A1A"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPressed"       Color="#FF1A1A1A"/>
+
+            <!-- RadioButton checked state: same WPF-neutral treatment as the
+                 CheckBox above (no accent blue). -->
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFill"               Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillPointerOver"    Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillPressed"        Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStroke"             Color="#FFE1E1E1"/>
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokePointerOver"  Color="#FF1A1A1A"/>
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokePressed"      Color="#FF1A1A1A"/>
+            <SolidColorBrush x:Key="RadioButtonCheckGlyphFill"                        Color="#FF1A1A1A"/>
+            <SolidColorBrush x:Key="RadioButtonCheckGlyphFillPointerOver"             Color="#FF1A1A1A"/>
+            <SolidColorBrush x:Key="RadioButtonCheckGlyphFillPressed"                 Color="#FF1A1A1A"/>
+            <SolidColorBrush x:Key="RadioButtonCheckGlyphStroke"                      Color="#FF1A1A1A"/>
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="TitleBackgroundColor"        Color="#FF1E1E1E"/>
+            <SolidColorBrush x:Key="TitleForegroundColor"        Color="#FFCCCCCC"/>
+            <!-- Settings-dialog section headers only. NOT TitleBackgroundColor: that
+                 doubles as the title-bar background (= WindowBackgroundColor), which
+                 made section headers invisible in Dark. -->
+            <SolidColorBrush x:Key="SettingsSectionBackgroundColor" Color="#FF3F3F3F"/>
+            <SolidColorBrush x:Key="TextColor"                   Color="#FFEEEEEE"/>
+            <SolidColorBrush x:Key="SelectedRowBackgroundColor"  Color="#FF555555"/>
+            <SolidColorBrush x:Key="MismatchColor"               Color="#FFFF7B72"/>
+            <!-- Light-on-dark counterparts of the access marking. The Light
+                 variant's #FFC42B1C / #FFB25000 would be near-invisible here. -->
+            <SolidColorBrush x:Key="AccessNoneColor"             Color="#FFFF7B72"/>
+            <SolidColorBrush x:Key="AccessLimitedColor"          Color="#FFFFA657"/>
+
+            <SolidColorBrush x:Key="WindowBackgroundColor"       Color="#FF1E1E1E"/>
+            <SolidColorBrush x:Key="PanelBackgroundColor"        Color="#FF252526"/>
+            <SolidColorBrush x:Key="ControlBackgroundColor"      Color="#FF2D2D2D"/>
+            <SolidColorBrush x:Key="BorderColor"                 Color="#FF555555"/>
+            <SolidColorBrush x:Key="DisabledForegroundColor"     Color="#FF777777"/>
+
+            <!-- Hyperlink colour, matching UI/WPF/Themes/Dark.xaml's Hyperlink style. -->
+            <SolidColorBrush x:Key="LinkColor"                   Color="#FF6CB3F5"/>
+            <SolidColorBrush x:Key="ButtonHoverBackground"       Color="#FF555555"/>
+            <SolidColorBrush x:Key="ButtonPressedBackground"     Color="#FF666666"/>
+
+            <!-- DataGrid package resources: align row selection with the app
+                 palette (SelectedRowBackgroundColor) instead of the Fluent
+                 accent-with-opacity default. -->
+            <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="#FF555555"/>
+            <SolidColorBrush x:Key="DataGridRowSelectedHoveredBackgroundBrush" Color="#FF555555"/>
+            <SolidColorBrush x:Key="DataGridRowSelectedUnfocusedBackgroundBrush" Color="#FF555555"/>
+            <SolidColorBrush x:Key="DataGridRowSelectedHoveredUnfocusedBackgroundBrush" Color="#FF555555"/>
+            <x:Double x:Key="DataGridRowSelectedBackgroundOpacity">1</x:Double>
+            <x:Double x:Key="DataGridRowSelectedHoveredBackgroundOpacity">1</x:Double>
+            <x:Double x:Key="DataGridRowSelectedUnfocusedBackgroundOpacity">1</x:Double>
+            <x:Double x:Key="DataGridRowSelectedHoveredUnfocusedBackgroundOpacity">1</x:Double>
+
+            <!-- CheckBox checked state: the WPF reference theme draws a neutral
+                 box (ControlBackground fill, Border stroke, TextColor glyph) -
+                 no accent blue. Mirror it by overriding the Fluent resources. -->
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked"               Color="#FF2D2D2D"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver"    Color="#FF2D2D2D"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPressed"        Color="#FF2D2D2D"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked"             Color="#FF555555"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver"  Color="#FFEEEEEE"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed"      Color="#FFEEEEEE"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked"              Color="#FFEEEEEE"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver"   Color="#FFEEEEEE"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPressed"       Color="#FFEEEEEE"/>
+
+            <!-- RadioButton checked state: same WPF-neutral treatment as the
+                 CheckBox above (no accent blue). -->
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFill"               Color="#FF2D2D2D"/>
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillPointerOver"    Color="#FF2D2D2D"/>
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFillPressed"        Color="#FF2D2D2D"/>
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStroke"             Color="#FF555555"/>
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokePointerOver"  Color="#FFEEEEEE"/>
+            <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStrokePressed"      Color="#FFEEEEEE"/>
+            <SolidColorBrush x:Key="RadioButtonCheckGlyphFill"                        Color="#FFEEEEEE"/>
+            <SolidColorBrush x:Key="RadioButtonCheckGlyphFillPointerOver"             Color="#FFEEEEEE"/>
+            <SolidColorBrush x:Key="RadioButtonCheckGlyphFillPressed"                 Color="#FFEEEEEE"/>
+            <SolidColorBrush x:Key="RadioButtonCheckGlyphStroke"                      Color="#FFEEEEEE"/>
+        </ResourceDictionary>
+
+    </ResourceDictionary.ThemeDictionaries>
+
+</ResourceDictionary>

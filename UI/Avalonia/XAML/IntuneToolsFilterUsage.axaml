@@ -1,0 +1,79 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/IntuneToolsFilterUsage.xaml. Same translation
+        notes as IntuneToolsAssignments.axaml: Grid.IsSharedSizeScope /
+        SharedSizeGroup dropped, DataGrid.RowStyle dropped (Fluent theme
+        handles selection/hover), InfoIcon rectangles dropped, ToolTip ->
+        ToolTip.Tip.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Action" Margin="0,0,5,2" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" VerticalAlignment="Center"
+                   Foreground="{DynamicResource TextColor}" Opacity="0.7"
+                   Text="Click Get Filter Usage to enumerate every assignment filter and resolve the policies / apps / scripts that reference it."
+                   TextWrapping="Wrap"/>
+        <Button Grid.Column="3" x:Name="btnGetIntuneFilterUsage" Padding="5,2,5,2"
+                Content="Get Filter Usage"
+                ToolTip.Tip="Read every assignment filter and resolve its payloads (policies, groups) via batched Graph calls"/>
+
+        <Label Grid.Row="1" Content="Filter" Margin="0,0,5,0" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,2,0,2"
+                 x:Name="txtIntuneFilterUsageFilter"
+                 ToolTip.Tip="Filter rows by any visible column"/>
+    </Grid>
+
+    <DataGrid x:Name="dgIntuneFilterUsage" Grid.Row="1" Margin="0,5,0,0"
+              AutoGenerateColumns="False" SelectionMode="Single" IsReadOnly="True"
+              CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Filter Name" Binding="{Binding FilterName}"  Width="Auto"/>
+            <DataGridTextColumn Header="Platform"    Binding="{Binding Platform}"    Width="Auto"/>
+            <DataGridTextColumn Header="Filter Type" Binding="{Binding FilterType}"  Width="Auto"/>
+            <DataGridTextColumn Header="Policy Name" Binding="{Binding PolicyName}"  Width="1*"/>
+            <DataGridTextColumn Header="Type"        Binding="{Binding PayloadType}" Width="Auto"/>
+            <DataGridTextColumn Header="Mode"        Binding="{Binding Mode}"        Width="Auto"/>
+            <DataGridTextColumn Header="Group"       Binding="{Binding GroupName}"   Width="1*"/>
+        </DataGrid.Columns>
+    </DataGrid>
+
+    <Grid Grid.Row="2" Margin="0,5,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock x:Name="txtIntuneFilterUsageCount" VerticalAlignment="Center"
+                   Foreground="{DynamicResource TextColor}"/>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="btnIntuneFilterUsageCopy" Content="Copy" MinWidth="100" Margin="0,0,5,0"
+                    ToolTip.Tip="Copy the visible rows to the clipboard as CSV"/>
+            <Button x:Name="btnIntuneFilterUsageSave" Content="Save" MinWidth="100"
+                    ToolTip.Tip="Save the visible rows to a CSV file"/>
+        </StackPanel>
+    </Grid>
+</Grid>

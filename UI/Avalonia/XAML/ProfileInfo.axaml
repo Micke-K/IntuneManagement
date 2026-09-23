@@ -1,0 +1,112 @@
+<Border xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Padding="8"
+        Background="{DynamicResource WindowBackgroundColor}"
+        Width="480">
+
+    <!-- Port of UI/WPF/XAML/ProfileInfo.xaml. -->
+
+    <Grid x:Name="ProfileInfo">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock x:Name="txtOrganization" Grid.Row="0" Grid.Column="0"
+                   Margin="5" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+        <Button x:Name="btnProfileClose" Grid.Row="0" Grid.Column="1"
+                Width="22" Height="22" Padding="0" FontSize="12"
+                Content="&#x2715;" ToolTip.Tip="Close (Esc)"
+                Background="Transparent" BorderThickness="0"/>
+
+        <!-- Row 1: large avatar (photo or initials) next to display name + UPN -->
+        <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="5,8,5,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border x:Name="bigAvatar" Grid.Column="0" Width="60" Height="60" CornerRadius="30" Margin="0,0,12,0"/>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock x:Name="txtUsername" FontSize="20" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+                <TextBlock x:Name="txtLogonName" TextTrimming="CharacterEllipsis"/>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="5,0,5,0">
+            <TextBlock x:Name="txtAuthMethod" FontStyle="Italic" Foreground="#888" IsVisible="False"/>
+            <TextBlock x:Name="txtAuthExpiry" FontStyle="Italic" Foreground="#888" IsVisible="False"/>
+        </StackPanel>
+
+        <!-- Row 3: app info. Populated by Show-ProfilePopup from the active
+             provider's GetUserInfo() (AppName / AppId). Hidden when no app info. -->
+        <StackPanel x:Name="pnlAppInfo" Grid.Row="3" Grid.ColumnSpan="2" Margin="5,8,5,0" IsVisible="False">
+            <TextBlock Text="Application:"/>
+            <TextBlock x:Name="txtAppName"/>
+            <TextBlock x:Name="txtAppId" Foreground="#888" FontSize="11"/>
+        </StackPanel>
+
+        <!-- Row 4: Request Consent. Visible only when the active provider is
+             MSAL and the current login isn't an app-token. Click triggers
+             Start-MSALConsentPrompt to request any missing scopes. -->
+        <Button x:Name="lnkRequestConsent" Grid.Row="4" Grid.ColumnSpan="2"
+                Margin="5,8,5,0" HorizontalAlignment="Left"
+                Content="Request Consent" IsVisible="False"
+                ToolTip.Tip="Request consent for any missing scopes from Entra"/>
+
+        <!-- Row 5: token inspectors (diagnostic). Left-aligned; capability
+             gating happens in Show-ProfilePopup (Id Token disabled for
+             non-MSAL providers, etc.). -->
+        <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal"
+                    HorizontalAlignment="Left" Margin="5,10,5,0">
+            <Button x:Name="lnkTokeninfo"      Content="Session Info" Margin="0,0,5,0"
+                    ToolTip.Tip="Show provider session details (MSAL AuthenticationResult / MgGraph context)"/>
+            <Button x:Name="lnkAccessTokenInfo" Content="Access Token" Margin="0,0,5,0"
+                    ToolTip.Tip="Decode and inspect the access token JWT"/>
+            <Button x:Name="lnkIdTokenInfo"     Content="Id Token"     Margin="0,0,5,0"
+                    ToolTip.Tip="Decode and inspect the ID token JWT (MSAL provider only)"/>
+            <Button x:Name="lnkEffectivePermissions" Content="Permissions" Margin="0,0,5,0"
+                    ToolTip.Tip="What this sign-in can do per policy type: token scopes combined with the user's Intune role"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal"
+                    HorizontalAlignment="Right" Margin="5,10,5,0">
+            <Button x:Name="lnkRefresh" Content="Refresh" Margin="0,0,8,0"/>
+            <Button x:Name="lnkLogout"  Content="Sign out"/>
+        </StackPanel>
+
+        <!-- Row 7: cached accounts (other signed-in MSAL identities). Populated
+             imperatively in Show-ProfilePopup; rows built by Add-CachedUser
+             (login button + forget bin). MaxHeight caps growth when many
+             accounts are cached. -->
+        <ScrollViewer Grid.Row="7" Grid.ColumnSpan="2" MaxHeight="200" Margin="0,5,0,0"
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel x:Name="grdCachedAccounts" Margin="5,0,5,0"/>
+        </ScrollViewer>
+
+        <!-- Row 8: footer rows for "Sign in with a different account" /
+             "Sign in to a different cloud..." appended by Show-ProfilePopup. -->
+        <StackPanel x:Name="grdLoginAccount" Grid.Row="8" Grid.ColumnSpan="2" Margin="5,0,5,0"/>
+
+        <!-- Row 9: tenant accounts. Populated imperatively in Show-ProfilePopup
+             only when $script:AccessibleTenants has >1 entry (set by the MSAL
+             flow when the GetTenantList setting is enabled). Wrapped in a
+             ScrollViewer with MaxHeight=200 so many tenants don't push the
+             popup beyond the window. -->
+        <ScrollViewer Grid.Row="9" Grid.ColumnSpan="2" MaxHeight="200" Margin="0,5,0,0"
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel x:Name="grdTenantAccounts" Margin="5,0,5,0"/>
+        </ScrollViewer>
+    </Grid>
+</Border>

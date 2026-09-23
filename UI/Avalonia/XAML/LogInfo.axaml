@@ -1,0 +1,68 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/LogInfo.xaml. WPF DataTrigger for
+        row coloring (Type==2 orange, Type==3 red) is replaced with a row
+        Style that binds Foreground to LogRowItem.RowForeground — the brush
+        is computed at projection time in Update-LogView so the binder doesn't
+        have to do any conversion.
+    -->
+
+    <Grid.Styles>
+        <Style Selector="DataGridRow">
+            <Setter Property="Foreground" Value="{Binding RowForeground}"/>
+        </Style>
+    </Grid.Styles>
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="4*" MinHeight="300"/>
+        <RowDefinition Height="3"/>
+        <RowDefinition Height="1*" MinHeight="100"/>
+    </Grid.RowDefinitions>
+
+    <DataGrid x:Name="dgLogInfo"
+              AutoGenerateColumns="False"
+              SelectionMode="Single"
+              IsReadOnly="True"
+              CanUserReorderColumns="True"
+              CanUserResizeColumns="True"
+              CanUserSortColumns="True">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Date" Binding="{Binding DateTime, StringFormat=\{0:d\}}"           Width="Auto"/>
+            <DataGridTextColumn Header="Time" Binding="{Binding DateTime, StringFormat=\{0:HH:mm:ss.fff\}}" Width="Auto"/>
+            <DataGridTextColumn Header="Type" Binding="{Binding TypeText}"                                  Width="Auto"/>
+            <DataGridTemplateColumn Header="Text" Width="*">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Text}" TextWrapping="NoWrap"/>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
+
+    <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+    <Grid Grid.Row="2" DataContext="{Binding #dgLogInfo.SelectedItem}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Date\Time" Grid.Row="0" Grid.Column="0"/>
+        <TextBlock Grid.Row="0" Grid.Column="2"
+                   Text="{Binding DateTime, StringFormat=\{0:yyyy-MM-dd HH:mm:ss.fff\}}"/>
+
+        <TextBox Grid.Row="1" Grid.ColumnSpan="3" x:Name="txtLogInfo"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 Text="{Binding Text}" IsReadOnly="True" AcceptsReturn="True"
+                 TextWrapping="Wrap"/>
+    </Grid>
+</Grid>

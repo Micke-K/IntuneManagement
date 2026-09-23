@@ -1,0 +1,116 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Grid.IsSharedSizeScope="True" Margin="5,5,5,5">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,5,2">
+            <Label Content="Source" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Select where assignments should be read from" />
+        </StackPanel>
+        <ComboBox Name="cbIntuneAssignmentsProvider" Grid.Column="1" Grid.Row="0" MinWidth="200" HorizontalAlignment="Left"
+                  Margin="0,2,0,2" DisplayMemberPath="Name" SelectedValuePath="Value" />
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,5,2">
+            <Label Content="Options" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Options specific to the selected source" />
+        </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ContentControl Name="ccIntuneAssignmentsProviderOptions" Margin="0,2,0,2" />
+            <Button Grid.Column="2" Name="btnGetIntuneAssignments" Padding="5,2,5,2" Content="Get Assignments"
+                    ToolTip="Read assignments from the selected source" />
+        </Grid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,5,0">
+            <Label Content="Filter" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Filter rows by name, type, included or excluded assignments" />
+        </StackPanel>
+        <TextBox Text="" Grid.Column="1" Grid.Row="2" Margin="0,2,0,2" Name="txtIntuneAssignmentsFilter"
+                 ToolTip="Filter items" />
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,5,0">
+            <Label Content="View" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Limit the list to assigned or unassigned policies" />
+        </StackPanel>
+        <ComboBox Name="cbIntuneAssignmentsView" Grid.Column="1" Grid.Row="3" MinWidth="200" HorizontalAlignment="Left"
+                  Margin="0,2,0,2" DisplayMemberPath="Name" SelectedValuePath="Value"
+                  ToolTip="Show all policies, only those with assignments, or only those without" />
+    </Grid>
+
+    <DataGrid Name="dgIntuneAssignments" Margin="0,5,0,0" Grid.Row="1"
+              AutoGenerateColumns="False"
+              SelectionMode="Single"
+              SelectionUnit="FullRow"
+              CanUserAddRows="False">
+        <DataGrid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="TextWrapping" Value="NoWrap" />
+            </Style>
+        </DataGrid.Resources>
+        <DataGrid.RowStyle>
+            <Style TargetType="DataGridRow">
+                <!-- Selection highlight brushes come from the theme dictionary
+                     (Themes/Light.xaml, Themes/Dark.xaml). They were redefined here,
+                     hardcoded to the dark palette, which made a selected row unreadable
+                     in the Light theme. -->
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}" />
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </DataGrid.RowStyle>
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Object Name"       Binding="{Binding Name}"                 IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Object Type"       Binding="{Binding Type}"                 IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Assignments"       Binding="{Binding AssignmentCount}"      IsReadOnly="True" Width="Auto" />
+            <DataGridCheckBoxColumn Header="Has Filters"   Binding="{Binding HasFilters}"           IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Included"          Binding="{Binding IncludedString}"       IsReadOnly="True" Width="1*" />
+            <DataGridTextColumn Header="Excluded"          Binding="{Binding ExcludedString}"       IsReadOnly="True" Width="1*" />
+            <DataGridTextColumn Header="Included Filters"  Binding="{Binding IncludedFilterString}" IsReadOnly="True" Width="1*" />
+            <DataGridTextColumn Header="Excluded Filters"  Binding="{Binding ExcludedFilterString}" IsReadOnly="True" Width="1*" />
+        </DataGrid.Columns>
+    </DataGrid>
+
+    <Grid Grid.Row="2" Margin="0,5,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Name="txtIntuneAssignmentsCount" VerticalAlignment="Center" Foreground="{DynamicResource TextColor}" />
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Name="btnIntuneAssignmentsCopy" Content="Copy" MinWidth="100" Margin="0,0,5,0"
+                    ToolTip="Copy the assignments as CSV to the clipboard" />
+            <Button Name="btnIntuneAssignmentsSave" Content="Save" MinWidth="100"
+                    ToolTip="Save assignments to a CSV file" />
+        </StackPanel>
+    </Grid>
+</Grid>

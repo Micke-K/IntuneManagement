@@ -1,0 +1,93 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5">
+    <!--
+        Avalonia port of UI/WPF/XAML/ExportForm.xaml. Hosted via Show-ModalForm
+        rather than as a standalone Window — the Export/Cancel buttons live
+        in this Grid and call back into Show-IntuneManagerExportForm.
+
+        WPF -> Avalonia translations applied:
+          - Window -> Grid (modal-form host owns the chrome).
+          - Grid.IsSharedSizeScope / SharedSizeGroup dropped — sized via
+            ColumnDefinition Width="Auto"/"*". Single grid column for labels
+            keeps the rows aligned.
+          - InfoIcon Rectangles are rendered as the info-icon glyph (Themes/Styles.axaml);
+            the description sits on the wrapping StackPanel so hovering the label shows it too.
+          - {Binding ExportFolder, Mode=TwoWay} et al replaced by imperative
+            property assignment in Show-IntuneManagerExportForm — the
+            IntuneManagerExportSettings class has no INotifyPropertyChanged,
+            so bindings would render but never round-trip. Same convention
+            as IntuneToolsAssignmentsFolderOptions.axaml.
+          - Per-type AddUIExportExtensions hook (Script/PolicyFile/Application
+            checkboxes) is *not* called yet — the WPF extensions construct
+            [System.Windows.Controls.CheckBox] directly and would crash on
+            Avalonia. Slice 3c covers the core form only; per-type extensions
+            need a parallel AddUIExportExtensionsAvalonia hook (deferred).
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <Grid Name="grdExportProperties" Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Root folder where exported files should be stored">
+            <Label Content="Export root"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Name="txtExportPath" Grid.Column="0"/>
+            <Button Name="browseExportPath" Grid.Column="2" Content="..."
+                    Padding="5,0,5,0" Width="50"
+                    ToolTip.Tip="Browse for folder"/>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Export each object type to its own sub-directory of the export path">
+            <Label Content="Add object name to path"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <CheckBox Name="chkAddObjectType" Grid.Row="1" Grid.Column="1"
+                  Margin="0,5,0,0" VerticalAlignment="Center"/>
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Add the Azure tenant company name to the export path">
+            <Label Content="Add company name to path"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <CheckBox Name="chkAddCompanyName" Grid.Row="2" Grid.Column="1"
+                  Margin="0,5,0,0" VerticalAlignment="Center"/>
+
+        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Export assignments and add information to a migration table so they can be imported into other environments">
+            <Label Content="Export Assignments"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <CheckBox Name="chkExportAssignments" Grid.Row="3" Grid.Column="1"
+                  Margin="0,5,0,0" VerticalAlignment="Center"/>
+    </Grid>
+
+    <StackPanel Name="spExportSubMenu" Grid.Row="1" Orientation="Horizontal"
+                HorizontalAlignment="Right" Margin="0,5,0,5">
+        <Label Name="lblSelectedObject" Margin="5,0,0,0" VerticalAlignment="Center"/>
+        <Button Name="btnExportSelected" Content="Export Selected" Width="120"
+                Margin="5,0,0,0" VerticalAlignment="Center"/>
+        <Button Name="btnExportAll" Content="Export All" Width="100"
+                Margin="5,0,0,0" VerticalAlignment="Center"/>
+        <Button Name="btnCancel" Content="Cancel" Width="100"
+                Margin="5,0,0,0" VerticalAlignment="Center"/>
+    </StackPanel>
+</Grid>

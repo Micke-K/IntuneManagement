@@ -1,0 +1,238 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Avalonia port of UI/WPF/Themes/Default.xaml.
+
+        Translation rules:
+          WPF                                       Avalonia
+          =========================================================================
+          Style TargetType="Button"                 Style Selector="Button"
+          Trigger IsMouseOver=True                  Style Selector="Button:pointerover"
+          Trigger IsPressed=True                    Style Selector="Button:pressed"
+          Trigger IsEnabled=False                   Style Selector="Button:disabled"
+          Trigger IsChecked=True                    Style Selector="CheckBox:checked"
+          Trigger IsSelected=True                   Style Selector="TabItem:selected"
+          StaticResource Foo                        DynamicResource Foo (theme-swap safe)
+
+        Deferred from the original (FluentTheme covers them with reasonable defaults; we
+        can re-template later if visual fidelity needs to match the legacy WPF look):
+          - ComboBox / CheckBox / RadioButton / Button / MenuItem / ScrollBar templates
+          - DataGrid styling (Avalonia.Controls.DataGrid is a separate package)
+          - ListView (WPF-only; Avalonia uses ListBox)
+          - Hyperlink (different model in Avalonia)
+          - PersonPicture* keys (UWP-specific, not used here)
+
+        Brushes live in Brushes.axaml (ThemeDictionaries), loaded into
+        Application.Resources.MergedDictionaries before this file. DynamicResource
+        lookups on the keys below resolve through the ThemeDictionary that matches
+        Application.RequestedThemeVariant.
+    -->
+
+    <!-- Window -->
+    <Style Selector="Window">
+        <Setter Property="Background" Value="{DynamicResource WindowBackgroundColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+    </Style>
+
+    <!-- Text-only controls -->
+    <Style Selector="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+    </Style>
+    <Style Selector="Label">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+    </Style>
+
+    <!-- Inputs -->
+    <Style Selector="TextBox">
+        <Setter Property="Background"      Value="{DynamicResource ControlBackgroundColor}"/>
+        <Setter Property="Foreground"      Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush"     Value="{DynamicResource BorderColor}"/>
+        <Setter Property="CaretBrush"      Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding"         Value="2,1"/>
+        <!-- Fluent's 32px MinHeight towers over the 12pt text (the WPF app's
+             inputs hug the font); 24 keeps a little breathing room. -->
+        <Setter Property="MinHeight"       Value="24"/>
+    </Style>
+
+    <!-- Avalonia has no PasswordBox; TextBox PasswordChar="*" is the equivalent. -->
+
+    <!-- TabControl: WPF draws a border around the tab CONTENT area; Avalonia's
+         Fluent template has none, and BorderBrush/Thickness on the control
+         itself do not reach it. Target the template's selected-content host
+         directly - ContentPresenter supports border properties. -->
+    <Style Selector="TabControl /template/ ContentPresenter#PART_SelectedContentHost">
+        <Setter Property="BorderBrush"     Value="{DynamicResource BorderColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding"         Value="8"/>
+    </Style>
+
+    <!-- DataGrid chrome. The DataGrid package ships Fluent defaults that
+         ignore the app palette: headers get the panel color. Do NOT change
+         DataGridColumnHeader Padding here - a symmetric override starved the
+         narrow checkbox-column headers of content width and the select-all
+         checkbox vanished. Checkbox-column header alignment is handled at
+         the column (Margin 0,0,12,0 on the header CheckBox compensates the
+         Fluent left-only header padding). Selection colors live in
+         Brushes.axaml. -->
+    <Style Selector="DataGrid">
+        <Setter Property="Background" Value="{DynamicResource ControlBackgroundColor}"/>
+        <!-- WPF sets RowBackground / AlternatingRowBackground and both grid-line
+             brushes; Fluent ships none of it, so rows lost their zebra striping
+             and the grid lost its rules. Avalonia's DataGrid has NO
+             AlternatingRowBackground property (verified), so the striping is
+             done with the nth-child selector below. -->
+        <Setter Property="RowBackground" Value="{DynamicResource ControlBackgroundColor}"/>
+        <Setter Property="GridLinesVisibility" Value="All"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource BorderColor}"/>
+        <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource BorderColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+    </Style>
+    <!-- Zebra striping: WPF's AlternatingRowBackground equivalent. -->
+    <Style Selector="DataGridRow:nth-child(2n)">
+        <Setter Property="Background" Value="{DynamicResource PanelBackgroundColor}"/>
+    </Style>
+    <Style Selector="DataGridColumnHeader">
+        <Setter Property="Background" Value="{DynamicResource PanelBackgroundColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+    </Style>
+
+    <!-- ComboBox + ComboBoxItem: colour overrides only; FluentTheme provides the template. -->
+    <Style Selector="ComboBox">
+        <Setter Property="Background"      Value="{DynamicResource ControlBackgroundColor}"/>
+        <Setter Property="Foreground"      Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush"     Value="{DynamicResource BorderColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding"         Value="4,2"/>
+    </Style>
+    <Style Selector="ComboBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="Padding"    Value="4,2"/>
+    </Style>
+    <Style Selector="ComboBoxItem:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}"/>
+    </Style>
+
+    <!-- CheckBox / RadioButton: colour-only; FluentTheme handles glyph + states.
+         Background must stay Transparent: on these controls it paints the whole
+         root (a slab behind glyph AND label), not the glyph - the glyph's fill
+         comes from the Fluent template's own resources. A solid value here drew
+         a ControlBackgroundColor box around every radio/checkbox that sat on a
+         window or panel surface. -->
+    <Style Selector="CheckBox">
+        <Setter Property="Foreground"  Value="{DynamicResource TextColor}"/>
+        <Setter Property="Background"  Value="Transparent"/>
+    </Style>
+    <Style Selector="RadioButton">
+        <Setter Property="Foreground"  Value="{DynamicResource TextColor}"/>
+        <Setter Property="Background"  Value="Transparent"/>
+    </Style>
+
+    <!-- Button: keep the legacy hover/press tones; lean on FluentTheme for the rest. -->
+    <Style Selector="Button">
+        <Setter Property="Background"                 Value="{DynamicResource ControlBackgroundColor}"/>
+        <Setter Property="Foreground"                 Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush"                Value="{DynamicResource BorderColor}"/>
+        <Setter Property="BorderThickness"            Value="1"/>
+        <Setter Property="Padding"                    Value="5,2"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment"   Value="Center"/>
+    </Style>
+    <Style Selector="Button:pointerover /template/ ContentPresenter">
+        <Setter Property="Background"  Value="{DynamicResource ButtonHoverBackground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+    </Style>
+    <Style Selector="Button:pressed /template/ ContentPresenter">
+        <Setter Property="Background"  Value="{DynamicResource ButtonPressedBackground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+    </Style>
+    <Style Selector="Button:disabled">
+        <Setter Property="Opacity" Value="0.5"/>
+    </Style>
+
+    <!-- Lists -->
+    <Style Selector="ListBox">
+        <Setter Property="Background"      Value="{DynamicResource ControlBackgroundColor}"/>
+        <Setter Property="Foreground"      Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush"     Value="{DynamicResource BorderColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="ListBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="Padding"    Value="6,2"/>
+        <Setter Property="MinHeight"  Value="0"/>
+    </Style>
+    <Style Selector="ListBoxItem /template/ ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ButtonHoverBackground}"/>
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}"/>
+    </Style>
+    <Style Selector="ListBoxItem:selected">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+    </Style>
+
+    <!-- Menus -->
+    <Style Selector="Menu">
+        <Setter Property="Background" Value="{DynamicResource WindowBackgroundColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+    </Style>
+    <Style Selector="MenuItem">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="Padding"    Value="6,3"/>
+    </Style>
+    <Style Selector="MenuItem:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource DisabledForegroundColor}"/>
+    </Style>
+
+    <Style Selector="Separator">
+        <Setter Property="Background" Value="{DynamicResource BorderColor}"/>
+        <Setter Property="Margin"     Value="0,2"/>
+        <Setter Property="Height"     Value="1"/>
+    </Style>
+
+    <Style Selector="ContextMenu">
+        <Setter Property="Background"  Value="{DynamicResource ControlBackgroundColor}"/>
+        <Setter Property="Foreground"  Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+    </Style>
+
+    <!-- Tabs -->
+    <Style Selector="TabControl">
+        <Setter Property="Background"  Value="{DynamicResource WindowBackgroundColor}"/>
+        <Setter Property="Foreground"  Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+    </Style>
+    <Style Selector="TabItem">
+        <Setter Property="Background"  Value="{DynamicResource PanelBackgroundColor}"/>
+        <Setter Property="Foreground"  Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+        <Setter Property="Padding"     Value="8,3"/>
+        <Setter Property="FontSize"    Value="14"/>
+        <Setter Property="MinHeight"   Value="0"/>
+    </Style>
+    <Style Selector="TabItem:selected">
+        <Setter Property="Background" Value="{DynamicResource ControlBackgroundColor}"/>
+    </Style>
+    <Style Selector="TabItem:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ButtonHoverBackground}"/>
+    </Style>
+
+    <!-- Containers -->
+    <Style Selector="ScrollViewer">
+        <Setter Property="Background" Value="{DynamicResource WindowBackgroundColor}"/>
+    </Style>
+    <!-- GroupBox: not part of core Avalonia. Common substitute is HeaderedContentControl
+         or a Border with a label; we'll handle it per-screen if/when ported screens use it. -->
+
+    <Style Selector="ToolTip">
+        <Setter Property="Background"  Value="{DynamicResource ControlBackgroundColor}"/>
+        <Setter Property="Foreground"  Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+    </Style>
+
+</Styles>

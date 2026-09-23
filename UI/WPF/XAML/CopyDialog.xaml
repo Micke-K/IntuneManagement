@@ -1,0 +1,93 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Copy object" 
+    SizeToContent="WidthAndHeight" 
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    WindowStartupLocation="CenterOwner"
+    FocusManager.FocusedElement="{Binding ElementName=txtObjectName}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="UI\WPF\Themes\Light.xaml" /> 
+            </ResourceDictionary.MergedDictionaries>            
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="0" HorizontalAlignment="Left">
+            <Label Content="Tenant" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Destination tenant" />
+        </StackPanel>
+        <ComboBox Name="cbDestinationTenant" Margin="0,5,5,0" Grid.Row="0" Grid.Column="1" Width="250">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding TenantNameEx}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="1" HorizontalAlignment="Left">
+            <Label Content="New Name" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Name of the object" />
+        </StackPanel>
+        <TextBox Name="txtObjectName" Margin="0,5,5,0" Grid.Row="1" Grid.Column="1" Width="250"/>
+
+        <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" >
+            <Label Content="Description" />    
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Description for the object" Margin="0,2,0,0" />
+        </StackPanel>
+        <TextBox Name="txtObjectDescription" Margin="0,5,5,0" Grid.Row="2" Grid.Column="1" AcceptsReturn="True"  Width="250" Height="100" />
+
+        <StackPanel Name="pnlCopyScopeTagsLabel" Orientation="Horizontal" Margin="0,10,5,0" Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Left">
+            <Label Content="Scope Tags" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Pick which scope tags the new object will have. Re-loads from the destination tenant when you change Tenant above; assignments are matched by name across tenants." />
+        </StackPanel>
+
+        <Grid Name="grdCopyScopeTags" Grid.Row="4" Grid.ColumnSpan="2" Height="180" Margin="0,5,5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Label Content="Available" Grid.Row="0" Grid.Column="0" Padding="0,0,0,2" FontSize="11" Foreground="#888"/>
+            <Label Content="Assigned"  Grid.Row="0" Grid.Column="2" Padding="0,0,0,2" FontSize="11" Foreground="#888"/>
+
+            <ListBox Name="lstCopyAvailableScopeTags" Grid.Row="1" Grid.Column="0"
+                     SelectionMode="Extended" DisplayMemberPath="Name" Margin="0,0,5,0"/>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="0,0,5,0">
+                <Button Name="btnCopyScopeTagAssign"   Content="&gt;" Width="40" Margin="0,0,0,5" ToolTip="Assign selected tag(s)"/>
+                <Button Name="btnCopyScopeTagUnassign" Content="&lt;" Width="40" ToolTip="Unassign selected tag(s)"/>
+            </StackPanel>
+
+            <ListBox Name="lstCopyAssignedScopeTags" Grid.Row="1" Grid.Column="2"
+                     SelectionMode="Extended" DisplayMemberPath="Name" Margin="5,0,0,0"/>
+        </Grid>
+
+        <WrapPanel Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button IsDefault="True" Name="btnOk" MinWidth="60" Margin="0,0,10,0">_OK</Button>
+            <Button IsCancel="True" Name="btnCancel" MinWidth="60" >_Cancel</Button>
+        </WrapPanel>
+    </Grid>
+</Window>

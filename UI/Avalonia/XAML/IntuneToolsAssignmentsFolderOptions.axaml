@@ -1,0 +1,24 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        WPF original used {Binding ExportPath, UpdateSourceTrigger=PropertyChanged}
+        with DataContext = the IntuneAssignmentsFolderProvider instance. The
+        Avalonia port skips that binding because the provider class doesn't
+        implement INotifyPropertyChanged; instead Register-IntuneAssignmentsProviderEvents
+        sets TextBox.Text imperatively from Provider.ExportPath on open, and
+        wires TextChanged + Browse-button click to push back to Provider.ExportPath.
+    -->
+
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="5"/>
+        <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
+
+    <TextBox x:Name="txtIntuneAssignmentsExportPath"
+             ToolTip.Tip="Root folder for exported objects"/>
+    <Button Grid.Column="2" x:Name="browseIntuneAssignmentsExportPath"
+            Padding="5,2,5,2" Width="50" Content="..."
+            ToolTip.Tip="Select folder with exported objects"/>
+</Grid>

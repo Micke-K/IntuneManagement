@@ -1,0 +1,46 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="20"
+      MaxWidth="520">
+    <!--
+        Startup notice shown once on macOS and Linux (and on Windows when
+        IM_EXPERIMENTAL_NOTICE=1, so it can be reviewed during development).
+        Hosted by Show-ModalForm -HideButtons from
+        UI/Avalonia/Extensions/ExperimentalPlatformNoticeAvalonia.ps1, which owns
+        every control name below. There is no WPF twin on purpose: the notice
+        never renders on Windows, where WPF is the only backend.
+    -->
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <TextBlock Name="txtNoticeHeading"
+               Text="Experimental platform"
+               FontSize="18"
+               FontWeight="SemiBold"
+               Margin="0,0,0,12"/>
+
+    <TextBlock Name="txtNoticeBody"
+               Grid.Row="1"
+               TextWrapping="Wrap"
+               LineHeight="19"
+               Margin="0,0,0,16"/>
+
+    <CheckBox Name="chkHideNoticeAgain"
+              Grid.Row="2"
+              Content="Do not show this message again"
+              Margin="0,0,0,16"/>
+
+    <StackPanel Grid.Row="3"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Spacing="10">
+        <Button Name="btnNoticeOk"
+                IsDefault="True"
+                MinWidth="80"
+                Content="_OK"/>
+    </StackPanel>
+</Grid>

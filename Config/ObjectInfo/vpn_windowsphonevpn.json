@@ -1,0 +1,367 @@
+{
+  "vpn_windowsphonevpn": [
+    {
+      "dataType": 20,
+      "category": 129,
+      "nameResourceKey": "vPNPolicyConnectionName",
+      "descriptionResourceKey": "vPNPolicyConnectionDescription",
+      "emptyValueResourceKey": "vPNConnectionExample",
+      "childSettings": [],
+      "options": [],
+      "entityKey": "connectionName",
+      "booleanActions": 0,
+      "policyType": 105,
+      "enabled": true
+    },
+    {
+      "dataType": 16,
+      "category": 129,
+      "nameResourceKey": "authenticationMethodName",
+      "descriptionResourceKey": "vPNAuthMethodDescription",
+      "childSettings": [],
+      "options": [
+        {
+          "nameResourceKey": "selectAnAuthenticationMethod",
+          "enabled": true
+        },
+        {
+          "nameResourceKey": "certificatesOption",
+          "value": "certificate",
+          "children": [
+            {
+              "complexOptions": [
+                {
+                  "dataType": 4,
+                  "category": 129,
+                  "nameResourceKey": "vPNPolicySelectAClientCertificateName",
+                  "descriptionResourceKey": "vPNPolicySelectAClientCertificateDescription",
+                  "childSettings": [],
+                  "options": [],
+                  "entityKey": "identityCertificate",
+                  "booleanActions": 0,
+                  "policyType": 105,
+                  "enabled": false
+                },
+                {
+                  "dataType": 4,
+                  "category": 129,
+                  "nameResourceKey": "vPNPolicySelectAClientCertificateName",
+                  "descriptionResourceKey": "vPNPolicySelectAClientCertificateDescription",
+                  "childSettings": [],
+                  "options": [],
+                  "entityKey": "identityCertificate",
+                  "booleanActions": 0,
+                  "policyType": 105,
+                  "enabled": false
+                }
+              ],
+              "dataType": 5,
+              "category": 129,
+              "nameResourceKey": "authenticationCertificate",
+              "descriptionResourceKey": "clientCertForClientAuthenticationDescription",
+              "emptyValueResourceKey": "selectCertificate",
+              "childSettings": [],
+              "options": [],
+              "booleanActions": 0,
+              "policyType": 105,
+              "enabled": true
+            }
+          ],
+          "enabled": true
+        },
+        {
+          "nameResourceKey": "usernameAndPasswordOption",
+          "value": "usernameAndPassword",
+          "enabled": true
+        },
+        {
+          "nameResourceKey": "derivedCredentialsOption",
+          "value": "derivedCredential",
+          "children": [
+            {
+              "dataType": 9,
+              "category": 129,
+              "childSettings": [
+                {
+                  "dataType": 10,
+                  "category": 129,
+                  "nameResourceKey": "derivedCredentialsSearchingForTenantLevel",
+                  "childSettings": [],
+                  "options": [],
+                  "booleanActions": 0,
+                  "policyType": 105,
+                  "enabled": true
+                },
+                {
+                  "dataType": 10,
+                  "category": 129,
+                  "nameResourceKey": "derivedCredentialsTenantLevelNotConfigured",
+                  "childSettings": [],
+                  "options": [],
+                  "booleanActions": 0,
+                  "policyType": 105,
+                  "enabled": true
+                }
+              ],
+              "options": [],
+              "entityKey": "derivedCredentialSettings@odata.bind",
+              "booleanActions": 0,
+              "policyType": 105,
+              "enabled": true
+            }
+          ],
+          "enabled": false
+        }
+      ],
+      "entityKey": "authenticationMethod",
+      "booleanActions": 0,
+      "policyType": 105,
+      "enabled": true
+    },
+    {
+      "dataType": 0,
+      "category": 129,
+      "nameResourceKey": "vPNPolicyRememberCredentialsName",
+      "descriptionResourceKey": "empty",
+      "childSettings": [],
+      "options": [],
+      "entityKey": "rememberUserCredentials",
+      "booleanActions": 2,
+      "policyType": 105,
+      "enabled": true
+    },
+    {
+      "columns": [
+        {
+          "metadata": {
+            "dataType": 20,
+            "category": 129,
+            "nameResourceKey": "vPNPolicyServerDescriptionName",
+            "descriptionResourceKey": "vPNPolicyServerDescriptionDescription",
+            "emptyValueResourceKey": "vPNServerExample",
+            "childSettings": [],
+            "options": [],
+            "entityKey": "description",
+            "booleanActions": 0,
+            "policyType": 105,
+            "enabled": true
+          }
+        },
+        {
+          "metadata": {
+            "dataType": 20,
+            "category": 129,
+            "nameResourceKey": "vPNPolicyServerIPAddressOrFQDNName",
+            "descriptionResourceKey": "vPNPolicyServerIPAddressOrFQDNDescription",
+            "emptyValueResourceKey": "vPNAddressExample",
+            "childSettings": [],
+            "options": [],
+            "entityKey": "address",
+            "booleanActions": 0,
+            "policyType": 105,
+            "enabled": true
+          }
+        },
+        {
+          "metadata": {
+            "dataType": 19,
+            "category": 129,
+            "nameResourceKey": "vPNPolicyDefaultServerName",
+            "descriptionResourceKey": "vPNPolicyDefaultServerDescription",
+            "childSettings": [],
+            "options": [
+              {
+                "nameResourceKey": "trueOption",
+                "value": true,
+                "enabled": true
+              },
+              {
+                "nameResourceKey": "falseOption",
+                "value": false,
+                "enabled": true
+              }
+            ],
+            "entityKey": "isDefaultServer",
+            "booleanActions": 0,
+            "defaultValue": false,
+            "policyType": 105,
+            "enabled": true
+          }
+        }
+      ],
+      "dataType": 21,
+      "category": 129,
+      "nameResourceKey": "vPNPolicyServersName",
+      "descriptionResourceKey": "vPNPolicyServersDescription",
+      "childSettings": [],
+      "options": [],
+      "entityKey": "servers",
+      "booleanActions": 0,
+      "policyType": 105,
+      "enabled": true
+    },
+    {
+      "dataType": 19,
+      "category": 129,
+      "nameResourceKey": "vPNPolicyBypassVPNOnCompanyWiFiName",
+      "descriptionResourceKey": "vPNPolicyBypassVPNOnCompanyWiFiDescription",
+      "childSettings": [],
+      "options": [
+        {
+          "nameResourceKey": "enableOption",
+          "value": true,
+          "enabled": true
+        },
+        {
+          "nameResourceKey": "disableOption",
+          "value": false,
+          "enabled": true
+        }
+      ],
+      "entityKey": "bypassVpnOnCompanyWifi",
+      "booleanActions": 0,
+      "defaultValue": false,
+      "policyType": 105,
+      "enabled": true
+    },
+    {
+      "dataType": 19,
+      "category": 129,
+      "nameResourceKey": "vPNPolicyBypassVPNOnHomeWiFiName",
+      "descriptionResourceKey": "vPNPolicyBypassVPNOnHomeWiFiDescription",
+      "childSettings": [],
+      "options": [
+        {
+          "nameResourceKey": "enableOption",
+          "value": true,
+          "enabled": true
+        },
+        {
+          "nameResourceKey": "disableOption",
+          "value": false,
+          "enabled": true
+        }
+      ],
+      "entityKey": "bypassVpnOnHomeWifi",
+      "booleanActions": 0,
+      "defaultValue": false,
+      "policyType": 105,
+      "enabled": true
+    },
+    {
+      "dataType": 16,
+      "category": 129,
+      "nameResourceKey": "vPNPolicyConnectionTypeName",
+      "descriptionResourceKey": "VPNPolicyConnectionTypeDescriptionNoCustom",
+      "childSettings": [],
+      "options": [
+        {
+          "nameResourceKey": "selectAConnectionType",
+          "enabled": true
+        },
+        {
+          "nameResourceKey": "checkPointCapsuleVPNOption",
+          "value": "checkPointCapsuleVpn",
+          "enabled": true
+        },
+        {
+          "nameResourceKey": "dellSoniceWallMobileConnectOption",
+          "value": "dellSonicWallMobileConnect",
+          "children": [
+            {
+              "dataType": 20,
+              "category": 129,
+              "nameResourceKey": "loginGroupOrDomain",
+              "descriptionResourceKey": "empty",
+              "childSettings": [],
+              "options": [],
+              "entityKey": "loginGroupOrDomain",
+              "booleanActions": 0,
+              "policyType": 105,
+              "enabled": true
+            }
+          ],
+          "enabled": true
+        },
+        {
+          "nameResourceKey": "fFiveEdgeClientOption",
+          "value": "f5EdgeClient",
+          "enabled": true
+        },
+        {
+          "nameResourceKey": "pulseSecureOption",
+          "value": "pulseSecure",
+          "enabled": true
+        }
+      ],
+      "entityKey": "connectionType",
+      "booleanActions": 0,
+      "policyType": 105,
+      "enabled": true
+    },
+    {
+      "columns": [
+        {
+          "metadata": {
+            "dataType": 20,
+            "category": 129,
+            "nameResourceKey": "vPNPolicyDNSSuffixSearchItem",
+            "descriptionResourceKey": "empty",
+            "childSettings": [],
+            "options": [],
+            "entityKey": "unusedForSingleItems",
+            "booleanActions": 0,
+            "policyType": 105,
+            "enabled": true
+          }
+        }
+      ],
+      "dataType": 21,
+      "category": 129,
+      "nameResourceKey": "vPNPolicyDNSSuffixSearchListName",
+      "descriptionResourceKey": "vPNPolicyDNSSuffixSearchListName",
+      "childSettings": [],
+      "options": [],
+      "entityKey": "dnsSuffixSearchList",
+      "booleanActions": 0,
+      "policyType": 105,
+      "enabled": true
+    },
+    {
+      "dataType": 12,
+      "category": 129,
+      "nameResourceKey": "vPNPolicyCustomXMLName",
+      "descriptionResourceKey": "empty",
+      "childSettings": [],
+      "options": [],
+      "entityKey": "customXml",
+      "booleanActions": 0,
+      "policyType": 105,
+      "enabled": true
+    },
+    {
+      "dataType": 19,
+      "category": 129,
+      "nameResourceKey": "vPNPolicySendAllNetworkTrafficThroughVPNName",
+      "descriptionResourceKey": "vPNPolicySendAllNetworkTrafficThroughVPNDescription",
+      "childSettings": [],
+      "options": [
+        {
+          "nameResourceKey": "enableOption",
+          "value": true,
+          "enabled": true
+        },
+        {
+          "nameResourceKey": "disableOption",
+          "value": false,
+          "enabled": true
+        }
+      ],
+      "entityKey": "enableSplitTunneling",
+      "booleanActions": 0,
+      "defaultValue": false,
+      "policyType": 105,
+      "enabled": true
+    }
+  ]
+}

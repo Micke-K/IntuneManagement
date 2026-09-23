@@ -1,0 +1,221 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/IntuneToolsADMXAddRegPolicy.xaml.
+        Translation notes:
+        - Grid.IsSharedSizeScope / SharedSizeGroup="TitleColumn" dropped — no
+          Avalonia equivalent. Auto-width title columns matched at runtime.
+        - InfoIcon Rectangles are rendered as the info-icon glyph (Themes/Styles.axaml);
+          the description sits on the wrapping StackPanel so hovering the label shows it too.
+        - WPF Visibility="Collapsed" -> IsVisible="False" on the data-type-
+          conditional rows (separator / value-prefix / expandable / additive).
+        - The three ComboBoxes (Hive / PolicyStatus / DataType) drop
+          DisplayMemberPath / SelectedValuePath / SelectedValue bindings —
+          Show-ADMXRegSettingsDialog assigns ItemsSource ([SettingsListItem]
+          rows) and ItemTemplate (LoadXaml) and seeds SelectedItem against the
+          DataContext via a Where-Object match.
+        - Bindings to RegPolicy.* / PolicyElement.* still resolve because the
+          underlying ADMXRegPolicy / ADMXRegPolicyElement types are CLR
+          (Add-NativeClass) — see [[avalonia-binding-needs-clr-types]].
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <Grid x:Name="grdADMXRegPolicy">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Policy name" Margin="0,0,5,0" VerticalAlignment="Center"
+               ToolTip.Tip="This is the name/id of the policy in the ADMX file. A guid will be used if not specified"/>
+        <TextBox Grid.Column="1" x:Name="txtADMXRegPolicyName" Text="{Binding PolicyName}" Margin="0,5,0,0"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Enabled will add the registry keys and disable will remove them">
+            <Label Content="Policy status"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="cbADMXRegPolicyStatus" DisplayMemberBinding="{Binding Name}"
+                  Margin="0,5,0,0" MinWidth="250" HorizontalAlignment="Left"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="HKLM for machine settings and HKCU for user settings">
+            <Label Content="Registry hive"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <ComboBox Grid.Row="2" Grid.Column="1" x:Name="cbADMXRegHive" DisplayMemberBinding="{Binding Name}"
+                  Margin="0,5,0,0" MinWidth="250" HorizontalAlignment="Left"/>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Path to the registry value">
+            <Label Content="Reg key"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtADMXRegKey" Text="{Binding Key}" Margin="0,5,0,0"/>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Name of the registry value to set if the policy is enabled/disabled">
+            <Label Content="Policy value"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <TextBox Grid.Row="5" Grid.Column="1" x:Name="txtADMXRegPolicyValueName"
+                 Text="{Binding StatusValueName}" Margin="0,5,0,0"/>
+    </Grid>
+
+    <Separator Grid.Row="1" Margin="0,5,0,5"/>
+
+    <Grid Grid.Row="2" x:Name="grdADMXRegPolicyElement">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="250"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock TextWrapping="Wrap" Grid.ColumnSpan="2"
+                   Text="Add registry values that should be created/removed in the specified registry key"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="HKLM for machine settings and HKCU for user settings">
+            <Label Content="Data type"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="cbADMXRegElementDataType" DisplayMemberBinding="{Binding Name}"
+                  Margin="0,5,0,0" MinWidth="250" HorizontalAlignment="Left"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Optional. Only required if the reg value is located in a different key than specified for the policy">
+            <Label Content="Key"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <TextBox Grid.Row="2" Grid.Column="1" x:Name="txtADMXRegElementKey"
+                 Text="{Binding Key}" Margin="0,5,0,0"/>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Name of the registry value to add">
+            <Label Content="Value name"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtADMXRegElementValueName"
+                 Text="{Binding ValueName}" Margin="0,5,0,0"/>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Value to set">
+            <Label Content="Value"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtADMXRegElementValue"
+                 Text="{Binding Value}" Margin="0,5,0,0"/>
+
+        <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" Margin="0,5,0,0">
+            <Button x:Name="btnADMXRegElementAdd" Content="Add"    MinWidth="100"/>
+            <Button x:Name="btnADMXRegElementNew" Content="Update" MinWidth="100" IsVisible="False"/>
+        </StackPanel>
+
+        <Rectangle Grid.Column="2" VerticalAlignment="Stretch" Fill="Black" Width="1" Margin="5,0,5,0" Grid.RowSpan="99"/>
+
+        <Grid Grid.Column="3" Grid.RowSpan="99">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock TextWrapping="Wrap" Grid.ColumnSpan="2" Text="Additional value settings"/>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Attribute: sotf - Do not overwrite existing value">
+                <Label Content="Do not overwrite"/>
+                <TextBlock Classes="info-icon"/>
+            </StackPanel>
+            <CheckBox Grid.Row="1" Grid.Column="1" x:Name="chkADMXRegAttributeSoft"
+                      IsChecked="{Binding AttributeSoft}" Margin="0,5,0,0"/>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Attribute: expandable - Create(REG_EXPAND_SZ) instead of a string type (REG_SZ)">
+                <Label Content="Expandable string" x:Name="spADMXRegAttributeExpandable" IsVisible="False"/>
+                <TextBlock Classes="info-icon"/>
+            </StackPanel>
+            <CheckBox Grid.Row="2" Grid.Column="1" x:Name="chkADMXRegAttributeExpandable"
+                      IsChecked="{Binding AttributeExpandable}" Margin="0,5,0,0" IsVisible="False"/>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Attribute: additive - Add the list value to an existing list. Existing values will be kept">
+                <Label Content="Additive" x:Name="spADMXRegAttributeAdditive" IsVisible="False"/>
+                <TextBlock Classes="info-icon"/>
+            </StackPanel>
+            <CheckBox Grid.Row="3" Grid.Column="1" x:Name="chkADMXRegAttributeAdditive"
+                      IsChecked="{Binding AttributeAdditive}" Margin="0,5,0,0" IsVisible="False"/>
+
+            <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Attribute: valuePrefix - Add the list value to an existing list. Existing values will be kept">
+                <Label Content="Value prefix" x:Name="spADMXRegAttributeValuePrefix" IsVisible="False"/>
+                <TextBlock Classes="info-icon"/>
+            </StackPanel>
+            <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtADMXRegAttributeValuePrefix"
+                     Text="{Binding AttributePrefix}" Margin="0,5,0,0" IsVisible="False"/>
+
+            <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify separator for List and MultiText values. ; is default.">
+                <Label Content="Separator" x:Name="spADMXRegAttributeValueSeparator" IsVisible="False"/>
+                <TextBlock Classes="info-icon"/>
+            </StackPanel>
+            <TextBox Grid.Row="5" Grid.Column="1" x:Name="txtADMXRegAttributeValueSeparator"
+                     Text="{Binding AttributeSeparator}" Width="50" MaxLength="1"
+                     HorizontalAlignment="Left" Margin="0,5,0,0" IsVisible="False"/>
+        </Grid>
+    </Grid>
+
+    <Grid Grid.Row="3" x:Name="grdADMXRegPolicyElements">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Added reg values" Margin="0,0,5,0" VerticalAlignment="Top"
+               ToolTip.Tip="Reg values added to the profile"/>
+        <DataGrid CanUserResizeColumns="True" Grid.Column="1" x:Name="dgADMXRegAddedElements"
+                  Margin="0,5,0,0" MinWidth="250"
+                  AutoGenerateColumns="False"
+                  SelectionMode="Single"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding PolicyElements}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Value Name" Binding="{Binding ValueName}"             Width="Auto"/>
+                <DataGridTextColumn Header="Data type"  Binding="{Binding DataTypeDisplayString}" Width="Auto"/>
+                <DataGridTextColumn Header="Value"      Binding="{Binding Value}"                 Width="*"/>
+                <DataGridTextColumn Header="Key"        Binding="{Binding Key}"                   Width="Auto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+
+    <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+        <Button x:Name="btnADMXRegAddNew" Content="Save"   MinWidth="100" Margin="0,0,5,0"/>
+        <Button x:Name="btnADMXRegCancel" Content="Cancel" MinWidth="100"/>
+    </StackPanel>
+</Grid>

@@ -1,0 +1,84 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Select" Height="500" Width="620"
+        WindowStartupLocation="CenterOwner"
+        CanResize="True"
+        ShowInTaskbar="False">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/PickerDialog.xaml.
+        Translation notes:
+        - Window-shaped sub-modal (uses Host::ShowDialog for sync semantics —
+          same as InputDialog). Sits on top of any active grdModal stack.
+        - WPF SelectionMode/SelectionUnit/CanUserAddRows mapped to Avalonia
+          equivalents (no SelectionUnit on Avalonia DataGrid — full-row is
+          the default).
+        - GroupBox replaced by a bordered StackPanel ([[avalonia-no-groupbox]]).
+        - WPF MouseDoubleClick / PreviewKeyDown wired in code via DoubleTapped
+          and KeyDown.
+    -->
+
+    <Grid Margin="10"
+          RowDefinitions="Auto,Auto,Auto,*,Auto,Auto">
+
+        <!--
+            Tenant selector. Hidden unless more than one tenant is signed in.
+            Items are [SettingsListItem] (Name/Value) rather than the raw
+            objects: Avalonia has no DisplayMemberPath and cannot bind
+            NoteProperties, so the display text needs a real CLR property.
+        -->
+        <Grid x:Name="grdPickerTenant" Grid.Row="0" Margin="0,0,0,5"
+              ColumnDefinitions="70,5,*" IsVisible="False">
+            <TextBlock Grid.Column="0" Text="Tenant" VerticalAlignment="Center"/>
+            <ComboBox x:Name="cbPickerTenant" Grid.Column="2" HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+
+        <!-- Scope selector. Hidden unless the caller passes -Scopes. -->
+        <Grid x:Name="grdPickerScope" Grid.Row="1" Margin="0,0,0,5"
+              ColumnDefinitions="70,5,*" IsVisible="False">
+            <TextBlock Grid.Column="0" Text="Search in" VerticalAlignment="Center"/>
+            <ComboBox x:Name="cbPickerScope" Grid.Column="2" HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="0,0,0,5"
+              ColumnDefinitions="*,5,Auto">
+            <TextBox x:Name="txtPickerSearch" Grid.Column="0" VerticalContentAlignment="Center" Padding="3,2,3,2"/>
+            <Button x:Name="btnPickerSearch" Grid.Column="2" Content="Search" MinWidth="70" Padding="5,2,5,2"/>
+        </Grid>
+
+        <DataGrid x:Name="dgPickerObjects" Grid.Row="3"
+                  AutoGenerateColumns="False"
+                  SelectionMode="Single"
+                  CanUserResizeColumns="True"
+                  IsReadOnly="True"/>
+
+        <Border x:Name="grpPickerStatus" Grid.Row="4" Margin="0,5,0,0"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource SystemBaseMediumLowColor}"
+                Padding="6,4,6,4"
+                IsVisible="False">
+            <TextBlock x:Name="txtPickerStatus" TextWrapping="Wrap"/>
+        </Border>
+
+        <Grid Grid.Row="5" Margin="0,5,0,0"
+              ColumnDefinitions="Auto,*">
+            <Button x:Name="btnPickerLoadAll" Grid.Column="0" Content="Load all from Intune" Padding="8,2,8,2" IsVisible="False"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
+                <Button x:Name="btnPickerOK"     Content="OK"     MinWidth="75" IsEnabled="False" IsDefault="True"/>
+                <Button x:Name="btnPickerCancel" Content="Cancel" MinWidth="75" IsCancel="True"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

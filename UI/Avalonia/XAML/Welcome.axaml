@@ -1,0 +1,65 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/Welcome.xaml. Translation notes:
+        - WPF <Hyperlink> isn't an Avalonia inline; the two GitHub / License
+          links are real <Button> elements named so Show-WelcomeDialog can wire
+          their Click to launch the URL. Inline placement uses InlineUIContainer.
+        - <Bold> exists in Avalonia.Controls.Documents — kept as-is.
+        - <LineBreak/> also exists — kept.
+        - Window-level Width/Height bindings to ScrollViewer.Viewport* (the WPF
+          trick to make the TextBlock soak up the scroll viewer's size) are
+          unnecessary; Avalonia's ScrollViewer measures the child naturally.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <ScrollViewer x:Name="scrollViewerObj"
+                  HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Auto"
+                  Margin="5">
+        <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                   MinWidth="700" MinHeight="390"
+                   TextWrapping="Wrap">
+            <Bold>Welcome!</Bold>
+            <LineBreak/><LineBreak/>
+            This software uses public APIs (e.g. Microsoft Graph etc.) to manage and view objects.
+            <LineBreak/>
+            It uses the BETA version of Microsoft Graph so some functionality might change or break.
+            <LineBreak/><LineBreak/>
+            Please report any issues to the GitHub repository.
+            <LineBreak/>
+            This is developed outside work hours so please respect that any support is based on best effort.
+            <LineBreak/><LineBreak/>
+            See <InlineUIContainer><Button x:Name="gitHubLink" Classes="link" Content="GitHub"/></InlineUIContainer> repository for documentation, issue tracking etc.
+            <LineBreak/><LineBreak/>
+            This software has <Bold>NO</Bold> association with Microsoft.
+            <LineBreak/><LineBreak/>
+            This software is provided AS IS and it is licensed under the MIT license. See <InlineUIContainer><Button x:Name="licenseLink" Classes="link" Content="LicenseInfo"/></InlineUIContainer> for more information.
+            <LineBreak/><LineBreak/>
+            <Bold>Note:</Bold>
+            <LineBreak/>
+            The 'Microsoft Intune PowerShell' Enterprise App in Azure is used by default for API calls.
+            <LineBreak/>
+            Go to Settings if you want to use 'Microsoft Graph PowerShell' or a custom App.
+            <LineBreak/>
+            This software might use permissions not granted for the existing App.
+            <LineBreak/>
+            A grant request will be displayed if permissions are missing.
+            <LineBreak/>
+            Enable 'Use Default Permissions' in Settings to only use existing App permissions. Some objects might not be supported.
+        </TextBlock>
+    </ScrollViewer>
+
+    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,5">
+        <CheckBox x:Name="chkAcceptConditions" VerticalAlignment="Center"
+                  IsChecked="False" Margin="5,0,0,0" Content="Accept conditions"/>
+        <Button x:Name="btnAcceptConditions" Content="OK" IsEnabled="False"
+                Width="100" Margin="5,0,0,0"/>
+        <Button x:Name="btnCancel" Content="Cancel" Width="100" Margin="5,0,0,0"/>
+    </StackPanel>
+</Grid>

@@ -1,0 +1,20 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Avalonia port of UI/WPF/XAML/CompareIntuneObjectOptions.xaml. Used as
+        ccCompareInputOptions.Content when the user picks "Intune Object"
+        in cbCompareInput.
+
+        WPF -> Avalonia:
+          - default xmlns swapped for the Avalonia URI.
+          - TextBlock + browse Button stay 1:1 with WPF.
+    -->
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="5"/>
+        <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
+    <TextBlock Name="txtCompareIntuneObject" VerticalAlignment="Center" Margin="2,0,0,0"/>
+    <Button Grid.Column="2" Name="browseIntuneObject" Padding="5,2,5,2" Width="50"
+            Content="..." ToolTip.Tip="Browse for Intune object"/>
+</Grid>

@@ -1,0 +1,139 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Avalonia port of UI/WPF/Themes/Styles.xaml.
+
+        Paradigm shift: Avalonia has no x:Key on Style; named styles are addressed
+        by class instead. Consumers move from
+            Style="{StaticResource HoverUnderlineStyle}"
+        to
+            Classes="hover-underline"
+        and the selector becomes
+            Style Selector="TextBlock.hover-underline"
+
+        Naming convention: the original PascalCase keys translate to kebab-case
+        classes (HoverUnderlineStyle -> hover-underline, LinkButton -> link, etc.)
+        per Avalonia community conventions.
+
+        Deferred (will reimplement when a screen actually needs them):
+          - ErrorControl   ContentControl with Tag-based DataTrigger
+          - ErrorBorder    HasErrors-bound DataTrigger
+          - DataGridRow    requires the Avalonia.Controls.DataGrid package
+    -->
+
+    <!--
+        info-icon: the Avalonia stand-in for WPF's InfoIcon (UI/WPF/Themes/Styles.xaml),
+        which is a 12x12 Rectangle filled with a DrawingBrush of three GeometryDrawings.
+        A glyph instead of a vector port: U+24D8 CIRCLED LATIN SMALL LETTER I scales with
+        the font, inherits the surrounding Foreground so it themes for free, and needs no
+        Drawing translation. It is the same glyph the settings dialog already renders
+        (Add-SettingsItem in Extensions/CoreUIAvalonia.ps1), so the two agree.
+
+        Consumers put the description on the SURROUNDING StackPanel rather than on the
+        glyph, so hovering the label shows it too - Avalonia's dropped InfoIcons had
+        moved these tips onto the Label, and this keeps that behaviour while restoring
+        the visible marker, without repeating the description string twice:
+
+            <StackPanel Orientation="Horizontal" ToolTip.Tip="...">
+                <Label Content="Export root"/>
+                <TextBlock Classes="info-icon"/>
+            </StackPanel>
+
+        The glyph is written as a numeric entity so the markup stays ASCII - it is also
+        embedded in .ps1 here-strings, which ARE covered by the ANSI/CP1252 gate in
+        Tests/Static.Tests.ps1 (.axaml files are not, but keeping one spelling avoids
+        a trap when this is copied into PowerShell).
+    -->
+    <Style Selector="TextBlock.info-icon">
+        <Setter Property="Text" Value="&#x24D8;"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Margin" Value="4,0,0,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- TextBlock named styles -->
+    <Style Selector="TextBlock.hover-underline:pointerover">
+        <Setter Property="TextDecorations" Value="Underline"/>
+    </Style>
+
+    <Style Selector="TextBlock.hover-underline-bg:pointerover">
+        <Setter Property="TextDecorations" Value="Underline"/>
+        <Setter Property="Background"      Value="LightGray"/>
+    </Style>
+
+    <!-- LinkButton: button styled as a text link.
+         Templated to a TextBlock (Foreground from button), with hover underline + bg
+         and disabled colour driven by DisabledForegroundColor.
+
+         Avalonia note: TextDecorations on Button is not honoured by ContentPresenter
+         alone; the templated TextBlock owns the decoration. -->
+    <Style Selector="Button.link">
+        <!-- WPF paints Hyperlinks blue; body-text colour made links invisible
+             as links. LinkColor is per-variant in Brushes.axaml. -->
+        <Setter Property="Foreground" Value="{DynamicResource LinkColor}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <TextBlock Name="PART_Text"
+                           Text="{TemplateBinding Content}"
+                           Foreground="{TemplateBinding Foreground}"
+                           Background="{TemplateBinding Background}"/>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Button.link:pointerover /template/ TextBlock#PART_Text">
+        <Setter Property="TextDecorations" Value="Underline"/>
+        <Setter Property="Background"      Value="{DynamicResource SelectedRowBackgroundColor}"/>
+    </Style>
+    <Style Selector="Button.link:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource DisabledForegroundColor}"/>
+        <Setter Property="Cursor"     Value="Arrow"/>
+    </Style>
+
+    <!-- ContentButton: bare button — just the content with hover background. -->
+    <Style Selector="Button.content">
+        <Setter Property="Foreground"      Value="{DynamicResource TextColor}"/>
+        <Setter Property="Background"      Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding"         Value="0"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_Content"
+                                  Background="{TemplateBinding Background}"
+                                  Content="{TemplateBinding Content}"/>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Button.content:pointerover /template/ ContentPresenter#PART_Content">
+        <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}"/>
+    </Style>
+
+    <!-- ListBoxItem default: hover/selected highlights.
+         Default.axaml already styles ListBoxItem:selected; this adds :pointerover
+         and matches the legacy padding. Targets all ListBoxItems (no class), same
+         as the original Styles.xaml. -->
+    <Style Selector="ListBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="Padding"    Value="2"/>
+    </Style>
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+        <Setter Property="Background"  Value="{DynamicResource SelectedRowBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource SelectedRowBackgroundColor}"/>
+    </Style>
+
+    <!-- Intune Manager grid, ObjectListFirstLineOnly setting (WPF parity): the
+         firstLine class is toggled by Add-IntuneManagerDataGridColumns. Nested
+         ^ selector so the rule follows the class on the grid, not on the cell. -->
+    <Style Selector="DataGrid.firstLine">
+        <Style Selector="^ DataGridCell TextBlock">
+            <Setter Property="MaxLines" Value="1"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+    </Style>
+
+</Styles>

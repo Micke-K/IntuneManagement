@@ -1,0 +1,26 @@
+<Viewbox Width="18" Height="18" xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Viewbox.Resources>
+    <LinearGradientBrush x:Key="blueBase" StartPoint="171.5,396.0" EndPoint="314.3,90.6">
+      <GradientStop Offset="0.02" Color="#FF1169DA"/>
+      <GradientStop Offset="0.44" Color="#FF0151BD"/>
+      <GradientStop Offset="0.61" Color="#FF014DB7"/>
+      <GradientStop Offset="1"    Color="#FF126AD9"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="cyanWave" StartPoint="114.7,97.5" EndPoint="182.1,383.7">
+      <GradientStop Offset="0"    Color="#FF92EEFE"/>
+      <GradientStop Offset="0.56" Color="#FF35DDFF"/>
+      <GradientStop Offset="1"    Color="#FF08B1F9"/>
+    </LinearGradientBrush>
+  </Viewbox.Resources>
+  <Canvas Width="401" Height="396" ClipToBounds="True">
+    <!-- Outer wave shape (dark blue) -->
+    <Path Fill="{StaticResource blueBase}"
+          Data="M0.685 65.852 C0.685 14.765 67.486 -13.203 111.616 19.408 L207.551 90.254 L288.514 44.373 C331.305 21.039 399.874 37.775 400.685 101.559 L400.685 336.622 C400.685 387.71 335.845 414.343 291.715 381.732 L194.031 309.34 L112.973 355.23 C69.778 378.784 0.753 360.714 0.753 298.637 C0.753 224.124 0.685 252.734 0.685 65.852 Z"/>
+    <!-- Inner face (medium cyan — creates the 3-D fold effect) -->
+    <Path Fill="#FF23C0FE"
+          Data="M111.616 19.408 C67.486 -13.203 0.685 14.765 0.685 65.852 V295.742 C0.685 290.153 3.533 279.026 3.533 279.026 C16.695 236.001 72.649 219.869 111.36 248.223 L291.715 381.732 C335.845 414.343 400.685 387.71 400.685 336.622 V101.559 C400.685 145.201 343.643 189.011 289.755 151.051 Z"/>
+    <!-- Foreground wave highlight (light cyan gradient) -->
+    <Path Fill="{StaticResource cyanWave}"
+          Data="M111.616 149.691 C67.486 117.08 0.685 145.048 0.685 196.135 L0.685 65.852 C0.685 14.765 67.486 -13.203 111.616 19.408 C170.996 63.289 230.374 107.171 289.755 151.051 C343.643 189.011 400.685 145.201 400.685 101.559 V234.89 C400.685 285.978 333.885 313.946 289.755 281.334 C230.374 237.454 170.996 193.572 111.616 149.691 Z"/>
+  </Canvas>
+</Viewbox>

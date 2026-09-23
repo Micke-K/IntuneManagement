@@ -1,0 +1,75 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5" MinWidth="500" MinHeight="400">
+    <!--
+        Avalonia port of UI/WPF/XAML/BulkAssignmentsGroupPicker.xaml. Hosted via
+        Show-ModalForm — stacks over the Bulk Assignments form via grdModal.
+
+        The WPF original used DisplayMemberPath / SelectedValuePath on the
+        ComboBoxes; in Avalonia those map to ItemTemplate (assigned in code
+        via DataTemplates is finicky for runtime PSCustomObject) so we use
+        DisplayMemberBinding for the ListBox and assign ComboBox items as
+        plain string lists where possible. cbGroupFilter is a list of
+        PSCustomObject with Id/Name — Avalonia binds to the .Name property
+        via ItemTemplate (set in code) and we read .Id back manually on OK.
+        cbGroupIntent is bound the same way.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
+
+    <Label Grid.Row="0" Grid.Column="0" Content="Search:" Margin="0,0,5,0"
+           VerticalAlignment="Center"/>
+    <TextBox Grid.Row="0" Grid.Column="1" Name="txtGroupSearch" Margin="0,3,5,3"/>
+    <Button  Grid.Row="0" Grid.Column="2" Name="btnGroupSearch" Content="Search" MinWidth="80"/>
+
+    <ListBox Grid.Row="1" Grid.ColumnSpan="3" Name="lstGroupResults"
+             Margin="0,5,0,5" SelectionMode="Single"/>
+
+    <Label Grid.Row="2" Grid.Column="0" Content="Direction:" Margin="0,0,5,0"
+           VerticalAlignment="Center"/>
+    <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal"
+                VerticalAlignment="Center" Margin="0,5,0,5">
+        <RadioButton Name="rbGroupInclude" Content="Include" GroupName="GroupPickerDir" IsChecked="True" VerticalAlignment="Center"/>
+        <RadioButton Name="rbGroupExclude" Content="Exclude" GroupName="GroupPickerDir" Margin="15,0,0,0" VerticalAlignment="Center"/>
+    </StackPanel>
+
+    <Label Grid.Row="3" Grid.Column="0" Content="Filter:" Margin="0,0,5,0"
+           VerticalAlignment="Center"/>
+    <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Name="cbGroupFilter"
+              Margin="0,3,0,3" HorizontalAlignment="Stretch"/>
+
+    <Label Grid.Row="4" Grid.Column="0" Content="Filter mode:" Margin="0,0,5,0"
+           VerticalAlignment="Center"/>
+    <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal"
+                VerticalAlignment="Center" Margin="0,5,0,5">
+        <RadioButton Name="rbGroupFilterInclude" Content="Include" GroupName="GroupPickerFilterDir" IsChecked="True" VerticalAlignment="Center"/>
+        <RadioButton Name="rbGroupFilterExclude" Content="Exclude" GroupName="GroupPickerFilterDir" Margin="15,0,0,0" VerticalAlignment="Center"/>
+    </StackPanel>
+
+    <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Only applies when the target policy is an app (mobile app assignment). Ignored for Device Configuration, Compliance, scripts, etc.">
+        <Label Content="App intent:"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <ComboBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Name="cbGroupIntent"
+              Margin="0,3,0,3" HorizontalAlignment="Stretch"
+              ToolTip.Tip="Required = auto-install. Available = visible in Company Portal. Uninstall = auto-remove. Available without enrollment = web/CP without MDM enrollment. Not available = hidden."/>
+
+    <StackPanel Grid.Row="6" Grid.ColumnSpan="3" Orientation="Horizontal"
+                HorizontalAlignment="Right" Margin="0,8,0,0">
+        <Button Name="btnGroupPickerOK"     Content="Add"    MinWidth="100" Margin="0,0,5,0"/>
+        <Button Name="btnGroupPickerCancel" Content="Cancel" MinWidth="100"/>
+    </StackPanel>
+</Grid>

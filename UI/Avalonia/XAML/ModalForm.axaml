@@ -1,0 +1,37 @@
+<Border xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Padding="5"
+        Background="{DynamicResource WindowBackgroundColor}">
+    <!--
+        Avalonia port of UI/WPF/XAML/ModalForm.xaml.
+
+        Modal host: Show-ModalForm parses this, drops the form's content into
+        grdModalContainer (Grid.Row=1), then mounts the whole Border into the
+        MainWindow's grdModal overlay. Title, close button, and named handles
+        match the WPF version so existing dialog ports can wire to the same
+        names.
+
+        WPF -> Avalonia translations:
+          - Visibility="Collapsed"  -> IsVisible="False"
+          - System.Windows.Controls.Grid.Row attached property is set in code
+            via [Avalonia.Controls.Grid]::SetRow($obj, 1)
+    -->
+    <Grid HorizontalAlignment="Stretch" Name="grdModalContainer" VerticalAlignment="Stretch"
+          Background="{DynamicResource WindowBackgroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Background="{DynamicResource TitleBackgroundColor}" BorderThickness="0">
+            <TextBlock Name="txtTitle" Margin="5" FontWeight="Bold"
+                       Foreground="{DynamicResource TitleForegroundColor}"/>
+        </Border>
+
+        <StackPanel Name="spButtons" Grid.Row="2" HorizontalAlignment="Right"
+                    Orientation="Horizontal" Margin="0,5,0,5">
+            <Button Name="btnClose" Width="100" Margin="15,0,0,0" Content="Close"/>
+        </StackPanel>
+    </Grid>
+</Border>

@@ -1,0 +1,80 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title=""
+        SystemDecorations="BorderOnly"
+        SizeToContent="WidthAndHeight"
+        CanResize="False"
+        MinWidth="280"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource WindowBackgroundColor}">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/MessageBox.xaml.
+        WPF used WindowStyle=None + WindowChrome to draw a fully custom title bar.
+        Avalonia equivalent: SystemDecorations=BorderOnly removes the OS title
+        bar so we draw our own (icon + title + close glyph). Result colors and
+        layout match the WPF version 1:1.
+    -->
+
+    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Custom title bar -->
+            <Grid Grid.Row="0" Background="{DynamicResource TitleBackgroundColor}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="txtCaption" Grid.Column="0"
+                           Foreground="{DynamicResource TitleForegroundColor}"
+                           VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12"/>
+
+                <Button x:Name="btnTitleClose" Grid.Column="1" Content="&#x2715;"
+                        Width="46" Background="Transparent" BorderThickness="0"
+                        Foreground="{DynamicResource TitleForegroundColor}"
+                        FontSize="11"/>
+            </Grid>
+
+            <!-- Content area -->
+            <Grid Grid.Row="1" Margin="16,14,16,12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="14"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Icon + message -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border x:Name="iconBorder" Width="30" Height="30" CornerRadius="15"
+                            Margin="0,2,12,0" VerticalAlignment="Top" IsVisible="False">
+                        <TextBlock x:Name="iconSymbol" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontWeight="Bold" FontSize="14" Foreground="White"/>
+                    </Border>
+
+                    <TextBlock x:Name="txtMessage" Grid.Column="1"
+                               TextWrapping="Wrap" MinWidth="240" MaxWidth="460"
+                               VerticalAlignment="Center"/>
+                </Grid>
+
+                <!-- Buttons -->
+                <WrapPanel Grid.Row="2" HorizontalAlignment="Right" Margin="0,2,0,0">
+                    <Button x:Name="btnYes"    MinWidth="78" Margin="0,0,8,0" Padding="8,3" IsVisible="False" Content="_Yes"/>
+                    <Button x:Name="btnNo"     MinWidth="78" Margin="0,0,8,0" Padding="8,3" IsVisible="False" Content="_No"/>
+                    <Button x:Name="btnOK"     MinWidth="78" Margin="0,0,8,0" Padding="8,3" IsVisible="False" Content="_OK"/>
+                    <Button x:Name="btnCancel" MinWidth="78" Padding="8,3" IsVisible="False" Content="_Cancel"/>
+                </WrapPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,15 @@
+*.cmd text eol=lf
+*.cs text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.ps1 text eol=lf
+*.psd1 text eol=lf
+*.psm1 text eol=lf
+*.xaml text eol=lf
+# Avalonia markup was missing here while *.xaml was covered, so an editor that
+# wrote CRLF turned a one-row change into a whole-file diff. All 96 committed
+# .axaml files are already LF, so this normalizes nothing retroactively.
+*.axaml text eol=lf
+# Shell launchers must stay LF or they will not run on macOS/Linux
+*.command text eol=lf
+*.sh text eol=lf

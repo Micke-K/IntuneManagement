@@ -1,0 +1,36 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Avalonia port of UI/WPF/XAML/CompareExportOptions.xaml. Used by both
+        CompareExportFilesProvider ("export") and CompareIntuneWithExportProvider
+        ("IntuneWithExport") — shape is identical: name filter + export root
+        path with browse button. SharedSizeGroup dropped; InfoIcon Rectangles are
+        rendered as the info-icon glyph (Themes/Styles.axaml), with the description
+        on the wrapping StackPanel so hovering the label shows it too.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
+
+    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify name filter for the objects to compare">
+        <Label Content="Name filter"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Name="txtCompareNameFilter"
+             Margin="0,5,0,0"/>
+
+    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="The root folder where exported files are stored. This sould be the Company Name folder if it was included in the export.">
+        <Label Content="Export root"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <TextBox Grid.Row="1" Grid.Column="1" Name="txtExportPath" Margin="0,5,5,0"/>
+    <Button  Grid.Row="1" Grid.Column="2" Name="browseExportPath" Content="..." Margin="0,5,0,0"
+             Padding="5,2,5,2" Width="50" ToolTip.Tip="Browse for folder"/>
+</Grid>

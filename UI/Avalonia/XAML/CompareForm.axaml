@@ -1,0 +1,179 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5">
+    <!--
+        Avalonia port of UI/WPF/XAML/CompareForm.xaml. Hosted via Show-ModalForm
+        rather than as a standalone Window — Swap/Compare/Close live in this
+        Grid and call back into Show-GraphCompareForm.
+
+        Slices 3d1+3d2+3d3 scope:
+          - TabControl: Options + Compare Output.
+          - Intune-vs-Intune AND file compare paths. cbCompareInput swaps
+            ccCompareInputOptions content between
+            CompareIntuneObjectOptions.axaml and CompareFileOptions.axaml.
+          - btnCompareSave / btnCompareCopy wired (SaveFilePicker, csv/json
+            provider FormatRows, clipboard via Get-CompareCsvInfo).
+          - Match-based row coloring done via DataGrid.LoadingRow handler
+            in PS code (no DataTrigger); Row.Foreground inheritance
+            cascades to cells.
+
+        WPF -> Avalonia translations applied:
+          - Grid.IsSharedSizeScope / SharedSizeGroup dropped — TitleColumn
+            uses ColumnDefinition Width="Auto".
+          - InfoIcon Rectangles are rendered as the info-icon glyph (Themes/Styles.axaml);
+            the description sits on the wrapping StackPanel so hovering the label shows it too.
+          - DataGridRowStyle / CellStyle Triggers + DataTriggers stripped.
+          - {DynamicResource SystemColors.*BrushKey} highlight overrides
+            dropped — Avalonia uses different theme keys for selection.
+          - <Bold>/<LineBreak/> inline runs in the help TextBlock are kept
+            verbatim — Avalonia parses them as XAML inline elements.
+          - ComboBox DisplayMemberPath / SelectedValuePath dropped; the PS
+            code projects PSCustomObject sources into [SettingsListItem] CLR
+            instances (avalonia-binding-needs-clr-types) and assigns an
+            ItemTemplate, then reads SelectedItem.Value imperatively.
+          - Window -> Grid (modal-form host owns the chrome).
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <TabControl Name="tabCompare" SelectedIndex="0" Margin="0,0,0,5">
+
+        <TabItem Header="Options">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="0,0,5,0">
+                <Grid VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Current Intune object">
+                        <Label Content="Source object"/>
+                        <TextBlock Classes="info-icon"/>
+                    </StackPanel>
+                    <TextBlock Name="txtIntuneObject" Grid.Row="0" Grid.Column="1" Margin="0,9,5,0"/>
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Select whether to compare against an exported file or another Intune object">
+                        <Label Content="Compare with"/>
+                        <TextBlock Classes="info-icon"/>
+                    </StackPanel>
+                    <ComboBox Name="cbCompareInput" DisplayMemberBinding="{Binding Name}" Grid.Row="1" Grid.Column="1" Margin="0,5,5,0"
+                              MinWidth="200" HorizontalAlignment="Left"/>
+
+                    <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="The object to compare against">
+                        <Label Name="lblCompareObject" Content="Compare object"/>
+                        <TextBlock Classes="info-icon"/>
+                    </StackPanel>
+                    <ContentControl Name="ccCompareInputOptions" Grid.Row="2" Grid.Column="1" Margin="0,5,5,0"/>
+
+                    <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify how objects should be compared">
+                        <Label Content="Comparison Type"/>
+                        <TextBlock Classes="info-icon"/>
+                    </StackPanel>
+                    <ComboBox Name="cbCompareType" DisplayMemberBinding="{Binding Name}" Grid.Row="3" Grid.Column="1" Margin="0,5,5,0"
+                              MinWidth="250" HorizontalAlignment="Left"/>
+
+                    <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify the output file format when saving compare results">
+                        <Label Content="Output format"/>
+                        <TextBlock Classes="info-icon"/>
+                    </StackPanel>
+                    <ComboBox Name="cbSingleCompareOutputFormat" DisplayMemberBinding="{Binding Name}" Grid.Row="4" Grid.Column="1" Margin="0,5,5,0"
+                              MinWidth="200" HorizontalAlignment="Left"/>
+
+                    <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Skip mismatch coloring for displayName, description, id, createdDateTime, lastModifiedDateTime and version. These will almost always differ between two objects.">
+                        <Label Content="Ignore core properties"/>
+                        <TextBlock Classes="info-icon"/>
+                    </StackPanel>
+                    <CheckBox Name="chkIgnoreCoreProperties" Grid.Row="5" Grid.Column="1" Margin="0,9,5,0"
+                              HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                    <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify the character to use for separating values for properties with more than one value (documentation comparison)">
+                        <Label Content="Multi-Value Delimiter"/>
+                        <TextBlock Classes="info-icon"/>
+                    </StackPanel>
+                    <ComboBox Name="cbCompareMultiValueDelimiter" DisplayMemberBinding="{Binding Name}" Grid.Row="6" Grid.Column="1" Margin="0,5,5,0"
+                              MinWidth="200" HorizontalAlignment="Left"/>
+
+                    <StackPanel Grid.Row="7" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Skip comparing assignments.">
+                        <Label Content="Skip Assignments"/>
+                        <TextBlock Classes="info-icon"/>
+                    </StackPanel>
+                    <CheckBox Name="chkSkipCompareAssignments" Grid.Row="7" Grid.Column="1" Margin="0,9,5,0"
+                              HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                    <TextBlock Grid.Row="8" Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="5,20,5,0">
+                        The <Bold>Property</Bold> comparison method is a quick and easy option for objects that are based on a static set of properties <LineBreak/>
+                        e.g. Configuration Profiles, Compliance Polcies etc.<LineBreak/>This method will compare each property of the objects. <LineBreak/>
+                        The downside of this method is that it could be difficult to match the property name with the setting in th UI.
+                        <LineBreak/>
+                        The <Bold>Documentation</Bold> method will use the documentation engine and compare property values as they are displayed in the portal.<LineBreak/>
+                        This is recommended for objects with dynamic settings e.g. Settings Catalog and Endpoint security objects. <LineBreak/>
+                        The downside of this method is that it could be slow and that some property-based objects are not supported.
+                    </TextBlock>
+                </Grid>
+            </ScrollViewer>
+        </TabItem>
+
+        <TabItem Header="Compare Output">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,5">
+                    <TextBlock Text="Show:" VerticalAlignment="Center" Margin="5,0,5,0" DockPanel.Dock="Left"/>
+                    <ComboBox Name="cbCompareFilter" DisplayMemberBinding="{Binding Name}" Width="160" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Name="txtCompareSummary" VerticalAlignment="Center"
+                               Margin="20,0,0,0" DockPanel.Dock="Left"/>
+                </DockPanel>
+
+                <DataGrid CanUserResizeColumns="True" Grid.Row="1" Name="dgCompareInfo"
+                          AutoGenerateColumns="False"
+                          SelectionMode="Single"
+                          CanUserReorderColumns="True"
+                          CanUserSortColumns="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Match"          Binding="{Binding MatchGlyph}"  IsReadOnly="True" Width="Auto"/>
+                        <DataGridTextColumn Header="Property"       Binding="{Binding PropertyName}" IsReadOnly="True" Width="Auto"/>
+                        <DataGridTextColumn Header="Category"       Binding="{Binding Category}"    IsReadOnly="True" Width="Auto"/>
+                        <DataGridTextColumn Header="SubCategory"    Binding="{Binding SubCategory}" IsReadOnly="True" Width="Auto"/>
+                        <DataGridTextColumn Header="Intune Object"  Binding="{Binding Object1Value}" IsReadOnly="True" Width="1*"/>
+                        <DataGridTextColumn Header="Compare Object" Binding="{Binding Object2Value}" IsReadOnly="True" Width="1*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,5,0,0">
+                    <Button Name="btnCompareSave" Content="Save" Width="100" Margin="5,0,0,0"
+                            ToolTip.Tip="Save compare results"/>
+                    <Button Name="btnCompareCopy" Content="Copy" Width="100" Margin="5,0,0,0"
+                            ToolTip.Tip="Copy CSV content to clipboard"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+
+    </TabControl>
+
+    <StackPanel Name="spCompareSubMenu" Grid.Row="1" Orientation="Horizontal"
+                HorizontalAlignment="Right">
+        <Button Name="btnSwap" Content="Swap" Width="100" Margin="5,0,0,0"
+                ToolTip.Tip="Swap source and compare objects"/>
+        <Button Name="btnStartCompare" Content="Compare" Width="100" Margin="5,0,0,0"
+                ToolTip.Tip="Compare objects"/>
+        <Button Name="btnClose" Content="Close" Width="100" Margin="5,0,0,0"/>
+    </StackPanel>
+</Grid>

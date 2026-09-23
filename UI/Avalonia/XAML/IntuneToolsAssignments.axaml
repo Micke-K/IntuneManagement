@@ -1,0 +1,105 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/IntuneToolsAssignments.xaml. Translation notes:
+        - Grid.IsSharedSizeScope / SharedSizeGroup dropped — no Avalonia
+          equivalent. Replaced with plain Auto column for the labels.
+        - DataGrid.RowStyle (WPF SystemColors + IsMouseOver / IsSelected
+          triggers) dropped; Avalonia's Fluent DataGrid theme handles
+          hover/selection states out of the box.
+        - InfoIcon rectangles dropped. The labels here are unambiguous; an
+          ⓘ glyph + tooltip could be added later if a tooltip pattern emerges.
+        - ToolTip="..." -> ToolTip.Tip="..." per Avalonia attached-property syntax.
+        - DataGridTextColumn / DataGridCheckBoxColumn carry over by name and
+          require Avalonia.Controls.DataGrid.dll loaded + the DataGrid Fluent
+          theme StyleInclude (both wired in AvaloniaHost.cs / Initialize-AvaloniaRuntime).
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Source" Margin="0,0,5,2" VerticalAlignment="Center"/>
+        <ComboBox x:Name="cbIntuneAssignmentsProvider" DisplayMemberBinding="{Binding Name}" Grid.Column="1" MinWidth="200"
+                  HorizontalAlignment="Left" Margin="0,2,0,2"/>
+
+        <Label Grid.Row="1" Content="Options" Margin="0,0,5,2" VerticalAlignment="Center"/>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ContentControl x:Name="ccIntuneAssignmentsProviderOptions" Margin="0,2,0,2"/>
+            <Button Grid.Column="2" x:Name="btnGetIntuneAssignments"
+                    Padding="5,2,5,2" Content="Get Assignments"
+                    ToolTip.Tip="Read assignments from the selected source"/>
+        </Grid>
+
+        <Label Grid.Row="2" Content="Filter" Margin="0,0,5,0" VerticalAlignment="Center"/>
+        <TextBox x:Name="txtIntuneAssignmentsFilter" Grid.Column="1" Grid.Row="2" Margin="0,2,0,2"
+                 ToolTip.Tip="Filter items"/>
+
+        <!-- Items are [NameValueComboItem]; the Avalonia binder needs a real CLR
+             type, so the plain Name/Value objects from Get-IntuneAssignmentViewOptions
+             are wrapped in Show-IntuneAssignmentsTool. -->
+        <Label Grid.Row="3" Content="View" Margin="0,0,5,0" VerticalAlignment="Center"/>
+        <ComboBox x:Name="cbIntuneAssignmentsView" DisplayMemberBinding="{Binding Name}"
+                  Grid.Column="1" Grid.Row="3" MinWidth="200" HorizontalAlignment="Left" Margin="0,2,0,2"
+                  ToolTip.Tip="Show all policies, only those with assignments, or only those without"/>
+    </Grid>
+
+    <DataGrid x:Name="dgIntuneAssignments" Grid.Row="1" Margin="0,5,0,0"
+              AutoGenerateColumns="False" SelectionMode="Single" IsReadOnly="True"
+              CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+        <DataGrid.Columns>
+            <!-- MinWidth keeps every header readable in a small window - Auto
+                 columns with empty cells collapsed below their header text and
+                 read as mystery empty columns. -->
+            <DataGridTextColumn     Header="Object Name"      Binding="{Binding Name}"                 Width="Auto" MinWidth="150"/>
+            <DataGridTextColumn     Header="Object Type"      Binding="{Binding Type}"                 Width="Auto" MinWidth="120"/>
+            <DataGridTextColumn     Header="Assignments"      Binding="{Binding AssignmentCount}"      Width="Auto" MinWidth="105"/>
+            <DataGridCheckBoxColumn Header="Has Filters"      Binding="{Binding HasFilters}"           Width="Auto" MinWidth="95" IsReadOnly="True"/>
+            <DataGridTextColumn     Header="Included"         Binding="{Binding IncludedString}"       Width="1*"   MinWidth="95"/>
+            <DataGridTextColumn     Header="Excluded"         Binding="{Binding ExcludedString}"       Width="1*"   MinWidth="95"/>
+            <DataGridTextColumn     Header="Included Filters" Binding="{Binding IncludedFilterString}" Width="1*"   MinWidth="120"/>
+            <DataGridTextColumn     Header="Excluded Filters" Binding="{Binding ExcludedFilterString}" Width="1*"   MinWidth="120"/>
+        </DataGrid.Columns>
+    </DataGrid>
+
+    <Grid Grid.Row="2" Margin="0,5,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock x:Name="txtIntuneAssignmentsCount" VerticalAlignment="Center"
+                   Foreground="{DynamicResource TextColor}"/>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="btnIntuneAssignmentsCopy" Content="Copy" MinWidth="100" Margin="0,0,5,0"
+                    ToolTip.Tip="Copy the assignments as CSV to the clipboard"/>
+            <Button x:Name="btnIntuneAssignmentsSave" Content="Save" MinWidth="100"
+                    ToolTip.Tip="Save assignments to a CSV file"/>
+        </StackPanel>
+    </Grid>
+</Grid>

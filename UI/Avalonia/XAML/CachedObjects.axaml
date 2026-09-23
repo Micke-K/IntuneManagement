@@ -1,0 +1,95 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/CachedObjects.xaml. Top stats bar +
+        Refresh button live in a Border header; rows render in a DataGrid
+        bound through Update-CachedObjectsView (CacheRowItem CLR class —
+        the binder can't reach PSCustomObject NoteProperties).
+
+        Selected-row detail pane uses DataContext binding to dgCachedObjects
+        SelectedItem; Avalonia uses the #element-name shorthand.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="4*" MinHeight="300"/>
+        <RowDefinition Height="3"/>
+        <RowDefinition Height="1*" MinHeight="100"/>
+    </Grid.RowDefinitions>
+
+    <Border Grid.Row="0" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1"
+            Background="{DynamicResource PanelBackgroundColor}" Padding="8" Margin="0,0,0,5">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="Entries: "    FontWeight="Bold" Margin="0,0,2,0"/>
+                <TextBlock x:Name="txtCacheEntries" Text="0" Margin="0,0,16,0"/>
+                <TextBlock Text="Hits: "       FontWeight="Bold" Margin="0,0,2,0"/>
+                <TextBlock x:Name="txtCacheHits"    Text="0" Margin="0,0,16,0"/>
+                <TextBlock Text="Misses: "     FontWeight="Bold" Margin="0,0,2,0"/>
+                <TextBlock x:Name="txtCacheMisses"  Text="0" Margin="0,0,16,0"/>
+                <TextBlock Text="Total size: " FontWeight="Bold" Margin="0,0,2,0"/>
+                <TextBlock x:Name="txtCacheBytes"   Text="0 B" Margin="0,0,16,0"
+                           ToolTip.Tip="Approximate in-memory size of all cached values (UTF-8 JSON serialization, compressed)."/>
+            </StackPanel>
+
+            <Button Grid.Column="1" x:Name="btnRefreshCachedObjects" Content="Refresh"
+                    Padding="8,2" Margin="5,0,0,0" VerticalAlignment="Center"
+                    ToolTip.Tip="Recompute cache totals and reload the list"/>
+        </Grid>
+    </Border>
+
+    <DataGrid Grid.Row="1" x:Name="dgCachedObjects"
+              AutoGenerateColumns="False"
+              SelectionMode="Single"
+              IsReadOnly="True"
+              CanUserReorderColumns="True"
+              CanUserResizeColumns="True"
+              CanUserSortColumns="True">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Name"       Binding="{Binding Name}"       Width="Auto"/>
+            <DataGridTextColumn Header="Tags"       Binding="{Binding TagsText}"   Width="Auto"/>
+            <DataGridTextColumn Header="Size"       Binding="{Binding SizeText}"   Width="Auto"/>
+            <DataGridTextColumn Header="Persistent" Binding="{Binding Persistent}" Width="Auto"/>
+            <DataGridTextColumn Header="TimeOut"    Binding="{Binding TimeOut, StringFormat=\{0:HH:mm.ss.fff\}}" Width="Auto"/>
+            <DataGridTemplateColumn Header="Value" Width="*">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding ValueText}" TextWrapping="NoWrap"/>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
+
+    <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+    <Grid Grid.Row="3" DataContext="{Binding #dgCachedObjects.SelectedItem}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Name" Grid.Row="0" Grid.Column="0"/>
+        <TextBlock Text="{Binding Name}" Grid.Row="0" Grid.Column="2"/>
+        <Button x:Name="btnClearCachedObject" Content="Clear" Grid.Row="0" Grid.Column="3"
+                Margin="0,5,5,5" Width="100"
+                ToolTip.Tip="Clear the selected object from cache"/>
+
+        <TextBox Grid.Row="1" Grid.ColumnSpan="99" x:Name="txtCacheObjectInfo"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"/>
+    </Grid>
+</Grid>

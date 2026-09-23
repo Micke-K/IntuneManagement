@@ -1,0 +1,116 @@
+name: Bug report (version 3.x)
+description: Something is wrong in the current release. Windows only.
+title: "[3.x] "
+labels: ["bug", "v3", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Version 3 stays supported until 4.0 leaves beta.
+
+        Before filing, check whether 4.0 already fixes it. Several long-standing
+        reports here are addressed there: sign-in with passkeys and other
+        phishing-resistant methods, lists that stopped at 20, 100 or a few
+        hundred objects, sovereign cloud sign-in, and running without a user
+        present. The 4.0 beta lives on the `v4` branch.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before reporting
+      options:
+        - label: >
+            If my sign-in involves a passkey, security key, Windows Hello or a
+            phishing-resistant policy: I know the embedded sign-in window cannot
+            complete those, and I have said so below rather than reporting it as
+            a broken login.
+          required: true
+        - label: >
+            I searched existing issues and discussions, including closed ones.
+          required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: 3.10.3
+    validations:
+      required: true
+
+  - type: dropdown
+    id: signin
+    attributes:
+      label: How did you sign in?
+      options:
+        - Interactive, embedded window (the default)
+        - Interactive, other
+        - Application and secret
+        - Application and certificate
+        - Not signed in / sign-in is the problem
+    validations:
+      required: true
+
+  - type: dropdown
+    id: cloud
+    attributes:
+      label: Cloud
+      options:
+        - Public (commercial)
+        - US Government (GCC High)
+        - US Government (DoD)
+        - China (21Vianet)
+    validations:
+      required: true
+
+  - type: input
+    id: powershell
+    attributes:
+      label: PowerShell version
+      description: Run `$PSVersionTable.PSVersion`.
+      placeholder: "5.1.22621.4391"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part of the application?
+      options:
+        - Sign-in and authentication
+        - Export
+        - Import
+        - Copy
+        - Compare
+        - Documentation output
+        - Assignments, groups or filters
+        - Bulk or silent operations
+        - ADMX or tools
+        - The user interface itself
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: >
+        The relevant lines, or the error text. **Remove tenant identifiers, user
+        names, access tokens and secrets before pasting.**
+      render: text
+    validations:
+      required: true

@@ -1,0 +1,228 @@
+[
+    {
+        "nameResourceKey":  "TableHeaders.configurationType",
+        "descriptionResourceKey":  "",
+        "entityKey":  "WindowsEnrollment.deploymentProfiles",
+        "dataType":  200,
+        "booleanActions":  0,
+        "category": 1000
+    },
+    {
+        "nameResourceKey":  "Autopilot.harvestDeviceId",
+        "descriptionResourceKey":  "",
+        "entityKey":  "extractHardwareHash",
+        "dataType":  0,
+        "booleanActions":  109,
+        "category": 1000
+    },
+    {
+        "nameResourceKey":  "Autopilot.deviceType",
+        "descriptionResourceKey":  "",
+        "entityKey":  "deviceType",
+        "dataType":  16,
+        "booleanActions":  0,
+        "category": 1000,
+        "options":  [                                
+            {
+                "nameResourceKey":  "Platform.windowsPC",
+                "value":  "windowsPc"
+            },
+            {
+                "nameResourceKey":  "Platform.surfaceHub2",
+                "value":  "surfaceHub2"
+            },  
+            {
+                "nameResourceKey":  "Platform.holoLens",
+                "value":  "holoLens"
+            }
+        ]        
+    },
+    {
+        "nameResourceKey":  "Autopilot.OOBE.title",
+        "descriptionResourceKey":  "",
+        "entityKey":  "outOfBoxExperienceSettings",
+        "dataType":  6,
+        "booleanActions":  0,
+        "category": "Autopilot.OOBE.title",
+        "complexOptions":  [
+            {
+                "nameResourceKey":  "Autopilot.OOBE.configureDevice",
+                "descriptionResourceKey":  "",
+                "dataType":  16,
+                "category":  "Autopilot.OOBE.title",
+                "entityKey":  "deviceUsageType",
+                "booleanActions":  0,
+                "options":  [                                
+                                {
+                                    "nameResourceKey":  "Autopilot.OOBE.endUserDevice",
+                                    "value":  "singleUser"
+                                },
+                                {
+                                    "nameResourceKey":  "Autopilot.OOBE.plugAndForgetDevice",
+                                    "value":  "shared"
+                                }
+                ]
+            },
+            {
+                "nameResourceKey":  "Autopilot.directoryServiceLabel",
+                "descriptionResourceKey":  "",
+                "dataType":  16,
+                "entityKey":  "azureADJoinType",
+                "category":  "Autopilot.OOBE.title",
+                "booleanActions":  0,
+                "options":  [                                
+                                {
+                                    "nameResourceKey":  "Autopilot.DirectoryService.activeDirectoryAD",
+                                    "value":  "hybrid"
+                                },
+                                {
+                                    "nameResourceKey":  "Autopilot.DirectoryService.azureAD",
+                                    "value":  "azureAD"
+                                }
+                ]
+            }
+        ]
+    },    
+    {
+        "nameResourceKey":  "Autopilot.OOBE.HybridAzureADSkipConnectivityCheck.label",
+        "descriptionResourceKey":  "Autopilot.OOBE.HybridAzureADSkipConnectivityCheck.infoBalloon",
+        "dataType":  0,
+        "category":  "Autopilot.OOBE.title",
+        "entityKey":  "hybridAzureADJoinSkipConnectivityCheck",
+        "booleanActions":  109,
+        "Condition": {
+            "type": "or",
+            "Expressions": [
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.activeDirectoryWindowsAutopilotDeploymentProfile"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "Autopilot.OOBE.language",
+        "descriptionResourceKey":  "",
+        "dataType":  102,
+        "category":  "Autopilot.OOBE.title",
+        "entityKey":  "language",
+        "booleanActions":  0,
+        "ChildSettings": [
+            {
+                "nameResourceKey":  "Autopilot.OOBE.title",
+                "descriptionResourceKey":  "",
+                "entityKey":  "outOfBoxExperienceSettings",
+                "dataType":  6,
+                "booleanActions":  0,
+                "category": "Autopilot.OOBE.title",
+                "Condition": {
+                    "Expressions": [
+                        {
+                            "property": "language",
+                            "operator": "ne",
+                            "value": "user-select"
+                        }
+                    ]
+                },
+                "complexOptions":  [
+                    {
+                        "nameResourceKey":  "Autopilot.OOBE.skipKeyboardSelection",
+                        "descriptionResourceKey":  "Autopilot.OOBE.skipKeyboardSelectionInfo",
+                        "entityKey":  "skipKeyboardSelectionPage",
+                        "dataType":  0,
+                        "booleanActions":  109,
+                        "category": "Autopilot.OOBE.title",
+                        "Condition": {
+                            "type": "or",
+                            "Expressions": [
+                                {
+                                    "property": "isLanguageSet",
+                                    "value": true
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]        
+    },      
+    {
+        "nameResourceKey":  "Autopilot.OOBE.title",
+        "descriptionResourceKey":  "",
+        "entityKey":  "outOfBoxExperienceSettings",
+        "dataType":  6,
+        "skipAddLevel": true,
+        "booleanActions":  0,
+        "category": "Autopilot.OOBE.title",
+        "complexOptions":  [            
+            {
+                "nameResourceKey":  "Autopilot.OOBE.licenseAgreement",
+                "descriptionResourceKey":  "Autopilot.OOBE.licenseAgreementInfo",
+                "entityKey":  "hideEULA",
+                "dataType":  0,
+                "booleanActions":  108,
+                "category": "Autopilot.OOBE.title"
+            },
+            {
+                "nameResourceKey":  "Autopilot.OOBE.privacySettings",
+                "descriptionResourceKey":  "Autopilot.OOBE.privacySettingsInfo",
+                "entityKey":  "hidePrivacySettings",
+                "dataType":  0,
+                "booleanActions":  108,
+                "category": "Autopilot.OOBE.title"
+            },    
+            {
+                "nameResourceKey":  "Autopilot.OOBE.hideEscapeLink",
+                "descriptionResourceKey":  "Autopilot.OOBE.hideEscapeLinkInfo",
+                "entityKey":  "hideEscapeLink",
+                "dataType":  0,
+                "booleanActions":  108,
+                "category": "Autopilot.OOBE.title"
+            },
+            {
+                "nameResourceKey":  "Autopilot.OOBE.accountType",
+                "descriptionResourceKey":  "Autopilot.OOBE.accountTypeInfo",
+                "dataType":  16,
+                "category":  "Autopilot.OOBE.title",
+                "entityKey":  "userType",
+                "booleanActions":  0,
+                "options":  [                                
+                                {
+                                    "nameResourceKey":  "standard",
+                                    "value":  "standard"
+                                },
+                                {
+                                    "nameResourceKey":  "admin",
+                                    "value":  "administrator"
+                                }
+                ]
+            }            
+        ]
+    },
+    {
+        "nameResourceKey":  "Autopilot.OOBE.EnableWhiteGlove.label",
+        "descriptionResourceKey":  "Autopilot.OOBE.EnableWhiteGlove.infoBalloon",
+        "entityKey":  "enableWhiteGlove",
+        "dataType":  0,
+        "booleanActions":  109,
+        "category": "Autopilot.OOBE.title"
+    },    
+    {
+        "nameResourceKey":  "Autopilot.OOBE.ApplyComputerNameTemplate.label",
+        "descriptionResourceKey":  "Autopilot.OOBE.ApplyComputerNameTemplate.infoBalloon",
+        "entityKey":  "applyDeviceNameTemplate",
+        "dataType":  0,        
+        "booleanActions":  109,
+        "category": "Autopilot.OOBE.title",
+        "ChildSettings": [
+            {
+                "nameResourceKey":  "Inputs.nameHint",
+                "descriptionResourceKey":  "",
+                "dataType":  20,
+                "category":  "Autopilot.OOBE.title",
+                "entityKey":  "deviceNameTemplate",
+                "booleanActions":  0
+            }
+        ]
+    }
+]

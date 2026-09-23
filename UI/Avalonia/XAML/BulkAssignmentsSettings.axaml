@@ -1,0 +1,427 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5" MinWidth="640" MinHeight="500">
+    <!--
+        Avalonia port of UI/WPF/XAML/BulkAssignmentsSettings.xaml. Hosted via
+        Show-ModalForm — stacks over the Bulk Assignments form via grdModal.
+
+        Per-platform app assignment settings. 13 TabItems, each containing a
+        ScrollViewer + StackPanel with an Apply CheckBox (FontWeight=SemiBold)
+        and a Grid of fields whose IsEnabled is bound to the Apply checkbox.
+
+        WPF -> Avalonia translations:
+          - SharedSizeGroup dropped — explicit ColumnDefinition Auto/* widths.
+          - DynamicResource ControlBackgroundColor / TextColor dropped — theme
+            drives backgrounds.
+          - Binding ElementName=...,Path=IsChecked still works for IsEnabled.
+          - ToolTip="..." -> ToolTip.Tip="...".
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <TextBlock Grid.Row="0" Margin="0,0,0,6" TextWrapping="Wrap">
+        Per-platform app assignment settings. Tick "Apply these settings" on a tab to include it in
+        the POST for matching apps; leave it unticked to let Graph defaults stand.
+    </TextBlock>
+
+    <TabControl Grid.Row="1" Name="tcBulkAssignSettings">
+
+        <!-- ======================== iOS LOB ======================== -->
+        <TabItem Header="iOS LOB" Name="tabIosLob">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyIosLob" Content="Apply these settings to iOS LOB apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyIosLob, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Is removable:"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" Name="chkIosLob_IsRemovable" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="1" Grid.Column="0" Content="Prevent backup:"/>
+                        <CheckBox Grid.Row="1" Grid.Column="1" Name="chkIosLob_PreventBackup" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="2" Grid.Column="0" Content="Uninstall on removal:"/>
+                        <CheckBox Grid.Row="2" Grid.Column="1" Name="chkIosLob_Uninstall" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="3" Grid.Column="0" Content="VPN config id:"/>
+                        <TextBox  Grid.Row="3" Grid.Column="1" Name="txtIosLob_VpnId" Margin="0,5,0,5"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== iOS Store ======================== -->
+        <TabItem Header="iOS Store" Name="tabIosStore">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyIosStore" Content="Apply these settings to iOS Store apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyIosStore, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Is removable:"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" Name="chkIosStore_IsRemovable" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="1" Grid.Column="0" Content="Prevent backup:"/>
+                        <CheckBox Grid.Row="1" Grid.Column="1" Name="chkIosStore_PreventBackup" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="2" Grid.Column="0" Content="Uninstall on removal:"/>
+                        <CheckBox Grid.Row="2" Grid.Column="1" Name="chkIosStore_Uninstall" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="3" Grid.Column="0" Content="VPN config id:"/>
+                        <TextBox  Grid.Row="3" Grid.Column="1" Name="txtIosStore_VpnId" Margin="0,5,0,5"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== iOS VPP ======================== -->
+        <TabItem Header="iOS VPP" Name="tabIosVpp">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyIosVpp" Content="Apply these settings to iOS VPP apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyIosVpp, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Use device licensing:"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" Name="chkIosVpp_DeviceLicensing" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="1" Grid.Column="0" Content="Is removable:"/>
+                        <CheckBox Grid.Row="1" Grid.Column="1" Name="chkIosVpp_IsRemovable" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="2" Grid.Column="0" Content="Prevent backup:"/>
+                        <CheckBox Grid.Row="2" Grid.Column="1" Name="chkIosVpp_PreventBackup" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="3" Grid.Column="0" Content="Prevent auto-update:"/>
+                        <CheckBox Grid.Row="3" Grid.Column="1" Name="chkIosVpp_PreventAutoUpdate" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="4" Grid.Column="0" Content="Uninstall on removal:"/>
+                        <CheckBox Grid.Row="4" Grid.Column="1" Name="chkIosVpp_Uninstall" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="5" Grid.Column="0" Content="VPN config id:"/>
+                        <TextBox  Grid.Row="5" Grid.Column="1" Name="txtIosVpp_VpnId" Margin="0,5,0,5"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== iOS DDM LOB ======================== -->
+        <TabItem Header="iOS DDM" Name="tabIosDdm">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyIosDdm" Content="Apply these settings to iOS DDM LOB apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyIosDdm, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Associated domains:"/>
+                        <TextBox  Grid.Row="0" Grid.Column="1" Name="txtIosDdm_Domains" Margin="0,5,0,5" Height="50"
+                                  AcceptsReturn="True" TextWrapping="Wrap"
+                                  ToolTip.Tip="One domain per line."/>
+                        <Label    Grid.Row="1" Grid.Column="0" Content="Direct download:"/>
+                        <CheckBox Grid.Row="1" Grid.Column="1" Name="chkIosDdm_DirectDownload" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="2" Grid.Column="0" Content="Prevent backup:"/>
+                        <CheckBox Grid.Row="2" Grid.Column="1" Name="chkIosDdm_PreventBackup" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="3" Grid.Column="0" Content="Tap-to-pay screen lock:"/>
+                        <CheckBox Grid.Row="3" Grid.Column="1" Name="chkIosDdm_TapToPay" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="4" Grid.Column="0" Content="VPN config id:"/>
+                        <TextBox  Grid.Row="4" Grid.Column="1" Name="txtIosDdm_VpnId" Margin="0,5,0,5"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== Android Managed Store ======================== -->
+        <TabItem Header="Android Store" Name="tabAndroidStore">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyAndroidStore" Content="Apply these settings to Android Managed Store apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyAndroidStore, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Auto-update mode:"/>
+                        <ComboBox Grid.Row="0" Grid.Column="1" Name="cbAndroidStore_AutoUpdate" Margin="0,5,0,5" Width="200" HorizontalAlignment="Left"/>
+                        <Label    Grid.Row="1" Grid.Column="0" Content="Track IDs:"/>
+                        <TextBox  Grid.Row="1" Grid.Column="1" Name="txtAndroidStore_Tracks" Margin="0,5,0,5" Height="50"
+                                  AcceptsReturn="True" TextWrapping="Wrap"
+                                  ToolTip.Tip="One track id per line. Leave empty for default production track."/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== macOS LOB ======================== -->
+        <TabItem Header="macOS LOB" Name="tabMacLob">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyMacLob" Content="Apply these settings to macOS LOB apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyMacLob, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Uninstall on removal:"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" Name="chkMacLob_Uninstall" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== macOS VPP ======================== -->
+        <TabItem Header="macOS VPP" Name="tabMacVpp">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyMacVpp" Content="Apply these settings to macOS VPP apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyMacVpp, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Use device licensing:"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" Name="chkMacVpp_DeviceLicensing" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="1" Grid.Column="0" Content="Prevent backup:"/>
+                        <CheckBox Grid.Row="1" Grid.Column="1" Name="chkMacVpp_PreventBackup" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="2" Grid.Column="0" Content="Prevent auto-update:"/>
+                        <CheckBox Grid.Row="2" Grid.Column="1" Name="chkMacVpp_PreventAutoUpdate" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="3" Grid.Column="0" Content="Uninstall on removal:"/>
+                        <CheckBox Grid.Row="3" Grid.Column="1" Name="chkMacVpp_Uninstall" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== Microsoft Store for Business ======================== -->
+        <TabItem Header="MS Store" Name="tabMsStore">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyMsStore" Content="Apply these settings to Microsoft Store for Business apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyMsStore, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Device context:"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" Name="chkMsStore_DeviceContext" VerticalAlignment="Center" Margin="0,5,0,5"
+                                  ToolTip.Tip="True = install in device context (all users on device). False = per-user."/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== Windows AppX ======================== -->
+        <TabItem Header="Windows AppX" Name="tabWinAppx">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyWinAppx" Content="Apply these settings to Windows AppX apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyWinAppx, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Device context:"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" Name="chkWinAppx_DeviceContext" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== Windows Universal AppX ======================== -->
+        <TabItem Header="Windows UAP" Name="tabWinUap">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyWinUap" Content="Apply these settings to Windows Universal AppX apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyWinUap, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Device context:"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" Name="chkWinUap_DeviceContext" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== Win32 LOB ======================== -->
+        <TabItem Header="Win32 LOB" Name="tabWin32">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyWin32" Content="Apply these settings to Win32 LOB / Win32 Catalog apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyWin32, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Delivery optimization:"/>
+                        <ComboBox Grid.Row="0" Grid.Column="1" Name="cbWin32_DeliveryOpt" Margin="0,5,0,5" Width="200" HorizontalAlignment="Left"/>
+                        <Label    Grid.Row="1" Grid.Column="0" Content="Notifications:"/>
+                        <ComboBox Grid.Row="1" Grid.Column="1" Name="cbWin32_Notifications" Margin="0,5,0,5" Width="200" HorizontalAlignment="Left"/>
+
+                        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="Auto-update settings" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                        <Label    Grid.Row="3" Grid.Column="0" Content="Superseded apps:"/>
+                        <ComboBox Grid.Row="3" Grid.Column="1" Name="cbWin32_Superseded" Margin="0,5,0,5" Width="200" HorizontalAlignment="Left"/>
+
+                        <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Text="Install time settings" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                        <Label    Grid.Row="5" Grid.Column="0" Content="Use local time:"/>
+                        <CheckBox Grid.Row="5" Grid.Column="1" Name="chkWin32_UseLocalTime" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="6" Grid.Column="0" Content="Start (ISO):"/>
+                        <TextBox  Grid.Row="6" Grid.Column="1" Name="txtWin32_StartTime" Margin="0,5,0,5"
+                                  ToolTip.Tip="ISO8601 datetime, e.g. 2026-06-01T10:00:00Z. Leave empty for no start time."/>
+                        <Label    Grid.Row="7" Grid.Column="0" Content="Deadline (ISO):"/>
+                        <TextBox  Grid.Row="7" Grid.Column="1" Name="txtWin32_DeadlineTime" Margin="0,5,0,5"/>
+
+                        <TextBlock Grid.Row="8" Grid.ColumnSpan="2" Text="Restart settings (Required intent only)" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                        <Label    Grid.Row="9" Grid.Column="0" Content="Grace period (min):"/>
+                        <TextBox  Grid.Row="9" Grid.Column="1" Name="txtWin32_GracePeriod" Margin="0,5,0,5" Width="120" HorizontalAlignment="Left"/>
+                        <Label    Grid.Row="10" Grid.Column="0" Content="Countdown (min):"/>
+                        <TextBox  Grid.Row="10" Grid.Column="1" Name="txtWin32_Countdown" Margin="0,5,0,5" Width="120" HorizontalAlignment="Left"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== winGet ======================== -->
+        <TabItem Header="winGet" Name="tabWinGet">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyWinGet" Content="Apply these settings to winGet apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyWinGet, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Notifications:"/>
+                        <ComboBox Grid.Row="0" Grid.Column="1" Name="cbWinGet_Notifications" Margin="0,5,0,5" Width="200" HorizontalAlignment="Left"/>
+
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="Install time settings (deadline required when enabled)" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                        <Label    Grid.Row="2" Grid.Column="0" Content="Use local time:"/>
+                        <CheckBox Grid.Row="2" Grid.Column="1" Name="chkWinGet_UseLocalTime" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="3" Grid.Column="0" Content="Deadline (ISO):"/>
+                        <TextBox  Grid.Row="3" Grid.Column="1" Name="txtWinGet_DeadlineTime" Margin="0,5,0,5"/>
+
+                        <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Text="Restart settings (Required intent only)" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                        <Label    Grid.Row="5" Grid.Column="0" Content="Grace period (min):"/>
+                        <TextBox  Grid.Row="5" Grid.Column="1" Name="txtWinGet_GracePeriod" Margin="0,5,0,5" Width="120" HorizontalAlignment="Left"/>
+                        <Label    Grid.Row="6" Grid.Column="0" Content="Countdown (min):"/>
+                        <TextBox  Grid.Row="6" Grid.Column="1" Name="txtWinGet_Countdown" Margin="0,5,0,5" Width="120" HorizontalAlignment="Left"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== Health Script ======================== -->
+        <TabItem Header="Health Script" Name="tabHealthScript">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyHealthScript" Content="Apply these settings to Health Script (Proactive Remediation) assignments" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyHealthScript, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Run remediation:"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" Name="chkScript_RunRemediation" VerticalAlignment="Center" Margin="0,5,0,5"
+                                  ToolTip.Tip="True = run the remediation script when detection finds an issue. False = detection only."/>
+
+                        <Label    Grid.Row="1" Grid.Column="0" Content="Schedule type:"/>
+                        <ComboBox Grid.Row="1" Grid.Column="1" Name="cbScript_ScheduleType" Margin="0,5,0,5" Width="200" HorizontalAlignment="Left"/>
+
+                        <Label    Grid.Row="2" Grid.Column="0" Content="Interval:"/>
+                        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBox Name="txtScript_Interval" Margin="0,5,5,5" Width="80"
+                                     ToolTip.Tip="Hourly: every N hours. Daily: every N days. Once: ignored."/>
+                            <TextBlock Text="(hours / days / once)" VerticalAlignment="Center" Opacity="0.6"/>
+                        </StackPanel>
+
+                        <Label    Grid.Row="3" Grid.Column="0" Content="Time (HH:MM):"/>
+                        <TextBox  Grid.Row="3" Grid.Column="1" Name="txtScript_Time" Margin="0,5,0,5" Width="100" HorizontalAlignment="Left"
+                                  ToolTip.Tip="24-hour HH:MM. Ignored when schedule type is Hourly."/>
+
+                        <Label    Grid.Row="4" Grid.Column="0" Content="Use UTC:"/>
+                        <CheckBox Grid.Row="4" Grid.Column="1" Name="chkScript_UseUtc" VerticalAlignment="Center" Margin="0,5,0,5"
+                                  ToolTip.Tip="Off = device local time. Ignored when schedule type is Hourly."/>
+
+                        <Label    Grid.Row="5" Grid.Column="0" Content="Date (YYYY-MM-DD):"/>
+                        <TextBox  Grid.Row="5" Grid.Column="1" Name="txtScript_Date" Margin="0,5,0,5" Width="150" HorizontalAlignment="Left"
+                                  ToolTip.Tip="Required for Once schedule type. Ignored otherwise."/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- ======================== Windows AutoUpdate Catalog ======================== -->
+        <TabItem Header="Win AutoUpdate" Name="tabWinAutoUpdate">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <CheckBox Name="chkApplyWinAutoUpdate" Content="Apply these settings to Windows AutoUpdate Catalog apps" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid IsEnabled="{Binding ElementName=chkApplyWinAutoUpdate, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/><ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label    Grid.Row="0" Grid.Column="0" Content="Delivery optimization:"/>
+                        <ComboBox Grid.Row="0" Grid.Column="1" Name="cbWinAutoUpdate_DeliveryOpt" Margin="0,5,0,5" Width="200" HorizontalAlignment="Left"/>
+                        <Label    Grid.Row="1" Grid.Column="0" Content="Notification type:"/>
+                        <ComboBox Grid.Row="1" Grid.Column="1" Name="cbWinAutoUpdate_Notifications" Margin="0,5,0,5" Width="200" HorizontalAlignment="Left"/>
+
+                        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="Install time settings" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                        <Label    Grid.Row="3" Grid.Column="0" Content="Use local time:"/>
+                        <CheckBox Grid.Row="3" Grid.Column="1" Name="chkWinAutoUpdate_UseLocalTime" VerticalAlignment="Center" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="4" Grid.Column="0" Content="Start (ISO):"/>
+                        <TextBox  Grid.Row="4" Grid.Column="1" Name="txtWinAutoUpdate_StartTime" Margin="0,5,0,5"/>
+                        <Label    Grid.Row="5" Grid.Column="0" Content="Deadline (ISO):"/>
+                        <TextBox  Grid.Row="5" Grid.Column="1" Name="txtWinAutoUpdate_DeadlineTime" Margin="0,5,0,5"/>
+
+                        <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Text="Restart settings (Required intent only)" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                        <Label    Grid.Row="7" Grid.Column="0" Content="Grace period (min):"/>
+                        <TextBox  Grid.Row="7" Grid.Column="1" Name="txtWinAutoUpdate_GracePeriod" Margin="0,5,0,5" Width="120" HorizontalAlignment="Left"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+    </TabControl>
+
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+        <Button Name="btnBulkAssignSettingsOK"     Content="OK"     Width="100" Margin="0,0,5,0"/>
+        <Button Name="btnBulkAssignSettingsCancel" Content="Cancel" Width="100"/>
+    </StackPanel>
+</Grid>

@@ -1,0 +1,69 @@
+[
+    {
+        "nameResourceKey":  "TableHeaders.policyType",
+        "descriptionResourceKey":  "",
+        "entityKey":  "WindowsDriverUpdateProfile.Subtitle.automatic",
+        "dataType":  200,
+        "booleanActions":  0,
+        "category": 1000,
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "approvalType",
+                    "value": "automatic"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "TableHeaders.policyType",
+        "descriptionResourceKey":  "",
+        "entityKey":  "WindowsDriverUpdateProfile.Subtitle.manual",
+        "dataType":  200,
+        "booleanActions":  0,
+        "category": 1000,
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "approvalType",
+                    "value": "manual"
+                }
+            ]
+        }        
+    },
+    {
+        "nameResourceKey":  "WindowsDriverUpdateProfile.Details.ApprovalMethod.label",
+        "descriptionResourceKey":  "",
+        "entityKey":  "approvalType",
+        "dataType":  16,
+        "booleanActions":  0,
+        "category":  "TableHeaders.settings",
+        "options":  [                                
+            {
+                "nameResourceKey":  "WindowsDriverUpdateProfile.ApprovalMethod.automatic",
+                "value":  "automatic"
+            },
+            {
+                "nameResourceKey":  "WindowsDriverUpdateProfile.ApprovalMethod.manual",
+                "value":  "manual"
+            }
+        ]
+    },
+    {
+        "nameResourceKey":  "WindowsDriverUpdateProfile.Details.DeploymentDeferralInDays.label",
+        "descriptionResourceKey":  "",
+        "entityKey":  "deploymentDeferralInDays",
+        "formatStringKey": "WindowsDriverUpdateProfile.Details.DeploymentDeferralInDays.value",
+        "dataType":  108,
+        "booleanActions":  0,
+        "category":  "TableHeaders.settings",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "approvalType",
+                    "value": "automatic"
+                }
+            ]
+        }
+    }
+]

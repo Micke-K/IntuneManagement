@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    .NET startup hook that runs a PowerShell script on the process main thread
+    inside the user's own pwsh (see StartupHook.cs). The output is a single
+    dependency-free DLL committed under Bin/MainThreadHook; nothing else ships.
+
+    net8.0 is the floor: pwsh 7.4 runs on .NET 8 and every later pwsh runtime
+    (9, 10, ...) loads a net8.0 assembly unchanged.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>IntuneManagement.MainThreadHook</AssemblyName>
+    <RootNamespace>IntuneManagement.MainThreadHook</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <DebugType>none</DebugType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- A hook is loaded into a running app; it has no runtimeconfig or deps of its own. -->
+    <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+  <ItemGroup>
+    <!--
+      Compile-time reference only (no runtime/native assets are copied): at run
+      time the hook binds to the System.Management.Automation that pwsh already
+      loaded. Referencing the OLDEST supported engine matters - .NET resolves a
+      reference to a lower assembly version against the newer loaded one, never
+      the other way round - so 7.4.x here means the DLL works in 7.4, 7.5, 7.6,
+      7.7 and whatever comes next without a rebuild.
+    -->
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.15" ExcludeAssets="runtime;native;contentFiles;build;buildTransitive" />
+  </ItemGroup>
+</Project>

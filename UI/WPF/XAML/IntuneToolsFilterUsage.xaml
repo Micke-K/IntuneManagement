@@ -1,0 +1,96 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Grid.IsSharedSizeScope="True" Margin="5,5,5,5">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,5,2">
+            <Label Content="Action" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Load all assignment filters and resolve where they're referenced" />
+        </StackPanel>
+        <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
+                   Foreground="{DynamicResource TextColor}" Opacity="0.7"
+                   Text="Click Get Filter Usage to enumerate every assignment filter and resolve the policies / apps / scripts that reference it." />
+        <Button Grid.Row="0" Grid.Column="3" Name="btnGetIntuneFilterUsage" Padding="5,2,5,2"
+                Content="Get Filter Usage"
+                ToolTip="Read every assignment filter and resolve its payloads (policies, groups) via batched Graph calls" />
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,5,0">
+            <Label Content="Filter" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Filter rows by filter name, policy name, type, mode, or group" />
+        </StackPanel>
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,2,0,2"
+                 Name="txtIntuneFilterUsageFilter" ToolTip="Filter rows by any visible column" />
+    </Grid>
+
+    <DataGrid Name="dgIntuneFilterUsage" Margin="0,5,0,0" Grid.Row="1"
+              AutoGenerateColumns="False"
+              SelectionMode="Single"
+              SelectionUnit="FullRow"
+              CanUserAddRows="False">
+        <DataGrid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="TextWrapping" Value="NoWrap" />
+            </Style>
+        </DataGrid.Resources>
+        <DataGrid.RowStyle>
+            <Style TargetType="DataGridRow">
+                <!-- Selection highlight brushes come from the theme dictionary
+                     (Themes/Light.xaml, Themes/Dark.xaml). They were redefined here,
+                     hardcoded to the dark palette, which made a selected row unreadable
+                     in the Light theme. -->
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}" />
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </DataGrid.RowStyle>
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Filter Name" Binding="{Binding FilterName}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Platform"    Binding="{Binding Platform}"   IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Filter Type" Binding="{Binding FilterType}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Policy Name" Binding="{Binding PolicyName}" IsReadOnly="True" Width="1*" />
+            <DataGridTextColumn Header="Type"        Binding="{Binding PayloadType}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Mode"        Binding="{Binding Mode}"        IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Group"       Binding="{Binding GroupName}"   IsReadOnly="True" Width="1*" />
+        </DataGrid.Columns>
+    </DataGrid>
+
+    <Grid Grid.Row="2" Margin="0,5,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Name="txtIntuneFilterUsageCount" VerticalAlignment="Center" Foreground="{DynamicResource TextColor}" />
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Name="btnIntuneFilterUsageCopy" Content="Copy" MinWidth="100" Margin="0,0,5,0"
+                    ToolTip="Copy the visible rows to the clipboard as CSV" />
+            <Button Name="btnIntuneFilterUsageSave" Content="Save" MinWidth="100"
+                    ToolTip="Save the visible rows to a CSV file" />
+        </StackPanel>
+    </Grid>
+</Grid>

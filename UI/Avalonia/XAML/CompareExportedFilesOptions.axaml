@@ -1,0 +1,44 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Avalonia port of UI/WPF/XAML/CompareExportedFilesOptions.xaml. Used by
+        CompareExportedFoldersProvider ("exportedFolders"). SharedSizeGroup
+        dropped; InfoIcon Rectangles are rendered as the info-icon glyph
+        (Themes/Styles.axaml), with the description on the wrapping StackPanel
+        so hovering the label shows it too.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
+
+    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify name filter for the objects to compare">
+        <Label Content="Name filter"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Name="txtCompareNameFilter"
+             Margin="0,5,0,0"/>
+
+    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="The root folder where exported files are stored. This sould be the Company Name folder if it was included in the export.">
+        <Label Content="Source root"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <TextBox Grid.Row="1" Grid.Column="1" Name="txtExportPathSource" Margin="0,5,5,0"/>
+    <Button  Grid.Row="1" Grid.Column="2" Name="browseExportPathSource" Content="..." Margin="0,5,0,0"
+             Padding="5,2,5,2" Width="50" ToolTip.Tip="Browse for folder"/>
+
+    <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="The folder with exported object that should be compared with the source">
+        <Label Content="Compare root"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <TextBox Grid.Row="2" Grid.Column="1" Name="txtExportPathCompare" Margin="0,5,5,0"/>
+    <Button  Grid.Row="2" Grid.Column="2" Name="browseExportPathCompare" Content="..." Margin="0,5,0,0"
+             Padding="5,2,5,2" Width="50" ToolTip.Tip="Browse for folder"/>
+</Grid>

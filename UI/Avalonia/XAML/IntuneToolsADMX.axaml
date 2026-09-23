@@ -1,0 +1,139 @@
+<TabControl xmlns="https://github.com/avaloniaui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            x:Name="tcADMXPolicyConfig" Margin="5,5,0,0">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/IntuneToolsADMX.xaml. Translation notes:
+        - xmlns swapped to https://github.com/avaloniaui.
+        - InfoIcon rectangles dropped — labels are unambiguous; tooltip on the
+          adjacent control covers the same info.
+        - ToolTip="..." -> ToolTip.Tip="..." (Avalonia attached-property syntax).
+        - Visibility="Collapsed" -> IsVisible="False".
+        - Grid.IsSharedSizeScope / SharedSizeGroup dropped — no Avalonia
+          equivalent. Auto-width title column is enough; both labels are short.
+        - DataGrid.ContextMenu placed via the ContextMenu attached property
+          (Avalonia DataGrid has no nested ContextMenu attached element).
+        - DataGridTextColumn Width="10*" -> Width="*"; only one column flexes
+          in the Avalonia grid so star-weighting is moot here.
+    -->
+
+    <TabItem Header="Policy">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" MinWidth="100"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="1*" MinWidth="100"/>
+                </Grid.ColumnDefinitions>
+
+                <TreeView x:Name="tvADMXCategories"/>
+
+                <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox x:Name="txtADMXFilterSettings" Margin="0,0,0,5" IsVisible="False"/>
+
+                    <DataGrid Grid.Row="1" x:Name="dgADMXCategoryPolicies"
+                              SelectionMode="Single"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="True"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Setting" Binding="{Binding Name}"              Width="*"   IsVisible="True"/>
+                            <DataGridTextColumn Header="State"   Binding="{Binding SettingStatusText}" Width="Auto" IsVisible="True"/>
+                            <DataGridTextColumn Header="Path"    Binding="{Binding Category}"          Width="Auto" IsVisible="False"/>
+                        </DataGrid.Columns>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu x:Name="mnuADMXSettingsContextMenu">
+                                <MenuItem Header="Edit" x:Name="mnuADMXSettingEdit"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                    </DataGrid>
+                </Grid>
+            </Grid>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+                <Button x:Name="btnADMXLoadADMX" Content="Load ADMX" MinWidth="100" Margin="0,0,5,0"
+                        ToolTip.Tip="Load ADMX file"/>
+                <Button x:Name="btnADMXLoadADML" Content="Load ADML" MinWidth="100" IsEnabled="False"
+                        ToolTip.Tip="Load ADML file if not found automatically"/>
+            </StackPanel>
+        </Grid>
+    </TabItem>
+
+    <TabItem Header="Import">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Content="Custom Profile Name" Margin="0,5,5,0" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtADMXProfileName" Margin="0,5,5,5"
+                     ToolTip.Tip="Specify the name of the custom profile"/>
+
+            <Label Grid.Row="1" Content="Custom Profile Description" Margin="0,5,5,0" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtADMXProfileDescription" Margin="0,5,5,5"
+                     ToolTip.Tip="Description for the custom profile"/>
+
+            <Label Grid.Row="2" Content="ADMX Policy File Name" Margin="0,5,5,0" VerticalAlignment="Center"/>
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" x:Name="txtADMXPolicyFileName" Margin="0,5,5,5"
+                         ToolTip.Tip="A unique name/id for the policy. The ADMX file will be stored in: %ProgramData%\Microsoft\PolicyManager\ADMXIngestion\Guid\AppName\Policy"/>
+                <Button Grid.Column="1" x:Name="btnADMXPolicyNameRandom" Content="Add Random" MinWidth="100"
+                        Margin="0,5,5,5"
+                        ToolTip.Tip="Only required if multiple policies use different versions of the ADMX file. Also consider changing the AppName"/>
+            </Grid>
+
+            <Label Grid.Row="3" Content="ADMX App Id" Margin="0,5,5,0" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtADMXPolicyAppName" Margin="0,5,5,5"
+                     ToolTip.Tip="App ID for the ADMX. Add v2 or vVersion if multiple policies use different versions of the ADMX file"/>
+
+            <Label Grid.Row="4" Content="Ingest ADMX file" Margin="0,5,5,0" VerticalAlignment="Center"/>
+            <CheckBox Grid.Row="4" Grid.Column="1" x:Name="chkADMXPolicyIngest" IsChecked="True"
+                      Margin="0,5,5,5"
+                      ToolTip.Tip="Ingest the ADMX file into the custom profile"/>
+
+            <Label Grid.Row="5" Content="OMA-URI Name for the ADMX ingestion" Margin="0,5,5,0" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="5" Grid.Column="1" x:Name="txtADMXPolicyIngestName" Margin="0,5,5,5"
+                     ToolTip.Tip="Name of the OMA-URI policy for the ADMX ingestion in the Custom Profile"/>
+
+            <StackPanel Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right"
+                        Margin="0,5,0,0">
+                <Button x:Name="btnADMXImport" Content="Import" MinWidth="100"
+                        ToolTip.Tip="Create ADMX profile in Intune"/>
+            </StackPanel>
+        </Grid>
+    </TabItem>
+</TabControl>

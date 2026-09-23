@@ -1,0 +1,106 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="10" MinWidth="380">
+    <!--
+        Avalonia port of UI/WPF/XAML/CopyDialog.xaml. Hosted via Show-ModalForm
+        rather than as a standalone Window — the OK/Cancel buttons live in
+        this Grid and call back into Copy-IntuneManagerPolicy.
+
+        WPF -> Avalonia translations applied:
+          - Window -> Grid (modal-form host owns the chrome).
+          - Window.Resources merging dropped; themes load globally.
+          - InfoIcon Rectangles are rendered as the info-icon glyph (Themes/Styles.axaml);
+            the description sits on the wrapping StackPanel so hovering the label shows it too.
+          - ComboBox SelectedValuePath dropped; the PS code reads
+            SelectedItem.Id directly via the CopyDialogTenantItem class.
+          - DataTemplate is assigned in code (see Copy-IntuneManagerPolicy)
+            because XAML can't reference TenantNameEx without a class import.
+          - IsDefault / IsCancel on Button replaced with explicit KeyDown
+            handlers in Copy-IntuneManagerPolicy.
+          - Scope-tag dual-list panels (Slice 3b2): hidden by default; the
+            PS code flips IsVisible=True when the source policy type
+            defines ScopeTagProperty. ListBoxes get a Name-binding
+            ItemTemplate assigned in code (Avalonia binder needs CLR types
+            — see [[avalonia-binding-needs-clr-types]] — so PS projects
+            tags into [CopyDialogScopeTagItem]).
+          - WPF's MouseDoubleClick on ListBox -> Avalonia DoubleTapped.
+    -->
+
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Destination tenant">
+        <Label Content="Tenant"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <ComboBox Name="cbDestinationTenant" DisplayMemberBinding="{Binding TenantNameEx}" Margin="0,5,5,0" Grid.Row="0" Grid.Column="1"
+              MinWidth="250" HorizontalAlignment="Stretch"/>
+
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Name of the object">
+        <Label Content="New Name"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <TextBox Name="txtObjectName" Margin="0,5,5,0" Grid.Row="1" Grid.Column="1" MinWidth="250"/>
+
+    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Top" ToolTip.Tip="Description for the object">
+        <Label Content="Description"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <TextBox Name="txtObjectDescription" Margin="0,5,5,0" Grid.Row="2" Grid.Column="1"
+             AcceptsReturn="True" MinWidth="250" MinHeight="100"
+             TextWrapping="Wrap"/>
+
+    <!-- Scope-tag dual-list (Slice 3b2 populates these). Hidden by default. -->
+    <StackPanel Name="pnlCopyScopeTagsLabel" Orientation="Horizontal"
+                Margin="0,10,5,0" Grid.Row="3" Grid.ColumnSpan="2"
+                HorizontalAlignment="Left" IsVisible="False">
+        <Label Content="Scope Tags"
+               ToolTip.Tip="Pick which scope tags the new object will have. Re-loads from the destination tenant when you change Tenant above; assignments are matched by name across tenants."/>
+    </StackPanel>
+
+    <Grid Name="grdCopyScopeTags" Grid.Row="4" Grid.ColumnSpan="2"
+          Height="180" Margin="0,5,5,0" IsVisible="False">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Available" Grid.Row="0" Grid.Column="0" Padding="0,0,0,2" FontSize="11"/>
+        <Label Content="Assigned"  Grid.Row="0" Grid.Column="2" Padding="0,0,0,2" FontSize="11"/>
+
+        <ListBox Name="lstCopyAvailableScopeTags" DisplayMemberBinding="{Binding Name}" Grid.Row="1" Grid.Column="0"
+                 SelectionMode="Multiple" Margin="0,0,5,0"/>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical"
+                    VerticalAlignment="Center" Margin="0,0,5,0">
+            <Button Name="btnCopyScopeTagAssign"   Content="&gt;" Width="40" Margin="0,0,0,5"
+                    ToolTip.Tip="Assign selected tag(s)"/>
+            <Button Name="btnCopyScopeTagUnassign" Content="&lt;" Width="40"
+                    ToolTip.Tip="Unassign selected tag(s)"/>
+        </StackPanel>
+
+        <ListBox Name="lstCopyAssignedScopeTags" DisplayMemberBinding="{Binding Name}" Grid.Row="1" Grid.Column="2"
+                 SelectionMode="Multiple" Margin="5,0,0,0"/>
+    </Grid>
+
+    <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal"
+                HorizontalAlignment="Right" Margin="0,15,0,0">
+        <Button Name="btnOk"     Content="_OK"     MinWidth="80" Margin="0,0,10,0"/>
+        <Button Name="btnCancel" Content="_Cancel" MinWidth="80"/>
+    </StackPanel>
+</Grid>

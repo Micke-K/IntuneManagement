@@ -1,0 +1,72 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+        <RowDefinition Height="5" />
+        <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="0">
+            <Label Content="Custom Profile Name" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the name of the custom profile" />
+        </StackPanel>
+        <TextBox Text="{Binding ProfileName}" Name="txtADMXRegProfileName" Margin="0,5,5,5" Grid.Row="0" Grid.Column="1"/>
+
+        <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="1">
+            <Label Content="Custom Profile Description" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Description for the custom profile" />
+        </StackPanel>
+        <TextBox Text="{Binding ProfileDescription}" Name="txtADMXRegProfileDescription" Margin="0,5,5,5" Grid.Row="1" Grid.Column="1" />
+
+       <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,0,5,0">
+            <Label Content="Policy type" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Select policy type, policy or preferences" />
+        </StackPanel>
+        <ComboBox Name="cbADMXRegPolicyType" Margin="0,5,0,0" MinWidth="250" Grid.Row='2' Grid.Column="1" HorizontalAlignment="Left" 
+                                DisplayMemberPath="Name" SelectedValuePath="Value" SelectedValue="{Binding PolicyType}"  />
+
+       <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,0,5,0">
+            <Label Content="Added reg values" />
+            <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Reg values added to the policy" VerticalAlignment="Top" Margin="0,7,0,0" />
+        </StackPanel>
+        <DataGrid Name="dgADMXRegAddedPolicies" Margin="0,5,0,0" MinWidth="250" Grid.Row='3' Grid.Column="1"
+                    AutoGenerateColumns="False"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow"
+                        CanUserAddRows="False"
+                        ItemsSource="{Binding ADMXPolicies}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Policy name" Binding="{Binding PolicyName}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="Hive" Binding="{Binding Hive}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="Path" Binding="{Binding Key}" IsReadOnly="True" Width="Auto" />                
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu Name="mnuADMXRegPoliciesContextMenu">
+                    <MenuItem Header="Edit" Name="mnuADMXRegPolicyEdit">
+                    </MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>            
+        </DataGrid>
+    </Grid>
+
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0" >
+        <Button Name="btnADMXAddRegValue" Content="Add" MinWidth="100" Margin="0,0,5,0" ToolTip="Add new reg value to the profile" />
+        <Button Name="btnADMXRegClear" Content="Clear" MinWidth="100" Margin="0,0,5,0" ToolTip="Clear current values" />
+        <Button Name="btnADMXRegImport" Content="Import" MinWidth="100" ToolTip="Create ADMX profile in Intune"/>
+    </StackPanel> 
+ 
+</Grid>

@@ -1,0 +1,155 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5">
+    <!--
+        Avalonia port of UI/WPF/XAML/ImportForm.xaml. Hosted via Show-ModalForm
+        rather than as a standalone Window — Get files / Import / Cancel
+        live in this Grid and call back into Show-IntuneManagerImportForm.
+
+        WPF -> Avalonia translations applied:
+          - Window -> Grid (modal-form host owns the chrome).
+          - Grid.IsSharedSizeScope / SharedSizeGroup dropped — TitleColumn
+            uses ColumnDefinition Width="Auto".
+          - InfoIcon Rectangles are rendered as the info-icon glyph (Themes/Styles.axaml);
+            the description sits on the wrapping StackPanel so hovering the label shows it too.
+          - {Binding ImportFolder, Mode=TwoWay} et al replaced by
+            imperative property assignment in Show-IntuneManagerImportForm
+            — IntuneManagerImportSettings has no INotifyPropertyChanged,
+            so two-way bindings would render but never round-trip. Same
+            convention as ExportForm.axaml.
+          - cbImportType DisplayMemberPath / SelectedValuePath dropped;
+            the PS code projects $script:IntuneManagerImportOptions
+            (NameValueObject) into [SettingsListItem] CLR rows
+            (avalonia-binding-needs-clr-types) and reads SelectedItem.Value.
+          - DataGrid Columns are declared inline against
+            [IntuneImportRowItem] properties — the WPF impl built them in
+            code (Get-GridCheckboxColumn + DataGridTextColumns). Header
+            checkbox toggle-all is wired imperatively against Selected.
+          - DataGrid Background DynamicResource binding dropped — Avalonia
+            theme keys differ; default works.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <Grid Name="grdImportProperties">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Folder where exported files are located. Either a folder for a single policy type or the parent folder for all exported policies. Parent folder is recommended — it then includes all policy types for the current group.">
+            <Label Content="Import folder"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Name="txtImportFolder" Grid.Column="0"/>
+            <Button Name="browseImportFolder" Grid.Column="2" Content="..."
+                    Padding="5,0,5,0" Width="50"
+                    ToolTip.Tip="Browse for folder"/>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Information about the exported environment (Groups, ScopeTags etc.). Only used when importing objects from a different tenant.">
+            <Label Content="Migration Table"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <TextBlock Name="lblMigrationTableInfo" Grid.Row="1" Grid.Column="1"
+                   Margin="0,9,5,0" VerticalAlignment="Center"/>
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Imports ScopeTags. The ScopeTags must exist in the target environment before they can be assigned during import.">
+            <Label Content="Assign Scope (Tags)"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <CheckBox Name="chkImportScopes" Grid.Row="2" Grid.Column="1"
+                  Margin="0,5,0,0" VerticalAlignment="Center"/>
+
+        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Import object assignments. Note: This will create groups that don't exist in the target environment.">
+            <Label Content="Import Assignments"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <CheckBox Name="chkImportAssignments" Grid.Row="3" Grid.Column="1"
+                  Margin="0,5,0,0" VerticalAlignment="Center"/>
+
+        <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Replaces IDs of dependency objects (e.g. App Config references Applications). Increases import time but ensures objects are imported correctly. Referenced objects must exist.">
+            <Label Content="Replace Dependency IDs"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <CheckBox Name="chkReplaceDependencyIDs" Grid.Row="4" Grid.Column="1"
+                  Margin="0,5,0,0" VerticalAlignment="Center"/>
+
+        <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify how files are imported. Always import (default) — always create. Skip if object exists — skip if there is an existing object with the same name and type. Replace — delete the existing match and copy its assignments to the imported object. Replace with assignments — delete the existing match, assignments come from the import file. Update — replace settings on the existing match.">
+            <Label Content="Import Type"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <ComboBox Name="cbImportType" DisplayMemberBinding="{Binding Name}" Grid.Row="5" Grid.Column="1" Margin="0,5,5,0"
+                  MinWidth="250" HorizontalAlignment="Left"/>
+    </Grid>
+
+    <Grid Grid.Row="1" Margin="0,5,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Files that can be imported. These must match the object type being imported.">
+            <Label Content="Import files"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+
+        <DataGrid CanUserResizeColumns="True" Grid.Row="1" Grid.Column="1" Name="dgObjectsToImport"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="True"
+                  CanUserSortColumns="True"
+                  Margin="0,0,0,5">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="Auto" CanUserSort="False">
+                    <DataGridTemplateColumn.Header>
+                        <CheckBox IsChecked="True"
+                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                  ToolTip.Tip="Select/deselect all listed items"/>
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}"
+                                      HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn     Header="Object Name" Binding="{Binding ObjectName}"          IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn     Header="Policy Type" Binding="{Binding PolicyType}"          IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn     Header="Policy Base" Binding="{Binding PolicyBase}"          IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn     Header="Platform"    Binding="{Binding Platform}"            IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn     Header="File Name"   Binding="{Binding FileName}"            IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn     Header="Action"      Binding="{Binding ImportAction}"        IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn     Header="Match"       Binding="{Binding ImportMatch}"         IsReadOnly="True" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+
+    <StackPanel Name="spImportSubMenu" Grid.Row="2" Orientation="Horizontal"
+                HorizontalAlignment="Right" Margin="0,5,0,5">
+        <Button Name="btnGetFiles"       Content="Get files" Width="100" Margin="5,0,0,0"/>
+        <Button Name="btnImportSelected" Content="Import"    Width="100" Margin="5,0,0,0"/>
+        <Button Name="btnCancel"         Content="Cancel"    Width="100" Margin="5,0,0,0"/>
+    </StackPanel>
+</Grid>

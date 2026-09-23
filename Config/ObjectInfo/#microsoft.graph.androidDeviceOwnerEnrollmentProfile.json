@@ -1,0 +1,170 @@
+[
+    {
+        "dataType":  8,
+        "booleanActions":  0,
+        "category":  "SettingDetails.settings"
+    },
+    {
+        "nameResource":  "Enrollment mode",
+        "descriptionResource":  "The type of Android Enterprise devices this profile enrolls.",
+        "entityKey":  "enrollmentMode",
+        "dataType":  16,
+        "booleanActions":  0,
+        "category":  "SettingDetails.settings",
+        "options":  [
+            {
+                "nameResource":  "Corporate-owned dedicated devices",
+                "value":  "corporateOwnedDedicatedDevice"
+            },
+            {
+                "nameResource":  "Corporate-owned, fully managed user devices",
+                "value":  "corporateOwnedFullyManaged"
+            },
+            {
+                "nameResource":  "Corporate-owned devices with work profile",
+                "value":  "corporateOwnedWorkProfile"
+            },
+            {
+                "nameResource":  "Corporate-owned, userless devices (AOSP)",
+                "value":  "corporateOwnedAOSPUserlessDevice"
+            },
+            {
+                "nameResource":  "Corporate-owned, user-associated devices (AOSP)",
+                "value":  "corporateOwnedAOSPUserAssociatedDevice"
+            },
+            {
+                "nameResource":  "Corporate-owned dedicated devices",
+                "value":  0
+            },
+            {
+                "nameResource":  "Corporate-owned, fully managed user devices",
+                "value":  1
+            },
+            {
+                "nameResource":  "Corporate-owned devices with work profile",
+                "value":  2
+            },
+            {
+                "nameResource":  "Corporate-owned, userless devices (AOSP)",
+                "value":  3
+            },
+            {
+                "nameResource":  "Corporate-owned, user-associated devices (AOSP)",
+                "value":  4
+            },
+            {
+                "nameResourceKey":  "PolicyType.workProfile",
+                "value":  5
+            }
+        ]
+    },
+    {
+        "nameResource":  "Token type",
+        "descriptionResource":  "The type of token used to enroll devices with this profile.",
+        "entityKey":  "enrollmentTokenType",
+        "dataType":  16,
+        "booleanActions":  0,
+        "category":  "SettingDetails.settings",
+        "options":  [
+            {
+                "nameResource":  "Default",
+                "value":  "default"
+            },
+            {
+                "nameResource":  "Corporate-owned dedicated device with Microsoft Entra shared mode",
+                "value":  "corporateOwnedDedicatedDeviceWithAzureADSharedMode"
+            },
+            {
+                "nameResource":  "Device staging",
+                "value":  "deviceStaging"
+            }
+        ]
+    },
+    {
+        "nameResource":  "Token expiration date",
+        "descriptionResourceKey":  "",
+        "entityKey":  "tokenExpirationDateTime",
+        "dataType":  7,
+        "booleanActions":  0,
+        "category":  "SettingDetails.settings",
+        "Condition":  {
+            "Expressions":  [
+                {
+                    "property":  "tokenExpirationDateTime",
+                    "operator":  "gt",
+                    "value":  "0002-01-01"
+                }
+            ]
+        }
+    },
+    {
+        "nameResource":  "Enrolled devices",
+        "descriptionResourceKey":  "",
+        "entityKey":  "enrolledDeviceCount",
+        "dataType":  14,
+        "booleanActions":  0,
+        "category":  "SettingDetails.settings"
+    },
+    {
+        "nameResource":  "For Microsoft Teams devices",
+        "descriptionResourceKey":  "",
+        "entityKey":  "isTeamsDeviceProfile",
+        "dataType":  0,
+        "booleanActions":  109,
+        "category":  "SettingDetails.settings"
+    },
+    {
+        "nameResource":  "Device name template",
+        "descriptionResource":  "Create a unique name for your devices. Names must be 63 characters or less, and can contain letters (a-z, A-Z), numbers (0-9), and hyphens.",
+        "entityKey":  "deviceNameTemplate",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category":  "SettingDetails.settings"
+    },
+    {
+        "nameResourceKey":  "Category.wiFi",
+        "descriptionResourceKey":  "",
+        "entityKey":  "configureWifi",
+        "dataType":  0,
+        "booleanActions":  109,
+        "category":  "Category.wiFi"
+    },
+    {
+        "nameResourceKey":  "SettingDetails.kioskWifiSsidColumnName",
+        "descriptionResourceKey":  "",
+        "entityKey":  "wifiSsid",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category":  "Category.wiFi"
+    },
+    {
+        "nameResourceKey":  "SettingDetails.wiFiTypeName",
+        "descriptionResourceKey":  "",
+        "entityKey":  "wifiSecurityType",
+        "dataType":  16,
+        "booleanActions":  0,
+        "category":  "Category.wiFi",
+        "options":  [
+            {
+                "nameResourceKey":  "SettingDetails.openOption",
+                "value":  "none"
+            },
+            {
+                "displayText":  "WPA-Pre-shared key",
+                "value":  "wpa"
+            },
+            {
+                "nameResourceKey":  "SettingDetails.wEPPSKOption",
+                "value":  "wep"
+            }
+        ]
+    },
+    {
+        "nameResourceKey":  "SettingDetails.wiFiPolicyConnectWhenNotBroadcastingName",
+        "descriptionResourceKey":  "",
+        "entityKey":  "wifiHidden",
+        "dataType":  0,
+        "booleanActions":  109,
+        "category":  "Category.wiFi"
+    }
+]

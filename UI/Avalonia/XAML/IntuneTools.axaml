@@ -1,0 +1,28 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/IntuneTools.xaml. Same structure: outer Grid
+        with two stacked single-cell child Grids (grdToolsMain holds the active
+        tool body; grdToolsInfo is reserved for popover-style info content,
+        currently unused). Visibility="Collapsed" -> IsVisible="False".
+    -->
+
+    <Grid x:Name="grdToolsMain">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+    </Grid>
+
+    <Grid x:Name="grdToolsInfo" IsVisible="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+    </Grid>
+</Grid>

@@ -1,0 +1,90 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Avalonia port of UI/WPF/XAML/IntuneToolsADMXRegValues.xaml.
+        Translation notes:
+        - Grid.IsSharedSizeScope / SharedSizeGroup="TitleColumn" dropped — no
+          Avalonia equivalent. Auto-width title column matches well enough.
+        - InfoIcon Rectangles are rendered as the info-icon glyph (Themes/Styles.axaml);
+          the description sits on the wrapping StackPanel so hovering the label shows it too.
+        - cbADMXRegPolicyType ItemTemplate is assigned in code (Avalonia has
+          no DisplayMemberPath / SelectedValuePath); the underlying ItemsSource
+          uses [SettingsListItem]. PolicyType (string) is sync'd on the
+          DataContext via SelectionChanged.
+        - DataGrid binding to ADMXPolicies works because the underlying C#
+          class exposes ObservableCollection<ADMXRegPolicy>.
+        - DataGrid.ContextMenu placed via ContextMenu attached property.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="5"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Custom Profile Name" Margin="0,5,5,0" VerticalAlignment="Center"
+               ToolTip.Tip="Specify the name of the custom profile"/>
+        <TextBox Grid.Column="1" x:Name="txtADMXRegProfileName" Text="{Binding ProfileName}" Margin="0,5,5,5"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Description for the custom profile">
+            <Label Content="Custom Profile Description"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtADMXRegProfileDescription"
+                 Text="{Binding ProfileDescription}" Margin="0,5,5,5"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Select policy type, policy or preferences">
+            <Label Content="Policy type"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <ComboBox Grid.Row="2" Grid.Column="1" x:Name="cbADMXRegPolicyType" DisplayMemberBinding="{Binding Name}"
+                  Margin="0,5,0,0" MinWidth="250" HorizontalAlignment="Left"/>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Top" ToolTip.Tip="Reg values added to the policy">
+            <Label Content="Added reg values"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <DataGrid CanUserResizeColumns="True" Grid.Row="3" Grid.Column="1" x:Name="dgADMXRegAddedPolicies"
+                  Margin="0,5,0,0" MinWidth="250"
+                  AutoGenerateColumns="False"
+                  SelectionMode="Single"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding ADMXPolicies}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Policy name" Binding="{Binding PolicyName}" Width="Auto"/>
+                <DataGridTextColumn Header="Hive"        Binding="{Binding Hive}"       Width="Auto"/>
+                <DataGridTextColumn Header="Path"        Binding="{Binding Key}"        Width="Auto"/>
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu x:Name="mnuADMXRegPoliciesContextMenu">
+                    <MenuItem Header="Edit" x:Name="mnuADMXRegPolicyEdit"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+    </Grid>
+
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+        <Button x:Name="btnADMXAddRegValue" Content="Add"    MinWidth="100" Margin="0,0,5,0"
+                ToolTip.Tip="Add new reg value to the profile"/>
+        <Button x:Name="btnADMXRegClear"    Content="Clear"  MinWidth="100" Margin="0,0,5,0"
+                ToolTip.Tip="Clear current values"/>
+        <Button x:Name="btnADMXRegImport"   Content="Import" MinWidth="100"
+                ToolTip.Tip="Create ADMX profile in Intune"/>
+    </StackPanel>
+</Grid>

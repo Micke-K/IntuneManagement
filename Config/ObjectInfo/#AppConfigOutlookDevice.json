@@ -1,0 +1,420 @@
+[
+    {
+        "nameResourceKey": "outlookConfigTitle",
+        "descriptionResourceKey": "",
+        "dataType": 8,
+        "booleanActions": 0
+    },
+    {
+        "nameResourceKey": "OutlookAppConfigSettings.ConfigureEmail.title",
+        "descriptionResourceKey": "",
+        "entityKey": "configureEmail",
+        "dataType": 0,
+        "booleanActions": 109,
+        "category": "SettingDetails.configurationSettingsTitle"
+    },
+    {
+        "nameResourceKey": "Inputs.authenticationType",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.EmailProfile.AccountType",
+        "dataType": 16,
+        "booleanActions": 0,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "options": [
+            {
+                "nameResourceKey": "Inputs.basicAuth",
+                "value": "BasicAuth"
+            },
+            {
+                "nameResourceKey": "Inputs.modernAuth",
+                "value": "ModernAuth"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "userNameTypeName",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.EmailProfile.EmailUPN",
+        "dataType": 16,
+        "booleanActions": 0,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "options": [
+            {
+                "nameResourceKey": "userPrincipalNameOption",
+                "value": "{{userprincipalname}}"
+            },
+            {
+                "nameResourceKey": "Inputs.sAMAccountName",
+                "value": "{{onPremisesSamAccountName}}"
+            },
+            {
+                "nameResourceKey": "primarySMTPAddressOption",
+                "value": "{{mail}}"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "Inputs.accountDomain",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.EmailProfile.AccountDomain",
+        "dataType": 20,
+        "booleanActions": 0,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "com.microsoft.outlook.EmailProfile.EmailUPN",
+                    "value": "{{onPremisesSamAccountName}}"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey": "emailAddressTypeName",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.EmailProfile.EmailAddress",
+        "dataType": 16,
+        "booleanActions": 0,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "options": [
+            {
+                "nameResourceKey": "userPrincipalNameOption",
+                "value": "{{userprincipalname}}"
+            },
+            {
+                "nameResourceKey": "primarySMTPAddressOption",
+                "value": "{{mail}}"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "Inputs.emailServer",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.EmailProfile.ServerHostName",
+        "dataType": 20,
+        "booleanActions": 0,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "com.microsoft.outlook.EmailProfile.AccountType",
+                    "value": "BasicAuth"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey": "Inputs.emailAccount",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.EmailProfile.EmailAccountName",
+        "dataType": 20,
+        "booleanActions": 0,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "com.microsoft.outlook.EmailProfile.AccountType",
+                    "value": "BasicAuth"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey": "OutlookAppConfigSettings.AllowWorkAccounts.title",
+        "descriptionResourceKey": "",
+        "entityKey": "IntuneMAMAllowedAccountsOnly",
+        "dataType": 16,
+        "booleanActions": 0,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "com.microsoft.outlook.EmailProfile.AccountType",
+                    "value": "ModernAuth"
+                }
+            ]
+        },
+        "options": [
+            {
+                "nameResourceKey": "enabledOption",
+                "value": "Enabled"
+            },
+            {
+                "nameResourceKey": "disabledOption",
+                "value": "Disabled"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "applicationConfiguration",
+        "descriptionResourceKey": "",
+        "dataType": 8,
+        "booleanActions": 0
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.allowFocusedInboxTitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.FocusedInbox",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle"
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.allowBiometricsTitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Auth.Biometric",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "ChildSettings": [
+            {
+                "nameResourceKey": "OutlookAppConfig.allowUserChangeTitle",
+                "descriptionResourceKey": "",
+                "entityKey": "com.microsoft.outlook.Auth.Biometric.UserChangeAllowed",
+                "dataType": 0,
+                "booleanActions": 109,
+                "allowMissing": true,
+                "unconfiguredValue": true,
+                "alwaysAddValue": true,
+                "category": "SettingDetails.configurationSettingsTitle"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.allowSaveContactsTitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Contacts.LocalSyncEnabled",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "ChildSettings": [
+            {
+                "nameResourceKey": "OutlookAppConfig.allowUserChangeTitle",
+                "descriptionResourceKey": "",
+                "entityKey": "com.microsoft.outlook.Contacts.LocalSyncEnabled.UserChangeAllowed",
+                "dataType": 0,
+                "booleanActions": 109,
+                "allowMissing": true,
+                "unconfiguredValue": true,
+                "alwaysAddValue": true,
+                "category": "SettingDetails.configurationSettingsTitle"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.discoverFeedTitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.OfficeFeedEnabled",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle"
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.allowSmartReplyTitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.SuggestedRepliesEnabled",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "ChildSettings": [
+            {
+                "nameResourceKey": "OutlookAppConfig.allowUserChangeTitle",
+                "descriptionResourceKey": "",
+                "entityKey": "com.microsoft.outlook.Mail.SuggestedRepliesEnabled.UserChangeAllowed",
+                "dataType": 0,
+                "booleanActions": 109,
+                "allowMissing": true,
+                "unconfiguredValue": true,
+                "alwaysAddValue": true,
+                "category": "SettingDetails.configurationSettingsTitle"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.allowExternalRecipientsMailTipTitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.ExternalRecipientsToolTipEnabled",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle"
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.allowDefaultAppSignatureTitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.DefaultSignatureEnabled",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle"
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.blockExternalImagesTitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.BlockExternalImagesEnabled",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "ChildSettings": [
+            {
+                "nameResourceKey": "OutlookAppConfig.allowUserChangeTitle",
+                "descriptionResourceKey": "",
+                "entityKey": "com.microsoft.outlook.Mail.BlockExternalImagesEnabled.UserChangeAllowed",
+                "dataType": 0,
+                "booleanActions": 109,
+                "allowMissing": true,
+                "unconfiguredValue": true,
+                "alwaysAddValue": true,
+                "category": "SettingDetails.configurationSettingsTitle"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.OrganizeMailByThread.title",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.OrganizeByThreadEnabled",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle"
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.playMyEmailsTitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.PlayMyEmailsEnabled",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle"
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.themesEnabledTitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Settings.ThemesEnabled",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle"
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.textPredictionsTitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.TextPredictionsEnabled",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "SettingDetails.configurationSettingsTitle",
+        "ChildSettings": [
+            {
+                "nameResourceKey": "OutlookAppConfig.allowUserChangeTitle",
+                "descriptionResourceKey": "",
+                "entityKey": "com.microsoft.outlook.Mail.TextPredictionsEnabled.UserChangeAllowed",
+                "dataType": 0,
+                "booleanActions": 109,
+                "allowMissing": true,
+                "unconfiguredValue": true,
+                "alwaysAddValue": true,
+                "category": "SettingDetails.configurationSettingsTitle"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "Inputs.outlookSMimeSettings",
+        "descriptionResourceKey": "",
+        "dataType": 8,
+        "booleanActions": 0
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.enableSMIMETitle",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.SMIMEEnabled",
+        "dataType": 0,
+        "booleanActions": 109,
+        "category": "SettingDetails.requireSMIME",
+        "ChildSettings": [
+            {
+                "nameResourceKey": "OutlookAppConfig.allowUserChangeTitle",
+                "descriptionResourceKey": "",
+                "entityKey": "com.microsoft.outlook.Mail.SMIMEEnabled.UserChangeAllowed",
+                "dataType": 0,
+                "booleanActions": 109,
+                "allowMissing": true,
+                "unconfiguredValue": true,
+                "alwaysAddValue": true,
+                "category": "SettingDetails.requireSMIME"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.encryptAllEmails",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.SMIMEEnabled.EncryptAllMail",
+        "dataType": 0,
+        "booleanActions": 109,
+        "category": "SettingDetails.requireSMIME",
+        "ChildSettings": [
+            {
+                "nameResourceKey": "OutlookAppConfig.allowUserChangeTitle",
+                "descriptionResourceKey": "",
+                "entityKey": "com.microsoft.outlook.Mail.SMIMEEnabled.EncryptAllMail.UserChangeAllowed",
+                "dataType": 0,
+                "booleanActions": 109,
+                "allowMissing": true,
+                "unconfiguredValue": true,
+                "alwaysAddValue": true,
+                "category": "SettingDetails.requireSMIME"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "OutlookAppConfig.signAllEmails",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.SMIMEEnabled.SignAllMail",
+        "dataType": 0,
+        "booleanActions": 109,
+        "category": "SettingDetails.requireSMIME",
+        "ChildSettings": [
+            {
+                "nameResourceKey": "OutlookAppConfig.allowUserChangeTitle",
+                "descriptionResourceKey": "",
+                "entityKey": "com.microsoft.outlook.Mail.SMIMEEnabled.SignAllMail.UserChangeAllowed",
+                "dataType": 0,
+                "booleanActions": 109,
+                "allowMissing": true,
+                "unconfiguredValue": true,
+                "alwaysAddValue": true,
+                "category": "SettingDetails.requireSMIME"
+            }
+        ]
+    },
+    {
+        "nameResourceKey": "Inputs.ldapUrl",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.SMIMEEnabled.LDAPHostName",
+        "dataType": 20,
+        "booleanActions": 0,
+        "category": "SettingDetails.requireSMIME"
+    },
+    {
+        "nameResourceKey": "Inputs.deploySMimeCertsFromIntune",
+        "descriptionResourceKey": "",
+        "entityKey": "com.microsoft.outlook.Mail.SMIMEEnabled.CertsFromIntune",
+        "dataType": 0,
+        "booleanActions": 109,
+        "category": "SettingDetails.requireSMIME"
+    },
+    {
+        "nameResourceKey": "OutlookAppConfigSettings.SyncCalendars.title",
+        "descriptionResourceKey": "OutlookAppConfigSettings.SyncCalendars.tooltip",
+        "entityKey": "com.microsoft.outlook.Calendar.NativeSyncEnabled",
+        "dataType": 0,
+        "booleanActions": 120,
+        "category": "TACSettings.outlookSettings",
+        "childSettings": [
+            {
+                "nameResourceKey": "OutlookAppConfigSettings.AllowUserToChangeSetting.title",
+                "descriptionResourceKey": "",
+                "entityKey": "com.microsoft.outlook.Calendar.NativeSyncEnabled.UserChangeAllowed",
+                "dataType": 0,
+                "booleanActions": 109,
+                "unconfiguredValue": true,
+                "allowMissing": true,
+                "category": "TACSettings.outlookSettings"
+            }
+        ]
+    }
+]

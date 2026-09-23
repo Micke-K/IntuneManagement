@@ -1,0 +1,183 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5" MinWidth="700" MinHeight="500">
+    <!--
+        Avalonia port of UI/WPF/XAML/BulkCompare.xaml. Hosted via Show-ModalForm
+        with -HideButtons; Compare / Close live inside this Grid and call
+        back into Show-GraphBulkCompareForm.
+
+        WPF -> Avalonia translations applied:
+          - Grid.IsSharedSizeScope / SharedSizeGroup="TitleColumn" dropped —
+            explicit Auto/* widths used in each child Grid.
+          - InfoIcon Rectangles are rendered as the info-icon glyph (Themes/Styles.axaml);
+            the description sits on the wrapping StackPanel so hovering the label shows it too.
+          - DisplayMemberPath / SelectedValuePath dropped on the ComboBoxes —
+            the ItemTemplate is set in code via LoadXaml and the SelectedItem
+            is mapped back to the original PSCustomObject through a hashtable
+            (same pattern as Slice 3d1's CompareForm).
+          - DataGrid columns inlined; chkSelectAll toolbar checkbox replaces
+            WPF's bound header checkbox (Avalonia DataGridCheckBoxColumn has
+            no bindable header — same trick as Slice 3e/4a/4b/4c/4d/4e).
+          - DynamicResource ControlBackgroundColor dropped — theme drives the
+            DataGrid background.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Provider picker -->
+    <Grid Grid.Row="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify the objects to compare e.g. compare exported files with existing objects or two existing objects based on name">
+            <Label Content="Compare object"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <ComboBox Grid.Row="0" Grid.Column="1" Name="cbCompareProvider" DisplayMemberBinding="{Binding Name}"
+                  Margin="0,5,0,0" MinWidth="250" HorizontalAlignment="Stretch"/>
+    </Grid>
+
+    <!-- Provider-specific options -->
+    <ContentControl Grid.Row="1" Name="ccContentProviderOptions" Margin="0,5,0,0"/>
+
+    <!-- Output config + objects-to-compare DataGrid -->
+    <Grid Grid.Row="2" Margin="0,5,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specifies how the export csv should be saved. One file per ObjectType or one file for all objects.">
+            <Label Content="Save as"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <ComboBox Grid.Row="0" Grid.Column="1" Name="cbCompareSave" DisplayMemberBinding="{Binding Name}"
+                  Margin="0,5,0,0" MinWidth="250" HorizontalAlignment="Left"/>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify the output file format for compare results">
+            <Label Content="Output format"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <ComboBox Grid.Row="1" Grid.Column="1" Name="cbCompareOutputFormat" DisplayMemberBinding="{Binding Name}"
+                  Margin="0,5,0,0" MinWidth="250" HorizontalAlignment="Left"/>
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify how objects should be compared">
+            <Label Content="Comparison Type"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <ComboBox Grid.Row="2" Grid.Column="1" Name="cbCompareType" DisplayMemberBinding="{Binding Name}"
+                  Margin="0,5,0,0" MinWidth="250" HorizontalAlignment="Left"/>
+
+        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify the character to use for separating properties in the CSV file">
+            <Label Content="CSV Delimiter"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <ComboBox Grid.Row="3" Grid.Column="1" Name="cbCompareCSVDelimiter"
+                  Margin="0,5,0,0" MinWidth="250" HorizontalAlignment="Left"/>
+
+        <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify the character to use for separating values for properties with more than one value. New line will cause a new line in the exported CSV">
+            <Label Content="Multi-Value Delimiter"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <ComboBox Grid.Row="4" Grid.Column="1" Name="cbCompareMultiValueDelimiter" DisplayMemberBinding="{Binding Name}"
+                  Margin="0,5,0,0" MinWidth="250" HorizontalAlignment="Left"/>
+
+        <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Skip mismatch coloring for displayName, description, id, createdDateTime, lastModifiedDateTime and version. These will almost always differ between two objects.">
+            <Label Content="Ignore core properties"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <CheckBox Grid.Row="5" Grid.Column="1" Name="chkIgnoreCoreProperties"
+                  Margin="0,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+        <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Skip comparing assignments.">
+            <Label Content="Skip Assignments"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <CheckBox Grid.Row="6" Grid.Column="1" Name="chkSkipCompareAssignments"
+                  Margin="0,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+        <StackPanel Grid.Row="7" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Skip policies that only exist on the compare side (e.g. in Intune but never exported).">
+            <Label Content="Skip Missing Source Policies"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <CheckBox Grid.Row="7" Grid.Column="1" Name="chkSkipMissingSourcePolicies"
+                  Margin="0,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+        <StackPanel Grid.Row="8" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Skip policies whose counterpart is missing (e.g. exported file with no matching object in Intune).">
+            <Label Content="Skip Missing Destination Policies"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <CheckBox Grid.Row="8" Grid.Column="1" Name="chkSkipMissingDestinationPolicies"
+                  Margin="0,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+        <Grid Grid.Row="9" Grid.ColumnSpan="2" Name="grdObjectsToCompareSection" Margin="0,5,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,3" ToolTip.Tip="Select the object types that should be compared">
+                <Label Content="Objects to compare"/>
+                <TextBlock Classes="info-icon"/>
+            </StackPanel>
+            <DataGrid CanUserResizeColumns="True" Grid.Row="1" Name="dgObjectsToCompare"
+                      AutoGenerateColumns="False"
+                      CanUserSortColumns="True"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="Auto" CanUserSort="False">
+                        <DataGridTemplateColumn.Header>
+                            <CheckBox IsChecked="True"
+                                      HorizontalAlignment="Left" VerticalAlignment="Center"
+                                      ToolTip.Tip="Select/deselect all listed items"/>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}"
+                                          HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn     Header="Object type" Binding="{Binding Title}"   IsReadOnly="True" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+
+    <!-- Status + Compare / Close -->
+    <Grid Grid.Row="3" Margin="0,5,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Name="txtBulkCompareStatus" VerticalAlignment="Center"
+                   Opacity="0.8"/>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Name="btnStartCompare" Content="Compare" Width="100" Margin="5,0,0,0"/>
+            <Button Name="btnClose"        Content="Close"   Width="100" Margin="5,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Grid>

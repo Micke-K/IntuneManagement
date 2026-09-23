@@ -1,0 +1,355 @@
+<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Cloud API PowerShell Management"
+    WindowStyle="None"
+    WindowStartupLocation="CenterScreen"
+    Background="{DynamicResource WindowBackgroundColor}"
+    x:Name="Window">
+
+    <WindowChrome.WindowChrome>
+        <!-- 8px radius matches the Windows 11 native chrome curve. Combined with the
+             outer Border's CornerRadius below to shape both the hit-test region and
+             the painted outline. -->
+        <WindowChrome CaptionHeight="32" ResizeBorderThickness="5" GlassFrameThickness="0" CornerRadius="8"/>
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="UI\WPF\Themes\Light.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- Thin neutral-gray outline around the whole window. WindowStyle=None removes the
+         OS chrome including its 1px border, so we draw our own here. CornerRadius
+         matches the WindowChrome.CornerRadius so the outline and the window shape agree.
+         Background here is the window background, which lets the rounded corners clip
+         children correctly. -->
+    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1"
+            CornerRadius="8" Background="{DynamicResource WindowBackgroundColor}"
+            ClipToBounds="True">
+    <Grid x:Name="Grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Single top bar: icon + menu + (drag area) + env/tenant badge + profile + system buttons.
+             Window.Title is intentionally not shown here; it stays set on the Window object so
+             the taskbar tooltip / Alt+Tab caption / window-snapping title pick it up.
+             The 1px bottom border separates the title bar from the view area. CornerRadius
+             "7,7,0,0" rounds the top corners to match the outer Border's CornerRadius="8"
+             minus its 1px BorderThickness, so the title-bar fill follows the curve cleanly
+             instead of poking out as a square. -->
+        <Border Grid.Row="0" Grid.ColumnSpan="2"
+                Background="{DynamicResource TitleBackgroundColor}"
+                BorderBrush="{DynamicResource BorderColor}"
+                BorderThickness="0,0,0,1"
+                CornerRadius="7,7,0,0">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Window icon (also acts as draggable area). -->
+            <Image x:Name="imgTitleIcon" Grid.Column="0" Width="18" Height="18"
+                   Margin="8,0,4,0" VerticalAlignment="Center"/>
+
+            <!-- Application menu, hosted in the title bar. WindowChrome.IsHitTestVisibleInChrome
+                 has to be True so menu clicks aren't swallowed by the drag region. -->
+            <Menu Name="mnuMain" Grid.Column="1" Padding="0" Background="Transparent"
+                  VerticalAlignment="Center"
+                  WindowChrome.IsHitTestVisibleInChrome="True">
+                <MenuItem Header="_File" Name="mnuFile">
+                    <MenuItem Header="_Settings" Name="mnuSettings" />
+                    <MenuItem Header="_Tenant Settings" Name="mnuTenantSettings" />
+                    <Separator />
+                    <MenuItem Header="_Release Notes" Name="mnuUpdates" />
+                    <MenuItem Header="_About" Name="mnuAbout" />
+                    <Separator />
+                    <MenuItem Header="_Exit" Name="mnuExit" />
+                </MenuItem>
+                <MenuItem Name="mnuViews" Header="_Views" />
+            </Menu>
+
+            <!-- Centered view title. WindowChrome.IsHitTestVisibleInChrome is intentionally
+                 NOT set, so the TextBlock is treated as part of the caption drag region —
+                 clicking anywhere on it still drags the window. Set by Set-MainTitle when
+                 the active view changes. -->
+            <TextBlock x:Name="txtTitleViewName" Grid.Column="2"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontWeight="SemiBold" FontSize="13"
+                       Foreground="{DynamicResource TitleForegroundColor}"
+                       TextTrimming="CharacterEllipsis"
+                       Margin="12,0,12,0" />
+
+            <!-- Merged environment + tenant badge. Set-EnvironmentInfo populates the inner
+                 TextBlock with "EnvText - Tenant" / either part on its own / nothing. -->
+            <Border x:Name="borderEnvBadge" Grid.Column="3" CornerRadius="3" Padding="10,2" Margin="4"
+                    Visibility="Collapsed" VerticalAlignment="Center"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
+                <TextBlock Name="txtEnvBadge" FontWeight="Bold" FontSize="12"/>
+            </Border>
+
+            <!-- Profile picture container. Kept as 'grdMenu' so Show-AuthenticationInfo continues
+                 to drop the profile picture into Column 2 here without code changes. -->
+            <Grid x:Name="grdMenu" Grid.Column="4" VerticalAlignment="Center" Margin="4,0,4,0"
+                  WindowChrome.IsHitTestVisibleInChrome="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="5"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+
+            <!-- System buttons (minimize / maximize / close). FontFamily is Segoe MDL2
+                 Assets (shipped with Windows 10/11) so the glyphs match the native
+                 chrome — Minimize E921, Maximize E922, Restore E923, Close E8BB. -->
+            <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Stretch"
+                        WindowChrome.IsHitTestVisibleInChrome="True">
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Width" Value="46"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="{DynamicResource TitleForegroundColor}"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+                        <Setter Property="FontSize" Value="10"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="bg" Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="bg" Property="Background" Value="#33FFFFFF"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter TargetName="bg" Property="Background" Value="#22FFFFFF"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </StackPanel.Resources>
+                <Button x:Name="btnTitleMinimize" Content="&#xE921;" ToolTip="Minimize"/>
+                <Button x:Name="btnTitleMaximize" Content="&#xE922;" ToolTip="Maximize"/>
+                <Button x:Name="btnTitleClose" Content="&#xE8BB;" ToolTip="Close">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#C42B1C"/>
+                                    <Setter Property="Foreground" Value="#FFFFFFFF"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#9B2215"/>
+                                    <Setter Property="Foreground" Value="#FFFFFFFF"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </Grid>
+        </Border>
+
+        <Grid Name="grdViewPanel" Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Margin="0,5,5,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+        <!-- Vertical divider between the left view-item menu and the main view panel. -->
+        <Border Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"
+                BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,1,0" />
+
+        <Grid Grid.Row="1" Margin="5,5,6,5" VerticalAlignment="Stretch" Name="grdViewItemMenu">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!-- MinHeight matches the right pane's title strip so the first nav item
+                 lines up with the right-pane DataGrid header row. The Grid wrap lets
+                 the title sit at the left and a per-view config gear at the right. -->
+            <Grid Margin="0,0,0,5" MinHeight="30" Background="{DynamicResource TitleBackgroundColor}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label Content="" Name="lblMenuTitle" FontWeight="Bold" VerticalAlignment="Center" Background="Transparent" />
+                <!-- View-specific config button. Hidden by default; views that
+                     have view-level toggles (currently IntuneViewObject for
+                     Group vs API) show it and populate its ContextMenu.
+                     Padding=0 + BorderThickness=0 give the gear the full
+                     button size to render — the WPF Button defaults eat
+                     ~5px on every side and clip the glyph. -->
+                <Button Grid.Column="1" Name="btnMenuTitleConfig" Visibility="Collapsed"
+                        Width="26" Height="26" Margin="0,0,4,0"
+                        Padding="0" BorderThickness="0"
+                        VerticalAlignment="Center" HorizontalAlignment="Right"
+                        Background="Transparent" BorderBrush="Transparent"
+                        Cursor="Hand" ToolTip="Switch menu view">
+                    <!-- Inline gear glyph — Path so it picks up theme TextColor without
+                         depending on a system font shipping the Segoe Symbol gear.
+                         Canvas is 24x24 to give the path coords (centred at 12,12)
+                         room without clipping at the edges. -->
+                    <Viewbox Width="16" Height="16" Stretch="Uniform">
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="{DynamicResource TextColor}"
+                                  Data="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96a7 7 0 00-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94 0 .31.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6 0-1.98 1.62-3.6 3.6-3.6s3.6 1.62 3.6 3.6c0 1.98-1.62 3.6-3.6 3.6z" />
+                        </Canvas>
+                    </Viewbox>
+                    <Button.ContextMenu>
+                        <ContextMenu Name="cmMenuTitleConfig">
+                            <MenuItem Header="_Group"  Name="mnuMenuTitleConfigGroup" IsCheckable="True" />
+                            <MenuItem Header="_API"    Name="mnuMenuTitleConfigType"  IsCheckable="True" />
+                            <Separator />
+                            <MenuItem Header="Show read-only _Info" Name="mnuMenuTitleConfigShowInfo" IsCheckable="True" ToolTip="Show the read-only Intune Info items (Baseline Templates, Tenant Settings, Google Play status, ...)" />
+                            <!-- Hidden 2026-06-12 per user decision; counts machinery kept for potential re-enable. -->
+                            <MenuItem Header="Show item _counts" Name="mnuMenuTitleConfigShowCounts" IsCheckable="True" Visibility="Collapsed" />
+                            <!-- Sub-menu items added at runtime: one per platform present in
+                                 the current grid + a "(no platform)" entry when applicable. -->
+                            <MenuItem Header="Filter _platforms" Name="mnuMenuTitleConfigFilterPlatforms" />
+                            <MenuItem Header="_Refresh"          Name="mnuMenuTitleConfigRefresh" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </Grid>
+            <ListBox Grid.Row="1" Name="lstMenuItems" SelectionMode="Single" Grid.IsSharedSizeScope='True' Background="{DynamicResource PanelBackgroundColor}" >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="ImageColumn" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+                            </Grid.ColumnDefinitions>
+                            <ContentControl Content="{Binding IconImage}" Width="16" Height="16" Margin="0,0,5,0" />
+                            <!-- MenuLabel = Title by default; populated with "Title (N)"
+                                 when the per-view "Show item counts" option is enabled. -->
+                            <TextBlock Text="{Binding MenuLabel}" Grid.Column="1"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <!-- GroupStyle applies whenever Show-ViewMenu wraps the items in
+                     a CollectionView with a PropertyGroupDescription (currently
+                     just the Intune Tools view). Views that ship a flat array
+                     bypass grouping and render unchanged. -->
+                <ListBox.GroupStyle>
+                    <GroupStyle>
+                        <!-- Panel for the items WITHIN each group. Without an explicit
+                             vertical StackPanel here, the inner ItemsPresenter renders
+                             children on a single row (we hit this — see commit log). -->
+                        <GroupStyle.Panel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </GroupStyle.Panel>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="GroupItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="GroupItem">
+                                            <Expander IsExpanded="True"
+                                                      Background="Transparent"
+                                                      Foreground="{DynamicResource TextColor}"
+                                                      BorderBrush="Transparent"
+                                                      BorderThickness="0">
+                                                <Expander.Header>
+                                                    <TextBlock Text="{Binding Name}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource TextColor}" />
+                                                </Expander.Header>
+                                                <ItemsPresenter Margin="12,0,0,0" />
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListBox.GroupStyle>
+                <ListBox.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Foreground" Value="{DynamicResource TextColor}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding AccessType}" Value="None">
+                                <Setter Property="Foreground" Value="Red" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding AccessType}" Value="Limited">
+                                <Setter Property="Foreground" Value="Orange" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Resources>
+            </ListBox>
+        </Grid>
+
+        <!-- Popup with very faint dim background. Opacity=0 made the dismiss target invisible;
+             a 0.04 tint hints "click outside to close" without obscuring content. -->
+        <Grid Name="grdPopup" Grid.ColumnSpan="2" Grid.RowSpan="3" Visibility="Collapsed">
+            <Grid.Background>
+                <SolidColorBrush Color="Black" Opacity="0.04" />
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Canvas Name="cvsPopup" />
+        </Grid>
+
+        <!-- Modal popup with background  -->
+        <Grid Name="grdModal" Grid.ColumnSpan="2" Grid.RowSpan="3" Visibility="Collapsed">
+            <Grid.Background>
+                <SolidColorBrush Opacity="0.5" Color="Black"/>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="15*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="15*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+        </Grid>
+
+        <Grid Name="grdStatus" Grid.ColumnSpan="2" Grid.RowSpan="3" Visibility="Collapsed">
+            <Grid.Background>
+                <SolidColorBrush Opacity="0.5" Color="Black" />
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <!-- TextBlock (not Label): Label treats a single '_' as an access-key
+                     marker and strips it, mangling names like adm_user -> admuser. -->
+                <TextBlock Name="txtInfo" Text="" HorizontalAlignment="Center" Foreground="White" />
+                <TextBlock Name="txtInfoDetail" Text="" HorizontalAlignment="Center" Foreground="#CCFFFFFF" FontSize="11" Margin="0,-4,0,0" Visibility="Collapsed" />
+                <!-- Shown only when a caller passes Write-Status -CancelText, so a wait
+                     that would otherwise run to its timeout (device code, browser
+                     sign-in) can be abandoned. Click calls Request-StatusCancel. -->
+                <Button Name="btnStatusCancel" Content="Cancel" HorizontalAlignment="Center" MinWidth="90" Padding="16,3" Margin="0,12,0,0" Visibility="Collapsed" />
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+    </Border>
+</Window>

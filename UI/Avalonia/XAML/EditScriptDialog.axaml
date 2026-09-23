@@ -1,0 +1,38 @@
+<Border xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        BorderBrush="Gray" BorderThickness="1" Padding="5">
+    <!--
+        Avalonia port of UI/WPF/XAML/EditScriptDialog.xaml. Loaded by
+        Show-AvaloniaScriptEditor in Extensions/IntuneManagerExtensionHooks.ps1.
+        Stacked on top of the Object Details modal via Show-ModalForm — same
+        nested-overlay trick as Show-ObjectPickerDialog.
+    -->
+
+    <Grid HorizontalAlignment="Stretch" Name="grdModalContainer" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Background="LightGray" BorderThickness="0">
+            <TextBlock Name="txtEditScriptTitle" Margin="5" FontWeight="Bold"/>
+        </Border>
+
+        <TextBox Name="txtScriptText" Grid.Row="1"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 MinWidth="600" MinHeight="300" Margin="0,5,0,0"
+                 AcceptsReturn="True" AcceptsTab="True"
+                 FontFamily="Consolas,Courier New,monospace"
+                 TextWrapping="NoWrap"/>
+
+        <StackPanel Name="pnlButtons" Grid.Row="2" Orientation="Horizontal"
+                    HorizontalAlignment="Right" Margin="0,5,0,0">
+            <Button Name="btnSaveScriptEdit" Content="Save" MinWidth="100"
+                    Margin="0,0,5,0" ToolTip.Tip="Save updated script"/>
+            <Button Name="btnCancelScriptEdit" Content="Cancel" MinWidth="100"
+                    ToolTip.Tip="Cancel any changes"/>
+        </StackPanel>
+    </Grid>
+</Border>

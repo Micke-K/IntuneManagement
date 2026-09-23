@@ -1,0 +1,257 @@
+<TabControl xmlns="https://github.com/avaloniaui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            SelectedIndex="0" Margin="0,5,0,5">
+    <!--
+        Avalonia port of UI/WPF/XAML/ObjectDetails.xaml. Hosted via Show-ModalForm.
+
+        WPF -> Avalonia translations applied:
+          - Window root not present (the WPF version was already a TabControl).
+          - InfoIcon Rectangles are rendered as the info-icon glyph (Themes/Styles.axaml);
+            the description sits on the wrapping StackPanel so hovering the label shows it too.
+          - DisplayMemberPath="Name" / "Property" on ListBoxes dropped — Avalonia
+            has no DisplayMemberPath; ItemTemplates are assigned imperatively in
+            Show-IntuneManagerDetailedView (avalonia-binding-needs-clr-types
+            applies to lstBasicProperties / lstObjectProperties; lstObjectColumns
+            binds to ObjectColumnInfo which is a real C# class with INPC).
+          - Visibility="Collapsed" -> IsVisible="False" (only reached imperatively
+            for btnFull when AllowFullDetails=$false; default visible here).
+          - WPF MouseDoubleClick on ListBox -> Avalonia DoubleTapped (wired in PS).
+          - The TextBox bindings on the per-column editor (Property / Header) work
+            against ObjectColumnInfo (C# INotifyPropertyChanged class) — TwoWay
+            is the default for TextBox.Text in Avalonia 11.
+    -->
+    <TabItem Header="Json">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBox Name="txtValue" Grid.Column="1" Grid.Row="1"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     IsReadOnly="True" AcceptsReturn="True"
+                     MinWidth="250" Margin="0"/>
+
+            <WrapPanel Name="pnlButtons" Grid.Row="2" Grid.ColumnSpan="2"
+                       HorizontalAlignment="Right" Margin="0,5,0,0">
+                <Button Name="btnFull" MinWidth="100" Margin="0,0,5,0"
+                        Content="Load full"
+                        ToolTip.Tip="Load full info of the object"/>
+                <Button Name="btnCopy" MinWidth="100" Margin="0,0,0,0"
+                        Content="Copy"
+                        ToolTip.Tip="Copy text to clipboard"/>
+            </WrapPanel>
+        </Grid>
+    </TabItem>
+
+    <TabItem Header="Settings">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Center" ToolTip.Tip="Name of the object">
+                <Label Content="Name"/>
+                <TextBlock Classes="info-icon"/>
+            </StackPanel>
+            <TextBox Name="txtObjectName" Grid.Row="0" Grid.Column="1"
+                     Margin="0,5,5,0"/>
+
+            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,5,5,0" VerticalAlignment="Top" ToolTip.Tip="Description for the object">
+                <Label Content="Description"/>
+                <TextBlock Classes="info-icon"/>
+            </StackPanel>
+            <TextBox Name="txtObjectDescription" Grid.Row="1" Grid.Column="1"
+                     AcceptsReturn="True" Height="100"
+                     TextWrapping="Wrap" Margin="0,5,5,0"/>
+
+            <StackPanel Name="pnlScopeTagsLabel" Orientation="Horizontal"
+                        Grid.Row="2" Grid.ColumnSpan="2" Margin="0,10,5,0"
+                        HorizontalAlignment="Left">
+                <Label Content="Scope Tags"
+                       ToolTip.Tip="Move tags between the lists to change assignment. Changes are not applied until you press Save."/>
+            </StackPanel>
+
+            <Grid Name="grdScopeTags" Grid.Row="3" Grid.ColumnSpan="2"
+                  Height="180" Margin="0,5,5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Available" Grid.Row="0" Grid.Column="0" Padding="0,0,0,2" FontSize="11"/>
+                <Label Content="Assigned"  Grid.Row="0" Grid.Column="2" Padding="0,0,0,2" FontSize="11"/>
+
+                <ListBox Name="lstAvailableScopeTags" DisplayMemberBinding="{Binding Name}" Grid.Row="1" Grid.Column="0"
+                         SelectionMode="Multiple" Margin="0,0,5,0"/>
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical"
+                            VerticalAlignment="Center" Margin="0,0,5,0">
+                    <Button Name="btnScopeTagAssign"   Content="&gt;" Width="40" Margin="0,0,0,5"
+                            ToolTip.Tip="Assign selected tag(s)"/>
+                    <Button Name="btnScopeTagUnassign" Content="&lt;" Width="40"
+                            ToolTip.Tip="Unassign selected tag(s)"/>
+                </StackPanel>
+
+                <ListBox Name="lstAssignedScopeTags" DisplayMemberBinding="{Binding Name}" Grid.Row="1" Grid.Column="2"
+                         SelectionMode="Multiple" Margin="5,0,0,0"/>
+            </Grid>
+
+            <StackPanel Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"
+                        Orientation="Horizontal" HorizontalAlignment="Right"
+                        Margin="5,5,5,5">
+                <Button Name="btnObjectSettingsSave" Content="Save" Width="100"/>
+            </StackPanel>
+        </Grid>
+    </TabItem>
+
+    <TabItem Header="Columns">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Content="Properties" Margin="0,0,5,0"
+                   ToolTip.Tip="Properties of the current object"/>
+
+            <Grid Grid.Row="1" Grid.RowSpan="99">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="50*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="50*"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Basic Properties" Grid.Row="0"/>
+                <ListBox Name="lstBasicProperties" DisplayMemberBinding="{Binding Name}" SelectionMode="Single" Grid.Row="1" MinWidth="150"/>
+
+                <Label Content="Object Properties" Grid.Row="2"/>
+                <ListBox Name="lstObjectProperties" DisplayMemberBinding="{Binding Name}" SelectionMode="Single" Grid.Row="3" MinWidth="150"/>
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,5,0">
+                    <Button Content="&gt;" Name="btnBasicColumnsAdd" Width="50"
+                            ToolTip.Tip="Add basic property"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Grid.Column="1" Margin="5,0,5,0">
+                    <Button Content="&gt;" Name="btnObjectColumnsAdd" Width="50"
+                            ToolTip.Tip="Add object property"/>
+                </StackPanel>
+            </Grid>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                          Grid.Row="1" Grid.Column="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Column settings" Grid.Row="0"/>
+
+                    <ListBox Name="lstObjectColumns" DisplayMemberBinding="{Binding Property}" SelectionMode="Single" Grid.Row="1"
+                             MinWidth="150" Height="200"/>
+
+                    <StackPanel Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Left"
+                                VerticalAlignment="Center" Grid.Row="1">
+                        <Button Content="Up"     Name="btnObjectColumnsMoveUp"   Width="68"
+                                ToolTip.Tip="Move the selected column up"/>
+                        <Button Content="Down"   Name="btnObjectColumnsMoveDown" Width="68"
+                                Margin="0,5,0,0" ToolTip.Tip="Move the selected column down"/>
+                        <Button Content="Delete" Name="btnObjectColumnsDelete"   Width="68"
+                                Margin="0,5,0,0" ToolTip.Tip="Delete the selected column"/>
+                        <Button Content="Clear"  Name="btnObjectColumnsClear"    Width="68"
+                                Margin="0,5,0,0" ToolTip.Tip="Delete all custom columns"/>
+                    </StackPanel>
+
+                    <CheckBox Grid.Row="2" Name="chkObjectColumnOverride" Grid.ColumnSpan="2"
+                              Content="Override default columns" VerticalAlignment="Center"
+                              ToolTip.Tip="Do not add default columns first. If this is checked then only the properties in the list will be displayed"/>
+
+                    <Grid Grid.Row="3" Grid.ColumnSpan="2" Name="grdObjectColumns">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,5,5,0" ToolTip.Tip="Property to display. Sub properties and array values are supported eg files[0].displayName">
+                            <Label Content="Property"/>
+                            <TextBlock Classes="info-icon"/>
+                        </StackPanel>
+                        <TextBox Name="txtObjectColumnsProperty" Text="{Binding Property}"
+                                 Margin="0,5,5,0" Grid.Row="0" Grid.Column="1"/>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5,5,0" ToolTip.Tip="Header for the property. Name of property will be used if not specified">
+                            <Label Content="Header"/>
+                            <TextBlock Classes="info-icon"/>
+                        </StackPanel>
+                        <TextBox Name="txtObjectColumnsHeader" Text="{Binding Header}"
+                                 Margin="0,5,5,0" Grid.Row="1" Grid.Column="1"/>
+
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5,5,0" ToolTip.Tip="Current property settings. Only updated when saved">
+                            <Label Content="Current settings:"/>
+                            <TextBlock Classes="info-icon"/>
+                        </StackPanel>
+                        <TextBox Name="lblObjectColumnsConfig" IsReadOnly="True"
+                                 BorderThickness="0" Background="Transparent" Padding="0"
+                                 Margin="5,5,5,0" Grid.Row="3" Grid.ColumnSpan="2"/>
+
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="5,5,5,0"
+                                    Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Right">
+                            <Button Name="btnObjectColumnsReset" Content="Reset"
+                                    Margin="0,0,5,0" Width="100"
+                                    ToolTip.Tip="Revert all changes"/>
+                            <Button Name="btnObjectColumnsSave"  Content="Save"
+                                    Margin="0,0,0,0" Width="100"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </TabItem>
+</TabControl>

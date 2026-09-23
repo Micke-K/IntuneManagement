@@ -1,0 +1,43 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Avalonia port of UI/WPF/XAML/CompareNamedOptions.xaml. Used by
+        CompareNamedObjectsProvider ("name"). SharedSizeGroup dropped;
+        InfoIcon Rectangles are rendered as the info-icon glyph
+        (Themes/Styles.axaml), with the description on the wrapping StackPanel
+        so hovering the label shows it too.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
+
+    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify the pattern of the source objects e.g. Test -">
+        <Label Content="Source object name pattern"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Name="txtCompareSource"
+             Margin="0,5,0,0"/>
+
+    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Specify the pattern of the objects that the source should be compared with e.g. Prod -">
+        <Label Content="Compare object name pattern"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="txtCompareWith"
+             Margin="0,5,0,0"/>
+
+    <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="The folder where compare files will be saved. Default is the MyDocuments folder">
+        <Label Content="Save folder"/>
+        <TextBlock Classes="info-icon"/>
+    </StackPanel>
+    <TextBox Grid.Row="2" Grid.Column="1" Name="txtSavePath" Margin="0,5,5,0"/>
+    <Button  Grid.Row="2" Grid.Column="2" Name="browseSavePath" Content="..." Margin="0,5,0,0"
+             Padding="5,2,5,2" Width="50" ToolTip.Tip="Browse for folder"/>
+</Grid>

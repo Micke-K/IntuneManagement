@@ -1,0 +1,160 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="5">
+    <!--
+        Avalonia port of UI/WPF/XAML/BulkAssignmentsForm.xaml. Hosted via
+        Show-ModalForm — Apply / Close live in this Grid and call back into
+        Show-GraphBulkAssignmentsForm.
+
+        Same WPF -> Avalonia translations as the other bulk forms:
+          - Grid host (modal-form host owns the chrome).
+          - SharedSizeGroup dropped — explicit ColumnDefinition Auto/* widths.
+          - InfoIcon Rectangles are rendered as the info-icon glyph (Themes/Styles.axaml);
+            the description sits on the wrapping StackPanel so hovering the label shows it too.
+          - DataGrid columns inlined; chkSelectAll toolbar checkbox in place
+            of WPF's bound header checkbox (Avalonia DataGridCheckBoxColumn
+            has no bindable header — same trick as Slice 3e/4a/4b/4c/4d).
+          - DynamicResource ControlBackgroundColor / TextColor dropped — theme
+            drives DataGrid / TextBlock backgrounds.
+    -->
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Top property block: Action / Filter / List-by -->
+    <Grid Grid.Row="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Add: union of current and selected. Replace: overwrite all current assignments. Remove: subtract selected from current.">
+            <Label Content="Action"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal"
+                    VerticalAlignment="Center" Margin="0,5,0,5">
+            <RadioButton Name="rbBulkAssignAdd"     Content="Add"     GroupName="BulkAssignAction" IsChecked="True" VerticalAlignment="Center"/>
+            <RadioButton Name="rbBulkAssignReplace" Content="Replace" GroupName="BulkAssignAction" Margin="15,0,0,0" VerticalAlignment="Center"/>
+            <RadioButton Name="rbBulkAssignRemove"  Content="Remove"  GroupName="BulkAssignAction" Margin="15,0,0,0" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Regex (or literal substring) matched against each policy's Name. Leave empty to target every listed policy.">
+            <Label Content="Name filter"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <TextBox Grid.Row="1" Grid.Column="1" Name="txtBulkAssignNameFilter"
+                 Margin="0,5,0,5"/>
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,0,5,0" VerticalAlignment="Center" ToolTip.Tip="Group: pick whole categories (Configuration, Compliance, ...). API: pick individual policy types. Apps and Health Scripts are supported — configure per-policy fields via the App settings... button.">
+            <Label Content="List by"/>
+            <TextBlock Classes="info-icon"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal"
+                    VerticalAlignment="Center" Margin="0,5,0,5">
+            <RadioButton Name="rbBulkAssignViewGroup" Content="Group" GroupName="BulkAssignView" IsChecked="True" VerticalAlignment="Center"/>
+            <RadioButton Name="rbBulkAssignViewType"  Content="API"   GroupName="BulkAssignView" Margin="15,0,0,0" VerticalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+
+    <!-- Middle: object DataGrid (left) + assignment list DataGrid + buttons (right) -->
+    <Grid Grid.Row="1" Margin="0,5,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,3" ToolTip.Tip="Select the policy types / groups to update">
+                <Label Content="Objects to update"/>
+                <TextBlock Classes="info-icon"/>
+            </StackPanel>
+            <DataGrid CanUserResizeColumns="True" Grid.Row="1" Name="dgBulkAssignObjects"
+                      AutoGenerateColumns="False"
+                      CanUserReorderColumns="True"
+                      CanUserSortColumns="True"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="Auto" CanUserSort="False">
+                        <DataGridTemplateColumn.Header>
+                            <CheckBox IsChecked="True"
+                                      HorizontalAlignment="Left" VerticalAlignment="Center"
+                                      ToolTip.Tip="Select/deselect all listed items"/>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}"
+                                          HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn     Header="Object type" Binding="{Binding Title}"   IsReadOnly="True" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,3" ToolTip.Tip="Targets that will be added / replaced / removed. Double-click a row to open settings.">
+                <Label Content="Assignments to apply"/>
+                <TextBlock Classes="info-icon"/>
+            </StackPanel>
+            <DataGrid CanUserResizeColumns="True" Grid.Row="1" Name="dgBulkAssignList"
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      CanUserReorderColumns="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Target type"  Binding="{Binding TargetTypeDisplay}" IsReadOnly="True" Width="Auto"/>
+                    <DataGridTextColumn Header="Group"        Binding="{Binding GroupName}"         IsReadOnly="True" Width="2*"/>
+                    <DataGridTextColumn Header="Intent"       Binding="{Binding Intent}"            IsReadOnly="True" Width="Auto"/>
+                    <DataGridTextColumn Header="Filter"       Binding="{Binding FilterDisplay}"     IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="App settings" Binding="{Binding SettingsDisplay}"   IsReadOnly="True" Width="Auto"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5,0,0">
+                <Button Name="btnBulkAssignAddGroup"     Content="Add group..."     MinWidth="120" Margin="0,0,5,0"
+                        ToolTip.Tip="Pick an AAD group to include or exclude"/>
+                <Button Name="btnBulkAssignAddAllDev"    Content="All devices"      MinWidth="100" Margin="0,0,5,0"
+                        ToolTip.Tip="Add the All Devices virtual target"/>
+                <Button Name="btnBulkAssignAddAllUsers"  Content="All users"        MinWidth="100" Margin="0,0,5,0"
+                        ToolTip.Tip="Add the All Users virtual target"/>
+                <Button Name="btnBulkAssignSettings"     Content="App settings..."  MinWidth="120" Margin="0,0,5,0"
+                        ToolTip.Tip="Configure per-platform app assignment settings for the selected row"/>
+                <Button Name="btnBulkAssignRemoveSel"    Content="Remove selected"  MinWidth="120"
+                        ToolTip.Tip="Remove the highlighted row from the list above"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+    <!-- Bottom: status + Apply / Close -->
+    <Grid Grid.Row="2" Margin="0,5,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Name="txtBulkAssignStatus" VerticalAlignment="Center"
+                   Opacity="0.8"/>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Name="btnBulkAssignApply" Content="Apply" Width="100" Margin="5,0,0,0"/>
+            <Button Name="btnBulkAssignClose" Content="Close" Width="100" Margin="5,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Grid>

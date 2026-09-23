@@ -1,0 +1,1386 @@
+[
+    {
+        "nameResourceKey":  "publisher",
+        "descriptionResourceKey":  "",
+        "entityKey":  "publisher",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name"
+    },
+    {
+        "nameResourceKey":  "Inputs.packageIdLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "packageIdentifier",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {                            
+            "Expressions": [
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.winGetApp"
+                }                        
+            ]
+        } 
+    },
+    {
+        "nameResourceKey":  "Inputs.packageIdLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "packageIdentifier",
+        "dataType":  107,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "value": "UWP",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "packageIdentifier",
+                    "value": "9*",
+                    "operator": "like"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.winGetApp"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "Inputs.packageIdLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "packageIdentifier",
+        "dataType":  107,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "value": "Win32",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "packageIdentifier",
+                    "value": "X*",
+                    "operator": "like"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.winGetApp"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "Inputs.packageIdLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "packageIdentifier",
+        "dataType":  107,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "value": "Unsupported Store Type",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "packageIdentifier",
+                    "value": "9*",
+                    "operator": "notlike"
+                },
+                {
+                    "property": "packageIdentifier",
+                    "value": "X*",
+                    "operator": "notlike"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.winGetApp"
+                }
+            ]
+        }
+    },    
+    {
+        "nameResourceKey":  "Inputs.displayVersionLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "displayVersion",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "displayVersion"
+                }
+            ]
+        }         
+    },
+    {
+        "nameResourceKey":  "Inputs.appUrlLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "appStoreUrl",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "appStoreUrl"
+                }
+            ]
+        }         
+    },
+    {
+        "nameResourceKey":  "Inputs.appInstallContext",
+        "descriptionResourceKey":  "AppInfoBalloonText.appInstallContext",
+        "entityKey":  "useDeviceContext",
+        "dataType":  16,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "options":  [                                
+            {
+                "nameResourceKey":  "InstallContextType.user",
+                "value":  false
+            },
+            {
+                "nameResourceKey":  "InstallContextType.Device",
+                "value":  true
+            }
+        ],
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "useDeviceContext"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.androidManagedStoreApp",
+                    "operator": "ne"
+                }
+                
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "Inputs.ignoreVersionDetection",
+        "descriptionResourceKey":  "AppInfoBalloonText.ignoreVersionDetection",
+        "entityKey":  "ignoreVersionDetection",
+        "dataType":  0,
+        "booleanActions":  109,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "ignoreVersionDetection"
+                }
+            ]
+        }         
+    },
+    {
+        "nameResourceKey":  "Inputs.commandLineLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "commandLine",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "commandLine"
+                }
+            ]
+        }         
+    },
+    {
+        "nameResourceKey":  "Inputs.minimumOperationSystem",
+        "descriptionResourceKey":  "AppInformationTab.Info.minOperatingSystem",
+        "entityKey":  "minimumSupportedOperatingSystem",
+        "dataType":  104,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "options":  [                                
+            {
+                "nameResourceKey":  "MinimumOperatingSystem.IOS.v8",
+                "value":  "v8_0"
+            },
+            {
+                "nameResourceKey":  "MinimumOperatingSystem.IOS.v9",
+                "value":  "v9_0"
+            },
+            {
+                "nameResourceKey":  "MinimumOperatingSystem.IOS.v10",
+                "value":  "v10_0"
+            },
+            {
+                "nameResourceKey":  "MinimumOperatingSystem.IOS.v11",
+                "value":  "v11_0"
+            },
+            {
+                "nameResourceKey":  "MinimumOperatingSystem.IOS.v12",
+                "value":  "v12_0"
+            },
+            {
+                "nameResourceKey":  "MinimumOperatingSystem.IOS.v13",
+                "value":  "v13_0"
+            },
+            {
+                "nameResourceKey":  "MinimumOperatingSystem.IOS.v14",
+                "value":  "v14_0"
+            }
+        ],
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "minimumSupportedOperatingSystem"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "*ios*",
+                    "operator": "like"
+                }
+                
+            ]
+        }                
+    },    
+    {
+        "nameResourceKey":  "Inputs.applicableDeviceType",
+        "descriptionResourceKey":  "AppInformationTab.Info.applicableDeviceType",
+        "entityKey":  "applicableDeviceType",
+        "dataType":  104,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "options":  [                                
+            {
+                "nameResourceKey":  "ApplicableDeviceType.iPad",
+                "value":  "iPad"
+            },
+            {
+                "nameResourceKey":  "ApplicableDeviceType.iPhoneAndIPod",
+                "value":  "iPhoneAndIPod"
+            }
+        ],
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "applicableDeviceType"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "*ios*",
+                    "operator": "like"
+                }
+                
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "Inputs.categoryLabel",
+        "descriptionResourceKey":  "AppInformationTab.Info.category",
+        "entityKey":  "categories",
+        "dataType":  21,
+        "category": "AppInformationTab.name",
+        "Columns": [
+            {
+                "metadata": {
+                    "entityKey": "displayName"
+                }
+            }
+        ],
+        "Condition": {
+            "type": "and",
+            "Expressions": [                
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.androidManagedStoreApp",
+                    "operator": "ne"
+                }
+            ]
+        }           
+    },
+    {
+        "nameResourceKey":  "Inputs.isFeatured",
+        "descriptionResourceKey":  "AppInformationTab.Info.isFeatured",
+        "entityKey":  "isFeatured",
+        "dataType":  0,
+        "booleanActions":  109,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "isFeatured"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.androidManagedStoreApp",
+                    "operator": "ne"
+                }
+            ]
+        }         
+    },
+    {
+        "nameResourceKey":  "Inputs.informationUrlLabel",
+        "descriptionResourceKey":  "AppInformationTab.Info.infoUrl",
+        "entityKey":  "informationUrl",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "informationUrl"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.androidManagedStoreApp",
+                    "operator": "ne"
+                }
+            ]
+        }         
+    },
+    {
+        "nameResourceKey":  "Inputs.privacyUrlLabel",
+        "descriptionResourceKey":  "AppInformationTab.Info.privacyUrl",
+        "entityKey":  "privacyInformationUrl",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "privacyInformationUrl"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.androidManagedStoreApp",
+                    "operator": "ne"
+                }
+            ]
+        }         
+    },
+    {
+        "nameResourceKey":  "Inputs.developerLabel",
+        "descriptionResourceKey":  "AppInformationTab.Info.developer",
+        "entityKey":  "developer",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "developer"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.androidManagedStoreApp",
+                    "operator": "ne"
+                }
+            ]
+        }         
+    },
+    {
+        "nameResourceKey":  "Inputs.ownerLabel",
+        "descriptionResourceKey":  "AppInformationTab.Info.owner",
+        "entityKey":  "owner",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "owner"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.androidManagedStoreApp",
+                    "operator": "ne"
+                }
+            ]
+        }         
+    },
+    {
+        "nameResourceKey":  "Inputs.notesLabel",
+        "descriptionResourceKey":  "AppInformationTab.Info.notes",
+        "entityKey":  "notes",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "notes"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.androidManagedStoreApp",
+                    "operator": "ne"
+                }
+            ]
+        }         
+    },
+
+
+
+
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.configureAppSuiteLabel",
+        "descriptionResourceKey":  "",
+        "dataType":  8,
+        "booleanActions":  0,
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.xmlConfigurationLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "MSAppsConfigXml",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",        
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.appsToBeInstalledLabel",
+        "descriptionResourceKey":  "OfficeSuiteAppsTab.selectOfficeAppsTooltip",
+        "entityKey":  "excludedApps",
+        "dataType":  105,
+        "booleanActions":  0,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",
+        "options":  [                                
+            {
+                "nameResourceKey":  "OfficeApplicationType.access",
+                "value":  "access"
+            },
+            {
+                "nameResourceKey":  "OfficeApplicationType.excel",
+                "value":  "excel"
+            },
+            {
+                "nameResourceKey":  "OfficeApplicationType.oneNote",
+                "value":  "oneNote"
+            },
+            {
+                "nameResourceKey":  "OfficeApplicationType.powerPoint",
+                "value":  "powerPoint"
+            },
+            {
+                "nameResourceKey":  "OfficeApplicationType.publisher",
+                "value":  "publisher"
+            },
+            {
+                "nameResourceKey":  "OfficeApplicationType.lync",
+                "value":  "lync"
+            },
+            {
+                "nameResourceKey":  "OfficeApplicationType.teams",
+                "value":  "teams"
+            },
+            {
+                "nameResourceKey":  "OfficeApplicationType.word",
+                "value":  "word"
+            }
+        ],
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.selectOtherOfficeAppsLabel",
+        "descriptionResourceKey":  "OfficeSuiteAppsTab.selectOtherOfficeAppsTooltip",
+        "entityKey":  "productIds",
+        "dataType":  13,
+        "booleanActions":  0,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",
+        "options":  [                                
+            {
+                "nameResourceKey":  "OfficeApplicationAdditionalType.projectProRetail",
+                "value":  "projectProRetail"
+            },
+            {
+                "nameResourceKey":  "OfficeApplicationAdditionalType.visioProRetail",
+                "value":  "visioProRetail"
+            }
+        ],
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.appSuiteInformationLabel",
+        "descriptionResourceKey":  "",
+        "dataType":  8,
+        "booleanActions":  0,
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.architectureLabel",
+        "descriptionResourceKey":  "OfficeSuiteAppsTab.architectureTooltip",
+        "entityKey":  "officePlatformArchitecture",
+        "dataType":  16,
+        "booleanActions":  0,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",
+        "options":  [                                
+            {
+                "nameResourceKey":  "ArchitectureOptions.sixtyFourBit",
+                "value":  "x64"
+            },
+            {
+                "nameResourceKey":  "ArchitectureOptions.thirtyTwoBit",
+                "value":  "x86"
+            }
+        ],
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.updateChannelLabel",
+        "descriptionResourceKey":  "OfficeSuiteAppsTab.updateChannelTooltip",
+        "entityKey":  "updateChannel",
+        "dataType":  16,
+        "booleanActions":  0,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",
+        "options":  [                                
+            {
+                "nameResourceKey":  "OfficeUpdateChannel.current",
+                "value":  "current"
+            },
+            {
+                "nameResourceKey":  "OfficeUpdateChannel.deferred",
+                "value":  "deferred"
+            },
+            {
+                "nameResourceKey":  "OfficeUpdateChannel.firstReleaseCurrent",
+                "value":  "firstReleaseCurrent"
+            },
+            {
+                "nameResourceKey":  "OfficeUpdateChannel.firstReleaseDeferred",
+                "value":  "firstReleaseDeferred"
+            },
+            {
+                "nameResourceKey":  "OfficeUpdateChannel.monthlyEnterprise",
+                "value":  "monthlyEnterprise"
+            }
+        ],
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.removeOtherVersionsLabel",
+        "descriptionResourceKey":  "OfficeSuiteAppsTab.removeOtherVersionsTooltip",
+        "entityKey":  "shouldUninstallOlderVersionsOfOffice",
+        "dataType":  0,
+        "booleanActions":  109,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",        
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.versionToInstallLabel",
+        "descriptionResourceKey":  "OfficeSuiteAppsTab.versionToInstallTooltip",
+        "entityKey":  "VersionToInstall",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",        
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.propertiesLabel",
+        "descriptionResourceKey":  "",
+        "dataType":  8,
+        "booleanActions":  0,
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.useSharedComputerActivationLabel",
+        "descriptionResourceKey":  "OfficeSuiteAppsTab.useSharedComputerActivationTooltip",
+        "entityKey":  "useSharedComputerActivation",
+        "dataType":  0,
+        "booleanActions":  109,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",        
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.acceptLicenseOnBehalfOfUsersLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "autoAcceptEula",
+        "dataType":  0,
+        "booleanActions":  109,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",        
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.useMicrosoftSearchAsDefault",
+        "descriptionResourceKey":  "",
+        "entityKey":  "useMicrosoftSearchAsDefault",
+        "dataType":  0,
+        "booleanActions":  109,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",        
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.languagesLabel",
+        "descriptionResourceKey":  "OfficeSuiteAppsTab.languagesTooltip",
+        "entityKey":  "localesToInstall",
+        "dataType":  106,
+        "booleanActions":  0,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",        
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+
+
+    {
+        "nameResourceKey":  "SettingDetails.channel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "channel",
+        "dataType":  16,
+        "booleanActions":  0,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",
+        "options":  [                                
+            {
+                "nameResourceKey":  "MicrosoftEdgeChannel.dev",
+                "value":  "dev"
+            },
+            {
+                "nameResourceKey":  "MicrosoftEdgeChannel.beta",
+                "value":  "beta"
+            },
+            {
+                "nameResourceKey":  "MicrosoftEdgeChannel.stable",
+                "value":  "stable"
+            }
+        ],
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.macOSMdatpApp"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.windowsMicrosoftEdgeApp"
+                }                
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "OfficeSuiteAppsTab.languagesLabel",
+        "descriptionResourceKey":  "OfficeSuiteAppsTab.languagesTooltip",
+        "entityKey":  "displayLanguageLocale",
+        "dataType":  102,
+        "booleanActions":  0,
+        "category": "OfficeSuiteAppsTab.appSuiteConfigurationLabel",
+        "unconfiguredValue": "os-default",
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "MSAppsConfigXml",
+                    "operator": "null"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.officeSuiteApp"
+                }
+            ]
+        }                
+    },
+    {
+        "nameResourceKey":  "Inputs.minimumOperationSystem",
+        "descriptionResourceKey":  "AppInformationTab.Info.minOperatingSystem",
+        "entityKey":  "minimumSupportedOperatingSystem",
+        "dataType":  104,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "options":  [
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V10.7",  "value":  "v10_7" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V10.8",  "value":  "v10_8" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V10.9",  "value":  "v10_9" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V10.10", "value":  "v10_10" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V10.11", "value":  "v10_11" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V10.12", "value":  "v10_12" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V10.13", "value":  "v10_13" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V10.14", "value":  "v10_14" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V10.15", "value":  "v10_15" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V11.0",  "value":  "v11_0" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V12.0",  "value":  "v12_0" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V13.0",  "value":  "v13_0" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V14.0",  "value":  "v14_0" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V15.0",  "value":  "v15_0" },
+            { "nameResourceKey":  "MinimumOperatingSystem.MacOS.V26.0",  "value":  "v26_0" }
+        ],
+        "Condition": {
+            "type": "and",
+            "Expressions": [
+                {
+                    "property": "minimumSupportedOperatingSystem"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "*macos*",
+                    "operator": "like"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "SettingDetails.bundleId",
+        "descriptionResourceKey":  "",
+        "entityKey":  "primaryBundleId",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.macOSPkgApp"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.macOSDmgApp"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "SettingDetails.appVersion",
+        "descriptionResourceKey":  "",
+        "entityKey":  "primaryBundleVersion",
+        "dataType":  20,
+        "booleanActions":  0,
+        "category": "AppInformationTab.name",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.macOSPkgApp"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.macOSDmgApp"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "SettingDetails.appsSelectorLabel",
+        "descriptionResourceKey":  "",
+        "entityKey":  "includedApps",
+        "dataType":  21,
+        "category": "AppInformationTab.name",
+        "Columns": [
+            {
+                "metadata": {
+                    "entityKey": "bundleId",
+                    "nameResourceKey": "SettingDetails.bundleId"
+                }
+            },
+            {
+                "metadata": {
+                    "entityKey": "bundleVersion",
+                    "nameResourceKey": "SettingDetails.appVersion"
+                }
+            }
+        ],
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.macOSPkgApp"
+                },
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.macOSDmgApp"
+                }
+            ]
+        }
+    },
+    {
+        "nameResourceKey":  "",
+        "descriptionResourceKey":  "",
+        "entityKey":  "installExperience",
+        "dataType":  6,
+        "booleanActions":  0,
+        "category": "",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.winGetApp"
+                }
+            ]
+        },
+        "complexOptions": [
+            {
+                "nameResourceKey":  "Win32Program.runAsAccount",
+                "descriptionResourceKey":  "Win32Program.runAsAccountTooltip",
+                "entityKey":  "runAsAccount",
+                "dataType":  16,
+                "booleanActions":  0,
+                "category": "AppInformationTab.name",
+                "options": [
+                    {
+                        "nameResourceKey":  "Win32Program.RunAsAccountOptions.system",
+                        "value":  "system"
+                    },
+                    {
+                        "nameResourceKey":  "Win32Program.RunAsAccountOptions.user",
+                        "value":  "user"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nameResourceKey":  "",
+        "descriptionResourceKey":  "",
+        "entityKey":  "",
+        "dataType":  5,
+        "booleanActions":  0,
+        "category": "",
+        "Condition": {
+            "Expressions": [
+                {
+                    "property": "@OData.Type",
+                    "value": "#microsoft.graph.win32LobApp"
+                }
+            ]
+        },
+        "complexOptions": [
+            {
+                "nameResourceKey":  "Win32Program.installerTypeText",
+                "descriptionResourceKey":  "",
+                "entityKey":  "installerType",
+                "dataType":  20,
+                "booleanActions":  0,
+                "category": "Win32Program.selectorLabel",
+                "Children": [
+                    {
+                        "nameResourceKey":  "Win32Program.installCommand",
+                        "descriptionResourceKey":  "",
+                        "entityKey":  "installCommandLine",
+                        "dataType":  20,
+                        "booleanActions":  0,
+                        "category": "Win32Program.selectorLabel",
+                        "Condition": {
+                            "Expressions": [
+                                {
+                                    "property": "installCommandLine"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "nameResourceKey":  "Win32Program.installScript",
+                        "descriptionResourceKey":  "",
+                        "entityKey":  "activeInstallScript",
+                        "dataType":  6,
+                        "booleanActions":  0,
+                        "category": "Win32Program.selectorLabel",
+                        "complexOptions": [
+                            {
+                                "nameResourceKey":  "TableHeaders.scriptName",
+                                "descriptionResourceKey":  "",
+                                "entityKey":  "scriptName",
+                                "dataType":  20,
+                                "booleanActions":  0,
+                                "category": "Win32Program.selectorLabel"
+                            },
+                            {
+                                "nameResourceKey":  "Win32Requirements.AdditionalRequirements.Script.enforceSignatureCheck",
+                                "descriptionResourceKey":  "Win32Requirements.AdditionalRequirements.Script.enforceSignatureCheckTooltip",
+                                "entityKey":  "enforceSignatureCheck",
+                                "dataType":  0,
+                                "booleanActions":  109,
+                                "category": "Win32Program.selectorLabel"
+                            },
+                            {
+                                "nameResourceKey": "DetectionRules.CustomScript.runAs32Bit",
+                                "descriptionResourceKey": "DetectionRules.CustomScript.runAs32BitTooltip",
+                                "entityKey":  "runAs32Bit",
+                                "dataType":  0,
+                                "booleanActions":  109,
+                                "category": "Win32Program.selectorLabel"
+                            }
+                        ]
+                    }
+                ]
+            },            
+            {
+                "nameResourceKey":  "Win32Program.uninstallerTypeText",
+                "descriptionResourceKey":  "",
+                "entityKey":  "uninstallerType",
+                "dataType":  20,
+                "booleanActions":  0,
+                "category": "Win32Program.selectorLabel",
+                "Children": [
+                    {
+                        "nameResourceKey":  "Win32Program.uninstallCommand",
+                        "descriptionResourceKey":  "",
+                        "entityKey":  "uninstallCommandLine",
+                        "dataType":  20,
+                        "booleanActions":  0,
+                        "category": "Win32Program.selectorLabel",
+                        "Condition": {
+                            "Expressions": [
+                                {
+                                    "property": "uninstallCommandLine"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "nameResourceKey":  "Win32Program.uninstallScript",
+                        "descriptionResourceKey":  "",
+                        "entityKey":  "activeUninstallScript",
+                        "dataType":  6,
+                        "booleanActions":  0,
+                        "category": "Win32Program.selectorLabel",
+                        "complexOptions": [
+                            {
+                                "nameResourceKey":  "TableHeaders.scriptName",
+                                "descriptionResourceKey":  "",
+                                "entityKey":  "scriptName",
+                                "dataType":  20,
+                                "booleanActions":  0,
+                                "category": "Win32Program.selectorLabel"
+                            },
+                            {
+                                "nameResourceKey":  "Win32Requirements.AdditionalRequirements.Script.enforceSignatureCheck",
+                                "descriptionResourceKey":  "Win32Requirements.AdditionalRequirements.Script.enforceSignatureCheckTooltip",
+                                "entityKey":  "enforceSignatureCheck",
+                                "dataType":  0,
+                                "booleanActions":  109,
+                                "category": "Win32Program.selectorLabel"
+                            },
+                            {
+                                "nameResourceKey":  "DetectionRules.CustomScript.runAs32Bit",
+                                "descriptionResourceKey":  "DetectionRules.CustomScript.runAs32BitTooltip",
+                                "entityKey":  "runAs32Bit",
+                                "dataType":  0,
+                                "booleanActions":  109,
+                                "category": "Win32Program.selectorLabel"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "nameResourceKey":  "",
+                "descriptionResourceKey":  "",
+                "entityKey":  "installExperience",
+                "dataType":  6,
+                "booleanActions":  0,
+                "category": "",
+                "complexOptions": [
+                    {
+                        "nameResourceKey":  "Win32Program.InstallExperience.maxRunTimeInMinutes",
+                        "descriptionResourceKey":  "Win32Program.InstallExperience.maxRunTimeInMinutesToolTip",
+                        "entityKey":  "maxRunTimeInMinutes",
+                        "dataType":  14,
+                        "booleanActions":  0,
+                        "category": "Win32Program.selectorLabel"
+                    }
+                ]
+            },
+            {
+                "nameResourceKey":  "Win32Program.availableUninstall",
+                "descriptionResourceKey":  "Win32Program.availableUninstallTooltip",
+                "entityKey":  "allowAvailableUninstall",
+                "dataType":  0,
+                "booleanActions":  109,
+                "category": "Win32Program.selectorLabel"
+            },
+            {
+                "nameResourceKey":  "",
+                "descriptionResourceKey":  "",
+                "entityKey":  "installExperience",
+                "dataType":  6,
+                "booleanActions":  0,
+                "category": "",
+                "complexOptions": [
+                    {
+                        "nameResourceKey":  "Win32Program.runAsAccount",
+                        "descriptionResourceKey":  "",
+                        "entityKey":  "runAsAccount",
+                        "dataType":  16,
+                        "booleanActions":  0,
+                        "category": "Win32Program.selectorLabel",
+                        "Options": [
+                            {
+                                "nameResourceKey":  "Win32Program.RunAsAccountOptions.system",
+                                "value":  "system"
+                            },
+                            {
+                                "nameResourceKey":  "Win32Program.RunAsAccountOptions.user",
+                                "value":  "user"
+                            }
+                        ]
+                    },
+                    {
+                        "nameResourceKey":  "Win32Program.deviceRestartBehavior",
+                        "descriptionResourceKey":  "",
+                        "entityKey":  "deviceRestartBehavior",
+                        "dataType":  16,
+                        "booleanActions":  0,
+                        "category": "Win32Program.selectorLabel",
+                        "Options": [
+                            {
+                                "nameResourceKey":  "Win32Program.DeviceRestartBehaviorOptions.basedOnReturnCode",
+                                "value":  "basedOnReturnCode"
+                            },
+                            {
+                                "nameResourceKey":  "Win32Program.DeviceRestartBehaviorOptions.allow",
+                                "value":  "allow"
+                            },
+                            {
+                                "nameResourceKey":  "Win32Program.DeviceRestartBehaviorOptions.suppress",
+                                "value":  "suppress"
+                            },
+                            {
+                                "nameResourceKey":  "Win32Program.DeviceRestartBehaviorOptions.force",
+                                "value":  "force"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Columns": [
+                    {
+                        "metadata": {
+                            "entityKey": "returnCode",
+                            "nameResourceKey": "Win32ReturnCodes.Columns.returnCode"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "entityKey": "type",
+                            "nameResourceKey": "Win32ReturnCodes.Columns.codeType"
+                        }
+                    }
+                ],
+                "nameResourceKey":  "Win32ReturnCodes.selectorLabel",
+                "descriptionResourceKey":  "",
+                "entityKey":  "returnCodes",
+                "dataType":  21,
+                "booleanActions":  0,
+                "category": "Win32Program.selectorLabel"
+            },
+            {
+                "nameResourceKey":  "Win32Requirements.allowedArchitectures",
+                "descriptionResourceKey":  "",
+                "entityKey":  "allowedArchitecturesTranslated",
+                "dataType":  20,
+                "booleanActions":  0,
+                "category": "Win32Requirements.selectorLabel"
+            },
+            {
+                "nameResourceKey":  "Win32Requirements.minimumOperatingSystem",
+                "descriptionResourceKey":  "",
+                "entityKey":  "win10Release",
+                "dataType":  20,
+                "booleanActions":  0,
+                "category": "Win32Requirements.selectorLabel"
+            },
+            {
+                "nameResourceKey":  "Win32Requirements.diskSpace",
+                "descriptionResourceKey":  "",
+                "entityKey":  "minimumFreeDiskSpaceInMB",
+                "dataType":  20,
+                "booleanActions":  0,
+                "category": "Win32Requirements.selectorLabel"
+            },
+            {
+                "nameResourceKey":  "Win32Requirements.physicalMemory",
+                "descriptionResourceKey":  "",
+                "entityKey":  "minimumMemoryInMB",
+                "dataType":  20,
+                "booleanActions":  0,
+                "category": "Win32Requirements.selectorLabel"
+            },
+            {
+                "nameResourceKey":  "Win32Requirements.minimumLogicalProcessors",
+                "descriptionResourceKey":  "",
+                "entityKey":  "minimumNumberOfProcessors",
+                "dataType":  20,
+                "booleanActions":  0,
+                "category": "Win32Requirements.selectorLabel"
+            },
+            {
+                "nameResourceKey":  "Win32Requirements.minimumCpuSpeed",
+                "descriptionResourceKey":  "",
+                "entityKey":  "minimumCpuSpeedInMHz",
+                "dataType":  20,
+                "booleanActions":  0,
+                "category": "Win32Requirements.selectorLabel"
+            },
+            {
+                "Columns": [
+                    {
+                        "metadata": {
+                            "entityKey": "property",
+                            "nameResourceKey": "ApplicabilityRules.GridLabel.property"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "entityKey": "value",
+                            "nameResourceKey": "ApplicabilityRules.GridLabel.value"
+                        }
+                    }
+                ],
+                "nameResourceKey":  "Win32Requirements.AdditionalRequirements.label",
+                "descriptionResourceKey":  "",
+                "entityKey":  "requirementRulesTranslated",
+                "dataType":  21,
+                "booleanActions":  0,
+                "category": "Win32Requirements.selectorLabel"
+            },
+            {
+                "nameResourceKey":  "DetectionRules.rulesFormat",
+                "descriptionResourceKey":  "",
+                "entityKey":  "detectionRulesType",
+                "dataType":  20,
+                "booleanActions":  0,
+                "category": "DetectionRules.selectorLabel"
+            },
+            {
+                "Columns": [
+                    {
+                        "metadata": {
+                            "entityKey": "property",
+                            "nameResourceKey": "ApplicabilityRules.GridLabel.property"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "entityKey": "value",
+                            "nameResourceKey": "ApplicabilityRules.GridLabel.value"
+                        }
+                    }
+                ],
+                "nameResourceKey":  "DetectionRules.selectorLabel",
+                "descriptionResourceKey":  "",
+                "entityKey":  "detectionRulesTranslated",
+                "dataType":  21,
+                "booleanActions":  0,
+                "category": "DetectionRules.selectorLabel",
+                "Condition": {                            
+                    "Expressions": [
+                        {
+                            "property": "@OData.Type",
+                            "value": "#microsoft.graph.win32LobAppPowerShellScriptDetection",
+                            "operator": "ne"
+                        }                        
+                    ]
+                }
+            },            
+            {
+                "nameResourceKey":  "",
+                "descriptionResourceKey":  "",
+                "entityKey":  "detectionRules",
+                "dataType":  6,
+                "booleanActions":  0,
+                "category": "",
+                "Condition": {                            
+                    "Expressions": [
+                        {
+                            "property": "@OData.Type",
+                            "value": "#microsoft.graph.win32LobAppPowerShellScriptDetection"
+                        }                        
+                    ]
+                },                
+                "complexOptions": [
+                    {
+                        "nameResourceKey":  "DetectionRules.CustomScript.runAs32Bit",
+                        "descriptionResourceKey":  "",
+                        "entityKey":  "runAs32Bit",
+                        "dataType":  0,
+                        "booleanActions":  109,
+                        "category": "DetectionRules.selectorLabel"
+                    },
+                    {
+                        "nameResourceKey":  "DetectionRules.CustomScript.enforceSignatureCheck",
+                        "descriptionResourceKey":  "",
+                        "entityKey":  "enforceSignatureCheck",
+                        "dataType":  0,
+                        "booleanActions":  109,
+                        "category": "DetectionRules.selectorLabel"
+                    }                    
+                ]
+            },
+            {
+                "nameResourceKey":  "dependencyCategory",
+                "descriptionResourceKey":  "",
+                "entityKey":  "dependencyApps",
+                "dataType":  20,
+                "booleanActions":  0,
+                "category": "SettingDetails.dependencyCategory"
+            },
+            {
+                "nameResourceKey":  "AppRelationshipStatus.Tabs.supersedence",
+                "descriptionResourceKey":  "",
+                "entityKey":  "supersededApps",
+                "dataType":  20,
+                "booleanActions":  0,
+                "category": "AppRelationshipStatus.Tabs.supersedence"
+            }
+        ]
+    }
+]

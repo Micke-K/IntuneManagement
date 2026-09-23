@@ -1,0 +1,105 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Name="grdData">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <DataGrid Name="dgIntuneManagerObjects"
+            SelectionMode="Single"
+            SelectionUnit="FullRow"
+            CanUserAddRows="False"
+            VirtualizingPanel.ScrollUnit="Pixel"
+            VirtualizingPanel.VirtualizationMode="Recycling"
+            Grid.Column="1"
+            Grid.Row="1"
+            Margin="5,4,5,4">
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="TextWrapping" Value="NoWrap"/>
+                </Style>
+            </DataGrid.Resources>
+        </DataGrid>
+
+        <!-- Title strip stays visible even when no menu item is selected so the
+             coloured header isn't missing on first load. Text/icon are blank until
+             a view item is picked. MinHeight matches lblMenuTitle on the left so
+             the DataGrid below this strip lines up with the first nav item. -->
+        <Grid Name="grdTitle" MinHeight="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Background="{DynamicResource TitleBackgroundColor}" Margin="0,0,0,5" >
+                <ContentControl Name="ccIcon" Width="24" Height="24" Margin="5,0,0,0" />
+            </Border>
+            <TextBlock Name="txtFormTitle" Text="" Grid.Column="1" Grid.ColumnSpan="5" FontWeight="Bold" Padding="5" Margin="0,0,0,5" Background="{DynamicResource TitleBackgroundColor}" />
+            <Button Name="btnLoadAllPages" Grid.Column="2" Content="Load All" Width='100' Margin="0,5,5,7" Visibility="Collapsed" />
+            <Button Name="btnLoadNextPage" Grid.Column="3" Content="Load More" Width='100' Margin="0,5,5,7" Visibility="Collapsed" />
+            <Grid Grid.Column="4" Margin="0,0,5,3">
+                <TextBox Name="txtFilter" MinWidth="200" MaxHeight="20" />
+                <TextBlock IsHitTestVisible="False" Text="Filter" FontStyle="Italic"
+                           Foreground="{DynamicResource TextColor}" Opacity="0.5"
+                           Margin="4,0,0,0" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=txtFilter}" Value="">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+<!--    
+            <Grid Grid.Column="2" MinWidth="200" MaxHeight="20">
+                <TextBlock Text="Filter" Background="White" />
+                <TextBox Name="txtFilter" Grid.Column="2" MinWidth="200" MaxHeight="20" Margin="0,0,5,3" Background="Transparent" />
+            </Grid> 
+-->        
+        </Grid>
+
+        <Grid Name="grdObject" Grid.Row="1" Grid.RowSpan="2" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{DynamicResource ControlBackgroundColor}" Margin="0,0,0,0" />
+
+        <Grid Grid.Row="2" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Name="txtObjectsCount" FontWeight="SemiBold" VerticalAlignment="Center" Margin="5,5,0,5"
+                       ToolTip="Loaded objects (filtered shown / loaded total). A trailing '+' means more pages are available on the server — click Load More / Load All to fetch them." />
+
+            <StackPanel Grid.Column="1" Name="spSubMenu" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0" >
+                <Button Name="btnDocument" Content="Document" MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip="Generate documentation for the selected item(s) — or all listed items when none are selected" />
+                <Button Name="btnView" Content="View" MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip="View the json data of an item" />
+                <Button Name="btnCompare" Content="Compare" MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip="Compare selected object with an exported file" />
+                <Button Name="btnCopy" Content="Copy" MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip="Clone the selected item"/>
+                <Button Name="btnDelete" Content="Delete" MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip="Delete selected item(s)"/>
+                <Button Name="btnImport" Content="Import" MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip="Import items" />
+                <Button Name="btnExport" Content="Export" MinWidth="100" IsEnabled="False" ToolTip="Export selected or all items" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+    
+    <Grid Name="grdNotLoggedIn" Visibility="Collapsed">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Label Name="txtNotLoggedIn" Content="Not logged in. Please login to view objects" HorizontalAlignment="Center" VerticalAlignment="Center" />
+    </Grid>
+</Grid>

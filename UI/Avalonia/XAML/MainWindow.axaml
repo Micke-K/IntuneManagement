@@ -1,0 +1,259 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cloud API PowerShell Management"
+        Width="1280" Height="800"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="32"
+        ExtendClientAreaChromeHints="PreferSystemChrome"
+        Background="{DynamicResource WindowBackgroundColor}"
+        x:Name="Window">
+    <!--
+        Avalonia port of UI/WPF/XAML/MainWindow.xaml.
+
+        WPF used WindowStyle=None + WindowChrome to draw a fully custom title bar
+        with hand-rolled minimize/maximize/close buttons. Avalonia's idiomatic
+        equivalent: ExtendClientAreaToDecorationsHint extends our content into
+        the caption area while PreferSystemChrome keeps the OS-painted system
+        buttons. Result: same merged title+menu layout, far less custom chrome
+        to maintain (and free Win11 rounded corners).
+
+        Named elements mirror the WPF version so the eventual menu/view
+        plumbing port can wire to the same handles.
+
+        Deferred (vs WPF):
+          - ListBox grouped layout (WPF GroupStyle has no Avalonia equivalent;
+            grouped views currently are just IntuneTools — re-introduce via
+            DataGridCollectionView or a TreeView when porting that view).
+          - AccessType color triggers on ListBoxItem (replace with Classes
+            driven from PS when porting Show-ViewMenu).
+    -->
+
+    <Grid x:Name="Grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Top bar: icon + menu + (drag region) + env badge + profile slot. System
+             min/max/close are painted by Windows on the right (PreferSystemChrome).
+             Window drag is wired in code (PointerPressed -> BeginMoveDrag) because
+             ExtendClientAreaToDecorationsHint + a Background brush block the OS
+             caption hit-test; buttons/menus mark PointerPressed Handled so they
+             don't trigger drag. -->
+        <Border x:Name="borderTitleBar" Grid.Row="0" Grid.ColumnSpan="2"
+                Background="{DynamicResource TitleBackgroundColor}"
+                BorderBrush="{DynamicResource BorderColor}"
+                BorderThickness="0,0,0,1">
+            <!-- Right margin reserves space for the Win11 system min/max/close
+                 buttons (PreferSystemChrome draws them over the right edge).
+                 Without this, grdMenu (avatar / Sign-in) collides with Close.
+                 Windows-specific: Set-MainWindowChrome (Extensions/WindowChromeAvalonia.ps1)
+                 rewrites this margin off-Windows - 0 on Linux (the WM draws its own
+                 caption) and left-side on macOS (traffic lights). -->
+            <Grid x:Name="grdTitleBarContent" Margin="0,0,140,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Image x:Name="imgTitleIcon" Grid.Column="0" Width="18" Height="18"
+                       Margin="8,0,4,0" VerticalAlignment="Center"/>
+
+                <Menu Name="mnuMain" Grid.Column="1" Padding="0" Background="Transparent"
+                      VerticalAlignment="Center">
+                    <MenuItem Header="_File" Name="mnuFile">
+                        <MenuItem Header="_Settings"        Name="mnuSettings"/>
+                        <MenuItem Header="_Tenant Settings" Name="mnuTenantSettings"/>
+                        <Separator/>
+                        <MenuItem Header="_Release Notes"   Name="mnuUpdates"/>
+                        <MenuItem Header="_About"           Name="mnuAbout"/>
+                        <Separator/>
+                        <MenuItem Header="_Exit"            Name="mnuExit"/>
+                    </MenuItem>
+                    <MenuItem Name="mnuViews" Header="_Views"/>
+                </Menu>
+
+                <!-- Centered active-view title; populated by Set-MainTitle. -->
+                <TextBlock x:Name="txtTitleViewName" Grid.Column="2"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           FontWeight="SemiBold" FontSize="13"
+                           Foreground="{DynamicResource TitleForegroundColor}"
+                           TextTrimming="CharacterEllipsis"
+                           Margin="12,0,12,0"/>
+
+                <!-- Env + tenant badge; Set-EnvironmentInfo flips IsVisible and sets text. -->
+                <Border x:Name="borderEnvBadge" Grid.Column="3" CornerRadius="3" Padding="10,2" Margin="4"
+                        IsVisible="False" VerticalAlignment="Center">
+                    <TextBlock Name="txtEnvBadge" FontWeight="Bold" FontSize="12"/>
+                </Border>
+
+                <!-- Profile picture container; Show-AuthenticationInfo drops controls into here. -->
+                <Grid x:Name="grdMenu" Grid.Column="4" VerticalAlignment="Center" Margin="4,0,4,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="5"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Right pane: active view content. -->
+        <Grid Name="grdViewPanel" Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Margin="0,5,5,5"
+              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+        <!-- Vertical divider between left nav and right pane. -->
+        <Border Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"
+                BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,1,0"/>
+
+        <!-- Left nav: title strip + menu items list. -->
+        <Grid Grid.Row="1" Margin="5,5,6,5" VerticalAlignment="Stretch" Name="grdViewItemMenu">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Margin="0,0,0,5" MinHeight="30" Background="{DynamicResource TitleBackgroundColor}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="" Name="lblMenuTitle" FontWeight="Bold" VerticalAlignment="Center" Background="Transparent"/>
+                <!-- Per-view config gear; views with toggles flip IsVisible and bind a Flyout. -->
+                <Button Grid.Column="1" Name="btnMenuTitleConfig" IsVisible="False"
+                        Width="26" Height="26" Margin="0,0,4,0"
+                        Padding="0" BorderThickness="0"
+                        VerticalAlignment="Center" HorizontalAlignment="Right"
+                        Background="Transparent" BorderBrush="Transparent"
+                        Cursor="Hand" ToolTip.Tip="Switch menu view">
+                    <Viewbox Width="16" Height="16" Stretch="Uniform">
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="{DynamicResource TextColor}"
+                                  Data="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96a7 7 0 00-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94 0 .31.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6 0-1.98 1.62-3.6 3.6-3.6s3.6 1.62 3.6 3.6c0 1.98-1.62 3.6-3.6 3.6z"/>
+                        </Canvas>
+                    </Viewbox>
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuItem Header="_Group" Name="mnuMenuTitleConfigGroup" ToggleType="CheckBox"/>
+                            <MenuItem Header="_API"   Name="mnuMenuTitleConfigType"  ToggleType="CheckBox"/>
+                            <Separator/>
+                            <MenuItem Header="Show read-only _Info" Name="mnuMenuTitleConfigShowInfo" ToggleType="CheckBox" ToolTip.Tip="Show the read-only Intune Info items (Baseline Templates, Tenant Settings, Google Play status, ...)"/>
+                            <!-- Hidden 2026-06-12 per user decision; counts machinery kept for potential re-enable. -->
+                            <MenuItem Header="Show item _counts" Name="mnuMenuTitleConfigShowCounts" ToggleType="CheckBox" IsVisible="False"/>
+                            <!-- Sub-menu items added at runtime: one per platform present in
+                                 the current grid + a "(no platform)" entry when applicable. -->
+                            <MenuItem Header="Filter _platforms" Name="mnuMenuTitleConfigFilterPlatforms"/>
+                            <MenuItem Header="_Refresh" Name="mnuMenuTitleConfigRefresh"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+            </Grid>
+            <ListBox Grid.Row="1" Name="lstMenuItems" SelectionMode="Single"
+                     Background="{DynamicResource PanelBackgroundColor}">
+                <ListBox.Styles>
+                    <!-- Headers are visual-only category labels; making the
+                         container non-hit-testable + non-focusable keeps them
+                         out of mouse + keyboard selection. Show-ViewMenu also
+                         filters the SelectionChanged handler as a safety net. -->
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="IsHitTestVisible" Value="{Binding !IsHeader}"/>
+                        <Setter Property="Focusable"        Value="{Binding !IsHeader}"/>
+                    </Style>
+                    <!-- Permission marking. WPF does this with DataTriggers on
+                         AccessType; Avalonia has none, so Get-IntuneViewItems
+                         sets the two booleans and these class selectors colour
+                         the label. Orange = readable but not writable, red =
+                         no access at all (a group is only red when every member
+                         type is unusable). -->
+                    <Style Selector="TextBlock.accessLimited">
+                        <Setter Property="Foreground" Value="{DynamicResource AccessLimitedColor}"/>
+                    </Style>
+                    <Style Selector="TextBlock.accessNone">
+                        <Setter Property="Foreground" Value="{DynamicResource AccessNoneColor}"/>
+                    </Style>
+                </ListBox.Styles>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <!-- Header row (Category title, SemiBold). Only
+                                 visible on rows Show-ViewMenu inserted with
+                                 IsHeader=$true. -->
+                            <TextBlock Text="{Binding Title}"
+                                       FontWeight="SemiBold"
+                                       IsVisible="{Binding IsHeader}"
+                                       Margin="0,4,0,2"/>
+                            <!-- Leaf row (icon + MenuLabel). Avalonia bindings
+                                 have no DataTrigger so we can't conditionally
+                                 indent only inside grouped menus; rather than
+                                 indent flat menus too, we rely on the SemiBold
+                                 header alone to convey the group hierarchy. -->
+                            <Grid IsVisible="{Binding !IsHeader}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ContentControl Content="{Binding IconImage}" Width="16" Height="16" Margin="0,0,5,0"/>
+                                <TextBlock Text="{Binding MenuLabel}" Grid.Column="1"
+                                           Classes.accessLimited="{Binding IsAccessLimited}"
+                                           Classes.accessNone="{Binding IsAccessNone}"
+                                           ToolTip.Tip="{Binding AccessInfo}"/>
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <!-- Light-dim popup layer (Show-Popup mounts content into cvsPopup). -->
+        <Grid Name="grdPopup" Grid.ColumnSpan="2" Grid.RowSpan="3" IsVisible="False">
+            <Grid.Background>
+                <SolidColorBrush Color="Black" Opacity="0.04"/>
+            </Grid.Background>
+            <Canvas Name="cvsPopup"/>
+        </Grid>
+
+        <!-- Modal dim layer (Show-ModalForm mounts content into the centre cell). -->
+        <Grid Name="grdModal" Grid.ColumnSpan="2" Grid.RowSpan="3" IsVisible="False">
+            <Grid.Background>
+                <SolidColorBrush Opacity="0.5" Color="Black"/>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="15*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="15*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+        </Grid>
+
+        <!-- Status overlay (Set-StatusInfo writes to txtInfo / txtInfoDetail). -->
+        <Grid Name="grdStatus" Grid.ColumnSpan="2" Grid.RowSpan="3" IsVisible="False">
+            <Grid.Background>
+                <SolidColorBrush Opacity="0.5" Color="Black"/>
+            </Grid.Background>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <!-- TextBlock (not Label): Label treats a single '_' as an access-key
+                     marker and strips it, mangling names like adm_user -> admuser. -->
+                <TextBlock Name="txtInfo"       Text="" HorizontalAlignment="Center" Foreground="White"/>
+                <TextBlock Name="txtInfoDetail" Text="" HorizontalAlignment="Center" Foreground="#CCFFFFFF" FontSize="11" Margin="0,-4,0,0" IsVisible="False"/>
+                <!-- Shown only when a caller passes Write-Status -CancelText, so a wait
+                     that would otherwise run to its timeout (device code, browser
+                     sign-in) can be abandoned. Click calls Request-StatusCancel. -->
+                <Button Name="btnStatusCancel" Content="Cancel" HorizontalAlignment="Center" MinWidth="90" Padding="16,3" Margin="0,12,0,0" IsVisible="False"/>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</Window>

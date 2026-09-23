@@ -1,0 +1,125 @@
+
+ <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="4*" MinHeight="300" />
+        <RowDefinition Height="3" />
+        <RowDefinition Height="1*" MinHeight="100"  />
+    </Grid.RowDefinitions>
+
+    <Border Grid.Row="0" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1"
+            Background="{DynamicResource PanelBackgroundColor}" Padding="8" Margin="0,0,0,5">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="Calls: "        FontWeight="Bold" Margin="0,0,2,0" />
+                <TextBlock Name="txtTotalCalls"   Text="0"          Margin="0,0,16,0" />
+                <TextBlock Text="Downloaded: "   FontWeight="Bold" Margin="0,0,2,0" />
+                <TextBlock Name="txtTotalMB"      Text="0 MB"       Margin="0,0,16,0" />
+                <TextBlock Text="Objects: "      FontWeight="Bold" Margin="0,0,2,0" />
+                <TextBlock Name="txtTotalObjects" Text="0"          Margin="0,0,16,0" />
+                <TextBlock Text="Total time: "   FontWeight="Bold" Margin="0,0,2,0" />
+                <TextBlock Name="txtTotalTime"    Text="0s"         Margin="0,0,16,0" />
+            </StackPanel>
+
+            <Button Grid.Row="0" Grid.Column="1" Name="btnRefreshGraphCalls" Content="Refresh"
+                    Padding="8,2" Margin="5,0,0,0" VerticalAlignment="Center"
+                    ToolTip="Recompute totals and reload the call list" />
+
+            <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,4,0,0">
+                <TextBlock Text="HTTP status: "  FontWeight="Bold" Margin="0,0,2,0" VerticalAlignment="Center" />
+                <WrapPanel Name="pnlHttpStatuses" Orientation="Horizontal" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,2,0,0">
+                <TextBlock Text="Batch status: " FontWeight="Bold" Margin="0,0,2,0" VerticalAlignment="Center" />
+                <WrapPanel Name="pnlBatchStatuses" Orientation="Horizontal" />
+            </StackPanel>
+
+            <StackPanel Name="pnlFilterIndicator" Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,6,0,0" Visibility="Collapsed">
+                <TextBlock Text="Active filter: " FontWeight="Bold" Margin="0,0,2,0" VerticalAlignment="Center" />
+                <TextBlock Name="txtActiveFilter" Text="" Margin="0,0,8,0" VerticalAlignment="Center" />
+                <Button Name="btnClearGraphCallsFilter" Content="Clear" Padding="6,1" VerticalAlignment="Center"
+                        ToolTip="Remove the filter and show all calls" />
+            </StackPanel>
+        </Grid>
+    </Border>
+
+    <DataGrid Grid.Row="1" Name="dgGraphCalls"
+        AutoGenerateColumns="False"
+        SelectionMode="Single"
+        SelectionUnit="FullRow"
+        CanUserAddRows="False">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Provider" Binding="{Binding Provider}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Date" Binding="{Binding Time, StringFormat={}{0:d}}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Time" Binding="{Binding Time, StringFormat={}{0:HH:mm.ss}}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Duration (ms)" Binding="{Binding Duration, StringFormat={}{0:N0}}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="KB" Binding="{Binding KB, StringFormat={}{0:N1}}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Objects" Binding="{Binding ObjectCount, StringFormat={}{0:N0}}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Pages" Binding="{Binding PageCount, StringFormat={}{0:N0}}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="StatusCode" Binding="{Binding StatusCode}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Batch Errors" Binding="{Binding BatchErrorSummary}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Method" Binding="{Binding Method}" IsReadOnly="True" Width="Auto" />
+            <DataGridTemplateColumn Header="URL">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                            <TextBlock Text="{Binding Path=URL}" TextWrapping="NoWrap" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
+
+    <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+    <Grid Grid.Row="3" Name="dgGraphCallObject">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Batch info" Grid.Row="0" Grid.Column="0"  />
+
+        <DataGrid
+            AutoGenerateColumns="False"
+            SelectionMode="Single"
+            SelectionUnit="FullRow"
+            CanUserAddRows="False"
+            Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+            ItemsSource="{Binding Path=SelectedItem.BatchRequests, ElementName=dgGraphCalls}"
+            >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="KB" Binding="{Binding Response.KB, StringFormat={}{0:N1}}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="Objects" Binding="{Binding Response.ObjectCount, StringFormat={}{0:N0}}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="Pages" Binding="{Binding Response.PageCount, StringFormat={}{0:N0}}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="StatusCode" Binding="{Binding Response.StatusCode}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="Method" Binding="{Binding Method}" IsReadOnly="True" Width="Auto" />
+                <DataGridTemplateColumn Header="URL">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                                <TextBlock Text="{Binding URL}" TextWrapping="NoWrap" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Grid>

@@ -1,0 +1,57 @@
+.vs/
+.vscode/
+.git/
+/*.Log
+/*.Lo_
+/*.log
+/*.lo_
+/*.csv
+/*.zip
+/*.new
+/*.old
+/*.zip
+/TestResults
+/TestResults.xml
+/TestResults*.xml
+Start-BYODToken.ps1
+/UI/Avalonia/Bootstrap/bin/
+# Main-thread hook compile output (the one ~10 KB DLL it produces IS tracked,
+# under Bin/MainThreadHook; see UI/Avalonia/Bootstrap/Publish-MainThreadHook.ps1).
+/UI/Avalonia/Bootstrap/MainThreadHook/bin/
+/UI/Avalonia/Bootstrap/obj/
+IntuneManagement.log
+
+# .NET build output / intermediates (the Avalonia payload is published into
+# Bin/Avalonia; these are the transient compile dirs and restore artifacts).
+# Note: only ignore the lowercase build dirs, never the tracked Bin/ runtime
+# folder — on case-insensitive filesystems a bare "bin/" would match it.
+**/obj/
+*.user
+project.assets.json
+*.nupkg
+
+# Timestamped backup folders (e.g. Bin/MSAL_PS7.bak-20260517-181539) and other
+# scratch/temp artifacts.
+*.bak-*/
+*.bak/
+*.tmp
+*.swp
+
+# Stray literal-path artifact created on non-Windows by older code that didn't
+# expand %LOCALAPPDATA% (kept ignored so it can never be re-committed).
+%LOCALAPPDATA%/
+
+# Test run logs
+/Tests/Logs/
+
+.claude/settings.local.json
+CLAUDE.local.md
+Internal/Documentation/IntuneManagement.log
+
+# Residue if the OLD-project automation batch ever runs with an unreplaced
+# txtJsonFileName placeholder (see Tests/Setup/Invoke-AutomationOrchestrator.ps1)
+REPLACED_AT_RUNTIME
+
+# Local-only online-test assets (binaries: .intunewin, vendor .admx/.adml).
+# Not committed - license/size. Tests skip when absent. See Docs/Testing.md.
+Tests/Fixtures/Automation.Local/

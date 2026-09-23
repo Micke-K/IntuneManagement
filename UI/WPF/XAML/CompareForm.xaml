@@ -1,0 +1,198 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <TabControl Name="tabCompare" SelectedIndex="0" Margin="0,0,0,5">
+        <TabItem Header="Options">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="0,0,5,0">
+                <Grid VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row='0' Margin="0,5,5,0">
+                        <Label Content="Source object" />
+                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Current Intune object" />
+                    </StackPanel>
+                    <TextBlock Name="txtIntuneObject" Text="" Grid.Column='1' Grid.Row='0' Margin="0,9,5,0"/>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row='1' Margin="0,5,5,0">
+                        <Label Content="Compare with" />
+                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Select whether to compare against an exported file or another Intune object" />
+                    </StackPanel>
+                    <ComboBox Name="cbCompareInput" Margin="0,5,5,0" MinWidth="200" Grid.Row='1' Grid.Column="1" HorizontalAlignment="Left"
+                              DisplayMemberPath="Name" SelectedValuePath="Value" />
+
+                    <StackPanel Orientation="Horizontal" Grid.Row='2' Margin="0,5,5,0">
+                        <Label Name="lblCompareObject" Content="Compare object" />
+                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="The object to compare against" />
+                    </StackPanel>
+                    <ContentControl Name="ccCompareInputOptions" Grid.Column='1' Grid.Row='2' Margin="0,5,5,0" />
+
+                    <StackPanel Orientation="Horizontal" Grid.Row='3' Margin="0,5,5,0">
+                        <Label Content="Comparison Type" />
+                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify how objects should be compared" />
+                    </StackPanel>
+                    <ComboBox Name="cbCompareType" Margin="0,5,5,0" MinWidth="250" Grid.Row='3' Grid.Column="1" HorizontalAlignment="Left"
+                              DisplayMemberPath="Name" SelectedValuePath="Value" />
+
+                    <StackPanel Orientation="Horizontal" Grid.Row='4' Margin="0,5,5,0">
+                        <Label Content="Output format" />
+                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the output file format when saving compare results" />
+                    </StackPanel>
+                    <ComboBox Name="cbSingleCompareOutputFormat" Margin="0,5,5,0" MinWidth="200" Grid.Row='4' Grid.Column="1" HorizontalAlignment="Left"
+                              DisplayMemberPath="Name" SelectedValuePath="Value" />
+
+                    <StackPanel Orientation="Horizontal" Grid.Row='5' Margin="0,5,5,0">
+                        <Label Content="Ignore core properties" />
+                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Skip mismatch coloring for displayName, description, id, createdDateTime, lastModifiedDateTime and version. These will almost always differ between two objects." />
+                    </StackPanel>
+                    <CheckBox Name="chkIgnoreCoreProperties" Margin="0,9,5,0" Grid.Row='5' Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                    <StackPanel Orientation="Horizontal" Grid.Row='6' Margin="0,5,5,0">
+                        <Label Content="Multi-Value Delimiter" />
+                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Specify the character to use for separating values for properties with more than one value (documentation comparison)" />
+                    </StackPanel>
+                    <ComboBox Name="cbCompareMultiValueDelimiter" Margin="0,5,5,0" MinWidth="200" Grid.Row='6' Grid.Column="1" HorizontalAlignment="Left"
+                              DisplayMemberPath="Name" SelectedValuePath="Value" />
+
+                    <StackPanel Orientation="Horizontal" Grid.Row='7' Margin="0,5,5,0">
+                        <Label Content="Skip Assignments" />
+                        <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Skip comparing assignments." />
+                    </StackPanel>
+                    <CheckBox Name="chkSkipCompareAssignments" Margin="0,9,5,0" Grid.Row='7' Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                    <TextBlock Grid.Row='8' TextWrapping="Wrap" Margin="5,20,5,0" Grid.ColumnSpan="2">
+                    The <Bold>Property</Bold> comparison method is a quick and easy option for objects that are based on a static set of properties <LineBreak/>
+                    e.g. Configuration Profiles, Compliance Polcies etc.<LineBreak/>This method will compare each property of the objects. <LineBreak/>
+                    The downside of this method is that it could be difficult to match the property name with the setting in th UI.
+                    <LineBreak/>
+                    The <Bold>Documentation</Bold> method will use the documentation engine and compare property values as they are displayed in the portal.<LineBreak/>
+                    This is recommended for objects with dynamic settings e.g. Settings Catalog and Endpoint security objects. <LineBreak/>
+                    The downside of this method is that it could be slow and that some property-based objects are not supported.
+                    </TextBlock>
+                </Grid>
+            </ScrollViewer>
+        </TabItem>
+        <TabItem Header="Compare Output">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row='0' LastChildFill="False" Margin="0,0,0,5">
+                    <TextBlock Text="Show:" VerticalAlignment="Center" Margin="5,0,5,0" DockPanel.Dock="Left" />
+                    <ComboBox Name="cbCompareFilter" Width="160" VerticalAlignment="Center" DockPanel.Dock="Left">
+                        <ComboBoxItem Content="All properties" Tag="All" />
+                        <ComboBoxItem Content="Mismatches only" Tag="Mismatch" />
+                        <ComboBoxItem Content="Matches only" Tag="Match" />
+                    </ComboBox>
+                    <TextBlock Name="txtCompareSummary" Text="" VerticalAlignment="Center" Margin="20,0,0,0" Foreground="{DynamicResource TextColor}" DockPanel.Dock="Left" />
+                </DockPanel>
+
+                    <DataGrid Grid.Row='1' Name="dgCompareInfo"
+                        AutoGenerateColumns="False"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow"
+                        CanUserAddRows="False"
+                        VirtualizingPanel.ScrollUnit="Pixel">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <!-- Selection highlight brushes come from the theme dictionary
+                                     (Themes/Light.xaml, Themes/Dark.xaml). They were redefined here,
+                                     hardcoded to the dark palette, which made a selected row unreadable
+                                     in the Light theme. -->
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource SelectedRowBackgroundColor}" />
+                                    </Trigger>
+                                    <!-- Match foreground tint at the ROW level. Cell-level
+                                         Foreground setters on a DataGridCell style do NOT
+                                         propagate to DataGridTextColumn's auto-generated
+                                         TextBlocks reliably (WPF wraps the cell content in a
+                                         ContentPresenter that bypasses cell.Foreground for
+                                         text columns). Setting Foreground on DataGridRow
+                                         flows through inheritance to every child TextBlock
+                                         and renders mismatched rows red as expected. Match
+                                         is tri-state ($true / $false / $null); only False
+                                         tints — True falls through to the inherited TextColor,
+                                         null (ignored) likewise stays neutral. -->
+                                    <DataTrigger Binding="{Binding Match}" Value="False">
+                                        <Setter Property="Foreground" Value="{DynamicResource MismatchColor}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <!-- Match is tri-state on the data: $true / $false / $null. The
+                                 column converts each to a single-glyph string in XAML via a
+                                 DataTrigger chain so we don't need a code-behind converter
+                                 (the project loads the XAML at runtime — no codegen). -->
+                            <DataGridTemplateColumn Header="Match" IsReadOnly="True" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock HorizontalAlignment="Center" FontWeight="Bold">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <!-- Default = ignored / skipped (Match is $null) -->
+                                                    <Setter Property="Text" Value="—" />
+                                                    <Setter Property="ToolTip" Value="Ignored" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Match}" Value="True">
+                                                            <Setter Property="Text" Value="✓" />
+                                                            <Setter Property="ToolTip" Value="Match" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Match}" Value="False">
+                                                            <Setter Property="Text" Value="✗" />
+                                                            <Setter Property="ToolTip" Value="Mismatch" />
+                                                            <Setter Property="Foreground" Value="{DynamicResource MismatchColor}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Property" Binding="{Binding PropertyName}" IsReadOnly="True" Width="Auto" />
+                            <DataGridTextColumn Header="Category" Binding="{Binding Category}" IsReadOnly="True" Width="Auto" />
+                            <DataGridTextColumn Header="SubCategory" Binding="{Binding SubCategory}" IsReadOnly="True" Width="Auto" />
+                            <DataGridTextColumn Header="Intune Object" Binding="{Binding Object1Value}" IsReadOnly="True" Width="1*" />
+                            <DataGridTextColumn Header="Compare Object" Binding="{Binding Object2Value}" IsReadOnly="True" Width="1*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row='2' Margin="5,5,0,0">
+                    <Button Name="btnCompareSave" Content="Save" ToolTip="Save compare results" Width='100' Margin="5,0,0,0" />
+                    <Button Name="btnCompareCopy" Content="Copy" ToolTip="Copy CSV content to clipboard" Width='100' Margin="5,0,0,0" />
+                </StackPanel>
+            </Grid>
+        </TabItem>
+    </TabControl>
+
+    <StackPanel Name="spCompareSubMenu" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row='1'>
+        <Button Name="btnSwap" Content="Swap" ToolTip="Swap source and compare objects" Width='100' Margin="5,0,0,0" />
+        <Button Name="btnStartCompare" Content="Compare" ToolTip="Compare objects" Width='100' Margin="5,0,0,0" />
+        <Button Name="btnClose" Content="Close" Width='100' Margin="5,0,0,0" />
+    </StackPanel>
+</Grid>

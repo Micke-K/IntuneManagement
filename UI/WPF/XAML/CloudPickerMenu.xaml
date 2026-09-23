@@ -1,0 +1,50 @@
+ <Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Choose Cloud"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        FocusManager.FocusedElement="{Binding ElementName=cbCloud}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="UI\WPF\Themes\Light.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Width="380" HorizontalAlignment="Stretch" Name="grdModalContainer" VerticalAlignment="Stretch" Background="{DynamicResource WindowBackgroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="TitleColumn" />
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal" Margin="0,5,5,0" Grid.Row="0">
+                <Label Content="Cloud" />
+                <Rectangle Style="{DynamicResource InfoIcon}" ToolTip="Select the Microsoft cloud to sign in to: Public (Global), US Government (GCC High), US Government (DoD), or China (Vianet)." />
+            </StackPanel>
+            <ComboBox Name="cbCloud" Margin="0,5,5,0" Grid.Row="0" Grid.Column="1"
+                    DisplayMemberPath="Name" SelectedValuePath="Value" />
+
+            <StackPanel Grid.Row='1' Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,5,5">
+                <Button Name="btnLogin" Content="Sign in" Width='100' Margin="5,0,0,0" VerticalAlignment="Center" IsDefault="True" />
+                <Button Name="btnCancel" Content="Cancel" Width='100' Margin="5,0,0,0" VerticalAlignment="Center" IsCancel="True" />
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+
+</Window>

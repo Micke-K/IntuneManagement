@@ -1,0 +1,78 @@
+
+ <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="4*" MinHeight="300" />
+        <RowDefinition Height="3" />
+        <RowDefinition Height="1*" MinHeight="100"  />
+    </Grid.RowDefinitions>
+
+    <Border Grid.Row="0" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1"
+            Background="{DynamicResource PanelBackgroundColor}" Padding="8" Margin="0,0,0,5">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="Entries: "    FontWeight="Bold" Margin="0,0,2,0" />
+                <TextBlock Name="txtCacheEntries" Text="0" Margin="0,0,16,0" />
+                <TextBlock Text="Hits: "       FontWeight="Bold" Margin="0,0,2,0" />
+                <TextBlock Name="txtCacheHits"    Text="0" Margin="0,0,16,0" />
+                <TextBlock Text="Misses: "     FontWeight="Bold" Margin="0,0,2,0" />
+                <TextBlock Name="txtCacheMisses"  Text="0" Margin="0,0,16,0" />
+                <TextBlock Text="Total size: " FontWeight="Bold" Margin="0,0,2,0" />
+                <TextBlock Name="txtCacheBytes"   Text="0 B" Margin="0,0,16,0"
+                           ToolTip="Approximate in-memory size of all cached values (UTF-8 JSON serialization, compressed)." />
+            </StackPanel>
+
+            <Button Grid.Column="1" Name="btnRefreshCachedObjects" Content="Refresh"
+                    Padding="8,2" Margin="5,0,0,0" VerticalAlignment="Center"
+                    ToolTip="Recompute cache totals and reload the list" />
+        </Grid>
+    </Border>
+
+    <DataGrid Grid.Row="1" Name="dgCachedObjects"
+        AutoGenerateColumns="False"
+        SelectionMode="Single"
+        SelectionUnit="FullRow"
+        CanUserAddRows="False">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Tags" Binding="{Binding TagsText}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Size" Binding="{Binding SizeText}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="Persistent" Binding="{Binding Persistent}" IsReadOnly="True" Width="Auto" />
+            <DataGridTextColumn Header="TimeOut" Binding="{Binding TimeOut, StringFormat={}{0:HH:mm.ss.fff}}" IsReadOnly="True" Width="Auto" />
+            <DataGridTemplateColumn Header="Value">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                            <TextBlock Text="{Binding Path=Value}" TextWrapping="NoWrap" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
+
+    <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+    <Grid Grid.Row="3" DataContext="{Binding Path=SelectedItem, ElementName=dgCachedObjects}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Name" Grid.Row="0" Grid.Column="0"  />
+        <TextBlock Text="{Binding Path=Name}" Grid.Row="0" Grid.Column="2" />
+        <Button Name="btnClearCachedObject" Content="Clear" Grid.Row="0" Grid.Column="3"  Margin="0,5,5,5"  Width="100"  ToolTip="Clear the selected object from cache" />
+
+        <TextBox Grid.Row="1" Grid.ColumnSpan="99" HorizontalAlignment="Stretch" Name="txtCacheObjectInfo" IsReadOnly="True" AcceptsReturn="true" />
+    </Grid>
+</Grid>

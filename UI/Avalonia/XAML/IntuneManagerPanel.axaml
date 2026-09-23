@@ -1,0 +1,110 @@
+<Grid xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Avalonia port of UI/WPF/XAML/IntuneManagerPanel.xaml.
+
+        Layout: title strip on row 0 (icon + form title + paging buttons +
+        filter box + refresh hook), DataGrid in the middle, action buttons
+        + count label at the bottom. The grdNotLoggedIn overlay sits on the
+        same Grid and is flipped via IsVisible by the auth event handlers.
+
+        WPF -> Avalonia translations applied:
+          - Visibility="Collapsed" -> IsVisible="False"
+          - ToolTip="..." -> ToolTip.Tip="..."
+          - {Binding Text, ElementName=txtFilter} placeholder pattern is
+            replaced with TextBox.Watermark (built-in in Avalonia).
+          - DataGrid TextBlock NoWrap default lives in Themes/Styles.axaml
+            — DataGrid.Resources can't house a Style without a key in
+            Avalonia, so it's globalised to keep this file focused on layout.
+    -->
+
+    <Grid Name="grdData">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Title strip (always visible — empty colored bar is intended idle state). -->
+        <Grid Name="grdTitle" MinHeight="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Background="{DynamicResource TitleBackgroundColor}" Margin="0,0,0,5">
+                <ContentControl Name="ccIcon" Width="24" Height="24" Margin="5,0,0,0"/>
+            </Border>
+            <TextBlock Name="txtFormTitle" Grid.Column="1" Grid.ColumnSpan="5"
+                       FontWeight="Bold" Padding="5" Margin="0,0,0,5"
+                       Background="{DynamicResource TitleBackgroundColor}"/>
+            <Button Name="btnLoadAllPages" Grid.Column="2" Content="Load All"
+                    Width="100" Margin="0,5,5,7" IsVisible="False"/>
+            <Button Name="btnLoadNextPage" Grid.Column="3" Content="Load More"
+                    Width="100" Margin="0,5,5,7" IsVisible="False"/>
+            <TextBox Name="txtFilter" Grid.Column="4"
+                     MinWidth="200" MaxHeight="20"
+                     Margin="0,0,5,3" Watermark="Filter"/>
+            <Button Name="btnRefresh" Grid.Column="5"
+                    Width="28" Height="22" Padding="0"
+                    Margin="0,0,5,5" Content="&#x21BB;"
+                    FontSize="14"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    ToolTip.Tip="Refresh"/>
+        </Grid>
+
+        <!-- Object DataGrid. Columns are added dynamically by Show-SelectedGraphPolicies. -->
+        <DataGrid CanUserResizeColumns="True" Name="dgIntuneManagerObjects" Grid.Row="1"
+                  SelectionMode="Single"
+                  CanUserReorderColumns="True"
+                  CanUserSortColumns="True"
+                  Margin="5,4,5,4"/>
+
+        <!-- Detail panel: Show-IntuneManagerDetailedView mounts content here. -->
+        <Grid Name="grdObject" Grid.Row="1" Grid.RowSpan="2" IsVisible="False"
+              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+              Background="{DynamicResource ControlBackgroundColor}"/>
+
+        <!-- Bottom: count label + action buttons. -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Name="txtObjectsCount" FontWeight="SemiBold"
+                       VerticalAlignment="Center" Margin="5,5,0,5"
+                       ToolTip.Tip="Loaded objects (filtered shown / loaded total). A trailing '+' means more pages are available on the server — click Load More / Load All to fetch them."/>
+
+            <StackPanel Grid.Column="1" Name="spSubMenu" Orientation="Horizontal"
+                        HorizontalAlignment="Right" Margin="0,5,0,0">
+                <Button Name="btnDocument" Content="Document" MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip.Tip="Generate documentation for the selected item(s) — or all listed items when none are selected"/>
+                <Button Name="btnView"     Content="View"     MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip.Tip="View the json data of an item"/>
+                <Button Name="btnCompare"  Content="Compare"  MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip.Tip="Compare selected object with an exported file"/>
+                <Button Name="btnCopy"     Content="Copy"     MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip.Tip="Clone the selected item"/>
+                <Button Name="btnDelete"   Content="Delete"   MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip.Tip="Delete selected item(s)"/>
+                <Button Name="btnImport"   Content="Import"   MinWidth="100" Margin="0,0,5,0" IsEnabled="False" ToolTip.Tip="Import items"/>
+                <Button Name="btnExport"   Content="Export"   MinWidth="100"                  IsEnabled="False" ToolTip.Tip="Export selected or all items"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+    <!-- Signed-out overlay. Auth event handlers flip IsVisible. -->
+    <Grid Name="grdNotLoggedIn" IsVisible="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Label Name="txtNotLoggedIn" Content="Not logged in. Please login to view objects"
+               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Grid>
+</Grid>
