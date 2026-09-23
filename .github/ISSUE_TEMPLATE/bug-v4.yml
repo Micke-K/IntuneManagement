@@ -1,0 +1,154 @@
+name: Bug report (version 4.0 beta)
+description: Something is wrong in 4.0. Runs on Windows, macOS and Linux.
+title: "[4.0] "
+labels: ["bug", "v4", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing the beta. Four fields below do most of the work:
+        **how you signed in**, **which cloud**, **which operating system** and
+        **the log**. Reports without them usually need a round trip before
+        anything can happen.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before reporting
+      description: These three cover the majority of beta reports so far.
+      options:
+        - label: >
+            I read the release notes for this beta, including the breaking changes.
+          required: true
+        - label: >
+            If my sign-in involves a passkey, security key, Windows Hello or any
+            phishing-resistant policy: I enabled **Use Web Account Manager (WAM)
+            for login** or **Use system browser for login** in Settings, and tried
+            again. The embedded window cannot complete those methods.
+          required: true
+        - label: >
+            My problem is not Inventory Policies returning 403. That endpoint is
+            not published on the public Graph API, so the application cannot read
+            it with a normal sign-in. It is a Microsoft limitation, not a bug.
+            A bring-your-own-token sign-in can reach it.
+          required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The About dialog, or the ModuleVersion in IntuneManagement.psd1.
+      placeholder: 4.0.0-beta1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: signin
+    attributes:
+      label: How did you sign in?
+      description: >
+        The single most useful field in this form. Roughly a third of all reports
+        on this project have turned out to be sign-in behaviour rather than the
+        feature being reported.
+      options:
+        - Interactive, embedded window
+        - Interactive, Web Account Manager (WAM)
+        - Interactive, system browser (the default)
+        - Device code
+        - Application and secret
+        - Application and certificate
+        - Managed identity or federated credential
+        - Bring your own token
+        - Not signed in / sign-in is the problem
+    validations:
+      required: true
+
+  - type: dropdown
+    id: cloud
+    attributes:
+      label: Cloud
+      options:
+        - Public (commercial)
+        - US Government (GCC High)
+        - US Government (DoD)
+        - China (21Vianet)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      description: 4.0 runs the full application outside Windows, so this now matters.
+      options:
+        - Windows
+        - macOS (Apple Silicon)
+        - macOS (Intel)
+        - Linux
+    validations:
+      required: true
+
+  - type: input
+    id: powershell
+    attributes:
+      label: PowerShell edition and version
+      description: Run `$PSVersionTable.PSVersion` and `$PSVersionTable.PSEdition`.
+      placeholder: "7.4.6, Core"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part of the application?
+      options:
+        - Sign-in and authentication
+        - Export
+        - Import
+        - Copy
+        - Compare
+        - Documentation output
+        - Assignments, groups or filters
+        - Bulk operations
+        - ADMX or tools
+        - The user interface itself
+        - Automation through the PowerShell commands
+        - Something else
+    validations:
+      required: true
+
+  - type: input
+    id: objecttype
+    attributes:
+      label: Which object type, if it is specific to one
+      placeholder: Settings Catalog, Conditional Access, Win32 app, ...
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Sign in to ...
+        2. Open ...
+        3. Click ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: >
+        The relevant lines from the log file, or the error text. **Remove tenant
+        identifiers, user names, access tokens and secrets before pasting.** If
+        an exported policy file is needed, redact it or use one from a lab tenant.
+      render: text
+    validations:
+      required: true

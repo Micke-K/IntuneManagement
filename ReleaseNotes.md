@@ -1,4 +1,36 @@
 # Release Notes
+
+## About version 4
+
+Version 4.0 is in beta on the `v4` branch ([4.0.0-beta1](https://github.com/Micke-K/IntuneManagement/releases/tag/4.0.0-beta1)). It is a rewrite: a single PowerShell module
+with `IM`-prefixed commands, an Avalonia UI that runs on Windows, macOS and Linux, and a
+public automation API. Exports made with 3.x import into 4.0. Version 3 stays supported
+here until 4.0 is final. From 3.11.0 the update check only offers 3.x releases; older
+3.x installations will be offered 4.0.0 once it is published as a final release.
+
+## 3.11.0 - 2026-09-23
+
+**New features**
+
+- **Sign in with the system browser**<br />
+  Interactive sign-in can run in your default browser instead of the embedded window,
+  which is where passkeys, security keys and other phishing-resistant methods work.
+  Turn on **Use system browser for login** in Settings.<br />
+  Based on [Issue 435](https://github.com/Micke-K/IntuneManagement/issues/435)
+  and [Discussion 425](https://github.com/Micke-K/IntuneManagement/discussions/425)<br />
+
+**Fixes**
+
+- Links to GitHub in the About, Updates and Welcome dialogs did not open the browser<br />
+  Based on [Issue 428](https://github.com/Micke-K/IntuneManagement/issues/428)<br />
+- Silent bulk compare failed with an `op_Addition` error and wrote no result CSV when
+  using the **Exported Files with Intune Objects (Id)** provider<br />
+  [PR 429](https://github.com/Micke-K/IntuneManagement/pull/429) by McKenzieCo<br />
+- Typo in the missing-permissions message<br />
+  [PR 424](https://github.com/Micke-K/IntuneManagement/pull/424) by BuggyAl<br />
+- The update check only offers 3.x releases and reads the release notes of the newest
+  3.x release, so a version 4 release is never offered to a version 3 installation.<br />
+
 ## 3.10.3 - 2026-05-11
 
 **Fixes**

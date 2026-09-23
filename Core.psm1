@@ -699,7 +699,11 @@ function Show-UpdatesDialog
         $params.Add("UseBasicParsing", $true)
     }
 
-    $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/contents/ReleaseNotes.md" @params
+    # The notes at the newest 3.x release tag, never at the default branch: that
+    # branch will carry version 4 once the branches are renamed.
+    $latestVer = Get-LatestGitHubVersion $params
+    $notesRef = if($latestVer) { "?ref=$($latestVer.ToString())" } else { "" }
+    $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/contents/ReleaseNotes.md$notesRef" @params
     if($content)
     {
         $txt = [System.Text.Encoding]::UTF8.GetString(([System.Convert]::FromBase64String($content.content)))
@@ -724,6 +728,37 @@ function Show-UpdatesDialog
     Show-ModalForm "Release Notes" $script:dlgUpdates -HideButtons
 }
 
+# Newest published 3.x release on GitHub, or $null.
+#
+# releases/latest answers the newest release of ANY version. The day 4.0.0 is
+# published it would tell every 3.x installation to upgrade to a breaking
+# change, and reading the manifest on the default branch stops working once the
+# branches are renamed for version 4. The releases list filtered to this major
+# is the one source that survives both. Pre-releases and drafts are skipped.
+function Get-LatestGitHubVersion
+{
+    param($Params = @{})
+
+    $latest = $null
+    try
+    {
+        $releases = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/releases?per_page=100" @Params
+        foreach($release in @($releases))
+        {
+            if($release.draft -or $release.prerelease) { continue }
+            $ver = $null
+            try { $ver = [version](([string]$release.tag_name) -replace '^v','') } catch { continue }
+            if($ver.Major -ne 3) { continue }
+            if($null -eq $latest -or $ver -gt $latest) { $latest = $ver }
+        }
+    }
+    catch
+    {
+        Write-Log "Failed to list GitHub releases: $($_.Exception.Message)" 2
+    }
+    return $latest
+}
+
 function Get-IsLatestVersion
 {
     if($global:MainAppStarted -ne $true)
@@ -742,35 +777,7 @@ function Get-IsLatestVersion
         $params.Add("UseBasicParsing", $true)
     }
 
-    $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/releases/latest" @params
-    if($content.Name)
-    {
-        try
-        {
-            $gitHubVer = [version]$content.Name
-        }
-        catch {}
-    }
-
-    if($null -eq $gitHubVer)
-    {
-        $params = @{}
-        $proxyURI = Get-ProxyURI
-        if($proxyURI)
-        {
-            $params.Add("proxy", $proxyURI)
-            $params.Add("UseBasicParsing", $true)
-        }
-    
-        $content = Invoke-RestMethod "https://api.github.com/repos/Micke-K/IntuneManagement/contents/CloudAPIPowerShellManagement.psd1" @params
-        $gitHubText = [System.Text.Encoding]::UTF8.GetString(([System.Convert]::FromBase64String($content.content)))
-        $gitHubInfo = Get-ModuleDataTable $gitHubText
-        try
-        {
-            $gitHubVer = [version]$gitHubInfo.ModuleVersion
-        }
-        catch {}
-    }
+    $gitHubVer = Get-LatestGitHubVersion $params
 
     if(-not $gitHubVer)
     {

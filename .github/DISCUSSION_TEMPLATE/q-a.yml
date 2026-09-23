@@ -1,0 +1,64 @@
+title: "[Question] "
+labels: ["needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Most questions here turn out to be one of four things: a sign-in method
+        the embedded window cannot complete, a list that looks short because the
+        version you are on stops paging, a permission the app registration does
+        not hold, or an object type that has no public Graph endpoint. The fields
+        below let that be spotted straight away.
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      options:
+        - 4.0 beta
+        - 3.x
+    validations:
+      required: true
+
+  - type: dropdown
+    id: signin
+    attributes:
+      label: How do you sign in?
+      options:
+        - Interactive, embedded window (the default in v3)
+        - Interactive, Web Account Manager (WAM)
+        - Interactive, system browser (the default in v4)
+        - Device code
+        - Application and secret
+        - Application and certificate
+        - Managed identity or federated credential
+        - Bring your own token
+    validations:
+      required: true
+
+  - type: dropdown
+    id: cloud
+    attributes:
+      label: Cloud
+      options:
+        - Public (commercial)
+        - US Government (GCC High)
+        - US Government (DoD)
+        - China (21Vianet)
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: What are you trying to do?
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried, and what happened?
+      description: >
+        Paste any error text here. **Remove tenant identifiers, user names and
+        tokens first.**
