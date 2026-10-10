@@ -1512,6 +1512,15 @@ function Start-MSALConsentPrompt
         [void]$aquireTokenObj.WithParentActivityOrWindow($ParentWindow) 
     }
     [void]$aquireTokenObj.WithPrompt([Microsoft.Identity.Client.Prompt]::NoPrompt)
+
+    # Same browser choice as the login (Connect-MSALUser): without this the consent
+    # prompt fell back to the embedded window, which has no access to the browser
+    # session (so it asked for a new sign-in) and cannot use passkeys or FIDO2 keys.
+    if($script:MSALUseSystemBrowser)
+    {
+        try { [void]$aquireTokenObj.WithUseEmbeddedWebView($false) }
+        catch { Write-LogDebug "WithUseEmbeddedWebView unavailable: $($_.Exception.Message)" }
+    }
     
     Write-Log "Consent prompt for the following scopes: $(($script:missingPermissions -join ","))" 
     [void] $aquireTokenObj.WithExtraScopesToConsent(([string[]]$script:missingPermissions))
