@@ -753,9 +753,12 @@ function Add-MSALPrereq_old
 
 function Connect-MSALClientApp
 {
-    param($clientId, $tenantId, $secret, $Certificate)
+    param($clientId, $tenantId, $secret, $Certificate, [switch]$Federated)
     $scopes = [String[]]".default"
-        
+
+    # GitHub OIDC assertions expire in minutes so rebuild the app on each request
+    if($Federated) { $script:MSALApp = $null }
+
     if(-not $script:MSALApp)
     {
         if($global:UseGraphEnvironment) { 
@@ -793,7 +796,19 @@ function Connect-MSALClientApp
             }  
             $ClientApplicationBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::Create($clientId).WithCertificate($cert).WithAuthority([URI]::new($authority)) #.WithRedirectUri($redirectUri)
         }
-        else 
+        elseif($Federated)
+        {
+            if(-not $env:ACTIONS_ID_TOKEN_REQUEST_URL)
+            {
+                Write-LogError "ACTIONS_ID_TOKEN_REQUEST_URL is missing. Run in GitHub Actions with 'permissions: id-token: write'"
+                return
+            }
+            $uri = "$($env:ACTIONS_ID_TOKEN_REQUEST_URL)&audience=api://AzureADTokenExchange"
+            $assertion = (Invoke-RestMethod -Uri $uri -Headers @{ Authorization = "Bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" }).value
+            # shortcut: string overload is flagged "not recommended" by MSAL, a delegate overload cannot run without a runspace
+            $ClientApplicationBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::Create($clientId).WithClientAssertion($assertion).WithAuthority([URI]::new($authority))
+        }
+        else
         {
             return
         }
@@ -1037,6 +1052,10 @@ function Connect-MSALUser
         {
             Connect-MSALClientApp $global:AzureAppId $global:TenantId -certificate $global:ClientCert
         }
+        elseif($global:AzureAppId -and $global:UseFederated -and $global:TenantId)
+        {
+            Connect-MSALClientApp $global:AzureAppId $global:TenantId -Federated
+        }
         else
         {
             Write-Log "Azure AppId, Tenant Id and Sercret/Cert must be specified for batch jobs" 3
@@ -1052,7 +1071,7 @@ function Connect-MSALUser
 
     if($global:MainAppStarted -eq $false) 
     { 
-        $script:AppLogin = (Get-SettingValue "GraphAzureAppLogin") -or ($global:TenantId -and $global:AzureAppId -and ($global:ClientSecret -or $global:ClientCert))
+        $script:AppLogin = (Get-SettingValue "GraphAzureAppLogin") -or ($global:TenantId -and $global:AzureAppId -and ($global:ClientSecret -or $global:ClientCert -or $global:UseFederated))
 
         if((Get-SettingValue "GraphAzureAppLogin") -and -not $global:TenantId)
         {
@@ -1069,8 +1088,8 @@ function Connect-MSALUser
 
         # Get login info for silent job from settings
         if(-not $global:AzureAppId) { $global:AzureAppId = Get-SettingValue "GraphAzureAppId" -TenantID $global:TenantId }
-        if(-not $global:ClientSecret -and -not $global:ClientCert) { $global:ClientSecret = Get-SettingValue "GraphAzureAppSecret" -TenantID $global:TenantId }
-        if(-not $global:ClientSecret -and -not $global:ClientCert) { $global:ClientCert = Get-SettingValue "GraphAzureAppCert" -TenantID $global:TenantId }
+        if(-not $global:ClientSecret -and -not $global:ClientCert -and -not $global:UseFederated) { $global:ClientSecret = Get-SettingValue "GraphAzureAppSecret" -TenantID $global:TenantId }
+        if(-not $global:ClientSecret -and -not $global:ClientCert -and -not $global:UseFederated) { $global:ClientCert = Get-SettingValue "GraphAzureAppCert" -TenantID $global:TenantId }
         
         if($global:AzureAppId -and $global:ClientSecret -and $global:TenantId)
         {
@@ -1079,6 +1098,10 @@ function Connect-MSALUser
         elseif($global:AzureAppId -and $global:ClientCert -and $global:TenantId)
         {
             Connect-MSALClientApp $global:AzureAppId $global:TenantId -certificate $global:ClientCert
+        }
+        elseif($global:AzureAppId -and $global:UseFederated -and $global:TenantId)
+        {
+            Connect-MSALClientApp $global:AzureAppId $global:TenantId -Federated
         }
         else
         {

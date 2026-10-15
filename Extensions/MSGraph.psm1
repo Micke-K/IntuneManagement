@@ -1405,7 +1405,7 @@ function Invoke-InitSilentBatchJob
         return
     }
 
-    if(-not $global:AzureAppId -or (-not $global:ClientSecret -and -not $global:ClientCert))
+    if(-not $global:AzureAppId -or (-not $global:ClientSecret -and -not $global:ClientCert -and -not $global:UseFederated))
     {
         # Get login info for silent job from settings
         $global:AzureAppId = Get-SettingValue "GraphAzureAppId" -TenantID $global:TenantId
@@ -1419,7 +1419,7 @@ function Invoke-InitSilentBatchJob
         return
     }    
 
-    if(-not $global:ClientSecret -and -not $global:ClientCert)
+    if(-not $global:ClientSecret -and -not $global:ClientCert -and -not $global:UseFederated)
     {
         Write-Log "Secret or Certificate must be specified. Either specify Secret/Certificate in Settings or Command Line" 3
         return
