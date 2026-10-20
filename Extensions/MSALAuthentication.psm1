@@ -756,8 +756,10 @@ function Connect-MSALClientApp
     param($clientId, $tenantId, $secret, $Certificate, [switch]$Federated)
     $scopes = [String[]]".default"
 
-    # GitHub OIDC assertions expire in minutes so rebuild the app on each request
-    if($Federated) { $script:MSALApp = $null }
+    if($Federated) { 
+        if($global:MSALToken -and $global:MSALToken.ExpiresOn.UtcDateTime -gt [DateTime]::UtcNow.AddMinutes(5)) { return }
+        $script:MSALApp = $null 
+    }
 
     if(-not $script:MSALApp)
     {
