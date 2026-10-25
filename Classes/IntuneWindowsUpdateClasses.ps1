@@ -128,10 +128,11 @@ class FeatureUpdateType : IntunePolicyTypeBase
         }
     }
 
-    [Hashtable]PreImportAssignmentsCommand([PSCustomObject]$PolicyObject, [PSCustomObject]$SourceObject)
-    {
-        return (@{ "API" = "$($this.API)/$($PolicyObject.Id)/microsoft.graph.managedDeviceMobileAppConfiguration/assign" })
-    }
+    # No PreImportAssignmentsCommand: the default {id}/assign is the right action.
+    # It used to post to {id}/microsoft.graph.managedDeviceMobileAppConfiguration/assign,
+    # a cast copied from app configuration that Graph rejects with 400, so
+    # imported feature update profiles never got their assignments (measured
+    # live 2026-10-17).
 }
 
 Class FeatureUpdateObject : IntunePolicyBase

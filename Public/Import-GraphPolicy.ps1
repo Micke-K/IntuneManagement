@@ -11,6 +11,7 @@ function Import-GraphPolicy {
 
     Begin {
         Write-Log "Start Import of $(($InputObject | Measure-Object).Count) object(s)"
+        $approvalsBefore = @(Get-MSGraphApprovalPending).Count
         $importedPolicies = @()
         $navigationPropObjects = @()
 
@@ -121,7 +122,17 @@ function Import-GraphPolicy {
             }
         }
 
-        Write-Log "Import finished. $($importedPolicies.Count) policies imported"
+        # Writes Multi Admin Approval held are queued for a second administrator,
+        # not failed - count them so the run doesn't read as "0 imported" (#442).
+        $pendingApprovals = @(Get-MSGraphApprovalPending | Select-Object -Skip $approvalsBefore)
+        $finishedText = "Import finished. $($importedPolicies.Count) policies imported"
+        if ($pendingApprovals.Count -gt 0) {
+            $finishedText += ", $($pendingApprovals.Count) waiting for Multi Admin Approval"
+        }
+        Write-Log $finishedText
+        foreach ($pendingApproval in $pendingApprovals) {
+            Write-Log "Waiting for Multi Admin Approval: $($pendingApproval.Method) $($pendingApproval.Url) - approval code $($pendingApproval.ApprovalCode)" 2
+        }
         return $importedPolicies
     }
 }

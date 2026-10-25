@@ -280,7 +280,7 @@
       "autoUpdate": "自動更新",
       "deadlineTimeColumnLabel": "安裝期限",
       "deliveryOptimizationPriorityHeader": "傳遞最佳化優先順序",
-      "detectAppsInUseHeader": "偵測使用中的應用程式",
+      "detectAppsInUseHeader": "偵測正在使用的應用程式",
       "groupTableHeader": "群組",
       "installContextLabel": "安裝內容",
       "isRemovable": "安裝為卸除式",
@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "將原則套用至特定 Agent 身分識別。",
     "agents": "代理程式",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "有關代理程式工作階段風險層級的其他資訊",
+    "agentsLicenseInfoBalloonAriaLabel": "Agent 授權需求",
+    "agentsLicenseRequiredAriaLabel": "Agent。您的租用戶不符合將 Agent 設為目標的授權需求。",
+    "agentsLicenseRequiredTooltip": "您的租用戶不符合將 Agent 設為目標的授權需求。",
     "agentsLicenseText": "需要 Microsoft Agent 365 或 Microsoft 365 E7 授權才能編輯此原則。",
     "agentsLicensingEnforcementDescription": "即將開始，代理程式的條件式存取將需要 Microsoft Agent 365 授權。",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "深入了解即將對 Agent 執行的授權強制",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "具名位置",
     "menuItemPhasedRollout": "分階段推出",
     "menuItemPolicies": "原則",
-    "menuItemPoliciesV2": "原則 V2 (預覽)",
+    "menuItemPoliciesV2": "原則方案 (預覽)",
     "menuItemPolicySettings": "設定 (預覽)",
+    "menuItemSecurityDefaults": "安全性預設值",
     "menuItemTermsOfUse": "使用規定",
     "microsoftAdminPortals": "Microsoft 管理入口網站",
     "microsoftAdminPortalsInfoBox": "管理入口網站包括 Microsoft 365 系統管理中心、Exchange 系統管理中心、Azure 入口網站、Microsoft Entra 系統管理中心等。",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "任何驗證流程",
             "authenticationTransfer": "驗證傳輸",
             "deviceCodeFlow": "裝置程式碼流程",
+            "excludeDeviceCodeFlow": "排除裝置程式碼流程",
             "infoBalloon": "貴組織如何使用特定驗證與授權通訊協定和授與",
             "label": "驗證流程",
             "multiple": "「{0}」和「{1}」",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "若要啟用 [要求風險補救]，您不得選取 {0}。",
       "mustSelect": "若要啟用「要求風險補救」，您必須選取 {0}。",
-      "xOrY": "{0} 或 {1}"
+      "xOrY": "{0} 或 {1}",
+      "xYOrZ": "{0}、{1} 或 {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "[每次的登入頻率] 工作模式控制項無法與 \"{0}\" 一起使用。",
         "appWarning": "目前選取的一些應用程式與「每次」的「登入頻率」選項不相容",
-        "everytime": "每次 (5 分鐘容忍度)",
+        "everytime": "每次",
         "EverytimeCA": {
           "secondaryOnly": "僅次要驗證方法"
         },
-        "everytimeInfoBalloon": "每次嘗試登入此原則範圍內的應用程式時，都會評估 [每次] 選項。",
-        "everyTimeStrict": "每次 (嚴格 - 10 秒容忍度)",
-        "everyTimeStrictInfoBalloon": "提示容忍度會限制系統重新提示使用者進行重新驗證的頻率，以避免過度提示與循環。",
+        "everytimeInfoBalloon": "「每次」控制具有 5 分鐘的驗證新鮮度有效時間範圍。",
+        "everytimeInfoBalloonAriaLabel": "有關「每次」的更多資訊",
+        "everyTimeStrict": "每次嚴格 (預覽)",
+        "everyTimeStrictInfoBalloon": "「每次嚴格 (預覽)」具有 10 秒的驗證新鮮度有效時間範圍，並且適用於已設定為可搭配此控制使用的應用程式。",
+        "everyTimeStrictInfoBalloonAriaLabel": "有關「每次嚴格 (預覽)」的更多資訊",
+        "everyTimeStrictWarning": "「每次嚴格 (預覽)」控制是為了解此控制的特定應用程式所設計。我們不建議將「每次嚴格 (預覽)」控制套用到所有應用程式。這樣做可能會導致意外的驗證提示，影響使用者的生產力，並造成驗證疲勞。",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "深入了解如何使用「每次嚴格 (預覽)」來避免驗證疲勞",
+        "everyTimeStrictWarningTitle": "避免驗證疲勞",
         "periodic": "定期重新驗證",
         "reqMFAWarning": "使用 [僅次要驗證方法] 時，必須選取 [需要多重要素驗證]",
         "selectorInvalid": "選取 [需要變更密碼] 授與時，只能使用 [每次登入頻率] 工作階段控制項",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "天",
           "everytime": "每次",
-          "everyTimeStrict": "每次 (嚴格)",
+          "everyTimeStrict": "每次嚴格 (預覽)",
           "help": "經過這段時間後，在使用者嘗試存取資源時要求再次登入。預設設定是一段連續 90 天的時間，也就是說，若使用者在電腦上有 90 天以上的時間處於非使用中狀態，系統會在他們之後初次嘗試存取資源時要求重新驗證。",
           "Hour": {
             "plural": "{0} 小時",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "層級 2",
       "accessRequirement3": "層級 3",
       "accessRequirementsLabel": "正在存取受保護的應用程式資料",
-      "accountRecovery": "復原帳戶",
+      "accountRecovery": "帳戶上線與復原",
       "accountRecoveryInfoText": "此使用者動作需要身分識別驗證授權控制。請選取身份識別驗證設定檔。",
       "appsActionsAuthTitle": "雲端應用程式、動作或驗證內容",
       "appsOrActionsSelectorInfoBallonText": "已存取的應用程式或使用者動作",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "連線能力",
     "vPNDNSTriggers": "DNS 設定",
     "vPNIKEv2": "IKEv2 設定",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "Proxy",
     "vPNSplitTunneling": "分割通道",
     "vPNTrustedNetwork": "受信任的網路偵測",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "喚醒設定",
     "webContentFilter": "Web 內容篩選",
     "wiFi": "Wi-Fi",
@@ -5769,7 +5784,7 @@
       "macOSFirewall": "macOS 防火牆",
       "mDMSecurityBaseline1810": "2018 年 10 月的 Windows 10 及更新版本的 MDM 安全性基準",
       "mDMSecurityBaseline1810Preview": "預覽: 2018 年 10 月的 Windows 10 及更新版本之 MDM 安全性基準",
-      "mDMSecurityBaseline1810PreviewBeta": "預覽: 2018 年 10 月的 Windows 10 之 MDM 安全性基準搶鮮版 (Beta)",
+      "mDMSecurityBaseline1810PreviewBeta": "預覽: 2018 年 10 月的 Windows 10 之 MDM ���全性基準搶鮮版 (Beta)",
       "mDMSecurityBaseline1906": "2019 年 5 月的 Windows 10 及更新版本的 MDM 安全性基準",
       "mDMSecurityBaseline2004": "2020 年 8 月的 Windows 10 及更新版本的 MDM 安全性基準",
       "mDMSecurityBaseline2101": "2020 年 12 月的 Windows 10 及更高版本的 MDM 安全性基準",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "所有設定檔類型",
     "workProfileOnly": "僅限個人擁有的工作設定檔"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "設定群組名稱"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "可用的可重複使用設定",
+      "Column": {
+        "displayName": "可重複使用設定群組"
+      },
+      "instanceHeader": "進行設定",
+      "objectName": "可重複使用設定",
+      "reusableSummary": "已設定 {0} 個設定",
+      "reusableSummaryMultiple": "已設定 {0} 個設定",
+      "ruleProperties": "規則屬性",
+      "searchBox": "搜尋可重複使用設定",
+      "selectCertificateFile": "選取已作為可重複使用設定上傳的憑證檔案。",
+      "selectOneOrMoreDeviceControlToExclude": "選取一或多個可重複使用設定群組，以將此裝置控制規則和設定檔排除在外。此規則會繼承這些群組的所有屬性，包括群組的變更。",
+      "selectOneOrMoreDeviceControlToInclude": "選取一或多個可重複使用設定群組，以將此裝置控制規則和設定檔包含在內。此規則會繼承這些群組的所有屬性，包括群組的變更。",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "設定可重複使用的設定"
+        }
+      },
+      "selectScript": "選取要新增到此自訂合規性設定中的指令碼。",
+      "Subtitle": {
+        "firewall": "選取一或多個可重複使用設定群組，以新增到此防火牆規則和設定檔。此規則會繼承這些群組的所有屬性，包括群組的變更。"
+      },
+      "title": "選取可重複使用設定 (預覽)"
+    },
+    "wizardTitle": "設定可重複使用的設定"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "系統管理員群組",
     "RoleAssignmentAdminDesc": "系統管理員群組使用者是指派給此角色的系統管理員",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "帳戶防護",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "所有裝置",
     "antivirus": "防毒軟體",
     "antivirusReporting": "防毒報告 (預覽)",
@@ -6134,7 +6183,7 @@
     "allowOTAPKIUpdatesDescription": "您的使用者若未將其裝置連接到電腦，即無法接收軟體更新。",
     "allowOTAPKIUpdatesName": "禁止以無線方式接收 PKI 更新",
     "allowOverrides": "允許覆寫",
-    "allowPersonalToWork": "工作設定檔中的應用程式可以處理來自個人���定檔的共用要求",
+    "allowPersonalToWork": "工作設定檔中的應用程式可以處理來自個人設定檔的共用要求",
     "allowSecurityDebuggingFeaturesDescription": "允許使用者開啟偵錯功能",
     "allowSecurityDebuggingFeaturesName": "允許使用者開啟偵錯功能",
     "allowSharedUserAppData": "共用的使用者應用程式資料",
@@ -8209,7 +8258,7 @@
     "enableUsePrivateStoreOnlyDescription": "只允許從私人市集下載應用程式，而不得從公開市集下載。",
     "enableWindowsDefenderFirewallName": "Windows 防火牆",
     "enableWithoutUEFILock": "不與 UEFI 鎖定一起啟用",
-    "enableWithUEFILock": "連同 UEFI 鎖���一起啟用",
+    "enableWithUEFILock": "連同 UEFI 鎖定一起啟用",
     "encryption": "<b>加密</b>",
     "encryptionAlgorithmName": "加密演算法",
     "encryptionCertificateType": "加密憑證類型",
@@ -10387,10 +10436,10 @@
     "publicInboundNotificationsSummaryLabel": "輸入通知 (公用網路)",
     "publicIPsecRulesSummaryLabel": "來自本機存放區的 IPsec 規則 (公用網路)",
     "publicIPsecSecuredPacketExemptionSummaryLabel": "隱形模式 IPsec 安全封包豁免 (公用網路)",
-    "publicLocalStoreSummaryLabel": "來自本機存放區的 Windows 防火牆規則 (公用網路)",
+    "publicLocalStoreSummaryLabel": "來自本機存放區的 Windows 防火牆��則 (公用網路)",
     "publicNetworkName": "公用 (不可搜尋的) 網路",
     "publicOutboundConnectionsSummaryLabel": "輸出連線的預設動作 (公用網路)",
-    "publicPlayStoreEnabledDescription": "如果您選取 [允許]，使用者可存取所有應用程式，但您已在用戶端應用程式中要求解除安裝的��用程式除外。如果您針對此設定選擇 [封鎖] 或 [未設定]，使用者只能存取您在用戶端應用程式中列為可用或必要的應用程式。",
+    "publicPlayStoreEnabledDescription": "如果您選取 [允許]，使用者可存取所有應用程式，但您已在用戶端應用程式中要求解除安裝的應用程式除外。如果您針對此設定選擇 [封鎖] 或 [未設定]，使用者只能存取您在用戶端應用程式中列為可用或必要的應用程式。",
     "publicPlayStoreEnabledName": "允許存取 Google Play 商店中的所有應用程式 (工作設定檔層級)",
     "publicPlayStoreEnabledWarning": "如果您選取 [允許]，使用者就可以從 Google Play 商店安裝任何應用程式。如果您稍後將選取項目變更為 [封鎖] 或 [未設定]，則會從裝置移除所有應用程式，但用戶端應用程式中列為可用或必要的應用程式除外。",
     "publicPlayStoreSelectionAllowList": "封鎖",
@@ -11099,7 +11148,7 @@
     "statusBarDisabledName": "狀態列",
     "stayOnPluggedModesDescription": "裝置保持開啟的充電模式。使用此設定時，建議您清除 [畫面鎖定時間] 設定，裝置才不會在保持開啟時自行鎖定。",
     "stayOnPluggedModesName": "畫面在裝置充電時開啟",
-    "stealthModeDescription": "如未��定，伺服器會以隱形模式運作。用以強制隱形模式的防火牆規則專屬於您的實作。",
+    "stealthModeDescription": "如未設定，伺服器會以隱形模式運作。用以強制隱形模式的防火牆規則專屬於您的實作。",
     "stealthModeName": "隱形模式",
     "stickyAvailableOption": "可使用黏著度",
     "storageAllowUsbDescription": "允許 USB 儲存裝置。",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "透過行動電話通訊網路的 VPN",
     "vpnPerApp": "個別應用程式 VPN",
     "vPNPerAppDescription": "當使用者開始使用選取的應用程式時，若連線的設定為 Always On，或連線是由使用者手動啟動，其流量都會自動經過 VPN 連線路由。",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "Proxy 伺服器位址 (完整的主機，或 IP 位址)。",
     "vPNPolicyAddressName": "位址",
     "vPNPolicyAssociatedAppsDescription": "於此處新增的應用程式將會自動啟動此 VPN 連線。",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "裝置 Tunnel",
     "vPNPolicyExcludedDomainsUrlsDescription": "依應用程式啟用 VPN 時會略過 VPN 的網域清單。適用於 iOS 14 及更新版本",
     "vPNPolicyExcludedDomainsUrlsName": "排除的網域",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "名稱解析原則資料表 (NRPT) 規則定義 DNS 如何在連線到 VPN 時解析名稱。資料表中的每個資料列皆會指定網域和 DNS 尾碼，或要用來解析該網域的 Web Proxy 伺服器。",
     "vPNPolicyNameResolutionPolicyTableRulesName": "名稱解析原則資料表 (NRPT) 規則",
     "vPNPolicyNetworkTrafficRulesDescription": "注意: 新增網路規則後，VPN 連線會限制於僅有指定的規則。\r\n     新增流量規則時，請務必新增一個限制最少的囊括規則，以避免 VPN 問題。",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "例如 Corp VPN for end-users",
     "vPNServerList": "伺服器清單",
     "vPNServerListExample": "ServerDescription、IP 位址或 FQDN (例如全公司 VPN、10.0.0.1) (例如僅限應用程式 VPN、vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "此清單中的應用程式會被排除在 VPN 通道之外。它們的流量一律會繞過 VPN，直接存取網路，無論 VPN 連線狀態為何。不在此清單中的應用程式在連線時必須使用 VPN，且當 VPN 無法使用時會被封鎖。",
     "vpnStrictTunnelBypassAppsName": "允許這些應用程式繞過嚴格通道模式",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "此清單中的工作設定檔應用程式會被排除在 VPN 通道之外。它們的流量一律會繞過 VPN，直接存取網路，無論 VPN 連線狀態為何。不在此清單中的工作設定檔應用程式在連線時必須使用 VPN，且當 VPN 無法使用時會被封鎖。",
     "vpnStrictTunnelModeDescription": "啟用後，所有網路流量都會強制通過 VPN 通道。如果無法建立 VPN 連線，裝置上的所有網路流量將被封鎖。新增至排除清單的應用程式即使在 VPN 已連線時，也會一律繞過 VPN，直接連接網路。",
     "vpnStrictTunnelModeName": "嚴格通道模式",
     "vpnStrictTunnelModeWorkProfileDescription": "啟用後，所有工作設定檔網路流量都會強制通過 VPN 通道。如果無法建立 VPN 連線，系統會封鎖工作設定檔網路流量。新增至排除清單的應用程式即使在 VPN 已連線時，也會一律繞過 VPN，直接連接網路。個人應用程式及工作設定檔外的流量不受影響。",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "因為 WIP 會定義原則及應用程式清單，所以除非有特殊需求，否則在選取了 WIP 時便不需要其他網路流量規則。",
     "vPNWipOrAppsName": "建立 WIP 或應用程式與此 VPN 的關聯",
     "wakeOnLANName": "網路喚醒",
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "雲端電腦概觀",
       "cloudPCSettings": "雲端電腦設定",
       "monitorCloudPCs": "監視雲端電腦 (預覽)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "佈建雲端電腦",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Windows 365 監視 (預覽)",
       "windows365Reports": "Windows 365 報告"
     },

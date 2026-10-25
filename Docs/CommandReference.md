@@ -398,7 +398,10 @@ Start-IMGraphBulkExport -SettingsFile .\nightly-export.json
 ### Start-IMGraphBulkImport
 
 Import an export folder. Groups are processed in dependency order. Returns `Groups`,
-`Imported`, `Duration`.
+`Imported`, `Updated`, `Replaced`, `Skipped`, `PendingApproval`, `UnknownSelectors`,
+`Duration`. `PendingApproval` counts the creates and updates Multi Admin Approval held
+for a second administrator; they are queued, not failed, and their approval codes are
+in the log.
 
 | Parameter | Type | Notes |
 |---|---|---|

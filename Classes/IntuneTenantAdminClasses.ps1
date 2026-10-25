@@ -134,7 +134,10 @@ class FiltersType : IntunePolicyTypeBase
         $this._ImportOrder = 15
         $this._ExpandAssignmentsList = $false
         $this._SupportsAssignments = $false
-        $this._PropertiesToRemoveForUpdate = @('platform')
+        # platform cannot be changed; evaluationMode (Graph beta, Oct 2026) is
+        # accepted on create but any PATCH carrying it fails with a generic 400
+        # (measured live 2026-10-17).
+        $this._PropertiesToRemoveForUpdate = @('platform', 'evaluationMode')
         $this._PropertiesToRemove = @("payloads")
         $this._ScopeTagProperty = "roleScopeTags"
         $this._ObjectClass = "FilterObject"

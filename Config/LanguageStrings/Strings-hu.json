@@ -672,7 +672,7 @@
       },
       "configureDevice": "Telepítési üzemmód",
       "configureDeviceHintForSurfaceHub2": "Az Autopilot csak Surface Hub 2 esetén támogatja az öntelepítési módot. Ez a mód nem társítja a felhasználót a regisztrált eszközhöz, ezért nem igényel felhasználói hitelesítő adatokat.",
-      "configureDeviceHintForWindowsPC": "<p>\r\n        A felhasználói affinitás azt szabályozza, hogy az eszközök a felhasználókhoz legyenek-e rendelve, és azt adja meg, hogy meg kell-e adni a felhasználói hitelesítő adatokat az eszköz üzembe helyezéséhez.\r\n        </p>\r\n        <ul>\r\n        <li>\r\n            Regisztr��ció felhasználói affinitással: A rendszer az adott eszközt regisztráló felhasználóhoz rendeli hozzá az eszközöket, és felhasználói hitelesítő adatok szükségesek az eszköz üzembe helyezéséhez.\r\n        </li>\r\n        <li>\r\n            Regisztráció felhasználói affinitás nélkül (előzetes verzió): Az eszközök nincsenek az adott eszközt regisztráló felhasználókhoz rendelve, és nem szükségesek felhasználói hitelesítő adatok az eszköz üzembe helyezéséhez\r\n        </li>\r\n        </ul>",
+      "configureDeviceHintForWindowsPC": "<p>\r\n        A felhasználói affinitás azt szabályozza, hogy az eszközök a felhasználókhoz legyenek-e rendelve, és azt adja meg, hogy meg kell-e adni a felhasználói hitelesítő adatokat az eszköz üzembe helyezéséhez.\r\n        </p>\r\n        <ul>\r\n        <li>\r\n            Regisztráció felhasználói affinitással: A rendszer az adott eszközt regisztráló felhasználóhoz rendeli hozzá az eszközöket, és felhasználói hitelesítő adatok szükségesek az eszköz üzembe helyezéséhez.\r\n        </li>\r\n        <li>\r\n            Regisztráció felhasználói affinitás nélkül (előzetes verzió): Az eszközök nincsenek az adott eszközt regisztráló felhasználókhoz rendelve, és nem szükségesek felhasználói hitelesítő adatok az eszköz üzembe helyezéséhez\r\n        </li>\r\n        </ul>",
       "createSurfaceHub2Info": "A Surface Hub 2 eszközök Autopilot-regisztrációs beállításainak konfigurálása. Alapértelmezés szerint az Autopilot lehetővé teszi a felhasználói hitelesítés kihagyását a kezdőélmény (OOBE) során. <a target=\"_blank\" href=\"https://go.microsoft.com/fwlink/?linkid=875443\">További információ a Surface Hub 2-höz készül Windows Autopilotról.</a>",
       "createWindowsPCInfo": "\r\n<p>\r\nAz AutoPilot-eszközök alábbi beállításai automatikusan engedélyezve vannak az öntelepítési módban:\r\n</p>\r\n<ul>\r\n    <li>\r\n    Munkahelyi vagy Otthoni használat kiválasztásának kihagyása\r\n    </li>\r\n    <li>\r\n    OEM-regisztráció és OneDrive-konfiguráció kihagyása\r\n    </li>\r\n    <li>\r\n    A felhasználó kezdőélményben történő hitelesítésének kihagyása\r\n    </li>\r\n</ul>",
       "EnableWhiteGlove": {
@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "Szabályzat alkalmazása meghatározott ügynökidentitásokra.",
     "agents": "Ügynökök",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "További információ az ügynök munkamenetének kockázati szintjeiről",
+    "agentsLicenseInfoBalloonAriaLabel": "Ügynökök licenckövetelményei",
+    "agentsLicenseRequiredAriaLabel": "Ügynökök. A bérlője nem felel meg az ügynökök kiválasztásához szükséges licenckövetelményeknek.",
+    "agentsLicenseRequiredTooltip": "A bérlője nem felel meg az ügynökök kiválasztásához szükséges licenckövetelményeknek.",
     "agentsLicenseText": "A szabályzat szerkesztéséhez Microsoft Agent 365 vagy Microsoft 365 E7 licenc szükséges.",
     "agentsLicensingEnforcementDescription": "Hamarosan az ügynökökre vonatkozó Feltételes hozzáféréshez Microsoft Agent 365-licencre lesz szükség.",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "További információ az ügynökökre vonatkozó közelgő licenckényszerítéséről",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "Nevesített helyek",
     "menuItemPhasedRollout": "Többfázisú kibocsátás",
     "menuItemPolicies": "Házirendek",
-    "menuItemPoliciesV2": "Házirendek V2 (előzetes verzió)",
+    "menuItemPoliciesV2": "Szabályzattervek (előzetes verzió)",
     "menuItemPolicySettings": "Beállítások (Előzetes verzió)",
+    "menuItemSecurityDefaults": "Javasolt biztonsági beállítások",
     "menuItemTermsOfUse": "Használati feltételek",
     "microsoftAdminPortals": "Microsoft adminisztrátori portálok",
     "microsoftAdminPortalsInfoBox": "Az adminisztrátori portálok közé tartozik többek között Microsoft 365 Felügyeleti központ, az Exchange Felügyeleti központ, az Azure Portal, a Microsoft Entra felügyeleti központ és egyebek.",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "Bármely hitelesítési folyamat",
             "authenticationTransfer": "Hitelesítés átvitele",
             "deviceCodeFlow": "Eszközkód folyamata",
+            "excludeDeviceCodeFlow": "Eszközkód folyamatának kizárása",
             "infoBalloon": "Hogyan használ a szervezete bizonyos hitelesítési és engedélyezési protokollokat és engedélyeket",
             "label": "Hitelesítési folyamatok",
             "multiple": "„{0}” és „{1}”",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "A Kockázatkezelés megkövetelése engedélyezéséhez nem választhatja a következőt: {0}.",
       "mustSelect": "A Kockázatkezelés megkövetelése engedélyezéséhez ki kell választania a következőt: {0}.",
-      "xOrY": "{0} vagy {1}"
+      "xOrY": "{0} vagy {1}",
+      "xYOrZ": "{0}, {1} vagy {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "A „Bejelentkezési gyakoriság (minden alkalom)“ munkamenet-vezérlő nem használható a következővel: „{0}“",
         "appWarning": "A jelenleg kijelölt alkalmazások némelyike nem kompatibilis a „Minden alkalommal” értékű bejelentkezési gyakorisággal",
-        "everytime": "Minden alkalommal (5 perces tűréshatár)",
+        "everytime": "Minden alkalommal",
         "EverytimeCA": {
           "secondaryOnly": "Csak másodlagos hitelesítési módszerek"
         },
-        "everytimeInfoBalloon": "A „Minden alkalommal” beállítással a rendszer minden alkalommal elvégzi a kiértékelést, amikor megpróbálnak bejelentkezni egy ennek a házirendnek a hatókörébe tartozó alkalmazásba.",
-        "everyTimeStrict": "Minden alkalommal (szigorú – 10 másodperces tűréshatár)",
-        "everyTimeStrictInfoBalloon": "A parancsok tűréshatára korlátozza, hogy milyen gyakran lehet újrahitelesítésre felszólítani a felhasználókat, hogy elkerülhetők legyenek a túlzott parancsok és hurkok.",
+        "everytimeInfoBalloon": "A „Minden alkalommal” vezérlő a hitelesítés frissességének 5 perces érvényességi időszakát határozza meg.",
+        "everytimeInfoBalloonAriaLabel": "További információ a „Minden alkalommal” vezérlőről",
+        "everyTimeStrict": "Minden alkalommal szigorú (előzetes verzió)",
+        "everyTimeStrictInfoBalloon": "A „Minden alkalommal szigorú (előzetes verzió)” esetében a hitelesítés frissességének érvényességi időszaka 10 másodperc, és olyan alkalmazásokhoz készült, amelyek úgy vannak konfigurálva, hogy ezzel a vezérlővel működjenek.",
+        "everyTimeStrictInfoBalloonAriaLabel": "További információ a „Minden alkalommal szigorú (előzetes verzió)” vezérlőről",
+        "everyTimeStrictWarning": "A „Minden alkalommal szigorú (előzetes verzió)” vezérlőt olyan alkalmazásokhoz tervezték, amelyek értelmezik ezt a vezérlőt. Nem javasoljuk a „Minden alkalommal szigorú (előzetes verzió)” vezérlő használatát minden alkalmazásnál. Ez váratlan hitelesítési kéréseket eredményezhet, amelyek csökkenthetik a felhasználók termelékenységét, és a túl sok hitelesítési kérés miatt frusztrációt okozhatnak.",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "További információ arról, hogyan kerülhető el a túl sok hitelesítési kérés a „Minden alkalommal szigorú (előzetes verzió)” vezérlő esetében",
+        "everyTimeStrictWarningTitle": "Kerülje a túl sok hitelesítési kérést",
         "periodic": "Rendszeres újrahitelesítés",
         "reqMFAWarning": "A „Csak másodlagos hitelesítési módszerek“ használata esetén a „Többtényezős hitelesítés megkövetelése“ lehetőséget kell kiválasztani",
         "selectorInvalid": "Ha a „Jelszómódosítás megkövetelése“ beállítás van kiválasztva, csak a „bejelentkezési gyakoriság minden alkalommal“ munkamenet-vezérlő használható",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "Nap",
           "everytime": "Minden alkalommal",
-          "everyTimeStrict": "Minden alkalommal (szigorú)",
+          "everyTimeStrict": "Minden alkalommal szigorú (előzetes verzió)",
           "help": "Az az időtartam, amely után a felhasználónak be kell jelentkeznie, ha megpróbál hozzáférni egy erőforráshoz. Az alapértelmezett beállítás 90 nap folyamatos számlálással, azaz a felhasználónak akkor kell újból hitelesítést végeznie, amikor először próbál meg hozzáférni egy erőforráshoz, miután 90 napig vagy annál tovább nem volt aktív a számítógépén.",
           "Hour": {
             "plural": "{0} óra",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "2. szint",
       "accessRequirement3": "3. szint",
       "accessRequirementsLabel": "A biztonságos alkalmazás adatainak elérése",
-      "accountRecovery": "Fiók visszaszerzése",
+      "accountRecovery": "Fiók előkészítése és helyreállítása",
       "accountRecoveryInfoText": "Ez a felhasználói művelet az identitás-ellenőrzés engedélyezési ellenőrzését igényli. Kérjük, válassza ki az identitás-ellenőrzési profilt.",
       "appsActionsAuthTitle": "Felhőalkalmazások, műveletek vagy hitelesítési környezet",
       "appsOrActionsSelectorInfoBallonText": "Elért alkalmazások vagy felhasználói műveletek",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "Hálózati kapcsolat",
     "vPNDNSTriggers": "DNS-beállítások",
     "vPNIKEv2": "IKEv2-beállítások",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "Proxy",
     "vPNSplitTunneling": "Vegyes alagútkezelés",
     "vPNTrustedNetwork": "Megbízható hálózatok észlelése",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "Ébresztési beállítások",
     "webContentFilter": "Webes tartalomszűrés",
     "wiFi": "Wi-Fi",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "Az összes profiltípus",
     "workProfileOnly": "Csak személyesen birtokolt munkahelyi profil"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "Beállításcsoport neve"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "Rendelkezésre álló újrahasználható beállítások",
+      "Column": {
+        "displayName": "Újrahasználható beállításcsoport"
+      },
+      "instanceHeader": "Beállítások megadása",
+      "objectName": "Újrahasználható beállítás",
+      "reusableSummary": "{0} beállítás konfigurálva",
+      "reusableSummaryMultiple": "{0} beállítás konfigurálva",
+      "ruleProperties": "Szabály tulajdonságai",
+      "searchBox": "Újrahasználható beállítások keresése",
+      "selectCertificateFile": "Válasszon ki egy újrahasználható beállításként feltöltött tanúsítványfájlt.",
+      "selectOneOrMoreDeviceControlToExclude": "Válasszon ki egy vagy több újrafelhasználható beállításcsoportot, amelyet ki szeretne zárni az eszközvezérlési szabályból és profilból. A szabály a csoportok összes tulajdonságát örökli, beleértve a csoportok módosításait is.",
+      "selectOneOrMoreDeviceControlToInclude": "Válasszon ki egy vagy több újrafelhasználható beállításcsoportot, amelyet bele szeretne foglalni az eszközvezérlési szabályba és profilba. A szabály a csoportok összes tulajdonságát örökli, beleértve a csoportok módosításait is.",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "Újrahasználható beállítások megadása"
+        }
+      },
+      "selectScript": "Válassza ki az egyéni megfelelőségi beállításhoz hozzáadni kívánt szkriptet.",
+      "Subtitle": {
+        "firewall": "Válasszon ki egy vagy több újrafelhasználható beállításcsoportot, amelyet hozzá szeretne adni ehhez a tűzfalszabályhoz és -profilhoz. A szabály a csoportok összes tulajdonságát örökli, beleértve a csoportok módosításait is."
+      },
+      "title": "Újrahasználható beállítások kiválasztása (előzetes verzió)"
+    },
+    "wizardTitle": "Újrahasználható beállítások konfigurálása"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "Adminisztrátori csoportok",
     "RoleAssignmentAdminDesc": "Az adminisztrátori csoportnak azon rendszergazdák a felhasználói, akik hozzá vannak rendelve ehhez a szerepkörhöz",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "Fiókvédelem",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "Minden eszköz",
     "antivirus": "Vírusvédelem",
     "antivirusReporting": "Víruskereső jelentés (előzetes verzió)",
@@ -7657,7 +7706,7 @@
     "deviceDefault": "Eszköz alapértelmezése",
     "deviceDefaultCopyPasteBetweenWorkAndPersonalProfilesOption": "Eszköz alapértelmezése",
     "deviceDefaultDataSharingBetweenWorkAndPersonalProfilesOption": "Eszköz alapértelmezése",
-    "deviceEnrollmentAndAutomatedDeviceEnrollmentDescription": "Ezek a beállítások az Intune eszközregisztrálási szolgáltatásával, valamint az Apple School Manager vagy az Apple Business Manager automatikus eszközregisztrálási szolgáltatásával (korábbi nev��n DEP) regisztrált eszközökön működnek.",
+    "deviceEnrollmentAndAutomatedDeviceEnrollmentDescription": "Ezek a beállítások az Intune eszközregisztrálási szolgáltatásával, valamint az Apple School Manager vagy az Apple Business Manager automatikus eszközregisztrálási szolgáltatásával (korábbi nevén DEP) regisztrált eszközökön működnek.",
     "deviceEnrollmentAndAutomatedDeviceEnrollmentHeaderDescription": "Ezek a beállítások az Intune eszközregisztrációs szolgáltatásával, valamint az Apple School Manager vagy az Apple Business Manager automatikus eszközregisztrációs szolgáltatásával (korábbi nevén DEP) regisztrált eszközökön működnek. Ezek közé tartozik az összes felügyelt eszköz.",
     "deviceEnrollmentAndAutomatedDeviceEnrollmentHeaderDescriptionMac": "Ezek a beállítások eszközregisztrálási szolgáltatással (felhasználói jóváhagyás mellett vagy nélkül), valamint automatikus eszközregisztrálási szolgáltatással (korábbi nevén DEP) regisztrált eszközökön működnek.",
     "deviceEnrollmentAndAutomatedDeviceEnrollmentHeaderName": "Eszközök regisztrálása és eszközök automatikus regisztrálása",
@@ -8813,7 +8862,7 @@
     "kioskAppsDescription": "",
     "kioskAppsInFolderOrderedByName": "Mappában lévő alkalmazások név alapján rendezve",
     "kioskAppsName": "Dedikált eszközökön futó alkalmazások",
-    "kioskAppTableDesc": "Az összes alkalmazás és függő alkalmazás hozzáadása a rácshoz. Ez lehetővé teszi az alkalmazások dedikált hozzáférési üzemmódban való működését. Erre még a Start menü egyéni elrendezésének használatakor is szükség van.",
+    "kioskAppTableDesc": "Az összes alkalmazás és függő alkalmazás hozzáadása a rácshoz. Ez lehetővé teszi az alkalmazások dedikált hozzáférési üzemmódban való működését. Erre még a Start menü egyéni elrendezésének használatakor is sz��kség van.",
     "kioskAppTableName": "Böngészők és alkalmazások",
     "kioskAppTableSummary": "Az alkalmazások a teljes képernyős Startra lesznek kitűzve az alábbiakban megadott sorrendben és csempeméretben. A táblázatbeli sorok megjelenítési sorrendjét kattintással és húzással módosíthatja. <a href=\"https://go.microsoft.com/fwlink/?linkid=2027092\" target=\"_blank\">További információ</a>.",
     "kioskAppTypeAUID": "UWP-alkalmazás",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "Mobilhálózati VPN",
     "vpnPerApp": "Alkalmazásonkénti VPN",
     "vPNPerAppDescription": "Amikor a felhasználók elkezdik a kiválasztott alkalmazások használatát, a forgalom automatikusan a VPN-kapcsolaton keresztül fog haladni, ha a kapcsolat Mindig bekapcsolva állapotúra van konfigurálva, vagy ha a kapcsolatot a felhasználó manuálisan indította el.",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "A proxykiszolgáló címe (teljes állomásnév vagy IP-cím).",
     "vPNPolicyAddressName": "Cím",
     "vPNPolicyAssociatedAppsDescription": "Az itt hozzáadott alkalmazások automatikusan elindítják a VPN-kapcsolatot.",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "Eszközalagút",
     "vPNPolicyExcludedDomainsUrlsDescription": "Azon tartományok listája, amelyek képesek megkerülni a VPN-t, ha az alkalmazásonkénti VPN aktiválva van. Az iOS 14-es és újabb verzióira vonatkozik",
     "vPNPolicyExcludedDomainsUrlsName": "Kizárt tartományok",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "A névfeloldási házirendtábla (NRPT) szabályai határozzák meg, hogy a DNS hogyan oldja fel a neveket, amikor csatlakozik a virtuális magánhálózathoz. A tábla minden sorában egy tartomány, illetve az adott tartomány feloldásához használandó DNS-utótagok vagy webes proxykiszolgáló van megadva.",
     "vPNPolicyNameResolutionPolicyTableRulesName": "Névfeloldási házirendtábla (NRPT) szabályai",
     "vPNPolicyNetworkTrafficRulesDescription": "Figyelmeztetés: ha hálózati szabályokat ad hozzá, a VPN-kapcsolat a megadott szabályokra fog korlátozódni.\r\n     Forgalmi szabályok hozzáadásakor a VPN-nel kapcsolatos problémák elkerülése érdekében adjon hozzá egy kevésbé korlátozó gyűjtőszabályt is.",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "például Céges VPN végfelhasználóknak",
     "vPNServerList": "Kiszolgálók listája",
     "vPNServerListExample": "Kiszolgáló leírása, IP-cím vagy teljes tartománynév (például Céges VPN, 10.0.0.1) (például VPN (csak alkalmazások), vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "A listán szereplő alkalmazások nem használhatják a VPN-alagutat. A forgalmuk mindig megkerüli a VPN-t, és közvetlenül hozzáfér a hálózathoz, függetlenül a VPN-kapcsolat állapotától. A listán nem szereplő alkalmazásoknak VPN-t kell használniuk, amikor csatlakoznak, és le vannak tiltva, ha a VPN nem elérhető.",
     "vpnStrictTunnelBypassAppsName": "Engedélyezze ezeknek az alkalmazásoknak a Szigorú alagút mód megkerülését",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "A lista munkahelyi profilt használó alkalmazásai nem használhatják a VPN-alagutat. A forgalmuk mindig megkerüli a VPN-t, és közvetlenül hozzáfér a hálózathoz, függetlenül a VPN-kapcsolat állapotától. Azoknak a munkahelyi profilt használó alkalmazásoknak, amelyek nem szerepelnek a listán, a VPN-t kell használniuk, és a rendszer letiltja őket, ha a VPN nem érhető el.",
     "vpnStrictTunnelModeDescription": "Ha engedélyezve van, a teljes hálózati forgalmat a VPN-alagúton keresztül bonyolítja le a rendszer. Ha nem sikerül kapcsolatot létesíteni a VPN-nel, a rendszer az eszköz teljes hálózati forgalmát letiltja. A kizárási listára felvett alkalmazások mindig megkerülik a VPN-t, és közvetlenül csatlakoznak a hálózathoz, még akkor is, ha a VPN csatlakoztatva van.",
     "vpnStrictTunnelModeName": "Szigorú alagút mód",
     "vpnStrictTunnelModeWorkProfileDescription": "Ha engedélyezve van, a munkahelyi profil teljes hálózati forgalma a VPN-alagúton keresztül bonyolódik. Ha nem lehet kapcsolatot létesíteni a VPN-nel, a munkahelyi profil hálózati forgalma le lesz tiltva. A kizárási listára felvett alkalmazások mindig megkerülik a VPN-t, és közvetlenül csatlakoznak a hálózathoz, még akkor is, ha a VPN csatlakoztatva van. A személyes alkalmazásokra és a munkahelyi profilon kívüli forgalomra nincs hatással.",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "Mivel a WIP definiálja a szabályzatokat és az alkalmazáslistákat, a WIP kiválasztása esetén további hálózati forgalmi szabályokra csak speciális esetekben lehet szükség.",
     "vPNWipOrAppsName": "WIP vagy alkalmazások társítása ehhez a VPN-hez",
     "wakeOnLANName": "Hálózati ébresztés",
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "Felhőalapú PC áttekintése",
       "cloudPCSettings": "Felhőalapú PC beállításai",
       "monitorCloudPCs": "Felhőalapú PC-k figyelése (előzetes verzió)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "Felhőalapú PC-k kiépítése",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Windows 365 monitorozás (előzetes verzió)",
       "windows365Reports": "Windows 365-jelentések"
     },
@@ -13426,7 +13486,7 @@
     "rolesByPermission": "Szerepkörök engedély szerint",
     "scriptManagement": "Szkriptek",
     "securityBaselines": "Biztonsági alapkonfigurációk",
-    "servicenowConnector": "ServiceNow-összekötő",
+    "servicenowConnector": "ServiceNow-összeköt��",
     "serviceToServiceConnector": "Exchange Online Connector",
     "shellScripts": "Héjszkriptek",
     "teamViewerConnector": "TeamViewer-összekötő",

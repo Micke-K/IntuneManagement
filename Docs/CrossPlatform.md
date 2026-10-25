@@ -63,6 +63,44 @@ Without `IM_UI_BACKEND`, the module defaults to the headless `None` backend off
 Windows - useful for automation, and the reason `Connect-IMIntuneManagement` and the
 bulk cmdlets work fine on a Mac or a Linux box with no display at all.
 
+### macOS blocks the launcher
+
+When the app was downloaded as a ZIP, the first start shows:
+
+> **"Start-Avalonia.command" Not Opened**
+> Apple could not verify "Start-Avalonia.command" is free of malware that may harm your
+> Mac or compromise your privacy.
+
+The buttons are **Move to Trash** and **Done** (or **OK**). Choose **Done**; nothing is
+wrong with the file.
+
+Why: the browser marks every file it downloads with a quarantine flag, and macOS
+Gatekeeper refuses to run a flagged file that Apple has not notarized. This project is
+not notarized - that needs a paid Apple Developer account and a signed build of every
+file - so every file from the ZIP carries the flag. That includes the Avalonia libraries
+in `Bin/Avalonia` (`.dylib`), which would each be refused the same way once the launcher
+itself is allowed.
+
+**Fix (recommended): clear the flag on the whole folder**, once, in Terminal:
+
+```sh
+xattr -dr com.apple.quarantine /path/to/IntuneManagement
+```
+
+Drag the folder onto the Terminal window to fill in the path. `-r` covers every file
+inside, so the launcher and all the native libraries start without further prompts.
+Extracting a new download brings the flag back, so run it again after each update.
+
+**Alternative: allow it in System Settings.** Right after the block, open **System
+Settings > Privacy & Security**, scroll to **Security**, and select **Open Anyway** next
+to the message about `Start-Avalonia.command`. Confirm with your password. This allows
+only that one file; macOS may then block each native library in turn, so the `xattr`
+command above is less work. (Control-click > **Open** no longer bypasses the check on
+macOS 15 and later.)
+
+**Avoid it entirely:** a `git clone` does not set the quarantine flag, and neither does
+copying the folder from another Mac over the network with `scp` or `rsync`.
+
 ## What does not work off Windows
 
 These degrade with a log message rather than an error:
@@ -72,6 +110,7 @@ These degrade with a log message rather than an error:
 | **Word documentation output** | Needs `Microsoft.Office.Interop.Word` COM automation. HTML, Markdown, CSV and JSON output are unaffected. |
 | **MSI property extraction** on app import | Needs the `WindowsInstaller.Installer` COM object. Other app types import normally. |
 | **WAM / broker sign-in** | Windows-only. Authentication falls back to the system browser. |
+| **File > Hide console** and the *Hide console window* setting | The process has no console window of its own off Windows - the terminal emulator is another application. The menu item is not shown and the setting does nothing. (On Windows it also needs the classic console host; under Windows Terminal the console cannot be hidden.) |
 
 The `Default` theme follows the OS on all three platforms: the Windows app theme, the
 macOS appearance setting, and the GNOME colour scheme on Linux. Linux desktops that are

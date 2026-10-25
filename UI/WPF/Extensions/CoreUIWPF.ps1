@@ -328,8 +328,24 @@ public class AppUserModelHelper {
         }
         catch { }
 
+        # Setting HideConsoleWindow: hide the console once the window is up.
+        if((Get-SettingValue "HideConsoleWindow") -eq $true -and (Test-ConsoleWindowSupported))
+        {
+            $script:window.Add_ContentRendered({
+                [void](Hide-ConsoleWindow)
+                Update-ConsoleWindowMenu
+            })
+        }
+
         $script:window.ShowDialog() | Out-Null
     }
+}
+
+# The menu item names what a click will do, so it follows the console state.
+function Update-ConsoleWindowMenu
+{
+    $header = if(Get-ConsoleWindowVisible) { "_Hide console" } else { "_Show console" }
+    $script:UIProvider.SetXamlProperty($script:window, "mnuToggleConsole", "Header", $header)
 }
 
 function Get-LogViewPanel
@@ -974,6 +990,20 @@ public class TaskbarIconKeeper {
     $script:UIProvider.AddXamlEvent($script:window, "mnuTenantSettings", "Add_Click", { Show-SettingsForm -Tenant })
     $script:UIProvider.AddXamlEvent($script:window, "mnuUpdates", "Add_Click", { Show-UpdatesDialog })
     $script:UIProvider.AddXamlEvent($script:window, "mnuAbout", "Add_Click", { Show-AboutDialog })
+    # File > Hide console / Show console. Windows, classic console host only
+    # (Internal/ConsoleWindow.ps1); where it cannot work the item is not shown.
+    if(Test-ConsoleWindowSupported)
+    {
+        $script:UIProvider.AddXamlEvent($script:window, "mnuToggleConsole", "Add_Click", {
+            [void](Switch-ConsoleWindow)
+            Update-ConsoleWindowMenu
+        })
+        Update-ConsoleWindowMenu
+    }
+    else
+    {
+        $script:UIProvider.SetXamlProperty($script:window, "mnuToggleConsole", "Visibility", "Collapsed")
+    }
     $script:UIProvider.AddXamlEvent($script:window, "mnuExit", "Add_Click", {
         if([System.Windows.MessageBox]::Show("Are you sure you want to exit?", "Exit?", "YesNo", "Question") -eq "Yes")
             {
@@ -1003,7 +1033,10 @@ public class TaskbarIconKeeper {
     $script:window.Add_Closed({
         $grdViewPanel = $script:window.FindName("grdViewPanel")
         $grdViewPanel.Children.Clear()
-    }) 
+        # Give the console back on exit: Start.cmd ends in `pause`, which would
+        # otherwise wait for a key in a window nobody can see.
+        if((Test-ConsoleWindowSupported) -and -not (Get-ConsoleWindowVisible)) { [void](Show-ConsoleWindow) }
+    })
 
     $script:window.add_Loaded({
         $script:SplashScreen.Hide()
@@ -1793,6 +1826,8 @@ function Show-AboutDialog
     }
 
     $script:UIProvider.SetXamlProperty($script:dlgAbout, "txtTitle", "Text", "Intune Management")
+    # From the manifest (Internal/AppInfo.ps1), not the XAML - see the comment there.
+    $script:UIProvider.SetXamlProperty($script:dlgAbout, "txtCopyright", "Text", (Get-AppCopyright))
     $script:UIProvider.SetXamlProperty($script:dlgAbout, "txtViewTitle", "Text", ("Current view: " + $script:ActiveView.Title))
     if($script:ActiveView.Description)
     {
@@ -1825,23 +1860,48 @@ function Show-UpdatesDialog
     }
     else {
         $fileContent = [IO.File]::ReadAllText($localReleaseNotes)
-        try
-        {
-            $tmp = $fileContent.Replace("`r`n","`n")
-            $mystring = ("blob $($tmp.Length)`0" + $tmp)
-            $mystream = [IO.MemoryStream]::new([byte[]][char[]]$mystring)
-            $curHash = Get-FileHash -InputStream $mystream -Algorithm SHA1
-        }
-        finally
-        {
-            if($mystream) { $mystream.Dispose() }
-        }
+        # One implementation of the git blob sha, in Internal/AppUpdateCheck.ps1, shared
+        # with the raw fallback that has to compute the published sha itself. The copy
+        # that used to live here counted CHARACTERS for the length prefix and cast
+        # chars to bytes, so a single non-ASCII character in the notes produced a sha
+        # GitHub never reports and the two copies always read as different.
+        $curHash = [PSCustomObject]@{ Hash = Get-AppGitBlobSha $fileContent }
     }
 
     # Fetch via Internal/AppUpdateCheck.ps1 so both backends share one
     # implementation (R10). Sha is the blob hash used below to decide whether the
     # published notes differ from the local copy.
     $content = Get-AppRemoteReleaseNotes
+
+    # The local notes are rendered whenever the file exists, independently of what
+    # GitHub returned. They used to be written only on the "remote OK but the shas
+    # differ" path, so any other outcome - notably a failed fetch - left the Local
+    # tab visible (it has no Visibility in the XAML, so it defaults to Visible) and
+    # completely empty.
+    if($fileContent)
+    {
+        Set-WpfMarkdownText $script:dlgUpdates.FindName("txtReleaseNotesLocal") $fileContent
+    }
+
+    if(-not $content)
+    {
+        # Say why, in the dialog. Get-AppRemoteReleaseNotes has already logged it, but
+        # a reader looking at an empty Release Notes tab has no reason to go to the log
+        # - and "unreachable" is the wrong conclusion when the real answer is a shared
+        # API rate limit that resets in an hour.
+        $reason = Get-AppUpdateLastError
+        $message = if($reason) { "Could not read the published release notes.`n`n$reason" }
+                   else        { "Could not read the published release notes. See the log for details." }
+        Set-WpfMarkdownText $script:dlgUpdates.FindName("txtReleaseNotes") $message
+
+        # Nothing to compare against, so neither verdict applies. Keep the local tab
+        # only when there is something in it.
+        $script:UIProvider.SetXamlProperty($script:dlgUpdates, "txtReleaseNotesMatch", "Visibility", "Collapsed")
+        $script:UIProvider.SetXamlProperty($script:dlgUpdates, "txtReleaseNotesNoMatch", "Visibility", "Collapsed")
+        $visibility = if($fileContent) { "Visible" } else { "Collapsed" }
+        $script:UIProvider.SetXamlProperty($script:dlgUpdates, "tabLocalReleaseNotes", "Visibility", $visibility)
+    }
+
     if($content)
     {
         # Rendered rather than dumped as raw text: Set-WpfMarkdownText turns the
@@ -1861,12 +1921,10 @@ function Show-UpdatesDialog
         }
         elseif($content.sha -ne $curHash.Hash)
         {
-            # ReleaseNotes.md not matching - show the local copy alongside.
-            # This used to write $fileContent into txtReleaseNotes, overwriting the
-            # GitHub notes with the local ones while the Local tab it had just made
-            # visible stayed empty. The local text belongs in txtReleaseNotesLocal.
+            # ReleaseNotes.md not matching - show the local copy alongside. The text
+            # itself is rendered once, above, for every outcome; this only decides
+            # that the tab is worth showing.
             $script:UIProvider.SetXamlProperty($script:dlgUpdates, "tabLocalReleaseNotes", "Visibility", "Visible")
-            Set-WpfMarkdownText $script:dlgUpdates.FindName("txtReleaseNotesLocal") $fileContent
             $script:UIProvider.SetXamlProperty($script:dlgUpdates, "txtReleaseNotesMatch", "Visibility", "Collapsed")
         }
         else

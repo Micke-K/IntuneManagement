@@ -18,6 +18,134 @@ $script:AppUpdateRepo = 'Micke-K/IntuneManagement'
 # Tried in order. $null means "no ref", i.e. whatever the default branch is.
 $script:AppUpdateRefs = @('v4', $null)
 
+# raw.githubusercontent.com fallback refs. Unlike the contents API there is no
+# "omit the ref" form, so the default branch has to be named - hence master AND
+# main, tried after v4. The list keeps the self-healing property described above:
+# when v4 becomes the default branch its own ref stops resolving and the next
+# entry serves exactly the content v4 used to.
+$script:AppUpdateRawRefs = @('v4', 'master', 'main')
+
+# Why a raw fallback exists at all: api.github.com allows 60 requests per hour per
+# IP for unauthenticated callers, and that quota is counted per EGRESS ip - so every
+# client behind one corporate proxy shares a single pool of 60 and a busy office
+# never gets above it. raw.githubusercontent.com serves file content from a CDN and
+# is not under that quota (verified live while the API was returning 403), so the
+# two file lookups this module makes keep working when the API is exhausted.
+# /releases has no raw equivalent and stays API-only.
+
+# Human-readable reason the last GitHub lookup failed, or $null. Read by the UI so
+# the dialog can say what actually happened instead of "not reachable" - the
+# failures used to go only to Write-LogDebug, which is silent unless the Debug
+# setting is on, so a rate-limited check looked exactly like a broken proxy.
+$script:AppUpdateLastError = $null
+
+function Get-AppUpdateLastError {
+    return $script:AppUpdateLastError
+}
+
+function Clear-AppUpdateLastError {
+    $script:AppUpdateLastError = $null
+}
+
+# Record (and log) why a lookup failed. First failure wins: it is the one that
+# describes the primary cause, later refs usually fail the same way.
+#
+# A 403 from this API is almost always the rate limit rather than a permission
+# problem, so it is named as such and the reset time is looked up from
+# /rate_limit - that endpoint is explicitly exempt from the quota, so asking costs
+# nothing even while everything else is being refused.
+function Set-AppUpdateError {
+    param([string]$Context, $ErrorRecord)
+
+    $message = if ($ErrorRecord) { [string]$ErrorRecord.Exception.Message } else { 'unknown error' }
+    $detail  = $message
+
+    if ($message -match '(?i)rate limit') {
+        $detail = 'GitHub API rate limit exceeded (60 requests per hour per IP for anonymous callers, shared by everyone behind the same proxy)'
+        $reset = Get-AppUpdateRateLimitReset
+        if ($reset) {
+            $detail += ". Resets at $($reset.ToString('HH:mm'))"
+        }
+    }
+
+    # Debug, not warning: a single lookup failing is not the outcome. The raw fallback
+    # below often rescues it, and four warnings for a check that then succeeded is its
+    # own kind of misleading. The entry points warn ONCE, with this reason, only when
+    # the whole lookup ends up empty.
+    Write-LogDebug "Update check: $Context failed. $detail"
+    if (-not $script:AppUpdateLastError) { $script:AppUpdateLastError = $detail }
+}
+
+# Local time the anonymous quota resets, or $null. /rate_limit does not count
+# against the quota, so this is safe to call from the failure path.
+function Get-AppUpdateRateLimitReset {
+    try {
+        $params = Get-AppUpdateRestParams
+        $limit = Invoke-RestMethod "https://api.github.com/rate_limit" @params
+        $epoch = [long]$limit.resources.core.reset
+        if ($epoch -gt 0) { return [DateTimeOffset]::FromUnixTimeSeconds($epoch).ToLocalTime() }
+    }
+    catch {
+        Write-LogDebug "Update check: rate limit lookup failed: $($_.Exception.Message)"
+    }
+    return $null
+}
+
+# The git blob sha of some text, the same value the contents API reports in .sha.
+#
+# git hashes a blob as sha1("blob <bytecount>\0<bytes>") over LF-normalised content.
+# Computing it here is what lets the raw fallback return a Sha at all - raw serves
+# bytes with no metadata - so a caller comparing published against local keeps
+# working whichever path the text arrived by.
+#
+# The length prefix counts BYTES, not characters, and the payload is hashed as UTF-8
+# bytes. Those differ the moment the file contains one non-ASCII character ("cafe"
+# with an e-acute is 5 characters but 6 bytes), which would silently yield a sha that
+# matches nothing GitHub ever reports - so a published file identical to the local
+# one would be reported as differing. Verified against git hash-object for both an
+# ASCII and a non-ASCII payload (Tests/AppUpdateFallback.Tests.ps1).
+function Get-AppGitBlobSha {
+    param([string]$Text)
+
+    if ($null -eq $Text) { return $null }
+
+    $payload = [System.Text.Encoding]::UTF8.GetBytes($Text.Replace("`r`n", "`n"))
+    $header  = [System.Text.Encoding]::ASCII.GetBytes("blob $($payload.Length)`0")
+
+    $stream = $null
+    try {
+        $stream = [IO.MemoryStream]::new()
+        $stream.Write($header, 0, $header.Length)
+        $stream.Write($payload, 0, $payload.Length)
+        [void]$stream.Seek(0, [IO.SeekOrigin]::Begin)
+        return (Get-FileHash -InputStream $stream -Algorithm SHA1).Hash
+    }
+    finally {
+        if ($stream) { $stream.Dispose() }
+    }
+}
+
+# A file's text from raw.githubusercontent.com, or $null. Tried refs in order.
+function Get-AppRawFileText {
+    param([Parameter(Mandatory)][string]$Path)
+
+    $params = Get-AppUpdateRestParams
+    foreach ($ref in $script:AppUpdateRawRefs) {
+        $url = "https://raw.githubusercontent.com/$($script:AppUpdateRepo)/$ref/$Path"
+        try {
+            $text = Invoke-RestMethod $url @params
+            if ($text) {
+                Write-LogDebug "Update check: '$Path' served by raw.githubusercontent.com at ref '$ref'"
+                return [string]$text
+            }
+        }
+        catch {
+            Write-LogDebug "Update check: raw lookup of '$Path' at ref '$ref' failed: $($_.Exception.Message)"
+        }
+    }
+    return $null
+}
+
 # Invoke-RestMethod splat honouring the configured proxy, if any.
 function Get-AppUpdateRestParams {
     $params = @{}
@@ -114,14 +242,33 @@ function Get-AppRemoteManifestVersion {
     $url = "https://api.github.com/repos/$($script:AppUpdateRepo)/contents/IntuneManagement.psd1"
     if ($Ref) { $url = $url + '?ref=' + $Ref }
 
-    $tempManifest = $null
     try {
         $content = Invoke-RestMethod $url @params
         if (-not $content.content) { return $null }
 
         $text = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($content.content))
+        return (ConvertTo-AppVersionFromManifestText $text)
+    }
+    catch {
+        Set-AppUpdateError "manifest lookup at ref '$Ref'" $_
+        return $null
+    }
+}
+
+# A manifest's ModuleVersion (plus pre-release label) from its TEXT.
+#
+# Written to a temp file and read with Import-PowerShellDataFile: the manifest is
+# PowerShell data, not JSON, and this avoids hand-rolling a parser or invoking the
+# text as code. Split out from the API path so the raw fallback parses identically.
+function ConvertTo-AppVersionFromManifestText {
+    param([string]$Text)
+
+    if ([string]::IsNullOrWhiteSpace($Text)) { return $null }
+
+    $tempManifest = $null
+    try {
         $tempManifest = [IO.Path]::Combine([IO.Path]::GetTempPath(), "IM-update-$([Guid]::NewGuid().ToString('N')).psd1")
-        [IO.File]::WriteAllText($tempManifest, $text, (New-Object System.Text.UTF8Encoding($false)))
+        [IO.File]::WriteAllText($tempManifest, $Text, (New-Object System.Text.UTF8Encoding($false)))
 
         $data = Import-PowerShellDataFile -Path $tempManifest -ErrorAction Stop
         if (-not $data.ModuleVersion) { return $null }
@@ -132,7 +279,7 @@ function Get-AppRemoteManifestVersion {
         return (ConvertTo-AppVersion $full)
     }
     catch {
-        Write-LogDebug "Update check: manifest lookup at ref '$Ref' failed: $($_.Exception.Message)"
+        Write-LogDebug "Update check: manifest parse failed: $($_.Exception.Message)"
         return $null
     }
     finally {
@@ -165,7 +312,7 @@ function Get-AppRemoteReleaseVersion {
         return $best
     }
     catch {
-        Write-LogDebug "Update check: releases lookup failed: $($_.Exception.Message)"
+        Set-AppUpdateError 'releases lookup' $_
         return $null
     }
 }
@@ -177,6 +324,20 @@ function Get-AppRemoteVersion {
     foreach ($ref in $script:AppUpdateRefs) {
         $fromManifest = Get-AppRemoteManifestVersion -Ref $ref
         if ($fromManifest -and ($Major -le 0 -or $fromManifest.Release.Major -eq $Major)) { return $fromManifest }
+    }
+
+    # Contents API gave nothing at any ref. Before falling back to /releases, try the
+    # same manifest from raw: when the failure was the shared anonymous rate limit,
+    # raw is not subject to it and answers normally.
+    $rawText = Get-AppRawFileText -Path 'IntuneManagement.psd1'
+    if ($rawText) {
+        $fromRaw = ConvertTo-AppVersionFromManifestText $rawText
+        if ($fromRaw -and ($Major -le 0 -or $fromRaw.Release.Major -eq $Major)) {
+            $reason = Get-AppUpdateLastError
+            if ($reason) { Write-Log "Version read from raw.githubusercontent.com instead of the API: $reason" }
+            Clear-AppUpdateLastError
+            return $fromRaw
+        }
     }
 
     # No manifest at any ref matched. The 3.x line has no IntuneManagement.psd1
@@ -217,12 +378,21 @@ function Get-AppUpdateInfo {
     [CmdletBinding()]
     param()
 
+    Clear-AppUpdateLastError
+
     $local  = Get-AppLocalVersion
     $major  = if ($local) { $local.Release.Major } else { 0 }
     $remote = Get-AppRemoteVersion -Major $major
 
     if (-not $local)  { Write-Log 'Failed to get version info from local file' 2 }
-    if (-not $remote) { Write-Log 'Failed to get version info in GitHub' 2 }
+    if (-not $remote) {
+        # Name the cause. 'Failed to get version info in GitHub' on its own reads as a
+        # connectivity problem, which sent one report chasing a proxy setting for a
+        # check that was simply rate limited.
+        $reason = Get-AppUpdateLastError
+        if ($reason) { Write-Log "Failed to get version info in GitHub: $reason" 2 }
+        else         { Write-Log 'Failed to get version info in GitHub' 2 }
+    }
 
     $outdated = ($local -and $remote -and (Compare-AppVersion $local $remote) -lt 0)
 
@@ -256,6 +426,8 @@ function Get-AppRemoteReleaseNotes {
     [CmdletBinding()]
     param()
 
+    Clear-AppUpdateLastError
+
     $params = Get-AppUpdateRestParams
     foreach ($ref in $script:AppUpdateRefs) {
         $url = "https://api.github.com/repos/$($script:AppUpdateRepo)/contents/ReleaseNotes.md"
@@ -270,8 +442,26 @@ function Get-AppRemoteReleaseNotes {
             }
         }
         catch {
-            Write-LogDebug "Update check: release notes lookup at ref '$ref' failed: $($_.Exception.Message)"
+            Set-AppUpdateError "release notes lookup at ref '$ref'" $_
         }
     }
+
+    # Raw fallback: same file, CDN instead of the rate-limited API. Sha is computed
+    # locally (Get-AppGitBlobSha) so the caller's published-vs-local comparison
+    # behaves exactly as it does on the API path.
+    $rawText = Get-AppRawFileText -Path 'ReleaseNotes.md'
+    if ($rawText) {
+        $reason = Get-AppUpdateLastError
+        if ($reason) { Write-Log "Release notes read from raw.githubusercontent.com instead of the API: $reason" }
+        Clear-AppUpdateLastError
+        return [PSCustomObject]@{
+            Text = $rawText
+            Sha  = Get-AppGitBlobSha $rawText
+        }
+    }
+
+    $reason = Get-AppUpdateLastError
+    if ($reason) { Write-Log "Failed to get release notes from GitHub: $reason" 2 }
+    else         { Write-Log 'Failed to get release notes from GitHub' 2 }
     return $null
 }

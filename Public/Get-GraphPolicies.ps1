@@ -133,8 +133,9 @@
             }
         }
 
-        if ($SinglePage -eq $true) { $newPageObject = $true }
-        else                       { $params.Add("AllPages", $true) }
+        # Page size "All" means every page, whatever the caller asked for (#384).
+        if ($SinglePage -eq $true -and -not (Test-GraphPageSizeAll)) { $newPageObject = $true }
+        else                                                          { $params.Add("AllPages", $true) }
     }
     elseif ($script:GraphPagingCache) {
         # Resume paging: cache stores the same {BatchObject,Types} / {ListURL,Types}

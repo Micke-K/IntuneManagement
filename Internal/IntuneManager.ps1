@@ -38,8 +38,17 @@ Add-SettingsObject -Title "Graph Page Size" -Key "GraphPageSize" -Type "List" `
         [PSCustomObject]@{ Name = "1000";          Value = "1000" },
         [PSCustomObject]@{ Name = "All";           Value = "All"  }
     ) `
-    -DefaultValue "0" -Description "How many items load at a time" `
+    -DefaultValue "0" -Description "How many items load at a time. All loads every page in one go." `
     -SubPath "IntuneManager" -Section "IntuneManager"
+
+# The list's "All" entry is not a number: it means no $top on the list URL and
+# every page in one call, even where the view asked for a single page. Casting
+# it used to throw, and the fallback made it 20 - so the "pick All" workaround
+# for duplicate imports paged at 20 instead (#384).
+function Test-GraphPageSizeAll
+{
+    return ("$(Get-SettingValue 'GraphPageSize' '0')" -eq 'All')
+}
 
 Add-SettingsObject -Title "Root folder" -Key "RootFolder" -Type "Folder" `
 -Description "Root folder for exporting/importing objects" `
@@ -725,6 +734,10 @@ function Get-PoliciesTypeFromObject
         }
     }
 
+    # The @odata.id named exactly one candidate's endpoint - remembered for the
+    # fallback below.
+    $idMatchedType = if(@($checkPolicies).Count -eq 1) { $checkPolicies[0] } else { $null }
+
     if($checkPolicies.Count -eq 0) { 
         if($FromPolicyTypes.Count -gt 0 ) {
             $checkPolicies = $FromPolicyTypes
@@ -756,6 +769,17 @@ function Get-PoliciesTypeFromObject
        -not $PolicyObject.'@odata.id' -and $PolicyObject.'@odata.type') {
         Write-Log "Resolved policy type '$($checkPolicies[0].Id)' for object with OData.type = $($PolicyObject.'@odata.type') from single narrowed candidate (no CheckPolicy match)" 4
         return $checkPolicies[0]
+    }
+
+    # An @odata.id that names exactly one type's endpoint identifies the object
+    # even when that type's CheckPolicy declines it. The script types' CheckPolicy
+    # always answers $false, so every exported PowerShell / shell / custom-attribute
+    # script ("@odata.id": "deviceManagement/deviceShellScripts('<id>')") was
+    # dropped and never imported - found by the online assignment round trip
+    # (2026-10-17). A strict @odata.type matcher keeps the final say, as above.
+    if($idMatchedType -and -not $idMatchedType.StrictODataTypeCheck) {
+        Write-Log "Resolved policy type '$($idMatchedType.Id)' for object with OData.id = $($PolicyObject.'@odata.id') from its endpoint (no CheckPolicy match)" 4
+        return $idMatchedType
     }
 
     if($null -eq $PSBoundParameters["FromPolicyTypes"]) {
@@ -1071,6 +1095,159 @@ function Resolve-IntuneImportUpdateTarget
     # replace / replace_with_assignments with no existing match fall through
     # to a plain import - same as the original project.
     return New-IntuneImportMatchResult -Action "Create" -Message "Create new object"
+}
+
+# ---- Import candidates (#384) ------------------------------------------------
+#
+# The per-view Import dialog matched files only against the rows it had loaded,
+# so an existing policy on a page not loaded yet was "new" and got imported a
+# second time. Loading every page fixes that but costs the whole type each time
+# the dialog opens, most of it never compared against anything.
+#
+# Instead look up only what could match the selected files, per policy type:
+#   - by id, on a same-tenant import (the matcher's Id strategy only runs then),
+#     batched through Invoke-GraphBatchRequest;
+#   - by a server-side name search (Get-GraphPolicies -NameFilter, which also
+#     re-checks client-side) for the name the other strategies compare: the name
+#     without the organization tokens, and every policy reference token.
+# A type whose endpoint rejects $filter, or a selection that would need more
+# searches than listing the type costs, is listed once instead. The result is
+# merged with the rows already loaded; the matcher itself is unchanged, so the
+# lookup only has to return a superset of what could match.
+
+$script:ImportCandidateNameSearchLimit = 20
+
+# Name searches that cover every name-based matcher strategy for one file.
+function Get-IntuneImportCandidateSearchTerms
+{
+    param($ImportPolicy)
+
+    $terms = [System.Collections.Generic.List[string]]::new()
+    $name = [string]$ImportPolicy.Name
+    if([string]::IsNullOrWhiteSpace($name)) { return @() }
+
+    # Exact name and normalized name, with one search: the LONGEST WORD of the
+    # normalized name. Normalization only removes organization names, trims
+    # separators and collapses whitespace, so each of its words occurs intact in
+    # every name that matches exactly or after normalization. The whole
+    # normalized string does not: "Baseline  Windows" normalizes to "BASELINE
+    # WINDOWS", which is no substring of the original, and an organization name
+    # in the middle splits it too (code review). The matcher then picks the real
+    # match from what comes back. The organization itself is never searched - the
+    # target's copy may carry another.
+    $core = Normalize-IntuneImportPolicyName -Name $name
+    $words = @(([string]$core).Split(' ', [StringSplitOptions]::RemoveEmptyEntries) | Sort-Object Length -Descending)
+    # However short: "Contoso - AV" normalizes to "AV", and only "av" finds the
+    # existing "AV" (code review). The full name is the fallback only when the
+    # name is nothing but organization names - then just the exact name can match.
+    $term = if($words.Count -gt 0) { $words[0] } else { $name.Trim() }
+    [void]$terms.Add($term.ToLowerInvariant())
+
+    foreach($token in @(Get-IntuneImportPolicyReferenceTokens -Name $name)) {
+        if($token -and -not ($terms | Where-Object { $_ -eq $token })) { [void]$terms.Add($token) }
+    }
+    return $terms.ToArray()
+}
+
+# Existing objects of one type by id, from one batched lookup. Ids that no
+# longer exist (or that the endpoint cannot GET directly) are simply absent.
+function Get-IntuneImportCandidatesById
+{
+    param($PolicyType, [string[]]$Ids, [int]$TokenId)
+
+    $requests = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $n = 0
+    foreach($id in $Ids) {
+        [void]$requests.Add([PSCustomObject]@{ id = "$n"; method = 'GET'; url = "$(([string]$PolicyType.API).TrimStart('/'))/$id" })
+        $n++
+    }
+    if($requests.Count -eq 0) { return @() }
+
+    $results = @()
+    try { $results = @(Invoke-GraphBatchRequest $requests "Import candidates" -TokenId $TokenId -IncludedFailed -SkipWarnings) }
+    catch { Write-LogError "Import candidates: id lookup failed for $($PolicyType.Id)" $_.Exception; return @() }
+
+    $tokenInfo = Get-OperationTokenInfo $TokenId
+    $found = foreach($r in $results) {
+        if(-not $r -or -not $r.body -or $r.body.PSObject.Properties['error']) { continue }
+        if($r.PSObject.Properties['Status'] -and [int]$r.Status -ge 300) { continue }
+        $policy = $PolicyType.GetObject($r.body)
+        if(-not $policy) { continue }
+        if($tokenInfo) {
+            $policy.TenantID = $tokenInfo.TenantID
+            $policy._TokenID = $tokenInfo.Id
+        }
+        $policy
+    }
+    return @($found)
+}
+
+function Get-IntuneImportCandidates
+{
+    param(
+        $ImportPolicies,
+        $LoadedPolicies,
+        [string]$ImportType = "alwaysImport",
+        [bool]$SameTenant,
+        # Every page of the view is loaded: the loaded rows are already complete.
+        [switch]$AllLoaded,
+        [int]$TokenId = (Get-DefaultTokenId)
+    )
+
+    $candidates = [System.Collections.Generic.List[object]]::new()
+    $seen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    $add = {
+        param($p)
+        if(-not $p) { return }
+        $key = "$($p.PolicyType.Id)|$($p.Id)"
+        if($p.Id -and -not $seen.Add($key)) { return }
+        [void]$candidates.Add($p)
+    }
+    foreach($p in @($LoadedPolicies)) { & $add $p }
+
+    # Always import never compares; a complete list needs no help.
+    if($ImportType -eq "alwaysImport" -or $AllLoaded) { return $candidates.ToArray() }
+
+    $byType = @($ImportPolicies | Where-Object { $_ -and $_.PolicyType }) | Group-Object { $_.PolicyType.Id }
+    foreach($group in $byType) {
+        $type = $group.Group[0].PolicyType
+
+        if($SameTenant) {
+            $ids = @($group.Group | ForEach-Object { [string]$_.Id } | Where-Object { $_ } | Select-Object -Unique)
+            foreach($p in @(Get-IntuneImportCandidatesById -PolicyType $type -Ids $ids -TokenId $TokenId)) { & $add $p }
+        }
+
+        $terms = [System.Collections.Generic.List[string]]::new()
+        foreach($file in $group.Group) {
+            foreach($term in @(Get-IntuneImportCandidateSearchTerms $file)) {
+                if(-not ($terms | Where-Object { $_ -eq $term })) { [void]$terms.Add($term) }
+            }
+        }
+        if($terms.Count -eq 0) { continue }
+
+        # Get-GraphPolicies clears $script:GraphPagingCache on every call that is
+        # not a paging call. That cache is the VIEW's "more pages to load" state,
+        # and the dialogs read its absence as "every page is loaded" - so these
+        # searches made the next matching pass skip the lookup (code review). The
+        # view's paging state is put back whatever happens here.
+        $viewPaging = $script:GraphPagingCache
+        try {
+            if($type.SupportsNameFilter -ne $true -or $terms.Count -gt $script:ImportCandidateNameSearchLimit) {
+                Write-Log "Import candidates: listing $($type.Id) once ($($terms.Count) name searches, name filter supported: $($type.SupportsNameFilter -eq $true))"
+                foreach($p in @(Get-GraphPolicies -PolicyType $type.Id -TokenId $TokenId)) { & $add $p }
+            }
+            else {
+                foreach($term in $terms) {
+                    foreach($p in @(Get-GraphPolicies -PolicyType $type.Id -NameFilter $term -TokenId $TokenId)) { & $add $p }
+                }
+            }
+        }
+        finally {
+            $script:GraphPagingCache = $viewPaging
+        }
+    }
+
+    return $candidates.ToArray()
 }
 
 function Invoke-IntuneImportReplace

@@ -22,6 +22,34 @@
 # Normalize-IntuneImportPolicyName) live in Internal/IntuneManager.ps1 and
 # are shared with the WPF tree.
 
+function Get-IntuneManagerImportExistingPolicies
+{
+    # Candidates for the skip / update / replace match (#384). Two things hid
+    # existing objects from it: pages the view had not loaded yet, and the filter
+    # box - the grid shows the filtered subset of IntuneManagerAllRows. So: every
+    # loaded row, plus whatever Get-IntuneImportCandidates (Internal/IntuneManager.ps1)
+    # finds in Graph for these files. It never loads every page. Cached for the
+    # dialog: the import type changing does not change what exists.
+    param($ImportPolicies, [string]$ImportType, [bool]$SameTenant)
+
+    $rows = @()
+    if ($script:IntuneManagerAllRows)          { $rows = $script:IntuneManagerAllRows }
+    elseif ($script:dgIntuneManagerObjects)    { $rows = $script:dgIntuneManagerObjects.ItemsSource }
+    $loaded = @($rows | ForEach-Object {
+        if ($_ -and $_.Source) { $_.Source } else { $_ }
+    } | Where-Object { $_ })
+    if ($ImportType -eq 'alwaysImport') { return $loaded }
+
+    $files = @($ImportPolicies | Where-Object { $_ })
+    $allLoaded = -not $script:GraphPagingCache
+    $key = "$SameTenant|$allLoaded|$($loaded.Count)|" + (($files | ForEach-Object { "$($_.PolicyType.Id)/$($_.Id)/$($_.Name)" }) -join '|')
+    if ($script:_importCandidateCache -and $script:_importCandidateCache.Key -eq $key) { return $script:_importCandidateCache.Value }
+
+    $value = @(Get-IntuneImportCandidates -ImportPolicies $files -LoadedPolicies $loaded -ImportType $ImportType -SameTenant $SameTenant -AllLoaded:$allLoaded)
+    $script:_importCandidateCache = @{ Key = $key; Value = $value }
+    return $value
+}
+
 function Update-IntuneManagerImportMatch
 {
     # Operates on $script:_imImportFormState. Recomputes ImportAction /
@@ -34,12 +62,8 @@ function Update-IntuneManagerImportMatch
 
     $importType = [string]$st.Settings.ImportType
     $sameTenant = [bool]$st.Settings.SameTenant
-    $existing   = @()
-    if ($script:dgIntuneManagerObjects) {
-        $existing = @($script:dgIntuneManagerObjects.ItemsSource | ForEach-Object {
-            if ($_ -and $_.Source) { $_.Source } else { $_ }
-        } | Where-Object { $_ })
-    }
+    $files = @($st.DG.ItemsSource | ForEach-Object { if ($_) { $_.Source } })
+    $existing = @(Get-IntuneManagerImportExistingPolicies -ImportPolicies $files -ImportType $importType -SameTenant $sameTenant)
 
     foreach ($row in @($st.DG.ItemsSource)) {
         if (-not $row -or -not $row.Source) { continue }
@@ -147,6 +171,8 @@ function Invoke-IntuneManagerImportLoad
 
 function Show-IntuneManagerImportForm
 {
+    # A new dialog looks candidates up afresh: an earlier import may have created some.
+    $script:_importCandidateCache = $null
     $ui = $script:UIProvider
     $policyTypes = Get-IntuneManagerSelectedPolicyTypes
 
@@ -368,12 +394,8 @@ function Invoke-IntuneManagerImportExecute
     Update-IntuneManagerImportMatch
     $script:_imImportFormState = $null
 
-    $existing = @()
-    if ($script:dgIntuneManagerObjects) {
-        $existing = @($script:dgIntuneManagerObjects.ItemsSource | ForEach-Object {
-            if ($_ -and $_.Source) { $_.Source } else { $_ }
-        } | Where-Object { $_ })
-    }
+    $allFiles = @($st.DG.ItemsSource | ForEach-Object { if ($_) { $_.Source } })
+    $existing = @(Get-IntuneManagerImportExistingPolicies -ImportPolicies $allFiles -ImportType $importType -SameTenant ([bool]$st.Settings.SameTenant))
 
     $policiesToImport = @()
     $updatedPolicies  = @()

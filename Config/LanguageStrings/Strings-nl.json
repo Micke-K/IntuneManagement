@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "Pas beleid toe op specifieke agentidentiteiten.",
     "agents": "Agents",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "Aanvullende informatie over risiconiveaus van agentsessies",
+    "agentsLicenseInfoBalloonAriaLabel": "Licentievereisten voor agents",
+    "agentsLicenseRequiredAriaLabel": "Agents. Uw tenant voldoet niet aan de licentievereisten voor doelagents.",
+    "agentsLicenseRequiredTooltip": "Uw tenant voldoet niet aan de licentievereisten voor doelagents.",
     "agentsLicenseText": "Een licentie voor Microsoft Agent 365 of Microsoft 365 E7 is vereist om dit beleid te bewerken.",
     "agentsLicensingEnforcementDescription": "Vanaf binnenkort is voor voorwaardelijke toegang voor agents een Microsoft Agent 365-licentie vereist.",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "Meer informatie over de aankomende handhaving van licenties voor agents",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "Benoemde locaties",
     "menuItemPhasedRollout": "Gefaseerde implementatie",
     "menuItemPolicies": "Beleidsregels",
-    "menuItemPoliciesV2": "Beleid V2 (preview)",
+    "menuItemPoliciesV2": "Beleidsplannen (preview)",
     "menuItemPolicySettings": "Instellingen (preview)",
+    "menuItemSecurityDefaults": "Standaardinstellingen voor beveiliging",
     "menuItemTermsOfUse": "Gebruiksvoorwaarden",
     "microsoftAdminPortals": "Microsoft-beheerportals",
     "microsoftAdminPortalsInfoBox": "De beheerportals omvatten Microsoft 365-beheercentrum, Exchange-beheercentrum, Azure Portal, Microsoft Entra-beheercentrum en andere.",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "Elke verificatiestroom",
             "authenticationTransfer": "Verificatieoverdracht",
             "deviceCodeFlow": "Stroom voor apparaatcode",
+            "excludeDeviceCodeFlow": "Apparaatcodestroom uitsluiten",
             "infoBalloon": "Hoe uw organisatie bepaalde verificatie- en autorisatieprotocollen en -toekenningen gebruikt",
             "label": "Verificatiestromen",
             "multiple": "'{0}' en '{1}'",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "Als u 'Risicoherstel vereisen' wilt inschakelen, moet u niet {0} selecteren.",
       "mustSelect": "Om Risicoherstel vereisen in te schakelen, moet je {0} selecteren.",
-      "xOrY": "{0} of {1}"
+      "xOrY": "{0} of {1}",
+      "xYOrZ": "{0}, {1} of {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "Het sessiebesturingselement 'aanmeldingsfrequentie elke keer' kan niet worden gebruikt met '{0}'",
         "appWarning": "Sommige van de geselecteerde toepassingen zijn niet compatibel met de optie 'Aanmeldingsfrequentie' van 'Elke keer'",
-        "everytime": "Elke keer (tolerantie van 5 minuten)",
+        "everytime": "Elke keer",
         "EverytimeCA": {
           "secondaryOnly": "Alleen secundaire verificatiemethoden"
         },
-        "everytimeInfoBalloon": "De optie \"Elke keer\" wordt geëvalueerd bij elke aanmeldingspoging voor een toepassing binnen het bereik van dit beleid.",
-        "everyTimeStrict": "Elke keer (strikt - tolerantie van 10 seconden)",
-        "everyTimeStrictInfoBalloon": "Prompttolerantie beperkt hoe vaak gebruikers opnieuw om verificatie kunnen worden gevraagd om overmatige prompts en lussen te voorkomen.",
+        "everytimeInfoBalloon": "Het besturingselement Elke keer heeft een geldigheidsvenster van vijf minuten voor de vernieuwing van de verificatie.",
+        "everytimeInfoBalloonAriaLabel": "Meer informatie over Elke keer",
+        "everyTimeStrict": "Elke keer strikt (preview)",
+        "everyTimeStrictInfoBalloon": "Elke keer strikt (preview) heeft een geldigheidsperiode van 10 seconden voor verificatie-versheid en is bedoeld voor gebruik met toepassingen die zijn geconfigureerd om met dit beheer te werken.",
+        "everyTimeStrictInfoBalloonAriaLabel": "Meer informatie over Elke keer strikt (preview)",
+        "everyTimeStrictWarning": "Het beheer met Elke keer strikt (preview) is bedoeld voor specifieke toepassingen die dit beheer begrijpen. Het wordt afgeraden het beheer met Elke keer strikt (preview) toe te passen op Alle apps. Dit kan leiden tot onverwachte verificatieprompts die van invloed zijn op de productiviteit van uw gebruikers en verificatiemoeheid veroorzaken.",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "Meer informatie over het voorkomen van verificatiemoeheid met Elke keer strikt (preview)",
+        "everyTimeStrictWarningTitle": "Verificatiemoeheid voorkomen",
         "periodic": "Periodieke herauthenticatie",
         "reqMFAWarning": "'Meervoudige verificatie vereisen' moet worden geselecteerd wanneer u alleen secundaire verificatiemethoden gebruikt",
         "selectorInvalid": "Wanneer de toekenning \"Wachtwoordwijziging vereisen\" is geselecteerd, kan alleen sessiebeheer \"iedere keer aanmelden\" worden gebruikt",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "Dagen",
           "everytime": "Elke keer",
-          "everyTimeStrict": "Elke keer (Strikt)",
+          "everyTimeStrict": "Elke keer strikt (preview)",
           "help": "De tijdsperiode voordat een gebruiker wordt gevraagd om zich opnieuw aan te melden als hij/zij probeert een resource te openen. De standaardinstelling is een lopende telling van 90 dagen. Dit houdt in dat gebruikers wordt gevraagd zich opnieuw te verifiëren wanneer zij voor het eerst weer proberen toegang tot een resource te krijgen nadat zij 90 dagen of langer niet actief zijn geweest op hun computer.",
           "Hour": {
             "plural": "{0} uur",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "Niveau 2",
       "accessRequirement3": "Niveau 3",
       "accessRequirementsLabel": "Toegang tot beveiligde app-gegevens",
-      "accountRecovery": "Account herstellen",
+      "accountRecovery": "Onboarding en herstel van account",
       "accountRecoveryInfoText": "Voor deze gebruikersactie is de toekenningscontrole voor identiteitverificatie vereist. Selecteer een profiel voor identiteitsverificatie.",
       "appsActionsAuthTitle": "Cloud-apps, acties of verificatiecontext",
       "appsOrActionsSelectorInfoBallonText": "Toepassingen die worden geopend of gebruikersacties",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "Connectiviteit",
     "vPNDNSTriggers": "DNS-instellingen",
     "vPNIKEv2": "IKEv2-instellingen",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "Proxy",
     "vPNSplitTunneling": "Split tunneling",
     "vPNTrustedNetwork": "Vertrouwde netwerkdetectie",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "Instellingen voor activeren",
     "webContentFilter": "Webinhoudsfilter",
     "wiFi": "Wi-Fi",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "Alle profieltypen",
     "workProfileOnly": "Alleen werkprofiel in persoonlijk eigendom"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "Naam van instellingsgroep"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "Beschikbare herbruikbare instellingen",
+      "Column": {
+        "displayName": "Herbruikbare instellingengroep"
+      },
+      "instanceHeader": "Instellingen configureren",
+      "objectName": "Herbruikbare instelling",
+      "reusableSummary": "{0} instelling geconfigureerd",
+      "reusableSummaryMultiple": "{0} geconfigureerde instellingen",
+      "ruleProperties": "Regeleigenschappen",
+      "searchBox": "Herbruikbare instellingen zoeken",
+      "selectCertificateFile": "Selecteer een certificaatbestand dat is geüpload als een herbruikbare instelling.",
+      "selectOneOrMoreDeviceControlToExclude": "Selecteer een of meer herbruikbare instellingsgroepen die moeten worden uitgesloten van deze Device Control-regel en dit Device Control-profiel. De regel neemt alle eigenschappen van deze groepen over, inclusief wijzigingen die zijn aangebracht in de groepen.",
+      "selectOneOrMoreDeviceControlToInclude": "Selecteer een of meer herbruikbare instellingsgroepen die moeten worden opgenomen in deze Device Control-regel en dit Device Control-profiel. De regel neemt alle eigenschappen van deze groepen over, inclusief wijzigingen die zijn aangebracht in de groepen.",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "Herbruikbare instellingen instellen"
+        }
+      },
+      "selectScript": "Selecteer een script om toe te voegen aan deze aangepaste nalevingsinstelling.",
+      "Subtitle": {
+        "firewall": "Selecteer een of meer herbruikbare instellingsgroepen om toe te voegen aan deze firewallregel en dit firewallprofiel. De regel neemt alle eigenschappen van deze groepen over, inclusief wijzigingen die zijn aangebracht in de groepen."
+      },
+      "title": "Herbruikbare instellingen selecteren (preview)"
+    },
+    "wizardTitle": "Herbruikbare instellingen configureren"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "Beheerdersgroepen",
     "RoleAssignmentAdminDesc": "Gebruikers in de beheerdersgroep zijn de beheerders die aan deze rol zijn toegewezen",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "Accountbeveiliging",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "Alle apparaten",
     "antivirus": "Antivirus",
     "antivirusReporting": "Antivirusrapportage (preview)",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "VPN via het mobiele netwerk",
     "vpnPerApp": "VPN per app",
     "vPNPerAppDescription": "Als gebruikers beginnen de geselecteerde apps te gebruiken, wordt het verkeer automatisch via de VPN-verbinding geleid als de verbinding is ingesteld op Always On of wanneer de verbinding handmatig is opgestart door de gebruiker.",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "Proxyserveradres (volledige host of IP-adres).",
     "vPNPolicyAddressName": "Adres",
     "vPNPolicyAssociatedAppsDescription": "Bij apps die hier worden toegevoegd, wordt automatisch deze VPN-verbinding gestart.",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "Apparaattunnel",
     "vPNPolicyExcludedDomainsUrlsDescription": "Lijst met domeinen die het VPN kunnen overslaan wanneer VPN per app wordt geactiveerd. Is van toepassing op iOS 14 en later",
     "vPNPolicyExcludedDomainsUrlsName": "Uitgesloten domeinen",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "Met de regels in de tabel voor naamomzettingsbeleid (NRPT) wordt gedefinieerd hoe met de DNS-server namen worden omgezet bij verbinding met het VPN. Elke rij in de tabel bevat een domein en de DNS-achtervoegsels of webproxyserver waarmee het domein wordt omgezet.",
     "vPNPolicyNameResolutionPolicyTableRulesName": "Regels van de tabel voor naamomzettingsbeleid (NRPT)",
     "vPNPolicyNetworkTrafficRulesDescription": "Let op: door het toevoegen van netwerkregels wordt de VPN-verbinding beperkt tot alleen de opgegeven regels.\r\n     Wanneer u regels voor netwerkverkeer toevoegt, kunt u het beste een minder beperkende catch-all-regel toevoegen om VPN-problemen te voorkomen.",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "bijvoorbeeld bedrijfs-VPN voor eindgebruikers",
     "vPNServerList": "Lijst met servers",
     "vPNServerListExample": "Serverbeschrijving, IP-adres of FQDN (bijvoorbeeld VPN voor het hele bedrijf, 10.0.0.1) (bijvoorbeeld VPN voor alleen apps, vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "Apps in deze lijst zijn uitgesloten van het gebruik van de VPN-tunnel. Hun verkeer omzeilt altijd de VPN en krijgt rechtstreeks toegang tot het netwerk, ongeacht de status van de VPN-verbinding. Apps die niet in deze lijst staan, moeten de VPN gebruiken wanneer ze verbonden zijn en worden geblokkeerd als de VPN niet beschikbaar is.",
     "vpnStrictTunnelBypassAppsName": "Sta deze apps toe om de strikte Tunnel-modus te omzeilen",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "Apps in deze lijst van het werkprofiel zijn uitgesloten van het gebruik van de VPN-tunnel. Hun verkeer omzeilt altijd de VPN en krijgt rechtstreeks toegang tot het netwerk, ongeacht de status van de VPN-verbinding. Apps van het werkprofiel die niet in deze lijst staan, moeten de VPN gebruiken wanneer ze verbonden zijn en worden geblokkeerd als de VPN niet beschikbaar is.",
     "vpnStrictTunnelModeDescription": "Als deze optie is ingeschakeld, wordt al het netwerkverkeer via de VPN-tunnel geleid. Als er geen verbinding met de VPN kan worden gemaakt, wordt al het netwerkverkeer op het apparaat geblokkeerd. Apps die aan de uitsluitingslijst zijn toegevoegd, omzeilen de VPN altijd en maken rechtstreeks verbinding met het netwerk, zelfs als de VPN verbonden is.",
     "vpnStrictTunnelModeName": "Strikte tunnelmodus",
     "vpnStrictTunnelModeWorkProfileDescription": "Als deze optie is ingeschakeld, wordt al het netwerkverkeer van het werkprofiel geforceerd via de VPN-tunnel. Als er geen verbinding met het VPN tot stand kan worden gebracht, wordt het netwerkverkeer van het werkprofiel geblokkeerd. Apps die aan de uitsluitingslijst zijn toegevoegd, omzeilen de VPN altijd en maken rechtstreeks verbinding met het netwerk, zelfs als de VPN verbonden is. Persoonlijke apps en verkeer buiten het werkprofiel worden niet beïnvloed.",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "Omdat bij WIP beleidsregels en app-lijsten worden gedefinieerd, zijn er geen aanvullende regels voor netwerkverkeer nodig als WIP is geselecteerd, tenzij hier speciaal behoefte aan is.",
     "vPNWipOrAppsName": "WIP of apps aan deze VPN koppelen",
     "wakeOnLANName": "Wake On LAN",
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "Overzicht van cloud-pc",
       "cloudPCSettings": "Cloud-pc-instellingen",
       "monitorCloudPCs": "Cloud-pc's bewaken (preview)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "Cloud-pc's inrichten",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Windows 365-monitoring (preview)",
       "windows365Reports": "Windows 365-rapporten"
     },

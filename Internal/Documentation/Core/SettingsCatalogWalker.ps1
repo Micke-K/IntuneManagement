@@ -26,6 +26,26 @@ function Get-SettingsCatalogPolicyBuffer {
     return $script:_curSettingsCatologPolicy
 }
 
+# The @odata.type of a setting instance, inferred from the value it carries
+# when the payload has none (a GET made with odata.metadata=none, and the
+# exports hydrated that way).
+function Get-SettingInstanceODataType {
+    param($SettingInstance)
+
+    $type = [string]$SettingInstance.'@odata.type'
+    if ($type) { return $type }
+    foreach ($pair in @(
+        @('groupSettingCollectionValue',  '#microsoft.graph.deviceManagementConfigurationGroupSettingCollectionInstance'),
+        @('groupSettingValue',            '#microsoft.graph.deviceManagementConfigurationGroupSettingInstance'),
+        @('choiceSettingCollectionValue', '#microsoft.graph.deviceManagementConfigurationChoiceSettingCollectionInstance'),
+        @('choiceSettingValue',           '#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance'),
+        @('simpleSettingCollectionValue', '#microsoft.graph.deviceManagementConfigurationSimpleSettingCollectionInstance'),
+        @('simpleSettingValue',           '#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance'))) {
+        if ($SettingInstance.PSObject.Properties[$pair[0]] -and $null -ne $SettingInstance.($pair[0])) { return $pair[1] }
+    }
+    return ''
+}
+
 function Add-SettingsSetting {
     param(
         $SettingInstance,
@@ -37,6 +57,7 @@ function Add-SettingsSetting {
     if (-not $SettingInstance) { return }
 
     $ctx = Get-CurrentDocumentationContext
+    $instanceType = Get-SettingInstanceODataType $SettingInstance
 
     $defaultValue = $null
     $tableValue   = $null
@@ -97,8 +118,12 @@ function Add-SettingsSetting {
         $settingDescription = $settingsDef.description.Trim([Environment]::NewLine).Trim("`n")
     }
 
+    # The id comes from the schema when it resolved, else from the instance: a
+    # row without a schema still needs its identity (EntityKey, fallback names).
+    $settingId = if ($settingsDef) { $settingsDef.Id } else { $SettingInstance.settingDefinitionId }
+
     $settingInfo = [PSCustomObject]@{
-        SettingId             = $settingsDef.Id
+        SettingId             = $settingId
         SettingKey            = ''
         SettingName           = $settingsDef.Name
         Name                  = $settingName
@@ -116,7 +141,7 @@ function Add-SettingsSetting {
         Level                 = $ItemLevel
         Parent                = $null
         Show                  = $show
-        Type                  = $SettingInstance.'@odata.type'
+        Type                  = $instanceType
         PropertyIndex         = 0
         RowIndex              = 0
         ChildSettings         = @()
@@ -126,7 +151,7 @@ function Add-SettingsSetting {
         $script:_curSettingsCatologPolicy += $settingInfo
     }
 
-    switch ($SettingInstance.'@odata.type') {
+    switch ($instanceType) {
 
         '#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance' {
             # Single dropdown
@@ -183,8 +208,12 @@ function Add-SettingsSetting {
                 # Catalog uses $settingsDef.childIds. Old code at L1347-1354.
                 $childIds = if ($ctx.CurrentObject.templateReference.templateId -and $SettingsDefs) {
                     $SettingsDefs.id
-                } else {
+                } elseif ($settingsDef.childIds) {
                     $settingsDef.childIds
+                } else {
+                    # No schema for this group (offline, or an id the generic
+                    # endpoint does not serve): walk the children the item has.
+                    @($groupSettingCollection.children | ForEach-Object { $_.settingDefinitionId })
                 }
                 foreach ($childId in $childIds) {
                     $childSetting = $groupSettingCollection.children | Where-Object settingDefinitionId -EQ $childId | Select-Object -First 1
@@ -242,7 +271,7 @@ function Add-SettingsSetting {
         }
 
         default {
-            Write-Log "Unhandled settings catalog instance type: $($SettingInstance.'@odata.type')" 2
+            Write-Log "Unhandled settings catalog instance type: $instanceType" 2
             return
         }
     }
@@ -274,15 +303,13 @@ function Add-SettingsSetting {
 #
 # Rows are returned rather than pushed onto the context, so the caller decides
 # whether they belong in the main settings table or in a table of their own.
-function Get-SettingsCatalogDocumentationRows
+# Bind the context to the session-wide schema caches and make sure the
+# configuration categories are loaded. Shared by Get-SettingsCatalogDocumentationRows
+# and the handlers that walk a single settings instance themselves (reusable
+# settings), which need the same category resolution.
+function Initialize-SettingsCatalogSchemaCache
 {
-    param(
-        $Settings,
-        [DocumentationContext]$Context
-    )
-
-    $cfgSettings = @($Settings)
-    if ($cfgSettings.Count -eq 0) { return @() }
+    param([DocumentationContext]$Context)
 
     # Generic schema caches (session-persistent, shared by reference so later
     # writes by the walker warm the cache automatically). Definitions are generic
@@ -306,6 +333,19 @@ function Get-SettingsCatalogDocumentationRows
             Write-LogError 'Failed to fetch configuration categories' $_.Exception
         }
     }
+}
+
+function Get-SettingsCatalogDocumentationRows
+{
+    param(
+        $Settings,
+        [DocumentationContext]$Context
+    )
+
+    $cfgSettings = @($Settings)
+    if ($cfgSettings.Count -eq 0) { return @() }
+
+    Initialize-SettingsCatalogSchemaCache $Context
 
     # Seed the definition cache from inline settingDefinitions on each setting
     foreach ($cfgSetting in $cfgSettings) {

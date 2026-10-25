@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "Apply policy to specific agent identities.",
     "agents": "Agents",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "Additional information about agent session risk levels",
+    "agentsLicenseInfoBalloonAriaLabel": "Agents license requirements",
+    "agentsLicenseRequiredAriaLabel": "Agents. Your tenant doesn't meet the license requirements to target agents.",
+    "agentsLicenseRequiredTooltip": "Your tenant doesn't meet the license requirements to target agents.",
     "agentsLicenseText": "A Microsoft Agent 365 or Microsoft 365 E7 license is required to edit this policy.",
     "agentsLicensingEnforcementDescription": "Starting soon, Conditional Access for agents will require a Microsoft Agent 365 license.",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "Learn more about upcoming licensing enforcement for agents",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "Named locations",
     "menuItemPhasedRollout": "Phased rollout",
     "menuItemPolicies": "Policies",
-    "menuItemPoliciesV2": "Policies V2 (Preview)",
+    "menuItemPoliciesV2": "Policy plans (Preview)",
     "menuItemPolicySettings": "Settings (Preview)",
+    "menuItemSecurityDefaults": "Security Defaults",
     "menuItemTermsOfUse": "Terms of use",
     "microsoftAdminPortals": "Microsoft Admin Portals",
     "microsoftAdminPortalsInfoBox": "The admin portals include Microsoft 365 admin center, Exchange admin center, Azure portal, Microsoft Entra admin center, and others.",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "Any authentication flow",
             "authenticationTransfer": "Authentication transfer",
             "deviceCodeFlow": "Device code flow",
+            "excludeDeviceCodeFlow": "Exclude Device code flow",
             "infoBalloon": "How your organization uses certain authentication and authorization protocols and grants",
             "label": "Authentication flows",
             "multiple": "\"{0}\" and \"{1}\"",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "To enable Require Risk Remediation, you must not select {0}.",
       "mustSelect": "To enable Require Risk Remediation, you must select {0}.",
-      "xOrY": "{0} or {1}"
+      "xOrY": "{0} or {1}",
+      "xYOrZ": "{0}, {1}, or {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "The \"sign-in frequency every time\" session control cannot be used with \"{0}\"",
         "appWarning": "Some of the applications currently selected are not compatible with the \"Sign-in frequency\" option of \"Every time\"",
-        "everytime": "Every time (5-minute tolerance)",
+        "everytime": "Every time",
         "EverytimeCA": {
           "secondaryOnly": "Secondary authentication methods only"
         },
-        "everytimeInfoBalloon": "\"Every time\" option is evaluated on every sign-in attempt to an application in scope for this policy.",
-        "everyTimeStrict": "Every time (Strict - 10-second tolerance)",
-        "everyTimeStrictInfoBalloon": "Prompt tolerance limits how often users can be re-prompted for reauthentication to prevent excessive prompts and loops.",
+        "everytimeInfoBalloon": "'Every time' control has a 5-minute validity window for authentication freshness.",
+        "everytimeInfoBalloonAriaLabel": "More information about Every time",
+        "everyTimeStrict": "Every time strict (preview)",
+        "everyTimeStrictInfoBalloon": "Every time strict (preview) has a 10-second validity window for authentication freshness and is intended to be used with applications that are configured to work with this control.",
+        "everyTimeStrictInfoBalloonAriaLabel": "More information about Every time strict (preview)",
+        "everyTimeStrictWarning": "Every time strict (preview) control is intended for specific applications that understand this control. We don't recommend applying 'Every time strict (preview)' control to All apps. Doing so can result in unexpected authentication prompts that impact productivity for your users and create authentication fatigue.",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "Learn more about avoiding authentication fatigue with Every time strict (preview)",
+        "everyTimeStrictWarningTitle": "Avoid authentication fatigue",
         "periodic": "Periodic reauthentication",
         "reqMFAWarning": "\"Require multifactor authentication\" must be selected when using \"Secondary authentication methods only\"",
         "selectorInvalid": "When \"Require password change\" grant is selected, only \"sign-in frequency every time\" session control can be used",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "Days",
           "everytime": "Every time",
-          "everyTimeStrict": "Every time (Strict)",
+          "everyTimeStrict": "Every time strict (preview)",
           "help": "Time period before a user is asked to sign-in again when attempting to access a resource. The default setting is a rolling window of 90 days, i.e. users will be asked to re-authenticate on the first attempt to access a resource after being inactive on their machine for 90 days or longer.",
           "Hour": {
             "plural": "{0} hours",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "Level 2",
       "accessRequirement3": "Level 3",
       "accessRequirementsLabel": "Accessing secured app data",
-      "accountRecovery": "Recover account",
+      "accountRecovery": "Account onboarding and recovery",
       "accountRecoveryInfoText": "This user action requires the idenity verification grant control. Please select an identity verification profile.",
       "appsActionsAuthTitle": "Cloud apps, actions, or authentication context",
       "appsOrActionsSelectorInfoBallonText": "Applications accessed or user actions",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "Connectivity",
     "vPNDNSTriggers": "DNS Settings",
     "vPNIKEv2": "IKEv2 settings",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "Proxy",
     "vPNSplitTunneling": "Split Tunneling",
     "vPNTrustedNetwork": "Trusted Network Detection",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "Wake settings",
     "webContentFilter": "Web Content Filter",
     "wiFi": "Wi-Fi",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "All Profile Types",
     "workProfileOnly": "Personally-Owned Work Profile Only"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "Setting group name"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "Available reusable settings",
+      "Column": {
+        "displayName": "Reusable setting group"
+      },
+      "instanceHeader": "Configure settings",
+      "objectName": "Reusable setting",
+      "reusableSummary": "{0} setting configured",
+      "reusableSummaryMultiple": "{0} settings configured",
+      "ruleProperties": "Rule properties",
+      "searchBox": "Search reusable settings",
+      "selectCertificateFile": "Select a certificate file that has been uploaded as a reusable setting.",
+      "selectOneOrMoreDeviceControlToExclude": "Select one or more reusable setting groups to exclude to this Device Control rule and profile. The rule inherits all properties of these groups including changes that are made to the groups.",
+      "selectOneOrMoreDeviceControlToInclude": "Select one or more reusable setting groups to include to this Device Control rule and profile. The rule inherits all properties of these groups including changes that are made to the groups.",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "Set reusable settings"
+        }
+      },
+      "selectScript": "Select a script to add to this custom compliance setting.",
+      "Subtitle": {
+        "firewall": "Select one or more reusable setting groups to add to this Firewall rule and profile. The rule inherits all properties of these groups including changes that are made to the groups."
+      },
+      "title": "Select reusable settings (preview)"
+    },
+    "wizardTitle": "Configure reusable settings"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "Admin Groups",
     "RoleAssignmentAdminDesc": "Admin group users are the administrators assigned to this role",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "Account protection",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "All devices",
     "antivirus": "Antivirus",
     "antivirusReporting": "Antivirus Reporting (Preview)",
@@ -7495,7 +7544,7 @@
     "daysToTrackResolvedMalwarePlaceholder": "Enter number of days (0-90)",
     "deadlineForFeatureUpdatesDescription": "Specifies the number of days a user has before feature updates are installed on their devices automatically",
     "deadlineForFeatureUpdatesName": "Deadline for feature updates",
-    "deadlineForQualityUpdatesDescription": "Specifies the number of days a user has before quality updates are installed on their devices automatically",
+    "deadlineForQualityUpdatesDescription": "Specify the number of days after the deferral period before quality updates are automatically installed.",
     "deadlineForQualityUpdatesName": "Deadline for quality updates",
     "deadlineGracePeriodDescription": "Specifies a minimum number of days after deadline until restarts occur automatically",
     "deadlineGracePeriodName": "Grace period",
@@ -11685,10 +11734,11 @@
     "vPNIKEv2RemoteIdentifierName": "Remote identifier",
     "vPNNetMotionMobilityCustomData": "Attributes for NetMotion Mobility VPN",
     "vPNNetMotionMobilityCustomDataDescription": "Enter key and value pairs for the NetMotion Mobility VPN attributes.",
-    "vpnOnDemand": "On-Demand VPN Rules",
+    "vpnOnDemand": "On-demand VPN rules",
     "vpnOverCellularName": "VPN over the cellular network",
     "vpnPerApp": "Per-app VPN",
     "vPNPerAppDescription": "When users start using the selected apps, traffic will automatically route through the VPN connection if the connection is configured to be Always On or if the connection has been manually started by the user.",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "Proxy server address (fully-qualified host, or IP address).",
     "vPNPolicyAddressName": "Address",
     "vPNPolicyAssociatedAppsDescription": "Apps added here will automatically start this VPN connection.",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "Device Tunnel",
     "vPNPolicyExcludedDomainsUrlsDescription": "A list of domains that can bypass the VPN when per-app VPN is activated. Applies to iOS 14 and later",
     "vPNPolicyExcludedDomainsUrlsName": "Excluded Domains",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "Name Resolution Policy table (NRPT) rules define how the DNS resolves names when connected to the VPN. Each row in the table specifies a domain and the DNS suffixes or web proxy server to use to resolve that domain.",
     "vPNPolicyNameResolutionPolicyTableRulesName": "Name Resolution Policy table (NRPT) rules",
     "vPNPolicyNetworkTrafficRulesDescription": "Careful: By adding network rules, the VPN connection will be limited to only the rules specified.\n     When adding traffic rules, make sure to add a catch-all rule that is least restrictive, to avoid VPN issues.",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "e.g. Corp VPN for end-users",
     "vPNServerList": "Server list",
     "vPNServerListExample": "ServerDescription, IP Address or FQDN (e.g. Company-wide VPN, 10.0.0.1) (e.g. Apps-only VPN, vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "Apps in this list are excluded from using the VPN tunnel. Their traffic always bypasses the VPN and accesses the network directly, regardless of VPN connection status. Apps not in this list must use the VPN when connected and are blocked when the VPN is unavailable.",
     "vpnStrictTunnelBypassAppsName": "Allow these apps to bypass Strict Tunnel Mode",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "Work profile apps in this list are excluded from using the VPN tunnel. Their traffic always bypasses the VPN and accesses the network directly, regardless of VPN connection status. Work profile apps not in this list must use the VPN when connected and are blocked when the VPN is unavailable.",
     "vpnStrictTunnelModeDescription": "When enabled, all network traffic is forced through the VPN tunnel. If a connection to the VPN can't be established, all network traffic on the device is blocked. Apps added to the exclusion list always bypass the VPN and connect to the network directly, even when the VPN is connected.",
     "vpnStrictTunnelModeName": "Strict tunnel mode",
     "vpnStrictTunnelModeWorkProfileDescription": "When enabled, all work profile network traffic is forced through the VPN tunnel. If a connection to the VPN can't be established, work profile network traffic is blocked. Apps added to the exclusion list always bypass the VPN and connect to the network directly, even when the VPN is connected. Personal apps and traffic outside the work profile are not affected.",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "Because WIP defines policies and app lists, additional network traffic rules are not required when WIP is selected, unless specifically needed.",
     "vPNWipOrAppsName": "Associate WIP or apps with this VPN",
     "wakeOnLANName": "Wake on LAN",
@@ -12093,7 +12151,7 @@
     "win10WifiMaximumAuthenticationFailuresName": "Maximum authentication failures",
     "win10WifiMaximumEAPOLStartMessagesDescription": "Choose a number of EAPOL-Start messages between 1 and 100. Not specifying a value results in a maximum of 3 messages being sent.",
     "win10WifiMaximumEAPOLStartMessagesName": "Maximum EAPOL-start",
-    "win10WifiMaximumNumberPMKStoredInCache": "Maximum number of PMK's stored in cache",
+    "win10WifiMaximumNumberPMKStoredInCache": "Maximum number of PMKs stored in cache",
     "win10WifiMaximumNumberPMKStoredInCacheExample": "Number of entries (1-255)",
     "win10WifiMaximumPreAuthenticationAttempts": "Maximum pre-authentication attempts",
     "win10WifiMaximumPreAuthenticationAttemptsExample": "Number of attempts (1-16)",
@@ -13393,8 +13451,10 @@
       "allCloudPCs": "All Cloud PCs",
       "cloudPCOverview": "Cloud PC Overview",
       "cloudPCSettings": "Cloud PC Settings",
-      "monitorCloudPCs": "Monitor Cloud PCs (preview)",
+      "monitorCloudPCs": "Monitor Cloud PCs",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "Provision Cloud PCs",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Windows 365 monitoring (preview)",
       "windows365Reports": "Windows 365 reports"
     },

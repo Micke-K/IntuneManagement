@@ -118,7 +118,18 @@ function Show-GraphBulkImportForm
                 -ImportType $importType
 
             $unknownNote = Get-IntuneUnknownSelectorSummary $summary.UnknownSelectors
-            if($summary.Imported -eq 0)
+            $approvalNote = Get-MSGraphApprovalPendingSummary $summary.PendingApproval
+            if($approvalNote)
+            {
+                # Held writes are queued, not failed - "no objects were imported,
+                # verify the folder" would send the user looking for a non-problem.
+                $msg = $approvalNote
+                if($summary.Imported -gt 0) { $msg = "Imported $($summary.Imported) object(s).`n`n$msg" }
+                if($unknownNote) { $msg += "`n`n$unknownNote" }
+                $script:UIProvider.ShowMessageBox($msg, "Import", "OK", "Information") | Out-Null
+                if($summary.Imported -gt 0) { Invoke-IntuneActivateObject $script:IntuneManagerSelectedObject | Out-Null }
+            }
+            elseif($summary.Imported -eq 0)
             {
                 $msg = "No objects were imported.`nVerify the import folder and exported files."
                 if($unknownNote) { $msg += "`n`n$unknownNote" }

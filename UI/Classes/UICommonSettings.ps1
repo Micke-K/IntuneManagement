@@ -58,6 +58,13 @@ function Add-CommonUISettings
         -Description "Adds the organization name next to the login info on the menu bar" `
         -Section "General"
 
+    # Windows only, and only for the classic console host; the menu item and
+    # this setting do nothing elsewhere (Internal/ConsoleWindow.ps1 explains).
+    # Read by the UI backends alone - the engine never consults it.
+    Add-SettingsObject -Title "Hide console window" -Key "HideConsoleWindow" -Type "Boolean" -DefaultValue $false `
+        -Description "Hide the console window the application was started from once the main window is showing. File > Hide console / Show console toggles it for the session. Windows only, and only for the classic console host: under Windows Terminal the console cannot be hidden and the menu item is not shown." `
+        -Section "General"
+
     # ---- Intune section (list behavior) ----
 
     Add-SettingsObject -Title "Get all pages" -Key "GetAllPages" -Type "Boolean" `
@@ -69,7 +76,7 @@ function Add-CommonUISettings
         -DefaultValue $true -SubPath "IntuneManager" -Section "IntuneManager"
 
     Add-SettingsObject -Title "Max characters per cell" -Key "ObjectListMaxCellLength" -Type "Int" `
-        -Description "With single-line values on, cut a cell's text at this many characters so one long description cannot push the other columns out of view. Hover the cell for the full text; sorting and the filter still use the whole value. 0 = no limit." `
+        -Description "With single-line values on, cut a cell's text at this many characters so one long description cannot push the other columns out of view. The Name column is never cut; it trims at the column edge. Hover the cell for the full text; sorting and the filter still use the whole value. 0 = no limit." `
         -DefaultValue 50 -SubPath "IntuneManager" -Section "IntuneManager"
 
     $viewMenuTypes = @(

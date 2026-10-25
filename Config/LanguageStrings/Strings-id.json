@@ -280,7 +280,7 @@
       "autoUpdate": "Pembaruan otomatis",
       "deadlineTimeColumnLabel": "Tenggat penginstalan",
       "deliveryOptimizationPriorityHeader": "Mode optimalisasi pengiriman",
-      "detectAppsInUseHeader": "Deteksi aplikasi yang digunakan",
+      "detectAppsInUseHeader": "Deteksi aplikasi yang sedang digunakan",
       "groupTableHeader": "Grup",
       "installContextLabel": "Konteks Instal",
       "isRemovable": "Instal sebagai dapat dilepas",
@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "Terapkan kebijakan ke identitas agen tertentu.",
     "agents": "Agen",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "Informasi tambahan tentang tingkat risiko sesi agen",
+    "agentsLicenseInfoBalloonAriaLabel": "Persyaratan lisensi agen",
+    "agentsLicenseRequiredAriaLabel": "Agen. Penyewa Anda tidak memenuhi persyaratan lisensi untuk agen target.",
+    "agentsLicenseRequiredTooltip": "Penyewa Anda tidak memenuhi persyaratan lisensi untuk agen target.",
     "agentsLicenseText": "Lisensi Microsoft Agent 365 atau Microsoft 365 E7 diperlukan untuk mengedit kebijakan ini.",
     "agentsLicensingEnforcementDescription": "Akan segera berlaku, Akses Bersyarat untuk agen akan memerlukan lisensi Microsoft Agent 365.",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "Pelajari selengkapnya tentang penegakan lisensi mendatang untuk agen",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "Lokasi bernama",
     "menuItemPhasedRollout": "Peluncuran bertahap",
     "menuItemPolicies": "Kebijakan",
-    "menuItemPoliciesV2": "Kebijakan V2 (Pratinjau)",
+    "menuItemPoliciesV2": "Rencana kebijakan (Pratinjau)",
     "menuItemPolicySettings": "Pengaturan (Pratinjau)",
+    "menuItemSecurityDefaults": "Default Keamanan",
     "menuItemTermsOfUse": "Ketentuan penggunaan",
     "microsoftAdminPortals": "Portal Admin Microsoft",
     "microsoftAdminPortalsInfoBox": "Portal admin mencakup pusat admin Microsoft 365, pusat admin Exchange, portal Azure, pusat admin Microsoft Entra, dan lainnya.",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "Alur autentikasi apa pun",
             "authenticationTransfer": "Transfer autentikasi",
             "deviceCodeFlow": "Alur kode perangkat",
+            "excludeDeviceCodeFlow": "Kecualikan alur kode Perangkat",
             "infoBalloon": "Cara organisasi Anda menggunakan protokol dan hibah autentikasi dan otorisasi tertentu",
             "label": "Alur autentikasi",
             "multiple": "\"{0}\" dan \"{1}\"",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "Untuk mengaktifkan Wajibkan Remediasi Risiko, Anda tidak boleh memilih {0}.",
       "mustSelect": "Untuk mengaktifkan Wajibkan Remediasi Risiko, Anda harus memilih {0}.",
-      "xOrY": "{0} atau {1}"
+      "xOrY": "{0} atau {1}",
+      "xYOrZ": "{0}, {1}, atau {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "Kontrol sesi \"frekuensi masuk setiap waktu\" tidak dapat digunakan dengan \"{0}\"",
         "appWarning": "Beberapa aplikasi yang sekarang dipilih tidak kompatibel dengan opsi \"Frekuensi masuk\" \"Setiap kali\"",
-        "everytime": "Setiap kali (toleransi 5 menit)",
+        "everytime": "Setiap saat",
         "EverytimeCA": {
           "secondaryOnly": "Metode autentikasi sekunder saja"
         },
-        "everytimeInfoBalloon": "Opsi \"Setiap kali\" dievaluasi pada setiap upaya masuk ke aplikasi dalam cakupan untuk kebijakan ini.",
-        "everyTimeStrict": "Setiap kali (Ketat - toleransi 10 detik)",
-        "everyTimeStrictInfoBalloon": "Toleransi perintah membatasi seberapa sering pengguna dapat diminta lagi untuk melakukan autentikasi ulang guna mencegah perintah yang berlebihan dan terjadinya pengulangan.",
+        "everytimeInfoBalloon": "Kontrol 'Setiap kali' memiliki jendela validitas 5 menit untuk kesegaran autentikasi.",
+        "everytimeInfoBalloonAriaLabel": "Informasi selengkapnya tentang Setiap kali",
+        "everyTimeStrict": "Setiap kali ketat (pratinjau)",
+        "everyTimeStrictInfoBalloon": "Setiap kali ketat (pratinjau) memiliki jendela validitas 10 detik untuk kesegaran autentikasi dan dimaksudkan untuk digunakan dengan aplikasi yang dikonfigurasi untuk bekerja dengan kontrol ini.",
+        "everyTimeStrictInfoBalloonAriaLabel": "Informasi selengkapnya tentang Setiap kali ketat (pratinjau)",
+        "everyTimeStrictWarning": "Kontrol Setiap kali ketat (pratinjau) ditujukan untuk aplikasi tertentu yang memahami kontrol ini. Kami tidak menyarankan untuk menerapkan kontrol 'Setiap kali ketat (pratinjau)' ke Semua aplikasi. Melakukannya dapat mengakibatkan perintah autentikasi tak terduga yang memengaruhi produktivitas bagi pengguna Anda dan membuat kelelahan autentikasi.",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "Pelajari selengkapnya tentang menghindari kelelahan autentikasi dengan Setiap kali ketat (pratinjau)",
+        "everyTimeStrictWarningTitle": "Hindari kelelahan autentikasi",
         "periodic": "Autentikasi ulang berkala",
         "reqMFAWarning": "\"Wajibkan autentikasi multifaktor\" harus dipilih saat menggunakan \"Metode autentikasi sekunder saja\"",
         "selectorInvalid": "Ketika pemberian \"Memerlukan perubahan kata sandi\" dipilih, hanya kontrol sesi \"frekuensi masuk setiap kali\" yang dapat digunakan",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "Hari",
           "everytime": "Setiap saat",
-          "everyTimeStrict": "Setiap kali (Ketat)",
+          "everyTimeStrict": "Setiap kali ketat (pratinjau)",
           "help": "Periode waktu sebelum pengguna diminta untuk masuk lagi saat mencoba mengakses sumber daya. Pengaturan default adalah jendela gulir selama 90 hari, artinya pengguna akan diminta untuk mengautentikasi ulang pada upaya pertama untuk mengakses sumber daya setelah tidak aktif di komputer mereka selama 90 hari atau lebih.",
           "Hour": {
             "plural": "{0} jam",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "Tingkat 2",
       "accessRequirement3": "Tingkat 3",
       "accessRequirementsLabel": "Mengakses data aplikasi aman",
-      "accountRecovery": "Pulihkan akun",
+      "accountRecovery": "Onboarding dan pemulihan akun",
       "accountRecoveryInfoText": "Tindakan pengguna ini memerlukan kontrol pemberian verifikasi identitas. Pilih profil verifikasi identitas.",
       "appsActionsAuthTitle": "Aplikasi cloud, tindakan, atau konteks autentikasi",
       "appsOrActionsSelectorInfoBallonText": "Aplikasi diakses atau tindakan pengguna",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "Konektivitas",
     "vPNDNSTriggers": "Pengaturan DNS",
     "vPNIKEv2": "Pengaturan IKEv2",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "Proksi",
     "vPNSplitTunneling": "Tunneling Pemisah",
     "vPNTrustedNetwork": "Deteksi Jaringan Tepercaya",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "Pengaturan bangun",
     "webContentFilter": "Filter Konten Web",
     "wiFi": "Wi-Fi",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "Semua Tipe Profil",
     "workProfileOnly": "Hanya Profil Kerja Milik Pribadi"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "Mengatur nama grup"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "Pengaturan yang dapat dipakai ulang tersedia",
+      "Column": {
+        "displayName": "Grup pengaturan yang dapat dipakai ulang"
+      },
+      "instanceHeader": "Konfigurasikan pengaturan",
+      "objectName": "Pengaturan yang dapat dipakai ulang",
+      "reusableSummary": "{0} pengaturan dikonfigurasi",
+      "reusableSummaryMultiple": "{0} pengaturan dikonfigurasi",
+      "ruleProperties": "Properti aturan",
+      "searchBox": "Cari pengaturan yang dapat dipakai ulang",
+      "selectCertificateFile": "Pilih file sertifikat yang telah diunggah sebagai pengaturan yang dapat digunakan kembali.",
+      "selectOneOrMoreDeviceControlToExclude": "Pilih satu atau beberapa grup pengaturan yang dapat digunakan kembali untuk dikecualikan dari aturan dan profil Kontrol Perangkat ini. Aturan mewarisi semua properti grup ini termasuk perubahan yang dibuat pada grup.",
+      "selectOneOrMoreDeviceControlToInclude": "Pilih satu atau beberapa grup pengaturan yang dapat digunakan kembali untuk disertakan ke aturan dan profil Kontrol Perangkat ini. Aturan mewarisi semua properti grup ini termasuk perubahan yang dibuat pada grup.",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "Atur pengaturan yang dapat dipakai ulang"
+        }
+      },
+      "selectScript": "Pilih skrip untuk ditambahkan ke pengaturan kepatuhan kustom ini.",
+      "Subtitle": {
+        "firewall": "Pilih satu atau beberapa grup pengaturan yang dapat digunakan kembali untuk ditambahkan ke aturan dan profil Firewall ini. Aturan mewarisi semua properti grup ini termasuk perubahan yang dibuat pada grup."
+      },
+      "title": "Pilih pengaturan yang dapat dipakai ulang (pratinjau)"
+    },
+    "wizardTitle": "Konfigurasikan pengaturan yang dapat dipakai ulang"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "Grup Admin",
     "RoleAssignmentAdminDesc": "Pengguna grup admin adalah administrator yang diberi peran ini",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "Perlindungan akun",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "Semua perangkat",
     "antivirus": "Antivirus",
     "antivirusReporting": "Pelaporan antivirus (Pratinjau)",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "VPN melalui jaringan seluler",
     "vpnPerApp": "VPN per aplikasi",
     "vPNPerAppDescription": "Ketika pengguna mulai menggunakan aplikasi yang dipilih, lalu lintas akan otomatis dialihkan melalui koneksi VPN jika koneksinya dikonfigurasikan ke Selalu Aktif atau jika koneksi telah dimulai secara manual oleh pengguna.",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "Alamat server proksi (host atau alamat IP yang benar-benar memenuhi syarat).",
     "vPNPolicyAddressName": "Alamat",
     "vPNPolicyAssociatedAppsDescription": "Aplikasi yang ditambahkan di sini secara otomatis akan memulai koneksi VPN ini.",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "Tunnel Perangkat",
     "vPNPolicyExcludedDomainsUrlsDescription": "Daftar domain yang dapat melewati VPN ketika VPN per aplikasi diaktifkan. Berlaku untuk iOS 14 dan versi lebih baru",
     "vPNPolicyExcludedDomainsUrlsName": "Domain yang Dikecualikan",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "Aturan tabel kebijakan resolusi nama (NRPT) menentukan cara DNS mengatasi nama saat terhubung ke VPN. Setiap baris dalam tabel menentukan domain dan akhiran DNS atau server proxy web yang digunakan untuk mengatasi domain tersebut.",
     "vPNPolicyNameResolutionPolicyTableRulesName": "Aturan tabel Kebijakan Resolusi Nama (NRPT)",
     "vPNPolicyNetworkTrafficRulesDescription": "Hati-hati: Dengan menambahkan aturan jaringan, koneksi VPN hanya akan dibatasi menurut aturan yang telah ditentukan.\r\n     Ketika menambahkan aturan lalu lintas, pastikan untuk menambahkan aturan catch-all yang paling tidak membatasi, untuk menghindari masalah VPN.",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "Misalnya, VPN Corp untuk pengguna akhir",
     "vPNServerList": "Daftar server",
     "vPNServerListExample": "ServerDescription, Alamat IP atau FQDN (misalnya, VPN seluruh perusahaan, 10.0.0.1) (misalnya, VPN khusus aplikasi, vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "Aplikasi dalam daftar ini dikecualikan dari penggunaan tunnel VPN. Lalu lintas aplikasi selalu melewati jaringan secara langsung tanpa melalui VPN, terlepas dari status koneksi VPN. Aplikasi yang tidak ada dalam daftar ini harus menggunakan VPN saat tersambung dan diblokir saat VPN tidak tersedia.",
     "vpnStrictTunnelBypassAppsName": "Izinkan aplikasi ini untuk melewati Mode Tunnel Ketat",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "Aplikasi profil kerja dalam daftar ini dikecualikan dari penggunaan tunnel VPN. Lalu lintas aplikasi selalu melewati jaringan secara langsung tanpa melalui VPN, terlepas dari status koneksi VPN. Aplikasi profil kerja yang tidak ada dalam daftar ini harus menggunakan VPN saat tersambung dan diblokir saat VPN tidak tersedia.",
     "vpnStrictTunnelModeDescription": "Jika diaktifkan, semua lalu lintas jaringan dipaksa untuk melalui tunnel VPN. Jika koneksi ke VPN tidak dapat dibuat, semua lalu lintas jaringan di perangkat akan diblokir. Aplikasi yang ditambahkan ke daftar pengecualian selalu melewati VPN dan tersambung ke jaringan secara langsung, bahkan jika VPN tersambung.",
     "vpnStrictTunnelModeName": "Mode tunnel ketat",
     "vpnStrictTunnelModeWorkProfileDescription": "Jika diaktifkan, semua lalu lintas jaringan profil kerja dipaksa untuk melalui tunnel VPN. Jika koneksi ke VPN tidak dapat dibuat, lalu lintas jaringan profil kerja akan diblokir. Aplikasi yang ditambahkan ke daftar pengecualian selalu melewati VPN dan tersambung ke jaringan secara langsung, bahkan jika VPN tersambung. Aplikasi dan lalu lintas pribadi di luar profil kerja tidak akan terpengaruh.",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "Karena WIP menentukan kebijakan dan daftar aplikasi, aturan lalu lintas jaringan tambahan tidak diperlukan saat WIP dipilih, kecuali diperlukan secara khusus.",
     "vPNWipOrAppsName": "Kaitkan WIP atau aplikasi dengan VPN ini",
     "wakeOnLANName": "Hidup dengan LAN",
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "Gambaran Umum PC Cloud",
       "cloudPCSettings": "Pengaturan PC Cloud",
       "monitorCloudPCs": "Pantau PC Cloud (pratinjau)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "Provisikan PC Cloud",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Pemantauan Windows 365 (pratinjau)",
       "windows365Reports": "Laporan Windows 365"
     },

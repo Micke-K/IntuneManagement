@@ -287,13 +287,19 @@ class IntunePolicyTypeBase
             }
         }
 
-        # ToDo: Add PageSize Setting        
+        # "All" is the one non-numeric list value and means no $top
+        # (Test-GraphPageSizeAll). It used to fall through the cast into 20 (#384).
         $pageSizeStr = Get-SettingValue "GraphPageSize" $this._TopItems
-        try {
-            $pageSize = [uint32]$pageSizeStr
+        if(Test-GraphPageSizeAll) {
+            $pageSize = 0
         }
-        catch {
-            $pageSize = 20
+        else {
+            try {
+                $pageSize = [uint32]$pageSizeStr
+            }
+            catch {
+                $pageSize = 20
+            }
         }
 
         if($this.HasPageSizeSupport -eq $false)
@@ -1121,6 +1127,7 @@ class IntunePolicyBase
         $clonedObject = $this.Clone()
         
         Remove-GraphPropertiesForImport $clonedObject $clonedObject.JsonObject
+        Remove-GraphAssignmentsFromBody $clonedObject.JsonObject
 
         $params = @{}
         $strAPI = (?? $clonedObject.PolicyType.APIPOST $clonedObject.PolicyType.API)
@@ -1266,6 +1273,7 @@ class IntunePolicyBase
         }
 
         Remove-GraphPropertiesForImport $updateObject $updateObject.JsonObject
+        Remove-GraphAssignmentsFromBody $updateObject.JsonObject
         # isAssigned is a computed status flag many endpoints refuse to accept
         # back on PATCH - the original project stripped it on every update.
         Remove-Property $updateObject.JsonObject "isAssigned"
@@ -1359,7 +1367,10 @@ class IntunePolicyBase
             if($null -eq $sourceObj) { $sourceObj = $this }
             $newObj.PolicyType.PostImportCommand($newObj, $sourceObj)
 
-            Import-GraphObjectAssignment $newObj $this
+            # Assignments come from the ORIGINAL too: the create body (this clone)
+            # has them stripped (Remove-GraphAssignmentsFromBody, #441). UpdateObject
+            # already passes the original.
+            Import-GraphObjectAssignment $newObj $sourceObj
         }
         return $newObj
     }

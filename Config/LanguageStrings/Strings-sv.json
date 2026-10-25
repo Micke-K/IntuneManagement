@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "Tillämpa principen på specifika agentidentiteter.",
     "agents": "Agenter",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "Ytterligare information om risknivåer för agentsessioner",
+    "agentsLicenseInfoBalloonAriaLabel": "Licenskrav för agenter",
+    "agentsLicenseRequiredAriaLabel": "Agenter. Din klientorganisation uppfyller inte licenskraven för agentinriktning.",
+    "agentsLicenseRequiredTooltip": "Din klientorganisation uppfyller inte licenskraven för agentinriktning.",
     "agentsLicenseText": "En Microsoft Agent 365- eller Microsoft 365 E7-licens krävs för att redigera den här principen.",
     "agentsLicensingEnforcementDescription": "Snart kräver villkorlig åtkomst för agenter en Microsoft Agent 365-licens.",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "Läs mer om kommande licensiering för agenter",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "Namngivna platser",
     "menuItemPhasedRollout": "Distribution i faser",
     "menuItemPolicies": "Principer",
-    "menuItemPoliciesV2": "Principer V2 (förhandsversion)",
+    "menuItemPoliciesV2": "Principplaner (förhandsversion)",
     "menuItemPolicySettings": "Inställningar (förhandsversion)",
+    "menuItemSecurityDefaults": "Standardinställningar för säkerhet",
     "menuItemTermsOfUse": "Användningsvillkor",
     "microsoftAdminPortals": "Microsofts administratörsportaler",
     "microsoftAdminPortalsInfoBox": "Administrationsportalerna omfattar Administrationscenter för Microsoft 365 och administrationscenterna för Exchange, Azure Portal, Microsoft Entra och andra.",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "Vilket autentiseringsflöde som helst",
             "authenticationTransfer": "Autentiseringsöverföring",
             "deviceCodeFlow": "Enhetskodflöde",
+            "excludeDeviceCodeFlow": "Exkludera enhetskodflöde",
             "infoBalloon": "Hur din organisation använder vissa autentiserings- och auktoriseringsprotokoll och beviljanden",
             "label": "Autentiseringsflöden",
             "multiple": "{0} och {1}",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "Om du vill aktivera Kräv riskreparation måste du inte välja {0}.",
       "mustSelect": "Om du vill aktivera Kräv riskreparation måste du välja {0}.",
-      "xOrY": "{0} eller {1}"
+      "xOrY": "{0} eller {1}",
+      "xYOrZ": "{0}, {1} eller {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "Sessionskontrollen \"inloggningsfrekvens varje gång\" kan inte användas med \"{0}\"",
         "appWarning": "Vissa av de valda programmen är inte kompatibla med inloggningsfrekvensalternativet Varje gång",
-        "everytime": "Varje gång (5 minuters tolerans)",
+        "everytime": "Varje gång",
         "EverytimeCA": {
           "secondaryOnly": "Endast sekundära autentiseringsmetoder"
         },
-        "everytimeInfoBalloon": "Alternativet ”Varje gång” utvärderas för varje försök att logga in på ett program inom den här principens omfång.",
-        "everyTimeStrict": "Varje gång (strikt - 10 sekunders tolerans)",
-        "everyTimeStrictInfoBalloon": "Prompttolerans begränsar hur ofta användare kan uppmanas att omautentiseras för att förhindra onödiga uppmaningar och loopar.",
+        "everytimeInfoBalloon": "Kontrollen Varje gång har ett 5-minuters giltighetsfönster för autentiseringens aktualitet.",
+        "everytimeInfoBalloonAriaLabel": "Mer information om Varje gång",
+        "everyTimeStrict": "Varje gång – strikt (förhandsversion)",
+        "everyTimeStrictInfoBalloon": "Varje gång – strikt (förhandsversion) har en 10-sekunders giltighetsperiod för autentiseringens aktualitet och är avsett att användas med program som är konfigurerade för att fungera med den här kontrollen.",
+        "everyTimeStrictInfoBalloonAriaLabel": "Mer information om Varje gång – strikt (förhandsversion)",
+        "everyTimeStrictWarning": "Kontrollen Varje gång – strikt (förhandsversion) är avsedd för specifika program som förstår den här kontrollen. Vi rekommenderar inte att du tillämpar kontrollen Varje gång – strikt (förhandsversion) på alla program. Det kan leda till oväntade autentiseringsfrågor som påverkar användarnas produktivitet och skapar autentiseringsutmattning.",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "Mer information om att undvika autentiseringsutmattning med Varje gång – strikt (förhandsversion)",
+        "everyTimeStrictWarningTitle": "Undvik autentiseringsutmattning",
         "periodic": "Periodisk omautentisering",
         "reqMFAWarning": "Du måste välja Kräv multifaktorautentisering när du använder Endast metoder för sekundär autentisering",
         "selectorInvalid": "När beviljandet Kräv lösenordsändring har valts går det endast att använda sessionskontrollen för inloggningsfrekvensen Varje gång",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "Dagar",
           "everytime": "Varje gång",
-          "everyTimeStrict": "Varje gång (strikt)",
+          "everyTimeStrict": "Varje gång – strikt (förhandsversion)",
           "help": "Tidsperiod innan en användare uppmanas att logga in igen när de försöker komma åt en resurs. Standardinställningen är ett rullande fönster på 90 dagar, d.v.s. användare ombeds återautentisera sig vid det första försöket att komma åt en resurs efter att ha varit inaktiva på sin dator i 90 dagar eller längre.",
           "Hour": {
             "plural": "{0} timmar",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "Nivå 2",
       "accessRequirement3": "Nivå 3",
       "accessRequirementsLabel": "Åtkomst till säkra appdata",
-      "accountRecovery": "Återställ konto",
+      "accountRecovery": "Kontoregistrering och -återställning",
       "accountRecoveryInfoText": "Den här användaråtgärden kräver kontrollen för identitetsverifieringsbeviljande. Välj en identitetsverifieringsprofil.",
       "appsActionsAuthTitle": "Molnappar, åtgärder eller autentiseringssammanhang",
       "appsOrActionsSelectorInfoBallonText": "Program som används eller användaråtgärder",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "Anslutning",
     "vPNDNSTriggers": "DNS-inställningar",
     "vPNIKEv2": "IKEv2-inställningar",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "Proxy",
     "vPNSplitTunneling": "Delade tunnlar (Split Tunneling)",
     "vPNTrustedNetwork": "Identifiering av betrott nätverk",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "Väckningsinställningar",
     "webContentFilter": "Webbinnehållsfilter",
     "wiFi": "Trådlöst",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "Alla profiltyper",
     "workProfileOnly": "Endast privatägda arbetsprofiler"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "Anger gruppnamn"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "Tillgängliga återanvändbara inställningar",
+      "Column": {
+        "displayName": "Återanvändbar inställningsgrupp"
+      },
+      "instanceHeader": "Konfigurera inställningar",
+      "objectName": "Återanvändbar inställning",
+      "reusableSummary": "{0} inställning har konfigurerats",
+      "reusableSummaryMultiple": "{0} inställningar har konfigurerats",
+      "ruleProperties": "Regelegenskaper",
+      "searchBox": "Sök återanvändbara inställningar",
+      "selectCertificateFile": "Välj en certifikatfil som har laddats upp som en återanvändbar inställning.",
+      "selectOneOrMoreDeviceControlToExclude": "Välj en eller flera återanvändbara inställningsgrupper som ska undantas till den här regeln och profilen för enhetskontroll. Regeln ärver alla egenskaper för dessa grupper, inklusive ändringar som görs i grupperna.",
+      "selectOneOrMoreDeviceControlToInclude": "Välj en eller flera återanvändbara inställningsgrupper som ska ingå i den här regeln och profilen för enhetskontroll. Regeln ärver alla egenskaper för dessa grupper, inklusive ändringar som görs i grupperna.",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "Ställ in återanvändbara inställningar"
+        }
+      },
+      "selectScript": "Välj ett skript som ska läggas till i den här anpassade kompatibilitetsinställningen.",
+      "Subtitle": {
+        "firewall": "Välj en eller flera återanvändbara inställningsgrupper som ska läggas till i den här brandväggsregeln och profilen. Regeln ärver alla egenskaper för dessa grupper, inklusive ändringar som görs i grupperna."
+      },
+      "title": "Välj återanvändbara inställningar (förhandsversion)"
+    },
+    "wizardTitle": "Konfigurera återanvändningsbara inställningar"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "Administrationsgrupper",
     "RoleAssignmentAdminDesc": "Administrationsgruppanvändare är de administratörer som har tilldelats den här rollen",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "Kontoskydd",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "Alla enheter",
     "antivirus": "Antivirus",
     "antivirusReporting": "Antivirusrapportering (förhandsversion)",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "VPN över mobilt nätverk",
     "vpnPerApp": "Per app-VPN",
     "vPNPerAppDescription": "När användarna börjar använda de valda apparna dirigeras trafiken automatiskt via VPN-anslutningen om anslutningen är inställd på Alltid på, eller om den har startats manuellt av användaren.",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "Proxyserveradress (fullständigt kvalificerad värd eller IP-adress).",
     "vPNPolicyAddressName": "Adress",
     "vPNPolicyAssociatedAppsDescription": "Appar som läggs till här startar automatiskt VPN-anslutningen.",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "Enhetstunnel",
     "vPNPolicyExcludedDomainsUrlsDescription": "En lista över domäner som kan kringgå VPN-anslutningen när per app-VPN är aktiverat. Gäller iOS 14 och senare",
     "vPNPolicyExcludedDomainsUrlsName": "Undantagna domäner",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "Regler för namnmatchningsprinciptabellen definierar hur DNS ska matcha namn vid anslutning till VPN. Varje rad i tabellen anger en domän och de DNS-suffix eller den webbproxyserver som ska användas för att matcha den domänen.",
     "vPNPolicyNameResolutionPolicyTableRulesName": "Regler för namnmatchningsprinciptabell",
     "vPNPolicyNetworkTrafficRulesDescription": "Se upp! Om nätverksregler läggs till kan bara de angivna reglerna användas i VPN-anslutningen.\r\n     När du lägger till trafikregler måste du se till att lägga till en standardregel som är minst restriktiv för att undvika VPN-problem.",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "t.ex. företags-VPN för användare",
     "vPNServerList": "Serverlista",
     "vPNServerListExample": "ServerDescription, ip-adress eller fullständigt domännamn (t.ex. företags-VPN, 10.0.0.1) (t.ex. endast app-VPN, vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "Appar i den här listan undantas från att använda VPN-tunneln. Deras trafik går alltid förbi VPN och ansluter direkt till nätverket, oavsett VPN-anslutningens status. Appar som inte finns i den här listan måste använda VPN när det är anslutet och blockeras när VPN inte är tillgängligt.",
     "vpnStrictTunnelBypassAppsName": "Tillåt att de här apparna kringgår strikt tunnelläge",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "Arbetsprofilappar i den här listan undantas från att använda VPN-tunneln. Deras trafik går alltid förbi VPN och ansluter direkt till nätverket, oavsett VPN-anslutningens status. Arbetsprofilappar som inte finns i den här listan måste använda VPN när de är anslutna och blockeras när VPN inte är tillgängligt.",
     "vpnStrictTunnelModeDescription": "När det är aktiverat tvingas all nätverkstrafik att gå genom VPN-tunneln. Om en anslutning till VPN inte kan upprättas blockeras all nätverkstrafik på enheten. Appar som lagts till i undantagslistan kringgår alltid VPN och ansluter direkt till nätverket, även när VPN är anslutet.",
     "vpnStrictTunnelModeName": "Strikt tunnelläge",
     "vpnStrictTunnelModeWorkProfileDescription": "När den är aktiverad tvingas all nätverkstrafik för arbetsprofilen via VPN-tunneln. Om det inte går att upprätta en anslutning till VPN blockeras nätverkstrafiken för arbetsprofilen. Appar som lagts till i undantagslistan kringgår alltid VPN och ansluter direkt till nätverket, även när VPN är anslutet. Personliga appar och trafik utanför arbetsprofilen påverkas inte.",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "Eftersom principer och applistor anges i Windows informationsskydd krävs inte ytterligare nätverkstrafikregler när Windows informationsskydd är valt, såvida det inte särskilt behövs.",
     "vPNWipOrAppsName": "Koppla Windows informationsskydd eller appar till detta virtuella privata nätverk",
     "wakeOnLANName": "Wake On Lan",
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "Översikt över molnbaserad dator",
       "cloudPCSettings": "Inställningar för molnbaserad dator",
       "monitorCloudPCs": "Övervaka molndatorer (förhandsversion)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "Etablera molnbaserade datorer",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Windows 365-övervakning (förhandsversion)",
       "windows365Reports": "Windows 365-rapporter"
     },

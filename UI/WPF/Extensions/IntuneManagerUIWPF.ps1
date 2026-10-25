@@ -501,7 +501,9 @@ function Show-SelectedGraphPolicies
             $bindingProp,$colHeader = $columnInfo.Split('=')
             if(-not $colHeader) { $colHeader = $bindingProp.Split(".")[-1] }
 
-            $dgIntuneManagerObjects.Columns.Add((New-GridTextColumn -Path $bindingProp -Header $colHeader -FirstLineOnly:$firstLineOnly -MaxLength $maxCellLength))
+            # The Name column is exempt from the cap (Get-GridCellMaxLength, issue #437).
+            $cellMax = Get-GridCellMaxLength -Path $bindingProp -Default $maxCellLength
+            $dgIntuneManagerObjects.Columns.Add((New-GridTextColumn -Path $bindingProp -Header $colHeader -FirstLineOnly:$firstLineOnly -MaxLength $cellMax))
         }
     }
     else {

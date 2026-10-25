@@ -280,7 +280,7 @@
       "autoUpdate": "Actualizar automáticamente",
       "deadlineTimeColumnLabel": "Fecha límite de instalación",
       "deliveryOptimizationPriorityHeader": "Prioridad de optimización de distribución",
-      "detectAppsInUseHeader": "Detección de aplicaciones en uso",
+      "detectAppsInUseHeader": "Detectar aplicaciones en uso",
       "groupTableHeader": "Grupo",
       "installContextLabel": "Contexto de instalación",
       "isRemovable": "Instalar como extraíble",
@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "Aplique la directiva a identidades de agente específicas.",
     "agents": "Agentes",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "Información adicional sobre los niveles de riesgo de la sesión del agente",
+    "agentsLicenseInfoBalloonAriaLabel": "Requisitos de licencia de agentes",
+    "agentsLicenseRequiredAriaLabel": "Agentes. Su inquilino no cumple los requisitos de licencia para usar agentes.",
+    "agentsLicenseRequiredTooltip": "Su inquilino no cumple los requisitos de licencia para usar agentes.",
     "agentsLicenseText": "Se necesita una licencia de Microsoft Agent 365 o Microsoft 365 E7 para editar esta directiva.",
     "agentsLicensingEnforcementDescription": "Próximamente, el acceso condicional para agentes requerirá una licencia de Microsoft Agent 365.",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "Más información sobre la próxima aplicación de los requisitos de licencia para agentes",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "Ubicaciones con nombre",
     "menuItemPhasedRollout": "Lanzamiento por fases",
     "menuItemPolicies": "Directivas",
-    "menuItemPoliciesV2": "Directivas V2 (versión preliminar)",
+    "menuItemPoliciesV2": "Planes de directivas (versión preliminar)",
     "menuItemPolicySettings": "Configuración (versión preliminar)",
+    "menuItemSecurityDefaults": "Valores predeterminados de seguridad",
     "menuItemTermsOfUse": "Términos de uso",
     "microsoftAdminPortals": "Portales de administración de Microsoft",
     "microsoftAdminPortalsInfoBox": "Los portales de administración incluyen el Centro de administración de Microsoft 365, el Centro de administración de Exchange, Azure Portal, el Centro de administración Microsoft Entra y otros.",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "Cualquier flujo de autenticación",
             "authenticationTransfer": "Transferencia de autenticación",
             "deviceCodeFlow": "Flujo de código de dispositivo",
+            "excludeDeviceCodeFlow": "Excluir flujo de código de dispositivo",
             "infoBalloon": "Cómo usa su organización determinados protocolos y concesiones de autenticación y autorización",
             "label": "Flujos de autenticación",
             "multiple": "\"{0}\" y \"{1}\"",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "Para habilitar Requerir corrección de riesgos, no debe seleccionar {0}.",
       "mustSelect": "Para habilitar Requerir corrección de riesgos, debe seleccionar {0}.",
-      "xOrY": "{0} o {1}"
+      "xOrY": "{0} o {1}",
+      "xYOrZ": "{0}, {1} o {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "El control de sesión \"Frecuencia de inicio de sesión cada vez\" no se puede usar con \"{0}\"",
         "appWarning": "Algunas de las aplicaciones seleccionadas actualmente no son compatibles con la opción \"Frecuencia de inicio de sesión\" de \"Cada vez\".",
-        "everytime": "Cada vez (tolerancia de 5 minutos)",
+        "everytime": "Cada vez",
         "EverytimeCA": {
           "secondaryOnly": "Solo métodos de autenticación secundarios"
         },
-        "everytimeInfoBalloon": "La opción \"Cada vez\" se evalúa en cada intento de inicio de sesión de una aplicación en el ámbito de esta directiva.",
-        "everyTimeStrict": "Cada vez (estricto: tolerancia de 10 segundos)",
-        "everyTimeStrictInfoBalloon": "La tolerancia de avisos limita la frecuencia con la que se puede volver a pedir a los usuarios que se reautentiquen para evitar avisos y bucles excesivos.",
+        "everytimeInfoBalloon": "El control \"Cada vez\" tiene una ventana de validez de 5 minutos para la actualización de la autenticación.",
+        "everytimeInfoBalloonAriaLabel": "Más información sobre Cada vez",
+        "everyTimeStrict": "Siempre estricto (versión preliminar)",
+        "everyTimeStrictInfoBalloon": "Siempre estricto (versión preliminar) tiene una ventana de validez de 10 segundos para la actualización de la autenticación y está pensado para usarse con aplicaciones configuradas para trabajar con este control.",
+        "everyTimeStrictInfoBalloonAriaLabel": "Más información sobre Siempre estricto (versión preliminar)",
+        "everyTimeStrictWarning": "El control Siempre estricto (versión preliminar) está pensado para aplicaciones específicas que comprenden este control. No se recomienda aplicar el control \"Siempre estricto (versión preliminar)\" a Todas las aplicaciones. Si lo hace, pueden aparecer solicitudes de autenticación inesperadas que afectan a la productividad del usuario y generan fatiga de autenticación.",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "Más información sobre cómo evitar la fatiga de autenticación con Siempre estricto (versión preliminar)",
+        "everyTimeStrictWarningTitle": "Evitar la fatiga de autenticación",
         "periodic": "Reautenticación periódica",
         "reqMFAWarning": "Debe seleccionarse “Requerir autenticación multifactor” al usar “Solo métodos de autenticación secundarios”",
         "selectorInvalid": "Cuando se selecciona la concesión \"Requerir cambio de contraseña\", solo se puede usar el control de sesión \"Frecuencia de inicio de sesión cada vez\"",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "Días",
           "everytime": "Cada vez",
-          "everyTimeStrict": "Cada vez (estricto)",
+          "everyTimeStrict": "Siempre estricto (versión preliminar)",
           "help": "Período de tiempo antes de que se pida a un usuario que vuelva a iniciar sesión cuando intenta acceder a un recurso. El valor predeterminado es un período acumulado de 90 días, es decir, se pedirá que los usuarios vuelvan a autenticarse la primera vez que intenten acceder a un recurso después de haber estado inactivos en la máquina durante un período de 90 días o superior.",
           "Hour": {
             "plural": "{0} horas",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "Nivel 2",
       "accessRequirement3": "Nivel 3",
       "accessRequirementsLabel": "Acceso a los datos de aplicaciones protegidos",
-      "accountRecovery": "Recuperar cuenta",
+      "accountRecovery": "Incorporación y recuperación de cuentas",
       "accountRecoveryInfoText": "Esta acción del usuario requiere el control de concesión de comprobación de integridad. Seleccione un perfil de verificación de identidad.",
       "appsActionsAuthTitle": "Aplicaciones en la nube, acciones o contexto de autenticación",
       "appsOrActionsSelectorInfoBallonText": "Aplicaciones a las que se ha accedido o acciones del usuario",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "Conectividad",
     "vPNDNSTriggers": "Configuración DNS",
     "vPNIKEv2": "Configuración de IKEv2",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "Proxy",
     "vPNSplitTunneling": "Túnel dividido",
     "vPNTrustedNetwork": "Detección de redes de confianza",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "Configuración de reactivación",
     "webContentFilter": "Filtro de contenido web",
     "wiFi": "Wi-Fi",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "Todos los tipos de perfil",
     "workProfileOnly": "Solo perfil de trabajo de propiedad personal"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "Estableciendo nombre del grupo"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "Configuración reutilizable disponible",
+      "Column": {
+        "displayName": "Grupo de configuraciones reutilizables"
+      },
+      "instanceHeader": "Configurar opciones",
+      "objectName": "Configuración reutilizable",
+      "reusableSummary": "{0} configuración establecida",
+      "reusableSummaryMultiple": "{0} configuraciones establecidas",
+      "ruleProperties": "Propiedades de regla",
+      "searchBox": "Buscar configuración reutilizable",
+      "selectCertificateFile": "Seleccione un archivo de certificado que se haya cargado como una configuración reutilizable.",
+      "selectOneOrMoreDeviceControlToExclude": "Seleccione uno o varios grupos de configuración reutilizables para excluirlos de esta regla y perfil de Control de dispositivos. La regla hereda todas las propiedades de estos grupos, incluidos los cambios realizados en los grupos.",
+      "selectOneOrMoreDeviceControlToInclude": "Seleccione uno o varios grupos de configuración reutilizables para incluirlos en esta regla y perfil de Control de dispositivos. La regla hereda todas las propiedades de estos grupos, incluidos los cambios realizados en los grupos.",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "Establecer la configuración reutilizable"
+        }
+      },
+      "selectScript": "Seleccione un script para agregarlo a esta configuración de cumplimiento personalizada.",
+      "Subtitle": {
+        "firewall": "Seleccione uno o varios grupos de configuración reutilizables para agregarlos a esta regla y perfil de firewall. La regla hereda todas las propiedades de estos grupos, incluidos los cambios realizados en los grupos."
+      },
+      "title": "Seleccionar configuración reutilizable (versión preliminar)"
+    },
+    "wizardTitle": "Establecer configuración reutilizable"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "Grupos de administradores",
     "RoleAssignmentAdminDesc": "Los usuarios del grupo de administradores son los administradores asignados a este rol.",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "Protección de cuentas",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "Todos los dispositivos",
     "antivirus": "Antivirus",
     "antivirusReporting": "Creación de informes de antivirus (versión preliminar)",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "VPN a través de la red de telefonía móvil",
     "vpnPerApp": "VPN por aplicación",
     "vPNPerAppDescription": "Cuando los usuarios empiecen a usar las aplicaciones seleccionadas, el tráfico se enrutará automáticamente a través de la conexión VPN si está configurada para estar siempre activa o si el usuario la ha iniciado manualmente.",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "Dirección del servidor proxy (host completo o dirección IP).",
     "vPNPolicyAddressName": "Dirección",
     "vPNPolicyAssociatedAppsDescription": "Las aplicaciones aquí agregadas iniciarán automáticamente esta conexión VPN.",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "Túnel del dispositivo",
     "vPNPolicyExcludedDomainsUrlsDescription": "Lista de dominios que pueden omitir la VPN cuando se activa la opción de VPN por aplicación. Se aplica a iOS 14 y versiones posteriores.",
     "vPNPolicyExcludedDomainsUrlsName": "Dominios excluidos",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "Las reglas de tabla de directivas de resolución de nombres (NRPT) definen cómo el DNS resuelve nombres cuando está conectado a la VPN. Cada fila de la tabla especifica un dominio y los sufijos DNS o el servidor proxy web que se utilizan para resolver ese dominio.",
     "vPNPolicyNameResolutionPolicyTableRulesName": "Reglas de tabla de directivas de resolución de nombres (NRPT)",
     "vPNPolicyNetworkTrafficRulesDescription": "Atención: Al agregar reglas de red, la conexión VPN estará limitada solo a las reglas especificadas.\r\n     Al agregar reglas de tráfico, asegúrese de agregar una regla comodín que sea menos restrictiva con el fin de evitar problemas de VPN.",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "Por ejemplo, VPN corporativa para usuarios finales",
     "vPNServerList": "Lista de servidores",
     "vPNServerListExample": "Descripción del servidor, dirección IP o FQDN (p. ej., VPN para toda la compañía, 10.0.0.1) (p. ej., VPN solo para aplicaciones, vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "Las aplicaciones de esta lista se excluyen del uso del túnel VPN. Su tráfico siempre omite la VPN y accede a la red directamente, independientemente del estado de la conexión VPN. Las aplicaciones que no están en esta lista deben usar la VPN cuando están conectadas y se bloquean cuando la VPN no está disponible.",
     "vpnStrictTunnelBypassAppsName": "Permitir que estas aplicaciones omitan el modo de túnel estricto",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "Las aplicaciones de perfil de trabajo de esta lista se excluyen del uso del túnel VPN. Su tráfico siempre omite la VPN y accede a la red directamente, independientemente del estado de la conexión VPN. Las aplicaciones de perfil de trabajo que no están en esta lista deben usar la VPN cuando están conectadas y se bloquean cuando la VPN no está disponible.",
     "vpnStrictTunnelModeDescription": "Cuando se habilita, todo el tráfico de red se fuerza a través del túnel VPN. Si no se puede establecer una conexión a la VPN, se bloquea todo el tráfico de red del dispositivo. Las aplicaciones agregadas a la lista de exclusión siempre omiten la VPN y se conectan a la red directamente, incluso cuando la VPN está conectada.",
     "vpnStrictTunnelModeName": "Modo de túnel estricto",
     "vpnStrictTunnelModeWorkProfileDescription": "Cuando se habilita, todo el tráfico de red del perfil de trabajo se fuerza a través del túnel VPN. Si no se puede establecer una conexión a la VPN, se bloquea el tráfico de red del perfil de trabajo. Las aplicaciones agregadas a la lista de exclusión siempre omiten la VPN y se conectan a la red directamente, incluso cuando la VPN está conectada. Las aplicaciones personales y el tráfico fuera del perfil de trabajo no se ven afectados.",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "Como WIP define directivas y listas de aplicaciones, no se necesitan otras reglas de tráfico de red cuando se selecciona WIP, excepto en situaciones específicas.",
     "vPNWipOrAppsName": "Asociar WIP o aplicaciones a esta VPN",
     "wakeOnLANName": "Wake On LAN",
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "Introducción a Cloud PC",
       "cloudPCSettings": "Configuración del PC en la nube",
       "monitorCloudPCs": "Supervisión de equipos en la nube (versión preliminar)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "Aprovisionar equipos en la nube",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Supervisión de Windows 365 (versión preliminar)",
       "windows365Reports": "Informes de Windows 365"
     },

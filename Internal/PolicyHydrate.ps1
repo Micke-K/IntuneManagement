@@ -149,6 +149,14 @@ function Merge-PolicyHydrateBody
     }
 
     foreach($prop in $Body.PSObject.Properties) {
+        # An EMPTY assignments array from the re-read does not replace loaded
+        # assignments: some endpoints answer the single-object $expand with []
+        # while the list $expand and /assignments return the rows (Compliance
+        # Policy V2, measured live 2026-10-17). Exports then lost them.
+        if($prop.Name -eq 'assignments' -and @($prop.Value).Count -eq 0 -and
+           $Policy.JsonObject.PSObject.Properties['assignments'] -and @($Policy.JsonObject.assignments).Count -gt 0) {
+            continue
+        }
         if($Policy.JsonObject.PSObject.Properties[$prop.Name]) {
             $Policy.JsonObject.($prop.Name) = $prop.Value
         }

@@ -118,9 +118,11 @@ function Invoke-GraphBatchRequest
     # same path even with batching on: a $batch envelope around one GET is a
     # whole extra round-trip for nothing (fifty-three of them on one measured
     # export).
-    if($requestObjects.Count -gt 0 -and (-not (Test-GraphBatchEnabled) -or $requestObjects.Count -eq 1))
+    # Writes under Multi Admin Approval go direct too (Test-MSGraphApprovalDirectWrites).
+    $approvalDirect = ($requestObjects.Count -gt 1) -and (Test-MSGraphApprovalDirectWrites $requestObjects)
+    if($requestObjects.Count -gt 0 -and (-not (Test-GraphBatchEnabled) -or $requestObjects.Count -eq 1 -or $approvalDirect))
     {
-        $reason = if(Test-GraphBatchEnabled) { 'single request' } else { 'batching off' }
+        $reason = if($approvalDirect) { 'Multi Admin Approval' } elseif(Test-GraphBatchEnabled) { 'single request' } else { 'batching off' }
         foreach($r in @(Invoke-GraphBatchRequestDirect -RequestObjects $requestObjects -BatchType $BatchType -TokenId $TokenId `
             -AllPages:$AllPages -SkipWarnings:$SkipWarnings -IncludedFailed:$IncludedFailed -Reason $reason)) { [void]$directResults.Add($r) }
         return $directResults.ToArray()
@@ -380,6 +382,7 @@ function Invoke-GraphBatchRequestDirect
             $script:AllGraphCalls[$script:AllGraphCalls.Count - 1]
         } else { $null }
         $content = $null
+        $approvalsBefore = @(Get-MSGraphApprovalPending).Count
         try { $content = Invoke-MSGraphAPI @callArgs } catch { }
 
         $status = 0
@@ -397,7 +400,13 @@ function Invoke-GraphBatchRequestDirect
 
         $ok = ($status -ge 200 -and $status -lt 300)
         if(-not $ok -and -not $IncludedFailed) {
-            if(-not $SkipWarnings) { Write-Log "Direct request $($o.id) ($method $($o.url)) returned $status. Skipping..." 2 }
+            # A write Multi Admin Approval held is queued, not failed - say so, next
+            # to the request id that names the object.
+            $held = (@(Get-MSGraphApprovalPending).Count -gt $approvalsBefore)
+            if($held) {
+                if(-not $SkipWarnings) { Write-Log "Direct request $($o.id) ($method $($o.url)) is waiting for Multi Admin Approval" 2 }
+            }
+            elseif(-not $SkipWarnings) { Write-Log "Direct request $($o.id) ($method $($o.url)) returned $status. Skipping..." 2 }
             continue
         }
         [void]$results.Add([PSCustomObject]@{ id = $o.id; status = $status; headers = @{}; body = $content })
@@ -1823,6 +1832,24 @@ function Get-GraphTranslatedDependencyObject
 #endregion
 
 #Region Remove Graph object properties
+
+# Strip assignments from a create (POST) or update (PATCH) request body, in any
+# casing, together with their @odata annotations. GitHub #441, measured live:
+# "Assignments" makes the POST fail with 400 ("does not exist on type"), and
+# lowercase "assignments" is accepted but silently ignored - the new object has
+# none. PATCH refuses navigation properties outright. Assignments are applied by
+# the separate assignment step, which reads them from the SOURCE object, so only
+# the request body (a clone) loses them.
+function Remove-GraphAssignmentsFromBody
+{
+    param([PSCustomObject]$Body)
+
+    if($null -eq $Body) { return }
+    foreach($name in @($Body.PSObject.Properties | Where-Object { $_.Name -like 'assignments*' } | ForEach-Object Name)) {
+        Remove-Property $Body $name
+    }
+}
+
 function Remove-GraphPropertiesForImport
 {
     param(

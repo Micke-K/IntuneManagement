@@ -8,7 +8,8 @@ function Update-IntuneImportMatchInfo
 
     $importType = $script:importForm.DataContext.ImportType
     $sameTenant = $script:importForm.DataContext.SameTenant
-    $existingPolicies = @($script:dgIntuneManagerObjects.ItemsSource)
+    $files = @($script:DGObjectsToImport.ItemsSource | ForEach-Object { if($_) { $_.Object } })
+    $existingPolicies = Get-IntuneManagerImportExistingPolicies -ImportPolicies $files -ImportType $importType -SameTenant $sameTenant
 
     foreach($item in @($script:DGObjectsToImport.ItemsSource)) {
         if(-not $item -or -not $item.Object) { continue }
@@ -23,8 +24,36 @@ function Update-IntuneImportMatchInfo
     try { $script:DGObjectsToImport.Items.Refresh() } catch { }
 }
 
+function Get-IntuneManagerImportExistingPolicies
+{
+    # Candidates for the skip / update / replace match (#384). Two things hid
+    # existing objects from it: pages the view had not loaded yet, and the filter
+    # box - the grid binds a CollectionView, which only enumerates the rows it
+    # shows. So: the unfiltered backing collection, plus whatever
+    # Get-IntuneImportCandidates (Internal/IntuneManager.ps1) finds in Graph for
+    # these files. It never loads every page. Cached for the dialog: the import
+    # type changing does not change what exists.
+    param($ImportPolicies, [string]$ImportType, [bool]$SameTenant)
+
+    $source = $script:dgIntuneManagerObjects.ItemsSource
+    if($source -is [System.Windows.Data.CollectionView]) { $source = $source.SourceCollection }
+    $loaded = @($source | Where-Object { $_ })
+    if($ImportType -eq "alwaysImport") { return $loaded }
+
+    $files = @($ImportPolicies | Where-Object { $_ })
+    $allLoaded = -not $script:GraphPagingCache
+    $key = "$SameTenant|$allLoaded|$($loaded.Count)|" + (($files | ForEach-Object { "$($_.PolicyType.Id)/$($_.Id)/$($_.Name)" }) -join '|')
+    if($script:_importCandidateCache -and $script:_importCandidateCache.Key -eq $key) { return $script:_importCandidateCache.Value }
+
+    $value = @(Get-IntuneImportCandidates -ImportPolicies $files -LoadedPolicies $loaded -ImportType $ImportType -SameTenant $SameTenant -AllLoaded:$allLoaded)
+    $script:_importCandidateCache = @{ Key = $key; Value = $value }
+    return $value
+}
+
 function Show-IntuneManagerImportForm
 {
+    # A new dialog looks candidates up afresh: an earlier import may have created some.
+    $script:_importCandidateCache = $null
     $policyTypes = Get-IntuneManagerSelectedPolicyTypes
 
     if(($policyTypes | Measure-Object).Count -eq 0) {
@@ -163,11 +192,13 @@ function Show-IntuneManagerImportForm
         $updatedPolicies = @()
         
         Update-IntuneImportMatchInfo
+        $allFiles = @($script:DGObjectsToImport.ItemsSource | ForEach-Object { if($_) { $_.Object } })
+        $existingPolicies = Get-IntuneManagerImportExistingPolicies -ImportPolicies $allFiles -ImportType $importType -SameTenant $script:importForm.DataContext.SameTenant
 
         foreach ($selectedPolicy in @($selectedPolicies))
         {
             $importPolicy = $selectedPolicy.Object
-            $match = Resolve-IntuneImportUpdateTarget -ImportPolicy $importPolicy -ExistingPolicies $script:dgIntuneManagerObjects.ItemsSource -SameTenant $script:importForm.DataContext.SameTenant -ImportType $importType
+            $match = Resolve-IntuneImportUpdateTarget -ImportPolicy $importPolicy -ExistingPolicies $existingPolicies -SameTenant $script:importForm.DataContext.SameTenant -ImportType $importType
             
             if($match.Action -eq "Update" -and $importType -eq "update")
             {

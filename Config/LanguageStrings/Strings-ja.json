@@ -649,7 +649,7 @@
         "validateEmpty": "ユーザー フレンドリ名を空にすることはできません。"
       },
       "ApplyComputerNameTemplate": {
-        "infoBalloon": "登録中にデバイスに名前を追加��るための、名前付けテンプレートを作成します。",
+        "infoBalloon": "登録中にデバイスに名前を追加するため��、名前付けテンプレートを作成します。",
         "label": "デバイス名のテンプレートを適用する"
       },
       "ApplyComputerNameTemplateDisabled": {
@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "特定のエージェント ID にポリシーを適用します。",
     "agents": "エージェント",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "エージェント セッションのリスク レベルに関する追加情報",
+    "agentsLicenseInfoBalloonAriaLabel": "エージェントのライセンス要件",
+    "agentsLicenseRequiredAriaLabel": "エージェント。テナントがターゲット エージェントのライセンス要件を満たしていません。",
+    "agentsLicenseRequiredTooltip": "テナントがターゲット エージェントのライセンス要件を満たしていません。",
     "agentsLicenseText": "このポリシーを編集するには、Microsoft Agent 365 または Microsoft 365 E7 のライセンスが必要です。",
     "agentsLicensingEnforcementDescription": "近日中に、エージェント向けの条件付きアクセスには Microsoft Agent 365 ライセンスが必要になります。",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "エージェントに対して今後予定されているライセンス適用の詳細情報",
@@ -894,7 +897,7 @@
     "badRequest": "無効な要求です",
     "blockAccess": "アクセスのブロック",
     "builtInDirectoryRoleLabel": "組み込みのディレクトリ ロール",
-    "caeDisableRequireEmptyExclude": "[継続的アクセス評価をカスタマイズ���る] - [無効にする] セッション コントロールが選択されている場合は、アプリを除外できません。",
+    "caeDisableRequireEmptyExclude": "[継続的アクセス評価をカスタマイズする] - [無効にする] セッション コントロールが選択されている場合は、アプリを除外できません。",
     "cannotDeleteNamedLocationsConfiguredInCAPolicy": "ネームド ロケーションは、1 つ以上の条件付きアクセス ポリシーによって参照されているため、削除できません。削除する前に、関連付けられているすべての条件付きアクセス ポリシーからこの名前付き場所を削除する必要があります。",
     "cannotDeleteTrustedNamedLocations": "ネームド ロケーションは信頼できる場所としてマークされているため、削除できません。削除する前に、この名前付き場所のマークを解除する必要があります。",
     "cannotExcludeBothAllMsftAppsAndO365": "すべての Microsoft アプリが除外されている場合、Office 365 アプリの除外による影響はありません。",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "ネームド ロケーション",
     "menuItemPhasedRollout": "段階的ロールアウト",
     "menuItemPolicies": "ポリシー",
-    "menuItemPoliciesV2": "ポリシー V2 (プレビュー)",
+    "menuItemPoliciesV2": "ポリシー プラン (プレビュー)",
     "menuItemPolicySettings": "設定 (プレビュー)",
+    "menuItemSecurityDefaults": "セキュリティの既定値群",
     "menuItemTermsOfUse": "利用規約",
     "microsoftAdminPortals": "Microsoft 管理ポータル",
     "microsoftAdminPortalsInfoBox": "管理ポータルには、Microsoft 365 管理センター、Exchange 管理センター、Azure portal、Microsoft Entra 管理センターなどが含まれます。",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "任意の認証フロー",
             "authenticationTransfer": "認証の転送",
             "deviceCodeFlow": "デバイス コード フロー",
+            "excludeDeviceCodeFlow": "デバイス コード フローを除外する",
             "infoBalloon": "組織で特定の認証および承認プロトコルと許可を使用する方法",
             "label": "認証フロー",
             "multiple": "\"{0}\" および \"{1}\"",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "[リスクの修復が必要] を有効にするには、{0} を選択しないでください。",
       "mustSelect": "[リスク修復を要求する] を有効にするには、{0}を選択する必要があります。",
-      "xOrY": "{0} または {1}"
+      "xOrY": "{0} または {1}",
+      "xYOrZ": "{0}、{1}、または {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "\"サインインの頻度 (毎回)\" セッション コントロールを \"{0}\" で使用することはできません",
         "appWarning": "現在選択されているアプリケーションの一部は、[毎回] の [サインインの頻度] オプションと互換性がありません",
-        "everytime": "毎回 (5 分の許容範囲)",
+        "everytime": "毎回",
         "EverytimeCA": {
           "secondaryOnly": "セカンダリ認証方法のみ"
         },
-        "everytimeInfoBalloon": "[毎回] オプションは、このポリシーのスコープ内のアプリケーションへのサインイン試行ごとに評価されます。",
-        "everyTimeStrict": "毎回 (厳密 - 10 秒の許容範囲)",
-        "everyTimeStrictInfoBalloon": "プロンプトの許容範囲は、過剰なプロンプトやループを防ぐために、再認証を再度求める頻度を制限します。",
+        "everytimeInfoBalloon": "\"毎回\" コントロールは、認証の鮮度を保つために 5 分の有効期間が設定されています。",
+        "everytimeInfoBalloonAriaLabel": "毎回に関する詳細情報",
+        "everyTimeStrict": "毎回 (厳格) (プレビュー)",
+        "everyTimeStrictInfoBalloon": "毎回 (厳格) (プレビュー) は、認証の鮮度を保つために 10 秒の有効期間が設定されており、このコントロールを使用して動作するように構成されているアプリケーションで使用することを目的としています。",
+        "everyTimeStrictInfoBalloonAriaLabel": "毎回 (厳格) (プレビュー) に関する詳細情報",
+        "everyTimeStrictWarning": "毎回 (厳格) (プレビュー) コントロールは、このコントロールを認識できる特定のアプリケーションを対象としています。すべてのアプリに '毎回 (厳格) (プレビュー)' コントロールを適用することはお勧めしません。そうした場合、予期しない認証プロンプトが表示されて、ユーザーの生産性に影響が及び、認証疲労を招く可能性があります。",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "毎回 (厳格) (プレビュー) に伴う認証疲労の回避に関する詳細情報",
+        "everyTimeStrictWarningTitle": "認証疲労の回避",
         "periodic": "定期的な再認証",
         "reqMFAWarning": "[セカンダリ認証方法のみ] を使用する場合は、[多要素認証を要求する] を選択する必要があります",
         "selectorInvalid": "[パスワードの変更を要求する] の許可が選択されている場合は、[サインインの頻度 (毎回)] のセッション制御しか使用できません",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "日間",
           "everytime": "毎回",
-          "everyTimeStrict": "毎回 (厳密)",
+          "everyTimeStrict": "毎回 (厳格) (プレビュー)",
           "help": "リソースにアクセスを試みるユーザーが再びサインインを求められるようになるまでの期間。既定の設定は、90 日のローリング ウィンドウです。つまり、ユーザーが自分のマシンで非アクティブな状態が 90 日以上続くと、その後初めてリソースにアクセスを試みる時に再認証が求められます。",
           "Hour": {
             "plural": "{0} 時間",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "レベル 2",
       "accessRequirement3": "レベル 3",
       "accessRequirementsLabel": "セキュリティで保護されたアプリ データにアクセスしています",
-      "accountRecovery": "アカウントの復元",
+      "accountRecovery": "アカウントのオンボードと回復",
       "accountRecoveryInfoText": "このユーザー 操作には、本人確認許可コントロールが必要です。本人確認プロファイルを選択してください。",
       "appsActionsAuthTitle": "クラウド アプリ、アクション、または認証コンテキスト",
       "appsOrActionsSelectorInfoBallonText": "アクセスされたアプリケーションまたはユーザー アクション",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "接続性",
     "vPNDNSTriggers": "DNS の設定",
     "vPNIKEv2": "IKEv2 設定",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "プロキシ",
     "vPNSplitTunneling": "分割トンネリング",
     "vPNTrustedNetwork": "信頼されたネットワーク検出",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "ウェイク設定",
     "webContentFilter": "Web コンテンツ フィルター",
     "wiFi": "Wi-Fi",
@@ -4446,7 +4461,7 @@
     },
     "CustomScript": {
       "enforceSignatureCheck": "スクリプトの署名の確認を強制し、スクリプトをサイレント実行する",
-      "enforceSignatureCheckTooltip": "スクリプトに信頼できる発行元の署名があることを確認するには、[はい] を選択します。署名がある場合、スクリプトは警告やプロンプトを表示せずに実行されます。スクリプトはブロックされずに実行されます。[いいえ] (既定) を選択すると、署名の検証なしで、エンドユーザーの確認に基づいてスクリプトが実行されます。",
+      "enforceSignatureCheckTooltip": "スクリプトに信頼できる発行元の署名があることを確認するには、[はい] を選択します。署名がある場合、スクリプトは警告やプロンプトを表示せずに実行されます。スクリプトはブロックされずに実行されます。[いいえ] (既定) を選択すると、署名の検証なしで、エンドユーザーの確認��基づいてスクリプトが実行されます。",
       "header": "カスタム検出スクリプトを使用する",
       "runAs32Bit": "64 ビット クライアントで 32 ビット プロセスとしてスクリプトを実行する",
       "runAs32BitTooltip": "[はい] を選択すると、64 ビット クライアント上でスクリプトは 32 ビット プロセス内で実行されます。[いいえ] (既定) を選択すると、64 ビット クライアント上でスクリプトは 64 ビット プロセス内で実行されます。32 ビット クライアントでは、スクリプトは 32 ビット プロセス内で実行されます。",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "すべてのプロファイルの種類",
     "workProfileOnly": "個人所有の仕事用プロファイルのみ"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "グループ名の設定"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "利用可能な再利用可能な設定",
+      "Column": {
+        "displayName": "再使用可能設定グループ"
+      },
+      "instanceHeader": "設定の構成",
+      "objectName": "再利用可能な設定",
+      "reusableSummary": "構成済みの {0} 設定",
+      "reusableSummaryMultiple": "構成済みの {0} 設定",
+      "ruleProperties": "ルールのプロパティ",
+      "searchBox": "再利用可能な設定を検索する",
+      "selectCertificateFile": "再利用可能な設定としてアップロードされた証明書ファイルを選択します。",
+      "selectOneOrMoreDeviceControlToExclude": "このデバイス制御ルールとプロファイルに除外する再利用可能な設定グループを 1 つ以上選択します。ルールは、グループに加えられた変更を含め、これらのグループのすべてのプロパティを継承します。",
+      "selectOneOrMoreDeviceControlToInclude": "このデバイス制御ルールとプロファイルに含める再利用可能な設定グループを 1 つ以上選択します。ルールは、グループに加えられた変更を含め、これらのグループのすべてのプロパティを継承します。",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "再利用可能な設定の設定"
+        }
+      },
+      "selectScript": "このカスタム コンプライアンス設定に追加するスクリプトを選択します。",
+      "Subtitle": {
+        "firewall": "このファイアウォール規則とプロファイルに追加する再利用可能な設定グループを 1 つ以上選択します。ルールは、グループに加えられた変更を含め、これらのグループのすべてのプロパティを継承します。"
+      },
+      "title": "再利用可能な設定の選択 (プレビュー)"
+    },
+    "wizardTitle": "再利用可能な設定を構成する"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "管理者グループ",
     "RoleAssignmentAdminDesc": "管理者グループのユーザーは、このロールに割り当てられている管理者です",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "アカウント保護",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "すべてのデバイス",
     "antivirus": "ウイルス対策",
     "antivirusReporting": "ウイルス対策レポート (プレビュー)",
@@ -6289,7 +6338,7 @@
     "applicationGuardAllowPrintToName": "印刷の種類",
     "applicationGuardAllowVirtualGPUDescription": "仮想グラフィックス処理装置へのアクセスを有効にすると、Application Guard 仮想ブラウズ セッション内で作業するときに、グラフィックを多用する Web サイトの読み込みが速くなります。",
     "applicationGuardAllowVirtualGPUName": "グラフィック アクセラレータ",
-    "applicationGuardAuditingDescription": "Application Guard 仮想ブラウズ セッション内で発生するイベ���トのログを収集します。",
+    "applicationGuardAuditingDescription": "Application Guard 仮想ブラウズ セッション内で発生するイベントのログを収集します。",
     "applicationGuardAuditingName": "ログの収集",
     "applicationGuardBlockNonEnterpriseContentDescription": "未承認の Web サイトのコンテンツの読み込みをブロックします。",
     "applicationGuardBlockNonEnterpriseContentName": "エンタープライズ サイトの外部コンテンツ",
@@ -7354,7 +7403,7 @@
     "contentCachingDataPathName": "キャッシュの場所",
     "contentCachingDisableConnectionSharingDescription": "macOS 10.15 以降で利用できます。構成しない場合、システムでより多くの記憶域スペースを必要とする際にキャッシュされたコンテンツが削除されます。",
     "contentCachingDisableConnectionSharingName": "インターネット接続をブロックしてコンテンツ共有をキャッシュする",
-    "contentCachingEnabledDescription": "macOS 10.13.4 以降で利用できます。有効にする場合、可能であればコンテンツ キャッシングが実行され、ユーザーは無効にすることはできません。",
+    "contentCachingEnabledDescription": "macOS 10.13.4 以降で利用できます。有効にする場合、可能であればコンテンツ キャッシングが実行さ���、ユーザーは無効にすることはできません。",
     "contentCachingEnabledName": "コンテンツ キャッシングを有効にする",
     "contentCachingForceConnectionSharingDescription": "macOS 10.15.4 以降で利用できます。テザリングされたキャッシュとも呼ばれます。有効にする場合、ユーザーは、USB 経由で Mac に接続されている iOS デバイスまたは iPadOS デバイスを使用して、インターネット接続とキャッシュされたコンテンツを共有できます。ユーザーはこの機能を無効にすることはできません。",
     "contentCachingForceConnectionSharingName": "インターネット接続共有を有効にする",
@@ -8436,7 +8485,7 @@
     "firewallRuleIPAddressSettingsRemotePlaceholder": "リモート アドレスのコンマ区切りの一覧",
     "firewallRuleIPAddressSettingsRemoteTooltip": "\r\n    規則の対象となるコンマ区切りのリモート アドレスの一覧。トークンは大文字と小文字を区別しません。有効なトークンには次のものがあります。<br>\r\n<ul><li>\"*\" は任意のリモート アドレスを示します。これが存在する場合、含まれる唯一のトークンである必要があります。</li>\r\n<li>\"Defaultgateway\"</li>\r\n<li>\"DHCP\"</li>\r\n<li>\"DNS\"</li>\r\n<li>\"WINS\"</li>\r\n<li>\"Intranet\" (Windows バージョン 1809 以降でサポート)</li>\r\n<li>\"RmtIntranet\" (Windows バージョン 1809 以降でサポート)</li>\r\n<li>\"Internet\" (Windows バージョン 1809 以降でサポート)</li>\r\n<li>\"Ply2Renders\" (Windows バージョン 1809 以降でサポート)</li>\r\n<li>\"LocalSubnet\" はローカル サブネット上の任意のローカル アドレスを示します。</li>\r\n<li>サブネットはサブネット マスクまたはネットワーク プレフィックスのいずれかの表記を使用して指定できます。サブネット マスクもネットワーク プレフィックスも指定されていない場合は、サブネット マスクの既定値である 255.255.255.255 になります。</li>\r\n<li>有効な IPv6 アドレス。</li>\r\n<li>スペースを含まない「開始アドレス - 終了アドレス」の形式の IPv4 アドレス範囲。</li>\r\n<li>スペースを含まない「開始アドレス - 終了アドレス」の形式の IPv6 アドレス範囲。</li></ul>\r\n指定しない場合、既定で「任意のアドレス」になります。<br>\r\n<a target=\"_blank\" href=\"https://aka.ms/intunefirewallremoteaddressrule\">詳細情報</a>",
     "firewallRuleIPAddressSettingsSpecifiedAddressOption": "指定されたアドレス",
-    "firewallRuleIPAddressSettingsSubheader": "このルールを適用するロー��ル アドレスとリモート アドレスを指定してください",
+    "firewallRuleIPAddressSettingsSubheader": "このルールを適用するローカル アドレスとリモート アドレスを指定してください",
     "firewallRuleLocalPortsPlaceholder": "ローカル ポートのコンマ区切りの一覧",
     "firewallRuleLocalPortsSetting": "ローカル ポート",
     "firewallRuleName": "名前",
@@ -10052,10 +10101,10 @@
     "passwordExpirationName": "パスワードの有効期限が切れるまでの日数",
     "passwordFormat": "パスワードの形式:",
     "passwordFormatDescription": "パスワードの形式の例 - abcd{{WifiMacAddress}}{{PreSharedKey}}",
-    "passwordMinimumAgeInDaysDescription": "このセキュリティ設定は、パスワードの変更禁止期間 (日数) を決定します。設定できる日数は、1 日から 998 日までです。日数を 0 に設定して、すぐにパスワードの変更を許可することもできます。",
+    "passwordMinimumAgeInDaysDescription": "このセキュリティ設定は、パスワードの変更禁止期間 (日数) を決定します。設定できる日数は、1 日���ら 998 日までです。日数を 0 に設定して、すぐにパスワードの変更を許可することもできます。",
     "passwordMinimumAgeInDaysEmptyValueKey": "日数を入力してください (0 - 998)",
     "passwordMinimumAgeInDaysName": "パスワードの変更禁止期間",
-    "passwordMinimumLengthDescription": "パスワード���必要な数字または文字の最小数。",
+    "passwordMinimumLengthDescription": "パスワードに必要な数字または文字の最小数。",
     "passwordMinimumLetterCharactersName": "必要な文字数",
     "passwordMinimumLowerCaseCharactersName": "必要な小文字の数",
     "passwordMinimumNonLetterCharactersName": "必要なアルファベット以外の文字数",
@@ -10677,7 +10726,7 @@
     "sdCardName": "SD カード",
     "searchBlockDiacriticsDescription": "検索で分音記号を使えるかどうかを指定します。",
     "searchBlockDiacriticsName": "分音記号",
-    "searchBlockWebResultsDescription": "この設定では、Windows Search で Web に対してクエリを実行できるかどうか、Web 結果を Search に表示するかどうかを制御できます。この設定をブロック��る場合、クエリは Web 上で実行されず、ユーザーが Search でクエリを実行したときに Web 結果は表示されません。",
+    "searchBlockWebResultsDescription": "この設定では、Windows Search で Web に対してクエリを実行できるかどうか、Web 結果を Search に表示するかどうかを制御できます。この設定をブロックする場合、クエリは Web 上で実行されず、ユーザーが Search でクエリを実行したときに Web 結果は表示されません。",
     "searchBlockWebResultsName": "Search で Web 結果を表示する",
     "searchDisableAutoLanguageDetectionDescription": "コンテンツとプロパティにインデックスを作成するときに自動言語検出を使うかどうかを指定します。",
     "searchDisableAutoLanguageDetectionName": "自動言語検出",
@@ -11315,7 +11364,7 @@
     "timeoutTwoHours": "2 時間",
     "timeoutTwoMinutes": "2 分",
     "timeScheduled": "スケジュールされた時刻",
-    "timeToLockScreenDescription": "デバイスがロックされるまでの最大時間。タイムアウトしないように、画面のロックを無効にすることもできます。",
+    "timeToLockScreenDescription": "デバイスがロックされるまでの最大時間。���イムアウトしないように、画面のロックを無効にすることもできます。",
     "timeToLockScreenName": "画面をロックするまでの時間 (仕事用プロファイル レベル)",
     "timeWindowDescription": "更新プログラムを自動インストールできるようになる期間。",
     "timeWindowName": "時間枠",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "移動体通信ネットワーク経由の VPN",
     "vpnPerApp": "アプリごとの VPN",
     "vPNPerAppDescription": "選択したアプリをユーザーが使い始めると、接続が Always On に構成されている場合またはユーザーによって接続が手動で開始された場合、トラフィックは自動的に VPN 接続経由でルーティングされます。",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "プロキシ サーバー アドレス (完全修飾ホストまたは IP アドレス)。",
     "vPNPolicyAddressName": "アドレス",
     "vPNPolicyAssociatedAppsDescription": "ここで追加したアプリは、この VPN 接続を自動的に開始します。",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "デバイス トンネル",
     "vPNPolicyExcludedDomainsUrlsDescription": "アプリごとの VPN がアクティブ化されたときに VPN をバイパスできるドメインの一覧。iOS 14 以降に適用されます",
     "vPNPolicyExcludedDomainsUrlsName": "除外されるドメイン",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "名前解決ポリシー テーブル (NRPT) ルールは、VPN に接続されているときの DNS による名前の解決方法を定義します。テーブルのそれぞれの行で、ドメインと、そのドメインの解決に使用する DNS サフィックスまたは Web プロキシ サーバーを指定します。",
     "vPNPolicyNameResolutionPolicyTableRulesName": "名前解決ポリシー テーブル (NRPT) ルール",
     "vPNPolicyNetworkTrafficRulesDescription": "注意: ネットワーク ルールを追加すると、VPN 接続は指定されたルールにのみ制限されます。\r\n     トラフィック ルールを追加する場合、VPN に関するイシューを回避するため、最も制限の少ない包括的なルールを追加してください。",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "例: エンドユーザーの企業 VPN",
     "vPNServerList": "サーバーの一覧",
     "vPNServerListExample": "ServerDescription、IP アドレスまたは FQDN (例: 会社全体の VPN、10.0.0.1) (例: アプリ専用 VPN、vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "この一覧にあるアプリは、VPN トンネルの使用から除外されます。それらのトラフィックでは、VPN 接続の状態にかかわらず、常に VPN をバイパスしてネットワークに直接アクセスします。この一覧にないアプリは、接続時に VPN を使用する必要があり、VPN が利用できない場合はブロックされます。",
     "vpnStrictTunnelBypassAppsName": "これらのアプリに厳格なトンネル モードのバイパスを許可する",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "この一覧にある仕事用プロファイルのアプリは、VPN トンネルの使用から除外されます。それらのトラフィックでは、VPN 接続の状態にかかわらず、常に VPN をバイパスしてネットワークに直接アクセスします。この一覧にない仕事用プロファイルのアプリは、接続時に VPN を使用する必要があり、VPN が利用できない場合はブロックされます。",
     "vpnStrictTunnelModeDescription": "有効にすると、すべてのネットワーク トラフィックが VPN トンネルを経由するように強制されます。VPN への接続を確立できない場合、デバイス上のすべてのネットワーク トラフィックがブロックされます。除外リストに追加されたアプリは、VPN が接続されていても、常に VPN をバイパスしてネットワークに直接接続します。",
     "vpnStrictTunnelModeName": "厳格なトンネル モード",
     "vpnStrictTunnelModeWorkProfileDescription": "有効にすると、すべての仕事用プロファイルのネットワーク トラフィックが VPN トンネルを経由するように強制されます。VPN への接続を確立できない場合、仕事用プロファイルのネットワーク トラフィックがブロックされます。除外リストに追加されたアプリは、VPN が接続されていても、常に VPN をバイパスしてネットワークに直接接続します。仕事用プロファイル外の個人用アプリおよびトラフィックは影響を受けません。",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "WIP によってポリシーとアプリのリストが定義されるため、WIP を選択する場合には、特に必要がない限りは追加のネットワーク トラフィック ルールは必要ありません。",
     "vPNWipOrAppsName": "WIP やアプリをこの VPN に関連付ける",
     "wakeOnLANName": "Wake On LAN",
@@ -11900,7 +11958,7 @@
     "wiFiForceOnlyConfiguredNetworksName": "構成プロファイルを使用している Wi-Fi ネットワークのみに参加することを必須にする",
     "wifiName": "Wi-Fi",
     "wifiPasswordExample": "<password>",
-    "wiFiPolicyConnectAutomaticallyDescription": "デバイスが範囲内にあるときにこのネットワークに自動的に接続するには、[有効] を選択します。デバイスが範囲内にある場合にデバイスがこのネットワークに自動的に���続しないようにするには、[無効] を選択します。",
+    "wiFiPolicyConnectAutomaticallyDescription": "デバイスが範囲内にあるときにこのネットワークに自動的に接続するには、[有効] を選択します。デバイスが範囲内にある場合にデバイスがこのネットワークに自動的に接続しないようにするには、[無効] を選択します。",
     "wiFiPolicyConnectAutomaticallyName": "自動的に接続する",
     "wiFiPolicyConnectWhenNotBroadcastingDescription": "ネットワークが SSID をブロードキャストしていない場合でも、このネットワークに接続します。",
     "wiFiPolicyConnectWhenNotBroadcastingName": "非公開のネットワーク",
@@ -12425,7 +12483,7 @@
     "ztdnsExemptionRuleIpAddressPlaceholder": "192.41.101.1, 2001:db8::/32",
     "ztdnsExemptionRulesChevronName": "適用除外のルール",
     "ztdnsExemptionRulesDescription": "これらのルールは、どの要求を信頼された DNS 処理から除外するかを決定し、除外された要求がゼロトラスト DNS の強制適用をバイパスできるようにします。",
-    "ztdnsExemptionRulesHeaderName": "一部のホストまたはサブネットをブロック ルールから除外する必要がある場合があります。その場合は、それらに対応するルールをここで追加してください。",
+    "ztdnsExemptionRulesHeaderName": "一部のホストまたはサブネットをブロック ルールから除外する必要がある場合があります。その場合は、それらに対応するルールをここ��追加してください。",
     "ztdnsExemptionRulesName": "適用除外のルール",
     "ztdnsMinimumBuildInfoboxName": "Windows 11 バージョン 25H2 以降",
     "ztdnsModeChevronName": "ゼロトラスト DNS モード",
@@ -13383,7 +13441,7 @@
       "releaseManagement": "リリース管理",
       "serviceRequests": "サービス要求",
       "settings": "設定",
-      "supportRequests": "��ポート リクエスト",
+      "supportRequests": "サポート リクエスト",
       "tenantEnrollment": "テナント登録",
       "tenantManagement": "テナント管理"
     },
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "クラウド PC の概要",
       "cloudPCSettings": "クラウド PC の設定",
       "monitorCloudPCs": "クラウド PC の監視 (プレビュー)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "クラウド PC のプロビジョニング",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Windows 365 監視 (プレビュー)",
       "windows365Reports": "Windows 365 レポート"
     },

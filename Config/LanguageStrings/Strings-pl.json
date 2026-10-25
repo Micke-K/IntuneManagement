@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "Zastosuj zasady do określonych tożsamości agentów.",
     "agents": "Agenci",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "Dodatkowe informacje o poziomach ryzyka sesji agentów",
+    "agentsLicenseInfoBalloonAriaLabel": "Wymagania dotyczące licencji agentów",
+    "agentsLicenseRequiredAriaLabel": "Agenci. Twoja dzierżawa nie spełnia wymagań licencji dla agentów docelowych.",
+    "agentsLicenseRequiredTooltip": "Twoja dzierżawa nie spełnia wymagań licencji dla agentów docelowych.",
     "agentsLicenseText": "Do edytowania tych zasad jest wymagana licencja Microsoft Agent 365 lub Microsoft 365 E7.",
     "agentsLicensingEnforcementDescription": "Już wkrótce dostęp warunkowy dla agentów będzie wymagać licencji usługi Microsoft Agent 365.",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "Dowiedz się więcej o nadchodzącym wymuszaniu licencjonowania dla agentów",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "Nazwane lokalizacje",
     "menuItemPhasedRollout": "Stopniowe wprowadzanie",
     "menuItemPolicies": "Zasady",
-    "menuItemPoliciesV2": "Zasady w wersji 2 (wersja zapoznawcza)",
+    "menuItemPoliciesV2": "Plany zasad (wersja zapoznawcza)",
     "menuItemPolicySettings": "Ustawienia (wersja zapoznawcza)",
+    "menuItemSecurityDefaults": "Wartości domyślne zabezpieczeń",
     "menuItemTermsOfUse": "Warunki użytkowania",
     "microsoftAdminPortals": "Portale administracyjne firmy Microsoft",
     "microsoftAdminPortalsInfoBox": "Portale administracyjne obejmują centrum administracyjne platformy Microsoft 365, centrum administracyjne programu Exchange, portal Azure Portal, centrum administracyjne Microsoft Entra i inne.",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "Dowolny przepływ uwierzytelniania",
             "authenticationTransfer": "Transfer uwierzytelniania",
             "deviceCodeFlow": "Przepływ kodu urządzenia",
+            "excludeDeviceCodeFlow": "Wyklucz przepływ kodu urządzenia",
             "infoBalloon": "Jak Twoja organizacja korzysta z określonych protokołów uwierzytelniania i autoryzacji oraz grantów",
             "label": "Przepływy uwierzytelniania",
             "multiple": "„{0}” i „{1}”",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "Aby włączyć funkcję Wymagaj korygowania ryzyka, nie można wybrać opcji {0}.",
       "mustSelect": "Aby włączyć opcję Wymagaj korygowania ryzyka, musisz wybrać pozycję {0}.",
-      "xOrY": "{0} lub {1}"
+      "xOrY": "{0} lub {1}",
+      "xYOrZ": "{0}, {1} lub {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "Mechanizm kontroli sesji „częstotliwość logowania za każdym razem” nie może być używany z „{0}”",
         "appWarning": "Niektóre aktualnie wybrane aplikacje nie są zgodne z opcją „Częstotliwość logowania” ustawioną na wartość \"Za każdym razem\"",
-        "everytime": "Za każdym razem (5-minutowa tolerancja)",
+        "everytime": "Za każdym razem",
         "EverytimeCA": {
           "secondaryOnly": "Tylko pomocnicze metody uwierzytelniania"
         },
-        "everytimeInfoBalloon": "Opcja „Za każdym razem” jest oceniana przy każdej próbie logowania do aplikacji w zakresie ustalonym dla tych zasad.",
-        "everyTimeStrict": "Za każdym razem (ścisłe — 10-sekundowa tolerancja)",
-        "everyTimeStrictInfoBalloon": "Tolerancja monitu ogranicza częstotliwość ponownego monitowania użytkowników o ponowne uwierzytelnienie, aby zapobiec nadmiernemu wyświetlaniu monitów i pętli.",
+        "everytimeInfoBalloon": "Kontrolka „Za każdym razem” ma 5-minutowe okno ważności na potrzeby aktualności uwierzytelniania.",
+        "everytimeInfoBalloonAriaLabel": "Więcej informacji o Za każdym razem",
+        "everyTimeStrict": "Za każdym razem ścisłe (wersja zapoznawcza)",
+        "everyTimeStrictInfoBalloon": "Kontrola Za każdym razem ściśle (wersja zapoznawcza) ma 10-sekundowe okno ważności na potrzeby świeżości uwierzytelniania i jest przeznaczone do użycia z aplikacjami skonfigurowanymi do pracy z tym mechanizmem kontroli.",
+        "everyTimeStrictInfoBalloonAriaLabel": "Więcej informacji dotyczących kontroli Za każdym razem ściśle (wersja zapoznawcza)",
+        "everyTimeStrictWarning": "Kontrola Za każdym razem ściśle (wersja zapoznawcza) jest przeznaczona dla określonych aplikacji, które rozumieją ten mechanizm kontroli. Nie zalecamy stosowania kontroli „Za każdym razem ściśle (wersja zapoznawcza)” do wszystkich aplikacji. Może to doprowadzić do nieoczekiwanych monitów o uwierzytelnienie, które wpłyną na produktywność użytkowników i spowodują zmęczenie uwierzytelniania.",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "Dowiedz się więcej o unikaniu zmęczenia uwierzytelniania korzystając z kontroli Za każdym razem ściśle (wersja zapoznawcza)",
+        "everyTimeStrictWarningTitle": "Unikaj zmęczenie uwierzytelnianiem",
         "periodic": "Okresowe ponowne uwierzytelnianie",
         "reqMFAWarning": "W przypadku korzystania z opcji „Tylko pomocnicze metody uwierzytelniania” należy wybrać opcję „Wymagaj uwierzytelniania wieloskładnikowego”",
         "selectorInvalid": "Po wybraniu opcji „Wymagaj zmiany hasła” można używać tylko kontroli sesji „częstotliwość logowania za każdym razem”",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "Dni",
           "everytime": "Za każdym razem",
-          "everyTimeStrict": "Za każdym razem (ścisłe)",
+          "everyTimeStrict": "Za każdym razem ścisłe (wersja zapoznawcza)",
           "help": "Czas, po upłynięciu którego użytkownik będzie musiał ponownie się zalogować podczas próby uzyskania dostępu do zasobu. Ustawieniem domyślnym jest kroczący przedział czasu wynoszący 90 dni, tzn. użytkownicy będą musieli się ponownie uwierzytelnić podczas pierwszej próby uzyskania dostępu do zasobu po okresie nieaktywności wynoszącym 90 lub więcej dni.",
           "Hour": {
             "plural": "{0} godz.",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "Poziom 2",
       "accessRequirement3": "Poziom 3",
       "accessRequirementsLabel": "Uzyskiwanie dostępu do zabezpieczonych danych aplikacji",
-      "accountRecovery": "Odzyskaj konto",
+      "accountRecovery": "Dołączanie i odzyskiwanie konta",
       "accountRecoveryInfoText": "Ta akcja użytkownika wymaga kontroli nad udzielaniem weryfikacji tożsamości. Wybierz profil weryfikacji tożsamości.",
       "appsActionsAuthTitle": "Aplikacje w chmurze, akcje lub kontekst uwierzytelniania",
       "appsOrActionsSelectorInfoBallonText": "Dostęp do aplikacji lub akcje użytkownika",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "Łączność",
     "vPNDNSTriggers": "Ustawienia DNS",
     "vPNIKEv2": "Ustawienia IKEv2",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "Serwer proxy",
     "vPNSplitTunneling": "Tunelowanie podzielone",
     "vPNTrustedNetwork": "Wykrywanie zaufanych sieci",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "Ustawienia wznawiania",
     "webContentFilter": "Filtr zawartości internetowej",
     "wiFi": "Sieć Wi-Fi",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "Wszystkie typy profilów",
     "workProfileOnly": "Tylko własny profil służbowy"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "Nazwa grupy ustawień"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "Dostępne ustawienia wielokrotnego użytku",
+      "Column": {
+        "displayName": "Grupa ustawień wielokrotnego użytku"
+      },
+      "instanceHeader": "Konfiguruj ustawienia",
+      "objectName": "Ustawienie wielokrotnego użytku",
+      "reusableSummary": "Skonfigurowano {0} ustawienie",
+      "reusableSummaryMultiple": "Skonfigurowane ustawienia: {0}",
+      "ruleProperties": "Właściwości reguły",
+      "searchBox": "Wyszukaj ustawienia wielokrotnego użytku",
+      "selectCertificateFile": "Wybierz plik certyfikatu, który został przekazany jako ustawienie wielokrotnego użytku.",
+      "selectOneOrMoreDeviceControlToExclude": "Wybierz co najmniej jedną grupę ustawienia wielokrotnego użytku na potrzeby wykluczenia do tej reguły i profilu kontroli urządzenia. Reguła dziedziczy wszystkie właściwości tych grup, w tym zmiany wprowadzone w grupach.",
+      "selectOneOrMoreDeviceControlToInclude": "Wybierz co najmniej jedną grupę ustawienia wielokrotnego użytku na potrzeby uwzględnienia w tej regule i profilu kontroli urządzenia. Reguła dziedziczy wszystkie właściwości tych grup, w tym zmiany wprowadzone w grupach.",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "Konfiguruj ustawienia wielokrotnego użytku"
+        }
+      },
+      "selectScript": "Wybierz skrypt do dodania do tego niestandardowego ustawienia zgodności.",
+      "Subtitle": {
+        "firewall": "Wybierz co najmniej jedną grupę ustawienia wielokrotnego użytku, aby dodać do tej reguły i profilu zapory. Reguła dziedziczy wszystkie właściwości tych grup, w tym zmiany wprowadzone w grupach."
+      },
+      "title": "Wybierz ustawienia wielokrotnego użytku (wersja zapoznawcza)"
+    },
+    "wizardTitle": "Konfigurowanie ustawień wielokrotnego użytku"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "Grupy administratorów",
     "RoleAssignmentAdminDesc": "Użytkownicy należący do grupy administratorów są administratorami przypisanymi do tej roli",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "Ochrona konta",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "Wszystkie urządzenia",
     "antivirus": "Oprogramowanie antywirusowe",
     "antivirusReporting": "Raportowanie antywirusowe (wersja zapoznawcza)",
@@ -7812,7 +7861,7 @@
     "doBusinessEndName": "Koniec godziny pracy",
     "doBusinessPercentageDuringName": "Podczas godzin pracy (w proc.)",
     "doBusinessPercentageOutsideName": "Poza godzinami pracy (w proc.)",
-    "doForegroundDownloadFromHttpDelayInSecondsDescription": "Opóźnij użycie źródła HTTP podczas pobierania na pierwszym planie, aby priorytetyzować pobieranie od węzłów równorzędnych. Po osiągnięciu maksymalnego opóźnienia pobieranie zostanie wznowione ze źródła HTTP. Zalecana wartość to 60 sekund.",
+    "doForegroundDownloadFromHttpDelayInSecondsDescription": "Opóźnij użycie źródła HTTP podczas pobierania na pierwszym planie, aby priorytetyzować pobieranie od węzłów równorzędnych. Po osi��gnięciu maksymalnego opóźnienia pobieranie zostanie wznowione ze źródła HTTP. Zalecana wartość to 60 sekund.",
     "doForegroundDownloadFromHttpDelayInSecondsEmpty": "Wprowadź wartość w sekundach",
     "doForegroundDownloadFromHttpDelayInSecondsName": "Opóźnij pobieranie HTTP na pierwszym planie (w sekundach)",
     "doGroupIdCustomDescription": "Użyj identyfikatora GUID jako identyfikatora grupy w celu utworzenia własnych, niestandardowych grup węzłów równorzędnych, jeśli na przykład chcesz utworzyć grupę dla wszystkich urządzeń w biurze oddziału.",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "Sieć VPN przez sieć komórkową",
     "vpnPerApp": "Sieć VPN dla aplikacji",
     "vPNPerAppDescription": "Gdy użytkownicy zaczną używać wybranych aplikacji, ruch sieciowy będzie automatycznie kierowany przez połączenie VPN, jeśli połączenie jest skonfigurowane jako zawsze włączone lub jeśli zostało ręcznie uruchomione przez użytkownika.",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "Adres serwera proxy (w pełni kwalifikowany host lub adres IP).",
     "vPNPolicyAddressName": "Adres",
     "vPNPolicyAssociatedAppsDescription": "Aplikacje dodane w tym miejscu będą automatycznie uruchamiać to połączenie sieci VPN.",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "Tunel urządzenia",
     "vPNPolicyExcludedDomainsUrlsDescription": "Lista domen, które mogą pomijać sieć VPN, gdy jest aktywowana sieć VPN dla aplikacji. Dotyczy systemu iOS 14 i nowszych",
     "vPNPolicyExcludedDomainsUrlsName": "Wykluczone domeny",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "Reguły tabeli zasad rozpoznawania nazw (NRPT) definiują, jak system DNS rozpoznaje nazwy podczas połączenia z siecią VPN. Każdy wiersz w tabeli określa domenę i sufiksy DNS lub internetowy serwer proxy na potrzeby rozpoznawania tej domeny.",
     "vPNPolicyNameResolutionPolicyTableRulesName": "Reguły tabeli zasad rozpoznawania nazw (NRPT)",
     "vPNPolicyNetworkTrafficRulesDescription": "Uwaga: po dodaniu reguł sieciowych połączenie sieci VPN będzie ograniczone tylko do podanych reguł.\r\n     Jeśli dodajesz reguły ruchu, koniecznie dodaj regułę przechwytującą cały ruch, która jest najmniej restrykcyjna, aby uniknąć problemów z siecią VPN.",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "np. Firmowa sieć VPN dla użytkowników końcowych",
     "vPNServerList": "Lista serwerów",
     "vPNServerListExample": "Opis serwera, adres IP lub nazwa FQDN (np. Firmowa sieć VPN, 10.0.0.1) (np. Sieć VPN tylko dla aplikacji, vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "Aplikacje na tej liście są wykluczone z używania tunelu sieci VPN. Ich ruch zawsze pomija sieć VPN i uzyskuje bezpośredni dostęp do sieci, niezależnie od stanu połączenia sieci VPN. Aplikacje, których nie ma na tej liście, muszą używać sieci VPN po nawiązaniu połączenia i są blokowane, gdy sieć VPN jest niedostępna.",
     "vpnStrictTunnelBypassAppsName": "Zezwalaj tym aplikacjom na pomijanie trybu ścisłego tunelu",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "Aplikacje na tej liście są wykluczone z używania tunelu sieci VPN. Ich ruch zawsze pomija sieć VPN i uzyskuje bezpośredni dostęp do sieci, niezależnie od stanu połączenia sieci VPN. Aplikacje profilu służbowego, których nie ma na tej liście, muszą używać sieci VPN po nawiązaniu połączenia i są blokowane, gdy sieć VPN jest niedostępna.",
     "vpnStrictTunnelModeDescription": "Po włączeniu całego ruchu sieciowego jest on wymuszany przez tunel sieci VPN. Jeśli nie można nawiązać połączenia z siecią VPN, cały ruch sieciowy na urządzeniu jest blokowany. Aplikacje dodane do listy wykluczeń zawsze pomijają sieć VPN i łączą się bezpośrednio z siecią nawet wtedy, gdy sieć VPN jest połączona.",
     "vpnStrictTunnelModeName": "Tryb ścisłego tunelu",
     "vpnStrictTunnelModeWorkProfileDescription": "Po włączeniu całego ruchu sieciowego profilu służbowego jest wymuszany przez tunel VPN. Jeśli nie można nawiązać połączenia z siecią VPN, ruch sieciowy profilu służbowego jest blokowany. Aplikacje dodane do listy wykluczeń zawsze pomijają sieć VPN i łączą się bezpośrednio z siecią nawet wtedy, gdy sieć VPN jest połączona. Nie ma to wpływu na aplikacje osobiste i ruch poza profilem służbowym.",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "Ponieważ usługa WIP definiuje listy zasad i aplikacji, reguły ruchu sieciowego nie są wymagane, gdy jest ona wybrana, chyba że są potrzebne.",
     "vPNWipOrAppsName": "Skojarz funkcję WIP lub aplikacje z tym połączeniem VPN",
     "wakeOnLANName": "Wybudzenie na LAN",
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "Omówienie komputera w chmurze",
       "cloudPCSettings": "Ustawienia komputera w chmurze",
       "monitorCloudPCs": "Monitorowanie komputerów w chmurze (wersja zapoznawcza)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "Aprowizowanie komputerów w chmurze",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Monitorowanie systemu Windows 365 (wersja zapoznawcza)",
       "windows365Reports": "Raporty dotyczące systemu Windows 365"
     },

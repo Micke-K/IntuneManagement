@@ -156,6 +156,50 @@ function ConvertTo-MSGraphApprovalJustification
     return [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($Justification))
 }
 
+# True when a Multi Admin Approval justification is configured and the queue holds
+# a write. Invoke-GraphBatchRequest then sends the queue as direct requests: they
+# carry the justification header (Invoke-MSGraphAPI) and report the 412 "waiting for
+# approval" answer, while $batch sub-requests went out without the header and were
+# refused with 400 (GitHub #442).
+function Test-MSGraphApprovalDirectWrites
+{
+    param($RequestObjects)
+
+    if([String]::IsNullOrWhiteSpace((Get-SettingValue "MultiAdminApprovalJustification"))) { return $false }
+    return (@($RequestObjects | Where-Object { ([string]$_.method).ToUpperInvariant() -in @('POST','PATCH','PUT','DELETE') }).Count -gt 0)
+}
+
+# Every write Multi Admin Approval held this session, in order. Invoke-MSGraphAPI
+# adds to it; an operation counts what it has before it starts and reports what was
+# added since, so a bulk import can say "2 waiting for approval" instead of
+# "0 imported" (GitHub #442). Nested operations each see only their own entries.
+$script:MSGraphApprovalPending = [System.Collections.Generic.List[PSCustomObject]]::new()
+
+function Add-MSGraphApprovalPending
+{
+    param([string]$Method, [string]$Url, [string]$ApprovalCode)
+
+    $script:MSGraphApprovalPending.Add([PSCustomObject]@{
+        Method       = $Method
+        Url          = $Url
+        ApprovalCode = $ApprovalCode
+    })
+}
+
+function Get-MSGraphApprovalPending
+{
+    return $script:MSGraphApprovalPending.ToArray()
+}
+
+# The import dialogs' note for a run whose writes were held; $null when none were.
+function Get-MSGraphApprovalPendingSummary
+{
+    param($Count)
+
+    if(-not $Count -or [int]$Count -le 0) { return $null }
+    return "$Count object(s) are waiting for Multi Admin Approval. Another administrator must approve them in the Intune admin center under Tenant administration > Multi Admin Approval. The approval codes are in the log."
+}
+
 function Get-MSGraphApprovalCodeFromError
 {
     param($Response, $GraphError)

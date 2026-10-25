@@ -5,7 +5,7 @@ dialog. **Setting** is the name shown in the dialog; **Key** is what `Get-IMSett
 `Set-IMSetting` and a settings file use. Where values are stored and how tenant and global
 values combine is in [Settings.md](Settings.md).
 
-**Generated** by `Tools/Export-SettingsReference.ps1` from `Get-IMSettingDefinition` - do not edit by hand. 83 settings.
+**Generated** by `Tools/Export-SettingsReference.ps1` from `Get-IMSettingDefinition` - do not edit by hand. 84 settings.
 
 A runbook settings file for `Import-IMSettingsStore` is a json object keyed by these names:
 
@@ -16,7 +16,7 @@ A runbook settings file for `Import-IMSettingsStore` is a json object keyed by t
 ## Contents
 
 - [Authentication](#authentication) (8)
-- [General](#general) (13)
+- [General](#general) (14)
 - [Import/Export](#importexport) (30)
 - [Intune](#intune) (8)
 - [Intune Tools](#intune-tools) (1)
@@ -46,6 +46,7 @@ A runbook settings file for `Import-IMSettingsStore` is a json object keyed by t
 | Debug | `Debug` | Boolean | `false` |  |
 | Environment color | `EnvironmentColor` | List |  | Background color of the environment badge. Text color is auto-calculated for contrast. |
 | Environment name | `EnvironmentText` | Text |  | Label shown as a badge in the toolbar (e.g. Production, Lab). Leave empty to hide. |
+| Hide console window | `HideConsoleWindow` | Boolean | `false` | Hide the console window the application was started from once the main window is showing. File > Hide console / Show console toggles it for the session. Windows only, and only for the classic console host: under Windows Terminal the console cannot be hidden and the menu item is not shown. |
 | Hide experimental platform notice | `HideExperimentalPlatformNotice` | Boolean | `false` | Stop showing the startup notice that macOS and Linux support is experimental. Clear this to see it again. |
 | Hide No-access items | `HideNoAccess` | Boolean | `false` | Remove items from the menu if object permissions is missing. Default is to mark them with red |
 | Log file | `LogFile` | File |  |  |
@@ -97,8 +98,8 @@ A runbook settings file for `Import-IMSettingsStore` is a json object keyed by t
 | App download folder | `IntuneAppDownloadFolder` | Folder |  | Folder where app packages will be downloaded and where encryption files will be saved |
 | App packages folder | `IntuneAppPackagesFolder` | Folder |  | Root folder where intune app packages are located |
 | Get all pages | `GetAllPages` | Boolean | `true` | Get all pages when getting items in the UI. Note: This can take long time in environments with lots of policies and apps. |
-| Graph Page Size | `GraphPageSize` | List | `0` | How many items load at a time Values: `Graph Default`, `5`, `20`, `50`, `100`, `1000`, `All`. |
-| Max characters per cell | `ObjectListMaxCellLength` | Int | `50` | With single-line values on, cut a cell's text at this many characters so one long description cannot push the other columns out of view. Hover the cell for the full text; sorting and the filter still use the whole value. 0 = no limit. |
+| Graph Page Size | `GraphPageSize` | List | `0` | How many items load at a time. All loads every page in one go. Values: `Graph Default`, `5`, `20`, `50`, `100`, `1000`, `All`. |
+| Max characters per cell | `ObjectListMaxCellLength` | Int | `50` | With single-line values on, cut a cell's text at this many characters so one long description cannot push the other columns out of view. The Name column is never cut; it trims at the column edge. Hover the cell for the full text; sorting and the filter still use the whole value. 0 = no limit. |
 | Menu Object Type | `ObjectViewType` | List | `Group` | Specify object type for the menu. Group: Groups items together like the portal. Type - Single item based on API. Some APIs are split into multiple menu items. Values: `Group`, `Type (API)`. |
 | Save Encryption File | `IntuneSaveEncryptionFile` | Boolean |  | Save encryption file when uploading an app. This can then be used to when downloading the app file. |
 | Single-line values in object list | `ObjectListFirstLineOnly` | Boolean | `true` | Show only the first line of multi-line values (e.g. store app descriptions) in the object list, so every row is one line high. Hover a cell for the full text. Takes effect when the list is next loaded. |

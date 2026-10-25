@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "将策略应用于特定智能体标识。",
     "agents": "代理",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "有关智能体会话风险级别的其他信息",
+    "agentsLicenseInfoBalloonAriaLabel": "智能体许可证要求",
+    "agentsLicenseRequiredAriaLabel": "智能体。你的租户不满足以智能体为目标的许可证要求。",
+    "agentsLicenseRequiredTooltip": "你的租户不满足以智能体为目标的许可证要求。",
     "agentsLicenseText": "编辑此策略需要 Microsoft Agent 365 或 Microsoft 365 E7 许可证。",
     "agentsLicensingEnforcementDescription": "即将开始实施: 面向智能体的条件访问将需要 Microsoft Agent 365 许可证。",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "详细了解即将推出的智能体许可强制措施",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "命名位置",
     "menuItemPhasedRollout": "分阶段推出",
     "menuItemPolicies": "策略",
-    "menuItemPoliciesV2": "策略 V2 (预览)",
+    "menuItemPoliciesV2": "策略计划(预览)",
     "menuItemPolicySettings": "设置(预览)",
+    "menuItemSecurityDefaults": "安全默认值",
     "menuItemTermsOfUse": "使用条款",
     "microsoftAdminPortals": "Microsoft 管理门户",
     "microsoftAdminPortalsInfoBox": "管理门户包括 Microsoft 365 管理中心、Exchange 管理中心、Azure 门户、Microsoft Entra 管理中心等。",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "任何身份验证流",
             "authenticationTransfer": "身份验证传输",
             "deviceCodeFlow": "设备代码流",
+            "excludeDeviceCodeFlow": "排除设备代码流",
             "infoBalloon": "你的组织如何使用某些身份验证和授权协议以及授予",
             "label": "身份验证流",
             "multiple": "“{0}”和“{1}”",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "若要启用“需要风险缓解”，则不得选择“{0}”。",
       "mustSelect": "要启用“需要风险缓解”，你必须选择 {0}。",
-      "xOrY": "{0} 或 {1}"
+      "xOrY": "{0} 或 {1}",
+      "xYOrZ": "{0}、{1} 或 {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "“每次登录频率”会话控件不能与“{0}”一起使用",
         "appWarning": "当前选择的某些应用程序与“每次”的“登录频率”选项不兼容",
-        "everytime": "每次(5 分钟容差)",
+        "everytime": "每次",
         "EverytimeCA": {
           "secondaryOnly": "仅限辅助身份验证方法"
         },
-        "everytimeInfoBalloon": "每次尝试登录到此策略范围内的应用程序时，都会评估“每次”选项。",
-        "everyTimeStrict": "每次(严格 - 10 秒容差)",
-        "everyTimeStrictInfoBalloon": "提示容差会限制重新提示用户重新进行身份验证的频率，以防止出现过多提示和循环。",
+        "everytimeInfoBalloon": "“每次”控件的身份验证新鲜度有效窗口为 5 分钟。",
+        "everytimeInfoBalloonAriaLabel": "有关“每次”控件的详细信息",
+        "everyTimeStrict": "每次严格(预览)",
+        "everyTimeStrictInfoBalloon": "“每次严格(预览)”控件的身份验证新鲜度有效窗口为 10 秒，旨在与已配置为与此控件配合使用的应用程序一起使用。",
+        "everyTimeStrictInfoBalloonAriaLabel": "有关“每次严格(预览)”控件的详细信息",
+        "everyTimeStrictWarning": "“每次严格(预览)”控件适用于了解此控件的特定应用程序。我们不建议将“每次严格(预览)”控件应用于所有应用。这样做可能会导致意外的身份验证提示，进而影响用户的工作效率，并造成身份验证疲劳。",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "了解如何通过“每次严格(预览)”避免身份验证疲劳",
+        "everyTimeStrictWarningTitle": "避免身份验证疲劳",
         "periodic": "定期重新身份验证",
         "reqMFAWarning": "使用“仅限辅助身份验证方法”时，必须选择“需要多重身份验证”",
         "selectorInvalid": "选择“需要更改密码”授予时，只能使用“登录频率(每次)”会话控制",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "天",
           "everytime": "每次",
-          "everyTimeStrict": "每次(严格)",
+          "everyTimeStrict": "每次严格(预览)",
           "help": "用户访问资源时收到登录提示的时间周期。默认设置是 90 天的滚动时间段，即用户在计算机上的非活跃天数为 90 天或更长时，首次访问资源将收到重新进行身份验证的提示。",
           "Hour": {
             "plural": "{0} 小时",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "级别 2",
       "accessRequirement3": "级别 3",
       "accessRequirementsLabel": "访问受保护的应用数据",
-      "accountRecovery": "恢复帐户",
+      "accountRecovery": "帐户加入和恢复",
       "accountRecoveryInfoText": "此用户操作需要身份验证授权控件。请选择身份验证配置文件。",
       "appsActionsAuthTitle": "云应用、操作或身份验证上下文",
       "appsOrActionsSelectorInfoBallonText": "已访问应用程序或用户操作",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "连接性",
     "vPNDNSTriggers": "DNS 设置",
     "vPNIKEv2": "IKEv2 设置",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "代理",
     "vPNSplitTunneling": "拆分隧道",
     "vPNTrustedNetwork": "受信任的网络检测",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "唤醒设置",
     "webContentFilter": "Web 内容筛选",
     "wiFi": "Wi-Fi",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "所有配置文件类型",
     "workProfileOnly": "仅限个人拥有的工作配置文件"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "设置组名称"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "可用的可重复使用的设置",
+      "Column": {
+        "displayName": "可重复使用的设置组"
+      },
+      "instanceHeader": "配置设置",
+      "objectName": "可重复使用的设置",
+      "reusableSummary": "已配置 {0} 项设置",
+      "reusableSummaryMultiple": "已配置 {0} 项设置",
+      "ruleProperties": "规则属性",
+      "searchBox": "搜索可重复使用的设置",
+      "selectCertificateFile": "选择已作为可重用设置上传的证书文件。",
+      "selectOneOrMoreDeviceControlToExclude": "选择要排除到此设备控制规则和配置文件的一个或多个可重用设置组。规则继承这些组的所有属性，包括对组所做的更改。",
+      "selectOneOrMoreDeviceControlToInclude": "选择要包含在此设备控制规则和配置文件的一个或多个可重用设置组。规则继承这些组的所有属性，包括对组所做的更改。",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "设定可重用设置"
+        }
+      },
+      "selectScript": "选择要添加到此自定义符合性设置的脚本。",
+      "Subtitle": {
+        "firewall": "选择要添加到此防火墙规则和配置文件的一个或多个可重用设置组。规则继承这些组的所有属性，包括对组所做的更改。"
+      },
+      "title": "选择可重用的设置(预览)"
+    },
+    "wizardTitle": "配置可重用设置"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "管理组",
     "RoleAssignmentAdminDesc": "管理组用户是分配到此角色的管理员",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "帐户保护",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "所有设备",
     "antivirus": "反恶意软件",
     "antivirusReporting": "反恶意软件报告 (预览)",
@@ -6195,7 +6244,7 @@
     "androidEnterpriseGlobalProxyExcludedHostsDescription": "已跳过代理的主机名称的分号分隔列表。主机名称可以包含通配符，如 *.example.com。",
     "androidEnterpriseGlobalProxyExcludedHostsName": "排除的主机",
     "androidEnterpriseGlobalProxyHostName": "主机",
-    "androidEnterpriseGlobalProxyPortName": "端口号",
+    "androidEnterpriseGlobalProxyPortName": "端口���",
     "androidEnterpriseGlobalProxyProxyAutoConfigURLName": "PAC URL",
     "androidEnterpriseGlobalProxyTypeName": "类型",
     "androidEnterprisePowerButtonActionsBlockedDescription": "默认情况下，当用户按住设备上的电源按钮时，将显示电源选项，如“重启”和“关机”。隐藏这些选项可阻止用户意外或有意地关闭设备。",
@@ -7593,8 +7642,8 @@
     "defenderSecurityCenterOrganizationDisplayNameDescription": "输入 IT 组织的名称。",
     "defenderSecurityCenterOrganizationDisplayNameName": "IT 组织名称",
     "defenderSecurityCenterOrganizationDisplayNamePlaceholder": "例如 Contoso IT",
-    "defenderSecurityCenterSubHeaderText": "阻止最终用户访问 Microsoft Defender 安全中心应用的各个区域。隐藏分区也将阻止相关通知。",
-    "defenderSecurityCenterTamperProtectionDescription": "默认状态为“未配置”，它将不受影响。<br>“已启用”状态将启用篡改防护限制。<br>“已禁用”状态将禁用篡改防护限制。<br>如果客户端上存在“已启用”或“已禁用”状��，则部署“未配置”将不影响设置。要更改状态，使其不再是当前的“已启用”或“已禁用”状态，则必须部署相反的设置才能生效。",
+    "defenderSecurityCenterSubHeaderText": "阻止最终用户访问 Microsoft Defender 安全中心应���的各个区域。隐藏分区也将阻止相关通知。",
+    "defenderSecurityCenterTamperProtectionDescription": "默认状态为“未配置”，它将不受影响。<br>“已启用”状态将启用篡改防护限制。<br>“已禁用”状态将禁用篡改防护限制。<br>如果客户端上存在“已启用”或“已禁用”状态，则部署“未配置”将不影响设置。要更改状态，使其不再是当前的“已启用”或“已禁用”状态，则必须部署相反的设置才能生效。",
     "defenderSecurityCenterTamperProtectionDisable": "已禁用",
     "defenderSecurityCenterTamperProtectionEnable": "已启用",
     "defenderSecurityCenterTamperProtectionName": "篡改防护",
@@ -10600,7 +10649,7 @@
     "sCCMComplianceStateDescription": "要求 Configuration Manager 中的所有合规性评估结果均为合规。这仅适用于运行 Windows 10 或更高版本的共同托管设备。所有仅 Intune 设备都将返回 N/A。",
     "scenario": "方案",
     "sCEPCertType": "SCEP 证书",
-    "sCEPPolicyCertificateValidityPeriodDescription": "证书到期前的剩余时间量。输入一个等于或低于证书模板中显示的有效期的值。默认设置为一年。",
+    "sCEPPolicyCertificateValidityPeriodDescription": "证书到���前的剩余时间量。输入一个等于或低于证书模板中显示的有效期的值。默认设置为一年。",
     "sCEPPolicyCertificateValidityPeriodName": "证书有效期",
     "sCEPPolicyCustomAADAttribute": "自定义 Microsoft Entra 属性",
     "sCEPPolicyCustomKeys": "自定义键",
@@ -11365,7 +11414,7 @@
     "tuesday": "星期二",
     "tuesdayOption": "星期二",
     "tunnelConfigurationName": "网络接口",
-    "tunnelConfigurationToolTip": "所有 IKEv2 设置仅适用于设备上选择的网络接口。仅当你将其部署到禁用或删除�� Wi-Fi 接口的设备时，才选择“手机网络”。",
+    "tunnelConfigurationToolTip": "所有 IKEv2 设置仅适用于设备上选择的网络接口。仅当你将其部署到禁用或删除了 Wi-Fi 接口的设备时，才选择“手机网络”。",
     "twelveAMOption": "中午 12 点",
     "twelveMonthsNumberOption": "12 个月",
     "twelvePMOption": "晚上 12 点",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "通过手机网络使用 VPN",
     "vpnPerApp": "每应用 VPN",
     "vPNPerAppDescription": "用户开始使用所选应用时，如果连接配置为 Always On 或用户已手动启动了连接，则流量将自动通过 VPN 连接进行路由。",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "代理服务器地址(完全限定的主机或 IP 地址)。",
     "vPNPolicyAddressName": "地址",
     "vPNPolicyAssociatedAppsDescription": "此处添加的应用将自动启动该 VPN 连接。",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "设备隧道",
     "vPNPolicyExcludedDomainsUrlsDescription": "在激活每应用 VPN 时可以绕过 VPN 的域的列表。适用于 iOS 14 及更高版本",
     "vPNPolicyExcludedDomainsUrlsName": "排除的域",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "名称解析策略表(NRPT)规则定义连接到 VPN 时 DNS 如何解析名称。表中每行指定一个域，以及用于解析该域的 DNS 后缀或 Web 代理服务器。",
     "vPNPolicyNameResolutionPolicyTableRulesName": "名称解析策略表(NRPT)规则",
     "vPNPolicyNetworkTrafficRulesDescription": "注意: 添加网络规则后，VPN 连接将限制为仅适用于指定规则。\r\n     添加流量规则时，请确保添加限制性最小的通用规则，以避免 VPN 问题。",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "例如面向最终用户的企业 VPN",
     "vPNServerList": "服务器列表",
     "vPNServerListExample": "ServerDescription、IP 地址或 FQDN(公司范围 VPN 例如 10.0.0.1) (应用程序专用 VPN 例如 vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "此列表中的应用不使用 VPN 隧道。无论 VPN 连接状态如何，它们的流量将始终绕过 VPN，直接访问网络。未包含在此列表中的应用在连接 VPN 时必须使用 VPN，且在 VPN 不可用时会被阻止。",
     "vpnStrictTunnelBypassAppsName": "允许这些应用绕过严格隧道模式",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "此列表中的工作配置文件应用不使用 VPN 隧道。无论 VPN 连接状态如何，它们的流量将始终绕过 VPN，直接访问网络。未包含在此列表中的工作配置文件应用在连接时必须使用 VPN，且当 VPN 不可用时会被阻止。",
     "vpnStrictTunnelModeDescription": "启用后，所有流量都会强制通过 VPN 隧道。如果无法建立 VPN 连接，设备上的所有流量都将被阻止。添加到排除列表的应用将始终绕过 VPN 并直接连接网络，即使 VPN 已连接也是如此。",
     "vpnStrictTunnelModeName": "严格隧道模式",
     "vpnStrictTunnelModeWorkProfileDescription": "启用后，所有工作配置文件流量都会强制通过 VPN 隧道。如果无法建立 VPN 连接，工作配置文件流量将被阻止。添加到排除列表的应用将始终绕过 VPN 并直接连接网络，即使 VPN 已连接也是如此。个人应用和工作配置文件外的流量不受影响。",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "由于 WIP 定义策略和应用列表，因此除非特别需要，否则选定 WIP 后无需其他网络流量规则。",
     "vPNWipOrAppsName": "无法保存电信费用管理配置。",
     "wakeOnLANName": "LAN 唤醒",
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "云电脑概述",
       "cloudPCSettings": "云电脑设置",
       "monitorCloudPCs": "监视云电脑(预览)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "预配云电脑",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Windows 365 监视(预览版)",
       "windows365Reports": "Windows 365 报表"
     },

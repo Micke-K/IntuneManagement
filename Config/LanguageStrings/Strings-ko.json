@@ -465,7 +465,7 @@
     "sixtyFourBit": "64비트",
     "sixtyFourBitInstructionSet": "x64 시스템에 설치",
     "thirtyTwoBit": "32비트",
-    "thirtyTwoBitInstructionSet": "x86 시���템에 설치"
+    "thirtyTwoBitInstructionSet": "x86 시스템에 설치"
   },
   "Assignment": {
     "AutoUpdateMode": {
@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "특정 에이전트 ID에 정책을 적용합니다.",
     "agents": "에이전트",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "에이전트 세션 위험 수준에 대한 추가 정보",
+    "agentsLicenseInfoBalloonAriaLabel": "에이전트 라이선스 요구 사항",
+    "agentsLicenseRequiredAriaLabel": "에이전트입니다. 테넌트가 에이전트를 대상으로 지정하기 위한 라이선스 요구 사항을 충족하지 않습니다.",
+    "agentsLicenseRequiredTooltip": "테넌트가 에이전트를 대상으로 지정하기 위한 라이선스 요구 사항을 충족하지 않습니다.",
     "agentsLicenseText": "이 정책을 편집하려면 Microsoft Agent 365 또는 Microsoft 365 E7 라이선스가 필요합니다.",
     "agentsLicensingEnforcementDescription": "조만간 에이전트에 대한 조건부 액세스를 사용하려면 Microsoft Agent 365 라이선스가 필요합니다.",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "앞으로 적용될 에이전트 라이선스 시행에 대해 자세히 알아보기",
@@ -1100,7 +1103,7 @@
     "clientAppMobileDesktopCheckboxAriaLabel": "그룹, 이 정책을 적용할 클라이언트 앱을 선택합니다. 최신 인증 클라이언트, 모바일 앱, 데스크톱 클라이언트입니다.",
     "clientAppModernHeader": "최신 인증 클라이언트",
     "clientAppOnlySupportedPlatforms": "지원되는 플랫폼에만 정책 적용",
-    "clientAppOtherCheckboxAriaLabel": "그룹, 이 정책을 적용할 클라이언트 앱을 선택합니다. 레거시 인증 클라이언트, 기타 클라이언트입니다.",
+    "clientAppOtherCheckboxAriaLabel": "그룹, 이 ��책을 적용할 클라이언트 앱을 선택합니다. 레거시 인증 클라이언트, 기타 클라이언트입니다.",
     "clientAppSelectSpecificClientApps": "클라이언트 앱 선택",
     "clientAppsInfoBalloonAriaLabelAccessibility": "클라이언트 앱에 대한 추가 정보",
     "clientAppsSelectedLabel": "{0}개 포함됨",
@@ -1182,7 +1185,7 @@
     "cloudappsSelectionBladeAllCloudapps": "모든 클라우드 앱",
     "cloudAppsSelectionBladeAllMicrosoftApps": "모든 Microsoft 앱",
     "cloudappsSelectionBladeAllResources": "모든 리소스(이전의 '모든 클라우드 앱')",
-    "cloudappsSelectionBladeExcludeDescription": "���책에서 제외할 클라우드 앱 선택",
+    "cloudappsSelectionBladeExcludeDescription": "정책에서 제외할 클라우드 앱 선택",
     "cloudappsSelectionBladeExcludedSelectorTitle": "제외된 클라우드 앱 선택",
     "cloudappsSelectionBladeIncludeDescription": "이 정책을 적용할 클라우드 앱 선택",
     "cloudappsSelectionBladeIncludedSelectorTitle": "선택",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "명명된 위치",
     "menuItemPhasedRollout": "단계적 출시",
     "menuItemPolicies": "정책",
-    "menuItemPoliciesV2": "정책 V2(미리 보기)",
+    "menuItemPoliciesV2": "정책 계획(미리 보기)",
     "menuItemPolicySettings": "설정(미리 보기)",
+    "menuItemSecurityDefaults": "보안 기본값",
     "menuItemTermsOfUse": "사용 약관",
     "microsoftAdminPortals": "Microsoft 관리 포털",
     "microsoftAdminPortalsInfoBox": "관리 포털에는 Microsoft 365 관리 센터, Exchange 관리 센터, Azure Portal, Microsoft Entra 관리 센터 등이 포함됩니다.",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "모든 인증 흐름",
             "authenticationTransfer": "인증 이전",
             "deviceCodeFlow": "장치 코드 흐름",
+            "excludeDeviceCodeFlow": "디바이스 코드 흐름 제외",
             "infoBalloon": "조직에서 특정 인증 및 권한 부여 프로토콜과 권한 부여를 사용하는 방법",
             "label": "인증 흐름",
             "multiple": "\"{0}\" 및 \"{1}\"",
@@ -2181,7 +2187,7 @@
     "resetFilters": "필터 재설정",
     "ResourcesSelectionBlade": {
       "Exclude": {
-        "description": "정책에서 제외할 리소�� 선택"
+        "description": "정책에서 제외할 리소스 선택"
       }
     },
     "resourcesSelectorPluralExcluded": "{0}개 리소스가 제외됨",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "위험 수정 필요를 사용하도록 설정하려면 {0}을(를) 선택하지 않아야 합니다.",
       "mustSelect": "위험 수정 필요를 사용하려면 {0}을(를) 선택해야 합니다.",
-      "xOrY": "{0} 또는 {1}"
+      "xOrY": "{0} 또는 {1}",
+      "xYOrZ": "{0}, {1} 또는 {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "\"매번 로그인 빈도\" 세션 제어는 \"{0}\"과(와) 함께 사용할 수 없습니다.",
         "appWarning": "현재 선택한 일부 응용 프로그램은 \"매번\"의 \"로그인 빈도\" 옵션과 호환되지 않음",
-        "everytime": "매번(5분 허용 오차)",
+        "everytime": "매번",
         "EverytimeCA": {
           "secondaryOnly": "2차 인증 방법만"
         },
-        "everytimeInfoBalloon": "\"매번\" 옵션은 이 정책 범위에 있는 애플리케이션에 대한 모든 로그인 시도에서 평가됩니다.",
-        "everyTimeStrict": "매번(엄격 - 10초 허용 오차)",
-        "everyTimeStrictInfoBalloon": "프롬프트 허용 오차는 과도한 프롬프트와 반복을 방지하기 위해 사용자에게 재인증 프롬프트를 다시 표시할 수 있는 빈도를 제한합니다.",
+        "everytimeInfoBalloon": "'매번' 컨트롤의 인증 최신성 유효 기간은 5분입니다.",
+        "everytimeInfoBalloonAriaLabel": "매번에 대한 자세한 정보",
+        "everyTimeStrict": "매번 엄격(미리 보기)",
+        "everyTimeStrictInfoBalloon": "매번 엄격(미리 보기)의 인증 최신성 유효 기간은 10초이며, 이 컨트롤과 함께 작동하도록 구성된 애플리케이션에서 사용하기 위한 것입니다.",
+        "everyTimeStrictInfoBalloonAriaLabel": "매번 엄격(미리 보기)에 대한 자세한 정보",
+        "everyTimeStrictWarning": "매번 엄격(미리 보기) 컨트롤은 이 컨트롤을 인식하는 특정 애플리케이션을 위한 것입니다. '매번 엄격(미리 보기)' 컨트롤을 모든 앱에 적용하는 것은 권장되지 않습니다. 이렇게 하면 예기치 않은 인증 메시지가 표시되어 사용자의 생산성이 저하되고 인증 피로가 발생할 수 있습니다.",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "매번 엄격(미리 보기)으로 인증 피로를 방지하는 방법에 대한 자세한 정보",
+        "everyTimeStrictWarningTitle": "인증 피로 방지",
         "periodic": "주기적 재인증",
         "reqMFAWarning": "\"2차 인증 방법만\"을 사용하는 경우 \"다단계 인증 필요\"를 선택해야 합니다.",
         "selectorInvalid": "\"암호 변경 필요\" 권한 부여를 선택하면 \"매번 로그인 빈도\" 세션 제어만 사용할 수 있습니다.",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "일",
           "everytime": "매번",
-          "everyTimeStrict": "매번(엄격)",
+          "everyTimeStrict": "매번 엄격(미리 보기)",
           "help": "사용자가 리소스에 액세스하려고 할 때 다시 로그인할지를 묻기까지 걸리는 기간입니다. 기본 설정은 90일(롤링 기간)입니다. 즉, 사용자가 머신에서 90일 이상 비활성 상태였다가 리소스에 액세스하려고 처음 시도할 때 사용자에게 다시 인증하라는 메시지가 표시됩니다.",
           "Hour": {
             "plural": "{0}시간",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "수준 2",
       "accessRequirement3": "수준 3",
       "accessRequirementsLabel": "보안 앱 데이터 액세스",
-      "accountRecovery": "계정 복구",
+      "accountRecovery": "계정 온보딩 및 복구",
       "accountRecoveryInfoText": "이 사용자 작업에는 ID 검증 권한 부여 제어가 필요합니다. ID 검증 프로필을 선택하세요.",
       "appsActionsAuthTitle": "클라우드 앱, 작업 또는 인증 컨텍스트",
       "appsOrActionsSelectorInfoBallonText": "액세스한 애플리케이션 또는 사용자 작업",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "연결",
     "vPNDNSTriggers": "DNS 설정",
     "vPNIKEv2": "IKEv2 설정",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "프록시",
     "vPNSplitTunneling": "분할 터널링",
     "vPNTrustedNetwork": "신뢰할 수 있는 네트워크 검색",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "절전 모드 해제 설정",
     "webContentFilter": "웹 콘텐츠 필터",
     "wiFi": "Wi-Fi",
@@ -4868,7 +4883,7 @@
     "configurationSettingsLabel": "설정 형식",
     "contacts": "연락처",
     "contactSync": "연락처 저장",
-    "contactSyncInfoBalloon": "모바일 디바이스의 기본 주소록에 연락처를 저장하면 새 통화 및 텍스트 메시지를 사용자의 기존 Outlook 연락처에 연결할 수 ��습니다. 구성되지 않도록 설정하면 기본 앱 설정이 [끄기]로 설정됩니다.",
+    "contactSyncInfoBalloon": "모바일 디바이스의 기본 주소록에 연락처를 저장하면 새 통화 및 텍스트 메시지를 사용자의 기존 Outlook 연락처에 연결��� 수 있습니다. 구성되지 않도록 설정하면 기본 앱 설정이 [끄기]로 설정됩니다.",
     "createdDateTime": "만든 날짜",
     "defaultCategoryHint": "기본 범주를 변경할 수 없습니다.",
     "deploySMimeCertsFromIntune": "Intune에서 S/MIME 인증서 배포",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "모든 프로필 유형",
     "workProfileOnly": "개인 소유 회사 프로필만"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "그룹 이름 설정"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "사용 가능한 재사용 가능 설정",
+      "Column": {
+        "displayName": "재사용 가능 설정 그룹"
+      },
+      "instanceHeader": "설정 구성",
+      "objectName": "재사용 가능 설정",
+      "reusableSummary": "{0} 설정이 구성됨",
+      "reusableSummaryMultiple": "{0} 설정 구성됨",
+      "ruleProperties": "규칙 속성",
+      "searchBox": "재사용 가능 설정 검색",
+      "selectCertificateFile": "다시 사용할 수 있는 설정으로 업로드된 인증서 파일을 선택합니다.",
+      "selectOneOrMoreDeviceControlToExclude": "이 장치 제어 규칙 및 프로필에서 제외할 다시 사용할 수 있는 설정 그룹을 하나 이상 선택합니다. 규칙은 그룹에 대한 변경 내용을 포함하여 이러한 그룹의 모든 속성을 상속합니다.",
+      "selectOneOrMoreDeviceControlToInclude": "이 장치 제어 규칙 및 프로필에 포함할 다시 사용할 수 있는 설정 그룹을 하나 이상 선택합니다. 규칙은 그룹에 대한 변경 내용을 포함하여 이러한 그룹의 모든 속성을 상속합니다.",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "재사용 가능 설정 지정"
+        }
+      },
+      "selectScript": "이 사용자 지정 규정 준수 설정에 추가할 스크립트를 선택합니다.",
+      "Subtitle": {
+        "firewall": "이 방화벽 규칙 및 프로필에 추가할 다시 사용할 수 있는 설정 그룹을 하나 이상 선택합니다. 규칙은 그룹에 대한 변경 내용을 포함하여 이러한 그룹의 모든 속성을 상속합니다."
+      },
+      "title": "재사용 가능한 설정 선택(미리 보기)"
+    },
+    "wizardTitle": "재사용 가능 설정 구성"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "관리자 그룹",
     "RoleAssignmentAdminDesc": "관리자 그룹 사용자는 이 역할에 할당된 관리자입니다.",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "계정 보호",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "모든 디바이스",
     "antivirus": "바이러스 백신",
     "antivirusReporting": "바이러스 백신 보고(미리 보기)",
@@ -6799,7 +6848,7 @@
     "blockGooglePlayStoreName": "Google Play 스토어(삼성 KNOX 전용) ",
     "blockHostPairingDescription": "호스트 페어링에서 iOS 디바이스와 페어링할 수 있는 디바이스 제어를 차단합니다.",
     "blockHostPairingName": "비 구성자 호스트와의 페어링 차단",
-    "blockIBooksStoreEroticaDescription": "iBook 스토어에서 에로물로 태그된 미디어를 다운로드할 수 없습니다.",
+    "blockIBooksStoreEroticaDescription": "iBook 스토어에서 에로���로 태그된 미디어를 다운로드할 수 없습니다.",
     "blockIBooksStoreEroticaName": "Apple Books에서 노골적인 성적 콘텐츠의 다운로드 차단",
     "blockIBooksStoreName": "Apple Books 차단",
     "blockICloudAddressBookDescription": "iCloud에서 연락처를 동기화하지 못하도록 차단합니다.",
@@ -8648,9 +8697,9 @@
     "homeScreenLayoutInfoBox": "레이아웃 행에 앱을 행별로 추가합니다. 채우지 않은 위치는 다른 앱이 디바이스에 설치하는 순서대로 채워집니다.",
     "homeScreenLayoutPageNameName": "페이지 이름",
     "homeScreenLayoutPagesDescription": "선택하는 앱 및 폴더는 이 정책을 할당하는 최종 사용자 iOS 디바이스의 주 화면에 배치됩니다. 항목은 화면 왼쪽 위에서 오른쪽 아래로 순서대로 추가됩니다. 화면이 가득 차면 항목이 자동으로 다음 화면에 배치됩니다.",
-    "homeScreenLayoutPagesHeader": "홈 화면에 표시할 페이지를 추가합니다. 선택한 앱은 아래에 추가한 순서대로 왼쪽에서 오른쪽으로 홈 화면의 페이지에 배치됩니다. 항목의 순서를 바꾸려면 항목을 클릭하고 끌어옵니다.\r\n<br>\r\n<br>\r\n최대 40개 페이지가 허용됩니다.",
+    "homeScreenLayoutPagesHeader": "홈 화면에 표시할 페이지를 추가합니다. 선택한 앱은 아래에 추가한 순서대로 왼쪽에서 오른쪽으로 홈 화면의 페이지에 배치됩니���. 항목의 순서를 바꾸려면 항목을 클릭하고 끌어옵니다.\r\n<br>\r\n<br>\r\n최대 40개 페이지가 허용됩니다.",
     "homeScreenLayoutPagesName": "페이지",
-    "homeScreenLayoutPagesPageHeader": "이 페이지에 표시할 앱을 추가합니다. 선택한 앱은 아래에 추가한 순서대로 왼쪽에서 오른쪽���로 디바이스의 페이지에 배치됩니다. 단일 화면에 표시할 수 있는 페이지를 넘어가는 앱 수는 그다음 화면으로 이동됩니다. 항목의 순서를 바꾸려면 항목을 클릭하고 끌어옵니다.\r\n<br>\r\n<br>\r\n최대 60개 항목이 허용됩니다.",
+    "homeScreenLayoutPagesPageHeader": "이 페이지에 표시할 앱을 추가합니다. 선택한 앱은 아래에 추가한 순서대로 왼쪽에서 오른쪽으로 디바이스의 페이지에 배치됩니다. 단일 화면에 표시할 수 있는 페이지를 넘어가는 앱 수는 그다음 화면으로 이동됩니다. 항목의 순서를 바꾸려면 항목을 클릭하고 끌어옵니다.\r\n<br>\r\n<br>\r\n최대 60개 항목이 허용됩니다.",
     "homeScreenLayoutPageTableName": "페이지 목록",
     "homeScreenLayoutType": "유형",
     "homeScreenLayoutTypeApp": "앱",
@@ -9775,7 +9824,7 @@
     "nacIdDescCitrix": "Citrix SSO 규정에 따라 NAC를 사용하려면 VPN 프로필에 Intune 디바이스 ID를 포함해야 합니다.<br><br>본인은 Microsoft가 Citrix SSO와 해당 파트너가 사용할 수 있도록 VPN 프로필에 디바이스 정보를 포함하는 것을 허용합니다. 서비스 공급자와 공유되는 정보 종류 등 자세한 정보를 확인하려면 클릭하세요.",
     "nacIdDescF5": "F5 Access 규정에 따라 NAC를 사용하려면 VPN 프로필에 Intune 디바이스 ID를 포함해야 합니다.<br><br>본인은 Microsoft가 F5 Access와 해당 파트너가 사용할 수 있도록 VPN 프로필에 디바이스 정보를 포함하는 것을 허용합니다. 서비스 공급자와 공유되는 정보 종류 등 자세한 정보를 확인하려면 클릭하세요.",
     "nacIdHeader": "NAC(네트워크 액세스 제어) 사용",
-    "nacIdHeaderCiscoToolTip": "디바이스 ID는 암호화되고 VPN 프로필에 포함됩니다. 사용자가 VPN에 연결하려고 하면 Cisco AnyConnect가 이 값을 NAC 인프라에 전달합니다. 그러면 NAC 인프라는 디바이스가 등록되었으며 규격인지 확인하기 위해 이 값을 사용하여 Intune을 쿼리합니다.<br><br>Cisco AnyConnect는 NAC를 사용하도록 설정하기 위해 디바���스 ID에 직접 액세스할 수 없습니다. 이 값은 VPN에 포함되어야 합니다.",
+    "nacIdHeaderCiscoToolTip": "디바이스 ID는 암호화되고 VPN 프로필에 포함됩니다. 사용자가 VPN에 연결하려고 하면 Cisco AnyConnect가 이 값을 NAC 인프라에 전달합니다. 그러면 NAC 인프라는 디바이스가 등록되었으며 규격인지 확인하기 위해 이 값을 사용하여 Intune을 쿼리합니다.<br><br>Cisco AnyConnect는 NAC를 사용하도록 설정하기 위해 디바이스 ID에 직접 액세스할 수 없습니다. 이 값은 VPN에 포함되어야 합니다.",
     "nacIdHeaderCitrixToolTip": "디바이스 ID는 암호화되어 VPN 프로필에 포함됩니다. 사용자가 VPN에 연결하려고 하면 Citrix SSO가 이 값을 NAC 인프라에 전달합니다. 그러면 NAC 인프라는 디바이스가 등록되었으며 규격인지 확인하기 위해 이 값을 사용하여 Intune을 쿼리합니다.<br><br>Citrix SSO는 NAC를 사용하도록 설정하기 위해 디바이스 ID에 직접 액세스할 수 없습니다. 이 값은 VPN에 포함되어 있어야 합니다.",
     "nacIdHeaderF5ToolTip": "디바이스 ID는 암호화되어 VPN 프로필에 포함됩니다. 사용자가 VPN에 연결하려고 하면 F5 Access가 이 값을 NAC 인프라에 전달합니다. 그러면 NAC 인프라는 디바이스가 등록되었으며 규격인지 확인하기 위해 이 값을 사용하여 Intune을 쿼리합니다.<br><br>F5 Access는 NAC를 사용하도록 설정하기 위해 디바이스 ID에 직접 액세스할 수 없습니다. 이 값은 VPN에 포함되어 있어야 합니다.",
     "name": "이름",
@@ -10537,7 +10586,7 @@
     "resetToDefaultOption": "기본값으로 다시 설정",
     "resourceManagement": "리소스 관리",
     "resourcePath": "리소스 경로",
-    "resourcePathDescription": "경로가 ipp/print가 아닌 경우 이 페이지의 자세한 내용 링크에서 ��움말을 참조하세요.",
+    "resourcePathDescription": "경로가 ipp/print가 아닌 경우 이 페이지의 자세한 내용 링크에서 도움말을 참조하세요.",
     "resourcesToBeCreated": "만들 리소스",
     "resourceSummaryPoliciesTitle": "앱 정책",
     "restartWarningsOnlyOption": "다시 시작 경고를 제외하고 모든 알림 끄기",
@@ -11173,7 +11222,7 @@
     "systemPageDescription": "설정 앱의 [시스템]에 대한 액세스를 차단합니다.",
     "systemPageName": "시스템",
     "systemScanName": "전체 또는 빠른 검색을 수행할 날짜 및 시간",
-    "systemTelemetryProxyServerDescription": "SSL(Secure Sockets Layer) 연결을 사용하여 연결된 사용자 환경 및 원격 분석 요청을 전달하도록 프록시 서버의 FQDN(정규화된 도메인 이름) 또는 IP 주소를 지정합니다. 이 설정의 형식은 server:port입니다. 명명된 프록시가 실패하는 경우 또는 이 정책을 사용하도록 설정했으나 프록시를 지정하지 않은 경우, 연결된 ��용자 환경 및 원격 분석 데이터가 전송되지 않으며 로컬 디바이스에 남아 있게 됩니다.<br><br>\r\n형식 예:<br>\r\nIPv4:     192.246.246.106:100 <br>\r\nIPv6:     [2001:4898:4010:4013:95c1:a8b2:953c:c633]:100 <br>\r\nFQDN:     www.contoso.com:345 <br>\r\n    ",
+    "systemTelemetryProxyServerDescription": "SSL(Secure Sockets Layer) 연결을 사용하�� 연결된 사용자 환경 및 원격 분석 요청을 전달하도록 프록시 서버의 FQDN(정규화된 도메인 이름) 또는 IP 주소를 지정합니다. 이 설정의 형식은 server:port입니다. 명명된 프록시가 실패하는 경우 또는 이 정책을 사용하도록 설정했으나 프록시를 지정하지 않은 경우, 연결된 사용자 환경 및 원격 분석 데이터가 전송되지 않으며 로컬 디바이스에 남아 있게 됩니다.<br><br>\r\n형식 예:<br>\r\nIPv4:     192.246.246.106:100 <br>\r\nIPv6:     [2001:4898:4010:4013:95c1:a8b2:953c:c633]:100 <br>\r\nFQDN:     www.contoso.com:345 <br>\r\n    ",
     "systemTelemetryProxyServerExample": "예: 249.168.246.106:100 또는 [2001:4898:4010:4013:95c1:a8b2:953c:c633]:100 또는 www.contoso.com:345",
     "systemTelemetryProxyServerName": "원격 분석 프록시 서버",
     "systemUpdateFreezePeriodEndDateColumnDescription": "연간 반복 고정 기간의 종료일(MM/DD)을 설정합니다. 이 날짜는 시작 날짜보다 90일 이상 늦지 않아야 합니다.",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "셀룰러 네트워크를 통한 VPN",
     "vpnPerApp": "앱별 VPN",
     "vPNPerAppDescription": "사용자가 선택한 앱을 사용하기 시작하면 연결이 [Always On]이 되도록 구성되었거나 사용자가 연결을 수동으로 시작한 경우 VPN 연결을 통해 트래픽이 자동으로 라우팅됩니다.",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "프록시 서버 주소(정규화된 호스트 또는 IP 주소)입니다.",
     "vPNPolicyAddressName": "주소",
     "vPNPolicyAssociatedAppsDescription": "여기에 추가된 앱은 자동으로 이 VPN 연결을 시작합니다.",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "디바이스 터널",
     "vPNPolicyExcludedDomainsUrlsDescription": "앱별 VPN이 활성화될 때 VPN을 우회할 수 있는 도메인 목록입니다. iOS 14 이상에 적용됩니다.",
     "vPNPolicyExcludedDomainsUrlsName": "제외된 도메인",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "NRPT(이름 확인 정책 테이블) 규칙은 VPN에 연결된 경우 DNS가 이름을 확인하는 방법을 정의합니다. 테이블의 각 행은 도메인과 해당 도메인을 확인하는 데 사용할 DNS 접미사 또는 웹 프록시 서버를 지정합니다.",
     "vPNPolicyNameResolutionPolicyTableRulesName": "NRPT(이름 확인 정책 테이블) 규칙",
     "vPNPolicyNetworkTrafficRulesDescription": "주의: 네트워크 규칙을 추가함으로써 VPN 연결은 지정된 규칙으로만 제한됩니다.\r\n     트래픽 규칙을 추가할 때 가장 덜 제한적인 catch-all 규칙을 추가하여 VPN 문제를 방지하도록 하세요.",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "예: 최종 사용자의 회사 VPN",
     "vPNServerList": "서버 목록",
     "vPNServerListExample": "ServerDescription, IP 주소 또는 FQDN(예: 회사 전체 VPN, 10.0.0.1)(예: 앱 전용 VPN, vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "이 목록의 앱은 VPN 터널 사용에서 제외됩니다. 트래픽은 항상 VPN을 우회하고 VPN 연결 상태에 관계없이 네트워크에 직접 액세스합니다. 이 목록에 없는 앱은 연결된 경우 VPN을 사용해야 하며 VPN을 사용할 수 없을 때 차단됩니다.",
     "vpnStrictTunnelBypassAppsName": "이러한 앱이 엄격한 터널 모드를 우회하도록 허용",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "이 목록의 회사 프로필 앱은 VPN 터널 사용에서 제외됩니다. 트래픽은 항상 VPN을 우회하고 VPN 연결 상태에 관계없이 네트워크에 직접 액세스합니다. 이 목록에 없는 회사 프로필 앱은 연결된 경우 VPN을 사용해야 하며 VPN을 사용할 수 없을 때 차단됩니다.",
     "vpnStrictTunnelModeDescription": "사용하도록 설정하면 모든 네트워크 트래픽이 VPN 터널을 통해 강제로 적용됩니다. VPN에 대한 연결을 설정할 수 없는 경우 디바이스의 모든 네트워크 트래픽이 차단됩니다. 제외 목록에 추가된 앱은 항상 VPN을 무시하고 VPN이 연결된 경우에도 네트워크에 직접 연결합니다.",
     "vpnStrictTunnelModeName": "엄격한 터널 모드",
     "vpnStrictTunnelModeWorkProfileDescription": "사용하도록 설정하면 모든 회사 프로필 네트워크 트래픽이 VPN 터널을 통해 강제로 적용됩니다. VPN에 대한 연결을 설정할 수 없는 경우 회사 프로필 네트워크 트래픽이 차단됩니다. 제외 목록에 추가된 앱은 항상 VPN을 무시하고 VPN이 연결된 경우에도 네트워크에 직접 연결합니다. 회사 프로필 외부의 트래픽과 개인 앱에는 영향을 주지 않습니다.",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "WIP가 정책 및 앱 목록을 정의하므로 WIP가 선택된 경우 특별히 필요하지 않은 한 추가 네트워크 트래픽 규칙은 필요하지 않습니다.",
     "vPNWipOrAppsName": "이 VPN에 WIP 또는 앱 연결",
     "wakeOnLANName": "Wake on LAN",
@@ -11832,7 +11890,7 @@
     "webContentFilterTypeBlockedUrlsName": "차단된 URL",
     "webContentFilterTypeBlockedUrlsTableDescription": "이러한 URL에 대한 액세스가 차단됩니다.",
     "webContentFilterTypeBlockedUrlsTableName": "차단된 URL",
-    "webContentFilterTypeConfigureUrlsHeaderName": "욕설 및 성적으로 노골적인 내용 등 성인용 표현을 찾는 Apple의 기본 제공 자동 필터 알고리즘을 사용합니다. 이 기능은 로드되는 각 웹 페이지를 평가하고 어린이에게 적합하지 않는 콘텐츠를 식별하여 차단하려고 합니다. Apple의 필터링 알고리즘을 건너뛰어야 하는 특정 URL이 있으면 [허용된 URL] 목록에 추가합니다. Apple의 자동 필터와 관계없이 차단해야 하는 특정 URL은 [차단된 URL] 목록에 추가합니다.",
+    "webContentFilterTypeConfigureUrlsHeaderName": "욕설 및 성적으로 노골적인 내용 등 성인용 표현을 찾는 Apple의 기본 제공 자동 필터 알고리즘을 사용합니다. 이 기능은 로드되는 각 웹 페이지를 평가하고 어린이에게 적합하지 않는 콘텐츠를 식별하여 차단하려고 합니다. Apple의 ���터링 알고리즘을 건너뛰어야 하는 특정 URL이 있으면 [허용된 URL] 목록에 추가합니다. Apple의 자동 필터와 관계없이 차단해야 하는 특정 URL은 [차단된 URL] 목록에 추가합니다.",
     "webContentFilterTypeConfigureUrlsOption": "URL 구성",
     "webContentFilterTypeDescription": "URL 액세스 가능 여부를 결정하는 데 사용되는 필터링 메커니즘입니다. Apple의 자동 필터를 사용하도록 선택하거나 정확한 URL 목록을 지정하거나 모든 URL을 차단할 수 있습니다.",
     "webContentFilterTypeName": "필터 유형",
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "클라우드 PC 개요",
       "cloudPCSettings": "클라우드 PC 설정",
       "monitorCloudPCs": "클라우드 PC 모니터링(미리 보기)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "클라우드 PC 프로비전",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Windows 365 모니터링(미리 보기)",
       "windows365Reports": "Windows 365 보고서"
     },

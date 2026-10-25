@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "Použijte zásadu pro identity konkrétních agentů.",
     "agents": "Agenti",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "Další informace o úrovních rizika relace agenta",
+    "agentsLicenseInfoBalloonAriaLabel": "Licenční požadavky pro agenty",
+    "agentsLicenseRequiredAriaLabel": "Agenti Váš tenant nesplňuje licenční požadavky pro cílení na agenty.",
+    "agentsLicenseRequiredTooltip": "Váš tenant nesplňuje licenční požadavky pro cílení na agenty.",
     "agentsLicenseText": "K úpravě této zásady je vyžadována licence Microsoft Agent 365 nebo Microsoft 365 E7.",
     "agentsLicensingEnforcementDescription": "Brzy bude Podmíněný přístup pro agenty vyžadovat licenci Microsoft Agent 365.",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "Další informace o chystaném vynucování licencí pro agenty",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "Pojmenovaná umístění",
     "menuItemPhasedRollout": "Postupné uvedení",
     "menuItemPolicies": "Zásady",
-    "menuItemPoliciesV2": "Zásady V2 (Preview)",
+    "menuItemPoliciesV2": "Plány zásad (Preview)",
     "menuItemPolicySettings": "Nastavení (Preview)",
+    "menuItemSecurityDefaults": "Výchozí nastavení zabezpečení",
     "menuItemTermsOfUse": "Podmínky použití",
     "microsoftAdminPortals": "Portály pro správu Microsoftu",
     "microsoftAdminPortalsInfoBox": "Mezi portály pro správu patří Centrum pro správu Microsoftu 365, Centrum pro správu Exchange, Azure Portal, Centrum pro správu Microsoft Entra a další.",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "Libovolný tok ověřování",
             "authenticationTransfer": "Přenos ověřování",
             "deviceCodeFlow": "Tok kódu zařízení",
+            "excludeDeviceCodeFlow": "Vyloučit tok kódu zařízení",
             "infoBalloon": "Jak vaše organizace používá určité ověřovací a autorizační protokoly a oprávnění",
             "label": "Toky ověřování",
             "multiple": "„{0}“ a „{1}“",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "Chcete-li povolit možnost Vyžadovat odstranění rizika, nesmíte vybrat možnost {0}.",
       "mustSelect": "Pokud chcete povolit možnost vyžadovat nápravu rizik, musíte vybrat {0}.",
-      "xOrY": "{0} nebo {1}"
+      "xOrY": "{0} nebo {1}",
+      "xYOrZ": "{0}, {1} nebo {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "Ovládací prvek relace „Frekvence přihlašování (pokaždé)“ nejde použít s „{0}“.",
         "appWarning": "Některé aktuálně vybrané aplikace nejsou kompatibilní s možností Frekvence přihlašování – Pokaždé.",
-        "everytime": "Pokaždé (s tolerancí 5 minut)",
+        "everytime": "Pokaždé",
         "EverytimeCA": {
           "secondaryOnly": "Pouze sekundární metody ověřování"
         },
-        "everytimeInfoBalloon": "Možnost Vždy se vyhodnocuje při každém pokusu o přihlášení k aplikaci v oboru těchto zásad.",
-        "everyTimeStrict": "Pokaždé (striktní – s tolerancí 10 sekund)",
-        "everyTimeStrictInfoBalloon": "Tolerance výzvy omezuje, jak často mohou být uživatelé znovu vyzváni k opětovnému ověření, aby se zabránilo nadměrnému počtu výzev a opakujícím se smyčkám.",
+        "everytimeInfoBalloon": "Ovládací prvek Pokaždé má 5minutové období platnosti pro aktuálnost ověřování.",
+        "everytimeInfoBalloonAriaLabel": "Další informace o funkci Pokaždé",
+        "everyTimeStrict": "Vždy striktní (Preview)",
+        "everyTimeStrictInfoBalloon": "Vždy striktní (Preview) má 10sekundové období platnosti pro aktuálnost ověřování a je určeno k použití s aplikacemi, které jsou nakonfigurované pro práci s tímto ovládacím prvkem.",
+        "everyTimeStrictInfoBalloonAriaLabel": "Další informace o možnosti Vždy striktní (Preview)",
+        "everyTimeStrictWarning": "Ovládací prvek Vždy striktní (Preview) je určen pro konkrétní aplikace, které tomuto ovládacímu prvku rozumí. Nedoporučujeme používat ovládací prvek Vždy striktní (Preview) pro všechny aplikace. Může to vést k neočekávaným výzvám k ověření identity, které ovlivní produktivitu vašich uživatelů a způsobí únavu z ověřování.",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "Zjistěte, jak se pomocí ovládacího prvku Vždy striktní (Preview) vyhnout únavě z ověřování",
+        "everyTimeStrictWarningTitle": "Zabraňte únavě z ověřování",
         "periodic": "Pravidelné opakované ověřování",
         "reqMFAWarning": "Pokud se používají jenom sekundární metody ověřování, musí se vybrat možnost Vyžadovat vícefaktorové ověřování.",
         "selectorInvalid": "Když se vybere udělení Vyžadovat změnu hesla, dá se použít pouze kontrola relace frekvence přihlašování pokaždé.",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "Dny",
           "everytime": "Pokaždé",
-          "everyTimeStrict": "Pokaždé (striktní)",
+          "everyTimeStrict": "Vždy striktní (Preview)",
           "help": "Doba, než se uživateli při přístupu k nějakému prostředku znovu zobrazí výzva k přihlášení. Výchozí nastavení je 90denní posuvné okno, tj. uživateli se výzva k opětovnému ověření zobrazí při prvním pokusu o přístup k prostředku poté, co na počítači nebyl uživatel aktivní 90 dní nebo déle.",
           "Hour": {
             "plural": "{0} hod.",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "Úroveň 2",
       "accessRequirement3": "Úroveň 3",
       "accessRequirementsLabel": "Přistupuje se k zabezpečeným datům aplikace.",
-      "accountRecovery": "Obnovit účet",
+      "accountRecovery": "Onboarding a obnovení účtu",
       "accountRecoveryInfoText": "Tato akce uživatele vyžaduje řízení udělení oprávnění k ověření identity. Vyberte prosím profil ověření identity.",
       "appsActionsAuthTitle": "Cloudové aplikace, akce nebo kontext ověřování",
       "appsOrActionsSelectorInfoBallonText": "Aplikace, ke které se přistupuje, nebo akce uživatele",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "Připojení",
     "vPNDNSTriggers": "Nastavení DNS",
     "vPNIKEv2": "Nastavení IKEv2",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "Proxy",
     "vPNSplitTunneling": "Dělené tunelové propojení",
     "vPNTrustedNetwork": "Detekce důvěryhodných sítí",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "Nastavení probuzení",
     "webContentFilter": "Filtr webového obsahu",
     "wiFi": "Wi-Fi",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "Všechny typy profilů",
     "workProfileOnly": "Jenom pracovní profil v osobním vlastnictví"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "Název skupiny nastavení"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "Dostupná opakovaně použitelná nastavení",
+      "Column": {
+        "displayName": "Skupina opakovaně použitelných nastavení"
+      },
+      "instanceHeader": "Konfigurovat nastavení",
+      "objectName": "Opakovaně použitelné nastavení",
+      "reusableSummary": "Počet nakonfigurovaných nastavení: {0}",
+      "reusableSummaryMultiple": "Počet nakonfigurovaných nastavení: {0}",
+      "ruleProperties": "Vlastnosti pravidla",
+      "searchBox": "Hledat opakovaně použitelná nastavení",
+      "selectCertificateFile": "Vyberte soubor certifikátu, který se nahrál jako opakovaně použitelné nastavení.",
+      "selectOneOrMoreDeviceControlToExclude": "Vyberte jednu nebo více opakovaně použitelných skupin nastavení, které chcete vyloučit do tohoto pravidla a profilu řízení zařízení. Pravidlo dědí všechny vlastnosti těchto skupin včetně změn provedených ve skupinách.",
+      "selectOneOrMoreDeviceControlToInclude": "Vyberte jednu nebo více opakovaně použitelných skupin nastavení, které chcete zahrnout do tohoto pravidla a profilu řízení zařízení. Pravidlo dědí všechny vlastnosti těchto skupin včetně změn provedených ve skupinách.",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "Nastavit opakovaně použitelná nastavení"
+        }
+      },
+      "selectScript": "Vyberte skript, který chcete přidat do tohoto vlastního nastavení dodržování předpisů.",
+      "Subtitle": {
+        "firewall": "Vyberte jednu nebo více opakovaně použitelných skupin nastavení, které chcete zahrnout do tohoto pravidla a profilu brány firewall. Pravidlo dědí všechny vlastnosti těchto skupin včetně změn provedených ve skupinách."
+      },
+      "title": "Vybrat opakovaně použitelná nastavení (Preview)"
+    },
+    "wizardTitle": "Konfigurovat opakovaně použitelná nastavení"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "Skupiny správců",
     "RoleAssignmentAdminDesc": "Uživatelé ze skupiny správců jsou správci přiřazení k této roli",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "Ochrana účtu",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "Všechna zařízení",
     "antivirus": "Antivirus",
     "antivirusReporting": "Vytváření sestav antivirové ochrany (Preview)",
@@ -7958,7 +8007,7 @@
     "edgeAllowSearchEngineCustomizationName": "Povolit změny vyhledávacího webu",
     "edgeAllowStartPagesModificationDescription": "Uživatelé můžou měnit domovské stránky. Pokud jim chcete úpravy těchto stránek zakázat, vyberte Ne.",
     "edgeAllowStartPagesModificationName": "Umožnit uživateli změnit Domovské stránky",
-    "edgeBlockCompatibilityListDescription": "Tento seznam od Microsoftu pomáhá Edgi správně zobrazovat weby se zn��mými problémy s kompatibilitou. Pokud ho chcete zablokovat, nastavte Ne.",
+    "edgeBlockCompatibilityListDescription": "Tento seznam od Microsoftu pomáhá Edgi správně zobrazovat weby se známými problémy s kompatibilitou. Pokud ho chcete zablokovat, nastavte Ne.",
     "edgeBlockCompatibilityListName": "Povolit seznam kompatibility Microsoftu",
     "edgeBlockFullScreenModeDescription": "Celoobrazovkový režim je povolený. Pokud chcete možnost přejít do tohoto režimu zakázat, vyberte Ne.",
     "edgeBlockFullScreenModeName": "Povolit celoobrazovkový režim",
@@ -9155,7 +9204,7 @@
     "localSecurityOptionsDoNotStoreLANManagerHashValueOnNextPasswordChangeDesc": "Toto nastavení zabezpečení určuje, jestli se při další změně hesla uloží hodnota hash LAN Manageru pro nové heslo. Standardně se neukládá.",
     "localSecurityOptionsDoNotStoreLANManagerHashValueOnNextPasswordChangeName": "Ukládání hodnoty hash LAN Manageru při změně hesla",
     "localSecurityOptionselevateWithoutPromptingName": "Zvýšit oprávnění bez dotazu",
-    "localSecurityOptionsEnableAdministratorAccountDesc": "Toto nastavení zabezpečení ur��uje, jestli je místní účet Administrator povolený, nebo zakázaný.",
+    "localSecurityOptionsEnableAdministratorAccountDesc": "Toto nastavení zabezpečení určuje, jestli je místní účet Administrator povolený, nebo zakázaný.",
     "localSecurityOptionsEnableAdministratorAccountName": "Místní účet správce",
     "localSecurityOptionsEnableGuestAccountDesc": "Toto nastavení zabezpečení určuje, jestli je účet Guest povolený, nebo zakázaný.",
     "localSecurityOptionsEnableGuestAccountName": "Účet Guest",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "VPN přes mobilní síť",
     "vpnPerApp": "VPN pro jednotlivé aplikace",
     "vPNPerAppDescription": "Když uživatelé začnou používat vybrané aplikace, přenos se bude automaticky směrovat prostřednictvím připojení sítě VPN, pokud je připojení nakonfigurované jako trvalé nebo je uživatel spustil ručně.",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "Adresa proxy serveru (plně kvalifikovaný hostitel nebo IP adresa)",
     "vPNPolicyAddressName": "Adresa",
     "vPNPolicyAssociatedAppsDescription": "Aplikace, které tady přidáte, budou automaticky spouštět toto připojení VPN.",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "Tunnel zařízení",
     "vPNPolicyExcludedDomainsUrlsDescription": "Seznam domén, které můžou obejít síť VPN, když se aktivuje VPN pro jednotlivé aplikace. Platí pro iOS 14 a novější.",
     "vPNPolicyExcludedDomainsUrlsName": "Vyloučené domény",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "Pravidla tabulky zásad překladu IP adres (NRPT) definují, jak služba DNS překládá IP adresy, když je připojená k síti VPN. Jednotlivé řádky tabulky určují doménu a přípony DNS nebo webový proxy server, které se mají použít pro překlad dané domény.",
     "vPNPolicyNameResolutionPolicyTableRulesName": "Pravidla tabulky zásad překladu IP adres (NRPT)",
     "vPNPolicyNetworkTrafficRulesDescription": "Důležité upozornění: Když přidáte pravidla sítě, omezí se připojení VPN pouze na zadaná pravidla.\r\n     Když přidáte pravidla přenosů, nezapomeňte přidat pravidlo pro zachytávání veškerého přenosu, které je nejméně restriktivní, abyste předešli problémům s VPN.",
@@ -11792,18 +11846,22 @@
     "vPNServerExample": "např. Podniková síť VPN pro koncové uživatele",
     "vPNServerList": "Seznam serverů",
     "vPNServerListExample": "Popis serveru, IP adresa nebo plně kvalifikovaný název domény (například Podniková síť VPN, 10.0.0.1) (například VPN jen pro aplikace, vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "Aplikace v tomto seznamu jsou vyloučené z používání tunelu VPN. Jejich provoz vždy obchází síť VPN a přistupuje k síti přímo bez ohledu na stav připojení VPN. Aplikace, které nejsou v tomto seznamu, musí při připojení používat síť VPN a jsou blokovány, pokud není síť VPN k dispozici.",
     "vpnStrictTunnelBypassAppsName": "Povolit těmto aplikacím obejít striktní režim tunelu",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "Aplikace pracovního profilu v tomto seznamu jsou vyloučené z používání tunelu VPN. Jejich provoz vždy obchází síť VPN a přistupuje k síti přímo bez ohledu na stav připojení VPN. Aplikace pracovního profilu, které nejsou v tomto seznamu, musí při připojení používat síť VPN a zablokují se, když síť VPN není dostupná.",
     "vpnStrictTunnelModeDescription": "Když je tato možnost povolená, veškerý síťový provoz je nucen procházet tunelem VPN. Pokud se připojení k síti VPN nedá navázat, veškerý síťový provoz na zařízení se zablokuje. Aplikace přidané do seznamu vyloučení vždy obcházejí síť VPN a připojují se k síti přímo, i když je připojená síť VPN.",
     "vpnStrictTunnelModeName": "Striktní režim tunelu",
     "vpnStrictTunnelModeWorkProfileDescription": "Když je tato možnost povolená, veškerý síťový provoz pracovního profilu se vynutí přes tunel VPN. Pokud se nepodaří navázat připojení k síti VPN, síťový provoz pracovního profilu se zablokuje. Aplikace přidané do seznamu vyloučení vždy obcházejí síť VPN a připojují se k síti přímo, i když je připojená síť VPN. Osobních aplikací a provozu mimo pracovní profil se to netýká.",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "Vzhledem k tomu, že WIP definuje zásady a seznamy aplikací, není třeba při výběru WIP přidávat další pravidla síťového přenosu, pokud to nevyžaduje konkrétní nastavení.",
     "vPNWipOrAppsName": "Přidružit WIP nebo aplikace k této síti VPN",
     "wakeOnLANName": "Wake on LAN",
     "wakeOnPowerName": "Probuzení při napájení",
     "wakeScreenWhenSomeoneInRoomName": "Probudit obrazovku, když je někdo v místnosti",
-    "wallpaperDisplayLocationDescription": "Umístění, kde se bude zobrazovat tapeta. Pokud chcete uživatelům zablokovat možnost změnit tapetu, p��ejděte na Omezení zařízení > Obecné.",
+    "wallpaperDisplayLocationDescription": "Umístění, kde se bude zobrazovat tapeta. Pokud chcete uživatelům zablokovat možnost změnit tapetu, přejděte na Omezení zařízení > Obecné.",
     "wallpaperDisplayLocationHomeScreenOption": "Domovská obrazovka",
     "wallpaperDisplayLocationLockScreenAndHomeScreenOption": "Zamykací a domovská obrazovka",
     "wallpaperDisplayLocationLockScreenOption": "Zamykací obrazovka",
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "Přehled pro Cloud PC",
       "cloudPCSettings": "Nastavení Cloud PC",
       "monitorCloudPCs": "Monitorovat cloudové počítače (náhled)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "Zřídit Cloud PC",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Monitorování Windows 365 (Preview)",
       "windows365Reports": "Sestavy Windows 365"
     },

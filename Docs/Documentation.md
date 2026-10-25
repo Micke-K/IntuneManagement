@@ -252,7 +252,10 @@ Start-IMGraphBulkDocumentation -OutputFormat html -PolicyGroup Compliance -Langu
 A policy is documented by the first of these that claims it:
 
 1. A **handler** for its exact `@odata.type` (Conditional Access, Named Locations,
-   Scope Tags, Role Definitions, Policy Sets, Kiosk, custom OMA-URI, ...).
+   Scope Tags, Role Definitions, Policy Sets, Kiosk, custom OMA-URI, Reusable Settings, ...).
+   Reusable settings (firewall dynamic keyword addresses, Device Control groups, the
+   Linux compliance script) are walked against the schema Graph publishes for them, so
+   each list of items comes out as a table with the portal's column names.
 2. An **input provider**: Settings Catalog policies walk their setting definitions;
    administrative templates their definition values; endpoint security intents their
    templates; Linux compliance its settings; and the profile providers use the

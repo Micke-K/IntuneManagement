@@ -491,6 +491,126 @@ function Add-DocumentationDefenderFirewallSettings {
     }
 }
 
+function Get-DocumentationFirewallRuleHeader {
+    param([hashtable]$Meta, [string]$EntityKey)
+    $text = if ($Meta[$EntityKey].nameResourceKey) { Get-LanguageString "SettingDetails.$($Meta[$EntityKey].nameResourceKey)" }
+    if ($text) { $text } else { $EntityKey }
+}
+
+# Option label(s) for a firewall rule value. Flag enums ('private,public') map
+# each part and join them with the property separator.
+function Get-DocumentationFirewallRuleOption {
+    param([hashtable]$Meta, [string]$EntityKey, $Value, [string]$Separator)
+    $labels = foreach ($part in ("$Value" -split ',')) {
+        $part = $part.Trim()
+        if (-not $part) { continue }
+        $option = @($Meta[$EntityKey].options) | Where-Object { "$($_.value)" -eq $part } | Select-Object -First 1
+        $text = if ($option.nameResourceKey) { Get-LanguageString "SettingDetails.$($option.nameResourceKey)" }
+        if ($text) { $text } else { $part }
+    }
+    return (@($labels) -join $Separator)
+}
+
+# Endpoint Protection firewall rules. The portal metadata marks the rules table and
+# every column enabled=false (rules are edited in a separate pane), so SkipDisabled
+# dropped the row, and the generic table walk left the synthetic columns
+# (application, protocol, ports, addresses) empty. Emit one enabled row whose
+# FullValueTable has a line per rule, keeping only the columns some rule sets.
+function Add-DocumentationFirewallRules {
+    param($Obj, $Prop, [DocumentationContext]$Context)
+
+    $rowProp = [PSCustomObject]@{
+        nameResourceKey        = 'firewallRules'
+        descriptionResourceKey = 'firewallCreateRules'
+        entityKey              = $Prop.entityKey
+        dataType               = $Prop.dataType
+        category               = $Prop.category
+        enabled                = $true
+    }
+    $rules = @($Obj."$($Prop.entityKey)" | Where-Object { $null -ne $_ })
+    if ($rules.Count -eq 0) {
+        Add-PropertyInfo $rowProp $null
+        return
+    }
+
+    # Column metadata by entityKey, including the port settings nested under the
+    # protocol options' children.
+    $meta = @{}
+    $pending = [System.Collections.Generic.Queue[object]]::new()
+    foreach ($column in @($Prop.columns)) { if ($column.metadata) { $pending.Enqueue($column.metadata) } }
+    while ($pending.Count -gt 0) {
+        $setting = $pending.Dequeue()
+        if ($setting.entityKey -and -not $meta.ContainsKey($setting.entityKey)) { $meta[$setting.entityKey] = $setting }
+        foreach ($option in @($setting.options)) {
+            foreach ($child in @($option.children)) { if ($child) { $pending.Enqueue($child) } }
+        }
+    }
+
+    $sep           = $Context.PropertySeparator
+    $notConfigured = Get-LanguageString 'SettingDetails.notConfigured'
+    $appKey        = 'firewallRuleSyntheticApplicationKey'
+    $protocolKey   = 'firewallRuleSyntheticProtocolKey'
+    $columnKeys    = @('displayName', 'description', 'trafficDirection', 'action', 'profileTypes', $appKey, $protocolKey,
+                       'firewallRuleSyntheticLocalPortsKey', 'firewallRuleSyntheticRemotePortsKey',
+                       'firewallRuleSyntheticLocalAddressesKey', 'firewallRuleSyntheticRemoteAddressesKey',
+                       'interfaceTypes', 'localUserAuthorizations')
+    $usedKeys = @{ displayName = $true }
+
+    $ruleCells = @(foreach ($rule in $rules) {
+        $cells = @{ displayName = $rule.displayName; description = $rule.description; localUserAuthorizations = $rule.localUserAuthorizations }
+        if ($rule.description) { $usedKeys.description = $true }
+        if ($rule.localUserAuthorizations) { $usedKeys.localUserAuthorizations = $true }
+
+        foreach ($key in 'trafficDirection', 'action', 'profileTypes', 'interfaceTypes') {
+            if ($null -ne $rule.$key -and "$($rule.$key)" -notin @('', 'notConfigured')) {
+                $cells[$key] = Get-DocumentationFirewallRuleOption $meta $key $rule.$key $sep
+                $usedKeys[$key] = $true
+            }
+            else { $cells[$key] = $notConfigured }
+        }
+
+        # The application option values are the rule property names.
+        $apps = foreach ($appProp in 'packageFamilyName', 'filePath', 'serviceName') {
+            if ($rule.$appProp) { '{0}: {1}' -f (Get-DocumentationFirewallRuleOption $meta $appKey $appProp $sep), $rule.$appProp }
+        }
+        if (@($apps).Count -gt 0) { $cells[$appKey] = @($apps) -join $sep; $usedKeys[$appKey] = $true }
+        else { $cells[$appKey] = Get-DocumentationFirewallRuleOption $meta $appKey 'all' $sep }
+
+        # Graph stores the IANA protocol number; the portal offers Any / TCP (6) / UDP (17) / Custom.
+        $protocol = $rule.protocol
+        if ($null -eq $protocol) { $cells[$protocolKey] = Get-DocumentationFirewallRuleOption $meta $protocolKey 'any' $sep }
+        else {
+            $usedKeys[$protocolKey] = $true
+            $cells[$protocolKey] = if ($protocol -eq 6) { Get-DocumentationFirewallRuleOption $meta $protocolKey 'TCP' $sep }
+                                   elseif ($protocol -eq 17) { Get-DocumentationFirewallRuleOption $meta $protocolKey 'UDP' $sep }
+                                   else { '{0}: {1}' -f (Get-DocumentationFirewallRuleOption $meta $protocolKey 'customProtocol' $sep), $protocol }
+        }
+
+        # Ports only apply to TCP/UDP; addresses always default to "Any address".
+        foreach ($pair in @(@('firewallRuleSyntheticLocalPortsKey', 'localPortRanges', ($protocol -in 6, 17)),
+                            @('firewallRuleSyntheticRemotePortsKey', 'remotePortRanges', ($protocol -in 6, 17)),
+                            @('firewallRuleSyntheticLocalAddressesKey', 'localAddressRanges', $true),
+                            @('firewallRuleSyntheticRemoteAddressesKey', 'remoteAddressRanges', $true))) {
+            $ranges = @($rule."$($pair[1])" | Where-Object { $_ })
+            if ($ranges.Count -gt 0) { $cells[$pair[0]] = $ranges -join $sep; $usedKeys[$pair[0]] = $true }
+            elseif ($pair[2]) { $cells[$pair[0]] = Get-DocumentationFirewallRuleOption $meta $pair[0] 'all' $sep }
+            else { $cells[$pair[0]] = '' }
+        }
+        $cells
+    })
+
+    $keys = @($columnKeys | Where-Object { $usedKeys[$_] })
+    $headers = @{}
+    foreach ($key in $keys) { $headers[$key] = Get-DocumentationFirewallRuleHeader $meta $key }
+    $table = foreach ($cells in $ruleCells) {
+        $row = [ordered]@{}
+        foreach ($key in $keys) { $row[$headers[$key]] = $cells[$key] }
+        [PSCustomObject]$row
+    }
+    $value = @(foreach ($cells in $ruleCells) { @(foreach ($key in $keys) { $cells[$key] }) -join $sep }) -join $Context.ObjectSeparator
+    Add-PropertyInfo $rowProp $value $rules -TableValue @($table)
+}
+
 function Initialize-FeatureUpdateSyntheticProperties {
     param($Obj, [DocumentationContext]$Context)
 
@@ -1257,6 +1377,10 @@ function Get-DocumentationCustomProfileValue {
             Invoke-TranslateOption $TopObj $Prop | Out-Null
             return $false
         }
+        if ($Prop.entityKey -eq 'firewallRules') {
+            Add-DocumentationFirewallRules $Obj $Prop $Context
+            return $false
+        }
     }
     if ($type -eq '#microsoft.graph.windowsHealthMonitoringConfiguration' -and $Prop.entityKey -eq 'configDeviceHealthMonitoringScope' -and ($Prop.options | Where-Object value -EQ 'healthMonitoring')) { return $false }
     if ($type -eq '#microsoft.graph.windows10VpnConfiguration') {
@@ -1274,13 +1398,23 @@ function Get-DocumentationCustomProfileValue {
 function Finalize-DocumentationCustomObject {
     param($Obj, [DocumentationContext]$Context)
     if ($Obj.'@odata.type' -ne '#microsoft.graph.windows10EndpointProtectionConfiguration') { return }
-    foreach ($categoryId in @('bitLocker','xboxServices')) {
+    # Drop a whole category when none of its rows differs from its default. Graph
+    # returns enum defaults for settings nobody touched (e.g. Xbox services 'manual',
+    # lanManagerAuthenticationLevel 'lmAndNltm') and the portal hides them. Done per
+    # category rather than per row: a default value is still shown when something
+    # else in its category is configured.
+    foreach ($categoryId in @('bitLocker','xboxServices','defenderLocalSecurityOptions')) {
         $category = Get-LanguageString "Category.$categoryId"
         if (-not $category) { continue }
         $rows = @($Context.SettingsData | Where-Object Category -EQ $category)
         $configured = $rows | Where-Object {
             if ($categoryId -eq 'bitLocker' -and $_.EntityKey -like 'startupAuthenticationTpm*') { return $false }
-            return $null -ne $_.RawValue -and $_.RawValue -ne $_.DefaultValue
+            $raw = $_.RawValue
+            if ($null -eq $raw -or "$raw" -in @('', 'notConfigured')) { return $false }
+            if ($raw -is [array]) { return $raw.Count -gt 0 }
+            # String compare: -ne coerces to the left operand's type, so a boolean
+            # RawValue against a string default would compare as booleans.
+            return "$raw" -ne "$($_.DefaultValue)"
         } | Select-Object -First 1
         if ($configured) { continue }
         foreach ($row in $rows) { [void]$Context.SettingsData.Remove($row) }

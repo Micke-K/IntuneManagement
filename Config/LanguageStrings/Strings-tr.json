@@ -759,6 +759,9 @@
     "agentIdentitiesSelectInfo": "İlkeyi belirli aracı kimliklerine uygula.",
     "agents": "Aracılar",
     "agentSessionRiskInfoBalloonAriaLabelAccessibility": "Aracı oturumu risk düzeyleri hakkında ek bilgiler",
+    "agentsLicenseInfoBalloonAriaLabel": "Aracılar lisans gereksinimleri",
+    "agentsLicenseRequiredAriaLabel": "Aracılar. Kiracınız, aracıları hedeflemek için gereken lisans koşullarını karşılamıyor.",
+    "agentsLicenseRequiredTooltip": "Kiracınız, aracıları hedeflemek için gereken lisans koşullarını karşılamıyor.",
     "agentsLicenseText": "Bu ilkeyi düzenlemek için bir Microsoft Agent 365 veya Microsoft 365 E7 lisansı gerekir.",
     "agentsLicensingEnforcementDescription": "Yakında, aracılar için Koşullu Erişim kullanmak üzere Microsoft Agent 365 lisansı gerekecek.",
     "agentsLicensingEnforcementLearnMoreAriaLabel": "Aracılar için yaklaşan lisans zorlaması hakkında daha fazla bilgi edinin",
@@ -1397,8 +1400,9 @@
     "menuItemNamedNetworks": "Adlandırılmış konumlar",
     "menuItemPhasedRollout": "Aşamalı olarak piyasaya çıkarma",
     "menuItemPolicies": "İlkeler",
-    "menuItemPoliciesV2": "İlkeler V2 (Önizleme)",
+    "menuItemPoliciesV2": "İlke planları (Önizleme)",
     "menuItemPolicySettings": "Ayarlar (Önizleme)",
+    "menuItemSecurityDefaults": "Güvenlik Varsayılanları",
     "menuItemTermsOfUse": "Kullanım koşulları",
     "microsoftAdminPortals": "Microsoft Yönetim Portalları",
     "microsoftAdminPortalsInfoBox": "Yönetim portalları Microsoft 365 yönetim merkezi, Exchange yönetim merkezi, Azure portal, Microsoft Entra yönetim merkezi ve diğerlerinden oluşur.",
@@ -1734,8 +1738,10 @@
         },
         "AuthenticationFlows": {
           "Selector": {
+            "anyAuthenticationFlow": "Tüm kimlik doğrulaması akışları",
             "authenticationTransfer": "Kimlik doğrulaması aktarımı",
             "deviceCodeFlow": "Cihaz kod akışı",
+            "excludeDeviceCodeFlow": "Cihaz kod akışını dışla",
             "infoBalloon": "Kuruluşunuzun belirli kimlik doğrulaması ve yetkilendirme protokollerini ve izinlerini kullanma yöntemi",
             "label": "Kimlik doğrulaması akışları",
             "multiple": "\"{0}\" ve \"{1}\"",
@@ -2191,7 +2197,8 @@
     "RiskRemediationValidation": {
       "mustNotSelect": "Risk Düzeltme Gerektir seçeneğini etkinleştirmek için {0} ayarını seçmemeniz gerekir.",
       "mustSelect": "Risk Düzeltme Gerektir seçeneğini etkinleştirmek için {0} ayarını seçmeniz gerekir.",
-      "xOrY": "{0} veya {1}"
+      "xOrY": "{0} veya {1}",
+      "xYOrZ": "{0}, {1} ya da {2}"
     },
     "SamlReauth": {
       "Filter": {
@@ -2356,13 +2363,18 @@
       "SignInFrequency": {
         "actorInvalid": "\"Her zaman oturum açma sıklığı\" oturum denetimi \"{0}\" ile kullanılamaz",
         "appWarning": "Şu anda seçili uygulamalardan bazıları “Oturum açma sıklığı” için “Her seferinde” seçeneğiyle uyumlu değil",
-        "everytime": "Her zaman (5 dakikalık tolerans)",
+        "everytime": "Her zaman",
         "EverytimeCA": {
           "secondaryOnly": "Yalnızca ikincil kimlik doğrulama yöntemleri"
         },
-        "everytimeInfoBalloon": "“Her seferinde” seçeneği, bu ilke kapsamındaki bir uygulamada her oturum açma denemesinde değerlendirilir.",
-        "everyTimeStrict": "Her zaman (Katı - 10 saniyelik tolerans)",
-        "everyTimeStrictInfoBalloon": "İstem toleransı, aşırı istemleri ve döngüleri önlemek için kullanıcılardan ne sıklıkta yeniden kimlik doğrulamalarının istenebileceğini sınırlar.",
+        "everytimeInfoBalloon": "'Her zaman' denetiminin kimlik doğrulaması tazeliği için 5 dakikalık bir geçerlilik süresi vardır.",
+        "everytimeInfoBalloonAriaLabel": "Her zaman seçeneği hakkında daha fazla bilgi",
+        "everyTimeStrict": "Her zaman katı (önizleme)",
+        "everyTimeStrictInfoBalloon": "Her zaman katı (önizleme) seçeneği, kimlik doğrulaması tazeliği için 10 saniyelik bir geçerlilik süresine sahiptir ve bu denetimle çalışacak şekilde yapılandırılmış uygulamalarla kullanılmak üzere tasarlanmıştır.",
+        "everyTimeStrictInfoBalloonAriaLabel": "Her zaman katı (önizleme) seçeneği hakkında daha fazla bilgi",
+        "everyTimeStrictWarning": "Her zaman katı (önizleme) denetimi, bu denetimi destekleyen belirli uygulamalar için tasarlanmıştır. 'Her zaman katı (önizleme)' denetimini Tüm uygulamalar için uygulamanızı önermiyoruz. Bunu yapmak, kullanıcılarınızın üretkenliğini etkileyen ve kimlik doğrulaması yorgunluğuna neden olan beklenmedik kimlik doğrulaması istemlerine yol açabilir.",
+        "everyTimeStrictWarningLearnMoreAriaLabel": "Her zaman katı (önizleme) ile kimlik doğrulaması yorgunluğunu önleme hakkında daha fazla bilgi edinin",
+        "everyTimeStrictWarningTitle": "Kimlik doğrulaması yorgunluğunu önleyin",
         "periodic": "Düzenli yeniden kimlik doğrulama",
         "reqMFAWarning": "“Yalnızca ikincil kimlik doğrulama yöntemleri” kullanılırken “Çok faktörlü kimlik doğrulaması gerektir” seçilmelidir",
         "selectorInvalid": "“Parola değişikliği gerektir” izin verme türü seçiliyken yalnızca “her seferinde oturum açma sıklığı” oturum denetimi kullanılabilir",
@@ -2404,7 +2416,7 @@
           },
           "daysOption": "Gün",
           "everytime": "Her seferinde",
-          "everyTimeStrict": "Her zaman (Katı)",
+          "everyTimeStrict": "Her zaman katı (önizleme)",
           "help": "Kullanıcının bir kaynağa erişmeye çalışırken tekrar oturum açmasının istenmesi için geçmesi gereken süre. Varsayılan ayar 90 günlük bir hareketli zaman aralığıdır, yani en az 90 gün boyunca makinelerinde etkin olmayan kullanıcılardan, bu süre sonunda bir kaynağa ilk kez erişmeyi denediklerinde kimliklerini yeniden doğrulamaları istenir.",
           "Hour": {
             "plural": "{0} saat",
@@ -2541,7 +2553,7 @@
       "accessRequirement2": "Düzey 2",
       "accessRequirement3": "Düzey 3",
       "accessRequirementsLabel": "Güvenli uygulama verilerine erişiliyor",
-      "accountRecovery": "Hesabı kurtar",
+      "accountRecovery": "Hesap ekleme ve kurtarma",
       "accountRecoveryInfoText": "Bu kullanıcı eylemi için kimlik doğrulama izninin denetlenmesi gerekir. Lütfen bir kimlik doğrulama profili seçin.",
       "appsActionsAuthTitle": "Bulut uygulamaları, eylemleri veya kimlik doğrulaması bağlamı",
       "appsOrActionsSelectorInfoBallonText": "Erişilen uygulamalar veya kullanıcı eylemleri",
@@ -4029,9 +4041,12 @@
     "vPNConnectivity": "Bağlantı",
     "vPNDNSTriggers": "DNS Ayarları",
     "vPNIKEv2": "IKEv2 ayarları",
+    "vPNOnDemand": "On-demand VPN rules",
+    "vPNPerApp": "Per-app VPN",
     "vPNProxy": "Proxy",
     "vPNSplitTunneling": "Bölünmüş Tünel",
     "vPNTrustedNetwork": "Güvenilen Ağ Algılama",
+    "vPNTunnelRouting": "VPN tunnel routing",
     "wakeSettings": "Uyandırma ayarları",
     "webContentFilter": "Web İçeriği Filtresi",
     "wiFi": "Wi-Fi",
@@ -5939,6 +5954,39 @@
     "workProfileAndDeviceOwner": "Tüm Profil Türleri",
     "workProfileOnly": "Yalnızca Kişilerin Sahipliğindeki İş Profili"
   },
+  "ReusableGroup": {
+    "Grid": {
+      "Column": {
+        "settingGroupName": "Ayar grubu adı"
+      }
+    },
+    "Picker": {
+      "availableSettingGroups": "Mevcut tekrar kullanılabilir ayarlar",
+      "Column": {
+        "displayName": "Tekrar kullanılabilir ayar grubu"
+      },
+      "instanceHeader": "Ayarları yapılandırın",
+      "objectName": "Tekrar kullanılabilir ayar",
+      "reusableSummary": "{0} ayar yapılandırıldı",
+      "reusableSummaryMultiple": "{0} ayar yapılandırıldı",
+      "ruleProperties": "Kural özellikleri",
+      "searchBox": "Tekrar kullanılabilir ayarları ara",
+      "selectCertificateFile": "Tekrar kullanılabilir ayar olarak karşıya yüklenen bir sertifika dosyası seçin.",
+      "selectOneOrMoreDeviceControlToExclude": "Bu Cihaz Denetimi kuralında ve profilinde dışlanacak bir veya birden fazla tekrar kullanılabilir ayar grubu seçin. Kural, bu gruplarda yapılan değişiklikler de dahil olmak üzere bu grupların tüm özelliklerini devralır.",
+      "selectOneOrMoreDeviceControlToInclude": "Bu Cihaz Denetimi kuralına ve profiline eklenecek bir veya birden fazla tekrar kullanılabilir ayar grubu seçin. Kural, bu gruplarda yapılan değişiklikler de dahil olmak üzere bu grupların tüm özelliklerini devralır.",
+      "Selector": {
+        "Button": {
+          "setReusableGroups": "Tekrar kullanılabilir ayarları belirle"
+        }
+      },
+      "selectScript": "Bu özel uyumluluk ayarına eklenecek betiği seçin.",
+      "Subtitle": {
+        "firewall": "Bu Güvenlik Duvarı kuralına ve profiline eklenecek bir veya birden fazla tekrar kullanılabilir ayar grubu seçin. Kural, bu gruplarda yapılan değişiklikler de dahil olmak üzere bu grupların tüm özelliklerini devralır."
+      },
+      "title": "Yeniden kullanılabilir ayarları seçin (önizleme)"
+    },
+    "wizardTitle": "Tekrar kullanılabilir ayarları yapılandır"
+  },
   "RoleAssignment": {
     "RoleAssignmentAdmin": "Yönetici Grupları",
     "RoleAssignmentAdminDesc": "Yönetici grubu kullanıcıları, bu role atanmış olan yöneticilerdir",
@@ -6006,6 +6054,7 @@
   },
   "SecurityTemplate": {
     "accountProtection": "Hesap koruması",
+    "agentContainment": "Agent containment (Preview)",
     "allDevices": "Tüm cihazlar",
     "antivirus": "Antivirüs",
     "antivirusReporting": "Virüsten Koruma Bildirimi (Önizleme)",
@@ -6325,9 +6374,9 @@
     "appManagement": "Uygulama Yönetimi",
     "appManagementMSIAllowUserControlOverInstallDesc": "Bu ilke ayarı, kullanıcıların genelde yalnızca sistem yöneticileri tarafından kullanılabilen yükleme seçeneklerini değiştirmesine izin verir. Windows Installer'ın güvenlik özellikleri, kullanıcıların genel olarak dosyaların yükleneceği dizinin belirtilmesi gibi sistem yöneticileri için ayrılmış yükleme seçeneklerini değiştirmesini önler. Etkinleştirilirse normal durumlarda güvenlik ihlali nedeniyle durdurulacak yüklemelerin devam etmesine izin verilir. Varsayılan: devre dışı.",
     "appManagementMSIAllowUserControlOverInstallName": "Yüklemeler üzerinde kullanıcı denetimi",
-    "appManagementMSIAlwaysInstallWithElevatedPrivilegesDesc": "Bu ilke ayarı, Windows Installer'ı sisteme herhangi bir program yüklerken yükseltilmiş izinleri kullanmak üzere yönlendirir. Bu ilke ayarını etkinleştirirseniz ayrıcalıklar tüm programlara uzatılır. Bu kullanıcının yüksek oranda korunan bilgisayarlardaki dizinler dahil olmak üzere görüntüleme veya değiştirme izni olmayabilecek dizinlere erişim gerektiren programları yüklemesini sağlar. Varsayılan: devre dışı.",
+    "appManagementMSIAlwaysInstallWithElevatedPrivilegesDesc": "Bu ilke ayarı, Windows Installer'ı sisteme herhangi bir program yüklerken yükseltilmiş izinleri kullanmak üzere yönlendirir. Bu ilke ayarını etkinleştirirseniz ayrıcalıklar tüm programlara uzatılır. Bu kullanıcının yüksek oranda korunan bilgisayarlardaki dizinler dahil olmak üzere görünt��leme veya değiştirme izni olmayabilecek dizinlere erişim gerektiren programları yüklemesini sağlar. Varsayılan: devre dışı.",
     "appManagementMSIAlwaysInstallWithElevatedPrivilegesName": "Yükseltilmiş ayrıcalıklara sahip uygulamaları yükleyin",
-    "appManagementPackageFamilyNamesToLaunchAfterLogOnDescription": "Bu ilke, BT y��neticisine kullanıcıların cihazda oturum açtıktan sonra çalıştırabileceği uygulamaların bir listesini belirtme olanağı sağlar.\r\n    Bu ilkenin çalışması için Windows uygulamalarının bildirimlerinde başlatma görevini kullanacağını bildirmesi gerekir",
+    "appManagementPackageFamilyNamesToLaunchAfterLogOnDescription": "Bu ilke, BT yöneticisine kullanıcıların cihazda oturum açtıktan sonra çalıştırabileceği uygulamaların bir listesini belirtme olanağı sağlar.\r\n    Bu ilkenin çalışması için Windows uygulamalarının bildirimlerinde başlatma görevini kullanacağını bildirmesi gerekir",
     "appManagementPackageFamilyNamesToLaunchAfterLogOnName": "Başlangıç uygulamaları",
     "appManagementPackageFamilyNamesToLaunchAfterLogOnPlaceholder": "Windows uygulamaları Paket Ailesi Adlarının virgülle ayrılmış listesini girin",
     "appManagementUninstallBuiltInAppsDesc": "Yerleşik Windows uygulamalarından oluşan sabit listenin kaldırılıp kaldırılmayacağını belirtir.",
@@ -9846,7 +9895,7 @@
     "newWipeRequestBladeTitle": "Temizleme isteği oluştur",
     "newWipeRequestCommandText": "Temizleme isteği oluştur",
     "newWipeRequestNotificationText": "Silme isteği gönderiliyor",
-    "nfcBlockedDescription": "Cihazların diğer NFC özellikli cihazlarla eşleştirilmesini önlemek için NFC'yi devre dış�� bırakın. Sürüm 14.2 veya sonrasını çalıştıran iOS/iPadOS cihazları için kullanılabilir.",
+    "nfcBlockedDescription": "Cihazların diğer NFC özellikli cihazlarla eşleştirilmesini önlemek için NFC'yi devre dışı bırakın. Sürüm 14.2 veya sonrasını çalıştıran iOS/iPadOS cihazları için kullanılabilir.",
     "nfcBlockedName": "Yakın alan iletişimini (NFC) devre dışı bırak",
     "nfcBlockOutgoingBeamDescription": "Uygulamalardan veri paylaşmak için NFC kullanımını engelleyin.",
     "nfcBlockOutgoingBeamName": "NFC kullanarak veri paylaşımı",
@@ -11689,6 +11738,7 @@
     "vpnOverCellularName": "Hücresel ağ üzerinden VPN",
     "vpnPerApp": "Uygulama başına VPN",
     "vPNPerAppDescription": "Kullanıcılar seçilen uygulamaları kullanmaya başladığında, bağlantı Her Zaman Açık olarak yapılandırıldıysa veya bağlantı kullanıcı tarafından el ile başlatılırsa trafik, otomatik olarak VPN bağlantısı üzerinden yönlendirilir.",
+    "vPNPerAppRoutingExclusionWarning": "Per-app VPN configurations use application-based routing rules and cannot be configured with VPN tunnel routing properties (Include all networks or Exclude local networks).",
     "vPNPolicyAddressDescription": "Proxy sunucusu adresi (tam konak veya IP adresi).",
     "vPNPolicyAddressName": "Adres",
     "vPNPolicyAssociatedAppsDescription": "Buraya eklenen uygulamalar, otomatik olarak bu VPN bağlantısını kullanmaya başlar.",
@@ -11725,6 +11775,10 @@
     "vPNPolicyEnableDeviceTunnelName": "Cihaz Tüneli",
     "vPNPolicyExcludedDomainsUrlsDescription": "Uygulama başına VPN etkinleştirildiğinde VPN'yi atlayabilecek etki alanlarının listesi. iOS 14 ve üzeri sürümler için geçerlidir",
     "vPNPolicyExcludedDomainsUrlsName": "Dışlanan Etki Alanları",
+    "vPNPolicyExcludeLocalNetworksDescription": "Routes all local network traffic outside the VPN, such as AirPlay, AirDrop, and CarPlay.",
+    "vPNPolicyExcludeLocalNetworksName": "Exclude local networks",
+    "vPNPolicyIncludeAllNetworksDescription": "Routes all traffic through the VPN.",
+    "vPNPolicyIncludeAllNetworksName": "Include all networks",
     "vPNPolicyNameResolutionPolicyTableRulesDescription": "Ad Çözümleme İlkesi tablosu (NRPT) kuralları, VPN'e bağlanıldığında DNS'in adları nasıl çözümlediğini tanımlar. Tablodaki her bir satır, bir etki alanını ve bu etki alanını çözümlemek için gereken DNS sonekleri ile web proxy sunucusunu belirtir.",
     "vPNPolicyNameResolutionPolicyTableRulesName": "Ad Çözümleme İlkesi tablosu (NRPT) kuralları",
     "vPNPolicyNetworkTrafficRulesDescription": "Dikkat: Ağ kuralları eklendiğinde, VPN bağlantısı yalnızca belirtilen kurallarla sınırlandırılır.\r\n     Trafik kuralları eklerken, VPN sorunlarını önlemek için daha az kısıtlayıcı olan bir genel kural eklediğinizden emin olun.",
@@ -11792,12 +11846,16 @@
     "vPNServerExample": "ör. son kullanıcılar için Şirket VPN'i",
     "vPNServerList": "Sunucu listesi",
     "vPNServerListExample": "Sunucu Açıklaması, IP Adresi veya FQDN (ör. Şirket çapında VPN'i, 10.0.0.1) (ör. Salt Uygulama VPN'i, vpn.contoso.com)",
+    "vpnSplitTunnelingRoutingWarning": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on macOS 11+, disable split tunneling and use VPN tunnel routing settings in the section below.",
+    "vpnSplitTunnelingRoutingWarningIos": "Using split tunneling together with VPN tunnel routing settings is not recommended. When split tunneling is enabled, it forces all traffic through the VPN at the system level and may override your configured routes. For route-based traffic control on iOS 14.2+, disable split tunneling and use VPN tunnel routing settings in the section below.",
     "vpnStrictTunnelBypassAppsDescription": "Bu listedeki uygulamalar VPN tüneli kullanımından dışlanır. Trafikleri her zaman VPN'yi atlar ve VPN bağlantı durumuna bakılmaksızın doğrudan ağa erişir. Bu listede olmayan uygulamalar VPN bağlıyken VPN'yi kullanmak zorundadır ve VPN kullanılamadığında engellenir.",
     "vpnStrictTunnelBypassAppsName": "Bu uygulamaların Katı Tünel Modu'nu atlamasına izin ver",
     "vpnStrictTunnelBypassAppsWorkProfileDescription": "Bu listedeki iş profili uygulamaları VPN tüneli kullanımından dışlanır. Trafikleri her zaman VPN'yi atlar ve VPN bağlantı durumuna bakılmaksızın doğrudan ağa erişir. Bu listede olmayan iş profili uygulamaları VPN bağlıyken VPN'yi kullanmak zorundadır ve VPN kullanılamadığında engellenir.",
     "vpnStrictTunnelModeDescription": "Etkinleştirildiğinde, tüm ağ trafiği zorunlu olarak VPN tünelinden geçer. VPN bağlantısı kurulamazsa, cihazda tüm ağ trafiği engellenir. Dışlama listesine eklenen uygulamalar VPN bağlı olsa bile her zaman VPN'yi atlar ve doğrudan ağa bağlanır.",
     "vpnStrictTunnelModeName": "Katı tünel modu",
     "vpnStrictTunnelModeWorkProfileDescription": "Etkinleştirildiğinde, tüm iş profili ağ trafiği zorunlu olarak VPN tünelinden geçer. VPN bağlantısı kurulamazsa, iş profili ağ trafiği engellenir. Dışlama listesine eklenen uygulamalar VPN bağlı olsa bile her zaman VPN'yi atlar ve doğrudan ağa bağlanır. Kişisel uygulamalar ve iş profili dışındaki trafik etkilenmez.",
+    "vpnTunnelRouting": "VPN tunnel routing",
+    "vpnTunnelRoutingDescription": "Route device network traffic through a VPN tunnel. Per-app VPN routing rules aren't used when device tunnel routing is configured, but on-demand VPN rules can still apply.",
     "vPNWipOrAppsDescription": "WIP, ilke ve uygulama listelerini tanımladığı için WIP seçildiğinde özellikle gerek olmadığı sürece ek ağ trafiği kuralları gerekli değildir.",
     "vPNWipOrAppsName": "WIP veya uygulamaları bu VPN ile ilişkilendir",
     "wakeOnLANName": "LAN'da Uyandırma",
@@ -13394,7 +13452,9 @@
       "cloudPCOverview": "Bulut PC Genel Bakış",
       "cloudPCSettings": "Bulut PC Ayarları",
       "monitorCloudPCs": "Bulut PC’leri izleyin (önizleme)",
+      "monitorCloudPCsPreview": "Monitor Cloud PCs (Preview)",
       "provisionCloudPCs": "Bulut PC'leri Sağla",
+      "windows365Agent": "Windows 365 Agent (Preview)",
       "windows365Monitoring": "Windows 365 izleme (önizleme)",
       "windows365Reports": "Windows 365 raporları"
     },

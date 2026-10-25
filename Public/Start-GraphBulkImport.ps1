@@ -51,7 +51,9 @@ function Start-GraphBulkImport {
         Start-GraphBulkImport -ImportFolder C:\IntuneExport -PolicyGroup DeviceConfiguration -Filter "Baseline"
 
     .OUTPUTS
-        PSCustomObject with summary statistics (Groups, Imported, Duration).
+        PSCustomObject with summary statistics (Groups, Imported, Updated, Replaced,
+        Skipped, PendingApproval, UnknownSelectors, Duration). PendingApproval counts
+        the writes Multi Admin Approval held for a second administrator.
     #>
     [CmdletBinding()]
     param(
@@ -111,7 +113,7 @@ function Start-GraphBulkImport {
     }
     if ($targetGroups.Count -eq 0) {
         Write-Log "Bulk import: no policy groups selected" 2
-        return [PSCustomObject]@{ Groups = 0; Imported = 0; UnknownSelectors = $unknownSelectors; Duration = $stopwatch.Elapsed }
+        return [PSCustomObject]@{ Groups = 0; Imported = 0; PendingApproval = 0; UnknownSelectors = $unknownSelectors; Duration = $stopwatch.Elapsed }
     }
 
     # Honour the ClearCacheBeforeExportImport setting (bit 4 = bulk import).
@@ -136,6 +138,8 @@ function Start-GraphBulkImport {
     $totalUpdated  = 0
     $totalReplaced = 0
     $totalSkipped  = 0
+    # Creates and updates Multi Admin Approval held: queued, not failed (#442).
+    $approvalsBefore = @(Get-MSGraphApprovalPending).Count
     # Ascending ImportOrder so dependencies import before their dependents.
     $orderedGroups = @($targetGroups | Sort-Object { ($_.PolicyTypes | Measure-Object ImportOrder -Minimum).Minimum })
     $groupTotal    = $orderedGroups.Count
@@ -216,9 +220,15 @@ function Start-GraphBulkImport {
         }
     }
 
+    $totalPendingApproval = @(Get-MSGraphApprovalPending).Count - $approvalsBefore
+    $finishedText = "Bulk import finished. $totalImported imported, $totalUpdated updated, $totalReplaced replaced, $totalSkipped skipped"
+    if ($totalPendingApproval -gt 0) {
+        $finishedText += ", $totalPendingApproval waiting for Multi Admin Approval"
+    }
+
     Write-Status $null
     Write-Log "****************************************************************"
-    Write-Log "Bulk import finished. $totalImported imported, $totalUpdated updated, $totalReplaced replaced, $totalSkipped skipped"
+    Write-Log $finishedText
     Write-Log "****************************************************************"
 
     return [PSCustomObject]@{
@@ -227,6 +237,7 @@ function Start-GraphBulkImport {
         Updated          = $totalUpdated
         Replaced         = $totalReplaced
         Skipped          = $totalSkipped
+        PendingApproval  = $totalPendingApproval
         UnknownSelectors = $unknownSelectors
         Duration         = $stopwatch.Elapsed
     }

@@ -547,6 +547,7 @@ function Invoke-MSGraphAPI {
 
                 if ($approvalInfo.IsApprovalPending) {
                     Write-Log "$Url - $($approvalInfo.Advice)" 2
+                    Add-MSGraphApprovalPending -Method $HttpMethod -Url $Url -ApprovalCode $approvalInfo.ApprovalCode
                 }
                 else {
                     if ($approvalInfo.Advice) { Write-Log $approvalInfo.Advice 2 }

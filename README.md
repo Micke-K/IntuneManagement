@@ -97,7 +97,8 @@ A custom app registration used for interactive sign-in must also allow
 `http://localhost` as a redirect URI, under *Mobile and desktop applications*: interactive
 sign-in runs in the system browser by default, and that is the only redirect a browser
 flow can use. Microsoft's Graph PowerShell application already allows it. See
-[Signing in](#signing-in).
+[Signing in](#signing-in). [Docs/CustomEntraApp.md](Docs/CustomEntraApp.md) walks through
+creating the registration and pointing the tool at it.
 
 ## Getting started
 
@@ -119,6 +120,18 @@ get - use `.\UI\Avalonia\Start-Avalonia.ps1` from PowerShell 7.
 ```sh
 ./Start-Avalonia.command    # double-click in Finder works too
 ```
+
+**Downloaded as a ZIP?** macOS blocks the launcher with *"Start-Avalonia.command" Not
+Opened - Apple could not verify it is free of malware*. That is expected: the files are
+not notarized by Apple. Clear the download flag on the whole folder once, then start it
+again:
+
+```sh
+xattr -dr com.apple.quarantine /path/to/IntuneManagement
+```
+
+A `git clone` is never flagged. Details and the System Settings alternative are in
+[Docs/CrossPlatform.md](Docs/CrossPlatform.md#macos-blocks-the-launcher).
 
 The launcher runs `pwsh` with a small startup hook so the GUI owns the process's main
 thread, which macOS requires. Do not import the module into an ordinary `pwsh` session
@@ -246,6 +259,29 @@ policies all work, and the sign-in picks up the browser session you already have
   `Set-IMSetting -Key UseSystemBrowser -Value $false`, and restart. Sign-in then uses the
   embedded window, or WAM if that is turned on. The system browser takes precedence over
   WAM when both are on.
+
+**Opening the window signed in as an app.** 3.x could start the UI with an app id and
+secret from `Start-WithApp.cmd`, and could save the secret in Settings, in clear text.
+4.0 never saves a secret. Sign in from PowerShell first, then open the window - it uses
+that sign-in:
+
+```powershell
+Import-Module .\IntuneManagement.psd1
+$secret = Get-Secret -Name IntuneAppSecret -AsPlainText    # from a vault, never from the script
+Connect-IMIntuneManagement -TenantId $tenantId -AppId $appId -Secret $secret
+Show-IMMainWindow
+```
+
+A certificate (`-Certificate <thumbprint>`) avoids the secret altogether. This works on
+Windows; on macOS the window has to be started by `Start-Avalonia.command`. More
+variants, including Azure Key Vault, are in
+[Docs/Examples.md](Docs/Examples.md#open-the-window-signed-in-as-an-app).
+
+**Government and sovereign clouds.** Pass `-Cloud` to `Connect-IMIntuneManagement`:
+`USGov` for GCC High, `USGovDOD` for DoD, `China` for 21Vianet. GCC (commercial) is
+`Public`, the default. For interactive sign-in, set **Settings > Authentication >
+Default cloud** instead. The 3.x parameters `-GraphEnvironment` and `-GCCType` still work
+but are deprecated and will be removed.
 
 A token acquired elsewhere can be passed directly with `-Token`. That is the only way to
 reach APIs Microsoft does not expose to public client applications (Inventory Policies,
@@ -477,6 +513,8 @@ How to drive each output, every option, and what each provider expects is in
   from a file instead of the registry.
 - [Docs/GraphBatching.md](Docs/GraphBatching.md) - what batching and parallelism do to a
   large export, and the two settings that control them.
+- [Docs/CustomEntraApp.md](Docs/CustomEntraApp.md) - creating your own Entra app registration
+  for interactive or unattended sign-in, and using it.
 - [Docs/EffectivePermissions.md](Docs/EffectivePermissions.md) - why a policy type is marked
   orange, and what the Permissions dialog reports.
 - [Docs/Compare.md](Docs/Compare.md), [Docs/BulkExport.md](Docs/BulkExport.md) - the compare

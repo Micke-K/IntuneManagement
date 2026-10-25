@@ -98,6 +98,23 @@ public class FirstLineConverter : IValueConverter
 # first line (capped at -MaxLength characters when that is above 0) and carries
 # the full text as a tooltip. Sorting and the grid filter still use the
 # underlying value: both read the binding path, not what is displayed.
+# The character cap (setting ObjectListMaxCellLength) exists for long free-text
+# cells - a store app description - so one value cannot widen its column until
+# the others leave the screen. It must never apply to the column that identifies
+# the row: with the default cap of 50, every policy name in a list that shares a
+# long prefix ended in an ellipsis, whatever the column width (issue #437). The
+# Name column is trimmed at its edge by TextTrimming instead, like any grid.
+function Get-GridCellMaxLength
+{
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [int]$Default = 0
+    )
+
+    if($Path -eq 'Name') { return 0 }
+    return $Default
+}
+
 function New-GridTextColumn
 {
     param(

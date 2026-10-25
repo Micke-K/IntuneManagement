@@ -352,6 +352,12 @@ function Initialize-UI {
     Initialize-AvaloniaRuntime
 }
 
+# The menu item names what a click will do, so it follows the console state.
+function Update-ConsoleWindowMenu {
+    $header = if (Get-ConsoleWindowVisible) { '_Hide console' } else { '_Show console' }
+    $script:UIProvider.SetXamlProperty($script:Window, 'mnuToggleConsole', 'Header', $header)
+}
+
 function Show-MainWindow {
     param($View)
 
@@ -470,6 +476,19 @@ public static class IMMaximizeMetrics
         try { $ui.ShowAboutDialog() } catch { Write-LogError "Show-AboutDialog failed" $_.Exception }
     }))
 
+    # File > Hide console / Show console. Windows, classic console host only
+    # (Internal/ConsoleWindow.ps1); on macOS and Linux, and under Windows
+    # Terminal, there is nothing it could do, so the item is not shown.
+    if (Test-ConsoleWindowSupported) {
+        $ui.AddXamlEvent($script:Window, 'mnuToggleConsole', 'Add_Click', ({
+            try { [void](Switch-ConsoleWindow); Update-ConsoleWindowMenu } catch { Write-LogError "Toggle console failed" $_.Exception }
+        }))
+        Update-ConsoleWindowMenu
+    }
+    else {
+        $ui.SetXamlProperty($script:Window, 'mnuToggleConsole', 'IsVisible', $false)
+    }
+
     $ui.AddXamlEvent($script:Window, 'mnuSettings', 'Add_Click', ({
         try { Show-SettingsForm } catch { Write-LogError "Show-SettingsForm failed" $_.Exception }
     }))
@@ -513,6 +532,18 @@ public static class IMMaximizeMetrics
         # Stacks on top of the welcome modal on a first run off Windows, so the
         # experimental warning is the first thing read and the first dismissed.
         try { Show-ExperimentalPlatformNotice } catch { Write-LogError 'Show-ExperimentalPlatformNotice failed' $_.Exception }
+
+        # Setting HideConsoleWindow: hide the console once the window is up.
+        if ((Get-SettingValue "HideConsoleWindow") -eq $true -and (Test-ConsoleWindowSupported)) {
+            try { [void](Hide-ConsoleWindow); Update-ConsoleWindowMenu } catch { Write-LogError 'Hide-ConsoleWindow failed' $_.Exception }
+        }
+    }))
+
+    # Give the console back on exit: Start.cmd ends in `pause`, which would
+    # otherwise wait for a key in a window nobody can see.
+    $script:Window.add_Closed((ConvertTo-AvaloniaEventScriptBlock {
+        param($S, $E)
+        if ((Test-ConsoleWindowSupported) -and -not (Get-ConsoleWindowVisible)) { [void](Show-ConsoleWindow) }
     }))
 
     # Tell Windows this process is the Intune Management app so the taskbar
@@ -934,8 +965,13 @@ function Show-ReleaseNotes {
 
     $remote  = $null
     $header  = $null
+    $failure = $null
     try {
         $remote = Get-AppRemoteReleaseNotes
+        # Read straight after the call: Get-AppUpdateInfo below clears the recorded
+        # reason at its start, so asking later would report the version lookup's
+        # failure instead of this one.
+        if (-not $remote) { $failure = Get-AppUpdateLastError }
         $info   = Get-AppUpdateInfo
         if ($info.IsOutdated) {
             $header = "A newer version is available on GitHub: $($info.RemoteVersion.ToString()) (installed: $($info.LocalVersion.ToString()))"
@@ -947,6 +983,15 @@ function Show-ReleaseNotes {
     catch { Write-LogError 'Failed to get release notes from GitHub' $_.Exception }
 
     $body = if ($remote -and $remote.Text) { $remote.Text } else { $localNotes }
+
+    # Falling back to the local copy silently makes a rate-limited check look like the
+    # published notes simply match. Say which copy this is and why.
+    if (-not ($remote -and $remote.Text)) {
+        $note = if ($failure) { "Showing the local ReleaseNotes.md - could not read the published notes: $failure" }
+                else          { 'Showing the local ReleaseNotes.md - could not read the published notes.' }
+        $header = if ($header) { $note + [Environment]::NewLine + $header } else { $note }
+    }
+
     $content = if ($header) {
         $header + [Environment]::NewLine + ('-' * 72) + [Environment]::NewLine + [Environment]::NewLine + $body
     } else {
@@ -1422,6 +1467,8 @@ function Show-AboutDialog
     }
 
     $ui.SetXamlProperty($dlgAbout, 'txtTitle', 'Text', 'Intune Management')
+    # From the manifest (Internal/AppInfo.ps1), not the XAML - see the comment there.
+    $ui.SetXamlProperty($dlgAbout, 'txtCopyright', 'Text', (Get-AppCopyright))
     if ($script:ActiveView) {
         $ui.SetXamlProperty($dlgAbout, 'txtViewTitle', 'Text', ("Current view: " + $script:ActiveView.Title))
         if ($script:ActiveView.Description) {

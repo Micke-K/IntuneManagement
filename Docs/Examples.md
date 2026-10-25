@@ -30,12 +30,51 @@ Connect-IMIntuneManagement -TenantId $tid -AppId $appId -CertificatePath .\auth.
 # Device code (headless box, sign in from another device)
 Connect-IMIntuneManagement -DeviceCode
 
-# Sovereign clouds
-Connect-IMIntuneManagement -Cloud USGov -GCCType High -DefaultToken
+# Sovereign clouds: USGov = GCC High, USGovDOD = DoD, China = 21Vianet.
+# GCC (commercial) is Public, the default.
+Connect-IMIntuneManagement -Cloud USGov -TenantId $tid -AppId $appId -Secret $secret -DefaultToken
 ```
 
 Several tenants can be connected at once; each connect returns a token whose
 `Id` you pass as `-TokenId` to target that tenant.
+
+## Open the window signed in as an app
+
+4.0 never stores an app secret (3.x saved it in Settings, in clear text). Sign in from
+PowerShell, then open the window; it uses that sign-in. Read the secret from a vault at
+start, never from the script itself.
+
+```powershell
+Import-Module C:\Tools\IntuneManagement\IntuneManagement.psd1
+
+$tenantId = '<tenant id>'
+$appId    = '<application id>'
+
+# Option 1: a certificate - no secret to store at all (CurrentUser\My or LocalMachine\My)
+Connect-IMIntuneManagement -TenantId $tenantId -AppId $appId -Certificate '<thumbprint>'
+
+# Option 2: a secret from a SecretManagement vault (Microsoft.PowerShell.SecretManagement
+# plus a registered vault, e.g. Microsoft.PowerShell.SecretStore)
+$secret = Get-Secret -Name IntuneAppSecret -AsPlainText
+Connect-IMIntuneManagement -TenantId $tenantId -AppId $appId -Secret $secret
+
+# Option 3: a secret from Azure Key Vault (Az.KeyVault; sign in to Azure first, with
+# Connect-AzAccount -Environment AzureUSGovernment for a GCC High vault)
+$secret = Get-AzKeyVaultSecret -VaultName contoso-kv -Name IntuneAppSecret -AsPlainText
+Connect-IMIntuneManagement -TenantId $tenantId -AppId $appId -Secret $secret
+
+# GCC High / DoD: add -Cloud USGov or -Cloud USGovDOD to the connect line
+
+Show-IMMainWindow
+```
+
+Save it as a `.ps1` and start it with `powershell -File` (Windows PowerShell 5.1) or
+`pwsh -STA -File` (PowerShell 7). This opens the WPF window on Windows. On macOS the
+window can only be started by `Start-Avalonia.command`, so use the commands above
+without `Show-IMMainWindow` for scripted work there.
+
+The app registration needs application permissions with admin consent - see
+[Custom Entra app](CustomEntraApp.md).
 
 ## Settings
 
