@@ -886,7 +886,7 @@ function Show-GraphObjects
         {
             $requiredPermissions = ""
         }
-        $global:txtNotLoggedIn.Content = "You don't have the required permissons to access $($global:curObjectType.Title).$($requiredPermissions)`n`Missing perimssons: $missingScopes`n`nRequest consent from the 'Request Consent' link in the user login info`nor`nDisable the 'Use Default Permissions' setting to trigger consent prompt.`nNote: Changing the 'Use Default Permissions' setting will require a restart of the app`nand a 'manual' login" 
+        $global:txtNotLoggedIn.Content = "You don't have the required permissions to access $($global:curObjectType.Title).$($requiredPermissions)`n`Missing permissions: $missingScopes`n`nRequest consent from the 'Request Consent' link in the user login info`nor`nDisable the 'Use Default Permissions' setting to trigger consent prompt.`nNote: Changing the 'Use Default Permissions' setting will require a restart of the app`nand a 'manual' login" 
         $global:grdNotLoggedIn.Visibility = "Visible"
         $global:grdData.Visibility = "Collapsed"
         return

@@ -706,7 +706,7 @@ function Start-BulkCompareExportObjects
                 $objName = Get-GraphObjectName (?? $compObj.Object1 $compObj.Object2) $item.ObjectType
                 foreach($compValue in $compObj.Result)
                 {
-                    $compValue += [PSCustomObject]@{
+                    $compResultValue = [PSCustomObject]@{
                         ObjectName = $objName
                         Id = $compObj.Id
                         Type = $compObj.ObjectType.Title
@@ -719,23 +719,23 @@ function Start-BulkCompareExportObjects
                         Match = $compValue.Match
                     }
 
-                    if($global:chkBulkCompareRemoveOData.IsChecked -and ($compValue.Value1 -like "@odata*" -or $compValue.Value2 -like "@odata*")) {
+                    if($global:chkBulkCompareRemoveOData.IsChecked -and ($compResultValue.Value1 -like "@odata*" -or $compResultValue.Value2 -like "@odata*")) {
                         foreach($prop in $('Value1','Value2'))
                         {
                             $tmpValue1 = ""
                             $tmpValue2 = ""
-                            $vauleString = $compValue.$prop
+                            $vauleString = $compResultValue.$prop
                             if($vauleString -is [String]) {
-                                $vauleString = $vauleString -replace $compValue.Id, ""
-                                $tmpObj = $compValue.$prop | ConvertFrom-Json
-                                if($compValue.$prop -and $compValue.$prop -like "@odata*") {
+                                $vauleString = $vauleString -replace $compResultValue.Id, ""
+                                $tmpObj = $compResultValue.$prop | ConvertFrom-Json
+                                if($compResultValue.$prop -and $compResultValue.$prop -like "@odata*") {
                                     Remove-GraphODataProperties $tmpObj.$prop | ConvertTo-Json -Depth 50  | Set-Variable -Name "tmp$prop"
                                 }
                             }
                         }
-                        $compValue.Match = $tmpValue1 -eq $tmpValue2
+                        $compResultValue.Match = $tmpValue1 -eq $tmpValue2
                     }
-                    $compResultValues += $compValue
+                    $compResultValues += $compResultValue
                 }
             }
 
