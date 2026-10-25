@@ -89,7 +89,9 @@ function Initialize-CloudAPIManagement
         [string]
         $GraphEnvironment,
         [string]
-        $GCCType
+        $GCCType,
+        [switch]
+        $Federated
 
     )
 
@@ -104,6 +106,7 @@ function Initialize-CloudAPIManagement
 
     $global:hideUI = ($Silent -eq $true)
     $global:SilentBatchFile = $SilentBatchFile
+    $global:UseFederated = ($Federated -eq $true)
 
     if($tenantId)
     {
@@ -123,9 +126,13 @@ function Initialize-CloudAPIManagement
             Write-Warning "Azure App Id is missing. Use -AppId <AppID> on the command line"
         }
 
-        if($global:ClientSecret -or $global:ClientCert)
+        if($global:ClientSecret -or $global:ClientCert -or $global:UseFederated)
         {
-            if($global:ClientSecret)
+            if($global:UseFederated)
+            {
+                Write-Host "Using GitHub Actions Federated Credential"
+            }
+            elseif($global:ClientSecret)
             {
                 Write-Host "Using Azure App Secret"
             }
