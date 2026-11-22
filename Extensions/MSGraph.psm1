@@ -216,6 +216,13 @@ function Invoke-InitializeModule
     }) "ImportExport"
 
     Add-SettingsObject (New-Object PSObject -Property @{
+        Title = "Scope tag instead of Default"
+        Key = "ImportReplaceDefaultScopeTag"
+        Type = "String"
+        Description = "Name or ID of a scope tag to use instead of the Default scope tag when importing. Use this when your Intune role does not include the Default scope tag. Leave empty to keep Default."
+    }) "ImportExport"
+
+    Add-SettingsObject (New-Object PSObject -Property @{
         Title = "Add ID to export file"
         Key = "AddIDToExportFile"
         Type = "Boolean"
@@ -416,6 +423,7 @@ function Invoke-GraphAuthenticationUpdated
     $global:LoadedDependencyObjects = $null
     $global:migFileObj = $null
     $global:AADObjectCache = $null
+    Reset-GraphImportScopeTagCache
 }
 
 function Invoke-SettingsUpdated
@@ -1646,6 +1654,11 @@ function Start-GraphObjectExport
         $global:AADObjectCache = $null
     }
 
+    if(($script:exportObjects | Where Selected -eq $true))
+    {
+        Initialize-GraphMigrationTable $script:exportRoot
+    }
+
     foreach($item in $script:exportObjects)
     { 
         if($item.Selected -ne $true) { continue }
@@ -1955,6 +1968,8 @@ function Show-GraphImportForm
             }
         }
 
+        Reset-GraphImportScopeTagCache
+
         $allowUpdate = $true 
         $filesToImport = $global:dgObjectsToImport.ItemsSource | Where Selected -eq $true
         if($global:curObjectType.PreFilesImportCommand)
@@ -2178,6 +2193,8 @@ function Start-GraphObjectImport
         }
     }
 
+    Reset-GraphImportScopeTagCache
+
     $importedObjects = 0
 
     $txtNameFilter = $global:txtImportNameFilter.Text.Trim()
@@ -2259,6 +2276,12 @@ function Start-GraphObjectImport
             {
                 Write-Log "Remove $($item.ObjectType.Title) from dependency cache"
                 $global:LoadedDependencyObjects.Remove($item.ObjectType.Id)
+            }
+
+            if($importedObjectsCurType -gt 0 -and $item.ObjectType.Id -eq "ScopeTags")
+            {
+                # New scope tags were added to the tenant
+                Reset-GraphImportScopeTagCache
             }
             Save-Setting "" "LastUsedFullPath" $folder
             if($navigationPropObjects)
@@ -2466,7 +2489,7 @@ function Show-GraphBulkDeleteForm
 
 function Get-GraphFileObjects
 {
-    param($path, $Exclude = @("*_settings.json","*_assignments.json"), $SelectedStatus = $true, $ObjectType = $global:curObjectType)
+    param($path, $Exclude = @("*_settings.json","*_assignments.json","MigrationTable.json"), $SelectedStatus = $true, $ObjectType = $global:curObjectType)
 
     if(-not $path -or (Test-Path $path) -eq $false) { return }
 
@@ -2595,6 +2618,11 @@ function Reset-GraphObject
 
         # Clone the object before removing properties
         $obj = $fileObj.Object | ConvertTo-Json -Depth 50 | ConvertFrom-Json
+
+        # Same scope tag handling as a new import (translation and "Scope tag instead of Default")
+        Get-GraphDependencyObjects $objectType
+        Set-ScopeTags $obj
+
         Start-GraphPreImport $obj $objectType
         if ($global:cbImportType.SelectedValue -ne "replace_with_assignments"){  
             # will use the assignments from the file for "replace_with_assignments" type
@@ -2817,7 +2845,6 @@ function Import-GraphObjectAssignment
 function Set-ScopeTags
 {
     param($obj)
-    # ToDo: Get values from exported json files instead of MigrationTable?
 
     if(($obj.PSObject.Properties | Where Name -eq "roleScopeTagIds"))
     {
@@ -2829,42 +2856,170 @@ function Set-ScopeTags
     }
     else { return }
 
+    $sourceIds = @(@($obj.$scopeTagProperty) | Where-Object { "$_" -ne "" } | ForEach-Object { "$_" })
     $scopesIds = @()
-    if($global:chkReplaceDependencyIDs.IsChecked -eq $false -and $global:chkReplaceDependencyIDs.IsEnabled -eq $false)
-    {
-        if($global:chkImportScopes.IsChecked -eq $true) 
-        {
-            $scopesIds += $obj.$scopeTagProperty
-        }
-    }
-    else
-    {    
-        $loadedScopeTags = $global:LoadedDependencyObjects["ScopeTags"]
-        $usingDefault = (($obj."$scopeTagProperty" | measure).Count -eq 1 -and ($obj."$scopeTagProperty")[0] -eq "0")
-        if($loadedScopeTags -and $global:chkImportScopes.IsChecked -eq $true -and $usingDefault -eq $false -and $loadedScopeTags)
-        {        
-            foreach($scopeId in $obj."$scopeTagProperty")
-            {
-                if($scopeId -eq 0) { $scopesIds += "0"; continue } # Add default
 
+    if($global:chkImportScopes.IsChecked -eq $true -and $sourceIds.Count -gt 0)
+    {
+        # The source tenant comes from MigrationTable.json. Without one, it is unknown.
+        $sourceTenantId = Get-GraphImportSourceTenantId
+        $sameTenant = ($sourceTenantId -and $sourceTenantId -eq $global:organization.Id)
+
+        if($sameTenant -or $global:chkReplaceDependencyIDs.IsChecked -ne $true)
+        {
+            # Same tenant, or ID replacement turned off: keep the exported IDs
+            $scopesIds = $sourceIds
+        }
+        else
+        {
+            $loadedScopeTags = $null
+            if($global:LoadedDependencyObjects -is [HashTable]) { $loadedScopeTags = $global:LoadedDependencyObjects["ScopeTags"] }
+
+            foreach($scopeId in $sourceIds)
+            {
+                if($scopeId -eq "0") { $scopesIds += "0"; continue } # Default
+
+                # Translate with the exported ScopeTags (matched on name)
                 $scopeMigObj = $loadedScopeTags | Where OriginalId -eq $scopeId
                 if($scopeMigObj -and $scopeMigObj.Id)
                 {
                     $scopesIds += "$($scopeMigObj.Id)"
+                    continue
                 }
-                elseif($scopeMigObj)
+
+                if(-not $sourceTenantId)
                 {
-                    Write-Log "Could not find a ScopeTag for exported Id '$($obj.Id)' ($($scopeMigObj.Name)). Make sure all ScopeTags are imported into the environment" 2
-                }            
+                    # No migration table, so the export may come from this tenant.
+                    # Keep the ID if this tenant has a scope tag with it.
+                    $targetScopeTags = Get-GraphImportTargetScopeTags
+                    if($null -eq $targetScopeTags -or ($targetScopeTags | Where-Object { "$($_.id)" -eq $scopeId }))
+                    {
+                        $scopesIds += $scopeId
+                    }
+                    else
+                    {
+                        Write-Log "Scope tag ID $scopeId is not in this tenant and no exported ScopeTag was found for it. It is not added to the object" 2
+                    }
+                }
+                else
+                {
+                    Write-Log "Could not find a ScopeTag in this tenant for exported scope tag ID $scopeId. Make sure the ScopeTags are exported and imported into the environment" 2
+                }
             }
         }
     }
 
+    $scopesIds = @($scopesIds | Select-Object -Unique)
+
+    $replaceDefaultId = Get-GraphImportReplaceDefaultScopeTagId
+    if($replaceDefaultId)
+    {
+        # The signed-in role might not include the Default scope tag
+        $scopesIds = @($scopesIds | ForEach-Object { if($_ -eq "0") { $replaceDefaultId } else { $_ } } | Select-Object -Unique)
+        if($scopesIds.Count -eq 0) { $scopesIds = @($replaceDefaultId) }
+    }
+
     if($scopesIds.Count -eq 0)
     {
-        $scopesIds += "0" # Import with Default ScopeTag as default.
+        $scopesIds = @("0") # Import with Default ScopeTag as default.
     }
     $obj."$scopeTagProperty" = $scopesIds
+}
+
+# Tenant ID in the MigrationTable.json of the import folder (or its parent). $null when there is no migration table.
+function Get-GraphImportSourceTenantId
+{
+    $path = $global:txtImportPath.Text
+    if(-not $path) { return }
+    $path = Expand-FileName $path
+
+    if($script:ImportSourceTenantInfo -and $script:ImportSourceTenantInfo.Path -eq $path)
+    {
+        return $script:ImportSourceTenantInfo.TenantId
+    }
+
+    $tenantId = $null
+    foreach($folder in @($path, [IO.Path]::GetDirectoryName($path)))
+    {
+        if(-not $folder) { continue }
+        $migFileName = [IO.Path]::Combine($folder, "MigrationTable.json")
+        if([IO.File]::Exists($migFileName))
+        {
+            try { $tenantId = (ConvertFrom-Json (Get-Content $migFileName -Raw)).TenantId }
+            catch { Write-LogError "Failed to read $migFileName" $_.Exception }
+            break
+        }
+    }
+
+    $script:ImportSourceTenantInfo = [PSCustomObject]@{
+        Path = $path
+        TenantId = $tenantId
+    }
+    $tenantId
+}
+
+# Scope tags in the current tenant. $null if they could not be read.
+function Get-GraphImportTargetScopeTags
+{
+    if($script:ImportTargetScopeTagsLoaded -ne $true)
+    {
+        $script:ImportTargetScopeTagsLoaded = $true
+        $response = Invoke-GraphRequest "/deviceManagement/roleScopeTags?`$select=id,displayName" -ODataMetadata "none" -AllPages -NoError
+        if($response)
+        {
+            $script:ImportTargetScopeTags = @($response.Value | Where-Object { $_ })
+        }
+        else
+        {
+            $script:ImportTargetScopeTags = $null
+            Write-Log "Could not read the scope tags in this tenant. Exported scope tag IDs are kept without checking them" 2
+        }
+    }
+    $script:ImportTargetScopeTags
+}
+
+# ID of the scope tag set in "Scope tag instead of Default". $null when not set or not found.
+function Get-GraphImportReplaceDefaultScopeTagId
+{
+    $setting = "$(Get-SettingValue "ImportReplaceDefaultScopeTag")".Trim()
+    if(-not $setting) { return }
+
+    if($script:ImportReplaceDefaultScopeTag -and $script:ImportReplaceDefaultScopeTag.Setting -eq $setting)
+    {
+        return $script:ImportReplaceDefaultScopeTag.Id
+    }
+
+    $id = $null
+    if($setting -match '^\d+$')
+    {
+        $id = $setting
+    }
+    else
+    {
+        $scopeTag = Get-GraphImportTargetScopeTags | Where-Object { $_.displayName -eq $setting } | Select-Object -First 1
+        if($scopeTag)
+        {
+            $id = "$($scopeTag.id)"
+        }
+        else
+        {
+            Write-Log "Scope tag '$setting' (Scope tag instead of Default) was not found in this tenant. The Default scope tag is used" 2
+        }
+    }
+
+    $script:ImportReplaceDefaultScopeTag = [PSCustomObject]@{
+        Setting = $setting
+        Id = $id
+    }
+    $id
+}
+
+function Reset-GraphImportScopeTagCache
+{
+    $script:ImportSourceTenantInfo = $null
+    $script:ImportTargetScopeTags = $null
+    $script:ImportTargetScopeTagsLoaded = $false
+    $script:ImportReplaceDefaultScopeTag = $null
 }
 
 # Called during export to add group info for assignments
@@ -2950,6 +3105,49 @@ function Get-GraphMigrationTableFile
         $path = Join-Path $path $global:organization.displayName
     }
     $path
+}
+
+# Called when an export starts. Creates MigrationTable.json with the tenant info even if no
+# groups are added to it, so an import can tell whether it is the same tenant as the export
+function Initialize-GraphMigrationTable
+{
+    param($exportRoot)
+
+    if(-not $global:organization.Id) { return }
+
+    $path = Get-GraphMigrationTableFile $exportRoot
+    if(-not $path) { return }
+
+    $path = Expand-FileName $path
+    $migFileName = Join-Path $path "MigrationTable.json"
+
+    try
+    {
+        if([IO.File]::Exists($migFileName))
+        {
+            $existingMigFileObj = ConvertFrom-Json (Get-Content $migFileName -Raw)
+            if($existingMigFileObj.TenantId -and $existingMigFileObj.TenantId -ne $global:organization.Id)
+            {
+                Write-Log "MigrationTable.json in $path is from another tenant ($($existingMigFileObj.TenantId)). Export each tenant to its own folder" 2
+                return
+            }
+            $global:migFileObj = $existingMigFileObj
+            return
+        }
+
+        if(-not (Test-Path $path)) { mkdir -Path $path -Force -ErrorAction SilentlyContinue | Out-Null }
+
+        $global:migFileObj = (New-Object PSObject -Property @{
+            TenantId = $global:organization.Id
+            Organization = $global:organization.displayName
+            Objects = @()
+        })
+        ConvertTo-Json $global:migFileObj -Depth 50 | Out-File $migFileName -Force
+    }
+    catch
+    {
+        Write-LogError "Failed to create migration table $migFileName" $_.Exception
+    }
 }
 
 function Add-GroupMigrationObject
@@ -3422,6 +3620,8 @@ function Export-GraphObjects
     {
         return
     }
+
+    Initialize-GraphMigrationTable $script:ExportRoot
 
     foreach($obj in $objectsToExport)
     {

@@ -94,7 +94,7 @@ function Get-EMIntuneAssignmentInfo
     {    
         if($path -eq "$rootDir\Groups") { continue }        
 
-        foreach($file in (Get-Item -path "$path\*.json" -Exclude @("*_settings.json","*_assignments.json")))
+        foreach($file in (Get-Item -path "$path\*.json" -Exclude @("*_settings.json","*_assignments.json","MigrationTable.json")))
         {
             $graphObj = (ConvertFrom-Json (Get-Content -LiteralPath $file.FullName -Raw))
         

@@ -34,12 +34,10 @@ Steps:
 
   * Microsoft Graph
     For full support of the app requires:<br />
-    Application.Read.All<br />
     Agreement.ReadWrite.All<br />
     CloudPC.ReadWrite.All<br />
     DeviceManagementApps.ReadWrite.All<br />
     DeviceManagementConfiguration.ReadWrite.All<br />
-    DeviceManagementManagedDevices.ReadWrite.All<br />
     DeviceManagementRBAC.ReadWrite.All<br />
     DeviceManagementScripts.ReadWrite.All<br />
     DeviceManagementServiceConfig.ReadWrite.All<br />
